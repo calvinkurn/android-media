@@ -160,14 +160,14 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             val device = it.third
             val ringtone = it.fourth?.second
 
+            if (viewModel.tickerItems.isNotEmpty()) {
+                adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
+            } else {
+                adapter.removeTickers()
+            }
+
             if (token.isNotNull() && notification.isNotNull() && device.isNotNull() && ringtone.isNotNull()) {
                 TroubleshooterTimber.combine(token, notification, device)
-
-                if (viewModel.tickerItems.isNotEmpty()) {
-                    adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
-                } else {
-                    adapter.removeTickers()
-                }
 
                 if (notification.isTrue() && device.isTrue() && !isSilent(ringtone)) {
                     adapter.status(StatusState.Success)
