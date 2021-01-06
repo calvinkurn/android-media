@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="saw_app_widget_1_grid">56dp</dimen>
-    <dimen name="saw_app_widget_2_grids">110dp</dimen>
     <dimen name="saw_app_widget_3_grids">180dp</dimen>
     <dimen name="saw_app_widget_4_grids">250dp</dimen>
     <dimen name="saw_app_widget_5_grids">320dp</dimen>
@@ -10,20 +9,14 @@
     <dimen name="saw_dimen_6dp">6dp</dimen>
     <dimen name="saw_dimen_10dp">10dp</dimen>
     <dimen name="saw_dimen_12dp">12dp</dimen>
-    <dimen name="saw_dimen_18dp">18dp</dimen>
     <dimen name="saw_dimen_44dp">44dp</dimen>
     <dimen name="saw_dimen_46dp">46dp</dimen>
     <dimen name="saw_dimen_50dp">50dp</dimen>
-    <dimen name="saw_dimen_80dp">80dp</dimen>
-    <dimen name="saw_dimen_88dp">88dp</dimen>
     <dimen name="saw_dimen_90dp">90dp</dimen>
-    <dimen name="saw_dimen_92dp">92dp</dimen>
     <dimen name="saw_dimen_98dp">98dp</dimen>
     <dimen name="saw_dimen_124dp">124dp</dimen>
     <dimen name="saw_dimen_142dp">142dp</dimen>
-    <dimen name="saw_dimen_106dp">106dp</dimen>
     <dimen name="saw_dimen_140dp">140dp</dimen>
-    <dimen name="saw_dimen_148dp">148dp</dimen>
     <dimen name="saw_dimen_160dp">160dp</dimen>
     <dimen name="saw_dimen_180dp">180dp</dimen>
     <dimen name="saw_dimen_200dp">200dp</dimen>
