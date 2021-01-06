@@ -126,6 +126,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
+    private var useNewInbox = false
 
     private lateinit var coachMarkItem: CoachMarkItem
     private lateinit var feedBackgroundCrossfader: TransitionDrawable
@@ -163,9 +164,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
             status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
+        initInboxAbTest()
         initToolbar()
         initView()
         requestFeedTab()
+    }
+
+    private fun initInboxAbTest() {
+        useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+        ) == AbTestPlatform.VARIANT_NEW_INBOX
     }
 
     private fun initToolbar() {
@@ -202,17 +210,26 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 it.setContentInsetsAbsolute(0,0)
                 it.setToolbarPageName(FEED_PAGE)
                 viewLifecycleOwner.lifecycle.addObserver(it)
-                it.setIcon(
-                        IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                                .addIcon(IconList.ID_MESSAGE) { onInboxButtonClick() }
-                                .addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
-                                .addIcon(IconList.ID_CART) {}
-                                .addIcon(IconList.ID_NAV_GLOBAL) {}
-                )
+                it.setIcon(getToolbarIcons())
                 it.setupSearchbar(hints = listOf(HintData()), searchbarClickCallback = ::onImageSearchClick)
             }
         }
         toolbarParent.addView(feedToolbar)
+    }
+
+    private fun getToolbarIcons(): IconBuilder {
+        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(IconList.ID_MESSAGE) { onInboxButtonClick() }
+
+        if (!useNewInbox) {
+            icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
+        }
+
+        icons.apply {
+            addIcon(IconList.ID_CART) {}
+            addIcon(IconList.ID_NAV_GLOBAL) {}
+        }
+        return icons
     }
 
     override fun onPause() {
@@ -270,7 +287,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             setInboxNumber(inboxCount)
         }
         (feedToolbar as? NavToolbar)?.run {
-            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+            if (!useNewInbox) {
+                setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+            }
             setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
