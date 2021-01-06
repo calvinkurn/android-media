@@ -55,7 +55,7 @@ open class InitialSearchActivityViewModelTestFixture {
     }
 
     protected fun verifyGetTypingSearchSuccess(expectedKeyword: String) {
-        val actualKeyword = (viewModel.searchKeyword.value as? Success<String>)?.data
+        val actualKeyword = viewModel.searchKeyword.value
         assertEquals(expectedKeyword, actualKeyword)
     }
 }
