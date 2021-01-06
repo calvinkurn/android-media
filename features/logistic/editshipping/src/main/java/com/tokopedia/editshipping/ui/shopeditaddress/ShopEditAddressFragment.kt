@@ -67,6 +67,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var etShopDetail: TextInputEditText? = null
     private var tvPinpointText: Typography? = null
     private var btnSave: UnifyButton? = null
+    private var helperShopDetail: Typography? = null
 
     private var mapView: MapView? = null
     private var btnOpenMap: UnifyButton? = null
@@ -204,6 +205,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         etShopDetail = view?.findViewById(R.id.et_detail_alamat_shop)
         tvPinpointText = view?.findViewById(R.id.tv_pinpoint_text)
         btnSave = view?.findViewById(R.id.btn_save_warehouse)
+        helperShopDetail = view?.findViewById(R.id.tv_detail_alamat_helper)
 
         mapView = view?.findViewById(R.id.map_view_detail)
         btnOpenMap = view?.findViewById(R.id.btn_open_map)
@@ -296,6 +298,41 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
                 false
             })
+        }
+
+        etShopDetail?.apply {
+            addTextChangedListener(setAlamatWatcher())
+        }
+    }
+
+    private fun setAlamatWatcher(): TextWatcher {
+        return object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                //no-op
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                //no-op
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    var helper = ""
+                    val strLength = s.toString().length
+                    when {
+                        strLength < 20 -> {
+                            helper = "Min. 20 Karakter. Harap tulis alamatmu lebih lengkap."
+                        }
+                        else -> {
+                            helper = ""
+                        }
+
+                    }
+                    helperShopDetail?.text = helper
+
+                }
+            }
+
         }
     }
 

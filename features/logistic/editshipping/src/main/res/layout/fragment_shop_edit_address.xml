@@ -120,6 +120,16 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_detail_alamat_helper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/dp_2"
+                android:paddingEnd="@dimen/dp_2"
+                android:text=""
+                android:textColor="@color/Unify_R500"
+                android:textSize="@dimen/sp_12" />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tv_pinpoint_location"

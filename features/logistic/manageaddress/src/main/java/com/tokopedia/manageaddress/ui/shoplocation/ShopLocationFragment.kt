@@ -61,6 +61,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     private var tickerMainLocationInfo: Ticker? = null
     private var warehouseName: String = ""
     private var warehouseStatus: Int? = null
+    private var tvDeactivateConfirmation: Typography? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_shop_location, container, false)
@@ -74,10 +75,10 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkWhitelistedUser()
+//        checkWhitelistedUser()
         initViews()
         initViewModel()
-//        fetchData()
+        fetchData()
     }
 
     private fun checkWhitelistedUser() {
@@ -217,7 +218,9 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     private fun setupChildAddressConfirmation(data: Warehouse, child: View) {
         buttonBackAddressConfirm = child.findViewById(R.id.btn_kembali)
         buttonDeactivateAddressConfirm = child.findViewById(R.id.btn_nonaktifkan)
+        tvDeactivateConfirmation = child.findViewById(R.id.tv_deactivate_location)
 
+        tvDeactivateConfirmation?.text = getString(R.string.text_deactivate_confirmation, data.warehouseName)
         buttonBackAddressConfirm?.setOnClickListener { bottomSheetAddressConfirmation?.dismiss() }
         buttonDeactivateAddressConfirm?.setOnClickListener {
             viewModel.setShopLocationState(data.warehouseId, data.status)

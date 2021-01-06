@@ -70,12 +70,14 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
         }
 
         private fun setHeadquarter(shopLocation: Warehouse) {
-            if (shopLocation.warehouseType == 0) {
+            if (shopLocation.warehouseType == 1) {
                 labelMainShop.visibility = View.VISIBLE
                 imgInfoIcon.visibility = View.VISIBLE
+                btnSetLocation.visibility = View.GONE
             } else {
                 labelMainShop.visibility = View.GONE
                 imgInfoIcon.visibility = View.GONE
+                btnSetLocation.visibility = View.VISIBLE
             }
 
             if (shopLocation.status == 1) {
