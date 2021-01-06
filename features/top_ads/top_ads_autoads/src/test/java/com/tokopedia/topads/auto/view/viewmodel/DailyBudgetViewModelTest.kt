@@ -14,6 +14,7 @@ import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,6 +38,7 @@ class DailyBudgetViewModelTest {
 
     private lateinit var viewModel: DailyBudgetViewModel
 
+    private lateinit var bidInfoUseCase: BidInfoUseCase
     private lateinit var dispatcher: AutoAdsDispatcherProvider
     private lateinit var repository: GraphqlRepository
     private lateinit var context: Context
@@ -48,7 +50,8 @@ class DailyBudgetViewModelTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
         repository = mockk()
         context = mockk()
-        viewModel = spyk(DailyBudgetViewModel(context, dispatcher, repository, rawQueries, mockk()))
+        bidInfoUseCase = mockk(relaxed = true)
+        viewModel = spyk(DailyBudgetViewModel(context, dispatcher, repository, rawQueries, bidInfoUseCase))
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
@@ -87,6 +90,10 @@ class DailyBudgetViewModelTest {
         }
 
         assertEquals(expected, actual)
+//        viewModel.getBudgetInfo("reqType", "source") {
+//        }
+//        verify { bidInfoUseCase.setParams(any(),any(),any()) }
+//        verify { bidInfoUseCase.executeQuerySafeMode(any(),any()) }
     }
 
     @Test

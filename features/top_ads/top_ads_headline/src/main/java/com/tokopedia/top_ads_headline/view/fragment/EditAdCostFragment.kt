@@ -95,8 +95,8 @@ class EditAdCostFragment : BaseDaggerFragment() {
 
     private fun setUpObservers() {
         sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
-            if (it.minBid != stepperModel?.minBid) {
-                setAdvertisingCost(it.minBid)
+            if (it.adBidPrice != stepperModel?.adBidPrice) {
+                setAdvertisingCost(it.adBidPrice)
             }
             stepperModel = it
         })
@@ -158,7 +158,8 @@ class EditAdCostFragment : BaseDaggerFragment() {
     private fun getViewPagerAdapter(): KeywordEditPagerAdapter? {
         val list: ArrayList<Fragment> = arrayListOf()
         list.add(HeadlineEditKeywordFragment.getInstance(KEYWORD_POSITIVE, groupId))
-        list.add(HeadlineEditKeywordFragment.getInstance(KEYWORD_NEGATIVE, groupId))
+        //since we are hiding negative keyword for now in app
+//        list.add(HeadlineEditKeywordFragment.getInstance(KEYWORD_NEGATIVE, groupId))
         val adapter = KeywordEditPagerAdapter(childFragmentManager, 0)
         adapter.setData(list)
         return adapter
@@ -167,7 +168,7 @@ class EditAdCostFragment : BaseDaggerFragment() {
     private fun setUpToolTipButton() {
         val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
             val tvToolTipText = findViewById<Typography>(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.topads_headline_schedule_tooltip_text)
+            tvToolTipText?.text = getString(R.string.topads_headline_ad_cost_tip)
             val imgTooltipIcon = findViewById<ImageUnify>(R.id.tooltip_icon)
             imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
         }

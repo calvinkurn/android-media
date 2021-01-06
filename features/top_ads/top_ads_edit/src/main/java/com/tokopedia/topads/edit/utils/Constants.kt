@@ -71,5 +71,8 @@ object Constants {
     const val KEYWORD_ID = "keywordId"
     const val KEYWORD_TYPE = "keywordType"
     const val IS_DATA_CHANGE = "dataChange"
+    const val PRODUK_NAME = " Produk"
+    const val KATA_KUNCI = " Kata Kunci"
+    const val ATUR_NAME = " Atur"
 
 }

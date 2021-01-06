@@ -10,20 +10,15 @@ import androidx.fragment.app.FragmentStatePagerAdapter
  */
 class KeywordEditPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
 
-    private val POSITIVE = 0
-    private val COUNT = 2
     val bundle = Bundle()
     var list: ArrayList<Fragment> = arrayListOf()
 
     override fun getItem(position: Int): Fragment {
-        return when (position) {
-            POSITIVE -> list[0]
-            else -> list[1]
-        }
+        return list[position]
     }
 
     override fun getCount(): Int {
-        return COUNT
+        return list.size
     }
 
     fun setData(list: ArrayList<Fragment>) {

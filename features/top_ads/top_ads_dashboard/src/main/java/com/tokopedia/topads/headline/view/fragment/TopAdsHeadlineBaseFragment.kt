@@ -118,7 +118,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     private fun editGroup(groupId: Int) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
-            putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
+            putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
             putExtra(ParamObject.GROUP_ID, groupId.toString())
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE)

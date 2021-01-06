@@ -63,6 +63,7 @@ class EditFormDefaultViewModelTest {
     @Test
     fun validateGroup() {
         val data = ResponseGroupValidateName()
+        every { userSession.shopId } returns "123"
         every {
             validGroupUseCase.execute(captureLambda(), any())
         } answers {
@@ -149,6 +150,7 @@ class EditFormDefaultViewModelTest {
     @Test
     fun getAdKeyword() {
         val data = GetKeywordResponse()
+        every { userSession.shopId } returns "123"
         every {
             getAdKeywordUseCase.executeQuerySafeMode(captureLambda(), any())
         } answers {

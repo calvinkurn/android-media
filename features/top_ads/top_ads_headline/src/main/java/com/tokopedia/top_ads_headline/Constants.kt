@@ -14,4 +14,8 @@ object Constants {
     const val ACTIVE_STATUS = "active"
     const val STATUS_PUBLISHED = "published"
     const val STATUS_INACTIVE = "inactive"
+    const val TAB_POSITION = "tab_position"
+    const val AD_CONTENT = "Konten Iklan"
+    const val AD_AND_KEYWORD_COST = "Biaya Iklan & Kata Kunci"
+    const val OTHERS = "Lainnya"
 }

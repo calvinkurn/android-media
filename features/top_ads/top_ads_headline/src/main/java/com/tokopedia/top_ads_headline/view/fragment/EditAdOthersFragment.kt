@@ -128,15 +128,19 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     }
 
     private fun setMinBid() {
-        stepperModel?.minBid?.let {
-            Utils.convertToCurrency(it.toLong())
+        stepperModel?.let { stepperModel ->
             val budget: Long
-            if (stepperModel?.dailyBudget ?: 0F == 0F) {
-                budget = (it * MULTIPLIER).toLong()
-                stepperModel?.dailyBudget = budget.toFloat()
-            } else {
-                budget = stepperModel?.dailyBudget?.toLong() ?: 0
-                limitBudgetSwitch.isChecked = true
+            when {
+                stepperModel.dailyBudget != 0F -> {
+                    budget = stepperModel.dailyBudget.toLong()
+                    limitBudgetSwitch.isChecked = true
+                }
+                stepperModel.adBidPrice != 0 -> {
+                    budget = stepperModel.adBidPrice * MULTIPLIER.toLong()
+                }
+                else -> {
+                    budget = (stepperModel.minBid * MULTIPLIER).toLong()
+                }
             }
             budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget))
             budgetCost.textFieldInput.addTextChangedListener(budgetCostTextWatcher())

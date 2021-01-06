@@ -11,7 +11,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.Constants.ACTION_EDIT
+import com.tokopedia.top_ads_headline.Constants.AD_AND_KEYWORD_COST
+import com.tokopedia.top_ads_headline.Constants.AD_CONTENT
 import com.tokopedia.top_ads_headline.Constants.HEADLINE_EDIT_SOURCE
+import com.tokopedia.top_ads_headline.Constants.OTHERS
+import com.tokopedia.top_ads_headline.Constants.TAB_POSITION
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
@@ -22,8 +26,6 @@ import com.tokopedia.top_ads_headline.view.fragment.EditAdCostFragment
 import com.tokopedia.top_ads_headline.view.fragment.EditAdOthersFragment
 import com.tokopedia.top_ads_headline.view.viewmodel.EditFormHeadlineViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
-import com.tokopedia.topads.common.constant.Constants
-import com.tokopedia.topads.common.constant.Constants.TAB_POSITION
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
 import com.tokopedia.unifycomponents.Toaster
@@ -153,11 +155,11 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
         val bundle = intent.extras
         view_pager.adapter = getViewPagerAdapter()
         view_pager.offscreenPageLimit = 3
-        tab_layout?.addNewTab(Constants.AD_CONTENT)
-        tab_layout?.addNewTab(Constants.AD_AND_KEYWORD_COST)
-        tab_layout?.addNewTab(Constants.OTHERS)
-        tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 2) ?: 2)?.select()
-        view_pager.currentItem = bundle?.getInt(TAB_POSITION, 2) ?: 2
+        tab_layout?.addNewTab(AD_CONTENT)
+        tab_layout?.addNewTab(AD_AND_KEYWORD_COST)
+        tab_layout?.addNewTab(OTHERS)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 0) ?: 0)?.select()
+        view_pager.currentItem = bundle?.getInt(TAB_POSITION, 0) ?: 0
         view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
@@ -179,7 +181,7 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
         list.add(AdContentFragment.newInstance())
         list.add(EditAdCostFragment.newInstance(groupId))
         list.add(EditAdOthersFragment.newInstance())
-        adapter = TopAdsEditPagerAdapter(arrayOf(Constants.AD_CONTENT, Constants.AD_AND_KEYWORD_COST, Constants.OTHERS), supportFragmentManager, 0)
+        adapter = TopAdsEditPagerAdapter(arrayOf(AD_CONTENT, AD_AND_KEYWORD_COST, OTHERS), supportFragmentManager, 0)
         adapter.setData(list)
         return adapter
     }

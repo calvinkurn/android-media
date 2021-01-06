@@ -1,6 +1,5 @@
 package com.tokopedia.topads.view.model
 
-import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.ResponseEtalase
@@ -17,7 +16,6 @@ import javax.inject.Named
  * Author errysuprayogi on 06,November,2019
  */
 class ProductAdsListViewModel @Inject constructor(
-        private val context: Context,
         @Named("Main")
         private val dispatcher: CoroutineDispatcher,
         private val userSession: UserSessionInterface,

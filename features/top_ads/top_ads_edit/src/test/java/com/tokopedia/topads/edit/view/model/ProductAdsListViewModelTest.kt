@@ -5,6 +5,7 @@ import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.domain.usecase.GetEtalaseListUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetListProductUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -17,12 +18,13 @@ import org.junit.Test
 class ProductAdsListViewModelTest {
     private val getProductUseCase: TopAdsGetListProductUseCase = mockk(relaxed = true)
     private val getEtalaseUseCase: GetEtalaseListUseCase = mockk(relaxed = true)
+    private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val testDispatcher = TestCoroutineDispatcher()
     private lateinit var viewModel: ProductAdsListViewModel
 
     @Before
     fun setUp() {
-        viewModel = ProductAdsListViewModel(testDispatcher, mockk(), getProductUseCase, getEtalaseUseCase)
+        viewModel = ProductAdsListViewModel(testDispatcher, userSession, getProductUseCase, getEtalaseUseCase)
     }
 
     @After
@@ -33,6 +35,7 @@ class ProductAdsListViewModelTest {
     @Test
     fun etalaseList() {
         val data = ResponseEtalase.Data()
+        every { userSession.shopId } returns "123"
         every {
             getEtalaseUseCase.execute(captureLambda(), any())
         } answers {
@@ -48,6 +51,7 @@ class ProductAdsListViewModelTest {
     @Test
     fun productList() {
         val data = ResponseProductList.Result()
+        every { userSession.shopId } returns "123"
         every {
             getProductUseCase.execute(captureLambda(), any())
         } answers {

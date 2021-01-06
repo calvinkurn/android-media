@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
@@ -29,8 +30,6 @@ import com.tokopedia.top_ads_headline.view.activity.EditTopAdsHeadlineKeywordAct
 import com.tokopedia.top_ads_headline.view.activity.SaveButtonState
 import com.tokopedia.top_ads_headline.view.viewmodel.HeadlineEditKeywordViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
-import com.tokopedia.topads.common.constant.Constants.TITLE_1
-import com.tokopedia.topads.common.constant.Constants.TITLE_2
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.KeywordDataItem
@@ -73,7 +72,6 @@ const val DELETED_KEYWORDS = "deletedKeywords"
 
 class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordViewHolder.OnHeadlineAdEditItemClick,
         HeadlineEditEmptyAdKeywordViewHolder.OnHeadlineEmptyKeywordButtonClick {
-    private var tipsSortListSheet: TipsListSheet? = null
     private var keywordType: String = ""
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
@@ -138,7 +136,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         setUpObservers()
         fetchNextPage()
         setAdapter()
-        setUpSearchTypeTipsSheet()
+        add_keyword.setCompoundDrawablesWithIntrinsicBounds(R.drawable.topads_plus_add_keyword, 0, 0, 0)
         add_keyword.setOnClickListener {
             onCtaBtnClick()
         }
@@ -215,7 +213,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
 
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
         selectedKeywordsList = data as ArrayList<GetKeywordResponse.KeywordsItem>
-        if(keywordType== KEYWORD_NEGATIVE){
+        if (keywordType == KEYWORD_NEGATIVE) {
             getRestoredNegativeKeywords()
         }
         this.cursor = cursor
@@ -280,9 +278,9 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
 
     private fun getKeywordSearchTitle(type: Int): String {
         return if (type == KEYWORD_TYPE_PHRASE || type == KEYWORD_TYPE_NEGATIVE_PHRASE) {
-            TITLE_1
+            getString(R.string.topads_headline_broad_sort_type_header)
         } else {
-            TITLE_2
+            getString(R.string.topads_headline_specific_sort_type_header)
         }
     }
 
@@ -329,10 +327,10 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     private fun deleteKeyword(keywordModel: HeadlineEditAdKeywordModel) {
         val deletedItem: GetKeywordResponse.KeywordsItem? = selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName }
         selectedKeywordsList.remove(deletedItem)
-        if(keywordType == KEYWORD_POSITIVE){
+        if (keywordType == KEYWORD_POSITIVE) {
             val removedItem = stepperModel?.selectedKeywords?.find { it.keyword == keywordModel.keywordName }
             stepperModel?.selectedKeywords?.remove(removedItem)
-        }else{
+        } else {
             restoreNegativeKeywords.remove(deletedItem)
         }
         adapter.removeItem(keywordModel)
@@ -353,9 +351,25 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     override fun onSearchTypeClick(keywordModel: HeadlineEditAdKeywordModel) {
+        val tipsList: ArrayList<TipsUiModel> = ArrayList()
+        tipsList.apply {
+            add(TipsUiSortModel(R.string.topads_headline_broad_sort_type_header, R.string.topads_headline_broad_sort_type_subheader, keywordModel.searchType.equals(
+                    getString(R.string.topads_headline_broad_sort_type_header), true
+            )))
+            add(TipsUiSortModel(R.string.topads_headline_specific_sort_type_header, R.string.topads_headline_specific_sort_type_subheader, keywordModel.searchType.equals(
+                    getString(R.string.topads_headline_specific_sort_type_header), true
+            )))
+        }
+        val tipsSortListSheet = context?.let { it1 ->
+            TipsListSheet.newInstance(it1, tipsList = tipsList, itemDecoration = DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
+        }
+        tipsSortListSheet?.setTitle(getString(R.string.topads_headline_sort_type_title))
+        tipsSortListSheet?.showHeader = true
+        tipsSortListSheet?.showKnob = false
+
         tipsSortListSheet?.setOnUiSortItemClickListener(sortItemClick = object : TipsUiSortViewHolder.OnUiSortItemClick {
             override fun onItemClick(sortModel: TipsUiSortModel) {
-                tipsSortListSheet?.getTipsList()?.forEach { model ->
+                tipsSortListSheet.getTipsList().forEach { model ->
                     if (model is TipsUiSortModel && model == sortModel) {
                         model.isChecked = true
                         changeSearchStatus(keywordModel, getString(model.headerText))
@@ -363,7 +377,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
                         (model as? TipsUiSortModel)?.isChecked = false
                     }
                 }
-                tipsSortListSheet?.dismissAllowingStateLoss()
+                tipsSortListSheet.dismissAllowingStateLoss()
             }
         })
         tipsSortListSheet?.show(childFragmentManager, "")
@@ -378,22 +392,8 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         }
     }
 
-    private fun setUpSearchTypeTipsSheet() {
-        val tipsList: ArrayList<TipsUiModel> = ArrayList()
-        tipsList.apply {
-            add(TipsUiSortModel(R.string.topads_headline_broad_sort_type_header, R.string.topads_headline_broad_sort_type_subheader, true))
-            add(TipsUiSortModel(R.string.topads_headline_specific_sort_type_header, R.string.topads_headline_specific_sort_type_subheader))
-        }
-        tipsSortListSheet = context?.let { it1 ->
-            TipsListSheet.newInstance(it1, tipsList = tipsList)
-        }
-        tipsSortListSheet?.setTitle(getString(R.string.topads_headline_sort_type_title))
-        tipsSortListSheet?.showHeader = true
-        tipsSortListSheet?.showKnob = false
-    }
-
     private fun changeSearchStatus(keywordModel: HeadlineEditAdKeywordModel, searchType: String) {
-        if (searchType.equals(TITLE_1, false)) {
+        if (searchType.equals(getString(R.string.topads_headline_broad_sort_type_header), false)) {
             selectedKeywordsList.find { keyword -> keyword.tag == keywordModel.keywordName }?.type = if (keywordType == KEYWORD_POSITIVE) {
                 KEYWORD_TYPE_PHRASE
             } else {
@@ -489,7 +489,15 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         tempList.addAll(selectedKeywordsList)
         viewModel.getSelectedKeywords().forEach {
             val item = selectedKeywordsList.find { keywordsItem -> keywordsItem.tag == it.tag }?.let { keywordItem ->
-                if (it.priceBid != keywordItem.priceBid || it.type != keywordItem.type) {
+                if (it.type != keywordItem.type) {
+                    val tempKeywordDataItem = keywordItem.copy(type = if (keywordItem.type == KEYWORD_TYPE_PHRASE) {
+                        KEYWORD_TYPE_EXACT
+                    } else {
+                        KEYWORD_TYPE_PHRASE
+                    })
+                    list.add(getKeywordOperation(tempKeywordDataItem, ACTION_DELETE))
+                    list.add(getKeywordOperation(keywordItem, ACTION_CREATE))
+                } else if (it.priceBid != keywordItem.priceBid) {
                     list.add(getKeywordOperation(keywordItem, ACTION_EDIT))
                 }
                 commonItems.add(keywordItem)

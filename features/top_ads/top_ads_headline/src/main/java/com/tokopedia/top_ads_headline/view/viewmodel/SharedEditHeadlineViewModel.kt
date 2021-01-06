@@ -53,7 +53,6 @@ class SharedEditHeadlineViewModel @Inject constructor(
     private fun setBiddingValueIntoStepperModel(stepperModel: HeadlineAdStepperModel, bidData: TopadsBidInfo.DataItem) {
         stepperModel.maxBid = bidData.maxBid
         stepperModel.minBid = bidData.minBid
-        stepperModel.dailyBudget = bidData.minDailyBudget.toFloat()
         editHeadlineAdLiveData.value = stepperModel
     }
 
@@ -98,7 +97,8 @@ class SharedEditHeadlineViewModel @Inject constructor(
 
     private fun setEditAdHeadlineData(ad: SingleAd): HeadlineAdStepperModel {
         val editHeadlineAdModel = HeadlineAdStepperModel()
-        editHeadlineAdModel.minBid = ad.priceBid
+        editHeadlineAdModel.adBidPrice = ad.priceBid
+        editHeadlineAdModel.dailyBudget = ad.priceDaily.toFloat()
         editHeadlineAdModel.startDate = "${ad.adStartDate} ${ad.adStartTime}"
         editHeadlineAdModel.endDate = "${ad.adEndDate} ${ad.adEndTime}"
         editHeadlineAdModel.stateRestoreKeyword = true
@@ -147,6 +147,7 @@ class SharedEditHeadlineViewModel @Inject constructor(
             it.endDate = stepperModel.endDate
             it.groupName = stepperModel.groupName
             it.dailyBudget = stepperModel.dailyBudget
+            it.adOperations.firstOrNull()?.ad?.title = stepperModel.groupName
         }
     }
 

@@ -140,6 +140,7 @@
     <string name="topads_headline_specific_sort_type_subheader">Gunakan pencarian dengan kata kunci spesifik untuk beriklan lebih efektif dan produkmu lebih mudah ditemukan pembeli.</string>
 
     <!--tips for managing advertising costs on search pages-->
+    <string name="topads_headline_ad_cost_tip">Tips atur biaya Iklan</string>
     <string name="topads_headline_ad_cost_title">Tips mengatur biaya iklan di halaman pencarian</string>
     <string name="topads_headline_ad_cost_row1">Biaya rekomendasi merupakan rata-rata biaya kata kunci dari kompetitormu</string>
     <string name="topads_headline_ad_cost_row2">Gunakan biaya rekomendasi atau lebih besar agar iklanmu terus tampil.</string>

@@ -123,11 +123,14 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
             groupFilterSheet.show()
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
+        btnAddItem?.setOnClickListener{
+
+        }
     }
 
     private fun setSearchBar() {
         divider.visibility = View.VISIBLE
-        btnAddItem.visibility = View.GONE
+        btnAddItem.visibility = View.VISIBLE
         movetogroup.visibility = View.GONE
     }
 
@@ -278,7 +281,6 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW, true)
             btn_submit?.isEnabled = false
-            btnAddItem.visibility = View.GONE
         } else {
             adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW, true)
         }

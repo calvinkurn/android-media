@@ -21,12 +21,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
-        android:drawableStart="@drawable/topads_plus_add_keyword"
         android:drawablePadding="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toEndOf="@id/keyword_counter"
         app:layout_constraintTop_toTopOf="parent"
+        tools:drawableStart="@drawable/topads_plus_add_keyword"
         tools:text="Tambah Kata Kunci" />
 
     <androidx.recyclerview.widget.RecyclerView

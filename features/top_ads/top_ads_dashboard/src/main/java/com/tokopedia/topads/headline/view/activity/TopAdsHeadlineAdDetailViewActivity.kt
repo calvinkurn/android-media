@@ -170,7 +170,7 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
         }
         header_toolbar.addRightIcon(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon).setOnClickListener {
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
-                putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
+                putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
                 putExtra(ParamObject.GROUP_ID, groupId.toString())
             }
             startActivityForResult(intent, EDIT_HEADLINE_REQUEST_CODE)

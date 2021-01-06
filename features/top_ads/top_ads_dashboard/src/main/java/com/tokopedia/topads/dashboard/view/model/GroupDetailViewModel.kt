@@ -16,6 +16,7 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsU
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupListUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupProductDataUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
@@ -50,6 +51,7 @@ class GroupDetailViewModel @Inject constructor(
         private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
         private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
         private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
+        private val topAdsGetPromoUseCase: TopAdsGetPromoUseCase,
         private val groupInfoUseCase: GroupInfoUseCase,
         private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
 
