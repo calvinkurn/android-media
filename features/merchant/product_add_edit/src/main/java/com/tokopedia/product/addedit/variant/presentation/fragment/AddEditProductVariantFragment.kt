@@ -25,7 +25,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
@@ -1075,7 +1074,6 @@ class AddEditProductVariantFragment :
     private fun removeSizechart() {
         val url = viewModel.variantSizechart.value?.urlOriginal.orEmpty()
         viewModel.updateSizechart("")
-        FileUtils.deleteFileInTokopediaFolder(url)
     }
 
     private fun showSizechartPicker() {

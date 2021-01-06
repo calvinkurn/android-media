@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import com.otaliastudios.cameraview.CameraListener
-import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.controls.Facing
 import com.otaliastudios.cameraview.controls.Flash
@@ -20,14 +19,12 @@ import com.otaliastudios.cameraview.gesture.Gesture
 import com.otaliastudios.cameraview.gesture.GestureAction
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
-import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
@@ -37,6 +34,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
+import com.tokopedia.utils.image.ImageUtil
 import java.io.File
 import javax.inject.Inject
 
@@ -235,9 +233,10 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 //                    .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
 //            onSuccessCaptureImageFromCamera(cameraResultFile)
 //        }
-        val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
-                .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
-        onSuccessCaptureImageFromCamera(cameraResultFile)
+        val cameraResultFile = ImageUtil.writeImageToTkpdPath(imageByte, false)
+        if (cameraResultFile!= null) {
+            onSuccessCaptureImageFromCamera(cameraResultFile)
+        }
     }
 
     private fun onSuccessCaptureImageFromCamera(cameraResultFile: File) {

@@ -27,8 +27,6 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.imagepicker.common.util.FileUtils
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.liveness.R
 import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
 import com.tokopedia.liveness.di.LivenessDetectionComponent
@@ -42,6 +40,8 @@ import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.utils.image.ImageUtil
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -112,9 +112,9 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     if (!it.data.isSuccessRegister) {
                         if (!it.data.listRetake.contains(FACE_RETAKE)) {
                             intent.putExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH, facePath)
-                            FileUtils.deleteFileInTokopediaFolder(ktpPath)
+                            FileUtil.deleteFile(ktpPath)
                         } else {
-                            FileUtils.deleteFileInTokopediaFolder(facePath)
+                            FileUtil.deleteFile(facePath)
                         }
                         intent.putIntegerArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_RETAKE, it.data.listRetake)
                         intent.putStringArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_MESSAGE, it.data.listMessage)
@@ -122,8 +122,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                         intent.putExtra(ApplinkConst.Liveness.EXTRA_SUBTITLE, it.data.apps.subtitle)
                         intent.putExtra(ApplinkConst.Liveness.EXTRA_BUTTON, it.data.apps.button)
                     } else {
-                        FileUtils.deleteFileInTokopediaFolder(ktpPath)
-                        FileUtils.deleteFileInTokopediaFolder(facePath)
+                        FileUtil.deleteFile(ktpPath)
+                        FileUtil.deleteFile(facePath)
                     }
                     activity?.setResult(RESULT_OK, intent)
                     activity?.finish()
@@ -411,7 +411,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     private fun writeImageToTkpdPath(bitmap: Bitmap): File {
-        val cacheDir = File(context?.externalCacheDir, FileUtils.generateUniqueFileName() + ImageUtils.JPG_EXT)
+        val cacheDir = File(context?.externalCacheDir, FileUtil.generateUniqueFileName() + ImageUtil.JPG_EXT)
         val cachePath = cacheDir.absolutePath
         val file = File(cachePath)
         if (file.exists()) {

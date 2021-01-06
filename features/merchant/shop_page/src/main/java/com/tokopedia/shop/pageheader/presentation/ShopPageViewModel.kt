@@ -9,7 +9,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -56,6 +55,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageUtil
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import rx.Subscriber
@@ -209,14 +209,11 @@ class ShopPageViewModel @Inject constructor(
         launchCatchError(dispatcherProvider.io, {
             ImageHandler.loadImageWithTarget(context, shopSnippetUrl, object : CustomTarget<Bitmap>(){
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    val savedFile = ImageUtils.writeImageToTkpdPath(
-                            ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
+                    val savedFile = ImageUtil.writeImageToTkpdPath(
                             resource,
                             true
                     )
-                    if(savedFile != null) {
-                        shopImagePath.postValue(savedFile.absolutePath)
-                    }
+                    shopImagePath.postValue(savedFile.absolutePath)
                 }
                 override fun onLoadCleared(placeholder: Drawable?) {
                     // no op

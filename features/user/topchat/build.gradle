@@ -64,7 +64,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.mediauploader)
 

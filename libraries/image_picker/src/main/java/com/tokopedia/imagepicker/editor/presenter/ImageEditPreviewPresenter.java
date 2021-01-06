@@ -7,7 +7,7 @@ import android.graphics.ColorMatrixColorFilter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.utils.image.ImageUtil;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -136,8 +136,8 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                 Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<String>>() {
                     @Override
                     public Observable<String> call(Bitmap bitmap) {
-                        Bitmap resultBitmap = ImageUtils.brightBitmap(bitmap, brightnessValue);
-                        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, resultBitmap, isPng);
+                        Bitmap resultBitmap = ImageUtil.brightBitmap(bitmap, brightnessValue);
+                        File file = ImageUtil.writeImageToTkpdPath(resultBitmap, isPng);
                         return Observable.just(file.getAbsolutePath());
                     }
                 })
@@ -174,8 +174,8 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                 Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<String>>() {
                     @Override
                     public Observable<String> call(Bitmap bitmap) {
-                        Bitmap resultBitmap = ImageUtils.contrastBitmap(bitmap, contrastValue);
-                        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, resultBitmap, isPng);
+                        Bitmap resultBitmap = ImageUtil.contrastBitmap(bitmap, contrastValue);
+                        File file = ImageUtil.writeImageToTkpdPath(resultBitmap, isPng);
                         return Observable.just(file.getAbsolutePath());
                     }
                 })
@@ -212,8 +212,8 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                 Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<String>>() {
                     @Override
                     public Observable<String> call(Bitmap bitmap) {
-                        Bitmap resultBitmap = ImageUtils.rotateBitmapByDegree(bitmap, angle);
-                        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, resultBitmap, isPng);
+                        Bitmap resultBitmap = ImageUtil.rotateBitmapByDegree(bitmap, angle);
+                        File file = ImageUtil.writeImageToTkpdPath(resultBitmap, isPng);
                         return Observable.just(file.getAbsolutePath());
                     }
                 })

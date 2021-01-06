@@ -10,7 +10,8 @@ import com.bumptech.glide.request.FutureTarget;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
-import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.utils.file.FileUtil;
+import com.tokopedia.utils.image.ImageUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,12 +57,11 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                     @Override
                     public Observable<String> call(String path) {
 
-                        if (ImageUtils.getFileSizeInKb(path) > maxFileSize) {
-                            if (ImageUtils.isImageType(getView().getContext(), path)) {
+                        if (FileUtil.getFileSizeInKb(path) > maxFileSize) {
+                            if (FileUtil.isImageType(getView().getContext(), path)) {
                                 //resize image
-                                String pathResult = ImageUtils.resizeBitmap(path, ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT,
-                                        true, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
-                                if (recheckSizeAfterResize && ImageUtils.getFileSizeInKb(pathResult) > maxFileSize) {
+                                String pathResult = ImageUtil.resizeBitmap(path, ImageUtil.DEF_WIDTH, ImageUtil.DEF_HEIGHT, true);
+                                if (recheckSizeAfterResize && FileUtil.getFileSizeInKb(pathResult) > maxFileSize) {
                                     throw new FileSizeAboveMaximumException();
                                 }
                                 return Observable.just(pathResult);
@@ -173,7 +173,7 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                             }
                             FutureTarget<File> future = Glide.with(getView().getContext())
                                     .load(url)
-                                    .downloadOnly(ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT);
+                                    .downloadOnly(ImageUtil.DEF_WIDTH, ImageUtil.DEF_HEIGHT);
                             try {
                                 return future.get();
                             } catch (InterruptedException | ExecutionException e) {

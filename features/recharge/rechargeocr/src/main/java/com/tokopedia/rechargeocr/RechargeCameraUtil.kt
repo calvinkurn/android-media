@@ -3,7 +3,7 @@ package com.tokopedia.rechargeocr
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
-import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.utils.image.ImageUtil
 
 class RechargeCameraUtil {
 
@@ -15,9 +15,9 @@ class RechargeCameraUtil {
         private const val BOTTOM_DIMEN_DIVIDER = 2.96
 
         @JvmStatic
-        fun trimBitmap(imagePath: String, @ImageUtils.DirectoryDef targetDirectory: String): String {
-            val bitmapToEdit = ImageUtils.getBitmapFromPath(imagePath, ImageUtils.DEF_WIDTH,
-                    ImageUtils.DEF_HEIGHT, false)
+        fun trimBitmap(imagePath: String): String {
+            val bitmapToEdit = ImageUtil.getBitmapFromPath(imagePath, ImageUtil.DEF_WIDTH,
+                    ImageUtil.DEF_HEIGHT, false)
             val width = bitmapToEdit!!.width
             val height = bitmapToEdit.height
             var left = 0
@@ -25,7 +25,7 @@ class RechargeCameraUtil {
             var top = 0
             var bottom = height
 
-            val isPng = ImageUtils.isPng(imagePath)
+            val isPng = ImageUtil.isPng(imagePath)
 
             var outputBitmap: Bitmap? = null
             try {
@@ -41,7 +41,7 @@ class RechargeCameraUtil {
                 val canvas = Canvas(outputBitmap!!)
                 canvas.drawBitmap(bitmapToEdit, Rect(newLeft, newTop, newRight, newBottom),
                         Rect(0, 0, expectedWidth, expectedHeight), null)
-                val file = ImageUtils.writeImageToTkpdPath(targetDirectory, outputBitmap, isPng)
+                val file = ImageUtil.writeImageToTkpdPath(outputBitmap, isPng)
                 bitmapToEdit.recycle()
                 outputBitmap.recycle()
                 System.gc()

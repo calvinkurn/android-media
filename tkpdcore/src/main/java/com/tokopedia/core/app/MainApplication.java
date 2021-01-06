@@ -10,6 +10,7 @@ import androidx.multidex.MultiDex;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
@@ -63,6 +64,13 @@ public abstract class MainApplication extends CoreNetworkApplication implements 
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT, MainApplication.this);
+    }
+
+    public void initFileDirConfig(){
+        GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
+        GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
+        GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir().getAbsolutePath();
+        GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null).getAbsolutePath();
     }
 
     @Override

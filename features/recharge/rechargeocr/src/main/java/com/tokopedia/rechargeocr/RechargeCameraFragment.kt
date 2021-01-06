@@ -18,12 +18,12 @@ import com.otaliastudios.cameraview.PictureResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.imagepicker.common.util.ImageUtils
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics
 import com.tokopedia.rechargeocr.di.RechargeCameraInstance
 import com.tokopedia.rechargeocr.viewmodel.RechargeUploadImageViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.image.ImageUtil
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_recharge_camera.*
 import java.io.File
 import javax.inject.Inject
@@ -138,15 +138,17 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             //rotate the bitmap using the library
             mCaptureNativeSize?.let {
                 CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.width, mCaptureNativeSize.height) { bitmap ->
-                    val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils
-                            .DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false)
-                    onSuccessImageTakenFromCamera(cameraResultFile)
+                    if (bitmap != null) {
+                        val cameraResultFile = ImageUtil.writeImageToTkpdPath(bitmap, false)
+                        onSuccessImageTakenFromCamera(cameraResultFile)
+                    }
                 }
             }
         } catch (error: Throwable) {
-            val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
-                    .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
-            onSuccessImageTakenFromCamera(cameraResultFile)
+            val cameraResultFile = ImageUtil.writeImageToTkpdPath(imageByte, false)
+            if (cameraResultFile!= null) {
+                onSuccessImageTakenFromCamera(cameraResultFile)
+            }
         }
     }
 
@@ -156,7 +158,6 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             imagePath = cameraResultFile.absolutePath
             showImagePreview()
             uploadImageviewModel.uploadImageRecharge(imagePath,
-                    ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA,
                     GraphqlHelper.loadRawString(resources, R.raw.query_recharge_ocr))
         } else {
             Toast.makeText(context, getString(R.string.ocr_default_error_message), Toast

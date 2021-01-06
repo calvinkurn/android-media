@@ -31,7 +31,6 @@ import com.tokopedia.imagepicker.common.ImageEditorBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
-import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
@@ -335,8 +334,6 @@ public final class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
-        //remove any cache file captured by camera
-        ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
         trackBack();
         super.onBackPressed();
     }

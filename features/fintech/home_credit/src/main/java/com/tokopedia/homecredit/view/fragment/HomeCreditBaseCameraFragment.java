@@ -9,8 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-
-import android.util.Pair;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -18,11 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.otaliastudios.cameraview.CameraException;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.bumptech.glide.Glide;
+import com.otaliastudios.cameraview.CameraException;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraUtils;
@@ -34,7 +32,7 @@ import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.utils.image.ImageUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -116,11 +114,11 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     private void setUIFlashCamera(int flashEnum) {
         if (flashEnum == Flash.AUTO.ordinal()) {
-            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_auto_flash));
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
-            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_on_flash));
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.R.drawable.ic_on_flash));
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_off_flash));
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.R.drawable.ic_off_flash));
         }
     }
 
@@ -194,12 +192,16 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         }
         try {
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), bitmap -> {
-                File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
-                onSuccessImageTakenFromCamera(cameraResultFile);
+                if (bitmap != null) {
+                    File cameraResultFile = ImageUtil.writeImageToTkpdPath(bitmap, false);
+                    onSuccessImageTakenFromCamera(cameraResultFile);
+                }
             });
         } catch (Throwable error) {
-            File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
-            onSuccessImageTakenFromCamera(cameraResultFile);
+            File cameraResultFile = ImageUtil.writeImageToTkpdPath(imageByte, false);
+            if (cameraResultFile != null) {
+                onSuccessImageTakenFromCamera(cameraResultFile);
+            }
         }
     }
 
@@ -228,7 +230,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     }
 
-    private void loadImageFromBitmap(Context context, final ImageView imageView, Bitmap bitmap){
+    private void loadImageFromBitmap(Context context, final ImageView imageView, Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         int min, max;
@@ -240,14 +242,14 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             max = height;
         }
         boolean loadFitCenter = min != 0 && (max / min) > 2;
-        if(loadFitCenter)
+        if (loadFitCenter)
             Glide.with(context).load(bitmapToByte(bitmap)).fitCenter().into(imageView);
         else
             Glide.with(context).load(bitmapToByte(bitmap)).into(imageView);
     }
 
 
-    private byte[] bitmapToByte(Bitmap bitmap){
+    private byte[] bitmapToByte(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, stream);
         return stream.toByteArray();

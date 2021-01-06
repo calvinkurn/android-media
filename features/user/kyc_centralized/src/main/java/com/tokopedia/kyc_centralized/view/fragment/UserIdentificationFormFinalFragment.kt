@@ -31,7 +31,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
@@ -50,6 +49,7 @@ import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KycCommonUrl
 import com.tokopedia.user_identification_common.KycUrl
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.utils.file.FileUtil
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -478,8 +478,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         } else {
             analytics?.eventClickBackFinalForm()
         }
-        FileUtils.deleteFileInTokopediaFolder(stepperModel?.ktpFile)
-        FileUtils.deleteFileInTokopediaFolder(stepperModel?.faceFile)
+        FileUtil.deleteFile(stepperModel?.ktpFile)
+        FileUtil.deleteFile(stepperModel?.faceFile)
     }
 
     override fun trackOnBackPressed() {}
