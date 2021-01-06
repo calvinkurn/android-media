@@ -13,6 +13,7 @@
     <string name="pantau_terus_performa_iklan_produkmu_di_dashboard_topads">Pantau terus performa iklan produkmu di\nDashboard TopAds</string>
     <string name="tambah_kredit_topads_agar_iklanmu_nselalu_tampil_dan_lebih_bersaing">Tambah kredit TopAds agar iklanmu\nselalu tampil dan lebih bersaing</string>
     <string name="tip_memilih_produk">Tip memilih produk</string>
+    <string name="topads_produk_tooltip_text">Tips memilih produk.</string>
     <string name="lanjutkan">Lanjutkan</string>
     <string name="_0_produk">0 produk dipilih</string>
     <string name="add_product">Tambah Produk</string>
@@ -78,6 +79,7 @@
     <string name="topads_common_keyword_competition">Kompetisi</string>
     <string name="topads_common_kata_kunci_dipilih">%d kata kunci dipilih</string>
     <string name="topads_common_tip_memilih_kata_kunci">Tip memilih kata kunci</string>
+    <string name="topads_empty_tip_memilih_kata_kunci_title">Tips memilih kata kunci</string>
     <string name="topads_common_keyword_empty_title">Belum ada kata kunci dicari</string>
     <string name="topads_common_keyword_empty_desc">Cari kata kunci yang sesuai dengan produkmu</string>
     <string name="topads_common_keyword_edit_bid_sheet_title">Celana Panjang</string>

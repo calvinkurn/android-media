@@ -90,7 +90,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
         keyword_list.layoutManager = LinearLayoutManager(this)
         val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
             tvToolTipText = this.findViewById(R.id.tooltip_text)
-            tvToolTipText?.text = getString(com.tokopedia.topads.common.R.string.topads_common_keyword_info_sheet_title)
+            tvToolTipText?.text = getString(com.tokopedia.topads.common.R.string.topads_empty_tip_memilih_kata_kunci_title)
 
             imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
             imgTooltipIcon?.setImageDrawable(this.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
