@@ -26,6 +26,7 @@ import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -52,6 +53,7 @@ class AccountHeaderViewHolder(itemView: View,
         val LAYOUT = R.layout.holder_account_header
         const val TEXT_LOGIN_AS = "Masuk Sebagai %s"
         const val TEXT_TOKO_SAYA = "Toko saya:  %s"
+        const val TEXT_PERAN_SAYA = "Peran saya:  %s"
         private const val GREETINGS_0_2 = "Selamat tidur~"
         private const val GREETINGS_3_4 =  "Lagi begadang? Kangen, ya?"
         private const val GREETINGS_5_9 =  "Selamat pagi! Semongko!"
@@ -174,9 +176,17 @@ class AccountHeaderViewHolder(itemView: View,
                 subtext = MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT_SHOP_TRY).toString()
                 fulltext = String.format(AccountHeaderViewModel.ERROR_TEXT_SHOP, subtext)
             } else {
-                subtext = MethodChecker.fromHtml(element.shopName).toString()
-                fulltext = String.format(TEXT_TOKO_SAYA, subtext)
-                tvShopInfo.setOnClickListener { onShopClicked() }
+                subtext =
+                        if (element.adminRoleText == null) {
+                            MethodChecker.fromHtml(element.shopName).toString().also { shopName ->
+                                fulltext = String.format(TEXT_TOKO_SAYA, shopName)
+                            }
+                        } else {
+                            element.adminRoleText.orEmpty().also { roleText ->
+                                fulltext = String.format(TEXT_PERAN_SAYA, roleText)
+                            }
+                        }
+                tvShopInfo.setOnClickListener { onShopClicked(element.canGoToSellerAccount) }
             }
 
             tvShopInfo.setText(fulltext, TextView.BufferType.SPANNABLE)
@@ -277,9 +287,13 @@ class AccountHeaderViewHolder(itemView: View,
         }
     }
 
-    private fun onShopClicked() {
+    private fun onShopClicked(canGoToSellerMenu: Boolean) {
         TrackingProfileSection.onClickShopProfileSection(userSession.userId)
-        RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
+        if (canGoToSellerMenu) {
+            RouteManager.route(itemView.context, ApplinkConstInternalSellerapp.SELLER_MENU)
+        } else {
+            LocationAdminDialog(itemView.context).show()
+        }
     }
 
     private var needToSwitchText: Boolean = isFirstTimeUserSeeNameAnimationOnSession()
