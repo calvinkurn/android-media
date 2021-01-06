@@ -166,12 +166,8 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     }
 
     private fun observeSearchKeyword() {
-        observe(viewModel.searchResult) {
-            when (it) {
-                is Success -> proceedSearchKeyword(it.data)
-                is Fail -> {
-                }
-            }
+        observe(viewModel.searchKeyword) {
+            proceedSearchKeyword(it)
         }
     }
 

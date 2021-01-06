@@ -25,15 +25,15 @@ class InitialSearchActivityViewModel @Inject constructor(
 
     private val _searchPlaceholder = MutableLiveData<Result<String>>()
 
-    private val _searchResult = MutableLiveData<Result<String>>()
-    val searchResult: LiveData<Result<String>>
-        get() = _searchResult
+    private val _searchKeyword = MutableLiveData<String>()
+    val searchKeyword: LiveData<String>
+        get() = _searchKeyword
 
 
     private val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
     init {
-        getKeywordSearch()
+        getSearchKeyword()
     }
 
     fun getSearchPlaceholder() {
@@ -53,24 +53,14 @@ class InitialSearchActivityViewModel @Inject constructor(
         queryChannel.offer(keyword)
     }
 
-    private fun getKeywordSearch() {
-        launchCatchError(block =  {
+    private fun getSearchKeyword() {
+        launch {
             queryChannel.asFlow()
                     .debounce(DEBOUNCE_DELAY_MILLIS)
                     .distinctUntilChanged()
-                    .mapLatest {
-                        try {
-                            Success(it)
-                        } catch (e: Throwable) {
-                            Fail(e)
-                        }
-                    }.catch {
-                        emit(Fail(it))
-                    }.collectLatest {
-                        _searchResult.value = it
+                    .collectLatest {
+                        _searchKeyword.value = it
                     }
-        }) {
-            _searchResult.value = Fail(it)
         }
     }
 
