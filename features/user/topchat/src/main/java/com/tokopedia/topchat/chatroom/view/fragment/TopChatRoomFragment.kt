@@ -58,6 +58,7 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -175,8 +176,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private val REQUEST_REPORT_USER = 118
     private val REQUEST_REVIEW = 119
 
-    private var seenAttachedProduct = HashSet<Int>()
-    private var seenAttachedBannedProduct = HashSet<Int>()
+    private var seenAttachedProduct = HashSet<Long>()
+    private var seenAttachedBannedProduct = HashSet<Long>()
     private val reviewRequest = Stack<ReviewRequestResult>()
     private var composeArea: EditText? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
@@ -324,7 +325,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         renderList(chatRoom.listChat)
         updateHasNextState(chat)
         loadChatRoomSettings(chatRoom)
-        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
     }
 
     private fun onErrorGetTopChat(throwable: Throwable) {
@@ -341,7 +342,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         updateNewUnreadMessageState(chat)
         renderBottomList(chatRoom.listChat)
         updateHasNextAfterState(chat)
-        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
     }
 
     private fun updateNewUnreadMessageState(chat: ChatReplies) {
@@ -498,7 +499,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         updateHasNextState(chat)
         updateHasNextAfterState(chat)
         loadChatRoomSettings(chatRoom)
-        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
     }
 
     private fun updateHasNextAfterState(chat: ChatReplies) {
@@ -1246,7 +1247,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return url
     }
 
-    override fun onDualAnnouncementClicked(redirectUrl: String, attachmentId: String, blastId: Int) {
+    override fun onDualAnnouncementClicked(
+            redirectUrl: String, attachmentId: String, blastId: Long
+    ) {
         analytics.trackClickImageAnnouncement(blastId.toString(), attachmentId)
         if (redirectUrl.isNotEmpty()) {
             onGoToWebView(redirectUrl, attachmentId)
@@ -1670,7 +1673,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
             putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
             putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
-            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
             putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, element.category)
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, element.productName)
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.priceInt.toFloat())
