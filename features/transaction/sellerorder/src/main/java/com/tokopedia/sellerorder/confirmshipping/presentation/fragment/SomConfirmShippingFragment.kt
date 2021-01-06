@@ -199,7 +199,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun observingConfirmShipping() {
-        somConfirmShippingViewModel.confirmShippingResult.observe(this, Observer {
+        somConfirmShippingViewModel.confirmShippingResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     SomAnalytics.eventClickKonfirmasi(true)
@@ -223,7 +223,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun observingCourierList() {
-        somConfirmShippingViewModel.courierListResult.observe(this, Observer {
+        somConfirmShippingViewModel.courierListResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     courierListResponse = it.data
@@ -254,7 +254,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun observingChangeCourier() {
-        somConfirmShippingViewModel.changeCourierResult.observe(this, Observer {
+        somConfirmShippingViewModel.changeCourierResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (it.data.mpLogisticChangeCourier.listMessage.isNotEmpty()) {
