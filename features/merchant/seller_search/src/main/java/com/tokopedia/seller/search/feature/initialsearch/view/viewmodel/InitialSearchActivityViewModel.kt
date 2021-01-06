@@ -2,6 +2,7 @@ package com.tokopedia.seller.search.feature.initialsearch.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.seller.search.common.domain.GetSellerSearchPlaceholderUseCase
@@ -9,10 +10,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class InitialSearchActivityViewModel @Inject constructor(
@@ -54,7 +56,7 @@ class InitialSearchActivityViewModel @Inject constructor(
     }
 
     private fun getSearchKeyword() {
-        launch {
+        viewModelScope.launch {
             queryChannel.asFlow()
                     .debounce(DEBOUNCE_DELAY_MILLIS)
                     .distinctUntilChanged()
