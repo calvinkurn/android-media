@@ -705,6 +705,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             tab_layout.customTabGravity = TabLayout.GRAVITY_FILL
 
             if (listProductTab.size > 1) {
+                tab_layout.getUnifyTabLayout().removeAllTabs()
                 for (item in listProductTab) {
                     tab_layout.addNewTab(item.title)
                 }

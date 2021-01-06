@@ -3,7 +3,6 @@ package com.tokopedia.tokopoints.view.tokopointhome.coupon
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -72,9 +71,7 @@ class SectionHorizontalViewHolder(val view: View)
             rvCarousel.addItemDecoration(CarouselItemDecoration(convertDpToPixel(8, rvCarousel.context)))
         }
         rvCarousel.adapter = CouponListAdapter(arrayList)
-
     }
-
 
     fun handledClick(appLink: String?, webLink: String?, action: String?) {
         try {

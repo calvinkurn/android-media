@@ -72,6 +72,9 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
                     countDownView?.visibility = View.GONE
                 }
             }
+            countDownView?.onTick = {
+                content.layoutCatalogAttr.countdownInfo?.countdownUnix = it / 1000
+            }
         } else {
             countDownView?.hide()
             timerMessage.hide()
