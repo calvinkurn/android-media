@@ -40,6 +40,8 @@ const val ARG_MERCHANT = "merchant"
 
 private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
 
+private const val KEY_CONFIG_NEW_NAVIGATION = "app_flag_thankyou_new_navigation"
+
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
         ThankYouPageDataLoadCallback {
 
@@ -201,9 +203,13 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     private fun isGlobalNavEnable(): Boolean {
-        getAbTestPlatform()?.let {
-            return (it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
-                    == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+        val isNewNavigationEnabled = FirebaseRemoteConfigImpl(this).getBoolean(KEY_CONFIG_NEW_NAVIGATION,
+                false)
+        if(isNewNavigationEnabled) {
+            getAbTestPlatform()?.let {
+                return (it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
+                        == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+            }
         }
         return false
     }
