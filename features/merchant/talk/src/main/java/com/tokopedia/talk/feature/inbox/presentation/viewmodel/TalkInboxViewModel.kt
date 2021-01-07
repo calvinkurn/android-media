@@ -105,6 +105,7 @@ class TalkInboxViewModel @Inject constructor(
             } else {
                 response.discussionInbox.buyerUnread
             }
+            unrespondedCount = response.discussionInbox.unrespondedTotal
             _inboxList.postValue(TalkInboxViewState.Success(response.discussionInbox, page, filter))
         }) {
             _inboxList.postValue(TalkInboxViewState.Fail(it, page))

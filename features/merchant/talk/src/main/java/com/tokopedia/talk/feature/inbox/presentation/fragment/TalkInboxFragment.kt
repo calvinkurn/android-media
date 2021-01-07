@@ -70,11 +70,13 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         const val EMPTY_SELLER_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_unread.png"
         const val EMPTY_SELLER_PROBLEM = "https://ecs7.tokopedia.net/android/others/talk_empty_reported_discussion.png"
 
-        fun createNewInstance(tab: TalkInboxTab, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
+        fun createNewInstance(tab: TalkInboxTab? = null, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
             return TalkInboxFragment().apply {
                 this.talkInboxListener = talkInboxListener
                 arguments = Bundle().apply {
-                    putString(TAB_PARAM, tab.tabParam)
+                    tab?.let {
+                        putString(TAB_PARAM, it.tabParam)
+                    }
                 }
             }
         }
@@ -515,6 +517,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                 return
             }
             viewModel.setInboxType(TalkInboxTab.SHOP_TAB)
+            return
         }
         viewModel.setInboxType(inboxType)
         return
