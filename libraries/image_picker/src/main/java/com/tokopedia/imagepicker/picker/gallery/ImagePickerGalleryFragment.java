@@ -187,15 +187,11 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         }
     }
 
-    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     @Override
     public void onResume() {
         super.onResume();
-        String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-        if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-            showLoading();
-            LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
-        }
+        showLoading();
+        LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
     }
 
     private void showLoading() {
@@ -221,19 +217,14 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-        if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-            switch (id) {
-                case ALBUM_LOADER_ID:
-                    return AlbumLoader.newInstance(getContext(), galleryType);
-                case MEDIA_LOADER_ID:
-                    Album album = selectedAlbumItem.intoAlbum();
-                    return AlbumMediaLoader.newInstance(getContext(), album, galleryType);
-                default:
-                    return new Loader<>(getContext());
-            }
-        } else {
-            return new Loader<>(getContext());
+        switch (id) {
+            case ALBUM_LOADER_ID:
+                return AlbumLoader.newInstance(getContext(), galleryType);
+            case MEDIA_LOADER_ID:
+                Album album = selectedAlbumItem.intoAlbum();
+                return AlbumMediaLoader.newInstance(getContext(), album, galleryType);
+            default:
+                return new Loader<>(getContext());
         }
     }
 
