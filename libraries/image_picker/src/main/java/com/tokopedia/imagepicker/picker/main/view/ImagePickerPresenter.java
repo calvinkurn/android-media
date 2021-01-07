@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.utils.image.ImageUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,13 +50,16 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
         }
     }
 
-    public void resizeImage(List<String> imagePath, final long maxFileSize, boolean recheckSizeAfterResize) {
+    public void resizeImage(List<String> imagePath, final long maxFileSize,
+                            boolean recheckSizeAfterResize, boolean convertToWebp) {
 
         Subscription subscription = Observable.from(imagePath)
                 .concatMap(new Func1<String, Observable<String>>() {
                     @Override
                     public Observable<String> call(String path) {
-
+                        if (convertToWebp) {
+                            path = ImageUtil.convertToWebp(getView().getContext(), path);
+                        }
                         if (ImageUtils.getFileSizeInKb(path) > maxFileSize) {
                             if (ImageUtils.isImageType(getView().getContext(), path)) {
                                 //resize image

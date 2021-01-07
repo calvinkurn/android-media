@@ -9,11 +9,15 @@ import android.net.Uri
 import android.view.Display
 import android.view.WindowManager
 import java.io.File
+import java.io.FileOutputStream
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 object ImageUtil {
+
+    const val EXT_WEBP = ".webp"
+
     /**
      * This method calculates maximum size of both width and height of bitmap.
      * It is twice the device screen diagonal for default implementation (extra quality to zoom image).
@@ -121,5 +125,26 @@ object ImageUtil {
         } catch (ignored: Exception) {
             0 to 0
         }
+    }
+
+    @JvmStatic
+    fun convertToWebp(context: Context, imagePath: String): String {
+        val lastIndexOfExtension = imagePath.lastIndexOf(".")
+        val extension = imagePath.substring(lastIndexOfExtension)
+        val path = imagePath.substring(0, lastIndexOfExtension)
+
+        try {
+            val bitmap = getBitmapFromFile(context, imagePath)
+
+            if (bitmap != null && extension != EXT_WEBP) {
+                val out = FileOutputStream(path + EXT_WEBP)
+                bitmap.compress(Bitmap.CompressFormat.WEBP, 90, out)
+                out.close()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return path + EXT_WEBP
     }
 }
