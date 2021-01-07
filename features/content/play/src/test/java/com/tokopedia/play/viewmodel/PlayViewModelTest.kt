@@ -51,6 +51,7 @@ class PlayViewModelTest {
     private val mockGetIsLikeUseCase: GetIsLikeUseCase = mockk(relaxed = true)
     private val mockGetCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true)
     private val mockGetProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true)
+    private val mockTrackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val mockPlaySocket: PlaySocket = mockk(relaxed = true)
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
@@ -87,6 +88,7 @@ class PlayViewModelTest {
                 mockGetIsLikeUseCase,
                 mockGetCartCountUseCase,
                 mockGetProductTagItemsUseCase,
+                mockTrackProductTagBroadcasterUseCase,
                 mockPlaySocket,
                 userSession,
                 dispatchers,
