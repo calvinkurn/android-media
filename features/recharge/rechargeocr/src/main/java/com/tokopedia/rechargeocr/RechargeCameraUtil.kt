@@ -46,7 +46,7 @@ class RechargeCameraUtil {
                 outputBitmap.recycle()
                 System.gc()
 
-                return file.absolutePath
+                return file?.absolutePath ?: imagePath
             } catch (e: Throwable) {
                 if (outputBitmap != null && !outputBitmap.isRecycled) {
                     outputBitmap.recycle()

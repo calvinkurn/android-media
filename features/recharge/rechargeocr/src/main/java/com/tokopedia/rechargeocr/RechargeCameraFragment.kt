@@ -140,7 +140,9 @@ class RechargeCameraFragment : BaseDaggerFragment() {
                 CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.width, mCaptureNativeSize.height) { bitmap ->
                     if (bitmap != null) {
                         val cameraResultFile = ImageUtil.writeImageToTkpdPath(bitmap, false)
-                        onSuccessImageTakenFromCamera(cameraResultFile)
+                        if (cameraResultFile!= null) {
+                            onSuccessImageTakenFromCamera(cameraResultFile)
+                        }
                     }
                 }
             }

@@ -14,7 +14,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.util.*
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -27,8 +26,10 @@ object ImageUtil {
     const val DEF_WIDTH = 2560
     const val DEF_HEIGHT = 2560
 
+    const val DEF_SMALL_WIDTH = 612
+    const val DEF_SMALL_HEIGHT = 816
+
     const val DEFAULT_DIRECTORY = "/"
-    const val DIRECTORY_TOKOPEDIA_EDIT_RESULT: String = "Tokopedia/Tokopedia Edit/"
 
     /**
      * This method calculates maximum size of both width and height of bitmap.
@@ -111,7 +112,7 @@ object ImageUtil {
      * If the ratio between width/height is too big, it should be viewed as fit center. Otherwise, it will OOM
      */
     @JvmStatic
-    fun shouldLoadFitCenter(file: File) : Boolean {
+    fun shouldLoadFitCenter(file: File): Boolean {
         val (width, height) = getWidthAndHeight(file)
         val min: Int
         val max: Int
@@ -185,11 +186,11 @@ object ImageUtil {
             val canvas = Canvas(outputBitmap)
             canvas.drawBitmap(bitmapToEdit, Rect(left, top, right, bottom),
                     Rect(0, 0, expectedWidth, expectedHeight), null)
-            val file: File = writeImageToTkpdPath(outputBitmap, isPng, targetRelativeDirectory)
+            val file = writeImageToTkpdPath(outputBitmap, isPng, targetRelativeDirectory)
             bitmapToEdit.recycle()
             outputBitmap.recycle()
             System.gc()
-            file.absolutePath
+            file?.absolutePath ?: imagePath
         } catch (e: Throwable) {
             if (outputBitmap != null && !outputBitmap.isRecycled) {
                 outputBitmap.recycle()
@@ -319,18 +320,18 @@ object ImageUtil {
      */
     @JvmOverloads
     @JvmStatic
-    fun writeImageToTkpdPath(bitmap: Bitmap, isPng: Boolean, directoryDef: String? = DEFAULT_DIRECTORY): File {
+    fun writeImageToTkpdPath(bitmap: Bitmap, isPng: Boolean, directoryDef: String? = DEFAULT_DIRECTORY, quality: Int = 100): File? {
         val file: File = getTokopediaPhotoPath(isPng, directoryDef)
         if (file.exists()) {
             file.delete()
         }
         try {
             val out = FileOutputStream(file)
-            bitmap.compress(if (isPng) CompressFormat.PNG else CompressFormat.JPEG, 100, out)
+            bitmap.compress(if (isPng) CompressFormat.PNG else CompressFormat.JPEG, quality, out)
             out.flush()
             out.close()
         } catch (e: Throwable) {
-            e.printStackTrace()
+            return null
         }
         return file
     }
@@ -357,94 +358,20 @@ object ImageUtil {
     /*
         Compress Image like WA
      */
+    @JvmOverloads
     @JvmStatic
     @Throws(IOException::class)
-    fun compressImageFile(filePath: String, quality: Int): File {
-        val compressFormat = CompressFormat.JPEG
-        val imageFile = File(filePath)
-        val reqWidth = 612
-        val reqHeight = 816
-        var fileOutputStream: FileOutputStream? = null
-        val file: File = getTokopediaPhotoPath(false)
-        if (!file.exists()) {
-            file.createNewFile()
-        }
-        try {
-            fileOutputStream = FileOutputStream(file)
-            decodeBitmapAndCompress(imageFile, reqHeight, reqWidth)
-                    ?.compress(compressFormat, quality, fileOutputStream)
-        } finally {
-            if (fileOutputStream != null) {
-                fileOutputStream.flush()
-                fileOutputStream.close()
-            }
-        }
-        return file
-    }
-
-    @Throws(IOException::class)
-    private fun decodeBitmapAndCompress(imageFile: File, reqHeight: Int, reqWidth: Int): Bitmap? {
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        BitmapFactory.decodeFile(imageFile.absolutePath, options)
-        //Calculating Sample Size
-        val height = options.outHeight
-        val width = options.outWidth
-        var inSampleSize = 1
-        val halfHeight = height / 2
-        val halfWidth = width / 2
-        if (height > reqHeight || width > reqWidth) {
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
-                inSampleSize *= 2
-            }
-        }
-        options.inSampleSize = inSampleSize
-        options.inJustDecodeBounds = false
-        var scaledBitmap = BitmapFactory.decodeFile(imageFile.absolutePath, options)
-        val exifInterface: androidx.exifinterface.media.ExifInterface
-        exifInterface = androidx.exifinterface.media.ExifInterface(imageFile.absolutePath)
-        val orientation: Int = exifInterface.getAttributeInt(androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION, 0)
-        val matrix = Matrix()
-        if (orientation == androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90) {
-            matrix.postRotate(90f)
-        } else if (orientation == androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180) {
-            matrix.postRotate(180f)
-        } else if (orientation == androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270) {
-            matrix.postRotate(270f)
+    fun compressImageFile(filePath: String, quality: Int = 100, reqWidth: Int = DEF_SMALL_WIDTH, reqHeight: Int = DEF_SMALL_HEIGHT): File {
+        val bitmap = getBitmapFromPath(filePath, reqWidth, reqHeight, true)
+        val file = if (bitmap != null) {
+            writeImageToTkpdPath(bitmap, isPng(filePath), DEFAULT_DIRECTORY, quality)
         } else {
-            return scaledBitmap
+            null
         }
-        scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width, scaledBitmap.height, matrix, true)
-        return scaledBitmap
-    }
-
-    @Throws(IOException::class)
-    fun copyFileimagePathListes(imagePathList: ArrayList<String>,
-                                directoryDef: String?): ArrayList<String> {
-        val resultList = ArrayList<String>()
-        for (imagePathFrom in imagePathList) {
-            val resultPath = copyFileToDirectory(imagePathFrom, directoryDef)
-            resultList.add(resultPath)
-        }
-        return resultList
-    }
-
-    fun isInTokopediaDirectory(filePath: String, directory: String?): Boolean {
-        return filePath.contains(directory!!)
-    }
-
-    @Throws(IOException::class)
-    fun copyFileToDirectory(imagePathFrom: String,
-                            directoryDef: String?): String {
-        return if (isInTokopediaDirectory(imagePathFrom, directoryDef)) {
-            imagePathFrom
+        if (file == null || !file.exists()) {
+            throw IOException()
         } else {
-            val outputFile: File = getTokopediaPhotoPath(directoryDef, imagePathFrom)
-            val resultPath = outputFile.absolutePath
-            FileUtil.copyFile(imagePathFrom, resultPath)
-            resultPath
+            return file
         }
     }
 
@@ -504,8 +431,8 @@ object ImageUtil {
 
     @JvmOverloads
     @JvmStatic
-    fun resizeBitmap(imagePath: String?, maxWidth: Int, maxHeight: Int, needCheckRotate: Boolean,
-                     resultRelativeDirectory: String? = DEFAULT_DIRECTORY): String? {
+    fun resizeBitmap(imagePath: String, maxWidth: Int, maxHeight: Int, needCheckRotate: Boolean,
+                     resultRelativeDirectory: String? = DEFAULT_DIRECTORY): String {
         val bitmapToEdit = getBitmapFromPath(imagePath, maxWidth, maxHeight, needCheckRotate)
         val isPng = isPng(imagePath)
         val outputBitmap: Bitmap
@@ -517,7 +444,7 @@ object ImageUtil {
             bitmapToEdit.recycle()
             outputBitmap.recycle()
             System.gc()
-            file.absolutePath
+            file?.absolutePath ?: imagePath
         } catch (e: Throwable) {
             imagePath
         }

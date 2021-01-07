@@ -27,7 +27,7 @@ class PlayMinimumCoverImageTransformer : ImageTransformer {
             t.printStackTrace()
             null
         } finally {
-            imageBitmap?.recycle()
+            imageBitmap.recycle()
             newBitmap?.recycle()
             System.gc()
         }

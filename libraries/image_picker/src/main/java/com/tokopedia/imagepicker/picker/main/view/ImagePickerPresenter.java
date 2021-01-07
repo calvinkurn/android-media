@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker.picker.main.view;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;

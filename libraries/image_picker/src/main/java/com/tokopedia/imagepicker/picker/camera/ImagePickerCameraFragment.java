@@ -305,8 +305,10 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
                         imageByte,
                         mCaptureNativeSize.getWidth(),
                         mCaptureNativeSize.getHeight(), bitmap -> {
-                            File cameraResultFile = ImageUtil.writeImageToTkpdPath(bitmap, false);
-                            onSuccessImageTakenFromCamera(cameraResultFile);
+                            if (bitmap!= null) {
+                                File cameraResultFile = ImageUtil.writeImageToTkpdPath(bitmap, false);
+                                onSuccessImageTakenFromCamera(cameraResultFile);
+                            }
                         });
             }
         } catch (Throwable error) {

@@ -213,8 +213,12 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                     @Override
                     public Observable<String> call(Bitmap bitmap) {
                         Bitmap resultBitmap = ImageUtil.rotateBitmapByDegree(bitmap, angle);
-                        File file = ImageUtil.writeImageToTkpdPath(resultBitmap, isPng);
-                        return Observable.just(file.getAbsolutePath());
+                        if (resultBitmap != null) {
+                            File file = ImageUtil.writeImageToTkpdPath(resultBitmap, isPng);
+                            return Observable.just(file.getAbsolutePath());
+                        } else {
+                            return null;
+                        }
                     }
                 })
                         .subscribeOn(Schedulers.newThread())
@@ -235,7 +239,11 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                             @Override
                             public void onNext(String filePath) {
                                 if (isViewAttached()) {
-                                    getView().onSuccessSaveContrastImage(filePath);
+                                    if (filePath != null) {
+                                        getView().onSuccessSaveContrastImage(filePath);
+                                    } else {
+                                        getView().onErrorSaveContrastImage(null);
+                                    }
                                 }
                             }
                         });

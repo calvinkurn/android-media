@@ -116,7 +116,7 @@ object FileUtil {
     }
 
     @JvmStatic
-    fun getFileSizeInKb(filePath: String?): Long {
+    fun getFileSizeInKb(filePath: String): Long {
         return getFileSizeInKb(File(filePath))
     }
 
