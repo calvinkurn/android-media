@@ -69,9 +69,6 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         getAbTestPlatform()?.fetch(null)
 
         if (isDirectToWebView) {
-
-            // if possible
-            // remove header webview if user logged in
             gotoWebView(urlResetPassword())
             return
         }
@@ -98,8 +95,13 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     }
 
     private fun gotoWebView(url: String) {
-        val intent = ManagePasswordWebViewActivity.createIntent(this, url)
-        startActivityForResult(intent, REQUEST_CODE_WEB_VIEW)
+        if (userSession.isLoggedIn) {
+            val intent = ManagePasswordWebViewActivity.createIntent(this, url, false)
+            startActivityForResult(intent, REQUEST_CODE_WEB_VIEW)
+        } else {
+            val intent = ManagePasswordWebViewActivity.createIntent(this, url)
+            startActivityForResult(intent, REQUEST_CODE_WEB_VIEW)
+        }
     }
 
     private fun gotoLogin() {

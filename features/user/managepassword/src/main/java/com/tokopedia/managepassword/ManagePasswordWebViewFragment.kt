@@ -10,8 +10,8 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.managepassword.common.ManagePasswordConstant.KEY_IS_CONTAINS_LOGIN_APPLINK
-import com.tokopedia.managepassword.common.ManagePasswordConstant.KEY_URL
 import com.tokopedia.webview.BaseWebViewFragment
+import com.tokopedia.webview.KEY_URL
 
 class ManagePasswordWebViewFragment : BaseWebViewFragment() {
 
