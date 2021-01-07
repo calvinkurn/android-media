@@ -151,6 +151,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         super.onCreate();
         initialiseHansel();
         initFirebase();
+        GraphqlClient.setInitData(getApplicationContext());
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         warmUpGQLClient();

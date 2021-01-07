@@ -2,6 +2,8 @@ package com.tokopedia.graphql.data;
 
 import android.content.Context;
 
+import androidx.annotation.AnyThread;
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 
 import com.akamai.botman.CYFMonitor;
@@ -47,13 +49,20 @@ public class GraphqlClient {
     private static Retrofit sRetrofit = null;
     private static FingerprintManager sFingerprintManager;
     private static GraphqlDatabase sGraphqlDatabase;
-
+    private static Context applicationContext;
     private static Function function;
 
     private GraphqlClient() {
 
     }
 
+    @MainThread
+    //Marking important method for main thread
+    public static void setInitData(Context context){
+        applicationContext = context.getApplicationContext();
+    }
+
+    @AnyThread
     public synchronized static void init(@NonNull Context context) {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
@@ -62,6 +71,7 @@ public class GraphqlClient {
         }
     }
 
+    @AnyThread
     public synchronized static void init(@NonNull Context context, boolean addBrotliInterceptor) {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
@@ -99,12 +109,36 @@ public class GraphqlClient {
         function = new Function(context);
     }
 
-
+    @AnyThread
     public static Function getFunction() {
         if (function == null) {
-            throw new RuntimeException("Please call init() before using graphql library");
+            if(canBeInitialized()){
+                init(applicationContext);
+            }
+            else {
+                throw new RuntimeException("Please call init() before using graphql library");
+            }
         }
         return function;
+    }
+
+    @AnyThread
+    //Use this method for safe usage
+    public static Function getFunctionSafe(Context context) {
+        if (!isInitialized()) {
+            init(context);
+        }
+        return function;
+    }
+
+    @AnyThread
+    public static boolean isInitialized(){
+        return function != null;
+    }
+
+    @AnyThread
+    public static boolean canBeInitialized(){
+        return applicationContext != null;
     }
 
     public static void reInitRetrofitWithInterceptors(@NonNull List<Interceptor> interceptors,
