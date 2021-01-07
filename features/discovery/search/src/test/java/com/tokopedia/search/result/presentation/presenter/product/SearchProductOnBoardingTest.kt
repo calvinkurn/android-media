@@ -16,7 +16,7 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
     @Test
     fun `Show search on boarding after free ongkir on boarding shown`() {
         val searchProductModel = "searchproduct/common-response.json".jsonToObject<SearchProductModel>()
-        val firstProductPosition = 0
+        val firstProductPosition = 1
 
         `Test show on boarding`(searchProductModel, firstProductPosition)
     }
@@ -73,7 +73,7 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
     @Test
     fun `Show search on boarding after free ongkir on boarding shown - with non zero first product position`() {
         val searchProductModel = "searchproduct/globalnavwidget/show-topads-true.json".jsonToObject<SearchProductModel>()
-        val firstProductPosition = 2
+        val firstProductPosition = 3
 
         `Test show on boarding`(searchProductModel, firstProductPosition)
     }
@@ -81,7 +81,7 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
     @Test
     fun `Show search on boarding when three dots on boarding not shown and has full options`() {
         val searchProductModel = "searchproduct/common-response.json".jsonToObject<SearchProductModel>()
-        val firstProductPosition = 0
+        val firstProductPosition = 1
 
         `Configure on boarding shown`(threeDotsShown = false)
         `Given AB test for full options`()
