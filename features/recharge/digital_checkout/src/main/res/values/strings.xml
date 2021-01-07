@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">tkpddigital</string>
+
+    <string name="digital_cart_toolbar_title">Checkout</string>
+
+    <string name="digital_cart_detail_see_detail_label">Lihat Detail</string>
+    <string name="digital_cart_total_payment_label">Total Pembayaran</string>
+    <string name="digital_cart_checkout_pay_label">Bayar</string>
+
+
 </resources>

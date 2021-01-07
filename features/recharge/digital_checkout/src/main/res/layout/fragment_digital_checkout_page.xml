@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Neutral_N0">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintBottom_toTopOf="@id/bottom"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_lvl4">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:typographyType="heading_4"
+                tools:text="Listrik PLN" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSeeDetailToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/spacing_lvl3"
+                android:text="@string/digital_cart_detail_see_detail_label"
+                android:textColor="@color/Green_G500"
+                app:typographyType="body_2" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+            android:id="@+id/promo_ticker_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTotalPaymentLabel"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:text="@string/digital_cart_total_payment_label"
+            app:layout_constraintEnd_toEndOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/promo_ticker_view"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTotalPayment"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:textColor="@color/Yellow_Y500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/tvTotalPaymentLabel"
+            app:layout_constraintStart_toStartOf="@id/tvTotalPaymentLabel"
+            app:layout_constraintTop_toBottomOf="@id/tvTotalPaymentLabel"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold"
+            tools:text="Rp.102.500"
+            android:text="testes"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnCheckout"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/digital_cart_checkout_pay_label"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/promo_ticker_view"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="transaction" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
