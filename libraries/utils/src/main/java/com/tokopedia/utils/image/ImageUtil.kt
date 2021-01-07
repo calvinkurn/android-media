@@ -29,7 +29,7 @@ object ImageUtil {
     const val DEF_SMALL_WIDTH = 612
     const val DEF_SMALL_HEIGHT = 816
 
-    const val DEFAULT_DIRECTORY = "/"
+    const val DEFAULT_DIRECTORY = "Tokopedia/"
 
     /**
      * This method calculates maximum size of both width and height of bitmap.

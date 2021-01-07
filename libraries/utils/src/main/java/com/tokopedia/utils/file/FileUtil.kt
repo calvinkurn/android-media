@@ -17,22 +17,18 @@ object FileUtil {
      */
     @JvmStatic
     fun getTokopediaInternalDirectory(relativePathFolder: String?, isCacheDir: Boolean = true): File {
-        val isExternal = Environment.MEDIA_MOUNTED == Environment.getExternalStorageState()
-        val directory: File
-        if (isExternal) {
+        val isExternalWritable = Environment.MEDIA_MOUNTED == Environment.getExternalStorageState()
+        var directory: File? = null
+        if (isExternalWritable) {
             if (isCacheDir) {
                 val rootCacheDirectory = File(GlobalConfig.EXTERNAL_CACHE_DIR)
                 if (rootCacheDirectory.exists()) {
                     directory = File(rootCacheDirectory.absolutePath, relativePathFolder ?: "")
-                } else {
-                    directory = File(GlobalConfig.INTERNAL_CACHE_DIR, relativePathFolder ?: "")
                 }
             } else {
-                val rootFileDirectory: File = File(GlobalConfig.EXTERNAL_FILE_DIR)
+                val rootFileDirectory = File(GlobalConfig.EXTERNAL_FILE_DIR)
                 if (rootFileDirectory.exists()) {
                     directory = File(rootFileDirectory.absolutePath, relativePathFolder ?: "")
-                } else {
-                    directory = File(GlobalConfig.INTERNAL_FILE_DIR, relativePathFolder ?: "")
                 }
             }
         } else {
@@ -42,7 +38,10 @@ object FileUtil {
                 directory = File(GlobalConfig.INTERNAL_FILE_DIR, relativePathFolder ?: "")
             }
         }
-        return directory
+        if (directory != null && !directory.exists()) {
+            directory.mkdirs()
+        }
+        return directory!!
     }
 
     @JvmStatic

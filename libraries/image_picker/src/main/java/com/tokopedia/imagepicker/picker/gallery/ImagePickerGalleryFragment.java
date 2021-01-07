@@ -187,11 +187,15 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         }
     }
 
+    @RequiresPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     @Override
     public void onResume() {
         super.onResume();
-        showLoading();
-        LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+        if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
+            showLoading();
+            LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+        }
     }
 
     private void showLoading() {
@@ -217,7 +221,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
         if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
             switch (id) {
                 case ALBUM_LOADER_ID:

@@ -300,14 +300,16 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         String[] permissions = null;
         if (cameraIndex > -1) {
             permissions = new String[]{
-                    Manifest.permission.CAMERA};
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE};
+        } else {
+            permissions = new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE};
         }
         permissionsToRequest = new ArrayList<>();
-        if (permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                    permissionsToRequest.add(permission);
-                }
+        for (String permission : permissions) {
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission);
             }
         }
         if (!permissionsToRequest.isEmpty()) {
