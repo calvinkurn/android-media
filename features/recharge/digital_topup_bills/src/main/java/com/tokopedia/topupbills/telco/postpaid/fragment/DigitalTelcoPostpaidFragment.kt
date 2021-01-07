@@ -100,6 +100,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         val view = inflater.inflate(R.layout.fragment_digital_telco_postpaid, container, false)
         mainContainer = view.findViewById(R.id.telco_main_container)
         pageContainer = view.findViewById(R.id.telco_page_container)
+        appBarLayout = view.findViewById(R.id.telco_appbar_input_number)
+        toolbarSpacer = view.findViewById(R.id.digital_telco_action_bar_spacer)
         postpaidClientNumberWidget = view.findViewById(R.id.telco_input_number)
         buyWidget = view.findViewById(R.id.telco_buy_widget)
         tickerView = view.findViewById(R.id.telco_ticker_view)

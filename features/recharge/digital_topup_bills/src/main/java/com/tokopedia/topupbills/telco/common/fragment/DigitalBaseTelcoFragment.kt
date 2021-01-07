@@ -12,6 +12,7 @@ import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.*
@@ -26,6 +27,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
+import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.common.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
@@ -42,6 +44,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.util.regex.Pattern
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * Created by nabillasabbaha on 23/05/19.
@@ -50,6 +53,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected lateinit var pageContainer: RelativeLayout
     protected lateinit var tickerView: Ticker
+    protected lateinit var appBarLayout: AppBarLayout
+    protected lateinit var toolbarSpacer: View
     private lateinit var viewModel: SharedTelcoViewModel
     protected var listMenu = mutableListOf<TelcoTabItem>()
     protected var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
@@ -90,6 +95,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setAnimationAppBarLayout()
         subscribeUi()
         val checkoutView = getCheckoutView()
         checkoutView?.run {
@@ -324,6 +330,28 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             action = DigitalTopupEventTracking.Action.CLICK_TAB_RECENT
         }
         topupAnalytics.eventClickTabMenuTelco(categoryId, userSession.userId, action)
+    }
+
+    private fun setAnimationAppBarLayout() {
+        var actionBarHeight = toolbarSpacer.height
+
+        appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+            var lastOffset = -1
+            override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
+                if (lastOffset == verticalOffSet) return
+
+                lastOffset = verticalOffSet
+                if (abs(verticalOffSet) >= appBarLayout.totalScrollRange - actionBarHeight) {
+                    //Collapsed
+                    onCollapseAppBar()
+                    (activity as? BaseTelcoActivity)?.onCollapseAppBar()
+                } else {
+                    //Expanded
+                    onExpandAppBar()
+                    (activity as? BaseTelcoActivity)?.onExpandAppBar()
+                }
+            }
+        })
     }
 
     abstract fun onCollapseAppBar()
