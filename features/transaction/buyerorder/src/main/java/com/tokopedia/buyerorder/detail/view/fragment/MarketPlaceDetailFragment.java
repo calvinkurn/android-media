@@ -89,8 +89,6 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
 import com.tokopedia.dialog.DialogUnify;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
@@ -146,8 +144,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private static final String CLICK_VIEW_COMPLAIN = "click view complain";
     private static final String TOTAL_SHIPPING_PRICE = "Total Ongkos Kirim";
     private static final String CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER = "click lihat produk serupa - order";
-    private static final String REVIEW_AB_TEST_KEY = "InboxUlasanRevamp2";
-    private static final String NEW_REVIEW_FLOW = "New Review Flow";
 
     public static final String SIMILAR_PRODUCTS_ACTION_BUTTON_KEY = "see_similar_products";
     public static final String WAITING_INVOICE_STATUS_TEXT = "Menunggu Invoice";
@@ -989,11 +985,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
                     orderListAnalytics.sendTulisReviewEventData(status.status());
-                    if(useNewPage()) {
-                        RouteManager.route(getContext(), ApplinkConst.REPUTATION);
-                    } else {
-                        RouteManager.route(getContext(), actionButton.getUri());
-                    }
+                    RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     if (this.status.status().equals(STATUS_CODE_220) || this.status.status().equals(STATUS_CODE_400)) {
                         Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
@@ -1074,15 +1066,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             intent.putExtra(ApplinkConst.Chat.SOURCE, TX_ASK_SELLER);
             startActivity(intent);
         }
-    }
-
-    private RemoteConfig getABTestRemoteConfig() {
-        return RemoteConfigInstance.getInstance().getABTestPlatform();
-    }
-
-    private Boolean useNewPage() {
-        String remoteConfigValue = getABTestRemoteConfig().getString(REVIEW_AB_TEST_KEY);
-        return remoteConfigValue.equals(NEW_REVIEW_FLOW);
     }
 
     @Override
@@ -1322,7 +1305,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         for (Items item : items) {
             JsonObject passenger = new JsonObject();
 
-            int productId = 0;
+            long productId = 0;
             int quantity = 0;
             int shopId = 0;
             String notes = "";

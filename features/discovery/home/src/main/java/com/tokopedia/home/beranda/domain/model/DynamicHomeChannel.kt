@@ -454,7 +454,7 @@ data class DynamicHomeChannel(
             val recommendationType: String = "",
             @Expose
             @SerializedName("campaignCode")
-            val campaignCode: String = "",
+            val campaignCode: String = ""
     )
 
     data class Benefit(

@@ -7,7 +7,7 @@
         <activity android:name=".SellerActionActivity"
             android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -24,7 +24,7 @@
             android:exported="true"
             android:grantUriPermissions="true">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.app.slice.category.SLICE" />
             </intent-filter>
         </provider>
