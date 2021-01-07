@@ -125,6 +125,8 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -716,10 +718,15 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun goToPrintAwb() {
-        val url = Uri.parse("https://123-staging-feature.tokopedia.com/shipping-label")
+        val featureUrl = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            remoteConfig.getString("android_som_print_url_staging", "https://186-staging-feature.tokopedia.com/shipping-label")
+        } else {
+            remoteConfig.getString("android_som_print_url_beta", "https://110-beta-feature.tokopedia.com/shipping-label")
+        }
+        val url = Uri.parse(featureUrl)
                 .buildUpon()
-                .appendQueryParameter(PRINT_AWB_ORDER_ID_QUERY_PARAM, detailResponse?.orderId.orZero().toString())
-                .appendQueryParameter(PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, "1")
+                .appendQueryParameter(SomConsts.PRINT_AWB_ORDER_ID_QUERY_PARAM, orderIds.joinToString(","))
+                .appendQueryParameter(SomConsts.PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, if (markAsPrinted) "1" else "0")
                 .build()
                 .toString()
         Intent(activity, SomPrintAwbActivity::class.java).apply {
