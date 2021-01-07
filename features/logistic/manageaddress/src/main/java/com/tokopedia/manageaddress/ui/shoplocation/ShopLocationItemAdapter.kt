@@ -99,8 +99,7 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
 
             if (shopLocation.ticker.textInactive.isNotEmpty()) {
                 tickerAddressInfo.visibility = View.VISIBLE
-                tickerAddressInfo.tickerTitle = shopLocation.ticker.textInactive
-                tickerAddressInfo.setHtmlDescription(shopLocation.ticker.textCourierSetting)
+                tickerAddressInfo.setHtmlDescription(shopLocation.ticker.textInactive + shopLocation.ticker.textCourierSetting)
                 tickerAddressInfo?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         val intent = RouteManager.getIntent(itemView.context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING)
