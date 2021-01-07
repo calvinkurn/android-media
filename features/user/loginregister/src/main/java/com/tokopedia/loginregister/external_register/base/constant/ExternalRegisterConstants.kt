@@ -31,12 +31,12 @@ object ExternalRegisterConstants {
 
         val URL = "external_url"
 
-        val GOAL_KEY = "goalKey"
-        val AUTH_CODE = "authCode"
-        val MSISDN = "msisdn"
+        val GOAL_KEY = "goal_key"
+        val AUTH_CODE = "auth_code"
+        val MSISDN = "phone"
+        val INPUT_PARAM = "input"
         val FULLNAME = "fullname"
-        val ACC_TYPE_NAME = "accounts_type_name"
-        val TYPE = "type"
+        val TYPE = "reg_type"
     }
 
     object KEY {

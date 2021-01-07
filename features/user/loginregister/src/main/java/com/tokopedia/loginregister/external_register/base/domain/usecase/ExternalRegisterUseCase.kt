@@ -4,14 +4,10 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
-import com.tokopedia.loginregister.external_register.ovo.data.ActivateOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.query.QueryCheckHasOvoAcc
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -37,7 +33,6 @@ class ExternalRegisterUseCase @Inject constructor(
         params.putString(ExternalRegisterConstants.PARAM.FULLNAME, name)
         params.putString(ExternalRegisterConstants.PARAM.GOAL_KEY, goalKey)
         params.putString(ExternalRegisterConstants.PARAM.AUTH_CODE, authCode)
-        params.putString(ExternalRegisterConstants.PARAM.ACC_TYPE_NAME, "")
         params.putString(ExternalRegisterConstants.PARAM.TYPE, "goal")
     }
 

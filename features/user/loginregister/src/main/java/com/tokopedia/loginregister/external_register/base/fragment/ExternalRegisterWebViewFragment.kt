@@ -1,17 +1,13 @@
 package com.tokopedia.loginregister.external_register.base.fragment
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
@@ -45,8 +41,10 @@ class ExternalRegisterWebViewFragment: BaseDaggerFragment() {
         base_web_view?.run {
             webViewClient = object: WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                    if(url?.startsWith(ApplinkConst.OVO_REGISTER_INIT) == true){
+                    val response = if(url?.contains("authCode") == true) url else ""
+                    if(url?.startsWith(ApplinkConstInternalGlobal.OVO_REG_INIT) == true && response.isNotEmpty()){
                         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OVO_REG_INIT)
+                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY, response)
                         startActivity(intent)
                         activity?.finish()
                     }
@@ -57,6 +55,7 @@ class ExternalRegisterWebViewFragment: BaseDaggerFragment() {
             loadUrl(url)
         }
     }
+
 
     companion object {
         fun createInstance(data: Bundle?): Fragment {

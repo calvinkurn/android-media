@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.external_register.ovo.view
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,17 +9,16 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterComponent
 import com.tokopedia.loginregister.external_register.base.viewmodel.ExternalRegisterViewModel
-import com.tokopedia.loginregister.external_register.ovo.viewmodel.OvoAddNameViewModel
-import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.net.URLDecoder
 import javax.inject.Inject
 
 /**
@@ -53,16 +53,29 @@ class OvoRegisterInitialFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
+        val args = arguments?.getString(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY) ?: ""
         if(::externalRegisterPreference.isInitialized
                 && externalRegisterPreference.getGoalKey().isNotEmpty()
-                && externalRegisterPreference.getAuthCode().isNotEmpty()) {
-                    externalRegisterViewModel.register()
+                && args.isNotEmpty()) {
+                    getAuthCodeFromUrl(args).run {
+                        externalRegisterViewModel.register(this)
+                    }
         }
         else {
-            activity?.finish()
+//            activity?.finish()
         }
     }
 
+    fun getAuthCodeFromUrl(url: String): String {
+        return try {
+            val uri = Uri.parse(URLDecoder.decode(url, Charsets.UTF_8.name()))
+            val response = uri.getQueryParameter("response") ?: ""
+            val parser = JsonParser()
+            parser.parse(response).getAsJsonObject().get("authCode").asString
+        } catch (e: Exception) {
+            ""
+        }
+    }
     private fun initObserver(){
         externalRegisterViewModel.registerRequestResponse.observe(viewLifecycleOwner, Observer {
             when(it){

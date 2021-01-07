@@ -11,6 +11,7 @@ object QueryCheckHasOvoAcc {
     private const val clientId = "\$client_id"
     private const val name = "\$name"
     private const val date = "\$date"
+    private const val regType = "\$reg_type"
 
     private const val type = "\$type"
     private const val fullname = "\$fullname"
@@ -22,7 +23,7 @@ object QueryCheckHasOvoAcc {
     private const val authCode = "\$auth_code"
     private const val typeName = "\$accounts_type_name"
 
-    private const val msisdn = "\$msisdn"
+    private const val msisdn = "\$phone"
 
     val checkHasOvoQuery: String = """
         query check_ovo_phone($phoneNo: String!){
@@ -57,14 +58,15 @@ object QueryCheckHasOvoAcc {
     """.trimIndent()
 
     val registerOvoQuery: String = """
-        query register($type: String!, $fullname: String!, $msisdn: String!, $goalKey: String!, $authCode: String, $typeName: String){
-          register(
-            goalKey: $goalKey
-            authCode: $authCode
-            type: $type
-            fullname: $fullname
-            msisdn: $msisdn
-            accounts_type_name: $typeName
+        mutation register($regType: String!, $fullname: String!, $msisdn: String!, $goalKey: String!, $authCode: String){
+            register(
+                input: {
+                    goal_key: $goalKey
+                    auth_code: $authCode
+                    reg_type: $regType
+                    fullname: $fullname
+                    phone: $msisdn
+                }
             ) {
                 user_id
                 sid

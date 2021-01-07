@@ -35,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_24"
+            app:typographyType="heading_2"
             android:text="@string/ovo_external_register_title_success"
             android:textAlignment="center"
             android:textSize="@dimen/fontSize_lvl6"
@@ -51,6 +52,8 @@
             android:text="@string/ovo_external_register_description_success"
             android:textAlignment="center"
             android:textSize="@dimen/fontSize_lvl3"
+            android:textColor="@color/Neutral_N500"
+            app:typographyType="body_2"
             app:layout_constraintEnd_toEndOf="@+id/fragment_base_success_title"
             app:layout_constraintStart_toStartOf="@+id/fragment_base_success_title"
             app:layout_constraintTop_toBottomOf="@+id/fragment_base_success_title" />
