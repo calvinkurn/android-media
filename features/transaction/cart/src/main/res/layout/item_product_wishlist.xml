@@ -104,19 +104,17 @@
             app:unify_image_type="rect"
             tools:src="@color/Unify_G500" />
 
-        <com.tokopedia.unifycomponents.UnifyImageButton
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/btn_delete_wishlist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_marginBottom="@dimen/dp_4"
             android:alpha="0.6"
             android:foreground="?selectableItemBackgroundBorderless"
             android:translationX="-4dp"
+            app:icon_name="DELETE"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_delete_cart"
-            app:unifyImageButtonVariant="image"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_add_to_cart"
@@ -126,7 +124,7 @@
             android:layout_marginBottom="@dimen/dp_4"
             android:foreground="?selectableItemBackground"
             android:gravity="center"
-            android:text="Tambah ke Keranjang"
+            android:text="@string/checkout_module_wishlist_add_to_cart"
             app:layout_constraintBottom_toBottomOf="@+id/btn_delete_wishlist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_delete_wishlist"

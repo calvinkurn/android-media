@@ -118,16 +118,15 @@
         app:layout_constraintTop_toTopOf="@+id/btn_delete_cart"
         app:typographyType="body_3" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_delete_cart"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/dp_20"
         android:paddingEnd="@dimen/dp_16"
+        app:icon_name="DELETE"
         app:layout_constraintEnd_toStartOf="@+id/tv_product_unavailable_action"
-        app:layout_constraintTop_toBottomOf="@+id/iu_image_product"
-        app:srcCompat="@drawable/ic_delete_cart"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/iu_image_product" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_unavailable_action"
