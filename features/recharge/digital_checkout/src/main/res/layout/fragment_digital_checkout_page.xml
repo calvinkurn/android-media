@@ -21,6 +21,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/Neutral_N700_96"
                 app:typographyType="heading_4"
                 tools:text="Listrik PLN" />
 
@@ -61,6 +62,7 @@
             android:layout_marginHorizontal="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:text="@string/digital_cart_total_payment_label"
+            android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/promo_ticker_view"
@@ -71,6 +73,7 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:text="testes"
             android:textColor="@color/Yellow_Y500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tvTotalPaymentLabel"
@@ -78,8 +81,7 @@
             app:layout_constraintTop_toBottomOf="@id/tvTotalPaymentLabel"
             app:typographyType="heading_4"
             app:typographyWeight="bold"
-            tools:text="Rp.102.500"
-            android:text="testes"/>
+            tools:text="Rp.102.500" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
