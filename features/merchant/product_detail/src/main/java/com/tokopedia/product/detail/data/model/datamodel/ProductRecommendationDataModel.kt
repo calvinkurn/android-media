@@ -49,6 +49,10 @@ data class ProductRecommendationDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
         return if (newData is ProductRecommendationDataModel) {
+            if (cardModel.hashCode() != newData.cardModel.hashCode()) {
+                return null
+            }
+
             if (!areFilterTheSame(newData.recomWidgetData)) {
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM)
                 return bundle
@@ -83,6 +87,7 @@ data class ProductRecommendationDataModel(
 
     private fun areFilterTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {
         var areSame = false
+        if (recomWidgetData?.recommendationFilterChips?.isEmpty() == true && newRecomWidgetData?.recommendationFilterChips?.isEmpty() == true) return false
         val currentFilterData = recomWidgetData?.recommendationFilterChips?.zip(newRecomWidgetData?.recommendationFilterChips
                 ?: listOf())
 
