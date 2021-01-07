@@ -184,7 +184,7 @@ public class TopChatAnalytics {
         ));
     }
 
-    public void trackHeaderClicked(int shopId) {
+    public void trackHeaderClicked(long shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
@@ -241,7 +241,7 @@ public class TopChatAnalytics {
                 ""));
     }
 
-    public void trackClickUnblockChat(int shopId) {
+    public void trackClickUnblockChat(long shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 ChatSettingsAnalytics.EVENT_NAME,
                 ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,

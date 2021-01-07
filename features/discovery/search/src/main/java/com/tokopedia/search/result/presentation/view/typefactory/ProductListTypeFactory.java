@@ -17,6 +17,7 @@ import com.tokopedia.search.result.presentation.model.RecommendationTitleViewMod
 import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
@@ -55,6 +56,8 @@ public interface ProductListTypeFactory {
     int type(SearchInTokopediaViewModel searchInTokopediaViewModel);
 
     int type(SearchProductCountViewModel searchProductCountViewModel);
+
+    int type(SearchProductTopAdsImageViewModel searchProductTopAdsImageViewModel);
 
     int getRecyclerViewItem();
 

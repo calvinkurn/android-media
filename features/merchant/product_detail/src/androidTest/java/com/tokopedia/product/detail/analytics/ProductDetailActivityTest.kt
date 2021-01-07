@@ -24,10 +24,13 @@ import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringLis
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
+import com.tokopedia.product.detail.view.viewholder.ProductDiscussionMostHelpfulViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
+import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
 import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
@@ -202,21 +205,14 @@ class ProductDetailActivityTest {
 
     private fun clickSeeAllDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))), scrollTo()))
-        waitForTalk()
-        onView(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll)))
-                .check(matches(isDisplayed()))
-                .perform(click())
+        val viewInteraction = onView(withId(R.id.rv_pdp)).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionMostHelpfulViewHolder>(12, clickChildViewWithId(R.id.productDiscussionMostHelpfulSeeAll)))
     }
 
     private fun clickThreadDetailDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulQuestions))), scrollTo()))
-        waitForTalk()
         val viewInteraction = onView(withId(R.id.productDiscussionMostHelpfulQuestions)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionQuestionViewHolder>(0, clickChildViewWithId(R.id.productDetailDiscussionThread)))
-    }
-
-    private fun waitForTalk() {
-        Thread.sleep(7000L)
     }
 
     private fun clickTabDiscussion() {

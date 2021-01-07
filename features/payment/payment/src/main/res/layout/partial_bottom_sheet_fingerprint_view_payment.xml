@@ -25,7 +25,8 @@
         <TextView
             style="@style/TextView.Micro"
             android:layout_marginBottom="@dimen/dp_10"
-            android:text="@string/fingerprint_label_or"/>
+            android:text="@string/fingerprint_label_or"
+            android:textColor="@color/Unify_N700_68"/>
 
         <Button
             android:id="@+id/button_use_otp"

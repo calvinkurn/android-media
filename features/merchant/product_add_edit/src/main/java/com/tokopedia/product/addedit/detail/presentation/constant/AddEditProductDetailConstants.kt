@@ -7,8 +7,9 @@ class AddEditProductDetailConstants {
         const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"
         const val REQUEST_CODE_IMAGE = 0
         const val REQUEST_CODE_CATEGORY = 1
-        const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 2
-        const val REQUEST_CODE_SPECIFICATION = 3
+        const val REQUEST_CODE_SHOP_LOCATION = 2
+        const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 3
+        const val REQUEST_CODE_SPECIFICATION = 4
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_FULL_NAME = "CATEGORY_RESULT_FULL_NAME"
         const val UNIT_DAY = 0
@@ -24,6 +25,7 @@ class AddEditProductDetailConstants {
         const val MIN_PRODUCT_STOCK_LIMIT = 1
         const val MAX_PRODUCT_PRICE_LIMIT = 100000000
         const val MAX_PRODUCT_STOCK_LIMIT = 999999
+        const val MAX_MIN_ORDER_QUANTITY = 10000
         const val MIN_MIN_ORDER_QUANTITY = 1
         const val MIN_PREORDER_DURATION = 1
         const val MAX_PREORDER_DAYS = 90

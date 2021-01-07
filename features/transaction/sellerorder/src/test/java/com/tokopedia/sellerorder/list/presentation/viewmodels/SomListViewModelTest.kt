@@ -25,6 +25,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Field
 
 class SomListViewModelTest {
     @get:Rule
@@ -73,6 +74,8 @@ class SomListViewModelTest {
 
     private lateinit var viewModel: SomListViewModel
 
+    private lateinit var somGetOrderListJobField: Field
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
@@ -81,6 +84,10 @@ class SomListViewModelTest {
                 dispatcher, somListGetTickerUseCase, somListGetFilterListUseCase, somListGetWaitingPaymentUseCase,
                 somListGetOrderListUseCase, somListGetTopAdsCategoryUseCase, bulkAcceptOrderStatusUseCase,
                 bulkAcceptOrderUseCase)
+
+        somGetOrderListJobField = viewModel::class.java.getDeclaredField("getOrderListJob").apply {
+            isAccessible = true
+        }
     }
 
     private fun doGetTopAdsCategory_shouldSuccess(result: Int = 1) {
@@ -103,8 +110,8 @@ class SomListViewModelTest {
             startDate = "12/12/2014"
             endDate = "12/12/2017"
             statusList = listOf(220, 400, 500)
-            shippingList = listOf(12)
-            orderTypeList = listOf(12)
+            shippingList = mutableSetOf(12)
+            orderTypeList = mutableSetOf(12)
             sortBy = SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING
             nextOrderId = 123456
         }
@@ -484,13 +491,32 @@ class SomListViewModelTest {
             somListGetOrderListUseCase.execute()
         } returns (0 to listOf())
 
+        somGetOrderListJobField.set(viewModel, null)
         viewModel.getOrderList()
 
         coVerify {
             somListGetOrderListUseCase.execute()
         }
 
-        assert(viewModel.orderListResult.observeAwaitValue() is Success)
+        assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage())
+    }
+
+    @Test
+    fun getOrderList_shouldCancelOldJobAndSuccess() {
+        val getOrderListJob = mockk<Job>(relaxed = true)
+        coEvery {
+            somListGetOrderListUseCase.execute()
+        } returns (0 to listOf())
+
+        somGetOrderListJobField.set(viewModel, getOrderListJob)
+        viewModel.getOrderList()
+
+        coVerify {
+            somListGetOrderListUseCase.execute()
+            getOrderListJob.cancel()
+        }
+
+        assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage())
     }
 
     @Test
@@ -715,7 +741,7 @@ class SomListViewModelTest {
 
     @Test
     fun setOrderTypeFilterTest() {
-        val orderTypes = listOf(1, 2, 3, 4, 5)
+        val orderTypes = mutableSetOf(1, 2, 3, 4, 5)
         setGetDataOrderListParams()
         viewModel.setOrderTypeFilter(orderTypes)
         assert(viewModel.getDataOrderListParams().orderTypeList == orderTypes)

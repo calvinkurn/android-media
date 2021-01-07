@@ -60,8 +60,10 @@ public interface ApplinkConst {
     String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
     String REPUTATION = "tokopedia://review";
     String REPUTATION_DETAIL = "tokopedia://review/{reputation_id}";
+    String REVIEW_DETAIL = "tokopedia://review/detail/{feedback_id}";
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
+    String SELLER_REVIEW = "tokopedia://seller-review-detail";
     String WEBVIEW = "tokopedia://webview";
     String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
     String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
@@ -147,6 +149,7 @@ public interface ApplinkConst {
     String EVENTS_ORDER = "tokopedia://events/order";
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
+    String TRAIN_ORDER = "tokopedia://kereta/order";
     String GIFT_CARDS_ORDER = "tokopedia://giftcards/order";
     String INSURANCE_ORDER = "tokopedia://insurance/order";
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
@@ -327,6 +330,8 @@ public interface ApplinkConst {
     String OCC = "tokopedia://occ";
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
+
+    String ACCOUNT = "tokopedia://account";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";

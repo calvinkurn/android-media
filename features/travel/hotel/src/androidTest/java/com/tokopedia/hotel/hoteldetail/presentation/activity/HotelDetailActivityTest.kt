@@ -11,11 +11,12 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.hotel.R
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.presentation.activity.mock.HotelDetailMockResponseConfig
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import org.junit.*
 
 /**
@@ -46,7 +47,6 @@ class HotelDetailActivityTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-
     @Test
     fun checkOnHotelDetailTracking() {
         clickOnSeePhoto()
@@ -58,6 +58,9 @@ class HotelDetailActivityTest {
     }
 
     private fun clickOnSeePhoto() {
+        Thread.sleep(1000)
+        activityRule.activity.hotelDetailNestedScrollView.scrollTo(0, 100)
+
         Thread.sleep(3000)
         Espresso.onView(ViewMatchers.withId(R.id.iv_first_photo_preview)).perform(click())
 

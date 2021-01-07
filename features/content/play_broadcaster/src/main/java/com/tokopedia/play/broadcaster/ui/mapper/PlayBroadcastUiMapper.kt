@@ -210,10 +210,8 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
             shortenUrl = channel.share.useShortURL
     )
 
-    override fun mapLiveDuration(duration: LiveDuration): DurationUiModel = DurationUiModel(
-            duration = duration.duration,
-            remaining = duration.remaining * 1000,
-            maxDuration = duration.maxDuration
+    override fun mapLiveDuration(duration: String): LiveDurationUiModel = LiveDurationUiModel(
+            duration = duration
     )
 
     override fun mapIncomingChat(chat: Chat): PlayChatUiModel = PlayChatUiModel(

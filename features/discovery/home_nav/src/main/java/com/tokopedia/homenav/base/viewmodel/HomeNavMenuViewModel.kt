@@ -18,10 +18,7 @@ data class HomeNavMenuViewModel(
     override fun id(): Any = id
 
     override fun isContentTheSame(visitable: HomeNavVisitable): Boolean =
-            visitable is HomeNavMenuViewModel &&
-            srcImage == visitable.srcImage &&
-            itemTitle == visitable.itemTitle &&
-            applink == visitable.applink && notifCount == visitable.notifCount
+            this == visitable
 
 
     override fun type(factory: HomeNavTypeFactory): Int {
