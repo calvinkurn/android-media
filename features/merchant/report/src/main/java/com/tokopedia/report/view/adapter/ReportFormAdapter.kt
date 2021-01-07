@@ -29,6 +29,7 @@ import kotlinx.android.synthetic.main.item_link_form.view.*
 import kotlinx.android.synthetic.main.item_photo_form.view.*
 import kotlinx.android.synthetic.main.item_submit_form.view.*
 import kotlinx.android.synthetic.main.item_textarea_form.view.*
+import java.util.*
 
 @Suppress("UNCHECKED_CAST")
 class ReportFormAdapter(private val item: ProductReportReason,
@@ -40,7 +41,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
     private var submitEnabled = false
 
     val trackingReasonLabel: String
-        get() = item.value.toLowerCase()
+        get() = item.value.toLowerCase(Locale.getDefault())
 
     private val items = mutableListOf<Pair<String, Any>>()
     val inputs = mutableMapOf<String, Any>()
@@ -134,7 +135,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                     val urlSpan = WebViewURLSpan( it.url).apply {
                         listener = object : WebViewURLSpan.OnClickListener {
                             override fun onClick(url: String) {
-                                tracking.eventReportLearnMore(item.value.toLowerCase())
+                                tracking.eventReportLearnMore(item.value.toLowerCase(Locale.getDefault()))
                                 RouteManager.route(itemView.context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
                             }
 
@@ -152,7 +153,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                     btn_lapor.visible()
                 }
                 btn_lapor.setOnClickListener {
-                    tracking.eventReportClickDetail(item.value.toLowerCase())
+                    tracking.eventReportClickDetail(item.value.toLowerCase(Locale.getDefault()))
                     submitForm.invoke()
                 }
             }

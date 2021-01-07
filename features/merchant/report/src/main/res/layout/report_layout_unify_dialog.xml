@@ -107,7 +107,6 @@
             android:textColor="@color/Unify_G400"
             android:textAllCaps="false"
             android:layout_marginTop="@dimen/dp_32"
-            android:layout_marginRight="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_4"
             android:visibility="gone"
             tools:text="CTA Here"
