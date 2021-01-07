@@ -2,5 +2,5 @@
 <resources>
     <dimen name="telco_space_3">3dp</dimen>
     <dimen name="telco_space_1">1dp</dimen>
-    <dimen name="telco_overlap_banner">40dp</dimen>
+    <dimen name="telco_banner_space">18dp</dimen>
 </resources>

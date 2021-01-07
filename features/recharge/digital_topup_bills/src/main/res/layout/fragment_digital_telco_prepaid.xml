@@ -23,7 +23,7 @@
     <include layout="@layout/layout_telco_shimmering_product_telco"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/telco_overlap_banner"
+        android:layout_marginTop="@dimen/telco_banner_space"
         android:layout_below="@+id/digital_telco_action_bar_spacer"/>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -43,7 +43,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/telco_overlap_banner"
+                android:layout_height="@dimen/telco_banner_space"
                 app:layout_scrollFlags="scroll"/>
 
             <com.tokopedia.unifycomponents.ticker.Ticker
