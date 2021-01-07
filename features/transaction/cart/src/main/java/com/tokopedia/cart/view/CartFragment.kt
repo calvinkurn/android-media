@@ -895,7 +895,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 setIcon(
                         IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
                                 .addIcon(
-                                        iconId = IconList.ID_NAV_LOTTIE_WISHLIST,
+                                        iconId = IconList.ID_NAV_ANIMATED_WISHLIST,
                                         disableDefaultGtmTracker = true,
                                         onClick = ::onNavigationToolbarWishlistClicked
                                 )
@@ -3000,7 +3000,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     if (toolbarType.equals(TOOLBAR_VARIANT_BASIC, true)) {
                         toolbar.animateWishlistIcon()
                     } else {
-                        navToolbar.triggerLottieAnimation(IconList.ID_NAV_LOTTIE_WISHLIST)
+                        navToolbar.triggerAnimatedVectorDrawableAnimation(IconList.ID_WISHLIST)
                     }
 
                     showToastMessageGreen(message)
