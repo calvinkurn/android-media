@@ -19,10 +19,9 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
+import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import com.tokopedia.tkpd.ConsumerSplashScreen
-
 import org.junit.Test
-
 import org.junit.Before
 import org.junit.Rule
 /**
@@ -30,7 +29,7 @@ import org.junit.Rule
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class PltHomeFullJourneyTest {
+class PltHomeFullJourneyNetworkTest {
     val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "test_case_page_load_time"
     private var pltIdlingResource: IdlingResource? = PerformanceAnalyticsUtil.performanceIdlingResource
 
@@ -38,6 +37,7 @@ class PltHomeFullJourneyTest {
     var activityRule = object: ActivityTestRule<ConsumerSplashScreen>(ConsumerSplashScreen::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            setupTotalSizeInterceptor(listOf("homeData", "getDynamicChannel"))
             setupRemoteConfig()
             setupIdlingResource()
             Thread.sleep(2000)
@@ -63,6 +63,8 @@ class PltHomeFullJourneyTest {
     fun testPageLoadTimePerformance() {
         Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE, checkDataSource())
+        getCurrentActivity()?.deleteDatabase("HomeCache.db")
+        Thread.sleep(1000)
         getCurrentActivity()?.finishAndRemoveTask()
     }
 

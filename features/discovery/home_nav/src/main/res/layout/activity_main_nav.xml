@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -20,6 +21,7 @@
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/toolbar"
+        tools:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="top"

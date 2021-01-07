@@ -24,6 +24,7 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.timber.TimberWrapper;
+import com.tokopedia.tkpd.utils.SplashScreenPerformanceTracker;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -41,16 +42,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
-    private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
-            "mp_splash_prepare",
-            "mp_splash_network",
-            "mp_splash_render",
-            0,
-            0,
-            0,
-            0,
-            null
-    );
+    public PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback = SplashScreenPerformanceTracker.getInstance();
 
     private boolean isApkTempered;
 
@@ -66,7 +58,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        pageLoadTimePerformanceCallback.startMonitoring("mp_splash_screen");
+        SplashScreenPerformanceTracker.startMonitoring(false);
         super.onCreate(savedInstanceState);
         executeInBackground();
     }
@@ -146,7 +138,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         } else {
             finish();
         }
-        pageLoadTimePerformanceCallback.stopMonitoring();
+        SplashScreenPerformanceTracker.stopMonitoring();
     }
 
     private void startWarmStart() {

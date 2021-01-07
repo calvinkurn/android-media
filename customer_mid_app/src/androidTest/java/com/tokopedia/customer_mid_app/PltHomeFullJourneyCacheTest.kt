@@ -1,4 +1,4 @@
-package com.tokopedia.navigation.com.tokopedia.navigation
+package com.tokopedia.customer_mid_app
 
 import android.app.Activity
 import androidx.test.espresso.Espresso
@@ -19,22 +19,20 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
-
+import com.tokopedia.tkpd.ConsumerSplashScreen
 import org.junit.Test
-
-import org.junit.Before
 import org.junit.Rule
 /**
  * Instrumented test, which will execute on an Android device.
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class PltHomeFullJourneyTest {
+class PltHomeFullJourneyCacheTest {
     val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "test_case_page_load_time"
     private var pltIdlingResource: IdlingResource? = PerformanceAnalyticsUtil.performanceIdlingResource
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<MainParentActivity>(MainParentActivity::class.java) {
+    var activityRule = object: ActivityTestRule<ConsumerSplashScreen>(ConsumerSplashScreen::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupRemoteConfig()
