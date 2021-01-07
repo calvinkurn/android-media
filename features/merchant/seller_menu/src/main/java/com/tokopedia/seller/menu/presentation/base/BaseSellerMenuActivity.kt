@@ -13,17 +13,6 @@ abstract class BaseSellerMenuActivity: BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBackgroundColor()
-        initStatusBar()
-    }
-
-    private fun initStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.apply {
-                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                statusBarColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0_96)
-            }
-        }
     }
 
     private fun setBackgroundColor() {
