@@ -35,6 +35,7 @@ import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.custom.PlayUnifyLoader
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.BoundsKey
 import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoBoundsManager
@@ -57,7 +58,6 @@ import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
@@ -76,7 +76,7 @@ class PlayFragment @Inject constructor(
         PlayVideoScalingManager.Listener {
 
     private lateinit var ivClose: ImageView
-    private lateinit var loaderPage: LoaderUnify
+    private lateinit var loaderPage: PlayUnifyLoader
     private val fragmentVideoView by viewComponent {
         FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
     }

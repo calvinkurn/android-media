@@ -28,6 +28,7 @@ include 'libraries:encryption'
 include "libraries:fingerprint"
 include "libraries:floating_window"
 include "libraries:image_picker"
+include "libraries:image_picker_common"
 include "libraries:image_preview"
 include 'libraries:imageuploader'
 

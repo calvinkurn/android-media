@@ -88,7 +88,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_ATUR_TOKO_TUTUP
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN_PENALTY
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PRODUK_KOSONG
@@ -560,11 +559,11 @@ class SomDetailFragment : BaseDaggerFragment(),
         detailResponse?.run {
             val dataShipping = SomDetailShipping(
                     shipment.name + " - " + shipment.productName,
-                    receiver.name,
-                    receiver.phone,
-                    receiver.street,
-                    detailResponse?.receiver?.district + ", " + receiver.city + " " + receiver.postal,
-                    receiver.province,
+                    receiverName = receiver.name,
+                    receiverPhone = receiver.phone,
+                    receiverStreet = receiver.street,
+                    receiverDistrict = receiver.district + ", " + receiver.city + " " + receiver.postal,
+                    receiverProvince = receiver.province,
                     flagOrderMeta.flagFreeShipping,
                     bookingInfo.driver.photo,
                     bookingInfo.driver.name,
@@ -630,6 +629,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                             buttonResp.key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                             buttonResp.key.equals(KEY_RESPOND_TO_CANCELLATION, true) -> onShowBuyerRequestCancelReasonBottomSheet(buttonResp)
                             buttonResp.key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
+                            buttonResp.key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
                         }
                     }
                 }
@@ -843,53 +843,6 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun setActionRejectOrder() {
         somDetailViewModel.getRejectReasons(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_reason))
-    }
-
-    private fun showCancelOrderPenaltyBottomSheet() {
-        val bottomSheetPenalty = BottomSheetUnify()
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_cancel_order_penalty, null).apply {
-            tf_cancel_notes?.apply {
-                setLabelStatic(true)
-                setMessage(getString(R.string.cancel_order_notes_max))
-                textFiedlLabelText.text = getString(R.string.cancel_order_notes_hint)
-                textFieldInput.hint = getString(R.string.cancel_order_notes_hint)
-            }
-            ticker_penalty_explanation?.apply {
-                setHtmlDescription(getString(R.string.cancel_order_penalty_warning_content))
-                closeButtonVisibility = View.GONE
-                setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                    }
-
-                    override fun onDismiss() {}
-                })
-            }
-            btn_cancel_order_canceled?.setOnClickListener { bottomSheetPenalty.dismiss() }
-            btn_cancel_order_confirmed?.setOnClickListener {
-                bottomSheetPenalty.dismiss()
-                val orderRejectRequest = SomRejectRequestParam(
-                        orderId = detailResponse?.orderId?.toString().orEmpty(),
-                        rCode = "0",
-                        reason = tf_cancel_notes?.textFieldInput?.text.toString()
-                )
-                if (checkReasonRejectIsNotEmpty(tf_cancel_notes?.textFieldInput?.text.toString())) {
-                    doRejectOrder(orderRejectRequest)
-                } else {
-                    showToasterError(getString(R.string.cancel_order_notes_empty_warning), bottomSheetPenalty.view)
-                }
-            }
-        }
-        bottomSheetPenalty.apply {
-            setTitle(TITLE_BATALKAN_PESANAN_PENALTY)
-            isFullpage = true
-            setChild(viewBottomSheet)
-            setCloseClickListener { dismiss() }
-        }
-
-        fragmentManager?.let {
-            bottomSheetPenalty.show(it, TAG_BOTTOMSHEET)
-        }
     }
 
     private fun checkReasonRejectIsNotEmpty(reason: String): Boolean {

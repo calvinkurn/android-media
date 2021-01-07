@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.common.network.data.db.RestDatabase;
 import com.tokopedia.common.network.data.source.cloud.api.RestApi;
-import com.tokopedia.network.CoroutineCallAdapterFactory;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
@@ -45,7 +44,6 @@ public class NetworkClient {
                     .baseUrl(RestConstant.BASE_URL)
                     .addConverterFactory(new StringResponseConverter())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .addCallAdapterFactory(CoroutineCallAdapterFactory.create())
                     .client(tkpdOkHttpBuilder.build()).build();
 
             sRestDatabase = RestDatabase.getInstance(context);

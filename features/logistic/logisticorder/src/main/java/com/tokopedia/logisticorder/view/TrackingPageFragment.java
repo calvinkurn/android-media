@@ -171,7 +171,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         initialHistoryView();
         setHistoryView(model);
         setEmptyHistoryView(model);
-        setLiveTrackingButton();
+        setLiveTrackingButton(model);
         setTickerInfoCourier(model);
         mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking();
     }
@@ -336,12 +336,12 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         }
     }
 
-    private void setLiveTrackingButton() {
-        if (TextUtils.isEmpty(mTrackingUrl))
+    private void setLiveTrackingButton(TrackingUiModel model) {
+        if (TextUtils.isEmpty(mTrackingUrl) && TextUtils.isEmpty(model.getTrackingUrl()))
             liveTrackingButton.setVisibility(View.GONE);
         else {
             liveTrackingButton.setVisibility(View.VISIBLE);
-            liveTrackingButton.setOnClickListener(onLiveTrackingClickedListener());
+            liveTrackingButton.setOnClickListener(onLiveTrackingClickedListener(model));
         }
     }
 
@@ -388,11 +388,15 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         mCountDownTimer.start();
     }
 
-    private View.OnClickListener onLiveTrackingClickedListener() {
+    private View.OnClickListener onLiveTrackingClickedListener(TrackingUiModel model) {
         return view -> {
             mAnalytics.eventClickOrderTrackingClickButtonLiveTracking();
             if (getContext() != null) {
-                startActivityForResult(LiveTrackingActivity.Companion.createIntent(getContext(), mTrackingUrl), LIVE_TRACKING_VIEW_REQ);
+                String trackingUrl = mTrackingUrl;
+                if (TextUtils.isEmpty(trackingUrl)) {
+                    trackingUrl = model.getTrackingUrl();
+                }
+                startActivityForResult(LiveTrackingActivity.Companion.createIntent(getContext(), trackingUrl), LIVE_TRACKING_VIEW_REQ);
             }
         };
     }

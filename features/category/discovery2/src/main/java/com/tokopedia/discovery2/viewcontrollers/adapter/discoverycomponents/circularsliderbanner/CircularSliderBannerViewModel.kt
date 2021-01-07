@@ -29,6 +29,7 @@ class CircularSliderBannerViewModel(val application: Application, val components
 
     fun getBannerItem(position: Int): DataItem? {
         components.data.checkForNullAndSize(position)?.let {
+            it[position].parentComponentName = components.name
             return it[position]
         }
         return null
