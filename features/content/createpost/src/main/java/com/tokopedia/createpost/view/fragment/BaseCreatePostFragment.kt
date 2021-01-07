@@ -509,7 +509,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
                     dialog.setTitle(getString(R.string.cp_update_post))
                     dialog.setDesc(getString(R.string.cp_delete_warning_desc))
-                    dialog.setBtnOk(getString(com.tokopedia.imagepicker.R.string.cancel))
+                    dialog.setBtnOk(getString(R.string.cp_cancel))
                     dialog.setBtnCancel(getString(com.tokopedia.design.R.string.title_delete))
                     dialog.setOnOkClickListener {
                         dialog.dismiss()

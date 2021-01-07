@@ -20,7 +20,7 @@ class CreatePostVideoPickerActivity: VideoPickerActivity() {
             dialog.setTitle(getString(R.string.cp_title_update_post))
             dialog.setDesc(
                     getString(R.string.cp_message_update_choosen_video))
-            dialog.setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
+            dialog.setBtnCancel(getString(R.string.cp_cancel))
             dialog.setBtnOk(getString(R.string.cp_continue))
             dialog.setOnOkClickListener{
                 dialog.dismiss()
