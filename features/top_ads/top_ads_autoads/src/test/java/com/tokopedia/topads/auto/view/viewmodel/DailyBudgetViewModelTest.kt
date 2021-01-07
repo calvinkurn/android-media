@@ -12,22 +12,17 @@ import com.tokopedia.topads.auto.view.AutoAdsTestDispatcherProvider
 import com.tokopedia.topads.auto.view.RequestHelper
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.common.data.model.AutoAdsParam
-import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
-import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import org.assertj.core.api.Assertions
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -132,30 +127,17 @@ class DailyBudgetViewModelTest {
         assertEquals(data, viewModel.autoAdsData.value)
     }
 
-
     @Test
-    fun `test exception in getTopAdsDeposit`() {
-        val t = Exception("my excep")
-        coEvery { topAdsGetShopDepositUseCase.executeOnBackground() } coAnswers { throw t }
-
-        viewModel.getTopAdsDeposit()
-
-        assertEquals(null, viewModel.topAdsDeposit.value)
-    }
-
-    @Test
-    fun `test result in getTopAdsDeposit`() = runBlockingTest {
+    fun `test result in getTopAdsDeposit`() {
 
         coEvery {
             topAdsGetShopDepositUseCase.execute(any(), any())
-        } answers {}
+        } just runs
         viewModel.getTopAdsDeposit()
-
         coVerify {
             topAdsGetShopDepositUseCase.execute(any(), any())
         }
     }
-
 
     @Test
     fun `test exception in topadsStatisticsEstimationPotentialReach`() {
