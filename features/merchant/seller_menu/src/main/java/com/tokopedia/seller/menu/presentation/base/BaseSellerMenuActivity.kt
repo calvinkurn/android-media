@@ -1,12 +1,8 @@
 package com.tokopedia.seller.menu.presentation.base
 
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.seller.menu.R
 
 abstract class BaseSellerMenuActivity: BaseSimpleActivity() {
 
