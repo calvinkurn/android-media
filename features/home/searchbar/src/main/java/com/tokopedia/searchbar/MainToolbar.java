@@ -145,7 +145,7 @@ public class MainToolbar extends Toolbar {
         btnInbox.setOnClickListener(v -> {
             if (userSession.isLoggedIn()) {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
-                RouteManager.route(context, ApplinkConstInternalMarketplace.INBOX);
+                RouteManager.route(context, ApplinkConst.INBOX);
             } else {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
                 RouteManager.route(context, ApplinkConst.LOGIN);
