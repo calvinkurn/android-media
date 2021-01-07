@@ -66,6 +66,7 @@ import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promogamification.common.GamificationRouter;
+import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -197,7 +198,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private boolean initLibraries() {
         initCMPushNotification();
         initTetraDebugger();
+        initCMDependencies();
         return true;
+    }
+
+    private void initCMDependencies(){
+        GratifCmInitializer.INSTANCE.start(this);
     }
 
     private void initialiseHansel() {

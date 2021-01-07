@@ -3,12 +3,14 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.*
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
+import com.tokopedia.usecase.RequestParams
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
@@ -24,6 +26,10 @@ private const val searchProductLocalSearchSecondPageEmptyProductJSON = "searchpr
 
 internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() {
 
+    private val requestParamsFirstPageSlot = slot<RequestParams>()
+    private val requestParamsFirstPage by lazy { requestParamsFirstPageSlot.captured }
+    private val requestParamsLoadMoreSlot = slot<RequestParams>()
+    private val requestParamsLoadMore by lazy { requestParamsLoadMoreSlot.captured }
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList by lazy { visitableListSlot.captured }
     private val searchProductPageTitle = "Waktu Indonesia Belanja"
@@ -44,6 +50,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
         `When Load Data`(searchParameter)
 
+        `Then verify request params during local search`(requestParamsFirstPage)
         `Then verify visitable list contains title`()
         `Then verify visitable list does not contain CPM`()
         `Then verify visitable list does not contain top ads`(searchProductModel)
@@ -51,7 +58,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
-        every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
+        every { searchProductFirstPageUseCase.execute(capture(requestParamsFirstPageSlot), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
     }
@@ -64,8 +71,16 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         productListPresenter.loadData(searchParameter)
     }
 
+    private fun `Then verify request params during local search`(requestParams: RequestParams) {
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, false) shouldBe true
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, false) shouldBe true
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, false) shouldBe true
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, false) shouldBe true
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, false) shouldBe true
+    }
+
     private fun `Then verify visitable list contains title`() {
-        val searchProductTitle = visitableList[0]
+        val searchProductTitle = visitableList[1]
         searchProductTitle.shouldBeInstanceOf<SearchProductTitleViewModel>()
 
         (searchProductTitle as SearchProductTitleViewModel).title shouldBe searchProductPageTitle
@@ -108,12 +123,13 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
         `When load more data`(searchParameter)
 
+        `Then verify request params during local search`(requestParamsLoadMore)
         `Then verify visitable list does not contain top ads`(searchProductModelPage2)
         `Then verify product item contains page title`()
     }
 
     private fun `Given Search Product Load More API will return Search Product Model`(searchProductModelPage2: SearchProductModel) {
-        every { searchProductLoadMoreUseCase.execute(any(), any()) } answers {
+        every { searchProductLoadMoreUseCase.execute(capture(requestParamsLoadMoreSlot), any()) } answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelPage2)
         }
     }

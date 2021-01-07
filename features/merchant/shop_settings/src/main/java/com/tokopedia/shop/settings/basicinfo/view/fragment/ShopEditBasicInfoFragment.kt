@@ -24,13 +24,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
@@ -134,8 +130,8 @@ class ShopEditBasicInfoFragment: Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-            if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
+            val imageUrlOrPathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+            if (imageUrlOrPathList.size > 0) {
                 savedLocalImageUrl = imageUrlOrPathList[0]
             }
             needUpdatePhotoUI = true
@@ -524,7 +520,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun showTicker(message: String, type: Int) {
         shopEditTicker.tickerType = type
         shopEditTicker.setHtmlDescription(message)
-        shopEditTicker.setDescriptionClickEvent(object : TickerCallback{
+        shopEditTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 clickReadMore(linkUrl)
             }
@@ -536,9 +532,9 @@ class ShopEditBasicInfoFragment: Fragment() {
     private fun initInjector() {
         (activity?.application as? BaseMainApplication)?.baseAppComponent?.let { baseAppComponent ->
             DaggerShopSettingsComponent.builder()
-                .baseAppComponent(baseAppComponent)
-                .build()
-                .inject(this)
+                    .baseAppComponent(baseAppComponent)
+                    .build()
+                    .inject(this)
         }
     }
 
@@ -575,13 +571,13 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun openImagePicker() {
-        val builder = ImagePickerBuilder(getString(R.string.choose_shop_picture),
-            intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA), GalleryType.IMAGE_ONLY, MAX_FILE_SIZE_IN_KB,
-            ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
-            ImagePickerEditorBuilder(
-                intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST, ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                false, null), null)
-        val intent = ImagePickerActivity.getIntent(context, builder)
+        val builder = ImagePickerBuilder.getSquareImageBuilder(requireContext())
+                .withSimpleEditor()
+                .apply {
+                    title = getString(R.string.choose_shop_picture)
+                }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.IMAGE_PICKER)
+        intent.putImagePickerBuilder(builder)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 

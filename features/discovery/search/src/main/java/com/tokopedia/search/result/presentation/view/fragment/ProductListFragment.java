@@ -68,6 +68,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
@@ -87,6 +88,7 @@ import com.tokopedia.search.result.presentation.view.listener.SearchNavigationLi
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
+import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
@@ -103,6 +105,7 @@ import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 
@@ -120,13 +123,10 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
 import static com.tokopedia.discovery.common.constants.SearchApiConst.PREVIOUS_KEYWORD;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
 
 public class ProductListFragment
         extends BaseDaggerFragment
-        implements ProductListAdapter.OnItemChangeView,
+        implements
         ProductListSectionContract.View,
         ProductListener,
         TickerListener,
@@ -141,7 +141,8 @@ public class ProductListFragment
         QuickFilterElevation,
         SortFilterBottomSheet.Callback,
         SearchInTokopediaListener,
-        SearchNavigationClickListener {
+        SearchNavigationClickListener,
+        TopAdsImageViewListener  {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -149,7 +150,7 @@ public class ProductListFragment
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
-    private static final String SEARCH_RESULT_PRODUCT_FILTER_ONBOARDING_TAG = "SEARCH_RESULT_PRODUCT_FILTER_ONBOARDING_TAG";
+    private static final String SEARCH_RESULT_PRODUCT_ONBOARDING_TAG = "SEARCH_RESULT_PRODUCT_ONBOARDING_TAG";
     private static final int REQUEST_CODE_LOGIN = 561;
     private static final String SHOP = "shop";
     private static final int DEFAULT_SPAN_COUNT = 2;
@@ -265,10 +266,6 @@ public class ProductListFragment
         initShimmeringView(view);
 
         setupRecyclerView();
-
-        if (getUserVisibleHint()) {
-            setupSearchNavigation();
-        }
     }
 
     private void initRecyclerView(View rootView) {
@@ -315,10 +312,11 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this,
-                this, this, this, this, this,
+                this, this, this,
+                this, this, this,
                 topAdsConfig);
 
-        adapter = new ProductListAdapter(this, productListTypeFactory);
+        adapter = new ProductListAdapter(productListTypeFactory);
     }
 
     private void initLoadMoreListener() {
@@ -423,64 +421,6 @@ public class ProductListFragment
         if (presenter != null) {
             presenter.onViewVisibilityChanged(isVisibleToUser, isAdded());
         }
-    }
-
-    @Override
-    public void setupSearchNavigation() {
-        if (searchNavigationListener == null) return;
-
-        searchNavigationListener.setupSearchNavigation(this::switchLayoutType, true);
-        refreshMenuItemGridIcon();
-    }
-
-    private void switchLayoutType() {
-        if (!getUserVisibleHint() || adapter == null) {
-            return;
-        }
-
-        switch (adapter.getCurrentLayoutType()) {
-            case LIST:
-                switchLayoutTypeTo(BIG_GRID);
-                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
-                break;
-            case SMALL_GRID:
-                switchLayoutTypeTo(LIST);
-                SearchTracking.eventSearchResultChangeGrid(getActivity(), "list", getScreenName());
-                break;
-            case BIG_GRID:
-                switchLayoutTypeTo(SMALL_GRID);
-                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 2", getScreenName());
-                break;
-        }
-    }
-
-    private void switchLayoutTypeTo(SearchConstant.ViewType layoutType) {
-        if (!getUserVisibleHint() || adapter == null) {
-            return;
-        }
-
-        switch (layoutType) {
-            case LIST:
-                staggeredGridLayoutManager.setSpanCount(1);
-                adapter.changeListView();
-                break;
-            case SMALL_GRID:
-                staggeredGridLayoutManager.setSpanCount(2);
-                adapter.changeDoubleGridView();
-                break;
-            case BIG_GRID:
-                staggeredGridLayoutManager.setSpanCount(1);
-                adapter.changeSingleGridView();
-                break;
-        }
-
-        refreshMenuItemGridIcon();
-    }
-
-    private void refreshMenuItemGridIcon() {
-        if (searchNavigationListener == null || adapter == null) return;
-
-        searchNavigationListener.refreshMenuItemGridIcon(adapter.getTitleTypeRecyclerView(), adapter.getIconTypeRecyclerView());
     }
 
     private FilterTrackingData getFilterTrackingData() {
@@ -1125,21 +1065,6 @@ public class ProductListFragment
         reloadData();
     }
 
-    @Override
-    public void onChangeList() {
-        recyclerView.requestLayout();
-    }
-
-    @Override
-    public void onChangeDoubleGrid() {
-        recyclerView.requestLayout();
-    }
-
-    @Override
-    public void onChangeSingleGrid() {
-        recyclerView.requestLayout();
-    }
-
     private SearchParameter getSearchParameter() {
         return searchParameter;
     }
@@ -1294,16 +1219,14 @@ public class ProductListFragment
     }
 
     @Override
-    public void setDefaultLayoutType(int defaultView) {
+    public void setDefaultLayoutType(int changeViewPosition, int defaultView) {
         switch (defaultView) {
-            case SearchConstant.DefaultViewType.SMALL_GRID:
-                switchLayoutTypeTo(SMALL_GRID);
-                break;
             case SearchConstant.DefaultViewType.LIST:
-                switchLayoutTypeTo(LIST);
+                switchSearchNavigationLayoutTypeToListView(changeViewPosition);
                 break;
+            case SearchConstant.DefaultViewType.SMALL_GRID:
             default:
-                switchLayoutTypeTo(SMALL_GRID);
+                switchSearchNavigationLayoutTypeToSmallGridView(changeViewPosition);
                 break;
         }
     }
@@ -1625,19 +1548,16 @@ public class ProductListFragment
         recyclerView.post(() -> {
             View threeDots = showThreeDotsOnBoarding ? getThreeDotsOfFirstProductItem(firstProductPosition) : null;
 
-            if (searchSortFilter == null) return;
-
             if (firstProductPosition > 0 && threeDots != null)
                 recyclerView.smoothScrollToPosition(firstProductPosition);
 
-            ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(
-                    searchSortFilter.getSortFilterPrefix(),
-                    threeDots
-            );
+            recyclerView.postDelayed(() -> {
+                ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(threeDots);
 
-            CoachMarkBuilder builder = new CoachMarkBuilder();
-            builder.allowPreviousButton(false);
-            builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_FILTER_ONBOARDING_TAG, coachMarkItemList);
+                CoachMarkBuilder builder = new CoachMarkBuilder();
+                builder.allowPreviousButton(false);
+                builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_ONBOARDING_TAG, coachMarkItemList);
+            }, 200);
         });
     }
 
@@ -1653,21 +1573,12 @@ public class ProductListFragment
             return null;
     }
 
-    private ArrayList<CoachMarkItem> createCoachMarkItemList(View sortFilterPrefix, @Nullable View threeDots) {
+    private ArrayList<CoachMarkItem> createCoachMarkItemList(@Nullable View threeDots) {
         ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
 
-        coachMarkItemList.add(createFilterOnBoarding(sortFilterPrefix));
         if (threeDots != null) coachMarkItemList.add(createThreeDotsOnBoarding(threeDots));
 
         return coachMarkItemList;
-    }
-
-    private CoachMarkItem createFilterOnBoarding(View sortFilterPrefix) {
-        return new CoachMarkItem(
-                sortFilterPrefix,
-                getString(R.string.search_product_filter_onboarding_title),
-                getString(R.string.search_product_filter_onboarding_description)
-        );
     }
 
     private CoachMarkItem createThreeDotsOnBoarding(View threeDotsButton) {
@@ -1821,5 +1732,28 @@ public class ProductListFragment
 
         staggeredGridLayoutManager.setSpanCount(2);
         adapter.changeSearchNavigationDoubleGridView(position);
+    }
+
+    @Override
+    public void onTopAdsImageViewImpressed(
+            String className,
+            @NotNull SearchProductTopAdsImageViewModel searchTopAdsImageViewModel
+    ) {
+        if (className == null || getContext() == null) return;
+
+        new TopAdsUrlHitter(getContext()).hitImpressionUrl(
+                className,
+                searchTopAdsImageViewModel.getTopAdsImageViewModel().getAdViewUrl(),
+                "",
+                "",
+                searchTopAdsImageViewModel.getTopAdsImageViewModel().getImageUrl()
+        );
+    }
+
+    @Override
+    public void onTopAdsImageViewClick(@NotNull SearchProductTopAdsImageViewModel searchTopAdsImageViewModel) {
+        if (getContext() == null) return;
+
+        RouteManager.route(getContext(), searchTopAdsImageViewModel.getTopAdsImageViewModel().getApplink());
     }
 }

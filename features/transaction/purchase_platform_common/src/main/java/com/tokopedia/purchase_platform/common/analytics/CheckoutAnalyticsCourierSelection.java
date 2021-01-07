@@ -943,7 +943,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendGeneralEvent(gtmMap);
     }
 
-    public void eventViewCampaignDialog(int productId, String userId) {
+    public void eventViewCampaignDialog(long productId, String userId) {
         Map<String, Object> gtmMap = TrackAppUtils.gtmData(
                 EventName.VIEW_COURIER_IRIS,
                 EventCategory.COURIER_SELECTION,
@@ -954,7 +954,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendGeneralEvent(gtmMap);
     }
 
-    public void eventClickBelanjaLagiOnDialog(int productId, String userId) {
+    public void eventClickBelanjaLagiOnDialog(long productId, String userId) {
         Map<String, Object> gtmMap = TrackAppUtils.gtmData(
                 EventName.VIEW_COURIER_IRIS,
                 EventCategory.COURIER_SELECTION,

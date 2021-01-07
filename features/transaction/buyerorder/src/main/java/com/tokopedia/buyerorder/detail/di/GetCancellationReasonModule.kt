@@ -19,7 +19,6 @@ import kotlinx.coroutines.Dispatchers
  */
 
 @Module
-@OrderListModuleScope
 class GetCancellationReasonModule {
     @OrderListModuleScope
     @Provides
