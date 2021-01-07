@@ -29,18 +29,6 @@
     {
       "event": "clickCreateShop",
       "eventCategory": "registration page - shop",
-      "eventAction": "click continue",
-      "eventLabel": "{{.*}}"
-    },
-    {
-      "event": "clickCreateShop",
-      "eventCategory": "registration page - shop",
-      "eventAction": "click back - add name registration",
-      "eventLabel": ""
-    },
-    {
-      "event": "clickCreateShop",
-      "eventCategory": "registration page - shop",
       "eventAction": "click register shop",
       "eventLabel": ""
     },
