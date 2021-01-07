@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.lifecycle.Observer
@@ -86,7 +88,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun hasInitialSwipeRefresh(): Boolean = true
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
-    override fun getScreenName(): String = "Notification"
+    override fun getScreenName(): String = "/new-inbox/notif"
     override fun onItemClicked(t: Visitable<*>?) {}
     override fun isAutoLoadEnabled(): Boolean = true
 
@@ -116,6 +118,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         super.onCreate(savedInstanceState)
         initRecommendationComponent()
         viewModel.loadNotificationFilter(containerListener?.role)
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     private fun initRecommendationComponent() {

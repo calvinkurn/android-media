@@ -14,23 +14,30 @@ object InboxAnalyticCommon {
     private const val KEY_USER_ROLE = "userRole"
 
     fun createGeneralEvent(
-            event: String,
+            event: String? = null,
             eventCategory: String? = null,
             eventAction: String? = null,
             eventLabel: String? = null,
-            businessUnit: String,
-            currentSite: String,
-            userId: String,
+            businessUnit: String? = null,
+            currentSite: String? = null,
+            userId: String? = null,
             isLoggedInStatus: Boolean? = null,
             screenName: String? = null,
             userRole: String? = null
-    ): Map<String, Any> {
-        val mapTrack: MutableMap<String, Any> =  mutableMapOf(
-                KEY_EVENT to event,
-                KEY_BUSINESS_UNIT to businessUnit,
-                KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userId
-        )
+    ): Map<String, String> {
+        val mapTrack: MutableMap<String, String> =  mutableMapOf()
+        event?.let {
+            mapTrack[KEY_EVENT] = it
+        }
+        businessUnit?.let {
+            mapTrack[KEY_BUSINESS_UNIT] = it
+        }
+        currentSite?.let {
+            mapTrack[KEY_CURRENT_SITE] = it
+        }
+        userId?.let {
+            mapTrack[KEY_USER_ID] = it
+        }
         eventCategory?.let {
             mapTrack[KEY_EVENT_CATEGORY] = it
         }
@@ -41,7 +48,7 @@ object InboxAnalyticCommon {
             mapTrack[KEY_EVENT_ACTION] = it
         }
         isLoggedInStatus?.let {
-            mapTrack[KEY_IS_LOGGED_IN] = it
+            mapTrack[KEY_IS_LOGGED_IN] = it.toString()
         }
         screenName?.let {
             mapTrack[KEY_SCREEN_NAME] = it

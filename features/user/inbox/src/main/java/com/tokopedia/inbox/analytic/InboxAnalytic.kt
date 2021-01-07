@@ -61,6 +61,31 @@ class InboxAnalytic @Inject constructor(
         )
     }
 
+    fun trackOpenInboxPage(
+            @InboxFragmentType
+            page: Int,
+            @RoleType
+            role: Int
+    ) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+                getScreenName(page),
+                createGeneralEvent(
+                        userRole = getRoleString(role),
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE
+                )
+        )
+    }
+
+    private fun getScreenName(@InboxFragmentType page: Int): String {
+        return when (page) {
+            InboxFragmentType.NOTIFICATION -> "/new-inbox/notif"
+            InboxFragmentType.CHAT -> "/new-inbox/chat"
+            InboxFragmentType.DISCUSSION -> "/new-inbox/diskusi"
+            else -> ""
+        }
+    }
+
     private fun getEventLabel(
             @InboxFragmentType
             page: Int,

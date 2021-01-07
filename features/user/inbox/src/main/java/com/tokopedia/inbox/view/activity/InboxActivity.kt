@@ -89,6 +89,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         setupSwitcher()
     }
 
+    override fun onResume() {
+        super.onResume()
+        analytic.trackOpenInboxPage(InboxConfig.page, InboxConfig.role)
+    }
+
     private fun setupInjector() {
         DaggerInboxComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
@@ -98,11 +103,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     private fun setupLastPreviousState() {
         InboxConfig.setRole(cacheState.role)
-        InboxConfig.initialPage = cacheState.initialPage
+        InboxConfig.page = cacheState.initialPage
     }
 
     private fun trackOpenInbox() {
-        analytic.trackOpenInbox(InboxConfig.initialPage, InboxConfig.role)
+        analytic.trackOpenInbox(InboxConfig.page, InboxConfig.role)
     }
 
     override fun clearNotificationCounter() {
@@ -265,31 +270,35 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                         cacheState.saveInitialPageCache(InboxFragmentType.NOTIFICATION)
                         onBottomNavSelected(InboxFragmentType.NOTIFICATION)
                         updateToolbarIcon()
+                        InboxConfig.page = InboxFragmentType.NOTIFICATION
                     }
                     R.id.menu_inbox_chat -> {
                         cacheState.saveInitialPageCache(InboxFragmentType.CHAT)
                         onBottomNavSelected(InboxFragmentType.CHAT)
                         updateToolbarIcon(true)
+                        InboxConfig.page = InboxFragmentType.CHAT
                     }
                     R.id.menu_inbox_discussion -> {
                         cacheState.saveInitialPageCache(InboxFragmentType.DISCUSSION)
                         onBottomNavSelected(InboxFragmentType.DISCUSSION)
                         updateToolbarIcon()
+                        InboxConfig.page = InboxFragmentType.DISCUSSION
                     }
                 }
+                analytic.trackOpenInboxPage(InboxConfig.page, InboxConfig.role)
                 return@setOnNavigationItemSelectedListener true
             }
         }
     }
 
     private fun setupInitialPage() {
-        navigator?.start(InboxConfig.initialPage)
-        bottomNav?.setSelectedPage(InboxConfig.initialPage)
+        navigator?.start(InboxConfig.page)
+        bottomNav?.setSelectedPage(InboxConfig.page)
         viewModel.getNotifications()
     }
 
     private fun setupInitialToolbar() {
-        val isChatPage = InboxConfig.initialPage == InboxFragmentType.CHAT
+        val isChatPage = InboxConfig.page == InboxFragmentType.CHAT
         updateToolbarIcon(isChatPage)
     }
 
