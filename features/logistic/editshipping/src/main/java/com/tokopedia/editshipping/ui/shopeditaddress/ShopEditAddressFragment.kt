@@ -131,9 +131,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 OPEN_MAP_REQUEST_CODE -> {
                    val addressModel = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)
                     addressModel?.let {
-                        currentLat = it.latitude.toDouble()
-                        currentLong = it.latitude.toDouble()
                         warehouseModel?.districtId = it.districtId
+                        adjustMap(it.latitude.toDouble(), it.longitude.toDouble())
                     }
                 }
             }
