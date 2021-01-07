@@ -13,6 +13,8 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.webview.KEY_TITLE
@@ -81,7 +83,12 @@ object SomListNavigator {
 
     fun goToPrintAwb(fragment: SomListFragment?, orderIds: List<String>, markAsPrinted: Boolean) {
         fragment?.run {
-            val url = Uri.parse("https://186-staging-feature.tokopedia.com/shipping-label")
+            val featureUrl = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                "https://186-staging-feature.tokopedia.com/shipping-label"
+            } else {
+                "https://110-beta-feature.tokopedia.com/shipping-label"
+            }
+            val url = Uri.parse(featureUrl)
                     .buildUpon()
                     .appendQueryParameter(SomConsts.PRINT_AWB_ORDER_ID_QUERY_PARAM, orderIds.joinToString(","))
                     .appendQueryParameter(SomConsts.PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, if (markAsPrinted) "1" else "0")
