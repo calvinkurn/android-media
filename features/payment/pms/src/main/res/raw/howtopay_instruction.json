@@ -1,10 +1,8 @@
 {
-  "VA": {
-    "payment_type": "VA",
-    "payment_methods": [
+  "VA": [
       {
         "gateway_code": "BNIVA",
-        "gateway_name": "BNI+Virtual+Account",
+        "gateway_name": "BNI Virtual Account",
         "instructions": [
           {
             "payment_channel": "OVO",
@@ -126,7 +124,7 @@
       },
       {
         "gateway_code": "RINTIS",
-        "gateway_name": "Virtual+Account+Lainnya",
+        "gateway_name": "Virtual Account Lainnya",
         "bank_code": "016",
         "channel": [
           {
@@ -141,9 +139,9 @@
             ]
           },
           {
-            "payment_channel": "SMS+ banking",
+            "payment_channel": "SMS banking",
             "channel_steps": [
-              "Klik App Maybank SMS+ Banking",
+              "Klik App Maybank SMS Banking",
               "Input Passcode (jika ada)",
               "Pilih media koneksi : SMS atau USSD (lihat indikator koneksi pada pojok kanan atas)",
               "Menu Utama, klik icon Pembayaran & Isi ulang",
@@ -188,7 +186,7 @@
       },
       {
         "gateway_code": "RINTIS",
-        "gateway_name": "Virtual+Account+Lainnya",
+        "gateway_name": "Virtual Account Lainnya",
         "bank_code": "028",
         "channel": [
           {
@@ -228,7 +226,7 @@
       },
       {
         "gateway_code": "RINTIS",
-        "gateway_name": "Virtual+Account+Lainnya",
+        "gateway_name": "Virtual Account Lainnya",
         "bank_code": "019",
         "channel": [
           {
@@ -251,7 +249,7 @@
       },
       {
         "gateway_code": "RINTIS",
-        "gateway_name": "Virtual+Account+Lainnya",
+        "gateway_name": "Virtual Account Lainnya",
         "bank_code": "426",
         "channel": [
           {
@@ -280,7 +278,7 @@
       },
       {
         "gateway_code": "RINTIS",
-        "gateway_name": "Virtual+Account+Lainnya",
+        "gateway_name": "Virtual Account Lainnya",
         "bank_code": "023",
         "channel": [
           {
@@ -312,7 +310,7 @@
       },
       {
         "gateway_code": "RINTIS",
-        "gateway_name": "Virtual+Account+Lainnya",
+        "gateway_name": "Virtual Account Lainnya",
         "bank_code": "422",
         "channel": [
           {
@@ -341,7 +339,7 @@
       },
       {
         "gateway_code": "RINTIS",
-        "gateway_name": "Virtual+Account+Lainnya",
+        "gateway_name": "Virtual Account Lainnya",
         "bank_code": "153",
         "channel": [
           {
@@ -380,7 +378,7 @@
       },
       {
         "gateway_code": "RINTIS",
-        "gateway_name": "Virtual+Account+Lainnya",
+        "gateway_name": "Virtual Account Lainnya",
         "bank_code": "118",
         "channel": [
           {
@@ -415,7 +413,7 @@
       },
       {
         "gateway_code": "RINTIS",
-        "gateway_name": "Virtual+Account+Lainnya",
+        "gateway_name": "Virtual Account Lainnya",
         "bank_code": "112",
         "channel": [
           {
@@ -528,7 +526,7 @@
       },
       {
         "gateway_code": "MANDIRIVA",
-        "gateway_name": "Mandiri+Virtual+Account",
+        "gateway_name": "Mandiri Virtual Account",
         "channel": [
           {
             "payment_channel": "ATM Mandiri",
@@ -561,7 +559,7 @@
       },
       {
         "gateway_code": "BTNVA",
-        "gateway_name": "BTN+Virtual+Account",
+        "gateway_name": "BTN Virtual Account",
         "channel": [
           {
             "payment_channel": "ATM BTN",
@@ -629,7 +627,7 @@
       },
       {
         "gateway_code": "DANAMONVA",
-        "gateway_name": "Danamon+Virtual+Account",
+        "gateway_name": "Danamon Virtual Account",
         "channel": [
           {
             "payment_channel": "ATM Danamon",
@@ -677,7 +675,7 @@
       },
       {
         "gateway_code": "BCAVA",
-        "gateway_name": "BCA+Virtual+Account",
+        "gateway_name": "BCA Virtual Account",
         "channel": [
           {
             "payment_channel": "ATM BCA",
@@ -726,7 +724,7 @@
       },
       {
         "gateway_code": "CIMBVA",
-        "gateway_name": "CIMB+Virtual+Account",
+        "gateway_name": "CIMB Virtual Account",
         "channel": [
           {
             "payment_channel": "ATM CIMB",
@@ -791,14 +789,11 @@
           }
         ]
       }
-    ]
-  },
-  "SYARIAH": {
-    "payment_type": "SYARIAH",
-    "payment_methods": [
+    ],
+  "SYARIAH":[
       {
         "gateway_code": "BMIVA",
-        "gateway_name": "Bank+Muamalat",
+        "gateway_name": "Bank Muamalat",
         "channel": [
           {
             "payment_channel": "ATM Muamalat",
@@ -867,7 +862,7 @@
       },
       {
         "gateway_code": "MANDIRISYARIAHVA",
-        "gateway_name": "Bank+Syariah+Mandiri",
+        "gateway_name": "Bank Syariah Mandiri",
         "bank_code": "451",
         "channel": [
           {
@@ -889,7 +884,6 @@
       {
         "gateway_code": "BRISYARIAHVA",
         "gateway_name": "BRISyariah",
-        "bank_code": "451",
         "channel": [
           {
             "payment_channel": "BRI Syariah Mobile Banking",
@@ -915,8 +909,7 @@
           }
         ]
       }
-    ]
-  },
+    ],
   "TRANSFER": [
     "Lakukan pembayaran melalui ATM / mobile banking / internet banking / SMS banking / kantor bank terdekat.",
     "Isi <b>nomor rekening</b> tujuan sesuai yang ada di halaman, <b>Menunggu, Pembayaran</b> (a.n. Tokopedia).",

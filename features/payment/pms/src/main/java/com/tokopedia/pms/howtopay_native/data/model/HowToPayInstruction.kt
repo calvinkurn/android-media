@@ -1,10 +1,10 @@
 package com.tokopedia.pms.howtopay_native.data.model
 
-sealed class HowToPayInstruction(type : PaymentType)
-data class MultiOptionInstructions(val type: PaymentType,
-                                   val options : ArrayList<ArrayList<String>>) : HowToPayInstruction(type)
-data class Instructions(val type: PaymentType,
-                                   val instructions : ArrayList<String>) : HowToPayInstruction(type)
+sealed class HowToPayInstruction
+data class SingleChannelGatewayResult(val type: PaymentType,
+                                      val instructions : ArrayList<String>) : HowToPayInstruction()
+data class MultiChannelGatewayResult(val type: PaymentType,
+                                     val gateway: MultiChannelGateway) : HowToPayInstruction()
 
 
 sealed class PaymentType
