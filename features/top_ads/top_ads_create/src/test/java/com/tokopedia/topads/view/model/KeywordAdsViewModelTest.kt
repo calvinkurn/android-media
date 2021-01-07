@@ -108,7 +108,7 @@ class KeywordAdsViewModelTest {
     }
 
     @Test
-    fun `test searchKeyword`() {
+    fun `test searchKeyword if query is not null`() {
 
         every { userSession.shopId } returns "2"
 
