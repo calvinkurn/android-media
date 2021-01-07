@@ -1,6 +1,7 @@
 package com.tokopedia.network.interceptor
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh
 import com.tokopedia.user.session.UserSession
@@ -59,12 +60,12 @@ class TkpdAuthenticator(
                     networkRouter.doRelogin(newAccessToken)
                     updateRequestWithNewToken(originalRequest)
                 } catch (ex: Exception) {
-                    Timber.w("P2#USER_AUTHENTICATOR#failed_authenticate;oldToken='%s';exception='%s';path='%s'",userSession.accessToken, ex.toString(), path);
+                    Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';exception='%s';path='%s'", "failed_authenticate", userSession.accessToken, formatThrowable(ex), path)
                     response.request()
                 }
             else {
                 networkRouter.showForceLogoutTokenDialog("/")
-                Timber.w("P2#USER_AUTHENTICATOR#response_count");
+                Timber.w("P2#USER_AUTHENTICATOR#'%s'", "response_count")
                 return response.request()
             }
         }
@@ -117,6 +118,14 @@ class TkpdAuthenticator(
         const val BYTE_COUNT = 512L
 
         const val AUTHENTICATOR_REMOTE_CONFIG_KEY: String = "android_enable_authenticator"
+
+        fun formatThrowable(throwable: Throwable): String {
+            return try{
+                Log.getStackTraceString(throwable).take(1000)
+            } catch (e: Exception){
+                e.toString()
+            }
+        }
 
         fun createAuthenticator(context: Context, networkRouter: NetworkRouter, userSession: UserSession): TkpdAuthenticator? {
                 return TkpdAuthenticator(context, networkRouter, userSession)

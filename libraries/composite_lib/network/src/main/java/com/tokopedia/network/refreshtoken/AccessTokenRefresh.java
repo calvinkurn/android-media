@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthenticator;
 import com.tokopedia.network.interceptor.akamai.AkamaiBotInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.url.TokopediaUrl;
@@ -57,7 +58,7 @@ public class AccessTokenRefresh {
 
             if (response.errorBody() != null) {
                 tokenResponseError = response.errorBody().string();
-                Timber.w("P2#USER_AUTHENTICATOR#error_refresh_token;oldToken='%s';error='%s';path='%s'", userSession.getAccessToken(), tokenResponseError, path);
+                Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "error_refresh_token", userSession.getAccessToken(), tokenResponseError, path);
                 networkRouter.sendRefreshTokenAnalytics(tokenResponseError);
                 checkShowForceLogout(tokenResponseError, networkRouter, path);
             } else if (response.body() != null) {
@@ -70,7 +71,7 @@ public class AccessTokenRefresh {
         } catch (Exception e) {
             e.printStackTrace();
             networkRouter.sendRefreshTokenAnalytics(e.toString());
-            Timber.w("P2#USER_AUTHENTICATOR#failed_refresh_token;oldToken='%s';exception='%s', path='%s'", userSession.getAccessToken(), e.toString(), path);
+            Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';exception='%s', path='%s'", "failed_refresh_token", userSession.getAccessToken(), TkpdAuthenticator.Companion.formatThrowable(e), path);
         }
 
         TokenModel model = null;
