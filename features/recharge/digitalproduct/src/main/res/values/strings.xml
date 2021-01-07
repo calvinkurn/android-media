@@ -106,4 +106,7 @@
 
     <string name="digital_success_message_scan_ocr">Nomor kartu berhasil dipindai</string>
     <string name="digital_generate_token_checkout">%1$s_%2$s</string>
+
+    <string name="digital_empty_state_checkout_title">Ada gangguan di rumah Toped</string>
+    <string name="digital_empty_state_checkout_btn">Coba Lagi</string>
 </resources>
