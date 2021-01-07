@@ -29,6 +29,7 @@ class TalkInboxViewModel @Inject constructor(
 
     private var shopId: String = ""
     private var unreadCount: Int = 0
+    private var unrespondedCount: Int = 0
     private var type: String = ""
     private var filter: TalkInboxFilter = TalkInboxFilter.TalkInboxNoFilter()
     private val page = MutableLiveData<Int>()
@@ -45,6 +46,10 @@ class TalkInboxViewModel @Inject constructor(
 
     fun getUnreadCount(): Int {
         return unreadCount
+    }
+
+    fun getUnrespondedCount(): Int {
+        return unrespondedCount
     }
 
     fun getActiveFilter(): String {
@@ -65,13 +70,13 @@ class TalkInboxViewModel @Inject constructor(
         resetFilter()
     }
 
-    fun setFilter(selectedFilter: TalkInboxFilter) {
+    fun setFilter(selectedFilter: TalkInboxFilter, isSellerView: Boolean) {
         if(this.filter == selectedFilter) {
-            talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), getUnreadCount(), false, getShopId(), getUserId())
+            talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), if(isSellerView) unrespondedCount else unreadCount, false, getShopId(), getUserId())
             resetFilter()
             return
         }
-        talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), getUnreadCount(), true, getShopId(), getUserId())
+        talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), if(isSellerView) unrespondedCount else unreadCount, true, getShopId(), getUserId())
         this.filter = selectedFilter
         resetPage()
     }

@@ -35,7 +35,7 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
-        viewModel.setFilter(expectedFilter)
+        viewModel.setFilter(expectedFilter, true)
 
         val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
 
@@ -51,8 +51,8 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
-        viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter())
-        viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter())
+        viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter(), true)
+        viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter(), true)
 
         val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
 
