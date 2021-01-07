@@ -62,7 +62,7 @@
         <![CDATA[
         <html>
         <body>
-        <a href="#"><p style="color: green;">#ticker_label</p></a>
+        <a href=""><span style="color: green;">#ticker_label</span></a>
         </body>
         </html>
         ]]>

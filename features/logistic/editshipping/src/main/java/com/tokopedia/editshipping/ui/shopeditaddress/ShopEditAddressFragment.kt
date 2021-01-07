@@ -390,6 +390,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         intent.putExtra(EXTRA_LONG, long)
         intent.putExtra(EXTRA_WAREHOUSE_DATA, warehouseDataModel)
         intent.putExtra(EXTRA_IS_EDIT_WAREHOUSE, true)
+        intent.putExtra(EXTRA_IS_POLYGON, true)
         startActivityForResult(intent, OPEN_MAP_REQUEST_CODE)
     }
 
@@ -406,7 +407,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     putParcelable(EXTRA_WAREHOUSE_DATA, extra.getParcelable(EXTRA_WAREHOUSE_DATA))
                     putDouble(EXTRA_LAT, extra.getDouble(EXTRA_LAT))
                     putDouble(EXTRA_LONG, extra.getDouble(EXTRA_LONG))
-                    putBoolean(EXTRA_IS_POLYGON, true)
                 }
             }
         }
