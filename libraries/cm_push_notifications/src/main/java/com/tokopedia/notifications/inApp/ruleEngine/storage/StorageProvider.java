@@ -18,8 +18,8 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class StorageProvider implements InterfaceDataStore {
-    private InAppDataDao inAppDataDao;
-    private ElapsedTimeDao elapsedTimeDao;
+    private final InAppDataDao inAppDataDao;
+    private final ElapsedTimeDao elapsedTimeDao;
     private StorageProviderListener storageProviderListener;
     String TAG = "GratifTag";
 
@@ -27,6 +27,14 @@ public class StorageProvider implements InterfaceDataStore {
         this.inAppDataDao = inAppDataDao;
         this.elapsedTimeDao = elapsedTimeDao;
         this.storageProviderListener = storageProviderListener;
+    }
+
+    public void setStorageProviderListener(StorageProviderListener storageProviderListener) {
+        this.storageProviderListener = storageProviderListener;
+    }
+
+    public StorageProviderListener getStorageProviderListener() {
+        return storageProviderListener;
     }
 
     @Override
@@ -51,12 +59,14 @@ public class StorageProvider implements InterfaceDataStore {
                             String[] existingScreenDataList = existingScreenData.split(",");
                             for (String screen : existingScreenDataList) {
                                 if (newScreenDataList.contains(screen)) {
-                                    storageProviderListener.onInappWithScreenAlreadyExists(value);
+                                    if (storageProviderListener != null)
+                                        storageProviderListener.onInappWithScreenAlreadyExists(value);
                                     return;
                                 }
                             }
                         } else {
-                            storageProviderListener.onInappWithScreenAlreadyExists(value);
+                            if (storageProviderListener != null)
+                                storageProviderListener.onInappWithScreenAlreadyExists(value);
                             return;
                         }
                     }
@@ -76,7 +86,8 @@ public class StorageProvider implements InterfaceDataStore {
 
     private void checkIfInappAlreadyExists(CMInApp oldData, CMInApp value) {
         if (oldData != null) {
-            storageProviderListener.onInappDuplicate(oldData);
+            if (storageProviderListener != null)
+                storageProviderListener.onInappDuplicate(oldData);
             inAppDataDao.deleteRecord(value.id);
         }
     }
@@ -101,27 +112,30 @@ public class StorageProvider implements InterfaceDataStore {
 
     @Override
     public List<CMInApp> getDataFromStore(String key, boolean isActivity) {
-        boolean fetchInapp = storageProviderListener.onFetchInappFromStore();
+        boolean fetchInapp = true;
+        if (storageProviderListener != null)
+            fetchInapp = storageProviderListener.onFetchInappFromStore();
+        List<CMInApp> list;
         if (fetchInapp) {
-            List<CMInApp> list = inAppDataDao.getDataForScreen(key);
-            List<CMInApp> finalList = new ArrayList<>();
-            if (list != null) {
-                for (CMInApp cmInApp : list) {
-                    String screenNames = cmInApp.getScreen();
-                    if (!TextUtils.isEmpty(screenNames)) {
-                        String[] screenNamesArray = screenNames.split(",");
-                        for (String screenName : screenNamesArray) {
-                            if (key.equals(screenName) || (isActivity && screenName.equals("*"))) {
-                                finalList.add(cmInApp);
-                                break;
-                            }
+            list = inAppDataDao.getDataForScreen(key);
+        } else
+            list =inAppDataDao.getDataForScreenTestCampaign(key);
+        List<CMInApp> finalList = new ArrayList<>();
+        if (list != null) {
+            for (CMInApp cmInApp : list) {
+                String screenNames = cmInApp.getScreen();
+                if (!TextUtils.isEmpty(screenNames)) {
+                    String[] screenNamesArray = screenNames.split(",");
+                    for (String screenName : screenNamesArray) {
+                        if (key.equals(screenName) || (isActivity && screenName.equals("*"))) {
+                            finalList.add(cmInApp);
+                            break;
                         }
                     }
                 }
             }
-            return finalList;
         }
-        return null;
+        return finalList;
     }
 
     @Override

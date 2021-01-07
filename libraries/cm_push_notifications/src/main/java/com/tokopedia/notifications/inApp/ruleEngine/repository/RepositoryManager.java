@@ -52,6 +52,8 @@ public class RepositoryManager implements StorageProvider.StorageProviderListene
     }
 
     public StorageProvider getStorageProvider() {
+        if (storageProvider.getStorageProviderListener() == null)
+            storageProvider.setStorageProviderListener(this);
         return storageProvider;
     }
 

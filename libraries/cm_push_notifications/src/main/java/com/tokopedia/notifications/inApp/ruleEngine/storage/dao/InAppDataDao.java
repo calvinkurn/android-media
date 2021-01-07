@@ -26,6 +26,9 @@ public interface InAppDataDao {
     @Query("SELECT * from inapp_data where s LIKE '%' || :screenName || '%' or s = '*'")
     List<CMInApp> getDataForScreen(String screenName);
 
+    @Query("SELECT * from inapp_data where is_test = 1 and (s LIKE '%' || :screenName || '%' or s = '*')")
+    List<CMInApp> getDataForScreenTestCampaign(String screenName);
+
     @Query("SELECT * from inapp_data where parentId  = :parentId LIMIT 1")
     CMInApp getDataForParentId(String parentId);
 
