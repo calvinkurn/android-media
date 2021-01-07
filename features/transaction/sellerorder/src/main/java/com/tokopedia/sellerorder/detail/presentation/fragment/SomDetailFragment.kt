@@ -39,6 +39,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -168,6 +169,9 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     private var somToaster: Snackbar? = null
 
@@ -725,8 +729,8 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
         val url = Uri.parse(featureUrl)
                 .buildUpon()
-                .appendQueryParameter(SomConsts.PRINT_AWB_ORDER_ID_QUERY_PARAM, orderIds.joinToString(","))
-                .appendQueryParameter(SomConsts.PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, if (markAsPrinted) "1" else "0")
+                .appendQueryParameter(PRINT_AWB_ORDER_ID_QUERY_PARAM, detailResponse?.orderId.orZero().toString())
+                .appendQueryParameter(PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, "1")
                 .build()
                 .toString()
         Intent(activity, SomPrintAwbActivity::class.java).apply {
