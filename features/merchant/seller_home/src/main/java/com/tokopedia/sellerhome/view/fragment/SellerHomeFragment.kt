@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -613,13 +614,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        val diffUtilCallback = SellerHomeDiffUtilCallback(
-                adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-                newWidgets.toList() as List<BaseWidgetUiModel<BaseDataUiModel>>)
-        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
-        diffUtilResult.dispatchUpdatesTo(adapter)
-        adapter.data.clear()
-        adapter.data.addAll(newWidgets)
+        updateWidgets(newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>)
 
         val isAnyWidgetFromCache = adapter.data.any { it.isFromCache }
         if (!isAnyWidgetFromCache) {
@@ -771,28 +766,38 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
         val isFromCache = firstOrNull()?.isFromCache == true
         stopPltMonitoringIfNotCompleted(isFromCache)
+        val newWidgetList = adapter.data.toMutableList()
         forEach { widgetData ->
-            adapter.data.indexOfFirst {
+            newWidgetList.indexOfFirst {
                 it.dataKey == widgetData.dataKey && it.widgetType == widgetType
             }.takeIf { it > -1 }?.let { index ->
-                val widget = adapter.data.getOrNull(index)
+                val widget = newWidgetList.getOrNull(index)
                 if (widget is W) {
                     if (!widget.isShowEmpty && widgetData.shouldRemove()) {
-                        adapter.data.removeAt(index)
-                        notifyWidgetRemoved(index)
+                        newWidgetList.removeAt(index)
                     } else {
-                        widget.data = widgetData
-                        widget.isLoading = widget.data?.isFromCache ?: false
-                        notifyWidgetChanged(index)
+                        val copiedWidget = widget.clone()
+                        copiedWidget.data = widgetData
+                        copiedWidget.isLoading = widget.data?.isFromCache ?: false
+                        newWidgetList[index] = copiedWidget
                     }
                 }
             }
         }
+        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         view?.addOneTimeGlobalLayoutListener {
-            recyclerView.post { requestVisibleWidgetsData() }
+            recyclerView.post {
+                val isAnyLoadingWidget = adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
+                if (!isAnyLoadingWidget) {
+                    view?.swipeRefreshLayout?.isRefreshing = false
+                    hideLoading()
+                }
+                requestVisibleWidgetsData()
+            }
         }
     }
 
@@ -827,15 +832,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         recyclerView.post {
             adapter.notifyItemChanged(position)
         }
-        val isAnyLoadingWidget = adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
-        if (!isAnyLoadingWidget) {
-            view?.swipeRefreshLayout?.isRefreshing = false
-            hideLoading()
-        }
-    }
-
-    private fun notifyWidgetRemoved(position: Int) {
-        adapter.notifyItemRemoved(position)
         val isAnyLoadingWidget = adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
         if (!isAnyLoadingWidget) {
             view?.swipeRefreshLayout?.isRefreshing = false
@@ -910,6 +906,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }
+    }
+
+    private fun <T: Any> T.clone(): T {
+        val json = CommonUtils.toJson(this)
+        return CommonUtils.fromJson(json, this::class.java)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
+        val diffUtilCallback = SellerHomeDiffUtilCallback(
+                adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
+                newWidgets)
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
+        diffUtilResult.dispatchUpdatesTo(adapter)
+        adapter.data.clear()
+        adapter.data.addAll(newWidgets)
     }
 
     interface Listener {
