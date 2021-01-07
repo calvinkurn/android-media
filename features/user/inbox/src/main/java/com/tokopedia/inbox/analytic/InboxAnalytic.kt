@@ -27,6 +27,7 @@ class InboxAnalytic @Inject constructor(
         companion object {
             const val OPEN_INBOX = "open inbox"
             const val CLICK_BOTTOM_NAV_MENU = "click menu at inbox bottom navigation"
+            const val CLICK_SWITCH_ACCOUNT = "click switch inbox at header"
         }
     }
 
@@ -84,6 +85,20 @@ class InboxAnalytic @Inject constructor(
                         eventCategory = EventCategory.INBOX_PAGE,
                         eventAction = EventAction.CLICK_BOTTOM_NAV_MENU,
                         eventLabel = getEventLabel(page, role),
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId
+                )
+        )
+    }
+
+    fun trackClickSwitchAccount() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                createGeneralEvent(
+                        event = Event.CLICK_INBOX_CHAT,
+                        eventCategory = EventCategory.INBOX_PAGE,
+                        eventAction = EventAction.CLICK_SWITCH_ACCOUNT,
+                        eventLabel = "",
                         businessUnit = BusinessUnit.COMMUNICATION,
                         currentSite = CurrentSite.MARKETPLACE,
                         userId = userSession.userId

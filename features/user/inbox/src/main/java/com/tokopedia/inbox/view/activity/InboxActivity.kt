@@ -207,6 +207,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         switcher = AccountSwitcherBottomSheet.create()
         navHeaderContainer?.setOnClickListener {
             switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
+            analytic.trackClickSwitchAccount()
         }
     }
 
