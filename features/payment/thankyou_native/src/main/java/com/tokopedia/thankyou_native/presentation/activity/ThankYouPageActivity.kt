@@ -38,12 +38,9 @@ const val SCREEN_NAME = "Finish Transaction"
 const val ARG_PAYMENT_ID = "payment_id"
 const val ARG_MERCHANT = "merchant"
 
-private const val EXP_NAME = "Navigation Revamp"
-private const val VARIANT_OLD = "existing navigation"
-private const val VARIANT_REVAMP = "navigation revamp"
 private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
 
-
+private const val KEY_CONFIG_NEW_NAVIGATION = "app_flag_thankyou_new_navigation"
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
         ThankYouPageDataLoadCallback {
@@ -206,8 +203,13 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     private fun isGlobalNavEnable(): Boolean {
-        getAbTestPlatform()?.let {
-            return it.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
+        val isNewNavigationEnabled = FirebaseRemoteConfigImpl(this).getBoolean(KEY_CONFIG_NEW_NAVIGATION,
+                false)
+        if(isNewNavigationEnabled) {
+            getAbTestPlatform()?.let {
+                return (it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
+                        == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+            }
         }
         return false
     }

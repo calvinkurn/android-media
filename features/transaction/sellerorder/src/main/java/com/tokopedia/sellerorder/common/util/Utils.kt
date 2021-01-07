@@ -8,6 +8,7 @@ import android.graphics.LightingColorFilter
 import android.graphics.drawable.Drawable
 import android.os.Parcel
 import android.os.Parcelable
+import android.text.Spanned
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -165,4 +166,13 @@ object Utils {
     }
 
     fun getFormattedDate(daysBefore: Long, format: String) = format(getNPastDaysTimestamp(daysBefore), format)
+
+    fun String.toStringFormatted(maxChar: Int): Spanned {
+        return if (MethodChecker.fromHtml(this).toString().length > maxChar) {
+            val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar)
+            MethodChecker.fromHtml("$subDescription...")
+        } else {
+            MethodChecker.fromHtml(this)
+        }
+    }
 }
