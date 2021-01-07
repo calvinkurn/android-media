@@ -1,7 +1,6 @@
 package com.tokopedia.flight.cancellation.di;
 
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationDetailFragment;
-import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationListFragment;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -16,8 +15,6 @@ import dagger.Component;
 public interface FlightCancellationComponent {
 
     UserSessionInterface userSessionInterface();
-
-    void inject(FlightCancellationListFragment flightCancellationListFragment);
 
     void inject(FlightCancellationDetailFragment flightCancellationDetailFragment);
 }

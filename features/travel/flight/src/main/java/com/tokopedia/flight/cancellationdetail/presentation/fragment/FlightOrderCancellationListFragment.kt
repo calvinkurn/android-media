@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationListFragment.EXTRA_INVOICE_ID
+import com.tokopedia.flight.cancellationdetail.presentation.activity.FlightOrderCancellationListActivity.Companion.EXTRA_INVOICE_ID
 import com.tokopedia.flight.cancellationdetail.presentation.adapter.FlightOrderCancellationListAdapterTypeFactory
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
 import com.tokopedia.flight.cancellationdetail.presentation.viewmodel.FlightOrderCancellationListViewModel
