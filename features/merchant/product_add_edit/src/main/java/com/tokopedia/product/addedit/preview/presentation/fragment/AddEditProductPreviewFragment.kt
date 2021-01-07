@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -1405,7 +1406,7 @@ class AddEditProductPreviewFragment :
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
                     getString(R.string.label_for_action_text_toaster_success_set_shop_location)
-            ) { /*no op*/ }.show()
+            ).show()
         }
     }
 
