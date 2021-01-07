@@ -286,6 +286,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                     }
                 }
                 analytic.trackOpenInboxPage(InboxConfig.page, InboxConfig.role)
+                analytic.trackClickBottomNaveMenu(InboxConfig.page, InboxConfig.role)
                 return@setOnNavigationItemSelectedListener true
             }
         }

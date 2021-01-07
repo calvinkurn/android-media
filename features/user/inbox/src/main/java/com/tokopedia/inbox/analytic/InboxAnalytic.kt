@@ -26,6 +26,7 @@ class InboxAnalytic @Inject constructor(
     class EventAction private constructor() {
         companion object {
             const val OPEN_INBOX = "open inbox"
+            const val CLICK_BOTTOM_NAV_MENU = "click menu at inbox bottom navigation"
         }
     }
 
@@ -47,13 +48,12 @@ class InboxAnalytic @Inject constructor(
             @RoleType
             role: Int
     ) {
-        val eventLabel = getEventLabel(page, role)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 createGeneralEvent(
                         event = Event.CLICK_INBOX_CHAT,
                         eventCategory = EventCategory.INBOX_PAGE,
                         eventAction = EventAction.OPEN_INBOX,
-                        eventLabel = eventLabel,
+                        eventLabel = getEventLabel(page, role),
                         businessUnit = BusinessUnit.COMMUNICATION,
                         currentSite = CurrentSite.MARKETPLACE,
                         userId = userSession.userId
@@ -73,6 +73,20 @@ class InboxAnalytic @Inject constructor(
                         userRole = getRoleString(role),
                         businessUnit = BusinessUnit.COMMUNICATION,
                         currentSite = CurrentSite.MARKETPLACE
+                )
+        )
+    }
+
+    fun trackClickBottomNaveMenu(page: Int, role: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                createGeneralEvent(
+                        event = Event.CLICK_INBOX_CHAT,
+                        eventCategory = EventCategory.INBOX_PAGE,
+                        eventAction = EventAction.CLICK_BOTTOM_NAV_MENU,
+                        eventLabel = getEventLabel(page, role),
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId
                 )
         )
     }
