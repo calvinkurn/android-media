@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
@@ -1449,20 +1450,20 @@ public class ProductListFragment
 
     @Override
     public void showMessageSuccessWishlistAction(boolean isWishlisted) {
-        if (isWishlisted) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
-        }
+        if (getView() == null) return;
+
+        if (isWishlisted)
+            Toaster.build(getView(), getString(R.string.msg_add_wishlist), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+        else Toaster.build(getView(), getString(R.string.msg_remove_wishlist), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
     }
 
     @Override
-    public void showMessageFailedWishlistAction(boolean isWishlisited) {
-        if (isWishlisited) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist_failed));
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist_failed));
-        }
+    public void showMessageFailedWishlistAction(boolean isWishlisted) {
+        if (getView() == null) return;
+
+        if (isWishlisted)
+            Toaster.build(getView(), getString(R.string.msg_add_wishlist_failed), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show();
+        else Toaster.build(getView(), getString(R.string.msg_remove_wishlist_failed), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show();
     }
 
     @Override
