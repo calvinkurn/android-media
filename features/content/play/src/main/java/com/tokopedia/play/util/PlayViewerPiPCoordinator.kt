@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 
 /**
  * Created by jegul on 01/12/20
@@ -18,7 +19,7 @@ import com.tokopedia.play.view.type.VideoOrientation
 class PlayViewerPiPCoordinator(
         context: Context,
         videoOrientation: VideoOrientation,
-        channelId: String,
+        pipInfoUiModel: PiPInfoUiModel,
         private val pipAdapter: FloatingWindowAdapter,
         private val listener: Listener
 ) {
@@ -39,7 +40,7 @@ class PlayViewerPiPCoordinator(
         }
 
         val view = PlayViewerPiPView(context.applicationContext).also {
-            it.setChannelId(channelId)
+            it.setPiPInfo(pipInfoUiModel)
         }
 
         val scaledWidth = (scaleFactor * width).toInt()

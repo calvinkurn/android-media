@@ -16,6 +16,7 @@ import com.tokopedia.floatingwindow.exception.FloatingWindowException
 import com.tokopedia.floatingwindow.permission.FloatingWindowPermissionManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.PlayViewerPiPCoordinator
@@ -28,7 +29,8 @@ import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.General
-import com.tokopedia.play.view.uimodel.PiPMode
+import com.tokopedia.play.view.type.PiPMode
+import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
 import com.tokopedia.play.view.viewcomponent.OneTapViewComponent
@@ -54,7 +56,8 @@ import javax.inject.Inject
  */
 class PlayVideoFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        dispatchers: CoroutineDispatcherProvider
+        dispatchers: CoroutineDispatcherProvider,
+        private val pipAnalytic: PlayPiPAnalytic
 ) : TkpdBaseV4Fragment(), PlayFragmentContract {
 
     private val job = SupervisorJob()
@@ -115,7 +118,14 @@ class PlayVideoFragment @Inject constructor(
             val videoPlayer = playViewModel.videoPlayer as? General ?: return
             PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), view.getPlayerView())
 
-            if (playViewModel.pipMode == PiPMode.WatchInPip) playPiPCoordinator.onEnterPiPMode()
+            if (playViewModel.pipMode == PiPMode.WatchInPip) {
+                playPiPCoordinator.onEnterPiPMode()
+                pipAnalytic.enterPiP(
+                        channelId = channelId,
+                        shopId = playViewModel.partnerId,
+                        channelType = playViewModel.channelType
+                )
+            }
         }
     }
 
@@ -200,7 +210,12 @@ class PlayVideoFragment @Inject constructor(
         PlayViewerPiPCoordinator(
                 context = requireContext(),
                 videoOrientation = playViewModel.videoOrientation,
-                channelId = channelId,
+                pipInfoUiModel = PiPInfoUiModel(
+                        channelId = channelId,
+                        partnerId = playViewModel.partnerId,
+                        channelType = playViewModel.channelType,
+                        videoOrientation = playViewModel.videoOrientation,
+                ),
                 pipAdapter = pipAdapter,
                 listener = playViewerPiPCoordinatorListener
         ).startPip()

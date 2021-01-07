@@ -33,6 +33,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -55,7 +56,8 @@ class PlayViewModel @Inject constructor(
         private val playSocket: PlaySocket,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider,
-        private val pageMonitoring: PlayPltPerformanceCallback
+        private val pageMonitoring: PlayPltPerformanceCallback,
+        private val remoteConfig: RemoteConfig
 ) : PlayBaseViewModel(dispatchers.main) {
 
     /**
@@ -149,6 +151,10 @@ class PlayViewModel @Inject constructor(
         get() {
             val pipValue = _observableEventPiP.value
             return pipValue != null && pipValue.peekContent() != PiPMode.StopPip
+        }
+    val isPiPAllowed: Boolean
+        get() {
+            return remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_PIP, true)
         }
 
     val userId: String
@@ -466,7 +472,7 @@ class PlayViewModel @Inject constructor(
                 launch { getTotalLikes(completeInfoUiModel.channelInfo.id) }
                 launch { getIsLike(completeInfoUiModel.channelInfo.feedInfo) }
                 launch { getBadgeCart(channel.configuration.showCart) }
-                launch { if (channel.configuration.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
+                launch { if (completeInfoUiModel.channelInfo.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
 
                 startWebSocket(channelId)
 
@@ -752,5 +758,7 @@ class PlayViewModel @Inject constructor(
         private const val MAX_RETRY_CHANNEL_INFO = 3
 
         private const val MS_PER_SECOND = 1000
+
+        private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_remoteconfig"
     }
 }

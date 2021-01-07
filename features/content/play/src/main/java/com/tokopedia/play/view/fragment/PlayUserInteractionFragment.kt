@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
+import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.animation.PlayDelayFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
@@ -77,7 +78,8 @@ import javax.inject.Inject
 class PlayUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val dispatchers: CoroutineDispatcherProvider,
-        private val trackingQueue: TrackingQueue
+        private val trackingQueue: TrackingQueue,
+        private val pipAnalytic: PlayPiPAnalytic
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -320,6 +322,8 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onPinnedMessageActionClicked(view: PinnedViewComponent, applink: String, message: String) {
         PlayAnalytics.clickPinnedMessage(channelId, message, applink, playViewModel.channelType)
         openPageByApplink(applink)
+
+        playViewModel.openPiPBrowsingPage()
     }
 
     override fun onPinnedProductActionClicked(view: PinnedViewComponent) {
@@ -377,6 +381,11 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     override fun onPiPButtonClicked(view: PiPViewComponent) {
         playViewModel.watchInPiP()
+        pipAnalytic.clickPiPIcon(
+                channelId = channelId,
+                shopId = playViewModel.partnerId,
+                channelType = playViewModel.channelType
+        )
     }
     //endregion
 
@@ -411,6 +420,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (orientation.isLandscape) setupLandscapeView()
         else setupPortraitView()
+
+        if (playViewModel.isPiPAllowed) pipView.show()
+        else pipView.hide()
     }
 
     private fun setupInsets(view: View) {
@@ -1135,7 +1147,7 @@ class PlayUserInteractionFragment @Inject constructor(
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (!videoPlayer.isGeneral || isFreezeOrBanned) {
+        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral || isFreezeOrBanned) {
             pipView.hide()
             return
         }
