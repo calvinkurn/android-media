@@ -15,7 +15,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
