@@ -8,6 +8,8 @@ import android.os.Parcelable
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -55,6 +57,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected lateinit var tickerView: Ticker
     protected lateinit var appBarLayout: AppBarLayout
     protected lateinit var toolbarSpacer: View
+    protected lateinit var bannerImage: ImageView
     private lateinit var viewModel: SharedTelcoViewModel
     protected var listMenu = mutableListOf<TelcoTabItem>()
     protected var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
@@ -333,6 +336,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     private fun setAnimationAppBarLayout() {
+        val fadeIn = AlphaAnimation(0f, 1.0f)
+        fadeIn.duration = 300
+        fadeIn.fillAfter = true
+
+        val fadeOut = AlphaAnimation(1.0f, 0f)
+        fadeOut.duration = 300
+        fadeOut.fillAfter = true
+
         var actionBarHeight = toolbarSpacer.height
 
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
@@ -344,10 +355,16 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 if (abs(verticalOffSet) >= appBarLayout.totalScrollRange - actionBarHeight) {
                     //Collapsed
                     onCollapseAppBar()
+                    if (!fadeOut.hasStarted()) {
+                        bannerImage.startAnimation(fadeOut)
+                    }
                     (activity as? BaseTelcoActivity)?.onCollapseAppBar()
                 } else {
                     //Expanded
                     onExpandAppBar()
+                    if (!fadeIn.hasStarted()) {
+                        bannerImage.startAnimation(fadeIn)
+                    }
                     (activity as? BaseTelcoActivity)?.onExpandAppBar()
                 }
             }
