@@ -35,6 +35,7 @@ abstract class BaseAppWidgetWorker(private val context: Context, params: WorkerP
         if (lastPrune <= nowMillis.minus(oneHourMillis)) {
             WorkManager.getInstance(context).pruneWork()
             cacheHandler.putLong(Const.SharedPrefKey.LAST_PRUNE_WORK, nowMillis)
+            cacheHandler.applyEditor()
         }
     }
 }
