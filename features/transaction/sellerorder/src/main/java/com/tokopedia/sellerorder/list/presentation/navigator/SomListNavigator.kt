@@ -81,12 +81,12 @@ object SomListNavigator {
         }
     }
 
-    fun goToPrintAwb(fragment: SomListFragment?, orderIds: List<String>, markAsPrinted: Boolean) {
+    fun goToPrintAwb(fragment: SomListFragment?, orderIds: List<String>, markAsPrinted: Boolean, stagingUrl: String, betaUrl: String) {
         fragment?.run {
             val featureUrl = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-                "https://186-staging-feature.tokopedia.com/shipping-label"
+                stagingUrl
             } else {
-                "https://110-beta-feature.tokopedia.com/shipping-label"
+                betaUrl
             }
             val url = Uri.parse(featureUrl)
                     .buildUpon()
