@@ -43,7 +43,7 @@
         android:text="Dengan fitur ini, pengiriman otomastis terisi dan penjual balbalbalbalbalbalbalablbla " />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_simpan"
+        android:id="@+id/btn_close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_24"
@@ -51,7 +51,7 @@
         android:layout_marginStart="@dimen/unify_space_48"
         android:layout_marginEnd="@dimen/unify_space_48"
         android:layout_weight="1"
-        android:text="Simpan"
+        android:text="Tutup"
         android:textStyle="bold"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"

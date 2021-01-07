@@ -15,9 +15,10 @@
         <ScrollView
             android:id="@+id/sv_shipping_editor"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:isScrollContainer="false"
             android:background="@color/Unify_N0"
+            app:layout_constraintBottom_toTopOf="@id/bottom_layout_address"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent">
@@ -28,7 +29,7 @@
                 android:orientation="vertical">
 
                 <com.tokopedia.unifycomponents.ticker.Ticker
-                    android:id="@+id/ticker_info_pengiriman"
+                    android:id="@+id/ticker_shipper_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:closeButtonVisibility="gone"
@@ -81,7 +82,7 @@
                     android:text="Kurir akan menjemput pesanan di alamatmu untuk diantar" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_dijemput_kurir"
+                    android:id="@+id/rv_on_demand"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_16"
@@ -104,7 +105,7 @@
                     android:layout_marginEnd="@dimen/unify_space_16"
                     app:typographyType="heading_4"
                     app:typographyWeight="bold"
-                    android:text="Antar ke Kantor Agen"/>
+                    android:text="Antar ke Gerai"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_antar_ke_agen_detail"
@@ -114,10 +115,10 @@
                     android:layout_marginStart="@dimen/unify_space_16"
                     android:layout_marginEnd="@dimen/unify_space_16"
                     app:typographyType="body_3"
-                    android:text="Bawa pesanan ke kantor agen terdekat dan minta resi dari petugas" />
+                    android:text="Bawa pesanan ke gerai terdekat dan minta resi dari petugas" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_antar_ke_agen"
+                    android:id="@+id/rv_conventional"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_16"
@@ -138,26 +139,36 @@
                     android:layout_marginTop="@dimen/unify_space_24"
                     android:layout_marginStart="@dimen/unify_space_16"
                     android:layout_marginEnd="@dimen/unify_space_16"
+                    android:layout_marginBottom="@dimen/unify_space_24"
                     app:typographyType="body_3"
                     android:text="Kenali detail kurir pengiriman...." />
-
-                <com.tokopedia.unifycomponents.UnifyButton
-                    android:id="@+id/btn_simpan"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/unify_space_24"
-                    android:layout_marginBottom="@dimen/unify_space_16"
-                    android:layout_marginStart="@dimen/unify_space_16"
-                    android:layout_marginEnd="@dimen/unify_space_16"
-                    android:layout_weight="1"
-                    android:text="Simpan"
-                    android:textStyle="bold"
-                    app:unifyButtonType="main"
-                    app:unifyButtonVariant="filled" />
 
             </LinearLayout>
 
         </ScrollView>
+
+        <FrameLayout
+            android:id="@+id/bottom_layout_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_save_shipper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:text="Simpan"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
+
+        </FrameLayout>
 
 
         <com.tokopedia.globalerror.GlobalError
