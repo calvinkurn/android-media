@@ -88,7 +88,7 @@ object ProductManageVariantMapper {
         return UpdateVariantParam(shopParam, result.productId, variantInputParam)
     }
 
-    fun mapVariantsToEditResult(productId: String, result: GetVariantResult): EditVariantResult? {
+    fun mapVariantsToEditResult(productId: String, result: GetVariantResult): EditVariantResult {
         val productName = result.productName
         val variants = result.variants
         val selections = result.selections

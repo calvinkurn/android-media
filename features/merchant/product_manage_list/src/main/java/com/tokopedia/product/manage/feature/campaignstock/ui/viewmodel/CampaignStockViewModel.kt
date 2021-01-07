@@ -1,12 +1,10 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
@@ -14,11 +12,9 @@ import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManag
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper.mapProductManageOwnerAccess
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
-import com.tokopedia.product.manage.common.feature.variant.data.model.param.UpdateVariantParam
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.param.EditVariantCampaignProductResult
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.OtherCampaignStockDataUseCase
@@ -45,205 +41,183 @@ class CampaignStockViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers): BaseViewModel(dispatchers.main) {
 
-    private val mIsStockVariant = MutableLiveData<Boolean>().apply {
-        value = false
-    }
-    private val mCampaignProductNameLiveData = MutableLiveData<String>()
-    private val mCampaignReservedStockLiveData = MutableLiveData<Int>().apply {
-        value = 0
-    }
+    private var isStockVariant: Boolean = false
+    private var campaignProductName: String = ""
+    private var campaignReservedStock: Int = 0
+
+    private var shopId: String = ""
+    private var productId: String = ""
+
+    private var nonVariantStock: Int = 0
+    private var nonVariantReservedStock = 0
+    private var nonVariantIsActive = false
+
+    private var editVariantResult: EditVariantResult = EditVariantResult()
+    private val mProductManageAccess = MutableLiveData<ProductManageAccess>()
+    private val mShowSaveBtn = MutableLiveData<Boolean>()
 
     private val mProductUpdateResponseLiveData = MutableLiveData<Result<UpdateCampaignStockResult>>()
+    private val mGetStockAllocationLiveData = MutableLiveData<Result<StockAllocationResult>>()
+
+    val getStockAllocationData: LiveData<Result<StockAllocationResult>>
+        get() = mGetStockAllocationLiveData
+
     val productUpdateResponseLiveData: LiveData<Result<UpdateCampaignStockResult>>
         get() = mProductUpdateResponseLiveData
 
     val showSaveBtn: LiveData<Boolean>
         get() = mShowSaveBtn
 
-    private val mProductIdsLiveData = MutableLiveData<List<String>>()
-    private val mShopIdLiveData = MutableLiveData<String>()
+    fun getStockAllocation(productIds: List<String>) {
+        if(productIds.isNotEmpty()) {
+            productId = productIds.first()
 
-    private val mNonVariantStockLiveData = MutableLiveData<Int>()
-    private val mNonVariantReservedStockLiveData = MutableLiveData<Int>()
-    private val mNonVariantIsActiveLiveData = MutableLiveData<Boolean>()
-
-    private val mEditVariantCampaignParamLiveData = MutableLiveData<List<EditVariantCampaignProductResult>>()
-    private val mEditVariantResultLiveData = MutableLiveData<EditVariantResult>()
-    private val mProductManageAccess = MutableLiveData<ProductManageAccess>()
-    private val mShowSaveBtn = MutableLiveData<Boolean>()
-
-    private val mGetStockAllocationLiveData = MediatorLiveData<Result<StockAllocationResult>>().apply {
-        addSource(mProductIdsLiveData) { productIds ->
-            val shopId: String = mShopIdLiveData.value.orEmpty()
             launchCatchError(
-                    block = {
-                        value = Success(withContext(dispatchers.io) {
-                            campaignStockAllocationUseCase.params = CampaignStockAllocationUseCase.createRequestParam(productIds, shopId)
-                            val stockAllocationData = campaignStockAllocationUseCase.executeOnBackground()
-                            mCampaignProductNameLiveData.postValue(stockAllocationData.summary.productName)
-                            stockAllocationData.summary.isVariant.let { isVariant ->
-                                mIsStockVariant.postValue(isVariant)
-                                if (isVariant) {
-                                    getVariantResult(productIds, stockAllocationData)
-                                } else {
-                                    getNonVariantResult(productIds, stockAllocationData)
-                                }
+                block = {
+                    mGetStockAllocationLiveData.value = Success(withContext(dispatchers.io) {
+                        campaignStockAllocationUseCase.params = CampaignStockAllocationUseCase.createRequestParam(productIds, shopId)
+                        val stockAllocationData = campaignStockAllocationUseCase.executeOnBackground()
+                        campaignProductName = stockAllocationData.summary.productName
+                        stockAllocationData.summary.isVariant.let { isVariant ->
+                            isStockVariant = isVariant
+
+                            if (isVariant) {
+                                getVariantResult(productId, stockAllocationData)
+                            } else {
+                                getNonVariantResult(productId, stockAllocationData)
                             }
-                        })
-                    },
-                    onError = {
-                        value = Fail(it)
-                    }
+                        }
+                    })
+                },
+                onError = {
+                    mGetStockAllocationLiveData.value = Fail(it)
+                }
             )
         }
     }
-    val getStockAllocationData: LiveData<Result<StockAllocationResult>>
-        get() = mGetStockAllocationLiveData
-
-    fun getStockAllocation(productIds: List<String>) {
-        mProductIdsLiveData.value = productIds
-    }
 
     fun setShopId(shopId: String) {
-        mShopIdLiveData.value = shopId
+        this.shopId = shopId
     }
 
     fun updateNonVariantStockCount(stock: Int) {
-        mNonVariantStockLiveData.value = stock
+        nonVariantStock = stock
     }
 
     fun updateNonVariantReservedStockCount(reservedStockCount: Int) {
-        mNonVariantReservedStockLiveData.value = reservedStockCount
+        nonVariantReservedStock = reservedStockCount
     }
 
     fun updateNonVariantIsActive(isActive: Boolean) {
-        mNonVariantIsActiveLiveData.value = isActive
+        nonVariantIsActive = isActive
     }
 
     fun updateVariantStockCount(productId: String, stockCount: Int) {
-        mEditVariantCampaignParamLiveData.run {
-            val updatedVariantIndex = value?.indexOfFirst {
-                it.productId == productId
-            }
-            updatedVariantIndex?.let { index ->
-                value?.getOrNull(index)?.copy(stock = stockCount)?.let { variant ->
-                    value = value?.toMutableList()?.apply {
-                        set(index, variant)
-                    }?.toList()
-                }
-            }
+        val variants = editVariantResult.variants
+
+        variants.firstOrNull { it.id == productId }?.let {
+            val variantList = variants.toMutableList()
+            val index = variants.indexOf(it)
+            val variant = it.copy(stock = stockCount)
+
+            editVariantResult = editVariantResult.copy(variants = variantList.apply {
+                set(index, variant)
+            })
         }
     }
 
     fun updateVariantIsActive(productId: String, status: ProductStatus) {
-        mEditVariantCampaignParamLiveData.run {
-            val updatedVariantIndex = value?.indexOfFirst {
-                it.productId == productId
-            }
-            updatedVariantIndex?.let { index ->
-                value?.getOrNull(index)?.copy(status = status)?.let { variant ->
-                    value = value?.toMutableList()?.apply {
-                        set(index, variant)
-                    }?.toList()
-                }
-            }
+        val variants = editVariantResult.variants
+
+        variants.firstOrNull { it.id == productId }?.let {
+            val variantList = variants.toMutableList()
+            val index = variants.indexOf(it)
+            val variant = it.copy(status = status)
+
+            editVariantResult = editVariantResult.copy(variants = variantList.apply {
+                set(index, variant)
+            })
         }
     }
 
     fun updateStockData() {
-        mIsStockVariant.value?.let { isVariant ->
-            if (isVariant) {
-                updateVariantData()
-            } else {
-                updateNonVariantData()
-            }
+        if (isStockVariant) {
+            updateVariantData()
+        } else {
+            updateNonVariantData()
         }
     }
 
     private fun updateNonVariantData() {
-        mProductIdsLiveData.value?.let { productIds ->
-            mShopIdLiveData.value?.let { shopId ->
-                mNonVariantStockLiveData.value?.let { stock ->
-                    mNonVariantIsActiveLiveData.value?.let { isActive ->
-                        launchCatchError(
-                                block = {
-                                    mProductUpdateResponseLiveData.value = Success(withContext(dispatchers.io) {
-                                        val status =
-                                                if (isActive) {
-                                                    ProductStatus.ACTIVE
-                                                } else {
-                                                    ProductStatus.INACTIVE
-                                                }
-                                        val productId = productIds.firstOrNull().orEmpty()
-                                        editStockUseCase.setParams(shopId, productId, stock, status)
-                                        val editStockResponse = editStockUseCase.executeOnBackground()
-                                        UpdateCampaignStockResult(
-                                                productId,
-                                                mCampaignProductNameLiveData.value.orEmpty(),
-                                                stock + mNonVariantReservedStockLiveData.value.toZeroIfNull(),
-                                                status,
-                                                editStockResponse.productUpdateV3Data.isSuccess,
-                                                editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
-                                        )
-                                    })
-                                },
-                                onError = {
-                                    mProductUpdateResponseLiveData.value = Fail(it)
-                                }
-                        )
+        launchCatchError(
+            block = {
+                mProductUpdateResponseLiveData.value = Success(withContext(dispatchers.io) {
+                    val status = if (nonVariantIsActive) {
+                        ProductStatus.ACTIVE
+                    } else {
+                        ProductStatus.INACTIVE
                     }
-                }
+                    editStockUseCase.setParams(shopId, productId, nonVariantStock, status)
+                    val editStockResponse = editStockUseCase.executeOnBackground()
+                    UpdateCampaignStockResult(
+                        productId,
+                        campaignProductName,
+                        nonVariantStock + nonVariantReservedStock,
+                        status,
+                        editStockResponse.productUpdateV3Data.isSuccess,
+                        editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+                    )
+                })
+            },
+            onError = {
+                mProductUpdateResponseLiveData.value = Fail(it)
             }
-        }
+        )
     }
 
     private fun updateVariantData() {
-        mEditVariantResultLiveData.value?.let { editVariantResult ->
-            mEditVariantCampaignParamLiveData.value?.let { editVariantCampaignParam ->
-                mShopIdLiveData.value?.let { shopId ->
-                    launchCatchError(
-                            block = {
-                                mProductUpdateResponseLiveData.value = Success(withContext(dispatchers.io) {
-                                    val updateVariantParam = getUpdateVariantParam(editVariantResult, editVariantCampaignParam, shopId)
-                                    val editProductVariantParam = EditProductVariantUseCase.createRequestParams(updateVariantParam)
-                                    val editStockResponse = editProductVariantUseCase.execute(editProductVariantParam)
+        launchCatchError(
+            block = {
+                mProductUpdateResponseLiveData.value = Success(withContext(dispatchers.io) {
+                    val variants = editVariantResult.variants
+                    val updateVariantParam = ProductManageVariantMapper.mapResultToUpdateParam(shopId, editVariantResult)
+                    val editProductVariantParam = EditProductVariantUseCase.createRequestParams(updateVariantParam)
+                    val editStockResponse = editProductVariantUseCase.execute(editProductVariantParam)
 
-                                    with(editVariantResult) {
-                                        val totalStock = editVariantCampaignParam.sumBy { it.stock } + mCampaignReservedStockLiveData.value.toZeroIfNull()
-                                        val status =
-                                                if (editVariantCampaignParam.any { it.status == ProductStatus.ACTIVE }) {
-                                                    ProductStatus.ACTIVE
-                                                } else {
-                                                    ProductStatus.INACTIVE
-                                                }
-                                        UpdateCampaignStockResult(
-                                                productId,
-                                                productName,
-                                                totalStock,
-                                                status,
-                                                editStockResponse.productUpdateV3Data.isSuccess,
-                                                editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
-                                        )
-                                    }
-                                })
-                            },
-                            onError = {
-                                mProductUpdateResponseLiveData.value = Fail(it)
-                            }
-                    )
-                }
+                    with(editVariantResult) {
+                        val totalStock = variants.sumBy { it.stock } + campaignReservedStock
+                        val status = if (variants.any { it.status == ProductStatus.ACTIVE }) {
+                            ProductStatus.ACTIVE
+                        } else {
+                            ProductStatus.INACTIVE
+                        }
+                        UpdateCampaignStockResult(
+                            productId,
+                            productName,
+                            totalStock,
+                            status,
+                            editStockResponse.productUpdateV3Data.isSuccess,
+                            editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+                        )
+                    }
+                })
+            },
+            onError = {
+                mProductUpdateResponseLiveData.value = Fail(it)
             }
-        }
+        )
     }
 
-    private suspend fun getNonVariantResult(productIds: List<String>,
-                                            stockAllocationData: GetStockAllocationData): NonVariantStockAllocationResult {
-        otherCampaignStockDataUseCase.params = OtherCampaignStockDataUseCase.createRequestParams(productIds.firstOrNull().orEmpty())
+    private suspend fun getNonVariantResult(
+        productId: String,
+        stockAllocationData: GetStockAllocationData
+    ): NonVariantStockAllocationResult {
+        otherCampaignStockDataUseCase.params = OtherCampaignStockDataUseCase.createRequestParams(productId)
 
         val otherCampaignStockData = otherCampaignStockDataUseCase.executeOnBackground()
 
-        mNonVariantStockLiveData.postValue(otherCampaignStockData.stock)
-        mNonVariantIsActiveLiveData.postValue(otherCampaignStockData.getIsActive())
+        nonVariantStock = otherCampaignStockData.stock
+        nonVariantIsActive = otherCampaignStockData.getIsActive()
 
         val productManageAccess = async {
             if(userSession.isShopOwner) {
@@ -262,12 +236,14 @@ class CampaignStockViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getVariantResult(productIds: List<String>,
-                                         stockAllocationData: GetStockAllocationData): VariantStockAllocationResult {
-        mCampaignReservedStockLiveData.postValue(stockAllocationData.summary.reserveStock.toIntOrZero())
+    private suspend fun getVariantResult(
+        productId: String,
+        stockAllocationData: GetStockAllocationData
+    ): VariantStockAllocationResult {
+        campaignReservedStock = stockAllocationData.summary.reserveStock.toIntOrZero()
 
-        val getProductVariantUseCaseRequestParams = GetProductVariantUseCase.createRequestParams(productIds.firstOrNull().orEmpty())
-        otherCampaignStockDataUseCase.params = OtherCampaignStockDataUseCase.createRequestParams(productIds.firstOrNull().orEmpty())
+        val getProductVariantUseCaseRequestParams = GetProductVariantUseCase.createRequestParams(productId)
+        otherCampaignStockDataUseCase.params = OtherCampaignStockDataUseCase.createRequestParams(productId)
 
         val getProductVariantData = async { getProductVariantUseCase.execute(getProductVariantUseCaseRequestParams) }
         val otherCampaignStockData = async { otherCampaignStockDataUseCase.executeOnBackground() }
@@ -284,14 +260,8 @@ class CampaignStockViewModel @Inject constructor(
             getProductVariantData.await().getProductV3,
             productManageAccess.await()
         ).also {
-            mEditVariantCampaignParamLiveData.postValue(
-                    it.variants.map { variant ->
-                        EditVariantCampaignProductResult(variant.id, variant.status, variant.stock)
-                    }
-            )
-            mEditVariantResultLiveData.postValue(
-                    ProductManageVariantMapper.mapVariantsToEditResult(productIds.firstOrNull().orEmpty(), it)
-            )
+            val variantsEditResult = ProductManageVariantMapper.mapVariantsToEditResult(productId, it)
+            editVariantResult = variantsEditResult
         }
 
         mProductManageAccess.postValue(productManageAccess.await())
@@ -314,25 +284,5 @@ class CampaignStockViewModel @Inject constructor(
     private suspend fun getProductManageAccess(): ProductManageAccess {
         val response = getProductManageAccessUseCase.execute(userSession.shopId)
         return ProductManageAccessMapper.mapToProductManageAccess(response)
-    }
-
-    private fun getUpdateVariantParam(editVariantResult: EditVariantResult,
-                                      editVariantCampaignResult: List<EditVariantCampaignProductResult>,
-                                      shopId: String): UpdateVariantParam {
-        val updatedEditVariantResult =
-                try {
-                    editVariantResult.copy(
-                            variants = editVariantCampaignResult.map { param ->
-                                editVariantResult.variants.find { it.id == param.productId }?.copy(
-                                        status = param.status,
-                                        stock = param.stock
-                                ) ?: editVariantResult.variants.first()
-                            }
-                    )
-                }
-                catch (ex: NoSuchElementException) {
-                    editVariantResult
-                }
-        return ProductManageVariantMapper.mapResultToUpdateParam(shopId, updatedEditVariantResult)
     }
 }
