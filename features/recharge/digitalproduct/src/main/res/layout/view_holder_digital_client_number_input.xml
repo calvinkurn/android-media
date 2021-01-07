@@ -52,7 +52,7 @@
                 android:popupBackground="@color/Unify_N0"
                 android:textColor="@color/Unify_N700_68"
                 android:textColorHint="@color/Unify_N150"
-                android:textSize="@dimen/unify_font_14"/>
+                android:textSize="@dimen/unify_font_16"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -78,11 +78,10 @@
 
                 <ImageView
                     android:id="@+id/btn_clear_client_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/layout_lvl3"
+                    android:layout_width="@dimen/spacing_lvl5"
+                    android:layout_height="@dimen/spacing_lvl5"
                     android:layout_gravity="end|center_vertical"
-                    android:background="@drawable/digital_bg_widget_close"
-                    android:paddingBottom="@dimen/spacing_lvl2" />
+                    app:srcCompat="@drawable/digital_bg_widget_close" />
 
             </LinearLayout>
         </RelativeLayout>
@@ -92,7 +91,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_weight="0.12"
-            android:paddingBottom="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/layout_lvl1"
+            android:paddingBottom="@dimen/spacing_lvl1"
             tools:visibility="visible">
 
             <Button
@@ -100,8 +100,6 @@
                 android:layout_width="@dimen/spacing_lvl5"
                 android:layout_height="@dimen/spacing_lvl5"
                 android:layout_marginEnd="4dp"
-                android:layout_marginLeft="@dimen/layout_lvl1"
-                android:layout_marginRight="4dp"
                 android:layout_marginStart="@dimen/layout_lvl1"
                 android:visibility="gone"
                 android:background="@drawable/digital_ic_phonebook_widget" />
@@ -111,8 +109,6 @@
                 android:layout_width="@dimen/spacing_lvl5"
                 android:layout_height="@dimen/spacing_lvl5"
                 android:layout_marginEnd="4dp"
-                android:layout_marginLeft="@dimen/layout_lvl1"
-                android:layout_marginRight="4dp"
                 android:layout_marginStart="@dimen/layout_lvl1"
                 android:visibility="gone"
                 app:srcCompat="@drawable/ic_product_action_camera_grayscale_24" />
