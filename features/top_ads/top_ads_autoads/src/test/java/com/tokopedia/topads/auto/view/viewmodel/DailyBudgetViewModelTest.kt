@@ -18,9 +18,11 @@ import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.withContext
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -128,14 +130,12 @@ class DailyBudgetViewModelTest {
     }
 
     @Test
-    fun `test result in getTopAdsDeposit`() {
-
-        coEvery {
-            topAdsGetShopDepositUseCase.execute(any(), any())
-        } just runs
-        viewModel.getTopAdsDeposit()
-        coVerify {
-            topAdsGetShopDepositUseCase.execute(any(), any())
+    fun `test result in getTopAdsDeposit`() = runBlocking {
+        withContext(dispatcher.ui()) {
+            viewModel.getTopAdsDeposit()
+            verify {
+                topAdsGetShopDepositUseCase.execute(any(), any())
+            }
         }
     }
 
