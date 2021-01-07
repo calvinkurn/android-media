@@ -11,6 +11,7 @@ import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -205,6 +206,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                 textInputLayoutReport.counterMaxLength = field.max
                 textInputLayoutReport.helperText = context.getString(R.string.product_helper_product_report,
                         field.min.toString())
+                textInputLayoutReport.setHelperTextColor(ContextCompat.getColorStateList(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 edit_text_report.filters = arrayOf(InputFilter.LengthFilter(field.max))
                 edit_text_report.setText(input)
                 if (inputs[field.key] != null)
