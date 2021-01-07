@@ -22,6 +22,7 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISH
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -77,7 +78,7 @@ class CartItemViewHolder constructor(itemView: View,
     private val btnQtyMinus: ImageView
     private val etRemark: AppCompatEditText
     private val tvLabelRemarkOption: TextView
-    private val btnDelete: ImageView
+    private val btnDelete: IconUnify
     private val tvErrorFormValidation: TextView
     private val tvErrorFormRemarkValidation: TextView
     private val tvLabelRemarkTitle: Typography
