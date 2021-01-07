@@ -26,11 +26,8 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 320400100
-        versionName "4.01-test"
 
         vectorDrawables.useSupportLibrary = vectorDrawable.toBoolean()
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"

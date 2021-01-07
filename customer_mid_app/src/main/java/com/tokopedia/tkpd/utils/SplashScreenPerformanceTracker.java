@@ -4,8 +4,8 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 
 public class SplashScreenPerformanceTracker {
     private static PageLoadTimePerformanceCallback instance;
-    private static final String SPLASH_DURATION_WARM = "mp_splash_duration_warm";
-    private static final String SPLASH_DURATION_COLD = "mp_splash_duration_cold";
+    public static final String SPLASH_DURATION_WARM = "mp_splash_duration_warm";
+    public static final String SPLASH_DURATION_COLD = "mp_splash_duration_cold";
 
     private static boolean isStarted = false;
 

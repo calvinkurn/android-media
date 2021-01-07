@@ -37,10 +37,10 @@ class PltHomeFullJourneyNetworkTest {
     var activityRule = object: ActivityTestRule<ConsumerSplashScreen>(ConsumerSplashScreen::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            Thread.sleep(3000)
             setupTotalSizeInterceptor(listOf("homeData", "getDynamicChannel"))
             setupRemoteConfig()
             setupIdlingResource()
-            Thread.sleep(2000)
         }
     }
 
@@ -64,7 +64,6 @@ class PltHomeFullJourneyNetworkTest {
         Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE, checkDataSource())
         getCurrentActivity()?.deleteDatabase("HomeCache.db")
-        Thread.sleep(1000)
         getCurrentActivity()?.finishAndRemoveTask()
     }
 
