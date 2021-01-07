@@ -1,7 +1,9 @@
 package com.tokopedia.homenav.view.activity
 
 import android.content.res.TypedArray
+import android.os.Build
 import android.os.Bundle
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
@@ -75,17 +77,37 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
 
     private fun setupView() {
         try {
-            val styledAttributes: TypedArray = getTheme().obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
-            val mActionBarSize = styledAttributes.getDimension(0, 0f).toInt()
-            styledAttributes.recycle()
+//            val styledAttributes: TypedArray = getTheme().obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
+//            val mActionBarSize = styledAttributes.getDimension(0, 0f).toInt()
+//            styledAttributes.recycle()
+//
+//            val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
+//            layoutParams.setMargins(
+//                    layoutParams.leftMargin,
+//                    resources.getDimensionPixelOffset(R.dimen.dp_16) + mActionBarSize,
+//                    layoutParams.rightMargin,
+//                    layoutParams.bottomMargin
+//            )
 
-            val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
-            layoutParams.setMargins(
-                    layoutParams.leftMargin,
-                    resources.getDimensionPixelOffset(R.dimen.dp_16) + mActionBarSize,
-                    layoutParams.rightMargin,
-                    layoutParams.bottomMargin
-            )
+            val toolbar = findViewById<NavToolbar>(R.id.toolbar)
+            toolbar?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val vto = findViewById<NavToolbar>(R.id.toolbar)?.viewTreeObserver
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        vto?.removeGlobalOnLayoutListener(this);
+                    } else {
+                        vto?.removeOnGlobalLayoutListener(this);
+                    }
+                    val toolbarHeight = toolbar.height
+                    val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
+                    layoutParams.setMargins(
+                            layoutParams.leftMargin,
+                            toolbarHeight - resources.getDimensionPixelOffset(R.dimen.dp_16),
+                            layoutParams.rightMargin,
+                            layoutParams.bottomMargin
+                    )
+                }
+            })
         } catch (e: Exception) {
             val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
             layoutParams.setMargins(
