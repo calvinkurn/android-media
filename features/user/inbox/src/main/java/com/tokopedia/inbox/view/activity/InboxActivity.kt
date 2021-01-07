@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.analytic.InboxAnalytic
 import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.di.DaggerInboxComponent
@@ -52,6 +53,9 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     @Inject
     lateinit var cacheState: InboxCacheState
 
+    @Inject
+    lateinit var analytic: InboxAnalytic
+
     private var switcher: AccountSwitcherBottomSheet? = null
     private var navigator: InboxNavigator? = null
     private var bottomNav: InboxBottomNavigationView? = null
@@ -71,6 +75,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         setupInjector()
         setContentView(R.layout.activity_inbox)
         setupLastPreviousState()
+        trackOpenInbox()
         setupView()
         setupConfig()
         setupNavigator()
@@ -94,6 +99,10 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun setupLastPreviousState() {
         InboxConfig.setRole(cacheState.role)
         InboxConfig.initialPage = cacheState.initialPage
+    }
+
+    private fun trackOpenInbox() {
+        analytic.trackOpenInbox(InboxConfig.initialPage, InboxConfig.role)
     }
 
     override fun clearNotificationCounter() {
