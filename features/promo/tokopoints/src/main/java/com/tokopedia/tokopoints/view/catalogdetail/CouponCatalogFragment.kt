@@ -566,7 +566,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             minUsageValue?.show()
             minUsageValue?.text = data.minimumUsage
         }
-        if (!data.activePeriod.isNullOrEmpty()) {
+        if ((!data.activePeriod.isNullOrEmpty() && data.activePeriod?.toLong()!! > 0) || !data.activePeriodDate.isNullOrEmpty()) {
             timerContainer?.visibility = View.VISIBLE
             showTimer(data)
         } else {
