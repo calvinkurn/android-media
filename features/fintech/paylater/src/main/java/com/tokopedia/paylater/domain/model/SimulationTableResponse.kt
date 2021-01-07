@@ -1,6 +1,18 @@
 package com.tokopedia.paylater.domain.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 data class SimulationTableResponse(
-        val partnerUrl: String,
-        val installmentData: ArrayList<String>
+        val tenureDesc: String,
+        val amount: Double,
+        val isPopular: Boolean,
+        var isSelected: Boolean,
+        val installmentData: ArrayList<CreditCardBank>
 )
+@Parcelize
+data class CreditCardBank(
+        val bankLogo: String,
+        val bankBenefits: String,
+        val availableDuration: String
+): Parcelable

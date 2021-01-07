@@ -10,5 +10,8 @@
     <dimen name="payLater_application_status_dp_62">62dp</dimen>
     <dimen name="payLater_signup_image_height_dp_72">72dp</dimen>
     <dimen name="payLater_shimmer_width_dp_256">256dp</dimen>
+    <dimen name="credit_card_dp_10">10dp</dimen>
+
+    <dimen name="credit_card_offer_label_sp_10">10sp</dimen>
 
 </resources>

@@ -4,26 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PayLaterComponent
-import com.tokopedia.paylater.domain.model.PayLaterSimulationGatewayItem
-import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
-import com.tokopedia.paylater.helper.PayLaterException
-import com.tokopedia.paylater.helper.PayLaterHelper
+import com.tokopedia.paylater.domain.model.CreditCardBank
+import com.tokopedia.paylater.domain.model.SimulationTableResponse
+import com.tokopedia.paylater.presentation.adapter.CreditCardAvailableBanksAdapter
+import com.tokopedia.paylater.presentation.adapter.CreditCardSimulationAdapter
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
-import com.tokopedia.paylater.presentation.widget.SimulationTableViewFactory
+import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardAvailableBanksBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_credit_card_simulation.*
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import kotlinx.android.synthetic.main.paylater_daftar_widget.view.*
 import javax.inject.Inject
 
 class CreditCardSimulationFragment : BaseDaggerFragment() {
@@ -36,6 +33,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
         viewModelProvider.get(PayLaterViewModel::class.java)
     }
 
+    private var bankList = ArrayList<CreditCardBank>()
     private var creditCardSimulationCallback: CreditCardSimulationCallback? = null
 
     override fun initInjector() {
@@ -56,40 +54,50 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRegisterWidget()
         initListeners()
     }
+
+    private fun initRegisterWidget() {
+        creditCardRegisterWidget.apply {
+            tvTitle.text = "Mau buat kartu kredit?"
+            ivPaymentMode.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_credit_card_register))
+        }
+    }
+
 
     override fun getScreenName(): String {
         return "Simulasi"
     }
 
     private fun initListeners() {
-        creditCardRegisterWidget.setOnClickListener {
-            creditCardSimulationCallback?.onRegisterPayLaterClicked()
-        }
+        tvSeeAll.setOnClickListener { showAllBanksBottomSheet() }
+        creditCardRegisterWidget.setOnClickListener { creditCardSimulationCallback?.onRegisterPayLaterClicked() }
     }
 
     private fun observeViewModel() {
-        /*payLaterViewModel.payLaterSimulationResultLiveData.observe(viewLifecycleOwner, {
+        payLaterViewModel.creditCardSimulationResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSimulationDataLoaded(it.data)
                 is Fail -> onSimulationLoadingFail(it.throwable)
             }
         })
-        payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(
-                viewLifecycleOwner,
-                {
-                    when (it) {
-                        is Success -> onApplicationStatusLoaded(it.data)
-                        is Fail -> onApplicationStatusLoadingFail(it.throwable)
-                    }
-                },
-        )*/
     }
 
-    private fun onSimulationDataLoaded(data: ArrayList<PayLaterSimulationGatewayItem>) {
+    private fun onSimulationDataLoaded(data: ArrayList<SimulationTableResponse>) {
         /*shimmerGroup.gone()
         simulationDataGroup.visible()*/
+        rvCreditCardSimulation.adapter = CreditCardSimulationAdapter(data) { bankList ->
+            this.bankList = bankList
+            val smallList = ArrayList(data[0].installmentData.slice(0..3))
+            (rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).setBankList(smallList)
+        }
+        rvCreditCardSimulation.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        rvAvailableBanks.adapter = CreditCardAvailableBanksAdapter()
+        rvAvailableBanks.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        val smallList = ArrayList(data[0].installmentData.slice(0..3))
+        (rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).setBankList(smallList)
+        this.bankList = data[0].installmentData
     }
 
     private fun onSimulationLoadingFail(throwable: Throwable) {
@@ -121,14 +129,14 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
 */
     }
 
-    private fun onApplicationStatusLoadingFail(throwable: Throwable) {
-        //paylaterDaftarWidget.gone()
+    private fun showAllBanksBottomSheet() {
+        if (bankList.isNotEmpty()) {
+            val bundle = Bundle().apply {
+                putParcelableArrayList(CreditCardAvailableBanksBottomSheet.CREDIT_CARD_BANK_DATA, bankList)
+            }
+            CreditCardAvailableBanksBottomSheet.show(bundle, childFragmentManager)
+        }
     }
-
-    private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
-
-    }
-
 
     fun setCreditCardSimulationCallback(creditCardSimulationCallback: CreditCardSimulationCallback) {
         this.creditCardSimulationCallback = creditCardSimulationCallback

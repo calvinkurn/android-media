@@ -237,7 +237,13 @@ class PayLaterFragment : BaseDaggerFragment(),
         val text = if (isChecked) "This is Kartu Kredit" else "This is PayLater"
         // @Todo comment it out afterwards
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-        if (isChecked) paymentMode = CreditCard else paymentMode = PayLater
+        if (isChecked) {
+            paymentMode = CreditCard
+            if (payLaterViewModel.creditCardSimulationResultLiveData.value == null) {
+                payLaterViewModel.getCreditCardData()
+            }
+        } else paymentMode = PayLater
+
         renderTabAndViewPager()
     }
 

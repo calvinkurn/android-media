@@ -29,6 +29,7 @@
     <string name="credit_card_simulation_empty_view_description">Untuk menggunakan kartu kredit, min. total transaksi adalah Rp500.000.</string>
     <string name="credit_card_simulation_installment_sub_header">Durasi cicilan</string>
     <string name="credit_card_simulation_all_installment">Semua cicilan</string>
+    <string name="credit_card_simulation_card_header">Cicilan 12 bulan</string>
 
     <!-- PayLater Products Detail Page -->
     <string name="paylater_title_detail">Ketahui lebih banyak soal PayLater</string>

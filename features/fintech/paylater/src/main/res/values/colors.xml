@@ -9,4 +9,6 @@
     <color name="paylater_partner_status_text_blue">#009BFF</color>
     <color name="paylater_status_bg_blue">#E5F5FF</color>
     <color name="payLater_register_widget_subtitle">#f531353b</color>
+    <color name="credit_card_all_installment_text_color">#AD31353b</color>
+    <color name="credit_card_installment_bg_color">#EBFFEF</color>
 </resources>
