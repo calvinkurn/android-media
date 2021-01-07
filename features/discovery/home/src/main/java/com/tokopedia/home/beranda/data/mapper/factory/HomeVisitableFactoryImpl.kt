@@ -167,7 +167,7 @@ class HomeVisitableFactoryImpl(
                         addTickerData()
                     }
                     TYPE_BANNER -> {
-                        addBannerVisitable()
+//                        addBannerVisitable()
                     }
                     TYPE_ICON -> {
                         addDynamicIconVisitable()

@@ -230,8 +230,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val HOME_SOURCE = "home"
 
         @JvmStatic
-        fun newInstance(scrollToRecommendList: Boolean): HomeFragment {
-            val fragment = HomeFragment()
+        fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
+            val fragment = HomeRevampFragment()
             val args = Bundle()
             args.putBoolean(SCROLL_RECOMMEND_LIST, scrollToRecommendList)
             fragment.arguments = args

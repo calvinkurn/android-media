@@ -18,6 +18,7 @@ const val TRACE_HOME_DATA_TO_STRING = "Converters.HomeDataToString"
 
 //HomeMapper
 const val TRACE_MAP_TO_HOME_VIEWMODEL = "HomeDataMapper.mapToHomeViewModel"
+const val TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP = "HomeDataMapper.mapToHomeRevampViewModel"
 
 //HomeFragment
 const val TRACE_INFLATE_HOME_FRAGMENT = "inflate.HomeFragment"
