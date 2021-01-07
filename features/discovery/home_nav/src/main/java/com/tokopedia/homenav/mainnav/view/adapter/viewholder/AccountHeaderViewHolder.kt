@@ -168,7 +168,7 @@ class AccountHeaderViewHolder(itemView: View,
         }
 
         //shop info error state
-        if (!element.isGetShopError && element.shopName.isNotEmpty()) {
+        if (!element.isGetShopError && (element.shopName.isNotEmpty() || element.adminRoleText != null)) {
             tvShopInfo.visible()
             var subtext = ""
             var fulltext = ""
