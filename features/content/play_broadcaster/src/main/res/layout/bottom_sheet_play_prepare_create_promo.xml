@@ -40,8 +40,7 @@
                 android:adjustViewBounds="true"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPlayPrepareBroadcastPromoHeaderDescription"
-                app:srcCompat="@drawable/ic_play_broadcast_promo_illustration" />
+                app:layout_constraintTop_toBottomOf="@+id/tvPlayPrepareBroadcastPromoHeaderDescription" />
 
             <!-- Main State View -->
             <androidx.cardview.widget.CardView
