@@ -34,6 +34,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
@@ -52,13 +53,12 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -178,8 +178,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private val REQUEST_REPORT_USER = 118
     private val REQUEST_REVIEW = 119
 
-    private var seenAttachedProduct = HashSet<Int>()
-    private var seenAttachedBannedProduct = HashSet<Int>()
+    private var seenAttachedProduct = HashSet<Long>()
+    private var seenAttachedBannedProduct = HashSet<Long>()
     private val reviewRequest = Stack<ReviewRequestResult>()
     private var composeArea: EditText? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
@@ -334,7 +334,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         renderList(chatRoom.listChat)
         updateHasNextState(chat)
         loadChatRoomSettings(chatRoom)
-        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
     }
 
     private fun onErrorGetTopChat(throwable: Throwable) {
@@ -351,7 +351,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         updateNewUnreadMessageState(chat)
         renderBottomList(chatRoom.listChat)
         updateHasNextAfterState(chat)
-        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
     }
 
     private fun updateNewUnreadMessageState(chat: ChatReplies) {
@@ -508,7 +508,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         updateHasNextState(chat)
         updateHasNextAfterState(chat)
         loadChatRoomSettings(chatRoom)
-        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
     }
 
     private fun updateHasNextAfterState(chat: ChatReplies) {
@@ -950,18 +950,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun pickImageToUpload() {
         activity?.let {
-            val builder = ImagePickerBuilder(
-                    it.getString(com.tokopedia.imagepicker.R.string.choose_image),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                    GalleryType.IMAGE_ONLY,
-                    MAX_SIZE_IMAGE_PICKER,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                    null,
-                    true,
-                    null,
-                    ImagePickerMultipleSelectionBuilder(null, null, 0, 1)
-            )
-            val intent = ImagePickerActivity.getIntent(context, builder)
+            val builder = ImagePickerBuilder.getOriginalImageBuilder(it).apply {
+                maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
+            }
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE)
         }
     }
@@ -1109,8 +1102,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
 
-        val imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-        if (imagePathList == null || imagePathList.size <= 0) {
+        val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+        if (imagePathList.size <= 0) {
             return null
         }
         val imagePath = imagePathList[0]
@@ -1264,7 +1257,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return url
     }
 
-    override fun onDualAnnouncementClicked(redirectUrl: String, attachmentId: String, blastId: Int) {
+    override fun onDualAnnouncementClicked(
+            redirectUrl: String, attachmentId: String, blastId: Long
+    ) {
         analytics.trackClickImageAnnouncement(blastId.toString(), attachmentId)
         if (redirectUrl.isNotEmpty()) {
             onGoToWebView(redirectUrl, attachmentId)
@@ -1688,7 +1683,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
             putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
             putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
-            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
             putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, element.category)
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, element.productName)
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.priceInt.toFloat())

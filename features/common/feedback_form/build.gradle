@@ -39,7 +39,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.screenshot_observer)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.kotlinExtensions)

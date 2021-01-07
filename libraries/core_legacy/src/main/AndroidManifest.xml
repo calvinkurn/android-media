@@ -75,7 +75,7 @@
             <intent-filter>
                 <data android:scheme="tagmanager.c.com.tokopedia.tkpd" />
 
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
