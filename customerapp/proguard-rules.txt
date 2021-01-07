@@ -228,6 +228,9 @@
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
 
+#Please refer to the link before manipulating this line https://help.branch.io/developers-hub/docs/android-basic-integration#proguard-settings
+-keep class com.google.android.gms.** { *; }
+
 #dontwarn com.tokopedia
 -dontwarn com.tokopedia.topads.dashboard.view.sheet.**
 -dontwarn com.tokopedia.tkpd.analytics.**
@@ -238,3 +241,11 @@
 -dontwarn com.tokopedia.home.beranda.presentation.viewModel.**inlined**
 -dontwarn com.tokopedia.home.beranda.presentation.view.**
 -dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
+-dontwarn com.tokopedia.sortfilter.SortFilter*
+
+
+# To show pop-up via CM engine
+-keepnames class com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
+-keepnames class com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
+-keepnames class com.tokopedia.home_recom.view.fragment.RecommendationFragment
+-keepnames class com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment

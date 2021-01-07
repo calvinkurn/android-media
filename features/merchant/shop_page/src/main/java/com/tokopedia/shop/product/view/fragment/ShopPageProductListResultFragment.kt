@@ -518,7 +518,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopInfo?.let { loadProductDataEmptyState(it, defaultInitialPage) }
             isEmptyState = true
         } else {
-            shopProductAdapter.updateShopPageProductChangeGridSection(totalProductData)
+            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData)
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
             isLoadingInitialData = false
@@ -1196,7 +1196,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun changeProductListGridView(gridType: ShopProductViewGridType){
-        shopProductAdapter.updateShopPageProductChangeGridSection(gridType)
+        shopProductAdapter.updateShopPageProductChangeGridSectionIcon(gridType)
         shopProductAdapter.changeProductCardGridType(gridType)
     }
 

@@ -47,7 +47,7 @@ object CartListPresenterUpdateCartAndValidateUseTest : Spek({
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
     val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    val getRecentViewUseCase: GetRecentViewUseCase = mockk()
+    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
@@ -99,7 +99,7 @@ object CartListPresenterUpdateCartAndValidateUseTest : Spek({
             }
 
             Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+                every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
             }
 
             When("process to update and validate use data") {
@@ -135,7 +135,7 @@ object CartListPresenterUpdateCartAndValidateUseTest : Spek({
         Scenario("failed update cart because data is empty") {
 
             Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers { emptyList() }
+                every { view.getAllAvailableCartDataList() } answers { emptyList() }
             }
 
             When("process to update and validate use data") {

@@ -314,6 +314,11 @@ object CMNotificationUtils {
             false
         }
     }
+
+
+    fun checkTokenValidity(token: String): Boolean {
+        return token.length <= 36
+    }
 }
 
 fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext,

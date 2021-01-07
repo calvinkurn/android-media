@@ -192,7 +192,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         menu.clear()
         inflater.inflate(R.menu.sah_menu_home_toolbar, menu)
         this.menu = menu
-        showGlobalSearchIcon()
         showNotificationBadge()
     }
 
@@ -448,20 +447,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickLineGraphEvent(dataKey, chartValue)
     }
 
-    override fun sendPostListImpressionEvent(dataKey: String) {
-        SellerHomeTracking.sendImpressionPostEvent(dataKey)
+    override fun sendPostListImpressionEvent(element: PostListWidgetUiModel) {
+        SellerHomeTracking.sendImpressionPostEvent(element, userSession.userId)
     }
 
     override fun sendPosListItemClickEvent(dataKey: String, title: String) {
         SellerHomeTracking.sendClickPostItemEvent(dataKey, title)
     }
 
-    override fun sendPostListCtaClickEvent(dataKey: String) {
-        SellerHomeTracking.sendClickPostSeeMoreEvent(dataKey)
+    override fun sendPostListCtaClickEvent(element: PostListWidgetUiModel) {
+        SellerHomeTracking.sendClickPostSeeMoreEvent(element, userSession.userId)
     }
 
     override fun sendPostListFilterClick(element: PostListWidgetUiModel) {
         SellerHomeTracking.sendPostListFilterClick(element, userSession.userId)
+    }
+
+    override fun sendPostListEmptyStateCtaClickEvent(element: PostListWidgetUiModel) {
+        SellerHomeTracking.sendPostEmptyStateCtaClick(element, userSession.userId)
     }
 
     override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {
@@ -479,6 +482,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {
         SellerHomeTracking.sendTableClickHyperlinkEvent(dataKey, url, isEmpty, userSession.userId)
+    }
+
+    override fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {
+        SellerHomeTracking.sendTableEmptyStateCtaClick(element, userSession.userId)
     }
 
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
@@ -503,6 +510,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendMultiLineGraphCtaClick(element, userSession.userId)
     }
 
+    override fun sendMultiLineGraphEmptyStateCtaClick(element: MultiLineGraphWidgetUiModel) {
+        SellerHomeTracking.sendMultiLineGraphEmptyStateCtaClick(element, userSession.userId)
+    }
+
     override fun sendAnnouncementImpressionEvent(element: AnnouncementWidgetUiModel) {
         SellerHomeTracking.sendAnnouncementImpressionEvent(element, userSession.userId)
     }
@@ -521,11 +532,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             notifyWidgetChanged(adapterPosition)
             getPostData(listOf(element))
         }.show(childFragmentManager)
-    }
-
-    private fun showGlobalSearchIcon() {
-        val menuItem = menu?.findItem(SEARCH_MENU_ID)
-        menuItem?.isVisible = remoteConfig.isGlobalSearchEnabled()
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) {

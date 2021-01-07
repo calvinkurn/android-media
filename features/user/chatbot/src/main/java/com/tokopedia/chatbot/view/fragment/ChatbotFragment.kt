@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
@@ -65,16 +66,17 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
@@ -128,6 +130,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var attribute: Attributes
     private var isBackAllowed = true
     private lateinit var ticker:Ticker
+    private var csatOptionsViewModel: CsatOptionsViewModel? = null
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -276,7 +279,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 ticker.show()
                 if (it.items.size > 1) {
                     showMultiTicker(it)
-                } else {
+                } else if (it.items.size == 1) {
                     showSingleTicker(it)
                 }
             }
@@ -285,8 +288,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun showSingleTicker(tickerData: TickerData) {
         ticker.tickerTitle = tickerData.items?.get(0)?.title
-        ticker.setTextDescription(tickerData.items?.get(0)?.text?:"")
+        ticker.setHtmlDescription(tickerData.items?.get(0)?.text?:"")
         ticker.tickerType = getTickerType(tickerData.type ?: "")
+        ticker.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                RouteManager.route(view?.context,linkUrl.toString())
+            }
+
+            override fun onDismiss() {
+            }
+
+        })
     }
 
     private fun showMultiTicker(tickerData: TickerData) {
@@ -300,6 +312,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
         val adapter = TickerPagerAdapter(activity, mockData)
         ticker.addPagerView(adapter, mockData)
+        adapter.setPagerDescriptionClickEvent(object :TickerPagerCallback{
+            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                RouteManager.route(view?.context,linkUrl.toString())
+            }
+        })
     }
 
     private fun getTickerType(tickerType: String): Int {
@@ -318,17 +335,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onAttachImageClicked() {
         activity?.let {
-            val builder = ImagePickerBuilder(it.getString(com.tokopedia.imagepicker.R.string.choose_image),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
-                            ImagePickerTabTypeDef.TYPE_CAMERA),
-                    GalleryType.IMAGE_ONLY,
-                    ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                    null,
-                    true,
-                    null,
-                    null)
-            val intent = ImagePickerActivity.getIntent(it, builder)
+            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
         }
     }
@@ -487,6 +496,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private val onsubmitingChatCsatSuccess: (String) -> Unit = { message ->
         view?.let {
+            csatOptionsViewModel?.let { it -> getViewState().hideCsatOptionList(it) }
             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACK_BAR_TEXT_OK)
         }
     }
@@ -550,8 +560,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
 
-        val imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-        if (imagePathList == null || imagePathList.size <= 0) {
+        val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+        if (imagePathList.size <= 0) {
             return null
         }
         val imagePath = imagePathList[0]
@@ -788,7 +798,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun csatOptionListSelected(selected: ChatOptionListViewModel, model: CsatOptionsViewModel?) {
-        model?.let { getViewState().hideCsatOptionList(it) }
+        csatOptionsViewModel = model
         startActivityForResult(context?.let {
             ChatBotCsatActivity
                     .getInstance(it, selected.value, model)

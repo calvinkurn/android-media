@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,7 +31,8 @@ const val TRANSPARENT_BLACK = "transparentBlack"
 const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
 const val PDP_APPLINK = "tokopedia://product/"
-val TIME_DISPLAY_FORMAT = "%1$02d"
+const val TIME_DISPLAY_FORMAT = "%1$02d"
+const val DEFAULT_TIME_DATA : Long = 0
 
 class Utils {
 
@@ -92,13 +94,13 @@ class Utils {
             }
         }
 
-        fun getQueryMap(componentId: String, pageIdentifier: String, rpcDiscoQuery: Map<String, String?>?): Map<String, Any> {
+        fun getQueryMap(componentId: String, pageIdentifier: String): Map<String, Any> {
             val queryParameterMap = mutableMapOf<String, Any>()
             queryParameterMap[IDENTIFIER] = pageIdentifier
             queryParameterMap[DEVICE] = DEVICE_VALUE
             queryParameterMap[COMPONENT_ID] = componentId
 
-            rpcDiscoQuery?.let { map ->
+            discoComponentQuery?.let { map ->
                 val queryString = StringBuilder()
                 map.forEach { (key, value) ->
                     if (!value.isNullOrEmpty()) {
@@ -188,5 +190,19 @@ class Utils {
             }
         }
 
+        fun getElapsedTime(endDate: String): Long {
+            if (endDate.isNotEmpty()) {
+                try {
+                    TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE))
+                    val currentSystemTime = Calendar.getInstance().time
+                    SimpleDateFormat(TIMER_DATE_FORMAT, Locale.getDefault()).parse(endDate)?.let {
+                        return it.time - currentSystemTime.time
+                    }
+                } catch (e: Exception) {
+                    return DEFAULT_TIME_DATA
+                }
+            }
+            return DEFAULT_TIME_DATA
+        }
     }
 }

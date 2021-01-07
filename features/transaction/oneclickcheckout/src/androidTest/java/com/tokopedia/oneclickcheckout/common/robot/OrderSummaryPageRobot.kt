@@ -59,6 +59,27 @@ class OrderSummaryPageRobot {
         PreferenceListBottomSheetRobot().apply(func)
     }
 
+    fun clickAddOrChangePreferenceRevamp(func: (PreferenceListBottomSheetRobot.() -> Unit)?) {
+        onView(withId(R.id.tv_new_choose_preference)).perform(scrollTo()).perform(click())
+        func?.let {
+            onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
+            PreferenceListBottomSheetRobot().apply(it)
+        }
+    }
+
+    fun clickChangeAddressRevamp() {
+        onView(withId(R.id.btn_new_change_address)).perform(scrollTo()).perform(click())
+    }
+
+    fun clickChangeDurationRevamp(func: DurationBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.btn_new_change_duration)).perform(scrollTo()).perform(click())
+        DurationBottomSheetRobot().apply(func)
+    }
+
+    fun clickChangePaymentRevamp() {
+        onView(withId(R.id.btn_new_change_payment)).perform(scrollTo()).perform(click())
+    }
+
     fun clickChangeCourier(func: CourierBottomSheetRobot.() -> Unit) {
         onView(withId(R.id.tv_shipping_price)).perform(scrollTo()).perform(click())
         CourierBottomSheetRobot().apply(func)
@@ -163,12 +184,10 @@ class OrderSummaryPageRobot {
 
     fun assertProfileAddress(headerMessage: String,
                              addressName: String,
-                             addressReceiver: String,
                              addressDetail: String,
                              isMainPreference: Boolean) {
         onView(withId(R.id.tv_card_header)).perform(scrollTo()).check(matches(withText(headerMessage)))
         onView(withId(R.id.tv_address_name)).check(matches(withText(addressName)))
-        onView(withId(R.id.tv_address_receiver)).check(matches(withText(addressReceiver)))
         onView(withId(R.id.tv_address_detail)).check(matches(withText(addressDetail)))
         onView(withId(R.id.lbl_main_preference)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()

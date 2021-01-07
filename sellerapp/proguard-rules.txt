@@ -239,6 +239,8 @@
 -dontwarn com.tokopedia.home.beranda.presentation.view.**
 -dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
 
+-dontwarn com.tokopedia.sortfilter.SortFilter*
+
 
 #SELLERAPP ONLY:
 #from Apsara broadcaster 29/11/2019 document

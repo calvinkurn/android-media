@@ -24,6 +24,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
     companion object {
         private const val SHIPPING_DURATION_VIEW_TYPE = 1
         private const val LOGISTIC_PROMO_INFO_VIEW_TYPE = 2
+        private const val LOGISTIC_PROMO_INFO_NEW_VIEW_TYPE = 3
     }
 
     fun renderData(data: List<ServicesItem>) {
@@ -39,6 +40,8 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == LOGISTIC_PROMO_INFO_VIEW_TYPE) {
             return LogisticPromoInfoViewHolder(parent.inflateLayout(R.layout.item_logistic_promo_info))
+        } else if (viewType == LOGISTIC_PROMO_INFO_NEW_VIEW_TYPE) {
+            return LogisticPromoInfoViewHolder(parent.inflateLayout(R.layout.item_logistic_promo_info_new))
         }
         return ShippingDurationViewHolder(parent.inflateLayout(R.layout.item_shipping_duration))
     }
@@ -48,8 +51,9 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (shippingDurationList[position] is LogisticPromoInfo) {
-            return LOGISTIC_PROMO_INFO_VIEW_TYPE
+        val servicesItem = shippingDurationList[position]
+        if (servicesItem is LogisticPromoInfo) {
+            return if (servicesItem.isNewLayout) LOGISTIC_PROMO_INFO_NEW_VIEW_TYPE else LOGISTIC_PROMO_INFO_VIEW_TYPE
         }
         return SHIPPING_DURATION_VIEW_TYPE
     }
@@ -70,6 +74,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
         private var itemShippingText = itemView.findViewById<Typography>(R.id.text_shipping_item)
         private var itemShippingPrice = itemView.findViewById<Typography>(R.id.item_shipping_price)
         private var itemShippingDesc = itemView.findViewById<Typography>(R.id.item_shipping_desc)
+        private var itemShippingError = itemView.findViewById<Typography>(R.id.item_shipping_error)
         private var itemShippingRadio = itemView.findViewById<RadioButtonUnify>(R.id.item_shipping_radio)
         private var itemList = itemView.findViewById<ConstraintLayout>(R.id.item_shipping_list)
 
@@ -78,6 +83,8 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
             itemShippingText.text = data.servicesDuration
             itemShippingPrice.gone()
             itemShippingDesc.gone()
+            itemShippingError.gone()
+            itemList.alpha = 1f
             itemShippingRadio.isChecked = data.isSelected
             itemShippingRadio.skipAnimation()
             itemList.setOnClickListener {
@@ -95,18 +102,30 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
             }
             when {
                 data.errorMessage.isNotEmpty() && data.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED -> {
-                    itemShippingDesc.visible()
-                    itemShippingDesc.text = data.errorMessage
+                    itemList.alpha = 0.5f
+                    itemShippingRadio.gone()
+                    itemShippingDesc.gone()
+                    itemShippingError.visible()
+                    itemShippingError.text = data.errorMessage
                 }
                 data.texts?.textsServiceDesc?.isNotEmpty() == true -> {
+                    itemList.alpha = 1f
+                    itemShippingError.gone()
+                    itemShippingRadio.visible()
                     itemShippingDesc.visible()
                     itemShippingDesc.text = data.texts?.textsServiceDesc
                 }
                 isCourierInstantOrSameday(data.servicesId) -> {
-                    itemShippingDesc.setText(com.tokopedia.logisticcart.R.string.label_shipping_information)
+                    itemList.alpha = 1f
+                    itemShippingError.gone()
+                    itemShippingRadio.visible()
                     itemShippingDesc.visible()
+                    itemShippingDesc.setText(com.tokopedia.logisticcart.R.string.label_shipping_information)
                 }
                 else -> {
+                    itemList.alpha = 1f
+                    itemShippingRadio.visible()
+                    itemShippingError.gone()
                     itemShippingDesc.gone()
                 }
             }
@@ -114,7 +133,9 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
             itemShippingRadio.skipAnimation()
 
             itemList.setOnClickListener {
-                listener.onSelect(data.servicesId)
+                if (itemShippingRadio.visibility == View.VISIBLE) {
+                    listener.onSelect(data.servicesId)
+                }
             }
         }
 

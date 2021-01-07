@@ -88,6 +88,7 @@ import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeCo
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -164,9 +165,9 @@ public class MainParentActivity extends BaseActivity implements
 
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
 
-    private static final String ROLLANCE_EXP_NAME = "Navigation Revamp";
-    private static final String ROLLANCE_VARIANT_OLD = "Existing Navigation";
-    private static final String ROLLANCE_VARIANT_REVAMP = "Navigation Revamp";
+    private static final String ROLLANCE_EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
+    private static final String ROLLANCE_VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD;
+    private static final String ROLLANCE_VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -521,6 +522,7 @@ public class MainParentActivity extends BaseActivity implements
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
                 showSelectedFragment(fragment, manager, ft);
+                FragmentLifecycleObserver.INSTANCE.onFragmentSelected(fragment);
             }
             ft.commitNowAllowingStateLoss();
         });
@@ -938,10 +940,10 @@ public class MainParentActivity extends BaseActivity implements
 
                     Intent intentHome = MainParentActivity.start(MainParentActivity.this);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intentHome.setAction(Intent.ACTION_VIEW);
+                    intentHome.setAction(RouteManager.INTERNAL_VIEW);
 
                     Intent productIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
-                    productIntent.setAction(Intent.ACTION_VIEW);
+                    productIntent.setAction(RouteManager.INTERNAL_VIEW  );
                     productIntent.putExtras(args);
 
                     ShortcutInfo productShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_BELI_ID)

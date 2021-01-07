@@ -407,9 +407,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void showToastMessage(String message) {
         View view = getView();
-        if (view != null) Toaster.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+        if (view != null) Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                 getString(com.tokopedia.abstraction.R.string.close), v -> {
-                });
+                }).show();
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -440,12 +440,12 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public int getOrderId() {
+    public long getOrderId() {
         String orderIdString = cartPassData.getOrderId();
         try {
-            return TextUtils.isEmpty(orderIdString) ? 0 : Integer.parseInt(orderIdString);
+            return TextUtils.isEmpty(orderIdString) ? 0L : Long.parseLong(orderIdString);
         } catch (Exception e) {
-            return 0;
+            return 0L;
         }
     }
 

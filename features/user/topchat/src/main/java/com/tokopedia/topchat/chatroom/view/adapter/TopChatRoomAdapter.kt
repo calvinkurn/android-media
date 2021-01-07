@@ -1,6 +1,8 @@
 package com.tokopedia.topchat.chatroom.view.adapter
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
@@ -9,24 +11,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 
 /**
  * @author : Steven 02/01/19
  */
-class TopChatRoomAdapter(
+class TopChatRoomAdapter constructor(
         private val context: Context?,
         private val adapterTypeFactory: TopChatTypeFactoryImpl
 ) : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener,
@@ -37,6 +44,7 @@ class TopChatRoomAdapter(
     private var topMostHeaderDate: HeaderDateUiModel? = null
     private var topMostHeaderDateIndex: Int? = null
     private val carouselViewPool = RecyclerView.RecycledViewPool()
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun enableShowDate(): Boolean = false
     override fun enableShowTime(): Boolean = false
@@ -69,6 +77,7 @@ class TopChatRoomAdapter(
         val nextItemIsSender: Boolean = when (nextItem) {
             is SendableViewModel -> nextItem.isSender
             is ProductCarouselUiModel -> nextItem.isSender
+            is ReviewUiModel -> nextItem.isSender
             else -> true
         }
         return isSender == nextItemIsSender
@@ -76,6 +85,18 @@ class TopChatRoomAdapter(
 
     override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
         return carouselViewPool
+    }
+
+    override fun changeToFallbackUiModel(element: ReviewUiModel, lastKnownPosition: Int) {
+        handler.post {
+            val itemPair = getUpToDateUiModelPosition(lastKnownPosition, element)
+            val position = itemPair.first
+            if (position == RecyclerView.NO_POSITION) return@post
+            itemPair.second ?: return@post
+            val message = FallbackAttachmentViewModel(element.reply)
+            visitables[position] = message
+            notifyItemChanged(position)
+        }
     }
 
     fun showRetryFor(model: ImageUploadViewModel, b: Boolean) {
@@ -264,6 +285,44 @@ class TopChatRoomAdapter(
         return null
     }
 
+
+    fun updateReviewState(
+            review: ReviewUiModel,
+            lastKnownPosition: Int,
+            reviewClickAt: Int,
+            state: Int
+    ) {
+        handler.post {
+            val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
+            val position = itemPair.first
+            if (position == RecyclerView.NO_POSITION) return@post
+            val item = itemPair.second ?: return@post
+            when (state) {
+                ReputationCommonConstants.REVIEWED -> {
+                    item.reviewCard.apply {
+                        isReviewed = true
+                        rating = reviewClickAt.toFloat()
+                        reviewUrl = UriUtil.buildUri(ApplinkConst.REVIEW_DETAIL, feedBackId)
+                    }
+                    notifyItemChanged(position, ReviewViewHolder.PAYLOAD_REVIEWED)
+                }
+                else -> {
+                    notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
+                }
+            }
+        }
+    }
+
+    fun resetReviewState(review: ReviewUiModel, lastKnownPosition: Int) {
+        handler.post {
+            val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
+            val position = itemPair.first
+            if (position == RecyclerView.NO_POSITION) return@post
+            val item = itemPair.second ?: return@post
+            notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
+        }
+    }
+
     private fun removeBroadcastHandler(index: Int) {
         if (index >= visitables.size) return
         val item = visitables[index]
@@ -315,5 +374,17 @@ class TopChatRoomAdapter(
             }
         }
         return TopchatProductAttachmentViewHolder.OccState(RecyclerView.NO_POSITION)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : Visitable<TopChatTypeFactory>> getUpToDateUiModelPosition(
+            lastKnownPosition: Int, element: T
+    ): Pair<Int, T?> {
+        val item = visitables.getOrNull(lastKnownPosition)
+        if (item == element) {
+            return Pair(lastKnownPosition, item as? T)
+        }
+        val updatePosition = visitables.indexOf(element)
+        return Pair(updatePosition, item as? T)
     }
 }

@@ -52,8 +52,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val reviewDetails: LiveData<ReviewViewState<ProductrevGetReviewDetail>>
         get() = _reviewDetails
 
-    private val _submitReviewResult = MutableLiveData<ReviewViewState<Boolean>>()
-    val submitReviewResult: LiveData<ReviewViewState<Boolean>>
+    private val _submitReviewResult = MutableLiveData<ReviewViewState<String>>()
+    val submitReviewResult: LiveData<ReviewViewState<String>>
         get() = _submitReviewResult
 
     private val _editReviewResult = MutableLiveData<ReviewViewState<Boolean>>()
@@ -61,12 +61,12 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         get() = _editReviewResult
 
     fun submitReview(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int,
-                     reviewText: String = "", isAnonymous: Boolean = false) {
+                     reviewText: String = "", isAnonymous: Boolean = false, utmSource: String) {
         _submitReviewResult.postValue(LoadingView())
         if (imageData.isEmpty()) {
-            sendReviewWithoutImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
+            sendReviewWithoutImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, utmSource)
         } else {
-            sendReviewWithImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, getSelectedImagesUrl())
+            sendReviewWithImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, getSelectedImagesUrl(), utmSource)
         }
     }
 
@@ -94,7 +94,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getAfterEditImageList(imagePickerResult: ArrayList<String>, originalImageUrl: java.util.ArrayList<String>, edited: ArrayList<Boolean>): MutableList<BaseImageReviewUiModel> {
+    fun getAfterEditImageList(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, edited: ArrayList<Boolean>): MutableList<BaseImageReviewUiModel> {
         val pictureList = originalImages.filter {
             originalImageUrl.contains(it)
         }.filterIndexed { index, _ -> !edited[index] }
@@ -212,15 +212,16 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     }
 
     private fun sendReviewWithoutImage(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
-                                       reviewText: String, isAnonymous: Boolean) {
+                                       reviewText: String, isAnonymous: Boolean, utmSource: String) {
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
-                submitReviewUseCase.setParams(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
+                submitReviewUseCase.setParams(reputationId = reputationId, productId =
+                productId, shopId = shopId, reputationScore = reputationScore, rating = rating, reviewText = reviewText, isAnonymous = isAnonymous, utmSource = utmSource)
                 submitReviewUseCase.executeOnBackground()
             }
             if (response.productrevSuccessIndicator != null) {
                 if (response.productrevSuccessIndicator.success) {
-                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
+                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.feedbackID))
                 } else {
                     _submitReviewResult.postValue(Fail(Throwable()))
                 }
@@ -231,7 +232,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     }
 
     private fun sendReviewWithImage(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
-                                    reviewText: String, isAnonymous: Boolean, listOfImages: List<String>) {
+                                    reviewText: String, isAnonymous: Boolean, listOfImages: List<String>, utmSource: String) {
         val uploadIdList: ArrayList<String> = ArrayList()
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
@@ -243,12 +244,12 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                     }
                     uploadIdList.add(imageId)
                 }
-                submitReviewUseCase.setParams(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, uploadIdList)
+                submitReviewUseCase.setParams(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, uploadIdList, utmSource)
                 submitReviewUseCase.executeOnBackground()
             }
             if (response.productrevSuccessIndicator != null) {
                 if (response.productrevSuccessIndicator.success) {
-                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
+                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.feedbackID))
                 } else {
                     _submitReviewResult.postValue(Fail(Throwable()))
                 }

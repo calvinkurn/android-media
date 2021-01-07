@@ -40,7 +40,8 @@ data class RecommendationItem(val productId: Int = 0,
                               val isFreeOngkirActive: Boolean = false,
                               val freeOngkirImageUrl: String = "",
                               val labelGroupList: List<RecommendationLabel> = listOf(),
-                              val isGold: Boolean = false): ImpressHolder(){
+                              val isGold: Boolean = false,
+                              val isOfficial:Boolean = false): ImpressHolder(){
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
