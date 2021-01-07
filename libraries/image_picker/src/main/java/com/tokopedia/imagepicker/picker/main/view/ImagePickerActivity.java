@@ -301,10 +301,10 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         if (cameraIndex > -1) {
             permissions = new String[]{
                     Manifest.permission.CAMERA,
-                    Manifest.permission.READ_EXTERNAL_STORAGE};
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
         } else {
             permissions = new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE};
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
         }
         permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {

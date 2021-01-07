@@ -866,8 +866,8 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
             finish();
             return;
         }
-        String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, permissions, REQUEST_STORAGE_PERMISSIONS);
         } else {
@@ -881,7 +881,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         int result = grantResults[0];
         if (result == PackageManager.PERMISSION_DENIED) {
             isPermissionGotDenied = true;
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 //Never ask again selected, or device policy prohibits the app from having that permission.
                 Toast.makeText(getContext(), getString(R.string.permission_enabled_needed), Toast.LENGTH_LONG).show();
             }
