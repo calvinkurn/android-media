@@ -35,7 +35,7 @@
         android:layout_height="@dimen/dp_20"
         android:layout_gravity="top|end"
         android:background="@drawable/circle_light_grey"
-        android:backgroundTint="@color/Neutral_N200"
+        android:backgroundTint="@color/Unify_N200"
         app:srcCompat="@drawable/ic_close_white"
         android:padding="@dimen/dp_2"/>
 
