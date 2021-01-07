@@ -12,110 +12,14 @@
     android:background="@drawable/bg_rect_white_round"
     android:elevation="@dimen/dp_2">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_title"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:textColor="@color/clr_ae31353b"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/background_view"
-        app:layout_constraintStart_toStartOf="parent"
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/sprint_sale_timer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5"
-        app:typographyWeight="bold"
-        tools:text="@string/discovery_sale_begins_in" />
-
-    <View
-        android:id="@+id/background_view"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
-        android:background="@drawable/discovery_timer_sale_grey_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/empty_space"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/empty_space"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tv_hours"
-        app:layout_constraintStart_toEndOf="@+id/tv_title"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_hours"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/timer_text_border"
-        android:gravity="center"
-        android:maxLines="1"
-        android:text="@string/default_timer_value"
-        android:textColor="@color/clr_ae31353b"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/hours_separator_text_view"
-        app:layout_constraintStart_toEndOf="@id/empty_space"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/hours_separator_text_view"
-        style="@style/TimerSeparatorStyle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_minutes"
-        app:layout_constraintStart_toEndOf="@id/tv_hours"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_minutes"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/timer_text_border"
-        android:gravity="center"
-        android:maxLines="1"
-        android:text="@string/default_timer_value"
-        android:textColor="@color/clr_ae31353b"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/minutes_separator_text_view"
-        app:layout_constraintStart_toEndOf="@id/hours_separator_text_view"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/minutes_separator_text_view"
-        style="@style/TimerSeparatorStyle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_seconds"
-        app:layout_constraintStart_toEndOf="@+id/tv_minutes"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_seconds"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginEnd="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:background="@drawable/timer_text_border"
-        android:gravity="center"
-        android:maxLines="1"
-        android:text="@string/default_timer_value"
-        android:textColor="@color/clr_ae31353b"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@+id/minutes_separator_text_view"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2" />
+        app:timer_unify_single_showClockIcon="true"
+        app:timer_unify_single_textWidth="full_radius"
+        app:timer_unify_single_type="auto" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

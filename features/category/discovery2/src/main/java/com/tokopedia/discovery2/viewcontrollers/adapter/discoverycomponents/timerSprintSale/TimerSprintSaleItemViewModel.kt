@@ -1,8 +1,10 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale
 
 import android.app.Application
+import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.common.SingleLiveEvent
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -10,15 +12,17 @@ import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerD
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.SaleCountDownTimer
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
 
 
 class TimerSprintSaleItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
-    private var timerWithBannerCounter: SaleCountDownTimer? = null
+    var timerWithBannerCounter: CountDownTimer? = null
     private val elapsedTime: Long = 1000
     private val needPageRefresh: MutableLiveData<Boolean> = MutableLiveData()
     private val mutableTimeDiffModel: MutableLiveData<TimerDataModel> = MutableLiveData()
+    private val restartStoppedTimerEvent: SingleLiveEvent<Boolean> = SingleLiveEvent()
     private var isTimerStopped = false
 
     init {
@@ -33,10 +37,10 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
     fun getComponentLiveData() = componentData
     fun refreshPage(): LiveData<Boolean> = needPageRefresh
     fun getTimerData(): LiveData<TimerDataModel> = mutableTimeDiffModel
-
+    fun getRestartTimerAction(): LiveData<Boolean> = restartStoppedTimerEvent
     fun handleSaleEndSates() {
         when {
-            Utils.isFutureSale(getStartDate()) -> {
+            Utils.isFutureSale(getStartDate()) || (Utils.isFutureSaleOngoing(getStartDate(),getEndDate())) -> {
                 needPageRefresh.value = true
             }
             Utils.isSaleOver(getEndDate()) -> {
@@ -97,7 +101,7 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
         }
     }
 
-    fun startTimer() {
+    fun startTimer(timerUnify: TimerUnifySingle) {
         val futureSaleTab = Utils.isFutureSale(getStartDate())
         val timerData: String? = if (futureSaleTab) getStartDate() else getEndDate()
         if (!timerData.isNullOrEmpty()) {
@@ -106,14 +110,20 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
             parsedEndDate?.let { parsedDate ->
                 val saleTimeMillis = parsedDate.time - currentSystemTime.time
                 if (saleTimeMillis > 0) {
-                    timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime) { timerModel ->
-                        if (timerModel.timeFinish) {
-                            stopTimer()
-                            if (futureSaleTab) needPageRefresh.value = true
+                    val parsedCalendar: Calendar = Calendar.getInstance()
+                    parsedCalendar.time = parsedEndDate
+                    timerUnify.targetDate = parsedCalendar
+                    timerUnify.onTick = {
+                        timerUnify.timer?.let { countDownTimer ->
+                            if (countDownTimer != timerWithBannerCounter) {
+                                timerWithBannerCounter = timerUnify.timer
+                            }
+                            timerUnify.onTick = {
+                            }
                         }
-                        mutableTimeDiffModel.value = timerModel
                     }
-                    timerWithBannerCounter?.start()
+                } else {
+                    checkUpcomingSaleTimer()
                 }
             }
         }
@@ -155,7 +165,7 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
 
     override fun onResume() {
         if (isTimerStopped) {
-            startTimer()
+            restartStoppedTimerEvent.setValue(true)
             isTimerStopped = false
         }
         super.onResume()
