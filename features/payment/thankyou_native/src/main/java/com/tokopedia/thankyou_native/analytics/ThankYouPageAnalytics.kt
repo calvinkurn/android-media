@@ -32,7 +32,6 @@ class ThankYouPageAnalytics @Inject constructor(
 
     private val IDR = "IDR"
 
-
     private lateinit var thanksPageData: ThanksPageData
 
     private val analyticTracker: ContextAnalytics
