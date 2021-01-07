@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
@@ -26,4 +27,6 @@ interface SomComponent {
     fun userSessionInterface(): UserSessionInterface
 
     fun dispatcherProvider(): SomDispatcherProvider
+
+    fun remoteConfigProvider(): FirebaseRemoteConfigImpl
 }
