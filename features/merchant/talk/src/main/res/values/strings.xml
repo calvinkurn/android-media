@@ -164,5 +164,6 @@
     <string name="template_list_toaster_fail">Template diskusi gagal disimpan. Coba lagi, ya.</string>
     <string name="template_list_rearrange_toaster_fail">Urutan template diskusi gagal diubah. Coba ubah lagi, ya.</string>
     <string name="template_delete_toaster_fail">Template diskusi gagal dihapus.</string>
+    <string name="template_list_delete">Hapus</string>
 
 </resources>

@@ -54,21 +54,6 @@
             app:argType="boolean"
             android:defaultValue='false' />
 
-        <action
-            android:id="@+id/action_talkTemplateListFragment_to_talkTemplateEditFragment"
-            app:destination="@id/talkTemplateEditFragment" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/talkTemplateEditFragment"
-        android:name="com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkEditTemplateFragment">
-
-        <argument
-            android:name="cacheManagerId"
-            app:argType="string"
-            android:defaultValue='"0"' />
-
     </fragment>
 
 </navigation>

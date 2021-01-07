@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -21,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.sellersettings.template.di.DaggerTalkTemplateComponent
 import com.tokopedia.talk.feature.sellersettings.template.di.TalkTemplateComponent
 import com.tokopedia.talk.R
-import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.getNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
@@ -29,6 +27,7 @@ import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateDataW
 import com.tokopedia.talk.feature.sellersettings.template.data.TalkTemplateMutationResults
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListAdapter
 import com.tokopedia.talk.feature.sellersettings.template.presentation.adapter.TalkTemplateListItemTouchHelperCallback
+import com.tokopedia.talk.feature.sellersettings.template.presentation.listener.TalkTemplateBottomSheetListener
 import com.tokopedia.talk.feature.sellersettings.template.presentation.listener.TalkTemplateListListener
 import com.tokopedia.talk.feature.sellersettings.template.presentation.viewmodel.TalkTemplateViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -37,10 +36,11 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_template_list.*
 import javax.inject.Inject
 
-class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplateComponent>, TalkTemplateListListener {
+class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplateComponent>, TalkTemplateListListener, TalkTemplateBottomSheetListener {
 
     companion object {
         const val MAX_TEMPLATE_SIZE = 5
+        const val MINIMUM_ITEM = 1
     }
 
     @Inject
@@ -50,6 +50,8 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     private val adapter = TalkTemplateListAdapter(this)
     private var toaster: Snackbar? = null
     private var toolbar: HeaderUnify? = null
+    private var editBottomsheet: TalkTemplateBottomsheet? = null
+    private var addBottomsheet: TalkTemplateBottomsheet? = null
 
     override fun getScreenName(): String {
         return ""
@@ -97,7 +99,11 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         setupOnBackPressed()
         setupAddTemplateButton()
         setToolbarTitle()
-        onFragmentResult()
+    }
+
+    override fun onSuccessUpdateTemplate(toasterText: String) {
+        showToaster(toasterText, false)
+        getTemplateList()
     }
 
     private fun getTemplateList() {
@@ -126,10 +132,10 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
                 is Success -> {
                     hideLoading()
                     if (isSeller) {
-                        renderList(it.data.sellerTemplate.templates)
+                        renderList(it.data.sellerTemplate.templates, it.data.sellerTemplate.isEnable)
                         return@Observer
                     }
-                    renderList(it.data.buyerTemplate.templates)
+                    renderList(it.data.buyerTemplate.templates, it.data.buyerTemplate.isEnable)
                 }
                 is Fail -> {
 
@@ -138,11 +144,11 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         })
     }
 
-    private fun renderList(templates: List<String>) {
+    private fun renderList(templates: List<String>, isEnabled: Boolean) {
         talkTemplateListAddButton.isEnabled = templates.shouldEnableButton()
         adapter.setData(templates)
         talkTemplateListRecyclerView.show()
-        initSwitch()
+        initSwitch(isEnabled)
     }
 
     private fun initRecyclerView() {
@@ -155,14 +161,17 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
         itemTouchHelper.attachToRecyclerView(talkTemplateListRecyclerView)
     }
 
-    private fun initSwitch() {
-        talkTemplateListSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.enableTemplate(isChecked)
-            if (isChecked) {
-                talkTemplateListRecyclerView.show()
-                return@setOnCheckedChangeListener
+    private fun initSwitch(isEnabled: Boolean) {
+        talkTemplateListSwitch.apply {
+            isChecked = isEnabled
+            setOnCheckedChangeListener { buttonView, isChecked ->
+                viewModel.enableTemplate(isChecked)
+                if (isChecked) {
+                    talkTemplateListRecyclerView.show()
+                    return@setOnCheckedChangeListener
+                }
+                talkTemplateListRecyclerView.hide()
             }
-            talkTemplateListRecyclerView.hide()
         }
     }
 
@@ -203,39 +212,35 @@ class TalkTemplateListFragment : BaseDaggerFragment(), HasComponent<TalkTemplate
     }
 
     private fun goToEdit(template: String, index: Int) {
-        val destination = TalkTemplateListFragmentDirections.actionTalkTemplateListFragmentToTalkTemplateEditFragment()
-        destination.cacheManagerId = putDataIntoCacheManager(true, template, index)
-        NavigationController.navigate(this, destination)
+        activity?.let {
+            if(editBottomsheet == null) {
+                editBottomsheet = context?.let { context -> TalkTemplateBottomsheet.createNewInstance(context, getString(R.string.title_edit_template_page)) }
+            }
+            editBottomsheet?.apply {
+                setCacheManagerId(putDataIntoCacheManager(true, template, index))
+                setListener(this@TalkTemplateListFragment)
+                show(it.supportFragmentManager, "")
+            }
+        }
     }
 
     private fun goToAdd() {
-        val destination = TalkTemplateListFragmentDirections.actionTalkTemplateListFragmentToTalkTemplateEditFragment()
-        destination.cacheManagerId = putDataIntoCacheManager(false, null, null)
-        NavigationController.navigate(this, destination)
-    }
-
-    private fun onFragmentResult() {
-        getNavigationResult(TalkEditTemplateFragment.REQUEST_KEY)?.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                toolbar?.rightContentView?.removeAllViews()
-                when(it.getString(TalkSellerSettingsConstants.KEY_ACTION, "")) {
-                    TalkSellerSettingsConstants.VALUE_DELETE -> {
-                        showToaster(getString(R.string.template_list_success_delete_template), false)
-                    }
-                    TalkSellerSettingsConstants.VALUE_ADD_EDIT -> {
-                        showToaster(getString(R.string.template_list_success_add_template), false)
-                    }
-                }
+        activity?.let {
+            if(addBottomsheet == null) {
+                addBottomsheet = context?.let { context -> TalkTemplateBottomsheet.createNewInstance(context, getString(R.string.title_add_template_page)) }
             }
-            removeNavigationResult(TalkEditTemplateFragment.REQUEST_KEY)
-            getTemplateList()
-        })
+            addBottomsheet?.apply {
+                setCacheManagerId(putDataIntoCacheManager(false, null, null))
+                setListener(this@TalkTemplateListFragment)
+                show(it.supportFragmentManager, "")
+            }
+        }
     }
 
     private fun putDataIntoCacheManager(isEditMode: Boolean, template: String?, index: Int?): String {
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         cacheManager?.apply {
-            put(TalkEditTemplateFragment.KEY_TEMPLATE, TalkTemplateDataWrapper(isSeller, isEditMode, template, index))
+            put(TalkTemplateBottomsheet.KEY_TEMPLATE, TalkTemplateDataWrapper(isSeller, isEditMode, template, index, adapter.itemCount > MINIMUM_ITEM))
         }
         return cacheManager?.id ?: ""
     }

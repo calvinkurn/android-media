@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -27,7 +26,7 @@ import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationCon
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.SmartReplyDataWrapper
-import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkEditTemplateFragment
+import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateBottomsheet
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -161,14 +160,14 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     }
 
     private fun onFragmentResult() {
-        getNavigationResult(TalkEditTemplateFragment.REQUEST_KEY)?.observe(viewLifecycleOwner, Observer {
+        getNavigationResult(TalkTemplateBottomsheet.REQUEST_KEY)?.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if(it.getString(TalkSellerSettingsConstants.KEY_ACTION, "") == TalkSellerSettingsConstants.VALUE_ADD_EDIT) {
                     getSmartReplyData()
                     showLoading()
                 }
             }
-            removeNavigationResult(TalkEditTemplateFragment.REQUEST_KEY)
+            removeNavigationResult(TalkTemplateBottomsheet.REQUEST_KEY)
         })
     }
 

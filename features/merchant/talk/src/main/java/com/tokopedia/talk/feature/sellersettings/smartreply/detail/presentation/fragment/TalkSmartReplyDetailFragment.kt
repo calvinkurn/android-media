@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -16,7 +15,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.DaggerTalkSmartReplyDetailComponent
@@ -26,7 +24,7 @@ import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.setNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.data.SmartReplyDataWrapper
-import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkEditTemplateFragment
+import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateBottomsheet
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -209,7 +207,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
                 val bundle = Bundle().apply {
                     putString(TalkSellerSettingsConstants.KEY_ACTION, requestValue)
                 }
-                setNavigationResult(bundle, TalkEditTemplateFragment.REQUEST_KEY)
+                setNavigationResult(bundle, TalkTemplateBottomsheet.REQUEST_KEY)
             }
             findNavController().navigateUp()
         }
