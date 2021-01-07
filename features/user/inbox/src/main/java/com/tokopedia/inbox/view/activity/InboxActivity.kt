@@ -181,6 +181,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     override fun onRoleChanged(@RoleType role: Int) {
+        analytic.trackRoleChanged(role)
         navigator?.notifyRoleChanged(role)
         navHeader.bindValue()
         cacheState.saveRoleCache(role)

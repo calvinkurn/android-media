@@ -28,6 +28,7 @@ class InboxAnalytic @Inject constructor(
             const val OPEN_INBOX = "open inbox"
             const val CLICK_BOTTOM_NAV_MENU = "click menu at inbox bottom navigation"
             const val CLICK_SWITCH_ACCOUNT = "click switch inbox at header"
+            const val CHOOSE_SWITCH_ACCOUNT = "click switch inbox role at bottom sheet"
         }
     }
 
@@ -99,6 +100,20 @@ class InboxAnalytic @Inject constructor(
                         eventCategory = EventCategory.INBOX_PAGE,
                         eventAction = EventAction.CLICK_SWITCH_ACCOUNT,
                         eventLabel = "",
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId
+                )
+        )
+    }
+
+    fun trackRoleChanged(@RoleType role: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                createGeneralEvent(
+                        event = Event.CLICK_INBOX_CHAT,
+                        eventCategory = EventCategory.INBOX_PAGE,
+                        eventAction = EventAction.CHOOSE_SWITCH_ACCOUNT,
+                        eventLabel = "switch to ${getRoleString(role)}",
                         businessUnit = BusinessUnit.COMMUNICATION,
                         currentSite = CurrentSite.MARKETPLACE,
                         userId = userSession.userId
