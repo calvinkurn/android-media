@@ -10,6 +10,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
@@ -23,7 +24,8 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListFr
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethodFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
-import kotlinx.android.synthetic.main.activity_preference_edit.*
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent>, PreferenceEditParent {
@@ -38,10 +40,20 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     private var _gatewayCode = ""
     private var _paymentQuery = ""
     private var _paymentProfile = ""
+    private var _paymentAmount = 0.0
     private var _shippingParam: ShippingParam? = null
     private var _listShopShipment: ArrayList<ShopShipment>? = null
     private var _isExtraProfile: Boolean = true
     private var _fromFlow = FROM_FLOW_PREF
+    private var _directPaymentStep = false
+    private var _isNewFlow = false
+
+    private var tvTitle: Typography? = null
+    private var tvSubtitle: Typography? = null
+    private var btnBack: IconUnify? = null
+    private var btnAdd: IconUnify? = null
+    private var btnDelete: IconUnify? = null
+    private var stepper: ProgressBarUnify? = null
 
     override fun getComponent(): PreferenceEditComponent {
         return DaggerPreferenceEditComponent.builder()
@@ -68,17 +80,27 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     }
 
     private fun initViews() {
-        btn_back.setOnClickListener {
+        btnBack = findViewById(R.id.btn_back)
+        tvTitle = findViewById(R.id.tv_title)
+        tvSubtitle = findViewById(R.id.tv_subtitle)
+        btnAdd = findViewById(R.id.btn_add)
+        btnDelete = findViewById(R.id.btn_delete)
+        stepper = findViewById(R.id.stepper)
+
+        btnBack?.setOnClickListener {
             onBackPressed()
         }
 
         _preferenceIndex = intent.getStringExtra(EXTRA_PREFERENCE_INDEX) ?: ""
         _profileId = intent.getIntExtra(EXTRA_PROFILE_ID, 0)
         _paymentProfile = intent.getStringExtra(EXTRA_PAYMENT_PROFILE) ?: ""
+        _paymentAmount = intent.getDoubleExtra(EXTRA_PAYMENT_AMOUNT, 0.0)
         _shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         _listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
         _isExtraProfile = intent.getBooleanExtra(EXTRA_IS_EXTRA_PROFILE, true)
         _fromFlow = intent.getIntExtra(EXTRA_FROM_FLOW, FROM_FLOW_PREF)
+        _directPaymentStep = intent.getBooleanExtra(EXTRA_DIRECT_PAYMENT_STEP, false)
+        _isNewFlow = intent.getBooleanExtra(EXTRA_IS_NEW_FLOW, false)
 
         val ft = supportFragmentManager.beginTransaction()
         val fragments = supportFragmentManager.fragments
@@ -87,7 +109,9 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
                 ft.remove(fragment)
             }
         }
-        if (_profileId == 0) {
+        if (_directPaymentStep) {
+            ft.replace(R.id.container, PaymentMethodFragment.newInstance(true)).commit()
+        } else if (_profileId == 0) {
             ft.replace(R.id.container, AddressListFragment.newInstance()).commit()
         } else {
             ft.replace(R.id.container, PreferenceSummaryFragment.newInstance(true)).commit()
@@ -181,11 +205,11 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     }
 
     override fun setHeaderTitle(title: String) {
-        tv_title.text = title
+        tvTitle?.text = title
     }
 
     override fun setHeaderSubtitle(subtitle: String) {
-        tv_subtitle.text = subtitle
+        tvSubtitle?.text = subtitle
     }
 
     override fun addFragment(fragment: Fragment) {
@@ -221,47 +245,45 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     }
 
     override fun setStepperValue(value: Int) {
-        if (stepper != null) {
-            stepper.setValue(value, true)
-        }
+        stepper?.setValue(value, true)
     }
 
     override fun showStepper() {
-        tv_subtitle.visible()
-        stepper.visible()
+        tvSubtitle?.visible()
+        stepper?.visible()
     }
 
     override fun hideStepper() {
-        tv_subtitle.gone()
-        stepper.gone()
+        tvSubtitle?.gone()
+        stepper?.gone()
     }
 
     override fun showAddButton() {
         hideDeleteButton()
-        btn_add.visible()
+        btnAdd?.visible()
     }
 
     override fun hideAddButton() {
-        btn_add.gone()
+        btnAdd?.gone()
     }
 
     override fun showDeleteButton() {
         hideAddButton()
-        btn_delete.visible()
+        btnDelete?.visible()
     }
 
     override fun hideDeleteButton() {
-        btn_delete.gone()
+        btnDelete?.gone()
     }
 
     override fun setDeleteButtonOnClickListener(onClick: () -> Unit) {
-        btn_delete.setOnClickListener {
+        btnDelete?.setOnClickListener {
             onClick()
         }
     }
 
     override fun setAddButtonOnClickListener(onClick: () -> Unit) {
-        btn_add.setOnClickListener {
+        btnAdd?.setOnClickListener {
             onClick()
         }
     }
@@ -274,6 +296,18 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         return _paymentProfile
     }
 
+    override fun getPaymentAmount(): Double {
+        return _paymentAmount
+    }
+
+    override fun isDirectPaymentStep(): Boolean {
+        return _directPaymentStep
+    }
+
+    override fun isNewFlow(): Boolean {
+        return _isNewFlow
+    }
+
     companion object {
 
         const val EXTRA_PREFERENCE_INDEX = "preference_index"
@@ -282,6 +316,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         const val EXTRA_SHIPPING_ID = "shipping_id"
         const val EXTRA_GATEWAY_CODE = "gateway_code"
         const val EXTRA_PAYMENT_PROFILE = "payment_profile"
+        const val EXTRA_PAYMENT_AMOUNT = "payment_amount"
         const val EXTRA_IS_EXTRA_PROFILE = "is_extra_profile"
 
         const val EXTRA_SHIPPING_PARAM = "shipping_param"
@@ -291,6 +326,13 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         const val FROM_FLOW_OSP = 1
         const val FROM_FLOW_PREF = 0
 
+        const val EXTRA_DIRECT_PAYMENT_STEP = "direct_payment_step"
+
+        const val EXTRA_IS_NEW_FLOW = "is_new_flow"
+
         const val EXTRA_RESULT_MESSAGE = "RESULT_MESSAGE"
+
+        const val EXTRA_RESULT_GATEWAY = "RESULT_GATEWAY"
+        const val EXTRA_RESULT_METADATA = "RESULT_METADATA"
     }
 }

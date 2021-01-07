@@ -3,12 +3,12 @@ package com.tokopedia.product.detail.estimasiongkir.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
-import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
-import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProviderImpl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -31,7 +31,7 @@ class RatesEstimationModule {
 
     @RatesEstimationScope
     @Provides
-    fun provideDispatcherProvider(): DynamicProductDetailDispatcherProvider = DynamicProductDetailDispatcherProviderImpl()
+    fun provideMainDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @RatesEstimationScope
     @Provides

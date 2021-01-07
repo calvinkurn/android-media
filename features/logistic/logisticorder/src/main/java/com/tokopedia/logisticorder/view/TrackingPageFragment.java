@@ -33,6 +33,7 @@ import com.tokopedia.logisticorder.presenter.ITrackingPagePresenter;
 import com.tokopedia.logisticorder.uimodel.AdditionalInfoUiModel;
 import com.tokopedia.logisticorder.uimodel.TrackingUiModel;
 import com.tokopedia.logisticorder.utils.DateUtil;
+import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.ticker.Ticker;
@@ -60,6 +61,7 @@ import rx.schedulers.Schedulers;
 public class TrackingPageFragment extends BaseDaggerFragment implements ITrackingPageFragment {
 
     private static final int PER_SECOND = 1000;
+    private static final int LIVE_TRACKING_VIEW_REQ = 1;
     private static final String ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID";
     private static final String ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL";
     private static final String ARGUMENTS_CALLER = "ARGUMENTS_CALLER";
@@ -169,7 +171,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         initialHistoryView();
         setHistoryView(model);
         setEmptyHistoryView(model);
-        setLiveTrackingButton();
+        setLiveTrackingButton(model);
         setTickerInfoCourier(model);
         mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking();
     }
@@ -334,12 +336,12 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         }
     }
 
-    private void setLiveTrackingButton() {
-        if (TextUtils.isEmpty(mTrackingUrl))
+    private void setLiveTrackingButton(TrackingUiModel model) {
+        if (TextUtils.isEmpty(mTrackingUrl) && TextUtils.isEmpty(model.getTrackingUrl()))
             liveTrackingButton.setVisibility(View.GONE);
         else {
             liveTrackingButton.setVisibility(View.VISIBLE);
-            liveTrackingButton.setOnClickListener(onLiveTrackingClickedListener());
+            liveTrackingButton.setOnClickListener(onLiveTrackingClickedListener(model));
         }
     }
 
@@ -386,11 +388,16 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         mCountDownTimer.start();
     }
 
-    private View.OnClickListener onLiveTrackingClickedListener() {
+    private View.OnClickListener onLiveTrackingClickedListener(TrackingUiModel model) {
         return view -> {
             mAnalytics.eventClickOrderTrackingClickButtonLiveTracking();
-            String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, mTrackingUrl);
-            RouteManager.route(getActivity(), applink);
+            if (getContext() != null) {
+                String trackingUrl = mTrackingUrl;
+                if (TextUtils.isEmpty(trackingUrl)) {
+                    trackingUrl = model.getTrackingUrl();
+                }
+                startActivityForResult(LiveTrackingActivity.Companion.createIntent(getContext(), trackingUrl), LIVE_TRACKING_VIEW_REQ);
+            }
         };
     }
 

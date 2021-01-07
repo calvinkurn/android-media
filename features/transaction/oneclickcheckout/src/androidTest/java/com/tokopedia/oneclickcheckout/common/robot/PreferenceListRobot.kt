@@ -12,6 +12,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.preference.list.view.NewMainPreferenceListViewHolder
 import com.tokopedia.oneclickcheckout.preference.list.view.PreferenceListViewHolder
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -103,7 +104,6 @@ class PreferenceListRobot {
 
     fun assertPreferenceView(position: Int,
                              addressName: String,
-                             addressReceiver: String,
                              addressStreet: String,
                              shippingName: String,
                              shippingDuration: String,
@@ -116,8 +116,7 @@ class PreferenceListRobot {
             override fun getConstraints(): Matcher<View>? = null
 
             override fun perform(uiController: UiController?, view: View) {
-                assertEquals(addressName, view.findViewById<Typography>(R.id.tv_address_name).text)
-                assertEquals(addressReceiver, view.findViewById<Typography>(R.id.tv_address_receiver).text)
+                assertEquals(addressName, view.findViewById<Typography>(R.id.tv_address_name).text.toString())
                 assertEquals(addressStreet, view.findViewById<Typography>(R.id.tv_address_detail).text)
                 assertEquals(shippingName, view.findViewById<Typography>(R.id.tv_shipping_name).text)
                 assertEquals(shippingDuration, view.findViewById<Typography>(R.id.tv_shipping_duration).text)
@@ -176,6 +175,18 @@ class PreferenceListBottomSheetRobot {
 
             override fun perform(uiController: UiController?, view: View) {
                 view.findViewById<Typography>(R.id.tv_choose_preference).callOnClick()
+            }
+        }))
+    }
+
+    fun clickUsePreferenceRevamp(position: Int) {
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<NewMainPreferenceListViewHolder>(position, object : ViewAction {
+            override fun getDescription(): String = "perform click gunakan"
+
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.layout_new_preference_card).callOnClick()
             }
         }))
     }

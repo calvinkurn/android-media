@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewPropertyAnimatorCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -38,7 +39,6 @@ class FloatingTextButton : FrameLayout {
     private var rightIcon: Drawable? = null
     private var background: Int = 0
     private var titleAllCaps: Boolean = false
-    private val animation: ViewPropertyAnimatorCompat? = null
     private var forceHide = false
     var isAnimationStart: Boolean = false
         private set
@@ -101,28 +101,14 @@ class FloatingTextButton : FrameLayout {
         titleView?.text = newTitle
     }
 
-    fun getTitle(): String? {
-        return title
-    }
-
     fun setTitleColor(@ColorInt color: Int) {
         titleColor = color
         titleView?.setTextColor(color)
     }
 
-    @ColorInt
-    fun getTitleColor(): Int {
-        return titleColor
-    }
-
     override fun setBackgroundColor(@ColorInt color: Int) {
         background = color
         container?.setCardBackgroundColor(color)
-    }
-
-    @ColorInt
-    fun getBackgroundColor(): Int {
-        return background
     }
 
     override fun setOnClickListener(listener: View.OnClickListener?) {
@@ -158,7 +144,7 @@ class FloatingTextButton : FrameLayout {
         )
 
         title = styleable.getString(R.styleable.FloatingTextButton_floating_title)
-        titleColor = styleable.getColor(R.styleable.FloatingTextButton_floating_title_color, Color.BLACK)
+        titleColor = styleable.getColor(R.styleable.FloatingTextButton_floating_title_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             leftIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_left_icon)
             rightIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_right_icon)
@@ -170,7 +156,7 @@ class FloatingTextButton : FrameLayout {
             if (drawableRightId != -1)
                 rightIcon = AppCompatResources.getDrawable(context, drawableRightId)
         }
-        background = styleable.getColor(R.styleable.FloatingTextButton_floating_background_color, Color.WHITE)
+        background = styleable.getColor(R.styleable.FloatingTextButton_floating_background_color, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         titleAllCaps = styleable.getBoolean(R.styleable.FloatingTextButton_floating_title_allcaps, false)
         titleView?.isAllCaps = titleAllCaps
         styleable.recycle()
@@ -186,14 +172,6 @@ class FloatingTextButton : FrameLayout {
 
     private fun initDisplayMetrics(context: Context) {
         displayMetric = context.resources.displayMetrics
-    }
-
-    private fun getVerticalPaddingValue(dp: Int): Int {
-        return dp.dpToPx(displayMetric)
-    }
-
-    private fun getHorizontalPaddingValue(dp: Int): Int {
-        return dp.dpToPx(displayMetric)
     }
 
     fun show() {
@@ -276,18 +254,7 @@ class FloatingTextButton : FrameLayout {
         }
     }
 
-    fun forceHide() {
-        forceHide = true
-        hide()
-    }
-
-    fun resetState() {
-        this.forceHide = false
-    }
-
     companion object {
-        private val TAG = FloatingTextButton::class.java.simpleName
-        private val INTERPOLATOR = FastOutSlowInInterpolator()
         private val DURATION = 250L
     }
 }

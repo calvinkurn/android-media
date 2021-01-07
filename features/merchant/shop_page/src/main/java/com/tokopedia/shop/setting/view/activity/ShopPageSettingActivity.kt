@@ -2,10 +2,11 @@ package com.tokopedia.shop.setting.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.view.Menu
-import android.view.MenuItem
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.setting.di.component.DaggerShopPageSettingComponent
@@ -34,6 +35,14 @@ class ShopPageSettingActivity : BaseSimpleActivity(), HasComponent<ShopPageSetti
                 .shopComponent(ShopComponentHelper().getComponent(application, this))
                 .shopPageSettingModule(ShopPageSettingModule())
                 .build()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        toolbar.background = ColorDrawable(
+                MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        )
     }
 
     override fun onBackPressed() {

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_8"
     android:paddingTop="@dimen/dp_16"
@@ -83,7 +83,7 @@
         app:lv_title="@string/shop_info_title_tab_discussion"
         app:lv_title_text_size="@dimen/sp_14"
         app:lv_content_text_size="@dimen/sp_14"
-        app:lv_content_color="@color/tkpd_main_green"
+        app:lv_content_color="@color/Unify_G400"
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"/>
@@ -105,7 +105,7 @@
         app:lv_title="@string/shop_info_label_process_time"
         app:lv_title_text_size="@dimen/sp_14"
         app:lv_content_text_size="@dimen/sp_14"
-        app:lv_content_color="@color/font_black_disabled_38"/>
+        app:lv_content_color="@color/Unify_N700_32"/>
 
     <View
         android:layout_width="match_parent"

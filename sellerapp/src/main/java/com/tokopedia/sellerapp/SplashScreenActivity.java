@@ -17,6 +17,7 @@ import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
+import com.tokopedia.graphql.util.LoggingUtils;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -40,6 +41,7 @@ public class SplashScreenActivity extends SplashScreen {
 
     private boolean isApkTempered;
     private static String KEY_AUTO_LOGIN = "is_auto_login";
+    private static String KEY_CONFIG_RESPONSE_SIZE_LOG = "android_resp_size_log_threshold";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,11 @@ public class SplashScreenActivity extends SplashScreen {
                 }
                 ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
                 if (remainingAppLinks == null || remainingAppLinks.size() == 0) {
+                    Intent intent = RouteManager.getIntent(this, uri.toString());
+                    if (intent!= null &&intent.resolveActivity(this.getPackageManager()) != null) {
+                        startActivity(intent);
+                        return true;
+                    }
                     return false;
                 }
                 new SellerMigrationRedirectionUtil().startRedirectionActivities(this, remainingAppLinks);
@@ -169,6 +176,7 @@ public class SplashScreenActivity extends SplashScreen {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
                 TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
+                LoggingUtils.setResponseSize(remoteConfig.getLong(KEY_CONFIG_RESPONSE_SIZE_LOG));
             }
 
             @Override

@@ -103,7 +103,7 @@ class FlightBookingViewModelTest {
         val returnJourney = viewModel.getReturnJourney()
 
         // then
-        departureJourney.flightClass shouldBe flightDetailModel[0].flightClass
+        departureJourney!!.flightClass shouldBe flightDetailModel[0].flightClass
         departureJourney.countInfant shouldBe flightDetailModel[0].countInfant
         departureJourney.countChild shouldBe flightDetailModel[0].countChild
         departureJourney.countAdult shouldBe flightDetailModel[0].countAdult
@@ -155,7 +155,7 @@ class FlightBookingViewModelTest {
         val returnJourney = viewModel.getReturnJourney()
 
         // then
-        departureJourney.flightClass shouldBe flightDetailModel[0].flightClass
+        departureJourney!!.flightClass shouldBe flightDetailModel[0].flightClass
         departureJourney.countInfant shouldBe flightDetailModel[0].countInfant
         departureJourney.countChild shouldBe flightDetailModel[0].countChild
         departureJourney.countAdult shouldBe flightDetailModel[0].countAdult

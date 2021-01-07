@@ -34,8 +34,10 @@ include "features:category:tradein"
 include "features:category:age_restriction"
 include "features:category:explore_category"
 include "features:category:discovery2"
+include "features:category:category_navbottomsheet"
 
-include "features:digital:digital_browse"
+
+        include "features:digital:digital_browse"
 
 include "features:recharge:common_digital"
 include "features:recharge:digitalproduct"
@@ -51,6 +53,7 @@ include "features:recharge:rechargeocr"
 include "features:recharge:recharge_credit_card"
 include "features:recharge:recharge_slice"
 include "features:recharge:smart_bills"
+include "features:recharge:recharge_component"
 
 include "features:travel:travel_homepage"
 include "features:travel:travel_country_code"
@@ -59,6 +62,7 @@ include "features:travel:flight"
 include "features:travel:flight_orderlist"
 include "features:travel:hotel"
 include "features:travel:common_travel"
+include "features:travel:travel_slice"
 
 include "features:entertainment:event"
 include "features:entertainment:deals"
@@ -180,6 +184,7 @@ include "features:top_ads:top_ads_dashboard"
 include "features:top_ads:top_ads_free_claim"
 include "features:top_ads:top_ads_management_common"
 include "features:top_ads:top_ads_management_sourcetagging"
+include "features:top_ads:top_ads_headline"
 
 include "features:transaction:atc_common"
 include "features:transaction:buyerorder"
@@ -237,3 +242,4 @@ include "tkpdabstraction"
 
 include 'testapp-features:user:logintestapp'
 include 'customerapp'
+include 'customer_mid_app'

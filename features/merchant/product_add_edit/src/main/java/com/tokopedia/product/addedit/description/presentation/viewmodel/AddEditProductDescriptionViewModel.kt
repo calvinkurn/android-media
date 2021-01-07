@@ -6,12 +6,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTP
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTPS
-import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
@@ -29,10 +29,10 @@ import java.lang.reflect.Type
 import javax.inject.Inject
 
 class AddEditProductDescriptionViewModel @Inject constructor(
-        private val coroutineDispatcher: CoroutineDispatchers,
-        private val resource: ResourceProvider,
-        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
-        private val validateProductDescriptionUseCase: ValidateProductDescriptionUseCase
+    private val coroutineDispatcher: CoroutineDispatchers,
+    private val resource: ResourceProvider,
+    private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
+    private val validateProductDescriptionUseCase: ValidateProductDescriptionUseCase
 ) : BaseViewModel(coroutineDispatcher.main) {
 
     private var _productInputModel = MutableLiveData(ProductInputModel())
@@ -41,14 +41,11 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     var isAddMode: Boolean = false
     var isDraftMode: Boolean = false
     var isFirstMoved: Boolean = false
-    val categoryId: String get() {
-        return productInputModel.value?.detailInputModel?.categoryId.orEmpty()
+    val descriptionInputModel: DescriptionInputModel? get() {
+        return productInputModel.value?.descriptionInputModel
     }
-    val descriptionInputModel: DescriptionInputModel get() {
-        return productInputModel.value?.descriptionInputModel ?: DescriptionInputModel()
-    }
-    val variantInputModel: VariantInputModel get() {
-        return productInputModel.value?.variantInputModel ?: VariantInputModel()
+    val variantInputModel: VariantInputModel? get() {
+        return productInputModel.value?.variantInputModel
     }
     val hasVariant: Boolean get() {
         productInputModel.value?.apply {
@@ -134,16 +131,20 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     fun getVariantTypeMessage(position: Int): String {
-        variantInputModel.selections.getOrNull(position)?.let {
-            return it.variantName
+        variantInputModel?.apply {
+            selections.getOrNull(position)?.let {
+                return it.variantName
+            }
         }
         return ""
     }
 
     fun getVariantCountMessage(position: Int): String {
-        variantInputModel.selections.getOrNull(position)?.let {
-            // generate count of variant eg. 4 Varian
-            return "${it.options.size} ${resource.getVariantCountSuffix().orEmpty()}"
+        variantInputModel?.apply {
+            selections.getOrNull(position)?.let {
+                // generate count of variant eg. 4 Varian
+                return "${it.options.size} ${resource.getVariantCountSuffix().orEmpty()}"
+            }
         }
         return ""
     }

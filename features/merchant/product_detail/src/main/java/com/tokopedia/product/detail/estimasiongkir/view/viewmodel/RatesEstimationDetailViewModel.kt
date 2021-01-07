@@ -2,13 +2,13 @@ package com.tokopedia.product.detail.estimasiongkir.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
-import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,7 +20,7 @@ class RatesEstimationDetailViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         @Named(RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION)
         private val rawQuery: String,
-        private val dispatcher: DynamicProductDetailDispatcherProvider): BaseViewModel(dispatcher.ui()){
+        val dispatcher: CoroutineDispatchers): BaseViewModel(dispatcher.main){
 
     val rateEstResp =  MutableLiveData<Result<RatesEstimationModel>>()
 
@@ -35,7 +35,7 @@ class RatesEstimationDetailViewModel @Inject constructor(
         val request = GraphqlRequest(rawQuery, RatesEstimationModel.Response::class.java, params)
 
         launchCatchError(block = {
-            val result = withContext(dispatcher.io()){
+            val result = withContext(dispatcher.io){
                 val resp = graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<RatesEstimationModel.Response>().data?.data ?: throw NullPointerException()
 

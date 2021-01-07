@@ -20,7 +20,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -57,11 +56,13 @@ import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputList
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel.Companion.NULL_PRODUCT_ERROR
+import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -92,6 +93,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private lateinit var favoriteNumbers: List<TopupBillsFavNumberItem>
     private var inputData: HashMap<String, String> = hashMapOf()
     private var inputDataKeys = mutableListOf<String>()
+
+    var rechargeProductFromSlice: String = ""
 
     private var operatorId: Int = 0
     set(value) {
@@ -171,6 +174,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             operatorId = it.getInt(EXTRA_PARAM_OPERATOR_ID, 0)
             selectedProduct = it.getParcelable(EXTRA_PARAM_PRODUCT)
             hasInputData = operatorId > 0
+            rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA, "")
         }
     }
 
@@ -221,7 +225,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     } else {
                         hideLoading()
                     }
-                    NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.selection_null_product_error))
+                    view?.let { v ->
+                        Toaster.build(v, getString(R.string.selection_null_product_error), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
                 }
             }
         })
@@ -250,6 +257,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             selectedProduct = savedInstanceState.getParcelable(EXTRA_PARAM_PRODUCT)
             inputData = (savedInstanceState.getSerializable(EXTRA_PARAM_INPUT_DATA) as? HashMap<String, String>) ?: inputData
             inputDataKeys = savedInstanceState.getStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS)?.toMutableList() ?: inputDataKeys
+        }
+
+        if(rechargeProductFromSlice.isNotEmpty()){
+            rechargeGeneralAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
+            rechargeGeneralAnalytics.onOpenPageFromSlice()
+
         }
 
         rv_digital_product.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -692,6 +705,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             tab_layout.customTabGravity = TabLayout.GRAVITY_FILL
 
             if (listProductTab.size > 1) {
+                tab_layout.getUnifyTabLayout().removeAllTabs()
                 for (item in listProductTab) {
                     tab_layout.addNewTab(item.title)
                 }
@@ -897,7 +911,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onEnquiryError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     override fun onMenuDetailError(error: Throwable) {
@@ -913,11 +930,17 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onCheckVoucherError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     private fun renderCheckoutView(data: TopupBillsEnquiry) {
@@ -1079,13 +1102,15 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         fun newInstance(categoryId: Int,
                         menuId: Int,
                         operatorId: Int = 0,
-                        selectedProduct: String = ""): RechargeGeneralFragment {
+                        selectedProduct: String = "",
+                        rechargeProductFromSlice: String = ""): RechargeGeneralFragment {
             val fragment = RechargeGeneralFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
             bundle.putInt(EXTRA_PARAM_MENU_ID, menuId)
             bundle.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
             bundle.putString(EXTRA_PARAM_PRODUCT, selectedProduct)
+            bundle.putString(RECHARGE_PRODUCT_EXTRA, rechargeProductFromSlice)
             fragment.arguments = bundle
             return fragment
         }

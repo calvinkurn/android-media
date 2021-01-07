@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataSource
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.VoucherTargetValidationUseCase
@@ -16,7 +16,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -43,7 +42,7 @@ class MerchantVoucherTargetViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = MerchantVoucherTargetViewModel(TestCoroutineDispatchers, voucherTargetValidationUseCase)
+        mViewModel = MerchantVoucherTargetViewModel(CoroutineTestDispatchersProvider, voucherTargetValidationUseCase)
     }
 
     @Test
@@ -139,8 +138,6 @@ class MerchantVoucherTargetViewModelTest {
 
         mViewModel.validateVoucherTarget(anyString(), anyString())
 
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             voucherTargetValidationUseCase.executeOnBackground()
         }
@@ -157,8 +154,6 @@ class MerchantVoucherTargetViewModelTest {
         } throws dummyThrowable
 
         mViewModel.validateVoucherTarget(anyString(), anyString())
-
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             voucherTargetValidationUseCase.executeOnBackground()

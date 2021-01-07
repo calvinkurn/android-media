@@ -2,7 +2,15 @@ package com.tokopedia.discovery2
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.net.Uri
+import android.os.Build
+import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,7 +31,8 @@ const val TRANSPARENT_BLACK = "transparentBlack"
 const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
 const val PDP_APPLINK = "tokopedia://product/"
-val TIME_DISPLAY_FORMAT = "%1$02d"
+const val TIME_DISPLAY_FORMAT = "%1$02d"
+const val DEFAULT_TIME_DATA : Long = 0
 
 class Utils {
 
@@ -85,13 +94,13 @@ class Utils {
             }
         }
 
-        fun getQueryMap(componentId: String, pageIdentifier: String, rpcDiscoQuery: Map<String, String?>?): Map<String, Any> {
+        fun getQueryMap(componentId: String, pageIdentifier: String): Map<String, Any> {
             val queryParameterMap = mutableMapOf<String, Any>()
             queryParameterMap[IDENTIFIER] = pageIdentifier
             queryParameterMap[DEVICE] = DEVICE_VALUE
             queryParameterMap[COMPONENT_ID] = componentId
 
-            rpcDiscoQuery?.let { map ->
+            discoComponentQuery?.let { map ->
                 val queryString = StringBuilder()
                 map.forEach { (key, value) ->
                     if (!value.isNullOrEmpty()) {
@@ -159,6 +168,41 @@ class Utils {
                     return "${date}T${time}"
             }
             return ""
+        }
+
+        fun parsedColor(context: Context, fontColor: String, defaultColor: Int): Int {
+            return try {
+                Color.parseColor(fontColor)
+            } catch (exception: Exception) {
+                MethodChecker.getColor(context, defaultColor)
+            }
+        }
+
+        fun setTimerBoxDynamicBackground(view: View, color: Int) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    view.background.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_ATOP)
+                } else {
+                    view.background.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+                }
+            } catch (exception: Exception) {
+                view.setBackgroundColor(MethodChecker.getColor(view.context, color))
+            }
+        }
+
+        fun getElapsedTime(endDate: String): Long {
+            if (endDate.isNotEmpty()) {
+                try {
+                    TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE))
+                    val currentSystemTime = Calendar.getInstance().time
+                    SimpleDateFormat(TIMER_DATE_FORMAT, Locale.getDefault()).parse(endDate)?.let {
+                        return it.time - currentSystemTime.time
+                    }
+                } catch (e: Exception) {
+                    return DEFAULT_TIME_DATA
+                }
+            }
+            return DEFAULT_TIME_DATA
         }
     }
 }

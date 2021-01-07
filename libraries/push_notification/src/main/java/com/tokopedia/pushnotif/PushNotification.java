@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,17 +21,12 @@ import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
-import com.tokopedia.pushnotif.listener.AllowToRenderListener;
 import com.tokopedia.pushnotif.util.NotificationTracker;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import androidx.core.app.NotificationManagerCompat;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase.STATUS_DELIVERED;
@@ -50,79 +46,82 @@ public class PushNotification {
     public static void notify(Context context, Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
 
-        isRenderable(context, applinkNotificationModel, isAllowToShowNotification -> {
-            if (isAllowToShowNotification) {
-                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-                int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
-                logEvent(context, applinkNotificationModel, data,
-                        "ApplinkNotificationHelper.allowToShow == true"
-                                + "; id " + notificationId
-                                + "; v " + Build.VERSION.SDK_INT
-                                + "; en " + isNotificationEnabled(context)
-                                + "; bl " + isAllowBell(context));
+        if (isAllowToRender(context, applinkNotificationModel)) {
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+            int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
+            logEvent(context, applinkNotificationModel, data,
+                    "ApplinkNotificationHelper.allowToShow == true"
+                            + "; id " + notificationId
+                            + "; v " + Build.VERSION.SDK_INT
+                            + "; en " + isNotificationEnabled(context)
+                            + "; bl " + isAllowBell(context));
 
-                if (notificationId == Constant.NotificationId.TALK) {
-                    notifyTalk(context, applinkNotificationModel, notificationId, notificationManagerCompat);
-                } else if (notificationId == Constant.NotificationId.CHAT) {
-                    notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
-                } else if (notificationId == Constant.NotificationId.GROUPCHAT) {
-                    notifyGroupChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
-                } else if (notificationId == Constant.NotificationId.CHAT_BOT) {
-                    if (!isChatBotWindowOpen)
-                        notifyChatbot(context, applinkNotificationModel, notificationId, notificationManagerCompat);
-                } else if (notificationId == Constant.NotificationId.REVIEW) {
-                    notifyReview(context, applinkNotificationModel, notificationId, notificationManagerCompat);
-                } else {
-                    notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
-                }
-                if (isNotificationEnabled(context)) {
-                    NotificationTracker
-                            .getInstance(context)
-                            .trackDeliveredNotification(applinkNotificationModel, STATUS_DELIVERED);
-                }
+            if (notificationId == Constant.NotificationId.TALK) {
+                notifyTalk(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else if (notificationId == Constant.NotificationId.CHAT) {
+                notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else if (notificationId == Constant.NotificationId.GROUPCHAT) {
+                notifyGroupChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else if (notificationId == Constant.NotificationId.CHAT_BOT) {
+                if (!isChatBotWindowOpen)
+                    notifyChatbot(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else if (notificationId == Constant.NotificationId.REVIEW) {
+                notifyReview(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else {
-                UserSessionInterface userSession = new UserSession(context);
-                String loginId = userSession.getUserId();
-                logEvent(context, applinkNotificationModel, data,
-                        "ApplinkNotificationHelper.allowToShow == false"
-                                + "; sam " + applinkNotificationModel.getToUserId().equals(loginId)
-                                + "; loc " + ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode())
-                                + "; app " + ApplinkNotificationHelper.isTargetApp(applinkNotificationModel)
-                                + "; uid " + loginId
-                );
+                notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            }
+            if (isNotificationEnabled(context)) {
                 NotificationTracker
                         .getInstance(context)
-                        .trackDeliveredNotification(applinkNotificationModel, STATUS_DROPPED);
+                        .trackDeliveredNotification(applinkNotificationModel, STATUS_DELIVERED);
             }
-        });
+            fetchSellerAppWidgetData(context, notificationId);
+        } else {
+            UserSessionInterface userSession = new UserSession(context);
+            String loginId = userSession.getUserId();
+            logEvent(context, applinkNotificationModel, data,
+                    "ApplinkNotificationHelper.allowToShow == false"
+                            + "; sam " + applinkNotificationModel.getToUserId().equals(loginId)
+                            + "; loc " + ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode())
+                            + "; app " + ApplinkNotificationHelper.isTargetApp(applinkNotificationModel)
+                            + "; uid " + loginId
+            );
+            NotificationTracker
+                    .getInstance(context)
+                    .trackDeliveredNotification(applinkNotificationModel, STATUS_DROPPED);
+        }
     }
 
-    private static void isRenderable(
-            Context context,
-            ApplinkNotificationModel applinkNotificationModel,
-            AllowToRenderListener listener
-    ) {
+    private static void fetchSellerAppWidgetData(Context context, int notificationId) {
+        if (!GlobalConfig.isSellerApp()) return;
+
+        if (notificationId == Constant.NotificationId.CHAT) {
+            sendBroadcast(context, Constant.IntentFilter.GET_CHAT_SELLER_APP_WIDGET_DATA);
+        } else if (notificationId == Constant.NotificationId.SELLER) {
+            sendBroadcast(context, Constant.IntentFilter.GET_ORDER_SELLER_APP_WIDGET_DATA);
+        }
+    }
+
+    private static void sendBroadcast(Context context, String actionName) {
+        try {
+            Intent intent = new Intent();
+            intent.setAction(actionName);
+            intent.setPackage(context.getPackageName());
+            context.sendBroadcast(intent);
+        } catch (Exception e) {
+            Timber.i(e);
+        }
+    }
+
+    private static boolean isAllowToRender(Context context, ApplinkNotificationModel applinkNotificationModel) {
         UserSessionInterface userSession = new UserSession(context);
         String loginId = userSession.getUserId();
         Boolean sameUserId = applinkNotificationModel.getToUserId().equals(loginId);
         Boolean allowInLocalNotificationSetting = ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
+        Boolean isRenderable = TransactionRepository.isRenderable(context, applinkNotificationModel.getTransactionId());
         Boolean isTargetApp = ApplinkNotificationHelper.isTargetApp(applinkNotificationModel);
 
-        Observable.just(true)
-                .subscribeOn(Schedulers.io())
-                .map(aBoolean -> TransactionRepository.isRenderable(
-                        context,
-                        applinkNotificationModel.getTransactionId()
-                ))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Boolean>() {
-                    @Override public void onNext(Boolean isRenderable) {
-                        listener.allowToRender(sameUserId && allowInLocalNotificationSetting && isTargetApp && isRenderable);
-                    }
-
-                    @Override public void onCompleted() {}
-                    @Override public void onError(Throwable e) {}
-                });
+        return sameUserId && allowInLocalNotificationSetting && isTargetApp && isRenderable;
     }
 
     private static void logEvent(Context context, ApplinkNotificationModel model, Bundle data, String message) {

@@ -10,13 +10,13 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 object TrackingUserMenuSection: BaseTrackerConst() {
     private const val ACTION_CLICK_ON_USER_MENU = "click on user menu"
 
-    fun clickOnUserMenu(userMenuName: String, userId: String) {
+    fun clickOnUserMenu(menuTrackerName: String, userId: String) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
                 event = EVENT_CLICK_NAVIGATION_DRAWER,
                 eventCategory = CATEGORY_GLOBAL_MENU,
                 eventAction = ACTION_CLICK_ON_USER_MENU,
-                eventLabel = userMenuName
+                eventLabel = menuTrackerName
         )
         trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
         trackingBuilder.appendUserId(userId)

@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.description.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -210,7 +209,7 @@ class AddEditProductDescriptionFragment:
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         textFieldDescription.setCounter(MAX_DESCRIPTION_CHAR)
         textFieldDescription.textFieldInput.apply {
@@ -542,8 +541,8 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun applyEditMode() {
-        val description = descriptionViewModel.descriptionInputModel.productDescription
-        val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
+        val description = descriptionViewModel.descriptionInputModel?.productDescription ?: ""
+        val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList ?: emptyList()
 
         textFieldDescription.setText(description)
         if (videoLinks.isNotEmpty()) {

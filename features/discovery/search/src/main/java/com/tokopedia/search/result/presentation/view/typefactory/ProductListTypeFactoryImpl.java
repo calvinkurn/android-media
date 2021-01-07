@@ -20,6 +20,7 @@ import com.tokopedia.search.result.presentation.model.RecommendationItemViewMode
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
@@ -39,13 +40,13 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationTitleViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchInTokopediaViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductCountViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTopAdsImageViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SeparatorViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTitleViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder;
-import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
@@ -57,6 +58,7 @@ import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaL
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
+import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener;
 import com.tokopedia.topads.sdk.base.Config;
 
 public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implements ProductListTypeFactory {
@@ -68,12 +70,12 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     private final BannerAdsListener bannerAdsListener;
     private final EmptyStateListener emptyStateListener;
     private final RecommendationListener recommendationListener;
-    private final BannedProductsRedirectToBrowserListener bannedProductsRedirectToBrowserListener;
     private final InspirationCarouselListener inspirationCarouselListener;
     private final BroadMatchListener broadMatchListener;
     private final InspirationCardListener inspirationCardListener;
     private final SearchInTokopediaListener searchInTokopediaListener;
     private final SearchNavigationClickListener searchNavigationListener;
+    private final TopAdsImageViewListener topAdsImageViewListener;
     private final Config topAdsConfig;
     private int recyclerViewItem;
 
@@ -84,12 +86,12 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
                                       BannerAdsListener bannerAdsListener,
                                       EmptyStateListener emptyStateListener,
                                       RecommendationListener recommendationListener,
-                                      BannedProductsRedirectToBrowserListener bannedProductsRedirectToBrowserListener,
                                       InspirationCarouselListener inspirationCarouselListener,
                                       BroadMatchListener broadMatchListener,
                                       InspirationCardListener inspirationCardListener,
                                       SearchInTokopediaListener searchInTokopediaListener,
                                       SearchNavigationClickListener searchNavigationListener,
+                                      TopAdsImageViewListener topAdsImageViewListener,
                                       Config config) {
 
         this.productListener = productListener;
@@ -99,13 +101,13 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
         this.bannerAdsListener = bannerAdsListener;
         this.emptyStateListener = emptyStateListener;
         this.recommendationListener = recommendationListener;
-        this.bannedProductsRedirectToBrowserListener = bannedProductsRedirectToBrowserListener;
         this.topAdsConfig = config;
         this.inspirationCarouselListener = inspirationCarouselListener;
         this.broadMatchListener = broadMatchListener;
         this.inspirationCardListener = inspirationCardListener;
         this.searchInTokopediaListener = searchInTokopediaListener;
         this.searchNavigationListener = searchNavigationListener;
+        this.topAdsImageViewListener = topAdsImageViewListener;
     }
 
     @Override
@@ -224,6 +226,11 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     }
 
     @Override
+    public int type(SearchProductTopAdsImageViewModel searchProductTopAdsImageViewModel) {
+        return SearchProductTopAdsImageViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
@@ -252,9 +259,9 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
         } else if(type == RecommendationItemViewHolder.LAYOUT){
             viewHolder = new RecommendationItemViewHolder(view, recommendationListener);
         } else if (type == BannedProductsEmptySearchViewHolder.LAYOUT) {
-            viewHolder = new BannedProductsEmptySearchViewHolder(view, bannedProductsRedirectToBrowserListener);
+            viewHolder = new BannedProductsEmptySearchViewHolder(view);
         } else if (type == BannedProductsTickerViewHolder.LAYOUT) {
-            viewHolder = new BannedProductsTickerViewHolder(view, bannedProductsRedirectToBrowserListener);
+            viewHolder = new BannedProductsTickerViewHolder(view);
         } else if (type == BroadMatchViewHolder.LAYOUT) {
             viewHolder = new BroadMatchViewHolder(view, broadMatchListener);
         } else if (type == SmallGridInspirationCardViewHolder.LAYOUT) {
@@ -269,6 +276,8 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
             viewHolder = new SearchInTokopediaViewHolder(view, searchInTokopediaListener);
         } else if (type == SearchProductCountViewHolder.LAYOUT) {
             viewHolder = new SearchProductCountViewHolder(view, searchNavigationListener);
+        } else if (type == SearchProductTopAdsImageViewHolder.LAYOUT) {
+            viewHolder = new SearchProductTopAdsImageViewHolder(view, topAdsImageViewListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

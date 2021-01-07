@@ -88,11 +88,9 @@ public interface ProductListSectionContract {
 
         void sendTrackingForNoResult(String resultCode, String alternativeKeyword, String keywordProcess);
 
-        void setDefaultLayoutType(int defaultView);
+        void setDefaultLayoutType(int changeViewPosition, int defaultView);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
-
-        void redirectToBrowser(String url);
 
         void showRefreshLayout();
 
@@ -101,8 +99,6 @@ public interface ProductListSectionContract {
         String getScreenNameId();
 
         boolean isFirstActiveTab();
-
-        void setupSearchNavigation();
 
         void trackScreenAuthenticated();
 
@@ -205,8 +201,6 @@ public interface ProductListSectionContract {
 
         void loadData(Map<String, Object> searchParameter);
 
-        void onBannedProductsGoToBrowserClick(String url);
-
         String getUserId();
 
         boolean isUserLoggedIn();
@@ -234,9 +228,6 @@ public interface ProductListSectionContract {
         void onProductClick(ProductItemViewModel item, int adapterPosition);
 
         List<Option> getQuickFilterOptionList();
-
-        @Nullable
-        DynamicFilterModel getDynamicFilterModel();
 
         void getProductCount(Map<String, String> mapParameter);
 

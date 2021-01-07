@@ -208,7 +208,7 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
 
         if (getPassengerTitle().isNullOrBlank()) {
             view?.let {
-                Toaster.showError(it, getString(R.string.umrah_checkout_pilgrims_title_error), Snackbar.LENGTH_LONG)
+                Toaster.build(it, getString(R.string.umrah_checkout_pilgrims_title_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
             }
             isValid = false
         }

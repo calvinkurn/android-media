@@ -29,18 +29,20 @@
       "businessUnit": "travel & entertainment",
       "item_list": "/hotel/",
       "category": "hotel",
-      "items": [ {
-        "item_id": "{{.+}}",
-        "price": "{{\\d*.\\d*}}",
-        "dimension40": "/hotel/",
-        "index": "{{.+}}",
-        "item_name": "{{.+}}",
-        "item_brand":  "none / other",
-        "item_variant": "{{.+}}",
-        "item_category": "Hotel"
-      }
+      "items": [
+        {
+          "item_id": "{{.+}}",
+          "price": "{{.+}}",
+          "dimension40": "/hotel/",
+          "index": "{{.+}}",
+          "item_name": "{{.+}}",
+          "item_brand": "none / other",
+          "item_variant": "{{.+}}",
+          "item_category": "Hotel"
+        }
       ]
-    },{
+    },
+    {
       "event": "clickHotel",
       "eventCategory": "digital - native",
       "eventAction": "click hotel photo",
@@ -65,7 +67,8 @@
       "userId": "{{.*}}",
       "businessUnit": "travel & entertainment",
       "category": "hotel"
-    },{
+    },
+    {
       "event": "clickHotel",
       "eventCategory": "digital - native",
       "eventAction": "choose view room",

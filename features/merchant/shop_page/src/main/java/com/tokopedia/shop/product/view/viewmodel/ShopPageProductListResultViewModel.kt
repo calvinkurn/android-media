@@ -21,13 +21,13 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
-import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopStickySortFilter
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
@@ -37,7 +37,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
@@ -48,12 +47,12 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                                              private val getShopProductUseCase: GqlGetShopProductUseCase,
                                                              private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
                                                              private val shopProductSortMapper: ShopProductSortMapper,
-                                                             private val dispatcherProvider: CoroutineDispatcherProvider,
+                                                             private val dispatcherProvider: CoroutineDispatchers,
                                                              private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
                                                              private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
                                                              private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
                                                              private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
-) : BaseViewModel(dispatcherProvider.main()) {
+) : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
 
@@ -69,22 +68,24 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     val bottomSheetFilterLiveData = MutableLiveData<Result<DynamicFilterModel>>()
     val shopProductFilterCountLiveData = MutableLiveData<Result<Int>>()
 
-    private val _productDataEmpty = MutableLiveData<Result<List<ShopProductViewModel>>>()
-    val productDataEmpty: LiveData<Result<List<ShopProductViewModel>>>
+    private val _productDataEmpty = MutableLiveData<Result<List<ShopProductUiModel>>>()
+    val productDataEmpty: LiveData<Result<List<ShopProductUiModel>>>
         get() = _productDataEmpty
 
     private val _restrictionEngineData = MutableLiveData<Result<RestrictValidateRestriction>>()
     val restrictionEngineData: LiveData<Result<RestrictValidateRestriction>>
         get() = _restrictionEngineData
 
-    fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
-        val id = shopId?.toIntOrNull() ?: 0
-        if (id == 0 && shopDomain == null) return
+    private var shopSortList = mutableListOf<ShopProductSortModel>()
+
+    fun getShop(shopId: String?, shopDomain: String? = "", isRefresh: Boolean = false) {
+        val id = shopId.toIntOrZero()
+        if (id == 0 && shopDomain == "") return
         launchCatchError(block = {
             getShopInfoUseCase.params = GQLGetShopInfoUseCase
                     .createParams(if (id == 0) listOf() else listOf(id), shopDomain, source = SHOP_PRODUCT_LIST_RESULT_SOURCE)
             getShopInfoUseCase.isFromCacheFirst = !isRefresh
-            val shopInfo = withContext(dispatcherProvider.io()) { getShopInfoUseCase.executeOnBackground() }
+            val shopInfo = withContext(dispatcherProvider.io) { getShopInfoUseCase.executeOnBackground() }
             shopInfoResp.value = Success(shopInfo)
         }) {
             shopInfoResp.value = Fail(it)
@@ -94,7 +95,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     fun getShopRestrictionInfo(input: RestrictionEngineRequestParams) {
         launchCatchError(block = {
             restrictionEngineNplUseCase.params = RestrictionEngineNplUseCase.createRequestParams(input)
-            val restrictionEngineResponse = withContext(dispatcherProvider.io()) {
+            val restrictionEngineResponse = withContext(dispatcherProvider.io) {
                 restrictionEngineNplUseCase.executeOnBackground()
             }
             _restrictionEngineData.value = Success(restrictionEngineResponse)
@@ -129,7 +130,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             shopProductFilterParameter: ShopProductFilterParameter
     ) {
         launchCatchError(block = {
-            val getProductResp = withContext(dispatcherProvider.io()) {
+            val getProductResp = withContext(dispatcherProvider.io) {
                 getShopProductData(
                         shopId,
                         ShopProductFilterInput(
@@ -162,7 +163,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             isForceRefresh: Boolean = true
     ) {
         launchCatchError(block = {
-            val getProductResp = withContext(Dispatchers.IO) {
+            val getProductResp = withContext(dispatcherProvider.io) {
                 val productFilter = ShopProductFilterInput(page, perPage, search, etalase, sortId)
                 getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId,
                         productFilter)
@@ -178,9 +179,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     fun clearCache() {
         getShopEtalaseByShopUseCase.clearCache()
-        getShopInfoUseCase
         clearGetShopProductUseCase()
-
     }
 
     fun clearGetShopProductUseCase() {
@@ -194,7 +193,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     ) {
         launchCatchError(coroutineContext, block = {
             val etalaseResponse = asyncCatchError(
-                    dispatcherProvider.io(),
+                    dispatcherProvider.io,
                     block = {
                         getShopEtalaseData(shopInfo.shopCore.shopID, isOwner, isForceRefresh)
                     },
@@ -204,7 +203,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                     }
             )
             val sortResponse  = asyncCatchError(
-                    dispatcherProvider.io(),
+                    dispatcherProvider.io,
                     block = {
                         getSortListData()
                     },
@@ -215,6 +214,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             )
             etalaseResponse.await()?.let { etalase ->
                 sortResponse.await()?.let{sort ->
+                    shopSortList = sort
                     shopSortFilterData.postValue(Success(ShopStickySortFilter(etalase, sort)))
                 }
             }
@@ -223,7 +223,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         }
     }
 
-    private fun getShopEtalaseData(shopId: String, isOwner: Boolean, isNeedToReloadData: Boolean = false): List<ShopEtalaseItemDataModel> {
+    private fun getShopEtalaseData(shopId: String, isOwner: Boolean, isNeedToReloadData: Boolean): List<ShopEtalaseItemDataModel> {
         val params: RequestParams = if (isOwner) {
             GetShopEtalaseByShopUseCase.createRequestParams(
                     shopId,
@@ -247,7 +247,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     private suspend fun getShopProductData(
             shopId: String,
             productFilter: ShopProductFilterInput,
-            isForceRefresh: Boolean = false,
+            isForceRefresh: Boolean,
             etalaseType: Int
     ): GetShopProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, productFilter)
@@ -270,7 +270,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     fun getBottomSheetFilterData() {
         launchCatchError(coroutineContext, block = {
-            val filterBottomSheetData = withContext(dispatcherProvider.io()) {
+            val filterBottomSheetData = withContext(dispatcherProvider.io) {
                 getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams()
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
             }
@@ -287,11 +287,13 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     fun getFilterResultCount(shopId: String, searchKeyword: String, etalaseId: String, tempShopProductFilterParameter: ShopProductFilterParameter) {
         launchCatchError(block = {
-            val filterResultProductCount = withContext(dispatcherProvider.io()) {
+            val filterResultProductCount = withContext(dispatcherProvider.io) {
                 getFilterResultCountData(shopId, searchKeyword, etalaseId, tempShopProductFilterParameter)
             }
             shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
-        }) {}
+        }) {
+            shopProductFilterCountLiveData.postValue(Fail(it))
+        }
     }
 
     private suspend fun getFilterResultCountData(
@@ -318,7 +320,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     }
 
     fun getSortNameById(sortId: String): String {
-        return (shopSortFilterData.value as? Success)?.data?.sortList?.firstOrNull {
+        return shopSortList.firstOrNull {
             it.value == sortId
         }?.name.orEmpty()
     }

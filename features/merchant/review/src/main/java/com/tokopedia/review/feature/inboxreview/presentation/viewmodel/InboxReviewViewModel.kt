@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.review.common.util.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.prefixRating
 import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
@@ -26,10 +26,10 @@ import java.util.*
 import javax.inject.Inject
 
 class InboxReviewViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatcherProvider,
-        private val getInboxReviewUseCase: GetInboxReviewUseCase,
-        val userSession: UserSessionInterface
-) : BaseViewModel(dispatcherProvider.main()) {
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getInboxReviewUseCase: GetInboxReviewUseCase,
+    val userSession: UserSessionInterface
+) : BaseViewModel(dispatcherProvider.main) {
 
     private val _inboxReview = MutableLiveData<Result<InboxReviewUiModel>>()
     val inboxReview: LiveData<Result<InboxReviewUiModel>>
@@ -85,7 +85,7 @@ class InboxReviewViewModel @Inject constructor(
 
     fun getInboxReview(page: Int = 1) {
         launchCatchError(block = {
-            val inboxReviewResult = withContext(dispatcherProvider.io()) {
+            val inboxReviewResult = withContext(dispatcherProvider.io) {
                 getInboxReviewUseCase.params = GetInboxReviewUseCase.createParams(
                         filterByList.getGeneratedFilterByText,
                         page
@@ -102,7 +102,7 @@ class InboxReviewViewModel @Inject constructor(
 
     fun getInitInboxReview(page: Int = 1, statusFilter: String = UNANSWERED_VALUE) {
         launchCatchError(block = {
-            val inboxReviewResult = withContext(dispatcherProvider.io()) {
+            val inboxReviewResult = withContext(dispatcherProvider.io) {
 
                 val statusFilterTextGenerated = "$prefixStatus$statusFilter"
                 filterByList.removeFilterElement(prefixStatus)
@@ -133,7 +133,7 @@ class InboxReviewViewModel @Inject constructor(
                 filterByList.add(statusFilterTextGenerated)
             }
 
-            val feedbackInboxReviewList = withContext(dispatcherProvider.io()) {
+            val feedbackInboxReviewList = withContext(dispatcherProvider.io) {
                 getInboxReviewUseCase.params = GetInboxReviewUseCase.createParams(
                         filterByList.getGeneratedFilterByText,
                         page
@@ -193,7 +193,7 @@ class InboxReviewViewModel @Inject constructor(
 
     fun getFeedbackInboxReviewListNext(page: Int) {
         launchCatchError(block = {
-            val feedbackInboxReviewList = withContext(dispatcherProvider.io()) {
+            val feedbackInboxReviewList = withContext(dispatcherProvider.io) {
                 getInboxReviewUseCase.params = GetInboxReviewUseCase.createParams(
                         filterByList.getGeneratedFilterByText,
                         page

@@ -148,7 +148,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private val coachMarkToShow: MutableSet<CoachMarkItem> = mutableSetOf()
 
     private val FLAG_DETAIL = 3333
-    private val FLAG_CONFIRM_REQ_PICKUP = 3553
     private val ANIMATION_DURATION_IN_MILIS = 250L
     private val ANIMATION_TYPE = "translationY"
     private val TRANSLATION_LENGTH = 500f
@@ -642,7 +641,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
             if (it.isChecked || tabActive.equals(it.key, true) || paramOrder.statusList == it.orderStatusIdList) {
                 currentIndex = index
-                filterItem.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green)
+                filterItem.setColorBorder(com.tokopedia.unifyprinciples.R.color.Unify_G400)
                 filterItem.isSelected = true
                 if (it.key.equals(STATUS_ALL_ORDER, true) ||
                         it.key.equals(STATUS_DONE, true) ||

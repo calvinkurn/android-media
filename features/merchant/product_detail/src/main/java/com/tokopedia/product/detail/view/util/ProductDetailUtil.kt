@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.data.model.description.DescriptionData
+import com.tokopedia.product.info.model.description.DescriptionData
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.getTypeface
@@ -64,7 +64,7 @@ object ProductDetailUtil {
             shopName = productInfo.basic.shopName,
             thumbnailPicture = productInfo.data.getFirstProductImage() ?: "",
             basicDescription = textDescription,
-            videoUrlList = productInfo.data.videos.map { it.url },
+            videoUrlList = productInfo.data.youtubeVideos.map { it.url },
             isOfficial = productInfo.data.isOS,
             isGoldMerchant = productInfo.data.isPowerMerchant)
 
@@ -239,9 +239,6 @@ infix fun String?.toDateId(format: String): String {
     }
     return ""
 }
-
-fun ArrayList<String>.asThrowable(): Throwable = Throwable(message = this.firstOrNull()?.toString()
-        ?: "")
 
 fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fail: Throwable) -> Unit) {
     when (this) {
