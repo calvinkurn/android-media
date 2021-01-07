@@ -121,4 +121,18 @@ class KeywordAdsViewModelTest {
     }
 
 
+    @Test
+    fun `test searchKeyword if query is null`() {
+
+        every { userSession.shopId } returns "2"
+
+        mockkStatic(GraphqlHelper::class)
+        every { GraphqlHelper.loadRawString(any(), any()) } returns null
+
+        viewModel.searchKeyword(keyword = "keyword", product_ids = "productIds") {}
+
+        verify(exactly = 0) { searchKeywordUseCase.execute(any(), any()) }
+    }
+
+
 }
