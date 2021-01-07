@@ -390,7 +390,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         intent.putExtra(EXTRA_LONG, long)
         intent.putExtra(EXTRA_WAREHOUSE_DATA, warehouseDataModel)
         intent.putExtra(EXTRA_IS_EDIT_WAREHOUSE, true)
-        intent.putExtra(EXTRA_IS_POLYGON, true)
         startActivityForResult(intent, OPEN_MAP_REQUEST_CODE)
     }
 

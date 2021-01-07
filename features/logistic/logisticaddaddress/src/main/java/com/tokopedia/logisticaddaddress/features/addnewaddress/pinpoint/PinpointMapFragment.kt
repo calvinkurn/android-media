@@ -52,6 +52,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
@@ -646,11 +647,15 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     private fun setResultPinpoint() {
         saveAddressDataModel?.editDetailAddress = et_detail_address?.text.toString()
-        activity?.run {
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(EXTRA_ADDRESS_MODEL, saveAddressDataModel)
-            })
-            finish()
+        if (isEditWarehouse && saveAddressDataModel?.districtId != warehouseDataModel?.districtId) {
+            view?.let { Toaster.build(it, "Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.", Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
+        } else {
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(EXTRA_ADDRESS_MODEL, saveAddressDataModel)
+                })
+                finish()
+            }
         }
     }
 
