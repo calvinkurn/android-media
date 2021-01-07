@@ -38,6 +38,8 @@ class TalkTemplateViewModel @Inject constructor(
             val response = arrangeTemplateUseCase.executeOnBackground()
             if(response.chatMoveTemplate.success.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
+            } else {
+                _templateMutation.postValue(TalkTemplateMutationResults.RearrangeTemplateFailed)
             }
         }) {
             _templateMutation.postValue(TalkTemplateMutationResults.RearrangeTemplateFailed)
@@ -50,6 +52,8 @@ class TalkTemplateViewModel @Inject constructor(
             val response = enableTemplateUseCase.executeOnBackground()
             if(response.chatToggleTemplate.success.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
+            } else {
+                _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
             }
         }) {
             _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)

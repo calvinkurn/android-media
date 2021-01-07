@@ -19,6 +19,8 @@ import com.tokopedia.talk.feature.reply.data.model.report.TalkReportTalkResponse
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudSuccess
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkNotFraudResponseWrapper
+import com.tokopedia.talk.feature.sellersettings.template.data.ChatTemplatesAll
+import com.tokopedia.talk.feature.sellersettings.template.data.GetAllTemplateResponseWrapper
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -28,6 +30,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import junit.framework.Assert.assertEquals
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.anyString
 
 class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
@@ -427,6 +430,30 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
         verifyReportTalkErrorEquals(Fail(expectedResponse))
     }
 
+    @Test
+    fun `when getTemplateList success should execute expected use case`() {
+        val expectedResponse = GetAllTemplateResponseWrapper()
+
+        onSuccessGetTemplateList_thenReturn(expectedResponse)
+
+        viewModel.getAllTemplates(ArgumentMatchers.anyBoolean())
+
+        verifyGetAllTemplatesUseCaseCalled()
+        verifyGetTemplateListSuccess(expectedResponse.chatTemplatesAll)
+    }
+
+    @Test
+    fun `when getTemplateList fail due to network error should execute expected use case and return fail`() {
+        val expectedResponse = Throwable()
+
+        onFailGetTemplateList_thenReturn(expectedResponse)
+
+        viewModel.getAllTemplates(ArgumentMatchers.anyBoolean())
+
+        verifyGetAllTemplatesUseCaseCalled()
+        verifyGetTemplateListFail(expectedResponse)
+    }
+
     private fun onGetDiscussionData_thenReturn(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper) {
         coEvery { discussionDataByQuestionIDUseCase.executeOnBackground() } returns discussionDataByQuestionIDResponseWrapper
     }
@@ -497,6 +524,14 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     private fun onTalkReportTalkFail_thenReturn(throwable: Throwable) {
         coEvery { talkReportTalkUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun onSuccessGetTemplateList_thenReturn(getAllTemplateResponseWrapper: GetAllTemplateResponseWrapper) {
+        coEvery { getAllTemplatesUseCase.executeOnBackground() } returns getAllTemplateResponseWrapper
+    }
+
+    private fun onFailGetTemplateList_thenReturn(throwable: Throwable) {
+        coEvery { getAllTemplatesUseCase.executeOnBackground() } throws throwable
     }
 
     private fun verifyGetDiscussionDataByQuestionIdUseCaseExecuted() {
@@ -615,4 +650,17 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
     private fun verifyAttachedProductsEqual(attachedProducts: MutableList<AttachedProduct>) {
         viewModel.attachedProducts.verifyValueEquals(attachedProducts)
     }
+
+    private fun verifyGetAllTemplatesUseCaseCalled() {
+        coVerify { getAllTemplatesUseCase.executeOnBackground() }
+    }
+
+    private fun verifyGetTemplateListSuccess(chatTemplatesAll: ChatTemplatesAll) {
+        viewModel.templateList.verifySuccessEquals(Success(chatTemplatesAll))
+    }
+
+    private fun verifyGetTemplateListFail(throwable: Throwable) {
+        viewModel.templateList.verifyErrorEquals(Fail(throwable))
+    }
+
 }

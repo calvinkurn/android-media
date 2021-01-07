@@ -25,7 +25,7 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
 
     @Test
     fun `when addTemplate fail due to BE error should execute expected use case and return fail`() {
-        val expectedResponse = AddTemplateResponseWrapper()
+        val expectedResponse = AddTemplateResponseWrapper(TemplateMutationResult(success = 0))
 
         onSuccessAddTemplate_thenReturn(expectedResponse)
 
@@ -63,14 +63,14 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
 
     @Test
     fun `when deleteSpecificTemplate fail due to BE error should execute expected use case and return fail`() {
-        val expectedResponse = DeleteSpecificTemplateResponseWrapper()
+        val expectedResponse = DeleteSpecificTemplateResponseWrapper(TemplateMutationResult(success = 0))
 
         onSuccessDeleteSpecificTemplate_thenReturn(expectedResponse)
 
         viewModel.deleteSpecificTemplate(ArgumentMatchers.anyInt(), ArgumentMatchers.anyBoolean())
 
         verifyDeleteTemplateUseCaseCalled()
-        verifyTemplateMutationFail()
+        verifyTemplateMutationFail(TalkTemplateMutationResults.DeleteTemplateFailed)
     }
 
     @Test
@@ -82,7 +82,7 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
         viewModel.deleteSpecificTemplate(ArgumentMatchers.anyInt(), ArgumentMatchers.anyBoolean())
 
         verifyDeleteTemplateUseCaseCalled()
-        verifyTemplateMutationFail()
+        verifyTemplateMutationFail(TalkTemplateMutationResults.DeleteTemplateFailed)
     }
 
     @Test
@@ -101,7 +101,7 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
 
     @Test
     fun `when updateSpecificTemplate fail due to BE error should execute expected use case and return fail`() {
-        val expectedResponse = UpdateSpecificTemplateResponseWrapper()
+        val expectedResponse = UpdateSpecificTemplateResponseWrapper(TemplateMutationResult(success = 0))
 
         onSuccessUpdateSpecificTemplate_thenReturn(expectedResponse)
 
@@ -165,6 +165,10 @@ class TalkEditTemplateViewModelTest : TalkEditTemplateViewModelTestFixture() {
 
     private fun verifyTemplateMutationFail() {
         viewModel.templateMutation.verifyValueEquals(TalkTemplateMutationResults.MutationFailed)
+    }
+
+    private fun verifyTemplateMutationFail(talkTemplateMutationResults: TalkTemplateMutationResults) {
+        viewModel.templateMutation.verifyValueEquals(talkTemplateMutationResults)
     }
 
 }

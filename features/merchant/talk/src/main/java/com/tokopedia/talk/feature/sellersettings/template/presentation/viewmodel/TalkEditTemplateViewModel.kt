@@ -28,6 +28,8 @@ class TalkEditTemplateViewModel @Inject constructor(
             val response = addTemplateUseCase.executeOnBackground()
             if(response.chatAddTemplate.success.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
+            } else {
+                _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
             }
         }) {
             _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
@@ -40,6 +42,8 @@ class TalkEditTemplateViewModel @Inject constructor(
             val response = deleteSpecificTemplateUseCase.executeOnBackground()
             if(response.chatDeleteTemplate.success.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.DeleteTemplate)
+            } else {
+                _templateMutation.postValue(TalkTemplateMutationResults.DeleteTemplateFailed)
             }
         }) {
             _templateMutation.postValue(TalkTemplateMutationResults.DeleteTemplateFailed)
@@ -52,6 +56,8 @@ class TalkEditTemplateViewModel @Inject constructor(
             val response = updateSpecificTemplateUseCase.executeOnBackground()
             if(response.chatUpdateTemplate.success.isMutationSuccess()) {
                 _templateMutation.postValue(TalkTemplateMutationResults.TemplateMutationSuccess)
+            } else {
+                _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)
             }
         }) {
             _templateMutation.postValue(TalkTemplateMutationResults.MutationFailed)

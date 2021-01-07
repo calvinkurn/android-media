@@ -60,7 +60,7 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
         viewModel.setSmartReplyTemplate()
 
         verifyDiscussionSetSmartReplyTemplateUseCaseCalled()
-        viewModel.setSmartReplyTemplateResult.verifySuccessEquals(Success(expectedResponse.discussionSetSmartReplyTemplate.reason))
+        viewModel.setSmartReplyResult.verifySuccessEquals(Success(expectedResponse.discussionSetSmartReplyTemplate.reason))
     }
 
     @Test
@@ -74,7 +74,7 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
         val expectedData = Throwable(expectedResponse.discussionSetSmartReplyTemplate.reason)
 
         verifyDiscussionSetSmartReplyTemplateUseCaseCalled()
-        viewModel.setSmartReplyTemplateResult.verifyErrorEquals(Fail(expectedData))
+        viewModel.setSmartReplyResult.verifyErrorEquals(Fail(expectedData))
     }
 
     @Test
@@ -86,7 +86,7 @@ class TalkSmartReplyDetailViewModelTest : TalkSmartReplyDetailViewModelTestFixtu
         viewModel.setSmartReplyTemplate()
 
         verifyDiscussionSetSmartReplyTemplateUseCaseCalled()
-        viewModel.setSmartReplyTemplateResult.verifyErrorEquals(Fail(expectedResponse))
+        viewModel.setSmartReplyResult.verifyErrorEquals(Fail(expectedResponse))
     }
 
     private fun onSetSmartReply_thenReturn(expectedResponse: DiscussionSetSmartReplySettingResponseWrapper) {
