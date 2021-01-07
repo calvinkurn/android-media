@@ -108,7 +108,8 @@ fun createHomeViewModel(
             getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
             playWidgetTools = Lazy { playWidgetTools },
             bestSellerMapper = Lazy { bestSellerMapper },
-            homeProcessor = Lazy{ homeProcessor }
+            homeProcessor = Lazy{ homeProcessor },
+            getHomeTokopointsDataUseCase = Lazy { getHomeTokopointsDataUseCase }
     )
 }
 
