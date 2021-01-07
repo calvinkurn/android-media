@@ -1,9 +1,7 @@
 package com.tokopedia.homenav.view.activity
 
 import android.content.res.TypedArray
-import android.os.Build
 import android.os.Bundle
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
