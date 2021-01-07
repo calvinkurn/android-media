@@ -1,0 +1,63 @@
+{
+  "readme": "Shop Open Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/shop registration"
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - user",
+      "eventAction": "click continue",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - user",
+      "eventAction": "click back",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - shop",
+      "eventAction": "click continue",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - shop",
+      "eventAction": "click back - add name registration",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - shop",
+      "eventAction": "click register shop",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - shop",
+      "eventAction": "click shop domain recommendation",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - shop",
+      "eventAction": "click back",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - shop",
+      "eventAction": "click term and condition",
+      "eventLabel": ""
+    },
+    {
+      "event": "clickCreateShop",
+      "eventCategory": "registration page - shop",
+      "eventAction": "click privacy term",
+      "eventLabel": ""
+    }
+  ]
+}

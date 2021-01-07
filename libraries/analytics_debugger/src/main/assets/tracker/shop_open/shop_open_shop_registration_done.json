@@ -1,0 +1,12 @@
+{
+  "readme": "Shop Open Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/registration page - shop/hooray"
+    },
+    {
+      "screenName": "/registration page - shop/congratulation"
+    }
+  ]
+}
