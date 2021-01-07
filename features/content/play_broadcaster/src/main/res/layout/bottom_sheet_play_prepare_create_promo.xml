@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/containerPlayPrepareBroadcastRoot"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/svPlayPrepareBroadcastPromo"
@@ -75,8 +74,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_lvl4"
-                        android:layout_marginLeft="@dimen/spacing_lvl4"
-                        android:layout_marginRight="@dimen/spacing_lvl4"
+                        android:layout_marginEnd="@dimen/spacing_lvl4"
                         android:text="@string/play_prepare_broadcast_promo_with_promo_title"
                         android:textColor="@color/Neutral_N700_96"
                         app:layout_constraintLeft_toRightOf="@+id/radioPlayPrepareBroadcastWithPromo"
@@ -142,7 +140,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_lvl4"
-                        android:layout_marginLeft="@dimen/spacing_lvl4"
                         android:text="@string/play_prepare_broadcast_promo_without_promo_title"
                         android:textColor="@color/Neutral_N700_96"
                         app:layout_constraintLeft_toRightOf="@+id/radioPlayPrepareBroadcastWithoutPromo"
@@ -200,9 +197,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_lvl4"
-                        android:layout_marginLeft="@dimen/spacing_lvl4"
                         android:layout_marginEnd="@dimen/spacing_lvl4"
-                        android:layout_marginRight="@dimen/spacing_lvl4"
                         android:text="@string/play_prepare_broadcast_promo_with_promo_description"
                         android:textColor="@color/Neutral_N700_68"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -236,9 +231,9 @@
         android:id="@+id/containerPlayPrepareBroadcastBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/spacing_lvl2"
         android:orientation="vertical"
         android:paddingBottom="@dimen/spacing_lvl3"
+        app:elevation="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
