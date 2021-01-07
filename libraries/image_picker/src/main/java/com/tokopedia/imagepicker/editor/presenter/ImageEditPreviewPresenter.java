@@ -27,7 +27,6 @@ import rx.subscriptions.CompositeSubscription;
 
 public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPreviewPresenter.ImageEditPreviewView> {
     private CompositeSubscription compositeSubscription;
-
     private PublishSubject<Float> brightnessSubject;
     private PublishSubject<Float> contrastSubject;
 
