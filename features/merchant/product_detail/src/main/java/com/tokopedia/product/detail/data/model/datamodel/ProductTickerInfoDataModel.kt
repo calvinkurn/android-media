@@ -48,10 +48,12 @@ data class ProductTickerInfoDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductTickerInfoDataModel) {
-            isProductWarehouse == newData.isProductWarehouse &&
-                    isOutOfStock == newData.isOutOfStock &&
-                    isProductInCampaign == newData.isProductInCampaign &&
-                    generalTickerInfo?.size == newData.generalTickerInfo?.size
+            isProductWarehouse == newData.isProductWarehouse
+                    && isOutOfStock == newData.isOutOfStock
+                    && isProductInCampaign == newData.isProductInCampaign
+                    && statusInfo.hashCode() == newData.statusInfo.hashCode()
+                    && closedInfo.hashCode() == newData.closedInfo.hashCode()
+                    && generalTickerInfo?.size == newData.generalTickerInfo?.size
 
         } else {
             false

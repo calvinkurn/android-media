@@ -144,6 +144,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
         rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvPdp?.itemAnimator = null
+        rvPdp?.setItemViewCacheSize(20);
         showLoading()
 
         rvPdp?.adapter = productAdapter

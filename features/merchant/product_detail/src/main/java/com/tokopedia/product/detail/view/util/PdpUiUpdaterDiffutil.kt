@@ -288,8 +288,8 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
 
             updateData(ProductDetailConstant.TICKER_INFO) {
                 tickerInfoMap?.run {
-                    statusInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.statusInfo else null
-                    closedInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.closedInfo else null
+                    statusInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.statusInfo.copy() else null
+                    closedInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.closedInfo.copy() else null
                     this.isProductWarehouse = isProductWarehouse
                     this.isProductInCampaign = isProductInCampaign
                     this.isOutOfStock = isOutOfStock
@@ -441,7 +441,9 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
 
         updateData(ProductDetailConstant.TICKER_INFO) {
             tickerInfoMap?.run {
-                generalTickerInfo = it.tickerInfo
+                if (it.tickerInfo.isNotEmpty()) {
+                    generalTickerInfo = it.tickerInfo
+                }
             }
         }
     }
