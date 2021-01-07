@@ -51,9 +51,9 @@ class InboxAnalytic @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 createGeneralEvent(
                         event = Event.CLICK_INBOX_CHAT,
-                        category = EventCategory.INBOX_PAGE,
-                        action = EventAction.OPEN_INBOX,
-                        label = eventLabel,
+                        eventCategory = EventCategory.INBOX_PAGE,
+                        eventAction = EventAction.OPEN_INBOX,
+                        eventLabel = eventLabel,
                         businessUnit = BusinessUnit.COMMUNICATION,
                         currentSite = CurrentSite.MARKETPLACE,
                         userId = userSession.userId
