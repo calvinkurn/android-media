@@ -58,6 +58,16 @@
     <string name="ticker_main_info">Jika ingin nonaktifkan semua lokasi toko, kamu bisa atur jadwal buka-tutup toko di tab informasi</string>
     <string name="text_deactivate_confirmation">Nonaktifkan lokasi toko %1$s?</string>
 
+    <string name="ticker_info_selengkapnya">
+        <![CDATA[
+        <html>
+        <body>
+        <a href="#"><p style="color: green;">#ticker_label</p></a>
+        </body>
+        </html>
+        ]]>
+    </string>
+
     <!--Shop Location Old-->
     <string name="shop_settings_manage_address">Lokasi</string>
     <string name="shop_settings_add_address">Tambah Lokasi</string>

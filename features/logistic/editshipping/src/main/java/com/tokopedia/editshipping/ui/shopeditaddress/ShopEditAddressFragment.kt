@@ -406,6 +406,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     putParcelable(EXTRA_WAREHOUSE_DATA, extra.getParcelable(EXTRA_WAREHOUSE_DATA))
                     putDouble(EXTRA_LAT, extra.getDouble(EXTRA_LAT))
                     putDouble(EXTRA_LONG, extra.getDouble(EXTRA_LONG))
+                    putBoolean(EXTRA_IS_POLYGON, true)
                 }
             }
         }

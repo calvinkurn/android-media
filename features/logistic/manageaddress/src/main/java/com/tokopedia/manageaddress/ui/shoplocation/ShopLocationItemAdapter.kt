@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.util.ShopLocationConstant.TICKER_LABEL
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -99,7 +100,8 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
 
             if (shopLocation.ticker.textInactive.isNotEmpty()) {
                 tickerAddressInfo.visibility = View.VISIBLE
-                tickerAddressInfo.setHtmlDescription(shopLocation.ticker.textInactive + shopLocation.ticker.textCourierSetting)
+                tickerAddressInfo.setHtmlDescription("${shopLocation.ticker.textInactive} ${itemView.context.getString(R.string.ticker_info_selengkapnya)
+                        .replace(TICKER_LABEL, shopLocation.ticker.textCourierSetting)}")
                 tickerAddressInfo?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         val intent = RouteManager.getIntent(itemView.context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING)
