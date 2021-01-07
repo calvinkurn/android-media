@@ -89,8 +89,13 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
             }
         }
 
-        override fun getLoadingView(): RemoteViews? {
-            return RemoteViews(context.packageName, R.layout.saw_app_widget_order_item_shimmer)
+        override fun getLoadingView(): RemoteViews {
+            return RemoteViews(context.packageName, R.layout.saw_app_widget_order_item_shimmer).apply {
+                setInt(R.id.shimmerSawOrder1, Const.Method.SET_VISIBILITY, View.INVISIBLE)
+                setInt(R.id.shimmerSawOrder2, Const.Method.SET_VISIBILITY, View.INVISIBLE)
+                setInt(R.id.shimmerSawOrder3, Const.Method.SET_VISIBILITY, View.INVISIBLE)
+                setInt(R.id.sawOrderItemHorLine, Const.Method.SET_VISIBILITY, View.INVISIBLE)
+            }
         }
 
         override fun getItemId(position: Int): Long = position.toLong()
