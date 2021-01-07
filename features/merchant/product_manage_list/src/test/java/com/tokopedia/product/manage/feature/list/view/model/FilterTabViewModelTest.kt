@@ -7,8 +7,10 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.*
+import org.junit.Ignore
 import org.junit.Test
 
+@Ignore
 class FilterTabViewModelTest {
 
     @Test
