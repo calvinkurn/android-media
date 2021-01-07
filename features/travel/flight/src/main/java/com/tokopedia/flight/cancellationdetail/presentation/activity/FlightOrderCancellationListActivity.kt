@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.flight.cancellationdetail.presentation.fragment.FlightOrderCancellationListFragment
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.orderdetail.di.DaggerFlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
@@ -12,9 +13,10 @@ import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 class FlightOrderCancellationListActivity : BaseFlightActivity(),
         HasComponent<FlightOrderDetailComponent> {
 
-    override fun getNewFragment(): Fragment? {
-        TODO("Not yet implemented")
-    }
+    override fun getNewFragment(): Fragment? =
+            FlightOrderCancellationListFragment.getInstance(
+                    intent.getStringExtra(EXTRA_INVOICE_ID) ?: ""
+            )
 
     override fun getComponent(): FlightOrderDetailComponent =
             DaggerFlightOrderDetailComponent.builder()

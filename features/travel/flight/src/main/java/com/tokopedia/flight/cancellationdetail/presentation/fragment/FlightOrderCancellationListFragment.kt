@@ -1,6 +1,10 @@
 package com.tokopedia.flight.cancellationdetail.presentation.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -10,6 +14,8 @@ import com.tokopedia.flight.cancellationdetail.presentation.adapter.FlightOrderC
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
 import com.tokopedia.flight.cancellationdetail.presentation.viewmodel.FlightOrderCancellationListViewModel
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -27,6 +33,24 @@ class FlightOrderCancellationListFragment : BaseListFragment<FlightOrderCancella
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         flightOrderCancellationViewModel = viewModelProvider.get(FlightOrderCancellationListViewModel::class.java)
         flightOrderCancellationViewModel.orderId = arguments?.getString(EXTRA_INVOICE_ID) ?: ""
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_flight_cancellation_list, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        flightOrderCancellationViewModel.cancellationList.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    renderList(it.data)
+                }
+                is Fail -> {
+
+                }
+            }
+        })
     }
 
     override fun getRecyclerViewResourceId(): Int =

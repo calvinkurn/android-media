@@ -20,9 +20,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationPassengerActivity
 import com.tokopedia.flight.cancellationV2.presentation.fragment.FlightCancellationPassengerFragment
+import com.tokopedia.flight.cancellationdetail.presentation.activity.FlightOrderCancellationListActivity
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailBrowserActivity
 import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailWebCheckInActivity
@@ -392,7 +392,10 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun navigateToCancellationDetailPage() {
-        startActivity(FlightCancellationListActivity.createIntent(context, flightOrderDetailViewModel.orderId))
+//        startActivity(FlightCancellationListActivity.createIntent(context, flightOrderDetailViewModel.orderId))
+        context?.let {
+            startActivity(FlightOrderCancellationListActivity.createIntent(it, flightOrderDetailViewModel.orderId))
+        }
     }
 
     private fun navigateToCancellationPage(cancellationItems: List<FlightCancellationJourney>) {
