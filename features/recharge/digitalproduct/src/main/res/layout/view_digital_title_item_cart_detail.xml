@@ -3,13 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_4"
-    android:layout_marginTop="@dimen/dp_4">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="@dimen/spacing_lvl2"
+    android:layout_marginTop="@dimen/spacing_lvl2">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"
-        style="@style/TextView.Title.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:typographyType="heading_4"
         tools:text="Data Pengguna" />
 </LinearLayout>
