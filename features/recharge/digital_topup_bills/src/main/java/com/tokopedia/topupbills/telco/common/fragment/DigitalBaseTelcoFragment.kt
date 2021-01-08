@@ -346,7 +346,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var lastOffset = -1
-            var lastIsCollapsed = false
+            var lastIsCollapsed = true
             var TAG = "TracePositionTelco"
 
             override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
