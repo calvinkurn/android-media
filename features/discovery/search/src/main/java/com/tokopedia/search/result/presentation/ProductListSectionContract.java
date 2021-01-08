@@ -88,7 +88,7 @@ public interface ProductListSectionContract {
 
         void sendTrackingForNoResult(String resultCode, String alternativeKeyword, String keywordProcess);
 
-        void setDefaultLayoutType(int changeViewPosition, int defaultView);
+        void setDefaultLayoutType(int defaultView);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
 
@@ -99,6 +99,8 @@ public interface ProductListSectionContract {
         String getScreenNameId();
 
         boolean isFirstActiveTab();
+
+        void setupSearchNavigation();
 
         void trackScreenAuthenticated();
 
