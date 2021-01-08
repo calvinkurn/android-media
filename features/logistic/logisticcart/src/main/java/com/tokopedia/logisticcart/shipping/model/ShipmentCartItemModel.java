@@ -243,7 +243,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setGoldMerchant(shipmentCartItemModel.isGoldMerchant());
         newShipmentCartItemModel.setShopShipmentList(shipmentCartItemModel.getShopShipmentList());
         newShipmentCartItemModel.setOrderNumber(shipmentCartItemModel.getOrderNumber());
-        newShipmentCartItemModel.setUseCourierRecommendation(shipmentCartItemModel.isUseCourierRecommendation());
         newShipmentCartItemModel.setHidingCourier(shipmentCartItemModel.isHidingCourier());
         newShipmentCartItemModel.setCartString(shipmentCartItemModel.getCartString());
         newShipmentCartItemModel.setShippingId(shipmentCartItemModel.getShippingId());
@@ -426,14 +425,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setShopShipmentList(List<ShopShipment> shopShipmentList) {
         this.shopShipmentList = shopShipmentList;
-    }
-
-    public boolean isUseCourierRecommendation() {
-        return useCourierRecommendation;
-    }
-
-    public void setUseCourierRecommendation(boolean useCourierRecommendation) {
-        this.useCourierRecommendation = useCourierRecommendation;
     }
 
     public boolean isHidingCourier() {
@@ -712,7 +703,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getErrorDescription(), that.getErrorDescription())
                 .append(getShopName(), that.getShopName())
                 .append(getCartItemModels(), that.getCartItemModels())
-                .append(isUseCourierRecommendation(), that.isUseCourierRecommendation())
                 .append(getIsBlackbox(), that.getIsBlackbox())
                 .append(getAddressId(), that.getAddressId())
                 .isEquals();
@@ -734,7 +724,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isProductFcancelPartial())
                 .append(isProductIsPreorder())
                 .append(getCartItemModels())
-                .append(isUseCourierRecommendation())
                 .append(getIsBlackbox())
                 .append(getAddressId())
                 .toHashCode();

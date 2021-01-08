@@ -28,7 +28,6 @@ data class CartShipmentAddressFormData(
         var keroUnixTime: Int = 0,
         var donation: Donation? = null,
         var cod: CodModel? = null,
-        var isUseCourierRecommendation: Boolean = false,
         var isHidingCourier: Boolean = false,
         var isBlackbox: Boolean = false,
         var egoldAttributes: EgoldAttributeModel? = null,
