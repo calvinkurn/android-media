@@ -12,7 +12,7 @@ data class RatesParam(
         val origin: String,
         val destination: String,
         val weight: String,
-        val actualWeight: String,
+        val actualWeight: String?,
         var token: String = "",
         var ut: String = "",
         val type: String = VALUE_ANDROID,
@@ -71,7 +71,7 @@ data class RatesParam(
             po_time = builder.po_time,
             mvc = builder.mvc)
 
-    fun toMap(): Map<String, Any> = mapOf(
+    fun toMap(): Map<String, Any?> = mapOf(
             "spids" to spids,
             "shop_id" to shop_id,
             "origin" to origin,
@@ -113,7 +113,7 @@ data class RatesParam(
             private set
         var weight: String = shipping.weightInKilograms.toString()
             private set
-        var weightActual: String = shipping.weightActualInKilograms.toString()
+        var weightActual: String? = if (shipping.weightActualInKilograms > 0) shipping.weightActualInKilograms.toString() else null
             private set
         var trade_in: Int = RatesParamHelper.determineTradeIn(shipping)
             private set
