@@ -21,7 +21,7 @@
             android:layout_toLeftOf="@+id/button_feature"
             android:layout_alignParentLeft="true"
             app:typographyWeight="reguler"
-            app:typographyType="heading_4"
+            app:typographyType="body_2"
             android:textColor="@color/Unify_N200"
             tools:text="Silahkan cek sisa saldo Anda"
             tools:visibility="gone" />
@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:typographyWeight="reguler"
-                app:typographyType="heading_4"
+                app:typographyType="body_2"
                 android:textColor="@color/Unify_N200"
                 tools:text="No. Kartu 6032 9860 5038 2497" />
 
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_N200"
                 app:typographyWeight="reguler"
-                app:typographyType="heading_4"
+                app:typographyType="body_2"
                 tools:text="12 Mei 2018, 06:50" />
 
         </LinearLayout>
