@@ -28,6 +28,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_toLeftOf="@+id/button_feature"
+            android:layout_alignParentLeft="true"
             tools:visibility="visible">
 
             <com.tokopedia.unifyprinciples.Typography
