@@ -4,7 +4,7 @@
 
     <stroke
         android:width="2dp"
-        android:color="#E5E7E9"/>
+        android:color="@color/Unify_N75"/>
 
     <corners android:radius="8dp"/>
 

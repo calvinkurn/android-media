@@ -1137,7 +1137,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     goToPDP(productId)
                     dialog.dismiss()
                 }
-                val backgroundColor = MethodChecker.getColor(context, com.tokopedia.design.R.color.tkpd_main_green)
+                val backgroundColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 spanText.setSpan(StyleSpan(Typeface.BOLD),
