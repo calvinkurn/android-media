@@ -2,8 +2,8 @@ package com.tokopedia.checkout.data.model.response.shipment_address_form;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButtonResponse;
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes;
+import com.tokopedia.purchase_platform.common.feature.button.ABTestButtonResponse;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 
@@ -36,12 +36,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("donation")
     @Expose
     private Donation donation;
-    @SerializedName("cod")
-    @Expose
-    private Cod cod;
-    @SerializedName("message")
-    @Expose
-    private Message message;
     @SerializedName("is_hide_courier_name")
     @Expose
     private boolean isHidingCourier;
@@ -114,14 +108,6 @@ public class ShipmentAddressFormDataResponse {
 
     public Donation getDonation() {
         return donation;
-    }
-
-    public Cod getCod() {
-        return cod;
-    }
-
-    public Message getMessage() {
-        return message;
     }
 
     public boolean getHideCourier() {

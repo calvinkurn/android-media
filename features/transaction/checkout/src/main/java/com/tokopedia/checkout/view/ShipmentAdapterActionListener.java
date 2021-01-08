@@ -23,7 +23,7 @@ public interface ShipmentAdapterActionListener {
 
     void onDataDisableToCheckout(String message);
 
-    void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode);
+    void onCheckoutValidationResult(boolean result, Object shipmentData, int position);
 
     void onChangeAddress();
 
@@ -96,8 +96,6 @@ public interface ShipmentAdapterActionListener {
     void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel);
 
     void onProcessToPayment();
-
-    void onProcessToPaymentCod();
 
     void onChangeTradeInDropOffClicked();
 

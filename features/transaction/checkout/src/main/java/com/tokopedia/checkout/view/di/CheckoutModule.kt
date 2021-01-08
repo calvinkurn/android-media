@@ -20,14 +20,13 @@ import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
@@ -116,7 +115,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  editAddressUseCase: EditAddressUseCase,
                                  changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
                                  saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
-                                 codCheckoutUseCase: CodCheckoutUseCase,
                                  ratesUseCase: GetRatesUseCase,
                                  ratesApiUseCase: GetRatesApiUseCase,
                                  stateConverter: RatesResponseStateConverter,
@@ -125,7 +123,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  shippingCourierConverter: ShippingCourierConverter,
                                  userSessionInterface: UserSessionInterface,
                                  analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
-                                 codAnalytics: CodAnalytics,
                                  checkoutAnalytics: CheckoutAnalyticsCourierSelection,
                                  getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                  shipmentDataConverter: ShipmentDataConverter,
@@ -138,9 +135,9 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 editAddressUseCase, changeShippingAddressGqlUseCase,
                 saveShipmentStateGqlUseCase,
                 ratesUseCase, ratesApiUseCase,
-                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
+                clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase,
+                analyticsPurchaseProtection, checkoutAnalytics, getInsuranceCartUseCase,
                 shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson,
                 executorSchedulers)
     }

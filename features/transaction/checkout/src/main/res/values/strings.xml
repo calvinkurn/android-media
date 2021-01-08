@@ -77,7 +77,6 @@
     <string name="gratis_ongkir">Gratis Ongkir</string>
     <string name="information_icon">Information Icon</string>
     <string name="label_payment_total">Total Tagihan</string>
-    <string name="label_pay_cod">Bayar di Tempat</string>
     <string name="label_shipping">Pengiriman</string>
     <string name="label_button_choose_courier_blackbox">Pilih Pengiriman</string>
     <string name="label_button_change_shipping">Ubah Pengiriman</string>

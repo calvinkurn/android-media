@@ -51,7 +51,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
     private static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
     private static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
     private static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
-    private static final String ARGUMENT_COD_HISTORY = "ARGUMENT_COD_HISTORY";
     private static final String ARGUMENT_DISABLE_PROMO_COURIER = "ARGUMENT_DISABLE_PROMO_COURIER";
     private static final String ARGUMENT_IS_LEASING = "ARGUMENT_IS_LEASING";
     private static final String ARGUMENT_PSL_CODE = "ARGUMENT_PSL_CODE";
@@ -93,7 +92,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                                                           int selectedServiceId,
                                                           List<ShopShipment> shopShipmentList,
                                                           RecipientAddressModel recipientAddressModel,
-                                                          int cartPosition, int codHistory,
+                                                          int cartPosition,
                                                           boolean isLeasing, String pslCode,
                                                           ArrayList<Product> products, String cartString,
                                                           boolean isDisableOrderPrioritas,
@@ -106,7 +105,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
         bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
         bundle.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId);
-        bundle.putInt(ARGUMENT_COD_HISTORY, codHistory);
         bundle.putBoolean(ARGUMENT_IS_LEASING, isLeasing);
         bundle.putString(ARGUMENT_PSL_CODE, pslCode);
         bundle.putParcelableArrayList(ARGUMENT_PRODUCTS, products);
@@ -186,7 +184,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
             mRecipientAddress = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
             mCartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
-            int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
             if (mRecipientAddress != null) {
                 mIsCorner = mRecipientAddress.isCornerAddress();
             }
@@ -206,7 +203,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
             if (shipmentDetailData != null) {
                 // Called from checkout
                 presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
-                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, mRecipientAddress, isFulfillment, preOrderTime, mvc);
+                        shopShipments, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, mRecipientAddress, isFulfillment, preOrderTime, mvc);
             }
         }
     }
@@ -263,7 +260,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
                             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
                             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
                             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
-                            int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
                             boolean isLeasing = getArguments().getBoolean(ARGUMENT_IS_LEASING);
                             String pslCode = getArguments().getString(ARGUMENT_PSL_CODE, "");
                             ArrayList<Product> products = getArguments().getParcelableArrayList(ARGUMENT_PRODUCTS);
@@ -275,7 +271,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                             if (shipmentDetailData != null) {
                                 presenter.loadCourierRecommendation(
                                         shipmentDetailData, selectedServiceId, shopShipments,
-                                        codHistory, mIsCorner, isLeasing, pslCode,
+                                        mIsCorner, isLeasing, pslCode,
                                         products, cartString, isTradeInDropOff, recipientAddressModel,
                                         isFulfillment, preOrderTime, mvc
                                 );

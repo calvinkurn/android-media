@@ -43,7 +43,6 @@ public class ProductDataCheckoutRequest implements Parcelable {
     private String shippingDuration;
     private String courier;
     private String shippingPrice;
-    private String codFlag;
     private String tokopediaCornerFlag;
     private String isFulfillment;
     private boolean isDiscountedPrice;
@@ -78,7 +77,6 @@ public class ProductDataCheckoutRequest implements Parcelable {
         shippingDuration = builder.shippingDuration;
         courier = builder.courier;
         shippingPrice = builder.shippingPrice;
-        codFlag = builder.codFlag;
         tokopediaCornerFlag = builder.tokopediaCornerFlag;
         isFulfillment = builder.isFulfillment;
         isDiscountedPrice = builder.isDiscountedPrice;
@@ -111,7 +109,6 @@ public class ProductDataCheckoutRequest implements Parcelable {
         shippingDuration = in.readString();
         courier = in.readString();
         shippingPrice = in.readString();
-        codFlag = in.readString();
         tokopediaCornerFlag = in.readString();
         isFulfillment = in.readString();
         isDiscountedPrice = in.readByte() != 0;
@@ -145,7 +142,6 @@ public class ProductDataCheckoutRequest implements Parcelable {
         dest.writeString(shippingDuration);
         dest.writeString(courier);
         dest.writeString(shippingPrice);
-        dest.writeString(codFlag);
         dest.writeString(tokopediaCornerFlag);
         dest.writeString(isFulfillment);
         dest.writeByte((byte) (isDiscountedPrice ? 1 : 0));
@@ -262,10 +258,6 @@ public class ProductDataCheckoutRequest implements Parcelable {
         return shippingPrice;
     }
 
-    public String getCodFlag() {
-        return codFlag;
-    }
-
     public String getTokopediaCornerFlag() {
         return tokopediaCornerFlag;
     }
@@ -339,7 +331,6 @@ public class ProductDataCheckoutRequest implements Parcelable {
         private String shippingDuration;
         private String courier;
         private String shippingPrice;
-        private String codFlag;
         private String tokopediaCornerFlag;
         private String isFulfillment;
         private boolean isDiscountedPrice;
@@ -466,11 +457,6 @@ public class ProductDataCheckoutRequest implements Parcelable {
 
         public Builder shippingPrice(String val) {
             shippingPrice = val;
-            return this;
-        }
-
-        public Builder codFlag(String val) {
-            codFlag = val;
             return this;
         }
 

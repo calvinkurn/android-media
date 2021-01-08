@@ -446,15 +446,6 @@
     "discount_amount": "",
     "discount_amount_fmt": 0
   },
-  "cod": {
-    "is_cod": false,
-    "counter_cod": -1
-  },
-  "message": {
-    "message_info": "",
-    "message_link": "",
-    "message_logo": ""
-  },
   "egold_attributes": {
     "eligible": false,
     "is_tiering": false,
