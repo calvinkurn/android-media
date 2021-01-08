@@ -42,7 +42,6 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
         super.onCreate(savedInstanceState)
-        talkInboxTracking.openScreen(screenName)
     }
 
     override fun getNewFragment(): Fragment? {

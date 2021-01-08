@@ -5,5 +5,5 @@ import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUi
 
 interface TalkInboxViewHolderListener {
     fun onInboxItemImpressed(talkId: String, position: Int, isUnread: Boolean)
-    fun onInboxItemClicked(talkInboxUiModel: TalkInboxUiModel?, talkInboxOldUiModel: TalkInboxOldUiModel?)
+    fun onInboxItemClicked(talkInboxUiModel: TalkInboxUiModel?, talkInboxOldUiModel: TalkInboxOldUiModel?, position: Int)
 }
