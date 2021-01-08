@@ -2967,11 +2967,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun animateProductImage(message: String) {
         var target: Pair<Int, Int>? = null
 
-        if (toolbarType.equals(TOOLBAR_VARIANT_BASIC, true)) {
-            target = toolbar.getWishlistIconPosition()
-        } else {
+        if (toolbarType.equals(TOOLBAR_VARIANT_NAVIGATION, true)) {
             val targetX = getScreenWidth() - resources.getDimensionPixelSize(R.dimen.dp_64)
             target = Pair(targetX, 0)
+        } else {
+            target = toolbar.getWishlistIconPosition()
         }
 
         tmpAnimatedImage.show()
@@ -2997,10 +2997,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onAnimationEnd(animation: Animator) {
                     tmpAnimatedImage.gone()
 
-                    if (toolbarType.equals(TOOLBAR_VARIANT_BASIC, true)) {
-                        toolbar.animateWishlistIcon()
-                    } else {
+                    if (toolbarType.equals(TOOLBAR_VARIANT_NAVIGATION, true)) {
                         navToolbar.triggerLottieAnimation(IconList.ID_NAV_LOTTIE_WISHLIST)
+                    } else {
+                        toolbar.animateWishlistIcon()
                     }
 
                     showToastMessageGreen(message)
