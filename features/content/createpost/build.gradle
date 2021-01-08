@@ -29,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.twitterShare)
     implementation project(rootProject.ext.libraries.videoplayer)
+    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.videoRecorder)
     implementation project(rootProject.ext.libraries.videoUploader)
     implementation project(rootProject.ext.features.affiliateCommon)
