@@ -780,7 +780,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     if (!widget.isShowEmpty && widgetData.shouldRemove()) {
                         newWidgetList.removeAt(index)
                     } else {
-                        val copiedWidget = widget.clone()
+                        val copiedWidget = widget.copy()
                         copiedWidget.data = widgetData
                         copiedWidget.isLoading = widget.data?.isFromCache ?: false
                         newWidgetList[index] = copiedWidget
@@ -906,11 +906,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }
-    }
-
-    private fun <T: Any> T.clone(): T {
-        val json = CommonUtils.toJson(this)
-        return CommonUtils.fromJson(json, this::class.java)
     }
 
     @Suppress("UNCHECKED_CAST")
