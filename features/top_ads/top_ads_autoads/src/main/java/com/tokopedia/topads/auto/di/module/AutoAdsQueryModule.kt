@@ -49,12 +49,6 @@ class AutoAdsQueryModule(val context: Context) {
 
     @Provides
     @IntoMap
-    @StringKey(RawQueryKeyObject.QUERY_TOPADS_DEPOSIT)
-    fun queryTopAdsDeposit(@ActivityContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.auto_ads_query_topads_deposit)
-
-    @Provides
-    @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_TOPADS_NONDELIVERY_REASON)
     fun queryTopAdsNonDelivery(@ActivityContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.topads_auto_query_get_nondelivery_reason)

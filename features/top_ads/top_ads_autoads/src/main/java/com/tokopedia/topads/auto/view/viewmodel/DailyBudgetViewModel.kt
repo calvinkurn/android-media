@@ -12,7 +12,6 @@ import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.data.network.response.TopAdsDepositResponse
 import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject
-import com.tokopedia.topads.auto.internal.RawQueryKeyObject.QUERY_TOPADS_DEPOSIT
 import com.tokopedia.topads.auto.view.RequestHelper
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.model.AutoAdsParam
@@ -21,11 +20,11 @@ import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.withContext
 import org.json.JSONException
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -36,8 +35,9 @@ class DailyBudgetViewModel @Inject constructor(
         private val dispatcher: AutoAdsDispatcherProvider,
         private val repository: GraphqlRepository,
         private val rawQueries: Map<String, String>,
-        private val bidInfoUseCase: BidInfoUseCase
-) : BaseViewModel(dispatcher.ui()) {
+        private val bidInfoUseCase: BidInfoUseCase,
+        private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
+        ) : BaseViewModel(dispatcher.ui()) {
 
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
     val topAdsDeposit = MutableLiveData<Int>()
@@ -74,24 +74,13 @@ class DailyBudgetViewModel @Inject constructor(
         }
     }
 
-    fun getTopAdsDeposit(shopId: Int) {
-        launchCatchError(
-                block = {
-                    val param: HashMap<String, Any> = hashMapOf(SHOP_ID to shopId,
-                            CREDIT_DATA to "unclaimed", SHOP_DATA to "0")
-                    val data = withContext(dispatcher.io()) {
-                        val request = RequestHelper.getGraphQlRequest(rawQueries[QUERY_TOPADS_DEPOSIT],
-                                TopAdsDepositResponse.Data::class.java,
-                                param)
-                        val cacheStrategy = RequestHelper.getCacheStrategy()
-                        repository.getReseponse(listOf(request), cacheStrategy)
-                    }
-                    data.getSuccessData<TopAdsDepositResponse.Data>().let {
-                        topAdsDeposit.postValue(it.topadsDashboardDeposits.data.amount)
-                    }
-                }) {
+    fun getTopAdsDeposit() {
+        topAdsGetShopDepositUseCase.execute(
+                {
+                    topAdsDeposit.value = it.topadsDashboardDeposits.data.amount
+                }, {
             it.printStackTrace()
-        }
+        })
     }
 
     fun topadsStatisticsEstimationPotentialReach(onSuccess: (EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) -> Unit, shopId: String, source: String) {

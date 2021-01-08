@@ -369,13 +369,14 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position0.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
 
-        val expectedTopSeparatorPosition = searchProductModelPage1.getTotalProductItem() + searchProductModelPage2.getTotalProductItem()
+        val expectedTopSeparatorPosition =
+                        searchProductModelPage1.getTotalProductItem() +
+                        searchProductModelPage2.getTotalProductItem() +
+                        1 // additional product count
         val expectedBottomSeparatorPosition = -1
 
         `Test broad match with position`(searchProductModelPage1, searchProductModelPage2, expectedTopSeparatorPosition, expectedBottomSeparatorPosition) { visitableList ->
-            val firstProductItemPosition = visitableList.indexOfFirst { it is ProductItemViewModel }
-
-            firstProductItemPosition + expectedTopSeparatorPosition + 1
+            expectedTopSeparatorPosition + 1
         }
     }
 
@@ -387,10 +388,12 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     fun `Show broad match at top of all product cards for position 1`() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
+        val broadMatchCount = searchProductModelPage1.getBroadMatchSize()
 
         val expectedTopSeparatorPosition = -1
-        val expectedBottomSeparatorPosition = 5
-        val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
+        val expectedSuggestionViewModelPosition = 1
+        val expectedBottomSeparatorPosition = expectedSuggestionViewModelPosition + broadMatchCount + 1
+
         `Test broad match with position`(
                 searchProductModelPage1, searchProductModelPage2,
                 expectedTopSeparatorPosition, expectedBottomSeparatorPosition
@@ -401,24 +404,31 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     fun `Show broad match at product card position 4`() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position4.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
+        val broadMatchCount = searchProductModelPage1.getBroadMatchSize()
 
-        val expectedTopSeparatorPosition = 4
-        val expectedBottomSeparatorPosition = 10
+        val expectedTopSeparatorPosition = 5
         val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
-            `Test broad match with position`(
-                    searchProductModelPage1, searchProductModelPage2,
-                    expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
-            { expectedSuggestionViewModelPosition }
+        val expectedBottomSeparatorPosition = expectedSuggestionViewModelPosition + broadMatchCount + 1
+
+        `Test broad match with position`(
+                searchProductModelPage1, searchProductModelPage2,
+                expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
+        { expectedSuggestionViewModelPosition }
     }
+
+    private fun SearchProductModel.getBroadMatchSize(): Int =
+            searchProduct.data.related.otherRelatedList.size
 
     @Test
     fun `Show broad match at product card position 12`() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position12.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
+        val broadMatchCount = searchProductModelPage1.getBroadMatchSize()
 
-        val expectedTopSeparatorPosition = 12
-        val expectedBottomSeparatorPosition = 18
+        val expectedTopSeparatorPosition = 13
         val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
+        val expectedBottomSeparatorPosition = expectedSuggestionViewModelPosition + broadMatchCount + 1
+
         `Test broad match with position`(
                 searchProductModelPage1, searchProductModelPage2,
                 expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
@@ -439,7 +449,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         `When load first page and load more data`(visitableList)
 
-        var expectedSuggestionViewModelPosition = getExpectedSuggestionViewModelPosition(visitableList)
+        val expectedSuggestionViewModelPosition = getExpectedSuggestionViewModelPosition(visitableList)
 
         `Then assert top separator view model is positioned before suggestion`(expectedTopSeparatorPosition, expectedSuggestionViewModelPosition, visitableList)
 

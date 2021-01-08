@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import javax.inject.Inject
 
@@ -18,10 +20,11 @@ class DailyBudgetViewModelFactory @Inject constructor(
         private val repository: GraphqlRepository,
         private val query: Map<String, String>,
         private val bidInfoUseCase: BidInfoUseCase
-): ViewModelProvider.NewInstanceFactory() {
+        private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase
+        ): ViewModelProvider.NewInstanceFactory() {
 
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return DailyBudgetViewModel(context, dispatcher, repository, query, bidInfoUseCase) as T
+        return DailyBudgetViewModel(context, dispatcher, repository, query, bidInfoUseCase ,topAdsGetShopDepositUseCase) as T
     }
 }

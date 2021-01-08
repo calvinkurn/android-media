@@ -20,6 +20,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
@@ -47,6 +48,8 @@ class SomListViewModel @Inject constructor(
     }
 
     private var retryCount = 0
+
+    private var getOrderListJob: Job? = null
 
     private val _tickerResult = MutableLiveData<Result<List<TickerData>>>()
     val tickerResult: LiveData<Result<List<TickerData>>>
@@ -183,7 +186,8 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getOrderList() {
-        launchCatchError(block = {
+        getOrderListJob?.cancel()
+        getOrderListJob = launchCatchError(block = {
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
             getUserRolesJob()?.join()

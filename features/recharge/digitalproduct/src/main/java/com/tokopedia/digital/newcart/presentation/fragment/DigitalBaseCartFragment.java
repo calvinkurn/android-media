@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -27,7 +26,7 @@ import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
-import com.tokopedia.design.component.Dialog;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
@@ -45,7 +44,6 @@ import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.utils.ErrorHandler;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
@@ -73,9 +71,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final int REQUEST_CODE_OTP = 1001;
 
     public static final int OTP_TYPE_CHECKOUT_DIGITAL = 16;
-    public static final int PAYMENT_SUCCESS = 5;
-
-    private static final int DELAY_ERROR_SHOWING = 3000;
 
     protected CartDigitalInfoData cartDigitalInfoData;
     protected CheckoutDataParameter.Builder checkoutDataParameterBuilder;
@@ -374,18 +369,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         } else if (requestCode == PaymentConstant.REQUEST_CODE) {
             switch (resultCode) {
                 case PaymentConstant.PAYMENT_SUCCESS:
-                    if (getActivity() != null) {
-                        FragmentManager manager = getActivity().getSupportFragmentManager();
-
-                        AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-                        rating.setDialogDismissListener(() -> {
-                            if (getActivity() != null) {
-                                getActivity().setResult(PAYMENT_SUCCESS);
-                                closeView();
-                            }
-                        });
-                        rating.showDialog(manager, getContext());
-                    }
                     presenter.onPaymentSuccess(cartPassData.getCategoryId());
                     break;
                 case PaymentConstant.PAYMENT_FAILED:
@@ -562,20 +545,16 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                                    String content,
                                    String confirmButtonTitle) {
         try {
-            Dialog dialog = new Dialog(
-                    getActivity(),
-                    Dialog.Type.RETORIC
-            );
-            dialog.setTitle(title);
-            dialog.setDesc(MethodChecker.fromHtml(content));
-            dialog.setBtnOk(confirmButtonTitle);
-            dialog.setOnOkClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
+            DialogUnify dialogUnify = new DialogUnify(getActivity(),
+                    DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+            dialogUnify.setTitle(title);
+            dialogUnify.setDescription(MethodChecker.fromHtml(content));
+            dialogUnify.setPrimaryCTAText(confirmButtonTitle);
+            dialogUnify.setPrimaryCTAClickListener(() -> {
+                dialogUnify.dismiss();
+                return Unit.INSTANCE;
             });
-            dialog.show();
+            dialogUnify.show();
         } catch (Throwable e) {
 
         }

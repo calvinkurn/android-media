@@ -16,13 +16,15 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.*
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.usecase.GetProductListUseCase
 
 class ShopShowcaseListViewModel @Inject constructor(
         private val getShopShowcaseListBuyerUseCase: GetShopEtalaseByShopUseCase,
         private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
         private val deleteShopShowcaseUseCase: DeleteShopShowcaseUseCase,
         private val reorderShopShowcaseUseCase: ReorderShopShowcaseListUseCase,
-        private val getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase,
+        private val getProductListUseCase: GetProductListUseCase,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
@@ -42,9 +44,9 @@ class ShopShowcaseListViewModel @Inject constructor(
     val reoderShopShowcaseResponse: LiveData<Result<ReorderShopShowcaseResponse>>
         get() = _reoderShopShowcaseResponse
 
-    private val _getShopProductResponse = MutableLiveData<Result<GetShopProductsResponse>>()
-    val getShopProductResponse: LiveData<Result<GetShopProductsResponse>>
-        get() = _getShopProductResponse
+    private val _shopTotalProduct = MutableLiveData<Result<Int>>()
+    val shopTotalProduct: LiveData<Result<Int>>
+        get() = _shopTotalProduct
 
 
     fun getShopShowcaseListAsBuyer(shopId: String, isOwner: Boolean, hideShowCaseGroup: Boolean) {
@@ -122,26 +124,17 @@ class ShopShowcaseListViewModel @Inject constructor(
         }
     }
 
-    fun getTotalProduct(shopId: String, page: Int, perPage: Int,
-            sortId: Int, etalase: String, search: String) {
+    fun getTotalProduct(shopId: String, filter: GetProductListFilter) {
         launchCatchError(block = {
             withContext(dispatchers.io) {
-                var paramInput = mapOf(
-                        "page" to page,
-                        "fkeyword" to search,
-                        "perPage" to perPage,
-                        "fmenu" to etalase,
-                        "sort" to sortId
-                )
-
-                getShopShowcaseTotalProductUseCase.params = GetShopShowcaseTotalProductUseCase.createRequestParam(shopId, paramInput)
-                val shopProductData = getShopShowcaseTotalProductUseCase.executeOnBackground()
-                shopProductData.let {
-                    _getShopProductResponse.postValue(Success(it))
+                getProductListUseCase.params = GetProductListUseCase.createRequestParams(shopId, filter)
+                val productListResponse = getProductListUseCase.executeOnBackground()
+                productListResponse.let { productList ->
+                    _shopTotalProduct.postValue(Success(productList.size))
                 }
             }
         }) {
-            _getShopProductResponse.value = Fail(it)
+            _shopTotalProduct.value = Fail(it)
         }
     }
 

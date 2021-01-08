@@ -61,6 +61,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         }
 
         btn_submit.setOnClickListener {
+            btn_submit?.isEnabled = false
             getDataFromChildFragments()
             saveChanges()
         }

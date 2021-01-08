@@ -10,7 +10,6 @@ import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Author errysuprayogi on 06,November,2019
