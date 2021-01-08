@@ -791,11 +791,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         view?.addOneTimeGlobalLayoutListener {
             recyclerView.post {
-                val isAnyLoadingWidget = adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
-                if (!isAnyLoadingWidget) {
-                    view?.swipeRefreshLayout?.isRefreshing = false
-                    hideLoading()
-                }
+                checkLoadingWidgets()
                 requestVisibleWidgetsData()
             }
         }
@@ -831,11 +827,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun notifyWidgetChanged(position: Int) {
         recyclerView.post {
             adapter.notifyItemChanged(position)
-        }
-        val isAnyLoadingWidget = adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
-        if (!isAnyLoadingWidget) {
-            view?.swipeRefreshLayout?.isRefreshing = false
-            hideLoading()
+            checkLoadingWidgets()
         }
     }
 
@@ -917,6 +909,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         diffUtilResult.dispatchUpdatesTo(adapter)
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
+    }
+
+    private fun checkLoadingWidgets() {
+        val isAnyLoadingWidget = adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
+        if (!isAnyLoadingWidget) {
+            view?.swipeRefreshLayout?.isRefreshing = false
+            hideLoading()
+        }
     }
 
     interface Listener {
