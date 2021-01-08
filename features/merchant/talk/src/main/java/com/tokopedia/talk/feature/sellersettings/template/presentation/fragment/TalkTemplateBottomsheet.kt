@@ -32,6 +32,7 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     companion object {
         const val REQUEST_KEY = "talk_template_request"
         const val KEY_TEMPLATE = "template"
+        const val BOLD_REOURCE = "RobotoBold.ttf"
         fun createNewInstance(context: Context, title: String): TalkTemplateBottomsheet {
             return TalkTemplateBottomsheet().apply {
                 val view = View.inflate(context, R.layout.fragment_talk_edit_template, null)
@@ -85,6 +86,10 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
             context?.let {
                 setAction(getString(R.string.template_list_delete)) {
                     deleteTemplate()
+                }
+                bottomSheetAction.apply {
+                    setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    this.typeface = com.tokopedia.unifyprinciples.getTypeface(context, BOLD_REOURCE)
                 }
             }
         }
