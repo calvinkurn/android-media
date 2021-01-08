@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -48,7 +49,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             val filters = quickFilterRepository.getQuickFilterData(components.id, components.pageEndPoint)
             addFilterOptions(components.data?.firstOrNull()?.filter ?: filters ?: arrayListOf())
         }, onError = {
-            it.printStackTrace()
+            Timber.e(it)
         })
     }
 
@@ -78,7 +79,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
                     syncData.value = true
                 }
             }, onError = {
-                it.printStackTrace()
+                Timber.e(it)
             })
         }
     }
@@ -88,7 +89,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             dynamicFilterModel.value = filterRepository.getFilterData(components.id, mutableMapOf(), components.pageEndPoint)
             renderDynamicFilter(dynamicFilterModel.value?.data)
         }, onError = {
-            it.printStackTrace()
+            Timber.e(it)
         })
     }
 
