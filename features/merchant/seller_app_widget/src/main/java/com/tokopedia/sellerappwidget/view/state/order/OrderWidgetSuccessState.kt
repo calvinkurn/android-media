@@ -35,8 +35,9 @@ object OrderWidgetSuccessState {
             WidgetSize.SMALL -> showSmallWidgetSuccessState(context, remoteViews, userSession, order, widgetId)
             else -> showNormalWidgetSuccessState(context, remoteViews, userSession, order, orderStatusId, widgetId)
         }
-        AppWidgetHelper.getCacheHandler(context)
-                .putInt(Const.SharedPrefKey.LAST_SELECTED_ORDER_TYPE, orderStatusId)
+        val localCacheHandler = AppWidgetHelper.getCacheHandler(context)
+        localCacheHandler.putInt(Const.SharedPrefKey.LAST_SELECTED_ORDER_TYPE, orderStatusId)
+        localCacheHandler.applyEditor()
     }
 
     private fun showSmallWidgetSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, order: OrderUiModel, widgetId: Int) {

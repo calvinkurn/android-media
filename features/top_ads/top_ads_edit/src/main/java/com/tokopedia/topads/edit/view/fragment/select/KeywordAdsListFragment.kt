@@ -59,7 +59,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private lateinit var keywordSelectedAdapter: KeywordSelectedAdapter
     private var STAGE = 0
     private var selectedKeyFromSearch: ArrayList<SearchData>? = arrayListOf()
-    var productId = ""
     private var selected: ArrayList<KeywordDataItem>? = arrayListOf()
     var groupId = 0
     private var tvToolTipText: Typography? = null
@@ -95,7 +94,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         val productIds = arguments?.getString(PRODUCT_ID) ?: ""
         groupId = arguments?.getInt(GROUP_ID) ?: 0
-        viewModel.getSuggestionKeyword(productIds, groupId, this::onSuccessSuggestion)
+        if (productIds.isNotEmpty()) {
+            viewModel.getSuggestionKeyword(productIds, groupId, this::onSuccessSuggestion)
+        }else{
+            setEmptyView()
+            setEmptyLayout(true)
+            selected_info.text = String.format(getString(R.string.format_selected_keyword), 0)
+        }
     }
 
     private fun onKeywordSelected(pos: Int) {

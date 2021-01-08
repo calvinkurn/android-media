@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.di.getSubComponent
@@ -162,10 +161,8 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         quickFilterViewModel.filterProductsCount(mapParameter)
     }
 
-
-
     override fun onViewAttachedToWindow() {
-        quickFilterViewModel.getQuickFilterLiveData().observe(fragment.viewLifecycleOwner, Observer { filters ->
+        quickFilterViewModel.getQuickFilterLiveData().observe(fragment.viewLifecycleOwner, { filters ->
             setQuickFilters(filters)
         })
     }

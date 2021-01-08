@@ -4,7 +4,7 @@
     android:minWidth="@dimen/saw_app_widget_5_grids"
     android:minHeight="@dimen/saw_app_widget_3_grids"
     android:minResizeWidth="@dimen/saw_app_widget_4_grids"
-    android:minResizeHeight="@dimen/saw_app_widget_2_grids"
+    android:minResizeHeight="@dimen/saw_app_widget_1_grid"
     android:previewImage="@drawable/saw_order_widget_preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0"
