@@ -349,7 +349,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 if (lastOffset == verticalOffSet) return
 
                 lastOffset = verticalOffSet
-                if (verticalOffSet <= appBarLayout.totalScrollRange) {
+                if (abs(verticalOffSet) >= appBarLayout.totalScrollRange) {
                     //Collapsed
                     onCollapseAppBar()
                     if (!fadeOut.hasStarted() || fadeOut.hasEnded()) {
