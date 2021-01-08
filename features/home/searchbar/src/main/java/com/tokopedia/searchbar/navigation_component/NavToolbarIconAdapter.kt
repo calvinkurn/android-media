@@ -1,6 +1,7 @@
 package com.tokopedia.searchbar.navigation_component
 
 import android.graphics.drawable.Drawable
+import android.os.Handler
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -25,8 +26,6 @@ import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon.view.*
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon_animated.view.*
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon_lottie.view.*
-import kotlinx.android.synthetic.main.toolbar_viewholder_icon_lottie.view.nav_icon_badge_lottieav
-import java.util.*
 
 internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
                                      private val topNavComponentListener: TopNavComponentListener)
@@ -339,12 +338,9 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
             iconAnimatedImage.background = animation
             animation.start()
 
-            val timer = Timer()
-            timer.schedule(object : TimerTask() {
-                override fun run() {
-                    iconAnimatedImage.gone()
-                    iconImage.show()
-                }
+            Handler().postDelayed({
+                iconAnimatedImage.gone()
+                iconImage.show()
             }, 1000)
         }
     }
