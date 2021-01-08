@@ -27,7 +27,7 @@ import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.analytics.NotificationAnalytic
+import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
@@ -68,7 +68,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var analytic: NotificationAnalytic
+    lateinit var topAdsAnalytic: NotificationTopAdsAnalytic
 
     private var rvLm = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
     private var rv: RecyclerView? = null
@@ -124,7 +124,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         context?.let {
             trackingQueue = TrackingQueue(it)
             recommendationLifeCycleAware = RecommendationLifeCycleAware(
-                    analytic, trackingQueue, rvAdapter, viewModel, this, it
+                    topAdsAnalytic, trackingQueue, rvAdapter, viewModel, this, it
             )
         }
         rvTypeFactory?.recommendationListener = recommendationLifeCycleAware

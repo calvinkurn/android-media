@@ -6,7 +6,7 @@ import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 import javax.inject.Inject
-class NotificationAnalytic @Inject constructor() {
+class NotificationTopAdsAnalytic @Inject constructor() {
 
     private val dataLayerList: ArrayList<Any> = arrayListOf()
 
