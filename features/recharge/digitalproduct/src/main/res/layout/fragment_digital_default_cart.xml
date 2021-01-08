@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -9,13 +8,14 @@
     tools:context=".newcart.presentation.fragment.DigitalCartDefaultFragment">
 
     <com.tokopedia.empty_state.EmptyStateUnify
+        xmlns:emptyState="http://schemas.android.com/apk/res-auto"
         android:id="@+id/empty_state"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone"
-        app:unifyEmptyStateOrientation="vertical"
-        app:unifyEmptyStateType="page"/>
+        emptyState:unifyEmptyStateOrientation="vertical"
+        emptyState:unifyEmptyStateType="page"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"
