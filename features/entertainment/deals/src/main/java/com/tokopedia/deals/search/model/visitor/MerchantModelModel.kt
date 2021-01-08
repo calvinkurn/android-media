@@ -7,7 +7,7 @@ import com.tokopedia.deals.search.ui.typefactory.DealsSearchTypeFactory
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class MerchantModelViewModel (
+data class MerchantModelModel (
         var merchantList: List<Brand> = arrayListOf()
 ) : Parcelable, Visitable<DealsSearchTypeFactory> {
 
