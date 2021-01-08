@@ -1,6 +1,8 @@
 package com.tokopedia.pms.howtopay_native.ui.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.text.*
@@ -24,6 +26,7 @@ import com.tokopedia.pms.howtopay_native.ui.adapter.InstructionAdapter
 import com.tokopedia.pms.howtopay_native.ui.adapter.MultiChannelAdapter
 import com.tokopedia.pms.howtopay_native.ui.adapter.viewHolder.NonScrollLinerLayoutManager
 import com.tokopedia.pms.howtopay_native.ui.viewmodel.HowToPayViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.pms_hwp_info.*
@@ -92,6 +95,8 @@ class HowToPayFragment : BaseDaggerFragment() {
                     is VirtualAccount -> addVirtualAccountPayment(data)
                     is Syariah -> addSyariahPayment(data)
                 }
+
+                addMultipleChannelAdapter(data.gateway.paymentChannels)
             }
             is SingleChannelGatewayResult -> {
                 when (data.type) {
@@ -106,18 +111,21 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     private fun addVirtualAccountPayment(data: MultiChannelGatewayResult) {
         tvGateWayName.text = appLinkPaymentInfo?.gateway_name
-        tvPaymentAccountTitle.text = getString(R.string.pms_hwp_payment_code)
+        tvPaymentAccountTitle.text = getString(R.string.pms_hwp_VA_code)
         tvPaymentAccountNumber.text = appLinkPaymentInfo?.payment_code
         tvTotalPaymentAmount.text = getString(R.string.pms_hwp_rp, appLinkPaymentInfo?.total_amount)
         tvPaymentInfoAction.text = getString(R.string.pms_hwp_copy)
         appLinkPaymentInfo?.gateway_logo?.let {
             ivGateWayImage.setImageUrl(it)
         }
+        groupPaymentInfoAction.setOnClickListener {
+            copyTOClipBoard(context, appLinkPaymentInfo?.payment_code ?: "")
+            showToast("Nomor virtual account berhasil disalin.")
+        }
         ivTakeScreenshot.setImage(IconUnify.COPY)
         tickerAmountNote.gone()
         tvAccountName.gone()
         tvPaymentNote.gone()
-        addMultipleChannelAdapter(data.gateway.paymentChannels)
     }
 
     private fun addSyariahPayment(data: MultiChannelGatewayResult) {
@@ -130,10 +138,13 @@ class HowToPayFragment : BaseDaggerFragment() {
             ivGateWayImage.setImageUrl(it, ivGateWayImage.heightRatio)
         }
         ivTakeScreenshot.setImage(IconUnify.COPY)
+        groupPaymentInfoAction.setOnClickListener {
+            copyTOClipBoard(context, appLinkPaymentInfo?.payment_code ?: "")
+            showToast("Kode Pembayaran berhasil disalin.")
+        }
         tickerAmountNote.gone()
         tvAccountName.gone()
         tvPaymentNote.gone()
-        addMultipleChannelAdapter(data.gateway.paymentChannels)
     }
 
     private fun addMultipleChannelAdapter(paymentChannels: ArrayList<PaymentChannel>?) {
@@ -157,13 +168,19 @@ class HowToPayFragment : BaseDaggerFragment() {
         tvPaymentAccountTitle.text = getString(R.string.pms_hwp_account_number)
         tvPaymentAccountNumber.text = appLinkPaymentInfo?.bank_num
         tvAccountName.visible()
-        tvAccountName.text = appLinkPaymentInfo?.bank_name
-        tvTotalPaymentAmount.text = highlightLastThreeDigits(getString(R.string.pms_hwp_rp, appLinkPaymentInfo?.total_amount))
+        tvAccountName.text = getString(R.string.pms_hwp_bank_info,
+                appLinkPaymentInfo?.bank_name, appLinkPaymentInfo?.bank_info)
+        tvTotalPaymentAmount.text = highlightLastThreeDigits(getString(R.string.pms_hwp_rp,
+                appLinkPaymentInfo?.total_amount))
         tvPaymentInfoAction.text = getString(R.string.pms_hwp_copy)
         appLinkPaymentInfo?.gateway_logo?.let {
             ivGateWayImage.setImageUrl(it)
         }
         ivTakeScreenshot.setImage(IconUnify.COPY)
+        groupPaymentInfoAction.setOnClickListener {
+            copyTOClipBoard(context, appLinkPaymentInfo?.bank_num ?: "")
+            showToast("Nomor rekening berhasil disalin.")
+        }
         tickerAmountNote.visible()
         tickerAmountNote.setTextDescription(getString(R.string.pms_hwp_transfer_3_digit_info))
         tvPaymentNote.gone()
@@ -187,13 +204,41 @@ class HowToPayFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun addKlikBCAPayment(data: SingleChannelGatewayResult) {
+        tvGateWayName.text = appLinkPaymentInfo?.gateway_name
+        tvPaymentAccountTitle.text = getString(R.string.pms_hwp_user_id)
+        tvPaymentAccountNumber.text = appLinkPaymentInfo?.payment_code
+        tvTotalPaymentAmount.text = getString(R.string.pms_hwp_rp, appLinkPaymentInfo?.total_amount)
+        appLinkPaymentInfo?.gateway_logo?.let {
+            ivGateWayImage.setImageUrl(it)
+        }
+        tvPaymentInfoAction.gone()
+        ivTakeScreenshot.gone()
+        tickerAmountNote.gone()
+        tvAccountName.gone()
+        tvPaymentNote.gone()
+    }
+
+    private fun highlightLastThreeDigits(amountStr: String): SpannableString {
+        val spannable = SpannableString(amountStr)
+        context?.let {
+            if (amountStr.length > HIGHLIGHT_DIGIT_COUNT) {
+                val startIndex = spannable.length - HIGHLIGHT_DIGIT_COUNT
+                spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifycomponents.R.color.Unify_G500)),
+                        startIndex, spannable.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+        return spannable
+    }
+
     private fun getSpannableStoreNote(context: Context): SpannableStringBuilder {
         val storeNote = getString(R.string.pms_hwp_pay_other_store_info)
         val viewStore = getString(R.string.pms_hwp_view_store_list)
         val spannableString = SpannableString(viewStore)
         val startIndex = 0
         val endIndex = spannableString.length
-        val color = ContextCompat.getColor(context, R.color.Unify_G500)
+        val color = ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
@@ -209,22 +254,6 @@ class HowToPayFragment : BaseDaggerFragment() {
         return SpannableStringBuilder.valueOf(storeNote).append(" ").append(spannableString)
     }
 
-    private fun addKlikBCAPayment(data: SingleChannelGatewayResult) {
-
-    }
-
-    private fun highlightLastThreeDigits(amountStr: String): SpannableString {
-        val spannable = SpannableString(amountStr)
-        context?.let {
-            if (amountStr.length > HIGHLIGHT_DIGIT_COUNT) {
-                val startIndex = spannable.length - HIGHLIGHT_DIGIT_COUNT
-                spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifycomponents.R.color.Unify_G500)),
-                        startIndex, spannable.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-        }
-        return spannable
-    }
 
     private fun getAppLinkPaymentInfoData(bundle: Bundle): AppLinkPaymentInfo? {
         return try {
@@ -241,7 +270,25 @@ class HowToPayFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun copyTOClipBoard(context: Context?, dataStr: String) {
+        context?.let {
+            val extraSpaceRegexStr = "\\s+".toRegex()
+            val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE)
+                    as ClipboardManager
+            val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
+                    dataStr.replace(extraSpaceRegexStr, ""))
+            clipboard.setPrimaryClip(clip)
+        }
+    }
+
+    private fun showToast(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT).show()
+        }
+    }
+
     companion object {
+        private val COPY_BOARD_LABEL = "Tokopedia"
         fun getInstance(activity: Activity, bundle: Bundle?): HowToPayFragment? {
             if (bundle == null) {
                 activity.finish()

@@ -49,11 +49,18 @@
     <string name="pms_hwp_rp">Rp%s</string>
     <string name="pms_hwp_screenshot">Simpan Screenshot</string>
     <string name="pms_hwp_payment_code">Kode Pembayaran</string>
+    <string name="pms_hwp_VA_code">Nomor Virtual Account</string>
+    <string name="pms_hwp_user_id">User ID</string>
     <string name="pms_hwp_account_number">Nomor Rekening</string>
     <string name="pms_hwp_copy">Salin</string>
     <string name="pms_hwp_transfer_3_digit_info">Penting! Transfer dengan jumlah yang tepat hingga 3 digit terakhir.</string>
     <string name="pms_hwp_pay_other_store_info">Kamu juga bisa bayar di gerai lainnya dengan biaya layanan yang bervariasi.</string>
     <string name="pms_hwp_view_store_list">Lihat Daftar Gerai</string>
+    <string name="pms_hwp_bank_info">%1$s Cabang %2$s</string>
+    <string name="pms_hwp_guaranteed_payment">Pembayaran terjamin</string>
+    <string name="pms_hwp_guaranteed_payment_desc">Tokopedia menjamin keamanan dana yang kamu bayarkan di tiap transaksi.</string>
+    <string name="pms_hwp_data_safety">Jaga keamanan datamu</string>
+    <string name="pms_hwp_data_safety_desc"><![CDATA[Jangan menyebarkan bukti & data pembayaran ke pihak mana pun kecuali Tokopedia.]]></string>
     <string-array name="payment_list_bank_name">
         <item>BCA</item>
         <item>MANDIRI</item>
