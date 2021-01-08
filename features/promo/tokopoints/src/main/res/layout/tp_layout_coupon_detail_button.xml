@@ -42,10 +42,10 @@
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_continue"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_40"
+                android:layout_height="@dimen/dp_48"
                 android:layout_gravity="center_vertical"
                 app:unifyButtonType="main"
-                app:unifyButtonSize="medium"
+                app:unifyButtonSize="large"
                 app:unifyButtonVariant="filled"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"/>
