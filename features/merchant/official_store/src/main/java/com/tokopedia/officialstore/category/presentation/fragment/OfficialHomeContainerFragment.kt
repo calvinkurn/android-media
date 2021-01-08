@@ -79,6 +79,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var badgeNumberInbox: Int = 0
     private var badgeNumberCart: Int = 0
     private var keyCategory = "0"
+    private var useNewInbox = false
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var tracking: OfficialStoreTracking
@@ -112,6 +113,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(context)
+        initInboxAbTest()
         init(view)
         observeOfficialCategoriesData()
         viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
@@ -142,7 +144,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     // from: GlobalNav, to show notification maintoolbar
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
         mainToolbar?.run {
-            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+            if (!useNewInbox) {
+                setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+            }
             setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
@@ -239,6 +243,12 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         return tabItemDataList
     }
 
+    private fun initInboxAbTest() {
+        useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+        ) == AbTestPlatform.VARIANT_NEW_INBOX
+    }
+
     private fun init(view: View) {
         configStatusBar(view)
         configMainToolbar(view)
@@ -273,13 +283,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             mainToolbar = view.findViewById(R.id.maintoolbar)
             maintoolbar?.run {
                 viewLifecycleOwner.lifecycle.addObserver(this)
-                setIcon(
-                        IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                                .addIcon(IconList.ID_MESSAGE) {}
-                                .addIcon(IconList.ID_NOTIFICATION) {}
-                                .addIcon(IconList.ID_CART) {}
-                                .addIcon(IconList.ID_NAV_GLOBAL) {}
-                )
+                setIcon(getToolbarIcons())
                 setupSearchbar(
                         hints = listOf(HintData(placeholder = getString(R.string.os_query_search))),
                         applink = ApplinkConstant.OFFICIAL_SEARCHBAR
@@ -295,6 +299,22 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             toolbar?.show()
             mainToolbar?.hide()
         }
+    }
+
+    private fun getToolbarIcons(): IconBuilder {
+        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                        .addIcon(IconList.ID_MESSAGE) {}
+
+        if (!useNewInbox) {
+            icons.addIcon(IconList.ID_NOTIFICATION) {}
+        }
+
+        icons.apply {
+            addIcon(IconList.ID_CART) {}
+            addIcon(IconList.ID_NAV_GLOBAL) {}
+        }
+
+        return icons
     }
 
     private fun isNavRevamp(): Boolean {

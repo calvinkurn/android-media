@@ -77,11 +77,13 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         const val COACH_MARK_SHOWN = false
         const val COACH_MARK_LAST_INDEX = 2
 
-        fun createNewInstance(tab: TalkInboxTab, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
+        fun createNewInstance(tab: TalkInboxTab? = null, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
             return TalkInboxFragment().apply {
                 this.talkInboxListener = talkInboxListener
                 arguments = Bundle().apply {
-                    putString(TAB_PARAM, tab.tabParam)
+                    tab?.let {
+                        putString(TAB_PARAM, it.tabParam)
+                    }
                 }
             }
         }
@@ -178,15 +180,14 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         talkInboxTracking.eventItemImpress(inboxType, talkId, viewModel.getUserId(), position, isUnread, trackingQueue)
     }
 
-    override fun onInboxItemClicked(talkInboxUiModel: TalkInboxUiModel?, talkInboxOldUiModel: TalkInboxOldUiModel?) {
+    override fun onInboxItemClicked(talkInboxUiModel: TalkInboxUiModel?, talkInboxOldUiModel: TalkInboxOldUiModel?, position: Int) {
         talkInboxUiModel?.inboxDetail?.let {
-            talkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,
-                    viewModel.getActiveFilter(), !it.isUnread, viewModel.getShopId(), viewModel.getUnreadCount(), viewModel.getUserId())
+            talkInboxTracking.eventClickThreadEcommerce(viewModel.getType(), it.questionID,  viewModel.getUserId(), position, !it.isUnread)
             goToReply(it.questionID)
         }
         talkInboxOldUiModel?.inboxDetail?.let {
             talkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,
-                    viewModel.getActiveFilter(), !it.isUnread, viewModel.getShopId(), viewModel.getUnreadCount(), viewModel.getUserId())
+                    viewModel.getActiveFilter(), !it.isUnread, viewModel.getShopId(), getCounterForTracking(), viewModel.getUserId())
             goToReply(it.questionID)
         }
     }
@@ -204,7 +205,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         clearAllData()
         setInboxType()
         initSortFilter()
-        talkInboxTracking.eventClickTab(inboxType, viewModel.getUserId(), viewModel.getShopId(), viewModel.getUnreadCount())
+        talkInboxTracking.eventClickTab(inboxType, viewModel.getUserId(), viewModel.getShopId(), getCounterForTracking())
     }
 
     override fun onPageClickedAgain() {
@@ -509,7 +510,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun selectFilter(filter: TalkInboxFilter) {
-        viewModel.setFilter(filter)
+        viewModel.setFilter(filter, isSellerView())
         showFullPageLoading()
         clearAllData()
     }
@@ -529,6 +530,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                 return
             }
             viewModel.setInboxType(TalkInboxTab.SHOP_TAB)
+            return
         }
         viewModel.setInboxType(inboxType)
         return
@@ -661,5 +663,12 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             remoteConfigInstance = RemoteConfigInstance(activity?.application)
         }
         return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun getCounterForTracking(): Int {
+        if(isSellerView()) {
+            return viewModel.getUnrespondedCount()
+        }
+        return viewModel.getUnreadCount()
     }
 }
