@@ -1252,7 +1252,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun enableVideo(): Boolean {
-        return remoteConfig?.getBoolean(ProductDetailConstant.ENABLE_VIDEO_PDP, true) ?: false
+        return remoteConfig()?.getBoolean(ProductDetailConstant.ENABLE_VIDEO_PDP, true) ?: false
     }
 
     private fun updateVariantDataToExistingProductData(variantProcessedData: List<VariantCategory>?) {
@@ -1964,11 +1964,11 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun checkAndExecuteReferralAction(productData: ProductData) {
-        val fireBaseRemoteMsgGuest = remoteConfig?.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "") ?: ""
+        val fireBaseRemoteMsgGuest = remoteConfig()?.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "") ?: ""
         if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.productShareDescription = fireBaseRemoteMsgGuest
 
         if (viewModel.userSessionInterface.isLoggedIn && viewModel.userSessionInterface.isMsisdnVerified) {
-            val fireBaseRemoteMsg = remoteConfig?.getString(RemoteConfigKey.fireBaseShareMsgKey, "") ?: ""
+            val fireBaseRemoteMsg = remoteConfig()?.getString(RemoteConfigKey.fireBaseShareMsgKey, "") ?: ""
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
                 doReferralShareAction(productData, fireBaseRemoteMsg)
                 return
@@ -2393,14 +2393,14 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             return
         }
 
-        var isCanShowing = remoteConfig?.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true) ?: true
+        var isCanShowing = remoteConfig()?.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true) ?: true
         if (stickyLoginView?.isLoginReminder() == true && isCanShowing) {
             stickyLoginView?.showLoginReminder(StickyLoginConstant.Page.PDP)
             if (stickyLoginView?.isShowing() == true) {
                 stickyLoginView?.trackerLoginReminder?.viewOnPage(StickyLoginConstant.Page.PDP)
             }
         } else {
-            isCanShowing = remoteConfig?.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true) ?: true
+            isCanShowing = remoteConfig()?.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true) ?: true
             if (!isCanShowing) {
                 stickyLoginView?.visibility = View.GONE
                 return
@@ -3242,8 +3242,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun setupRemoteConfig() {
-        viewModel.enableCaching = remoteConfig?.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true) ?: true
-        enableCheckImeiRemoteConfig = remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false) ?: false
+        viewModel.enableCaching = remoteConfig()?.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true) ?: true
+        enableCheckImeiRemoteConfig = remoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false) ?: false
     }
 
     //Will be delete soon

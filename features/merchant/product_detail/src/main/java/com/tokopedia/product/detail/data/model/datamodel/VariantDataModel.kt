@@ -34,7 +34,7 @@ data class VariantDataModel(
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is VariantDataModel) {
             isVariantError == newData.isVariantError
-                    && listOfVariantCategory.hashCode() == newData.listOfVariantCategory.hashCode()
+                    && listOfVariantCategory == newData.listOfVariantCategory
         } else {
             false
         }

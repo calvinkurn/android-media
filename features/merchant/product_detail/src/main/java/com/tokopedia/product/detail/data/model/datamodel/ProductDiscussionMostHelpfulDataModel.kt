@@ -26,7 +26,7 @@ data class ProductDiscussionMostHelpfulDataModel(
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductDiscussionMostHelpfulDataModel) {
             isShimmering == newData.isShimmering
-                    && questions?.hashCode() == newData.questions?.hashCode()
+                    && questions?.size == newData.questions?.size
                     && totalQuestion == newData.totalQuestion
         } else {
             false

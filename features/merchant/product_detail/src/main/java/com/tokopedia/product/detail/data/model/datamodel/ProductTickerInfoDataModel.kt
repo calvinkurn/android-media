@@ -32,7 +32,7 @@ data class ProductTickerInfoDataModel(
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     fun shouldRemoveComponent(): Boolean {
-            return (statusInfo == null || (statusInfo?.shopStatus == ProductShopStatusTypeDef.OPEN && statusInfo?.isIdle != true)) &&
+        return (statusInfo == null || (statusInfo?.shopStatus == ProductShopStatusTypeDef.OPEN && statusInfo?.isIdle != true)) &&
                 !isOutOfStock && !isProductWarehouse
     }
 
@@ -51,10 +51,9 @@ data class ProductTickerInfoDataModel(
             isProductWarehouse == newData.isProductWarehouse
                     && isOutOfStock == newData.isOutOfStock
                     && isProductInCampaign == newData.isProductInCampaign
-                    && statusInfo.hashCode() == newData.statusInfo.hashCode()
-                    && closedInfo.hashCode() == newData.closedInfo.hashCode()
+                    && isStatusInfoTheSame(newData.statusInfo)
+                    && isClosedInfoTheSame(newData.closedInfo)
                     && generalTickerInfo?.size == newData.generalTickerInfo?.size
-
         } else {
             false
         }
@@ -66,5 +65,18 @@ data class ProductTickerInfoDataModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
+    }
+
+    private fun isStatusInfoTheSame(newStatusInfo: ShopInfo.StatusInfo?): Boolean {
+        if (statusInfo == null && newStatusInfo == null) return true
+        return statusInfo?.isIdle == newStatusInfo?.isIdle
+                && statusInfo?.shopStatus == newStatusInfo?.shopStatus
+                && statusInfo?.statusMessage == newStatusInfo?.statusMessage
+                && statusInfo?.statusTitle == newStatusInfo?.statusTitle
+    }
+
+    private fun isClosedInfoTheSame(newClosedInfo: ShopInfo.ClosedInfo?): Boolean {
+        if (closedInfo == null && newClosedInfo == null) return true
+        return closedInfo?.closeDetail?.openDateUnix == newClosedInfo?.closeDetail?.openDateUnix
     }
 }

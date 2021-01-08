@@ -49,7 +49,7 @@ data class ProductRecommendationDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
         return if (newData is ProductRecommendationDataModel) {
-            if (cardModel.hashCode() != newData.cardModel.hashCode()) {
+            if (cardModel?.size != newData.cardModel?.size) {
                 return null
             }
 

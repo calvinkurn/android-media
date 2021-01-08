@@ -81,7 +81,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
     private var deeplinkUrl: String? = null
     private var layoutId: String? = null
     private var userSessionInterface: UserSessionInterface? = null
-    private var remoteConfig: RemoteConfig? = null
+    var remoteConfig: RemoteConfig? = null
 
     //Performance Monitoring
     var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null

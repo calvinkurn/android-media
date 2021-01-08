@@ -18,8 +18,8 @@ import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
@@ -30,7 +30,6 @@ import kotlinx.android.synthetic.main.partial_layout_button_action.*
 abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactory> : BaseDaggerFragment() {
 
     var productAdapter: ProductDetailAdapter? = null
-    var remoteConfig: RemoteConfig? = null
     var productDaggerComponent: ProductDetailComponent? = null
 
     private var rvPdp: RecyclerView? = null
@@ -58,9 +57,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
         setHasOptionsMenu(true)
-        activity?.run {
-            remoteConfig = FirebaseRemoteConfigImpl(this)
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -77,6 +73,8 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         super.onActivityCreated(savedInstanceState)
         observeData()
     }
+
+    fun remoteConfig(): RemoteConfig? = (activity as ProductDetailActivity).remoteConfig
 
     fun submitInitialList(visitables: List<DynamicPdpDataModel>) {
         hideSwipeLoading()
@@ -144,6 +142,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
         rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvPdp?.itemAnimator = null
+        rvPdp?.setItemViewCacheSize(20)
         showLoading()
 
         rvPdp?.adapter = productAdapter
