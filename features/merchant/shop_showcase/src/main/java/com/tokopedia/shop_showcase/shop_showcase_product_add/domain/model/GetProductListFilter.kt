@@ -27,7 +27,7 @@ data class GetProductListFilter (
         @Expose
         @SerializedName("fpicture") var fpicture : Int = 0,
         @Expose
-        @SerializedName("sort") var sort : Int = 0
+        @SerializedName("sort") var sort : Int = 1
 ) {
 
     /**

@@ -36,7 +36,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.io.File;
@@ -320,8 +320,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
             initCropPresenter();
             ArrayList<String> list = new ArrayList<>();
             list.add(file.getAbsolutePath());
-            ArrayList<ImageRatioTypeDef> ratioList = new ArrayList<>();
-            ratioList.add(ImageRatioTypeDef.RATIO_1_1);
+            ArrayList<ImageRatioType> ratioList = new ArrayList<>();
+            ratioList.add(ImageRatioType.RATIO_1_1);
             imageRatioCropPresenter.cropBitmapToExpectedRatio(list, ratioList, false,
                     ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
         } else {

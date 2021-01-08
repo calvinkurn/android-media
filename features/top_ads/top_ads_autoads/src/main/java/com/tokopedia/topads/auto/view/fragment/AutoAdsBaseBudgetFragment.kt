@@ -95,7 +95,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         showLoading()
-        budgetViewModel.getTopAdsDeposit(userSession.shopId.toInt())
+        budgetViewModel.getTopAdsDeposit()
         budgetViewModel.topAdsDeposit.observe(viewLifecycleOwner, Observer {
             topAdsDeposit = it
             budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source, this::onSuccessBudgetInfo)

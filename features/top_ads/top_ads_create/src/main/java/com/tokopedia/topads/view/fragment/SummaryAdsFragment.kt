@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
@@ -30,7 +31,6 @@ import com.tokopedia.topads.data.param.Group
 import com.tokopedia.topads.data.param.InputCreateGroup
 import com.tokopedia.topads.data.param.KeywordsItem
 import com.tokopedia.topads.data.response.ResponseCreateGroup
-import com.tokopedia.topads.data.response.TopAdsDepositResponse
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.SummaryViewModel
@@ -114,8 +114,8 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         return inflater.inflate(R.layout.topads_create_fragment_summary, container, false)
     }
 
-    private fun onSuccess(data: TopAdsDepositResponse.Data) {
-        isEnoughDeposit = data.topadsDashboardDeposits.data.amount > 0
+    private fun onSuccess(data: DepositAmount) {
+        isEnoughDeposit = data.amount > 0
         val intent: Intent = if (isEnoughDeposit) {
             Intent(context, SuccessActivity::class.java).apply {
                 if (isFromPdpSellerMigration(activity?.intent?.extras)) {
