@@ -39,6 +39,7 @@ import com.tokopedia.checkout.view.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.logisticCommon.data.constant.CourierConstant;
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant;
@@ -115,9 +116,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private CheckboxUnify cbPPP;
     private RecyclerView rvCartItem;
     private Typography tvExpandOtherProduct;
-    private ImageView ivExpandOtherProduct;
+    private IconUnify ivExpandOtherProduct;
     private RelativeLayout rlExpandOtherProduct;
-    private ImageView ivDetailOptionChevron;
+    private IconUnify ivDetailOptionChevron;
     private Typography tvSubTotalPrice;
     private RelativeLayout rlCartSubTotal;
     private Typography tvTotalItem;
@@ -607,14 +608,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             rvCartItem.setVisibility(View.VISIBLE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             tvExpandOtherProduct.setText(R.string.label_hide_other_item_new);
-            ivExpandOtherProduct.setImageResource(R.drawable.checkout_module_ic_up);
+            ivExpandOtherProduct.setImage(IconUnify.CHEVRON_UP, null, null, null, null);
         } else {
             rvCartItem.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             tvExpandOtherProduct.setText(String.format(tvExpandOtherProduct.getContext().getString(R.string.label_other_item_count_format),
                     String.valueOf(cartItemModels.size())));
             tvExpandOtherProduct.setTextColor(ContextCompat.getColor(tvExpandOtherProduct.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
-            ivExpandOtherProduct.setImageResource(R.drawable.checkout_module_ic_down);
+            ivExpandOtherProduct.setImage(IconUnify.CHEVRON_DOWN, null, null, null, null);
         }
     }
 
@@ -958,12 +959,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded()) {
             rlShipmentCost.setVisibility(View.VISIBLE);
-            // ivDetailOptionChevron.setImageResource(R.drawable.ic_keyboard_arrow_up_24dp);
-            ivDetailOptionChevron.setImageResource(R.drawable.checkout_module_ic_up);
+            ivDetailOptionChevron.setImage(IconUnify.CHEVRON_UP, null, null, null, null);
         } else {
             rlShipmentCost.setVisibility(View.GONE);
-            // ivDetailOptionChevron.setImageResource(R.drawable.ic_keyboard_arrow_down_24dp);
-            ivDetailOptionChevron.setImageResource(R.drawable.checkout_module_ic_down);
+            ivDetailOptionChevron.setImage(IconUnify.CHEVRON_DOWN, null, null, null, null);
         }
 
         String shippingFeeLabel = tvShippingFee.getContext().getString(R.string.label_delivery_price);
