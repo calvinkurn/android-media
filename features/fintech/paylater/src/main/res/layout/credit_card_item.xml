@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/creditCardLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:card_type="border">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clCreditCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Neutral_N0">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivRecommendationBadge"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_32"
+            app:unify_image_corner_radius="0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/icRecommendationLike"
+            android:layout_width="18dp"
+            android:layout_height="@dimen/unify_space_16"
+            android:layout_marginTop="2dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvBestOffer"
+            app:layout_constraintEnd_toStartOf="@+id/tvBestOffer"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvBestOffer"
+            app:srcCompat="@drawable/ic_recommended_credit_card" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvBestOffer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/payLater_benefit_margin_dp_6"
+            android:text="Penawaran Terbaik"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/icRecommendationLike"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold" />
+
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivCreditCard"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_0"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_credit_card_demo"
+            app:layout_constraintDimensionRatio="H, 4:3"
+            app:layout_constraintEnd_toStartOf="@+id/imageGuideLine"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivRecommendationBadge"
+            app:unify_image_corner_radius="8" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/imageGuideLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.4" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvCreditCardName"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:text="Kartu Kredit Citi PremierMiles"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageGuideLine"
+            app:layout_constraintTop_toBottomOf="@+id/ivRecommendationBadge"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvBankName"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:text="Citibank"
+            android:textColor="@color/credit_card_all_installment_text_color"
+            app:layout_constraintEnd_toEndOf="@+id/tvCreditCardName"
+            app:layout_constraintStart_toStartOf="@+id/tvCreditCardName"
+            app:layout_constraintTop_toBottomOf="@+id/tvCreditCardName"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/benefitLabel1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:labelTitle="Easy Approval"
+            app:labelType="general_dark_green"
+            android:layout_marginTop="@dimen/credit_card_dp_10"
+            app:layout_constraintTop_toBottomOf="@+id/ivCreditCard"
+            app:layout_constraintStart_toStartOf="@+id/ivCreditCard"/>
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/benefitLabel2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:labelTitle="100% Cashback"
+            app:labelType="general_light_green"
+            android:layout_marginStart="@dimen/unify_space_4"
+            app:layout_constraintStart_toEndOf="@+id/benefitLabel1"
+            app:layout_constraintTop_toTopOf="@id/benefitLabel1"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvBenefitsMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+2 Lainnya"
+            android:textColor="@color/credit_card_all_installment_text_color"
+            app:layout_constraintStart_toEndOf="@id/benefitLabel2"
+            app:layout_constraintTop_toTopOf="@id/benefitLabel2"
+            app:layout_constraintBottom_toBottomOf="@id/benefitLabel2"
+            app:typographyType="body_3"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvBenefitsDesc"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/credit_card_dp_10"
+            android:layout_marginBottom="@dimen/unify_space_24"
+            app:layout_constraintTop_toBottomOf="@id/benefitLabel1"
+            app:layout_constraintStart_toStartOf="@id/ivCreditCard"
+            app:layout_constraintEnd_toEndOf="@id/tvCreditCardName"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:listitem="@layout/paylater_cards_content_info_item"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
+

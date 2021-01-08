@@ -1,12 +1,27 @@
 query getUserApplicationStatus{
   creditapplication_getUserApplicationStatus{
-    tkp_user_id
-    application_detail{
-      id
-      gateway_name
-      gateway_code
-      application_status
-      expiration_date
+      tkp_user_id
+     	application_detail{
+        id
+        gateway_name
+        gateway_code
+        application_status
+        expiration_date
+        limit {
+          max
+          one_month
+          three_month
+          six_month
+          nine_month
+          one_year
+        }
+        app_status_content {
+          email
+          subheader
+          phone_number
+          pop_up_detail
+          additional_info
+        }
+      }
     }
-  }
 }

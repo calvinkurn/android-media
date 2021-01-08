@@ -10,13 +10,13 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.CreditCardBank
-import com.tokopedia.paylater.presentation.adapter.CreditCardRegistrationAdapter
+import com.tokopedia.paylater.presentation.adapter.CreditCardListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import kotlinx.android.synthetic.main.base_list_bottomsheet_widget.*
 
 
-class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
+class CreditCardsListBottomSheet : BottomSheetUnify() {
 
     init {
         setShowListener {
@@ -33,7 +33,6 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private var listener: Listener? = null
     private val childLayoutRes = R.layout.base_list_bottomsheet_widget
     private var bankList: ArrayList<CreditCardBank> = arrayListOf()
 
@@ -56,7 +55,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
 
     private fun getArgumentData() {
         arguments?.let {
-            bankList = it.getParcelableArrayList(CREDIT_CARD_BANK_DATA) ?: arrayListOf()
+            //bankList = it.getParcelableArrayList(CREDIT_CARD_BANK_DATA) ?: arrayListOf()
         }
     }
 
@@ -72,14 +71,14 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
             v.onTouchEvent(event)
             true
         }
-        baseList.adapter = CreditCardRegistrationAdapter(bankList) {
-            listener?.showCreditCardList()
-        }
-        baseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        baseList.adapter = CreditCardListAdapter(bankList)
+        baseList.layoutManager = linearLayoutManager
     }
 
+
     private fun setDefaultParams() {
-        setTitle("Tersedia cicilan 6 bulan")
+        setTitle("Kartu kredit Citibank")
         isDragable = true
         isHideable = true
         showCloseIcon = true
@@ -87,23 +86,15 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         customPeekHeight = getScreenHeight() / 2
     }
 
-    fun setActionListener(listener: Listener) {
-        this.listener = listener
-    }
-
     companion object {
-        const val CREDIT_CARD_BANK_DATA = "BANK_DATA"
-        const val TAG = "FT_TAG"
+        const val CREDIT_CARD_DATA = "CREDIT_DATA"
+        private const val TAG = "FT_TAG"
 
-        fun getInstance(bundle: Bundle, childFragmentManager: FragmentManager): CreditCardRegistrationBottomSheet {
-            return CreditCardRegistrationBottomSheet().apply {
+        fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
+            val creditCardsListBottomSheet = CreditCardsListBottomSheet().apply {
                 arguments = bundle
             }
+            creditCardsListBottomSheet.show(childFragmentManager, TAG)
         }
-    }
-
-    interface Listener {
-        fun
-                showCreditCardList()
     }
 }
