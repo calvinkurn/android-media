@@ -172,7 +172,10 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
 
     private fun setupEditText() {
         if (isEditMode) {
-            talkEditTemplateEditText.setText(text)
+            talkEditTemplateEditText.apply {
+                clearComposingText()
+                setText(this@TalkTemplateBottomsheet.text)
+            }
         }
     }
 }

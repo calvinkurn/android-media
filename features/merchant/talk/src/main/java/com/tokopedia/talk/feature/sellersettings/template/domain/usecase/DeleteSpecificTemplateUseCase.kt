@@ -11,6 +11,7 @@ import javax.inject.Inject
 class DeleteSpecificTemplateUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<DeleteSpecificTemplateResponseWrapper>(graphqlRepository) {
 
     companion object {
+        const val INDEX_ADJUSTMENT = 1
         const val DELETE_SPECIFIC_TEMPLATE_QUERY_CLASS_NAME = "DeleteSpecificTemplate"
         private const val query = """
             mutation chatDeleteTemplate(${'$'}templateIndex: Int!, ${'$'}isSeller: Boolean!){
@@ -36,7 +37,7 @@ class DeleteSpecificTemplateUseCase @Inject constructor(graphqlRepository: Graph
     fun setParams(index: Int, isSeller: Boolean) {
         setRequestParams(
                 requestParams.apply {
-                    putInt(TemplateConstants.PARAM_TEMPLATE_INDEX, index)
+                    putInt(TemplateConstants.PARAM_TEMPLATE_INDEX, index + INDEX_ADJUSTMENT)
                     putBoolean(TemplateConstants.PARAM_IS_SELLER, isSeller)
                 }.parameters
         )

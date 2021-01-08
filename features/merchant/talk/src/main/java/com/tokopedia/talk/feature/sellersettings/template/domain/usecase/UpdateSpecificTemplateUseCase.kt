@@ -11,6 +11,7 @@ import javax.inject.Inject
 class UpdateSpecificTemplateUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<UpdateSpecificTemplateResponseWrapper>(graphqlRepository) {
 
     companion object {
+        const val INDEX_ADJUSTMENT = 1
         const val CHAT_UPDATE_TEMPLATE_QUERY_CLASS_NAME = "UpdateSpecificTemplate"
         private const val query = """
             mutation chatUpdateTemplate(${'$'}isSeller: Boolean!, ${'$'}value: String!, ${'$'}index: Int!){
@@ -38,7 +39,7 @@ class UpdateSpecificTemplateUseCase @Inject constructor(graphqlRepository: Graph
                 requestParams.apply {
                     putBoolean(TemplateConstants.PARAM_IS_SELLER, isSeller)
                     putString(TemplateConstants.PARAM_VALUE, value)
-                    putInt(TemplateConstants.PARAM_INDEX, index)
+                    putInt(TemplateConstants.PARAM_INDEX, index + INDEX_ADJUSTMENT)
                 }.parameters
         )
     }

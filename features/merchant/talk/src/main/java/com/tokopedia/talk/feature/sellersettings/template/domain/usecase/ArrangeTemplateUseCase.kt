@@ -11,6 +11,7 @@ import javax.inject.Inject
 class ArrangeTemplateUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<ArrangeTemplateResponseWrapper>(graphqlRepository) {
 
     companion object {
+        const val INDEX_ADJUSTMENT = 1
         const val ARRANGE_TEMPLATE_QUERY_CLASS_NAME = "ArrangeTemplate"
         private const val query = """
             mutation chatMoveTemplate(${'$'}index: Int!, ${'$'}moveTo: Int!, ${'$'}isSeller: Boolean!) {
@@ -36,8 +37,8 @@ class ArrangeTemplateUseCase @Inject constructor(graphqlRepository: GraphqlRepos
     fun setParams(index: Int, moveTo: Int, isSeller: Boolean) {
         setRequestParams(
                 requestParams.apply {
-                    putInt(TemplateConstants.PARAM_INDEX, index)
-                    putInt(TemplateConstants.PARAM_MOVE_TO, moveTo)
+                    putInt(TemplateConstants.PARAM_INDEX, index + INDEX_ADJUSTMENT)
+                    putInt(TemplateConstants.PARAM_MOVE_TO, moveTo + INDEX_ADJUSTMENT)
                     putBoolean(TemplateConstants.PARAM_IS_SELLER, isSeller)
                 }.parameters
         )
