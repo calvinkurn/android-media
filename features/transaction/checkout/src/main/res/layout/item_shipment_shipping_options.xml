@@ -11,9 +11,9 @@
         android:id="@+id/ll_prioritas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_9"
+        android:paddingStart="@dimen/dp_9"
         android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_4">
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -32,20 +32,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/cb_prioritas"
-            android:layout_toRightOf="@+id/cb_prioritas"
             android:padding="@dimen/dp_4"
             android:text="@string/label_order_prioritas" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_prioritas_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_alignBottom="@+id/tv_label_prioritas"
             android:layout_toEndOf="@+id/tv_label_prioritas"
-            android:layout_toRightOf="@+id/tv_label_prioritas"
             android:foregroundGravity="center_vertical"
-            android:padding="@dimen/dp_4"
-            android:src="@drawable/info_icon" />
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            app:icon_name="INFORMATION" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_order_prioritas_info"
@@ -53,7 +52,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_label_prioritas"
             android:layout_toEndOf="@+id/cb_prioritas"
-            android:layout_toRightOf="@+id/cb_prioritas"
             android:padding="@dimen/dp_4"
             android:text="@string/label_hardcoded_order_prioritas_info"
             android:textSize="@dimen/sp_12"
@@ -97,9 +95,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
-        android:paddingLeft="@dimen/dp_9"
+        android:paddingStart="@dimen/dp_9"
         android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_4">
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -121,14 +119,15 @@
             app:typographyType="body_2"
             app:typographyWeight="reguler" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_insurance_info"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:contentDescription="@string/content_desc_img_insurance_info"
             android:foregroundGravity="center_vertical"
-            android:padding="@dimen/dp_4"
-            android:src="@drawable/info_icon" />
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            app:icon_name="INFORMATION" />
 
     </LinearLayout>
 
@@ -160,12 +159,13 @@
             app:typographyType="body_2"
             app:typographyWeight="reguler" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_dropshipper_info"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="@dimen/dp_4"
-            android:src="@drawable/info_icon" />
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            app:icon_name="INFORMATION" />
 
     </LinearLayout>
 
