@@ -759,6 +759,6 @@ class PlayViewModel @Inject constructor(
 
         private const val MS_PER_SECOND = 1000
 
-        private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_remoteconfig"
+        private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
     }
 }
