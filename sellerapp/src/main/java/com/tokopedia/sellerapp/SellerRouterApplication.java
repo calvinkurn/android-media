@@ -363,14 +363,14 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void doRelogin(String newAccessToken) {
-        if(gcmUpdateComponent == null) {
-            injectGcmUpdateComponent();
-        }
-        SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
             if(isOldGcmUpdate()) {
+                SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
                 sessionRefresh.gcmUpdate();
             } else {
+                if(gcmUpdateComponent == null) {
+                    injectGcmUpdateComponent();
+                }
                 fcmManager.get().onNewToken(newAccessToken);
             }
         } catch (IOException e) {

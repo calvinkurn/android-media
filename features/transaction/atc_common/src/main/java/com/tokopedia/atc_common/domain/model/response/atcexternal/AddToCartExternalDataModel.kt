@@ -7,7 +7,7 @@ data class AddToCartExternalModel(
 )
 
 data class AddToCartExternalDataModel(
-        var productId: Int = 0,
+        var productId: Long = 0,
         var productName: String = "",
         var quantity: Int = 0,
         var price: Int = 0,
