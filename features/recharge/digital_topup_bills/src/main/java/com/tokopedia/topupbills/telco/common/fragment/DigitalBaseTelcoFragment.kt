@@ -345,21 +345,27 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var lastOffset = -1
+            var lastIsCollapsed = false
+
             override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
                 if (lastOffset == verticalOffSet) return
 
                 lastOffset = verticalOffSet
-                if (abs(verticalOffSet) >= appBarLayout.totalScrollRange) {
+                if (abs(verticalOffSet) >= appBarLayout.totalScrollRange && !lastIsCollapsed) {
                     //Collapsed
+                    lastIsCollapsed = true
                     onCollapseAppBar()
                     if (!fadeOut.hasStarted() || fadeOut.hasEnded()) {
+                        bannerImage.clearAnimation()
                         bannerImage.startAnimation(fadeOut)
                     }
                     (activity as? BaseTelcoActivity)?.onCollapseAppBar()
-                } else if (verticalOffSet == 0) {
+                } else if (verticalOffSet == 0 && lastIsCollapsed) {
                     //Expanded
+                    lastIsCollapsed = false
                     onExpandAppBar()
                     if (!fadeIn.hasStarted() || fadeIn.hasEnded()) {
+                        bannerImage.clearAnimation()
                         bannerImage.startAnimation(fadeIn)
                     }
                     (activity as? BaseTelcoActivity)?.onExpandAppBar()
