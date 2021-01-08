@@ -13,6 +13,7 @@ import com.tokopedia.notifications.utils.NotificationCancelManager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -23,17 +24,14 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
 
     public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
     private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
-    private int activityCount;
-
     private CmActivityLifecycleHandler lifecycleHandler;
     private NotificationCancelManager cancelManager;
 
-    public CMActivityLifeCycle(
-            CmActivityLifecycleHandler lifecycleHandler,
-            NotificationCancelManager cancelManager
-    ) {
+    private int activityCount;
+
+    public CMActivityLifeCycle(CmActivityLifecycleHandler lifecycleHandler) {
         this.lifecycleHandler = lifecycleHandler;
-        this.cancelManager = cancelManager;
+        cancelManager = new NotificationCancelManager();
     }
 
     @Override
@@ -54,7 +52,11 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     public void onActivityStarted(Activity activity) {
         try {
             lifecycleHandler.onActivityStartedInternal(activity);
-            cancelManager.clearNotifications();
+
+            if (Objects.requireNonNull(activity.getClass().getCanonicalName())
+                    .equals(NotificationCancelManager.TARGET_ACTIVITY)) {
+                cancelManager.clearNotifications(activity.getApplicationContext());
+            }
         } catch (Exception e) {
             Timber.e(e);
         }

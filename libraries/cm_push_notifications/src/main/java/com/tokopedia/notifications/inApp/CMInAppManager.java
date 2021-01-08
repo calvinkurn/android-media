@@ -71,8 +71,6 @@ public class CMInAppManager implements CmInAppListener,
     public CmDataConsumer cmDataConsumer;
     public DataConsumer dataConsumer;
 
-    private NotificationCancelManager cancelManager;
-
     static {
         inAppManager = new CMInAppManager();
     }
@@ -99,7 +97,6 @@ public class CMInAppManager implements CmInAppListener,
                 this,
                 this);
         dataConsumer = new DataConsumerImpl();
-        cancelManager = NotificationCancelManager.getInstance(application.getApplicationContext());
         RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), dataConsumer);
         initInAppManager();
     }
@@ -111,7 +108,7 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     private void initInAppManager() {
-        CMActivityLifeCycle lifeCycle = new CMActivityLifeCycle(activityLifecycleHandler, cancelManager);
+        CMActivityLifeCycle lifeCycle = new CMActivityLifeCycle(activityLifecycleHandler);
         application.registerActivityLifecycleCallbacks(lifeCycle);
         CmFragmentLifecycleHandler cmFragmentLifecycleHandler = new CmFragmentLifecycleHandler(this, pushIntentHandler);
         FragmentObserver fragmentObserver = new FragmentObserver(cmFragmentLifecycleHandler);
