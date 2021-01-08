@@ -1,4 +1,3 @@
-include ':features:recharge:digital_checkout'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
