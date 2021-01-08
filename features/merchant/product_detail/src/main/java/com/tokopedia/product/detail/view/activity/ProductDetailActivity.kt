@@ -197,7 +197,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
     }
 
     //TODO CHANGE
-    override fun getNewFragment(): Fragment = if (remoteConfig?.getBoolean(ProductDetailConstant.ENABLE_NEW_PDP, true) == false) {
+    override fun getNewFragment(): Fragment = if (remoteConfig?.getBoolean(ProductDetailConstant.ENABLE_NEW_PDP, true) == true) {
         DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
                 productKey, isFromDeeplink,
                 isFromAffiliate ?: false, trackerAttribution,
