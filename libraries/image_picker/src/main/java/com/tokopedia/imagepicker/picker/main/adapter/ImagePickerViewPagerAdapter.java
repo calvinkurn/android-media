@@ -9,11 +9,10 @@ import androidx.collection.SparseArrayCompat;
 import android.view.ViewGroup;
 
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 
 /**
@@ -35,14 +34,14 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
     // Note: permission will be handled in activity, before the adapter is attached.
     @Override
     public Fragment getItem(int position) {
-        switch (imagePickerBuilder.getTabTypeDef(position)) {
-            case ImagePickerTabTypeDef.TYPE_GALLERY:
+        switch (imagePickerBuilder.getImagePickerTab()[position]) {
+            case TYPE_GALLERY:
                 return createGalleryFragment();
-            case ImagePickerTabTypeDef.TYPE_CAMERA:
+            case TYPE_CAMERA:
                 return createCameraFragment();
-            case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
+            case TYPE_INSTAGRAM:
                 return createInstagramFragment();
-            case ImagePickerTabTypeDef.TYPE_RECORDER:
+            case TYPE_RECORDER:
                 return createVideoFragment();
             default:
                 return new Fragment();
@@ -67,7 +66,6 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
     @SuppressLint("MissingPermission")
     protected Fragment createInstagramFragment(){
         return ImagePickerInstagramFragment.newInstance(
-                imagePickerBuilder.getGalleryType(),
                 imagePickerBuilder.supportMultipleSelection() ,
                 imagePickerBuilder.getMinResolution());
     }
@@ -78,14 +76,14 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (imagePickerBuilder.getTabTypeDef(position)) {
-            case ImagePickerTabTypeDef.TYPE_GALLERY:
+        switch (imagePickerBuilder.getImagePickerTab()[position]) {
+            case TYPE_GALLERY:
                 return context.getString(R.string.gallery);
-            case ImagePickerTabTypeDef.TYPE_CAMERA:
+            case TYPE_CAMERA:
                 return context.getString(R.string.camera);
-            case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
+            case TYPE_INSTAGRAM:
                 return context.getString(R.string.instagram);
-            case ImagePickerTabTypeDef.TYPE_RECORDER:
+            case TYPE_RECORDER:
                 return context.getString(R.string.recorder);
             default:
                 return context.getString(R.string.gallery);
@@ -111,7 +109,7 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return imagePickerBuilder.getTabTypeDef().length;
+        return imagePickerBuilder.getImagePickerTab().length;
     }
 
     public void destroyAllIndex(){
