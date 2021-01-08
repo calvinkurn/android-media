@@ -87,7 +87,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/img_time"
                         app:layout_constraintLeft_toRightOf="@+id/img_time"
                         app:layout_constraintTop_toTopOf="@+id/img_time"
-                        app:typographyType="body_3" />
+                        app:typographyType="body_2" />
 
                     <com.tokopedia.unifycomponents.timer.TimerUnifySingle
                         android:id="@+id/progress_timer"
@@ -144,7 +144,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/iv_rp"
                         app:layout_constraintLeft_toRightOf="@+id/iv_rp"
                         app:layout_constraintTop_toTopOf="@+id/iv_rp"
-                        app:typographyType="body_3"
+                        app:typographyType="body_2"
                         tool:text="Minimum Transaksi" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -173,8 +173,8 @@
                 <View
                     android:id="@+id/top_separator"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_2"
-                    android:layout_margin="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_16"
                     android:background="@color/bg_label_grey_tokopoints"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
