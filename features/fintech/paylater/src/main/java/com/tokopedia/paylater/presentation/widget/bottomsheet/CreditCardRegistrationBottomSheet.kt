@@ -6,13 +6,17 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.CreditCardBank
-import com.tokopedia.paylater.presentation.adapter.CreditCardAvailableBanksAdapter
+import com.tokopedia.paylater.presentation.adapter.CreditCardRegistrationAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import kotlinx.android.synthetic.main.base_list_bottomsheet_widget.*
 
-class CreditCardAvailableBanksBottomSheet : BottomSheetUnify() {
+
+class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
 
     init {
         setShowListener {
@@ -41,6 +45,12 @@ class CreditCardAvailableBanksBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initAdapter()
+        fbViewAllCards.apply {
+            visible()
+            addItem(arrayListOf(FloatingButtonItem(
+                    "Lihat Semua Kartu",
+                    true)))
+        }
     }
 
     private fun getArgumentData() {
@@ -61,9 +71,9 @@ class CreditCardAvailableBanksBottomSheet : BottomSheetUnify() {
             v.onTouchEvent(event)
             true
         }
-        baseList.adapter = CreditCardAvailableBanksAdapter()
+        baseList.adapter = CreditCardRegistrationAdapter(bankList) {
+        }
         baseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        (baseList.adapter as CreditCardAvailableBanksAdapter).setBankList(bankList)
     }
 
 
@@ -73,7 +83,7 @@ class CreditCardAvailableBanksBottomSheet : BottomSheetUnify() {
         isHideable = true
         showCloseIcon = true
         showHeader = true
-        isFullpage = true
+        customPeekHeight = getScreenHeight() / 2
     }
 
     companion object {
@@ -81,7 +91,7 @@ class CreditCardAvailableBanksBottomSheet : BottomSheetUnify() {
         private const val TAG = "FT_TAG"
 
         fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
-            val creditCardAvailableBanksBottomSheet = CreditCardAvailableBanksBottomSheet().apply {
+            val creditCardAvailableBanksBottomSheet = CreditCardRegistrationBottomSheet().apply {
                 arguments = bundle
             }
             creditCardAvailableBanksBottomSheet.show(childFragmentManager, TAG)

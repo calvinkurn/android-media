@@ -9,17 +9,20 @@ object CreditCardResponseMapper {
         val bankList = ArrayList<CreditCardBank>()
         bankList.add(CreditCardBank(
                 "https://ecs7.tokopedia.net/img/microfinance/credit-card-new/bca/bca-logo.png",
+                "Bank BCA",
                 "Diskon 10%; Kupon 20rb",
                 "3, 6"
         ))
         bankList.add(CreditCardBank(
                 "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/banks/bri.png",
+                "Bank BCA",
                 "Diskon 20%; Kupon 5rb",
                 "6, 9"
         ))
         for (i in 0..10) {
             bankList.add(CreditCardBank(
                     "https://ecs7.tokopedia.net/img/microfinance/credit-card-new/bca/bca-logo.png",
+                    "Bank BCA",
                     "Diskon 10%; Kupon 20rb",
                     "3, 6"
             ))

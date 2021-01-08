@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ivPayLaterPartner"
+        android:id="@+id/ivPartnerLogo"
         android:layout_width="@dimen/unify_space_48"
         android:layout_height="@dimen/unify_space_48"
         android:scaleType="centerInside"
@@ -20,7 +20,7 @@
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvTitlePaylaterPartner"
+        android:id="@+id/tvTitlePaymentPartner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/kredivo"
@@ -28,14 +28,14 @@
         android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginStart="@dimen/payLater_register_title_padding"
         app:layout_constraintBottom_toTopOf="@+id/tvDescription"
-        app:layout_constraintStart_toEndOf="@+id/ivPayLaterPartner"
+        app:layout_constraintStart_toEndOf="@+id/ivPartnerLogo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="body_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/payLaterOfferLabel"
+        android:id="@+id/paymenyOfferLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -43,11 +43,12 @@
         android:paddingTop="@dimen/unify_space_2"
         android:paddingEnd="@dimen/unify_space_4"
         android:paddingBottom="@dimen/unify_space_2"
+        android:visibility="gone"
         android:text="Aktif"
         app:labelType="general_dark_blue"
-        app:layout_constraintBottom_toBottomOf="@+id/tvTitlePaylaterPartner"
-        app:layout_constraintStart_toEndOf="@+id/tvTitlePaylaterPartner"
-        app:layout_constraintTop_toTopOf="@+id/tvTitlePaylaterPartner"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTitlePaymentPartner"
+        app:layout_constraintStart_toEndOf="@+id/tvTitlePaymentPartner"
+        app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"
         app:typographyType="small" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -60,14 +61,14 @@
         android:text="Daftar sekarang"
         android:textSize="@dimen/unify_font_12"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivPayLaterArrow"
+        app:layout_constraintEnd_toStartOf="@+id/ivActionArrow"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/tvTitlePaylaterPartner"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitlePaylaterPartner"
+        app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
         app:typographyType="body_3" />
 
     <ImageView
-        android:id="@+id/ivPayLaterArrow"
+        android:id="@+id/ivActionArrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_8"

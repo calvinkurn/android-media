@@ -13,6 +13,7 @@ data class SimulationTableResponse(
 @Parcelize
 data class CreditCardBank(
         val bankLogo: String,
+        val bankName: String,
         val bankBenefits: String,
         val availableDuration: String
 ): Parcelable

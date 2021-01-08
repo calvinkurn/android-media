@@ -122,7 +122,7 @@
             android:id="@+id/tvValidCreditCardBanks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Berlaku kartu kredit dari: 16 bank"
+            tools:text="Berlaku kartu kredit dari: 16 bank"
             android:layout_marginTop="@dimen/unify_space_16"
             app:layout_constraintStart_toStartOf="@+id/tvAllInstallments"
             app:layout_constraintTop_toBottomOf="@+id/ccDivider"
@@ -144,7 +144,7 @@
             android:id="@+id/tvSeeAll"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:text="Lihat Semua (10)"
+            tools:text="Lihat Semua (10)"
             android:textColor="@color/paylater_common_tab_green"
             android:gravity="center"
             android:layout_marginTop="@dimen/unify_space_16"
@@ -152,7 +152,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvAvailableBanks"
             app:typographyType="body_2"
-            app:typographyWeight="bold"/>
+            app:typographyWeight="bold"
+            android:visibility="gone"/>
 
 
         <com.tokopedia.unifycomponents.LoaderUnify

@@ -5,25 +5,43 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.paylater.domain.model.CreditCardBank
 import com.tokopedia.paylater.presentation.viewholder.CreditCardBankInfoViewHolder
+import com.tokopedia.paylater.presentation.viewholder.CreditCardBankShimmerViewHolder
 
-class CreditCardAvailableBanksAdapter : RecyclerView.Adapter<CreditCardBankInfoViewHolder>() {
+class CreditCardAvailableBanksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var bankList = arrayListOf<CreditCardBank>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CreditCardBankInfoViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return CreditCardBankInfoViewHolder.getViewHolder(inflater, parent)
+        return when (viewType) {
+            SHIMMER_VIEW -> CreditCardBankShimmerViewHolder.getViewHolder(inflater, parent)
+            BANK_VIEW -> CreditCardBankInfoViewHolder.getViewHolder(inflater, parent)
+            else -> throw IllegalStateException("Unsupported type: $viewType")
+        }
     }
 
-    override fun onBindViewHolder(holder: CreditCardBankInfoViewHolder, position: Int) {
-        holder.bindData(bankList[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when(holder) {
+            is CreditCardBankInfoViewHolder -> holder.bindData(bankList[position])
+        }
     }
 
     override fun getItemCount(): Int {
-        return bankList.size
+        return if(bankList.isEmpty()) 4 else bankList.size
     }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (bankList.isEmpty()) SHIMMER_VIEW
+        else BANK_VIEW
+    }
+
 
     fun setBankList(bankList: ArrayList<CreditCardBank>) {
         this.bankList = bankList
         notifyDataSetChanged()
+    }
+
+    companion object {
+        const val SHIMMER_VIEW = 1
+        const val BANK_VIEW = 2
     }
 }

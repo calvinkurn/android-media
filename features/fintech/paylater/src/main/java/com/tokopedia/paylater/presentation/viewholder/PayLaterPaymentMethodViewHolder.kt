@@ -7,31 +7,33 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
-import kotlinx.android.synthetic.main.paylater_payment_method_item.view.*
+import kotlinx.android.synthetic.main.base_payment_register_item.view.*
 
 class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLaterItemProductData, PayLaterApplicationDetail?) -> Unit) : RecyclerView.ViewHolder(view) {
 
     fun bindData(payLaterItemProductData: PayLaterItemProductData, payLaterApplicationDataForPartner: PayLaterApplicationDetail?) {
         view.apply {
             setOnClickListener { clickListener(payLaterItemProductData, payLaterApplicationDataForPartner) }
-            ivPayLaterPartner.maxHeight = context.dpToPx(72).toInt()
-            ivPayLaterPartner.maxWidth = context.dpToPx(80).toInt()
+            ivPartnerLogo.layoutParams.height = context.dpToPx(18).toInt()
+            ivPartnerLogo.layoutParams.width = context.dpToPx(48).toInt()
             ImageHandler.loadImage(context,
-                    ivPayLaterPartner,
+                    ivPartnerLogo,
                     payLaterItemProductData.partnerImgLightUrl,
                     R.drawable.ic_loading_image)
-            tvTitlePaylaterPartner.text = payLaterItemProductData.partnerName ?: ""
+            tvTitlePaymentPartner.text = payLaterItemProductData.partnerName ?: ""
             tvDescription.text = "${context.getString(R.string.payLater_verification_until_subtitle)} ${payLaterApplicationDataForPartner?.payLaterExpirationDate}"
             payLaterApplicationDataForPartner?.let {
                 it.payLaterApplicationStatusLabelStringId.also { resId ->
                     if (resId != 0) {
-                        payLaterOfferLabel.text = context.getString(resId)
-                        payLaterOfferLabel.setLabelType(it.payLaterApplicationStatusLabelType)
+                        paymenyOfferLabel.visible()
+                        paymenyOfferLabel.text = context.getString(resId)
+                        paymenyOfferLabel.setLabelType(it.payLaterApplicationStatusLabelType)
                     } else {
-                        payLaterOfferLabel.gone()
+                        paymenyOfferLabel.gone()
                     }
                 }
             }
@@ -39,7 +41,7 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
     }
 
     companion object {
-        private val LAYOUT_ID = R.layout.paylater_payment_method_item
+        private val LAYOUT_ID = R.layout.base_payment_register_item
 
         fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup, clickListener: (PayLaterItemProductData, PayLaterApplicationDetail?) -> Unit) = PayLaterPaymentMethodViewHolder(
                 inflater.inflate(LAYOUT_ID, parent, false), clickListener

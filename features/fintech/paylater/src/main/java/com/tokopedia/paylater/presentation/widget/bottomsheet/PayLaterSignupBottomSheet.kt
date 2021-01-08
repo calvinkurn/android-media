@@ -3,8 +3,6 @@ package com.tokopedia.paylater.presentation.widget.bottomsheet
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,7 +20,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.paylater_signup_bottomsheet_widget.*
+import kotlinx.android.synthetic.main.base_list_bottomsheet_widget.*
 import javax.inject.Inject
 
 class PayLaterSignupBottomSheet : BottomSheetUnify() {
@@ -51,7 +49,7 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private val childLayoutRes = R.layout.paylater_signup_bottomsheet_widget
+    private val childLayoutRes = R.layout.base_list_bottomsheet_widget
     private var payLaterDataList: ArrayList<PayLaterItemProductData> = arrayListOf()
     private var payLaterApplicationStatusList: ArrayList<PayLaterApplicationDetail> = arrayListOf()
     private var listener: Listener? = null
@@ -99,12 +97,12 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
     }
 
     private fun initAdapter() {
-        rvPayLaterPaymentMethods.adapter = PayLaterPaymentMethodAdapter(payLaterDataList, payLaterApplicationStatusList) { payLaterData, payLaterApplicationStatus ->
+        baseList.adapter = PayLaterPaymentMethodAdapter(payLaterDataList, payLaterApplicationStatusList) { payLaterData, payLaterApplicationStatus ->
             listener?.onPayLaterSignupClicked(payLaterData, payLaterApplicationStatus)
             dismiss()
             //openBottomSheet(payLaterData, payLaterApplicationStatus)
         }
-        rvPayLaterPaymentMethods.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        baseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     private fun setDefaultParams() {

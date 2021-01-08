@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PayLaterComponent
 import com.tokopedia.paylater.domain.model.CreditCardBank
@@ -17,6 +18,7 @@ import com.tokopedia.paylater.presentation.adapter.CreditCardAvailableBanksAdapt
 import com.tokopedia.paylater.presentation.adapter.CreditCardSimulationAdapter
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardAvailableBanksBottomSheet
+import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardRegistrationBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_credit_card_simulation.*
@@ -56,6 +58,9 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initRegisterWidget()
         initListeners()
+        rvAvailableBanks.adapter = CreditCardAvailableBanksAdapter()
+        rvAvailableBanks.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        (rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).setBankList(bankList)
     }
 
     private fun initRegisterWidget() {
@@ -72,7 +77,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
 
     private fun initListeners() {
         tvSeeAll.setOnClickListener { showAllBanksBottomSheet() }
-        creditCardRegisterWidget.setOnClickListener { creditCardSimulationCallback?.onRegisterPayLaterClicked() }
+        creditCardRegisterWidget.setOnClickListener { showRegistrationBottomSheet() }
     }
 
     private fun observeViewModel() {
@@ -88,16 +93,19 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
         /*shimmerGroup.gone()
         simulationDataGroup.visible()*/
         rvCreditCardSimulation.adapter = CreditCardSimulationAdapter(data) { bankList ->
-            this.bankList = bankList
-            val smallList = ArrayList(data[0].installmentData.slice(0..3))
-            (rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).setBankList(smallList)
+            setBankData(bankList)
         }
         rvCreditCardSimulation.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        rvAvailableBanks.adapter = CreditCardAvailableBanksAdapter()
-        rvAvailableBanks.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        val smallList = ArrayList(data[0].installmentData.slice(0..3))
+        setBankData(data[0].installmentData)
+    }
+
+    private fun setBankData(bankList: ArrayList<CreditCardBank>) {
+        this.bankList = bankList
+        val smallList = ArrayList(bankList.slice(0..3))
+        tvValidCreditCardBanks.text = "Berlaku kartu kredit dari: ${bankList.size} bank"
+        tvSeeAll.text = "Lihat Semua (${bankList.size - smallList.size})"
+        if (bankList.size > 4) tvSeeAll.visible()
         (rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).setBankList(smallList)
-        this.bankList = data[0].installmentData
     }
 
     private fun onSimulationLoadingFail(throwable: Throwable) {
@@ -135,6 +143,16 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
                 putParcelableArrayList(CreditCardAvailableBanksBottomSheet.CREDIT_CARD_BANK_DATA, bankList)
             }
             CreditCardAvailableBanksBottomSheet.show(bundle, childFragmentManager)
+        }
+    }
+
+    private fun showRegistrationBottomSheet() {
+        if (bankList.isNotEmpty()) {
+            val bundle = Bundle().apply {
+                val list = ArrayList(bankList.slice(0..3))
+                putParcelableArrayList(CreditCardRegistrationBottomSheet.CREDIT_CARD_BANK_DATA, list)
+            }
+            CreditCardRegistrationBottomSheet.show(bundle, childFragmentManager)
         }
     }
 

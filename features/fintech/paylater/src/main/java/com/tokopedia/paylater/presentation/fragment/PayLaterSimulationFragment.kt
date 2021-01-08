@@ -111,6 +111,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     private fun onSimulationLoadingFail(throwable: Throwable) {
         payLaterSimulationCallback?.getPayLaterProductInfo()
         shimmerGroup.gone()
+        paylaterDaftarWidget.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
                 payLaterSimulationCallback?.noInternetCallback()

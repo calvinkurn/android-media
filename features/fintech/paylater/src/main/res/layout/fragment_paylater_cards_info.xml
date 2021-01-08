@@ -25,7 +25,7 @@
             tools:src="@tools:sample/avatars"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvTitlePaylaterPartner"
+            android:id="@+id/tvTitlePaymentPartner"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/payLater_payment_cl_margin_dp_14"
@@ -50,9 +50,9 @@
             android:visibility="gone"
             android:textSize="@dimen/unify_font_14"
             app:layout_constraintBottom_toBottomOf="@+id/ivPaylaterPartner"
-            app:layout_constraintEnd_toEndOf="@+id/tvTitlePaylaterPartner"
-            app:layout_constraintStart_toStartOf="@+id/tvTitlePaylaterPartner"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitlePaylaterPartner"
+            app:layout_constraintEnd_toEndOf="@+id/tvTitlePaymentPartner"
+            app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.Label
@@ -64,7 +64,7 @@
             app:labelType="general_light_blue"
             app:layout_constraintBottom_toBottomOf="@+id/tvSubTitlePaylaterPartner"
             app:layout_constraintEnd_toEndOf="@+id/rvPaymentDesciption"
-            app:layout_constraintTop_toTopOf="@+id/tvTitlePaylaterPartner"
+            app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"
             tools:text="Aktif" />
 
         <androidx.constraintlayout.widget.Barrier
