@@ -1,11 +1,8 @@
 package com.tokopedia.checkout.view.viewholder;
 
 import android.annotation.SuppressLint;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +11,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.design.component.Tooltip;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 
 /**
@@ -26,7 +24,8 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
 
     private CheckboxUnify cbDonation;
     private TextView tvDonationTitle;
-    private LinearLayout llContainer;
+    private IconUnify imgDonationInfo;
+    private ViewGroup llContainer;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -37,6 +36,7 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
 
         cbDonation = itemView.findViewById(R.id.cb_donation);
         tvDonationTitle = itemView.findViewById(R.id.tv_donation_title);
+        imgDonationInfo = itemView.findViewById(R.id.img_donation_info);
         llContainer = itemView.findViewById(R.id.ll_container);
     }
 
@@ -46,17 +46,18 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
         cbDonation.setChecked(shipmentDonationModel.isChecked());
         cbDonation.skipAnimation();
         tvDonationTitle.setText(shipmentDonationModel.getDonation().getTitle());
-        tvDonationTitle.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                int[] textLocation = new int[2];
-                tvDonationTitle.getLocationOnScreen(textLocation);
-                if (event.getRawX() >= textLocation[0] + tvDonationTitle.getWidth() - tvDonationTitle.getTotalPaddingRight()){
-                    showBottomSheet(shipmentDonationModel);
-                    return true;
-                }
-            }
-            return true;
-        });
+//        tvDonationTitle.setOnTouchListener((v, event) -> {
+//            if (event.getAction() == MotionEvent.ACTION_UP) {
+//                int[] textLocation = new int[2];
+//                tvDonationTitle.getLocationOnScreen(textLocation);
+//                if (event.getRawX() >= textLocation[0] + tvDonationTitle.getWidth() - tvDonationTitle.getTotalPaddingRight()){
+//                    showBottomSheet(shipmentDonationModel);
+//                    return true;
+//                }
+//            }
+//            return true;
+//        });
+        imgDonationInfo.setOnClickListener(v -> showBottomSheet(shipmentDonationModel));
         cbDonation.setOnCheckedChangeListener((buttonView, isChecked) -> shipmentAdapterActionListener.onDonationChecked(isChecked));
     }
 
