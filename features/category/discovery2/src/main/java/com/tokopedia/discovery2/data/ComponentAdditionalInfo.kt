@@ -12,9 +12,9 @@ data class ComponentAdditionalInfo(
 
 data class TotalProductData(
         @SerializedName("product_count")
-        val productCount: String,
+        val productCount: String? = null,
         @SerializedName("product_count_text")
-        val productCountText: String,
+        val productCountText: String? = null,
         @SerializedName("product_count_wording")
-        val productCountWording: String,
+        val productCountWording: String? = null,
 )
