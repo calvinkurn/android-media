@@ -123,10 +123,13 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
 import static com.tokopedia.discovery.common.constants.SearchApiConst.PREVIOUS_KEYWORD;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
 
 public class ProductListFragment
         extends BaseDaggerFragment
-        implements
+        implements ProductListAdapter.OnItemChangeView,
         ProductListSectionContract.View,
         ProductListener,
         TickerListener,
@@ -266,6 +269,10 @@ public class ProductListFragment
         initShimmeringView(view);
 
         setupRecyclerView();
+
+        if (getUserVisibleHint()) {
+            setupSearchNavigation();
+        }
     }
 
     private void initRecyclerView(View rootView) {
@@ -316,7 +323,7 @@ public class ProductListFragment
                 this, this, this,
                 topAdsConfig);
 
-        adapter = new ProductListAdapter(productListTypeFactory);
+        adapter = new ProductListAdapter(this, productListTypeFactory);
     }
 
     private void initLoadMoreListener() {
@@ -421,6 +428,64 @@ public class ProductListFragment
         if (presenter != null) {
             presenter.onViewVisibilityChanged(isVisibleToUser, isAdded());
         }
+    }
+
+    @Override
+    public void setupSearchNavigation() {
+        if (searchNavigationListener == null) return;
+
+        searchNavigationListener.setupSearchNavigation(this::switchLayoutType, true);
+        refreshMenuItemGridIcon();
+    }
+
+    private void switchLayoutType() {
+        if (!getUserVisibleHint() || adapter == null) {
+            return;
+        }
+
+        switch (adapter.getCurrentLayoutType()) {
+            case LIST:
+                switchLayoutTypeTo(BIG_GRID);
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
+                break;
+            case SMALL_GRID:
+                switchLayoutTypeTo(LIST);
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "list", getScreenName());
+                break;
+            case BIG_GRID:
+                switchLayoutTypeTo(SMALL_GRID);
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 2", getScreenName());
+                break;
+        }
+    }
+
+    private void switchLayoutTypeTo(SearchConstant.ViewType layoutType) {
+        if (!getUserVisibleHint() || adapter == null) {
+            return;
+        }
+
+        switch (layoutType) {
+            case LIST:
+                staggeredGridLayoutManager.setSpanCount(1);
+                adapter.changeListView();
+                break;
+            case SMALL_GRID:
+                staggeredGridLayoutManager.setSpanCount(2);
+                adapter.changeDoubleGridView();
+                break;
+            case BIG_GRID:
+                staggeredGridLayoutManager.setSpanCount(1);
+                adapter.changeSingleGridView();
+                break;
+        }
+
+        refreshMenuItemGridIcon();
+    }
+
+    private void refreshMenuItemGridIcon() {
+        if (searchNavigationListener == null || adapter == null) return;
+
+        searchNavigationListener.refreshMenuItemGridIcon(adapter.getTitleTypeRecyclerView(), adapter.getIconTypeRecyclerView());
     }
 
     private FilterTrackingData getFilterTrackingData() {
@@ -1065,6 +1130,21 @@ public class ProductListFragment
         reloadData();
     }
 
+    @Override
+    public void onChangeList() {
+        recyclerView.requestLayout();
+    }
+
+    @Override
+    public void onChangeDoubleGrid() {
+        recyclerView.requestLayout();
+    }
+
+    @Override
+    public void onChangeSingleGrid() {
+        recyclerView.requestLayout();
+    }
+
     private SearchParameter getSearchParameter() {
         return searchParameter;
     }
@@ -1219,14 +1299,16 @@ public class ProductListFragment
     }
 
     @Override
-    public void setDefaultLayoutType(int changeViewPosition, int defaultView) {
+    public void setDefaultLayoutType(int defaultView) {
         switch (defaultView) {
-            case SearchConstant.DefaultViewType.LIST:
-                switchSearchNavigationLayoutTypeToListView(changeViewPosition);
-                break;
             case SearchConstant.DefaultViewType.SMALL_GRID:
+                switchLayoutTypeTo(SMALL_GRID);
+                break;
+            case SearchConstant.DefaultViewType.LIST:
+                switchLayoutTypeTo(LIST);
+                break;
             default:
-                switchSearchNavigationLayoutTypeToSmallGridView(changeViewPosition);
+                switchLayoutTypeTo(SMALL_GRID);
                 break;
         }
     }
