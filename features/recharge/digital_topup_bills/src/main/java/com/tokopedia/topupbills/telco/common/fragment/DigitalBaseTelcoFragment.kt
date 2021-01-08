@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.ImageView
@@ -346,13 +347,16 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var lastOffset = -1
             var lastIsCollapsed = false
+            var TAG = "TracePositionTelco"
 
             override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
                 if (lastOffset == verticalOffSet) return
 
                 lastOffset = verticalOffSet
+                Log.d(TAG, "verticalOffset: ${verticalOffSet} totalScrollRange: ${appBarLayout.totalScrollRange}")
                 if (abs(verticalOffSet) >= appBarLayout.totalScrollRange && !lastIsCollapsed) {
                     //Collapsed
+                    Log.d(TAG, "Collapsed")
                     lastIsCollapsed = true
                     onCollapseAppBar()
                     if (!fadeOut.hasStarted() || fadeOut.hasEnded()) {
@@ -362,6 +366,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     (activity as? BaseTelcoActivity)?.onCollapseAppBar()
                 } else if (verticalOffSet == 0 && lastIsCollapsed) {
                     //Expanded
+                    Log.d(TAG, "Expanded")
                     lastIsCollapsed = false
                     onExpandAppBar()
                     if (!fadeIn.hasStarted() || fadeIn.hasEnded()) {
