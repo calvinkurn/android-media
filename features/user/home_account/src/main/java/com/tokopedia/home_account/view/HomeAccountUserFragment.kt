@@ -64,6 +64,9 @@ import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
+import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
+import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
+import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -455,7 +458,12 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         adapter?.notifyDataSetChanged()
     }
 
+    override fun onProfileClicked() {
+        homeAccountAnalytic.eventClickProfile()
+    }
+
     override fun onEditProfileClicked() {
+        homeAccountAnalytic.eventClickProfile()
         goToApplink(ApplinkConstInternalGlobal.SETTING_PROFILE)
     }
 
@@ -466,7 +474,18 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
-    override fun onMemberItemClicked(applink: String) {
+    override fun onMemberItemClicked(applink: String, type: Int) {
+        when (type) {
+            TYPE_TOKOMEMBER -> {
+                homeAccountAnalytic.eventClickRewardMemberStore()
+            }
+            TYPE_TOPQUEST -> {
+                homeAccountAnalytic.eventClickRewardTopQuest()
+            }
+            TYPE_KUPON_SAYA -> {
+                homeAccountAnalytic.eventClickRewardMyCoupon()
+            }
+        }
         goToApplink(applink)
     }
 
@@ -477,9 +496,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     override fun onSwitchChanged(item: CommonDataView, isActive: Boolean, switch: SwitchUnify) {
         when (item.id) {
             AccountConstants.SettingCode.SETTING_SHAKE_ID -> {
+                homeAccountAnalytic.eventClickAppSettingShake(isActive)
                 accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SHAKE, isActive)
             }
             AccountConstants.SettingCode.SETTING_GEOLOCATION_ID -> {
+                homeAccountAnalytic.eventClickAppSettingGeolocation(isActive)
                 if(isActive) {
                     switch.isChecked = false
                     createAndShowLocationAlertDialog(isActive)
@@ -488,6 +509,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
             }
             AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID -> {
+                homeAccountAnalytic.eventClickAppSettingSafeMode(isActive)
                 if(isActive) {
                     createAndShowSafeModeAlertDialog(isActive)
                 }
@@ -528,22 +550,53 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun mapSettingId(item: CommonDataView) {
         when (item.id) {
+            AccountConstants.SettingCode.SETTING_OVO -> {
+                homeAccountAnalytic.eventViewOvoHomepage()
+                goToApplink(item.applink)
+            }
+            AccountConstants.SettingCode.SETTING_SALDO -> {
+                homeAccountAnalytic.eventClickBalance()
+                goToApplink(item.applink)
+            }
+            AccountConstants.SettingCode.SETTING_TOKOPOINTS -> {
+                homeAccountAnalytic.eventClickOnMoreMemberOption()
+                goToApplink(item.applink)
+            }
             AccountConstants.SettingCode.SETTING_ACCOUNT_PERSONAL_DATA_ID -> {
                 homeAccountAnalytic.eventClickAccountSetting(PERSONAL_DATA)
             }
             AccountConstants.SettingCode.SETTING_ACCOUNT_ADDRESS_ID -> {
                 homeAccountAnalytic.eventClickAccountSetting(ADDRESS_LIST)
+                homeAccountAnalytic.eventClickAccountSettingListAddress()
                 goToApplink(item.applink)
             }
             AccountConstants.SettingCode.SETTING_BANK_ACCOUNT_ID -> {
                 homeAccountAnalytic.eventClickPaymentSetting(ACCOUNT_BANK)
+                homeAccountAnalytic.eventClickAccountSettingBankAccount()
                 if (userSession.hasPassword()) {
                     goToApplink(item.applink)
                 } else {
                     showNoPasswordDialog()
                 }
             }
-
+            AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT -> {
+                homeAccountAnalytic.eventClickAccountSettingInstantPayment()
+                goToApplink(item.applink)
+            }
+            AccountConstants.SettingCode.SETTING_INSTANT_BUY -> {
+                homeAccountAnalytic.eventClickAccountSettingInstantBuy()
+                goToApplink(item.applink)
+            }
+            AccountConstants.SettingCode.SETTING_NOTIFICATION -> {
+                homeAccountAnalytic.eventClickAccountSettingNotification()
+                goToApplink(item.applink)
+            }
+            AccountConstants.SettingCode.SETTING_APP_SETTING -> {
+                homeAccountAnalytic.eventClickOnMoreAppSettingOption()
+            }
+            AccountConstants.SettingCode.SETTING_ABOUT_TOKOPEDIA -> {
+                homeAccountAnalytic.eventClickOnMoreAboutTokopediaOption()
+            }
             AccountConstants.SettingCode.SETTING_TKPD_PAY_ID -> {
                 homeAccountAnalytic.eventClickSetting(PAYMENT_METHOD)
                 goToApplink(item.applink)
@@ -551,11 +604,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
             AccountConstants.SettingCode.SETTING_TNC_ID -> {
                 homeAccountAnalytic.eventClickSetting(TERM_CONDITION)
+                homeAccountAnalytic.eventClickTermsAndConditionsAboutTokopedia()
                 RouteManager.route(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_TERM_CONDITION)
             }
 
             AccountConstants.SettingCode.SETTING_ABOUT_US -> {
                 homeAccountAnalytic.eventClickSetting(ABOUT_US)
+                homeAccountAnalytic.eventClickGetToKnowAboutTokopedia()
                 RouteManager.getIntent(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK
                         + AccountConstants.Url.BASE_MOBILE
                         + AccountConstants.Url.PATH_ABOUT_US).run {
@@ -565,11 +620,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
             AccountConstants.SettingCode.SETTING_PRIVACY_ID -> {
                 homeAccountAnalytic.eventClickSetting(PRIVACY_POLICY)
+                homeAccountAnalytic.eventClickPrivacyPolicyAboutTokopedia()
                 RouteManager.route(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_PRIVACY_POLICY)
             }
 
             AccountConstants.SettingCode.SETTING_APP_REVIEW_ID -> {
                 homeAccountAnalytic.eventClickSetting(APPLICATION_REVIEW)
+                homeAccountAnalytic.eventClickReviewAboutTokopedia()
                 goToPlaystore()
             }
 
@@ -585,13 +642,15 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
+                homeAccountAnalytic.eventClickLogout()
                 showDialogLogout()
             }
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
+                homeAccountAnalytic.eventClickAppSettingCleanCache()
                 showDialogClearCache()
             }
-
             AccountConstants.SettingCode.SETTING_SECURITY -> {
+                homeAccountAnalytic.eventClickAccountSettingAccountSecurity()
                 val intent = RouteManager.getIntent(context, item.applink).apply {
                     putExtras(Bundle().apply {
                         putExtra(ApplinkConstInternalGlobal.PARAM_NEW_HOME_ACCOUNT, true)
@@ -633,9 +692,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun createAndShowLocationAlertDialog(currentValue: Boolean) {
         if (!currentValue) {
-            homeAccountAnalytic.eventClickToggleOnGeolocation(activity)
+            homeAccountAnalytic.eventClickToggleOnGeolocation()
         } else {
-            homeAccountAnalytic.eventClickToggleOffGeolocation(activity)
+            homeAccountAnalytic.eventClickToggleOffGeolocation()
         }
 
         context?.run {
@@ -720,7 +779,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 it.startActivity(goToMarket)
             } catch (e: ActivityNotFoundException) {
                 it.startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse(AccountConstants.SettingCode.PLAYSTORE_URL + it.application.packageName)))
+                        Uri.parse(AccountConstants.Url.PLAYSTORE_URL + it.application.packageName)))
             }
         }
     }

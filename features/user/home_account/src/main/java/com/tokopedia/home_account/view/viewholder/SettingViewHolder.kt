@@ -3,7 +3,9 @@ package com.tokopedia.home_account.view.viewholder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.data.model.SettingDataView
 import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
@@ -56,6 +58,12 @@ class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener): 
 
         itemView.setOnClickListener {
             if(itemView.home_account_expandable_arrow.visibility == View.VISIBLE) {
+                val id : Int = when (setting.title) {
+                    TITLE_APP_SETTING -> AccountConstants.SettingCode.SETTING_APP_SETTING
+                    TITLE_ABOUT_TOKOPEDIA -> AccountConstants.SettingCode.SETTING_ABOUT_TOKOPEDIA
+                    else -> 0
+                }
+                listener.onSettingItemClicked(CommonDataView(id = id, body = setting.title))
                 setting.isExpanded = !setting.isExpanded
                 rotationAngle = if (rotationAngle == 0F) 180F else 0F //toggle
                 itemView?.home_account_expandable_arrow?.animate()?.rotation(rotationAngle)?.setDuration(400)?.start()
@@ -79,6 +87,8 @@ class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener): 
         val LAYOUT = R.layout.home_account_expandable_layout
 
         val SETTING_ORIENTATION_VERTICAL = 1
+        val TITLE_APP_SETTING = "Pengaturan Aplikasi"
+        val TITLE_ABOUT_TOKOPEDIA = "Seputar Tokopedia"
     }
 
 }

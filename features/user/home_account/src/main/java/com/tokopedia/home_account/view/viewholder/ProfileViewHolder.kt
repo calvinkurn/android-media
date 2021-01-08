@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.Utils
 import com.tokopedia.home_account.data.model.CommonDataView
@@ -21,6 +22,7 @@ import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.home_account_financial.view.*
 import kotlinx.android.synthetic.main.home_account_item_profile.view.*
 import kotlinx.android.synthetic.main.home_account_member.view.*
+import kotlinx.android.synthetic.main.home_account_profile.view.*
 
 
 /**
@@ -43,6 +45,7 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
             }
             account_user_item_profile_email?.text = profile.email
             account_user_item_profile_edit?.setOnClickListener { listener.onEditProfileClicked() }
+            home_account_profile_section?.setOnClickListener { listener.onProfileClicked() }
 
             loadImage(account_user_item_profile_avatar, profile.avatar)
 
@@ -101,7 +104,10 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
         itemView.home_account_member_layout_rv?.isLayoutFrozen = true
         itemView.home_account_member_layout_member_forward?.setOnClickListener {
             listener.onSettingItemClicked(
-                    CommonDataView(applink = ApplinkConst.TOKOPOINTS)
+                    CommonDataView(
+                            id = AccountConstants.SettingCode.SETTING_TOKOPOINTS,
+                            applink = ApplinkConst.TOKOPOINTS
+                    )
             )
         }
     }

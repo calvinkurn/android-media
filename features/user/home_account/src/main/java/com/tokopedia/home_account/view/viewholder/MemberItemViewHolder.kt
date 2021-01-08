@@ -20,7 +20,7 @@ class MemberItemViewHolder(itemView: View, val listener: HomeAccountUserListener
             home_account_item_member_title?.text = member.title
             ImageUtils.loadImageWithoutPlaceholderAndError(home_account_item_member_icon, member.icon)
             itemView.setOnClickListener {
-                listener.onMemberItemClicked(member.applink)
+                listener.onMemberItemClicked(member.applink, member.type)
             }
         }
     }
@@ -29,6 +29,9 @@ class MemberItemViewHolder(itemView: View, val listener: HomeAccountUserListener
         val LAYOUT = R.layout.home_account_item_member
 
         val TYPE_DEFAULT = 1
+        val TYPE_TOKOMEMBER = 2
+        val TYPE_TOPQUEST = 3
+        val TYPE_KUPON_SAYA = 4
     }
 
 }
