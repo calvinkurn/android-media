@@ -128,7 +128,7 @@ object ImageUtil {
     }
 
     @JvmStatic
-    fun convertToWebp(context: Context, imagePath: String): String {
+    fun convertToWebp(context: Context, imagePath: String, quality: Int): String {
         val lastIndexOfExtension = imagePath.lastIndexOf(".")
         val extension = imagePath.substring(lastIndexOfExtension)
         val path = imagePath.substring(0, lastIndexOfExtension)
@@ -138,7 +138,7 @@ object ImageUtil {
 
             if (bitmap != null && extension != EXT_WEBP) {
                 val out = FileOutputStream(path + EXT_WEBP)
-                bitmap.compress(Bitmap.CompressFormat.WEBP, 90, out)
+                bitmap.compress(Bitmap.CompressFormat.WEBP, quality, out)
                 out.close()
             }
         } catch (e: Exception) {
