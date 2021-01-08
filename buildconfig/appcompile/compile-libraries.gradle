@@ -27,6 +27,7 @@ include 'libraries:dynamic_features'
 include 'libraries:encryption'
 include "libraries:fingerprint"
 include "libraries:image_picker"
+include "libraries:image_picker_common"
 include "libraries:image_preview"
 include 'libraries:imageuploader'
 
