@@ -12,15 +12,16 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl4"
         android:text="@string/settingnotif_onboarding_message"
-        android:textColor="@color/charcoal_grey_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_1"
         app:typographyWeight="reguler" />
 
-    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+    <androidx.recyclerview.widget.RecyclerView
+        android:orientation="vertical"
         android:id="@+id/rv_setting_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:has_divider_left_padding="true"
-        tools:listitem="@layout/item_setting_type"/>
+        tools:listitem="@layout/item_setting_type"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
 </LinearLayout>

@@ -52,6 +52,8 @@ class SomListViewModel @Inject constructor(
 
     private var retryCount = 0
 
+    private var getOrderListJob: Job? = null
+
     private val _tickerResult = MutableLiveData<Result<List<TickerData>>>()
     val tickerResult: LiveData<Result<List<TickerData>>>
         get() = _tickerResult
@@ -205,7 +207,8 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getOrderList() {
-        launchCatchError(block = {
+        getOrderListJob?.cancel()
+        getOrderListJob = launchCatchError(block = {
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
             getUserRolesJob()?.join()

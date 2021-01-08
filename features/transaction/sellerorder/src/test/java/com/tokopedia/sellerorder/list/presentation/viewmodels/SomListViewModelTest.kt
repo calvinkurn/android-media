@@ -29,6 +29,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Field
 
 class SomListViewModelTest {
     @get:Rule
@@ -80,6 +81,8 @@ class SomListViewModelTest {
 
     private lateinit var viewModel: SomListViewModel
 
+    private lateinit var somGetOrderListJobField: Field
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
@@ -88,6 +91,10 @@ class SomListViewModelTest {
                 dispatcher, somListGetTickerUseCase, somListGetFilterListUseCase, somListGetWaitingPaymentUseCase,
                 somListGetOrderListUseCase, somListGetTopAdsCategoryUseCase, bulkAcceptOrderStatusUseCase,
                 bulkAcceptOrderUseCase, adminPermissionUseCase)
+
+        somGetOrderListJobField = viewModel::class.java.getDeclaredField("getOrderListJob").apply {
+            isAccessible = true
+        }
     }
 
     private fun doGetTopAdsCategory_shouldSuccess(result: Int = 1) {
@@ -528,13 +535,32 @@ class SomListViewModelTest {
             somListGetOrderListUseCase.execute()
         } returns (0 to listOf())
 
+        somGetOrderListJobField.set(viewModel, null)
         viewModel.getOrderList()
 
         coVerify {
             somListGetOrderListUseCase.execute()
         }
 
-        assert(viewModel.orderListResult.observeAwaitValue() is Success)
+        assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage())
+    }
+
+    @Test
+    fun getOrderList_shouldCancelOldJobAndSuccess() {
+        val getOrderListJob = mockk<Job>(relaxed = true)
+        coEvery {
+            somListGetOrderListUseCase.execute()
+        } returns (0 to listOf())
+
+        somGetOrderListJobField.set(viewModel, getOrderListJob)
+        viewModel.getOrderList()
+
+        coVerify {
+            somListGetOrderListUseCase.execute()
+            getOrderListJob.cancel()
+        }
+
+        assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage())
     }
 
     @Test

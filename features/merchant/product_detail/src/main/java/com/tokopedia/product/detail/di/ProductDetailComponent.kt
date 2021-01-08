@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
@@ -18,7 +17,6 @@ import dagger.Component
         dependencies = [BaseAppComponent::class])
 interface ProductDetailComponent {
     fun inject(fragment: DynamicProductDetailFragment)
-    fun inject(activity: ProductInstallmentActivity)
     fun inject(bottomSheetFragment: AddToCartDoneBottomSheet)
     fun inject(productDetailBottomSheet: ProductDetailInfoBottomSheet)
 }
