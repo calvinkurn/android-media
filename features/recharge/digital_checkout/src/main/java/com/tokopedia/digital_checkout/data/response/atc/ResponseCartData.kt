@@ -1,9 +1,9 @@
-package com.tokopedia.digital_checkout.data.response
+package com.tokopedia.digital_checkout.data.response.atc
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.digital_checkout.data.response.AttributesCart
-import com.tokopedia.digital_checkout.data.response.RelationshipsCart
+import com.tokopedia.digital_checkout.data.response.atc.AttributesCart
+import com.tokopedia.digital_checkout.data.response.atc.RelationshipsCart
 
 data class ResponseCartData(
         @SerializedName("type")

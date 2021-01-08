@@ -1,4 +1,4 @@
-package com.tokopedia.digital_checkout.data.response
+package com.tokopedia.digital_checkout.data.response.getcart
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
@@ -7,9 +7,13 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class FintechProduct(
+        @SerializedName("id")
+        @Expose
+        val id: Int = 0,
+
         @SerializedName("transaction_type")
         @Expose
-        var transactionType: String? = null,
+        var transactionType: String = "",
 
         @SerializedName("tier_id")
         @Expose
@@ -37,23 +41,24 @@ data class FintechProduct(
 
         @SerializedName("info")
         @Expose
-        var info: FintechProductInfo? = null
+        var info: FintechProductInfo = FintechProductInfo()
 ) : Parcelable {
+
     @Parcelize
     data class FintechProductInfo(
             @SerializedName("title")
             @Expose
-            var title: String? = null,
+            var title: String = "",
             @Expose
-            var subtitle: String? = null,
+            var subtitle: String = "",
             @SerializedName("link_text")
             @Expose
-            var textLink: String? = null,
+            var textLink: String = "",
             @SerializedName("link_url")
             @Expose
-            var urlLink: String? = null,
+            var urlLink: String = "",
             @SerializedName("tooltip_text")
             @Expose
-            var tooltipText: String? = null
+            var tooltipText: String = ""
     ) : Parcelable
 }
