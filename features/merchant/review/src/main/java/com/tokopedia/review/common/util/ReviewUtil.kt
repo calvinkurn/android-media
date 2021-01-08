@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.relativeDate
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
@@ -91,8 +92,8 @@ fun String.toReviewDescriptionFormatted(maxChar: Int): Spanned {
 infix fun String.toRelativeDate(format: String): String {
     return if (this.isNotEmpty()) {
         val sdf = SimpleDateFormat(format, Locale.getDefault())
-        val date: Date = sdf.parse(this)
-        val millis: Long = date.time
+        val date = sdf.parse(this)
+        val millis: Long = date?.time.orZero()
 
         return try {
             val cal = Calendar.getInstance()

@@ -45,6 +45,7 @@ import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManag
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity.ShopShowcaseListActivity.Companion.REQUEST_CODE_ADD_ETALASE
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter.ShopShowcaseListAdapter
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcaseListViewModel
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -312,7 +313,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         viewModel.getListBuyerShopShowcaseResponse.removeObservers(this)
         viewModel.getListSellerShopShowcaseResponse.removeObservers(this)
         viewModel.deleteShopShowcaseResponse.removeObservers(this)
-        viewModel.getShopProductResponse.removeObservers(this)
+        viewModel.shopTotalProduct.removeObservers(this)
         super.onDestroy()
     }
 
@@ -410,20 +411,14 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun observeTotalProduct() {
-        viewModel.getShopProductResponse.observe(viewLifecycleOwner, Observer {
+        viewModel.shopTotalProduct.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val error = it.data.getShopProduct.errors
-                    val totalProduct = it.data.getShopProduct.totalData
-
-                    if (error.isNotEmpty()) {
-                        showErrorResponse(error)
+                    val totalProduct = it.data
+                    if (totalProduct > 0) {
+                        goToAddShowcase()
                     } else {
-                        if (totalProduct < 1) {
-                            showErrorResponse(getString(R.string.error_product_less_than_one))
-                        } else if (totalProduct > 0) {
-                            goToAddShowcase()
-                        }
+                        showErrorResponse(getString(R.string.error_product_less_than_one))
                     }
                 }
                 is Fail -> {
@@ -489,12 +484,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun checkTotalProduct() {
-        val page = 1
-        val perPage = 1
-        val fkeyword = ""
-        val sort = 0
-        val fmenu = "etalase"
-        viewModel.getTotalProduct(shopId, page, perPage, sort, fmenu, fkeyword)
+        viewModel.getTotalProduct(userSession.shopId, GetProductListFilter(perPage = 1))
     }
 
     private fun handleEditShowcase(dataShowcase: ShopEtalaseModel, position: Int) {
