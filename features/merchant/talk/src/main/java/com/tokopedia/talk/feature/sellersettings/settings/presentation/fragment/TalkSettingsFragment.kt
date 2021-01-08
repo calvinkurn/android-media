@@ -82,10 +82,10 @@ class TalkSettingsFragment : Fragment() {
     }
 
     private fun goToTemplate() {
-//        if (!GlobalConfig.isSellerApp()) {
-//            goToSellerMigration(getTemplateListApplink())
-//            return
-//        }
+        if (!GlobalConfig.isSellerApp()) {
+            goToSellerMigration(getTemplateListApplink())
+            return
+        }
         val destination = TalkSettingsFragmentDirections.actionTalkSettingsFragmentToTalkTemplateListFragment()
         destination.isSeller = true
         NavigationController.navigate(this@TalkSettingsFragment, destination)

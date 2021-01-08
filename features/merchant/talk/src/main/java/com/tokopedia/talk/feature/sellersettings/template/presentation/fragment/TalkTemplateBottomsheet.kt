@@ -47,7 +47,7 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
 
     private var isSeller: Boolean = false
     private var index: Int = -1
-    private var text: String = ""
+    private var templateText: String = ""
     private var toaster: Snackbar? = null
     private var isEditMode: Boolean = false
     private var allowDelete: Boolean = false
@@ -118,13 +118,8 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
 
     private fun showToaster(successMessage: String) {
         view?.let {
-            this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
-            toaster?.let { toaster ->
-                if (toaster.isShownOrQueued) {
-                    return
-                }
-                toaster.show()
-            }
+            this.toaster = Toaster.build(talkEditTemplateContainer, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
+            toaster?.show()
         }
     }
 
@@ -151,7 +146,7 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
                 isEditMode = it.isEditMode
                 if (isEditMode) {
                     index = it.index ?: -1
-                    text = it.template ?: ""
+                    templateText = it.template ?: ""
                     allowDelete = it.allowDelete
                 }
             }
@@ -173,8 +168,8 @@ class TalkTemplateBottomsheet : BottomSheetUnify(), HasComponent<TalkTemplateCom
     private fun setupEditText() {
         if (isEditMode) {
             talkEditTemplateEditText.apply {
-                clearComposingText()
-                setText(this@TalkTemplateBottomsheet.text)
+                text.clear()
+                setText(templateText)
             }
         }
     }
