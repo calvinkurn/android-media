@@ -40,7 +40,7 @@ class RecommendationLifeCycleAware constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
         TopAdsGtmTracker.getInstance().eventInboxProductView(trackingQueue)
-        analytic.eventInboxProductView(trackingQueue)
+        analytic.eventInboxTopAdsProductView(trackingQueue)
         trackingQueue?.sendAll()
     }
 
@@ -154,11 +154,11 @@ class RecommendationLifeCycleAware constructor(
                 fragment?.activity?.javaClass?.name, item.trackerImageUrl,
                 item.productId.toString(), item.name, item.imageUrl, COMPONENT_NAME_TOP_ADS
         )
-        analytic.addInboxProductViewImpressions(item, item.position, item.isTopAds)
+        analytic.addInboxTopAdsProductViewImpressions(item, item.position, item.isTopAds)
     }
 
     private fun onImpressionOrganic(item: RecommendationItem) {
-        analytic.addInboxProductViewImpressions(item, item.position, item.isTopAds)
+        analytic.addInboxTopAdsProductViewImpressions(item, item.position, item.isTopAds)
     }
 
     override fun onWishlistClick(
@@ -177,13 +177,13 @@ class RecommendationLifeCycleAware constructor(
                 fragment?.activity?.javaClass?.name, item.clickUrl, item.productId.toString(),
                 item.name, item.imageUrl, COMPONENT_NAME_TOP_ADS
         )
-        analytic.eventInboxProductClick(
+        analytic.eventInboxTopAdsProductClick(
                 item, item.position, item.isTopAds
         )
     }
 
     private fun onClickOrganic(item: RecommendationItem) {
-        analytic.eventInboxProductClick(
+        analytic.eventInboxTopAdsProductClick(
                 item, item.position, item.isTopAds
         )
     }

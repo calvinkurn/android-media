@@ -6,12 +6,11 @@ import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 import javax.inject.Inject
-
 class NotificationAnalytic @Inject constructor() {
 
     private val dataLayerList: ArrayList<Any> = arrayListOf()
 
-    fun eventInboxProductView(trackingQueue: TrackingQueue?) {
+    fun eventInboxTopAdsProductView(trackingQueue: TrackingQueue?) {
         if (dataLayerList.isNotEmpty()) {
             val map = mutableMapOf(
                     "event" to "productView",
@@ -30,7 +29,7 @@ class NotificationAnalytic @Inject constructor() {
         }
     }
 
-    fun addInboxProductViewImpressions(
+    fun addInboxTopAdsProductViewImpressions(
             recommendationItem: RecommendationItem, position: Int, isTopAds: Boolean
     ) {
         val priceCurrency = recommendationItem.price.replace("[^0-9]".toRegex(), "")
@@ -48,7 +47,7 @@ class NotificationAnalytic @Inject constructor() {
         )
     }
 
-    fun eventInboxProductClick(
+    fun eventInboxTopAdsProductClick(
             recommendationItem: RecommendationItem, position: Int, isTopAds: Boolean
     ) {
         val tracker: ContextAnalytics = TrackApp.getInstance().gtm
@@ -101,13 +100,22 @@ class NotificationAnalytic @Inject constructor() {
         dataLayerList.clear()
     }
 
-    private fun getDimension83Attribute(recommendationItem: RecommendationItem) =
-            if (recommendationItem.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+    private fun getDimension83Attribute(recommendationItem: RecommendationItem): String {
+        return if (recommendationItem.isFreeOngkirActive) {
+            VALUE_BEBAS_ONGKIR
+        } else {
+            VALUE_NONE_OTHER
+        }
+    }
 
-    private fun getListAttribute(recommendationItem: RecommendationItem, isTopAds: Boolean) =
-            "/inbox - rekomendasi untuk anda - " +
-                    recommendationItem.recommendationType +
-                    if (isTopAds) " - product topads" else ""
+    private fun getListAttribute(
+            recommendationItem: RecommendationItem,
+            isTopAds: Boolean
+    ): String {
+        val isTopAdsString = if (isTopAds) " - product topads" else ""
+        return "/inbox - rekomendasi untuk anda - " +
+                recommendationItem.recommendationType + isTopAdsString
+    }
 
     companion object {
         private const val DATA_DIMENSION_83 = "dimension83"
@@ -115,3 +123,4 @@ class NotificationAnalytic @Inject constructor() {
         private const val VALUE_NONE_OTHER = "none / other"
     }
 }
+
