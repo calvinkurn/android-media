@@ -7,7 +7,7 @@ package com.tokopedia.digital_checkout.data
 object DigitalCheckoutQueries {
 
     fun getGetCartQuery() = """
-        query (${'$'}categoryId: [MapParamData]!) {
+        query (${'$'}categoryId: Int!) {
           rechargeGetCart(CategoryID: ${'$'}categoryId) {
             id
             user_id
