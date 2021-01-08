@@ -662,17 +662,17 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
         progressBar?.apply {
             onFinish = {
-                flipTimer?.displayedChild = 1
+                flipTimer?.displayedChild = CONTAINER_DATE
                 couponExpire?.text = resources.getString(R.string.tp_catalog_timer_expire)
             }
             timerTextWidth= TimerUnifySingle.TEXT_WRAP
         }
         if (item.activePeriod != null && item.activePeriod != "0" && item.activePeriod!!.toLong() > 0) {
-            flipTimer?.displayedChild = 0
+            flipTimer?.displayedChild = CONTAINER_TIMER
             val timeToExpire = item.activePeriod?.toLong()?.let { convertSecondsToHrMmSs(it) }
             progressBar?.targetDate = timeToExpire
         } else {
-            flipTimer?.displayedChild = 1
+            flipTimer?.displayedChild = CONTAINER_DATE
             couponExpire?.text = item.activePeriodDate
         }
     }
@@ -715,6 +715,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         private const val CONTAINER_ERROR = 2
         private const val REQUEST_CODE_LOGIN = 1
         private const val CONTAINER_COUPON_ERROR = 3
+        private const val CONTAINER_TIMER = 0
+        private const val CONTAINER_DATE = 1
 
         fun newInstance(extras: Bundle?): Fragment {
             val fragment: Fragment = CouponCatalogFragment()

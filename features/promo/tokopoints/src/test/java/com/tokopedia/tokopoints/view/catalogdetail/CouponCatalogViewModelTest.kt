@@ -143,6 +143,7 @@ class CouponCatalogViewModelTest {
                 every { title } returns "title"
                 every { description } returns "description"
             }
+            every { redeemMessage } returns "success"
         }
         coEvery { repository.startSaveCoupon(1) } returns mockk {
             every { hachikoRedeem } returns data
@@ -156,6 +157,7 @@ class CouponCatalogViewModelTest {
         assert(result.cta == data.coupons?.get(0)?.cta)
         assert(result.title == data.coupons?.get(0)?.title)
         assert(result.description == data.coupons?.get(0)?.description)
+        assert(result.redeemMessage ==  data.redeemMessage)
     }
 
     @Test
