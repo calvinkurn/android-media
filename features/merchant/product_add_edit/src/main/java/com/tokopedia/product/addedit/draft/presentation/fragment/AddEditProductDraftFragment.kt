@@ -42,6 +42,7 @@ class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListen
         const val SCREEN_NAME = "/draft product page"
         const val SCREEN_NAME_ADD_PRODUCT = "/add-product"
         const val REQUEST_CODE_ADD_PRODUCT = 9003
+        const val FIRST_INDEX = 0
 
         @JvmStatic
         fun newInstance() = AddEditProductDraftFragment()

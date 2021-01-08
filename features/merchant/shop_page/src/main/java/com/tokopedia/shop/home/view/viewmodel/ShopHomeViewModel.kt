@@ -224,10 +224,10 @@ class ShopHomeViewModel @Inject constructor(
         if (result is Success) {
             launchCatchError(block = {
                 getMerchantVoucherList(shopId, numVoucher, result.data)?.let{
-                    _shopHomeMerchantVoucherLayoutData.value = Success(it)
+                    _shopHomeMerchantVoucherLayoutData.postValue(Success(it))
                 }
             }) {
-                _shopHomeMerchantVoucherLayoutData.value = Fail(it)
+                _shopHomeMerchantVoucherLayoutData.postValue(Fail(it))
             }
         }
     }
@@ -267,7 +267,7 @@ class ShopHomeViewModel @Inject constructor(
                         onError = { null }
                 )
             }.awaitAll()
-            _checkWishlistData.value = Success(listResultCheckWishlist)
+            _checkWishlistData.postValue(Success(listResultCheckWishlist))
         }) {}
     }
 
@@ -327,9 +327,9 @@ class ShopHomeViewModel @Inject constructor(
             val result = withContext(dispatcherProvider.io) {
                 convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
             }
-            _videoYoutube.value = Pair(widgetId, Success(result))
+            _videoYoutube.postValue(Pair(widgetId, Success(result)))
         }, onError = {
-            _videoYoutube.value = Pair(widgetId, Fail(it))
+            _videoYoutube.postValue(Pair(widgetId, Fail(it)))
         })
     }
 
@@ -371,7 +371,7 @@ class ShopHomeViewModel @Inject constructor(
             val getCampaignNotifyMeUiModel = ShopPageHomeMapper.mapToGetCampaignNotifyMeUiModel(
                     getCampaignNotifyMeModel
             )
-            _campaignNplRemindMeStatusData.value = Success(getCampaignNotifyMeUiModel)
+            _campaignNplRemindMeStatusData.postValue(Success(getCampaignNotifyMeUiModel))
         }) {}
     }
 
@@ -393,13 +393,13 @@ class ShopHomeViewModel @Inject constructor(
                     checkCampaignNotifyMeModel.errorMessage,
                     action
             )
-            _checkCampaignNplRemindMeStatusData.value = Success(checkCampaignNotifyMeUiModel)
+            _checkCampaignNplRemindMeStatusData.postValue(Success(checkCampaignNotifyMeUiModel))
         }) {
-            _checkCampaignNplRemindMeStatusData.value = Fail(CheckCampaignNplException(
+            _checkCampaignNplRemindMeStatusData.postValue(Fail(CheckCampaignNplException(
                     it.cause,
                     it.message,
                     campaignId
-            ))
+            )))
         }
     }
 
@@ -481,12 +481,12 @@ class ShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io
             )
             val widgetUiModel = playWidgetTools.mapWidgetToModel(widgetResponse = response, prevModel = _playWidgetObservable.value?.widgetUiModel)
-            _playWidgetObservable.value = carouselPlayWidgetUiModel.copy(
+            _playWidgetObservable.postValue(carouselPlayWidgetUiModel.copy(
                     actionEvent = Event(CarouselPlayWidgetUiModel.Action.Refresh),
                     widgetUiModel = widgetUiModel
-            )
+            ))
         }) {
-            _playWidgetObservable.value = null
+            _playWidgetObservable.postValue(null)
         }
     }
 
@@ -498,13 +498,13 @@ class ShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io
             )
             val reminderUiModel = playWidgetTools.mapWidgetToggleReminder(response)
-            _playWidgetToggleReminderObservable.value = reminderUiModel.copy(remind = remind, position = position)
+            _playWidgetToggleReminderObservable.postValue(reminderUiModel.copy(remind = remind, position = position))
         }) {
-            _playWidgetToggleReminderObservable.value = PlayWidgetReminderUiModel(
+            _playWidgetToggleReminderObservable.postValue(PlayWidgetReminderUiModel(
                     remind = remind,
                     success = false,
                     position = position
-            )
+            ))
         }
     }
 
@@ -512,7 +512,7 @@ class ShopHomeViewModel @Inject constructor(
 
         fun updateWidget(onUpdate: (oldVal: CarouselPlayWidgetUiModel) -> CarouselPlayWidgetUiModel) {
             val currentValue = _playWidgetObservable.value
-            if (currentValue != null) _playWidgetObservable.value = onUpdate(currentValue)
+            if (currentValue != null) _playWidgetObservable.postValue(onUpdate(currentValue))
         }
 
         updateWidget {
