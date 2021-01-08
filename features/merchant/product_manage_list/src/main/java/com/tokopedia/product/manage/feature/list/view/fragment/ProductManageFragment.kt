@@ -63,7 +63,6 @@ import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
-import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
@@ -97,7 +96,6 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.URL_TIPS_TRICK
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
-import com.tokopedia.product.manage.feature.list.extension.isMoreOneMonth
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
@@ -216,7 +214,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private var isProductVariant = false
     private var isProductActive = false
 
-    private var productManageSession: ProductManageSession? = null
     private var progressDialog: ProgressDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -237,7 +234,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             isProductVariant = this.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_VARIANT).toBoolean()
             isProductActive = this.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_ACTIVE).toBoolean()
         }
-        productManageSession = ProductManageSession(requireContext())
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -270,7 +266,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupInterceptor()
         setupSearchBar()
         setupProductList()
-        setupTickerBroadcast()
         setupProgressDialogVariant()
         setupFiltersTab()
         setupBottomSheet()
@@ -322,33 +317,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun hideProgressDialogVariant() {
         progressDialog?.hide()
-    }
-
-    private fun setupTickerBroadcast() {
-        productManageSession?.run {
-            if (!getHasTickerBroadcastChat()) {
-                tickerBroadcastChat?.apply {
-                    setTextDescription(getString(R.string.ticker_broadcast_chat))
-                    show()
-                    if (getHasTickerDateBC().isBlank())
-                        setHasTickerDateBC(getHasTickerDateBC())
-
-                    if (getHasTickerDateBC().isNotEmpty())
-                        if (getHasTickerDateBC().isMoreOneMonth) hide()
-
-                    setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {}
-
-                        override fun onDismiss() {
-                            hide()
-                            setHasTickerBroadcastChat(true)
-                        }
-                    })
-                }
-            } else {
-                tickerBroadcastChat.hide()
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
