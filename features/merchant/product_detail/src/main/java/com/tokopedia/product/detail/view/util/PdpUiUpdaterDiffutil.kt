@@ -485,6 +485,16 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         }
     }
 
+    fun updateVariantSelected(variantId: Int, variantKey: String) {
+        updateData(ProductDetailConstant.VARIANT_OPTIONS) {
+            productNewVariantDataModel?.let {
+                val copyMap :MutableMap<String,Int> = it.mapOfSelectedVariant.toMutableMap()
+                copyMap[variantKey] = variantId
+                it.mapOfSelectedVariant = copyMap
+            }
+        }
+    }
+
     fun updateDiscussionData(discussionMostHelpful: DiscussionMostHelpful) {
         updateData(ProductDetailConstant.DISCUSSION_FAQ) {
             productDiscussionMostHelpfulMap?.run {

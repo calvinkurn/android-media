@@ -38,7 +38,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     protected abstract fun createAdapterInstance(): ProductDetailAdapter
 
-    protected abstract fun loadData(forceRefresh:Boolean = false)
+    protected abstract fun loadData(forceRefresh: Boolean = false)
 
     protected abstract fun observeData()
 
@@ -144,7 +144,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
         rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvPdp?.itemAnimator = null
-        rvPdp?.setItemViewCacheSize(20);
         showLoading()
 
         rvPdp?.adapter = productAdapter

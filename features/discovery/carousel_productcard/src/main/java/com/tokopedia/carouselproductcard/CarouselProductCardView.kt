@@ -80,8 +80,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
-            carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
-            onFinishCalculateHeight: (() -> Unit)? = null
+            carouselSeeMoreClickListener: OnSeeMoreClickListener? = null
     ) {
         if (productCardModelList.isEmpty()) return
 
@@ -97,7 +96,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
 
         launch {
             try {
-                tryBindCarousel(productCardModelList, carouselProductCardListenerInfo, recyclerViewPool, showSeeMoreCard, scrollToPosition, true, onFinishCalculateHeight)
+                tryBindCarousel(productCardModelList, carouselProductCardListenerInfo, recyclerViewPool, showSeeMoreCard, scrollToPosition, true)
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -149,12 +148,10 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
             showSeeMoreCard: Boolean = false,
             scrollToPosition: Int = 0,
-            isGrid: Boolean,
-            onFinishCalculateHeight: (() -> Unit)? = null
+            isGrid: Boolean
     ) {
         initRecyclerView(productCardModelList, recyclerViewPool, isGrid)
         submitList(productCardModelList, showSeeMoreCard, carouselProductCardListenerInfo)
-        onFinishCalculateHeight?.invoke()
         scrollCarousel(scrollToPosition)
     }
 

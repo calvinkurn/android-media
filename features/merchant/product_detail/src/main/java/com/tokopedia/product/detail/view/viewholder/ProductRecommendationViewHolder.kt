@@ -71,6 +71,8 @@ class ProductRecommendationViewHolder(
                 }
                 annotationChipAdapter?.submitList(element.filterData ?: listOf())
                 initAdapter(element, this, element.cardModel, getComponentTrackData(element))
+                view.rvProductRecom.show()
+                view.loadingRecom.gone()
 
                 view.titleRecom.text = title
                 if (seeMoreAppLink.isNotEmpty()) {
@@ -144,11 +146,7 @@ class ProductRecommendationViewHolder(
                         listener.onSeeAllRecomClicked(product.pageName, product.seeMoreAppLink, getComponentTrackData(element))
                     }
                 },
-                productCardModelList = cardModel?.toMutableList() ?: listOf(),
-                onFinishCalculateHeight = {
-                    view.rvProductRecom.show()
-                    view.loadingRecom.gone()
-                })
+                productCardModelList = cardModel?.toMutableList() ?: listOf())
     }
 
     private fun getComponentTrackData(element: ProductRecommendationDataModel?) = ComponentTrackDataModel(element?.type

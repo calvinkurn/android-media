@@ -302,7 +302,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     override fun createAdapterInstance(): ProductDetailAdapter {
         val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtil())
-                .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
         return ProductDetailAdapter(asyncDifferConfig, this, adapterFactory)
     }
@@ -1342,7 +1341,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         viewLifecycleOwner.observe(viewModel.productLayout) { data ->
             (activity as? ProductDetailActivity)?.startMonitoringPltRenderPage()
             data.doSuccessOrFail({
-                pdpUiUpdater = PdpUiUpdaterDiffutil(DynamicProductDetailMapper.hashMapLayout(it.data).toMutableMap())
+                pdpUiUpdater = PdpUiUpdaterDiffutil(DynamicProductDetailMapper.hashMapLayout(it.data))
                 onSuccessGetDataP1(it.data)
             }, {
                 Timber.w("P2#LOAD_PAGE_FAILED#'pdp';desc='${it.message}';err='${Log.getStackTraceString(it).take(1000).trim()}'")
@@ -1812,9 +1811,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
-        pdpUiUpdater?.productNewVariantDataModel?.let {
-            it.mapOfSelectedVariant[variantOptions.variantCategoryKey] = variantOptions.variantId
-        }
+        pdpUiUpdater?.updateVariantSelected(variantOptions.variantId, variantOptions.variantCategoryKey)
         val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
                 ?: false
 
