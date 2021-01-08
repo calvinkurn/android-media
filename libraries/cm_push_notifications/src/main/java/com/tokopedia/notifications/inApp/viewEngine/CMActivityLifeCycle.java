@@ -11,9 +11,10 @@ import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
 import com.tokopedia.notifications.utils.NotificationCancelManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -49,12 +50,11 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     }
 
     @Override
-    public void onActivityStarted(Activity activity) {
+    public void onActivityStarted(@NotNull Activity activity) {
         try {
             lifecycleHandler.onActivityStartedInternal(activity);
 
-            if (Objects.requireNonNull(activity.getClass().getCanonicalName())
-                    .equals(NotificationCancelManager.TARGET_ACTIVITY)) {
+            if (cancelManager != null && cancelManager.isCancellable(activity)) {
                 cancelManager.clearNotifications(activity.getApplicationContext());
             }
         } catch (Exception e) {

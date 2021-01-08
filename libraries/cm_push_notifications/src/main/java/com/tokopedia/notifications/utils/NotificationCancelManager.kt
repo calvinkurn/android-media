@@ -1,5 +1,6 @@
 package com.tokopedia.notifications.utils
 
+import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
@@ -19,10 +20,17 @@ open class NotificationCancelManager: CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + jobs
 
+    fun isCancellable(activity: Activity): Boolean {
+        return !TARGET_ACTIVITIES.singleOrNull {
+            it == activity.javaClass.canonicalName
+        }.isNullOrEmpty()
+    }
+
     fun clearNotifications(context: Context) {
         val remoteConfig = CMRemoteConfigUtils(context)
+
         if (remoteConfig.getBooleanRemoteConfig(NOTIFICATION_TRAY_CLEAR, false)) {
-            getCancellableNotifications(context, remoteConfig) { notifications ->
+            cancellableItems(context, remoteConfig) { notifications ->
                 notifications.forEach {
                     cancelNotificationManager(context, it.notificationId)
                 }
@@ -34,7 +42,7 @@ open class NotificationCancelManager: CoroutineScope {
         jobs.cancelChildren()
     }
 
-    private fun getCancellableNotifications(
+    private fun cancellableItems(
             context: Context,
             remoteConfig: CMRemoteConfigUtils,
             invoke: (List<BaseNotificationModel>) -> Unit
@@ -43,7 +51,7 @@ open class NotificationCancelManager: CoroutineScope {
             val notifications = pushRepository(context).getNotification()
             withContext(Dispatchers.Main) {
                 val result = notifications
-                        .intersect(excludeCampaignIdList(remoteConfig)) { notification, excludedItem ->
+                        .intersect(excludeIds(remoteConfig)) { notification, excludedItem ->
                             notification.campaignId == excludedItem.toLong()
                         }
                 invoke(result)
@@ -51,7 +59,7 @@ open class NotificationCancelManager: CoroutineScope {
         }
     }
 
-    private fun excludeCampaignIdList(remoteConfig: CMRemoteConfigUtils): List<String> {
+    private fun excludeIds(remoteConfig: CMRemoteConfigUtils): List<String> {
         val campaignIds = remoteConfig.getStringRemoteConfig(CM_CAMPAIGN_ID_EXCLUDE_LIST)
         return campaignIds.split(",").map { it.trim() }
     }
@@ -65,12 +73,14 @@ open class NotificationCancelManager: CoroutineScope {
 
     companion object {
         /*
-        * TARGET_ACTIVITY;
-        * the NotificationCancelManager only called if the current activity is
-        * MainParentActivity (home), to preventing multiple called every
-        * another activity opened.
+        * TARGET_ACTIVITIES;
+        * the NotificationCancelManager only called in the specific current activity
+        * to preventing multiple called every another activity opened.
         * */
-        const val TARGET_ACTIVITY = "com.tokopedia.navigation.presentation.activity.MainParentActivity"
+        val TARGET_ACTIVITIES = listOf(
+                "com.tokopedia.navigation.presentation.activity.MainParentActivity",
+                "com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
+        )
     }
 
 }
