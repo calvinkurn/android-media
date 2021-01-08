@@ -1,6 +1,4 @@
-package com.tokopedia.tkpd.utils;
-
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
+package com.tokopedia.analytics.performance.util;
 
 public class SplashScreenPerformanceTracker {
     private static PageLoadTimePerformanceCallback instance;
@@ -9,8 +7,10 @@ public class SplashScreenPerformanceTracker {
 
     private static boolean isStarted = false;
 
-    public static synchronized PageLoadTimePerformanceCallback getInstance(){
-        if(instance == null){
+    public static boolean isColdStart = false;
+
+    public static synchronized PageLoadTimePerformanceCallback getInstance(Boolean reinit){
+        if(instance == null || reinit){
             instance = new PageLoadTimePerformanceCallback(
                     "",
                     "",
@@ -25,20 +25,22 @@ public class SplashScreenPerformanceTracker {
         return instance;
     }
 
-    public static void startMonitoring(Boolean isFromApplication) {
-        if (getInstance() != null && !isStarted) {
-            if (isFromApplication) {
-                getInstance().startMonitoring(SPLASH_DURATION_COLD);
+    public static void startMonitoring() {
+        if (!isStarted) {
+            if (isColdStart) {
+                getInstance(true).startMonitoring(SPLASH_DURATION_COLD);
             } else {
-                getInstance().startMonitoring(SPLASH_DURATION_WARM);
+                getInstance(true).startMonitoring(SPLASH_DURATION_WARM);
             }
             isStarted = true;
         }
     }
 
     public static void stopMonitoring() {
-        if (getInstance() != null && isStarted) {
-            getInstance().stopMonitoring();
+        if (getInstance(false) != null && isStarted) {
+            getInstance(false).stopMonitoring();
+            isStarted = false;
+            isColdStart = false;
         }
     }
 }

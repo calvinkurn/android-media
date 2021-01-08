@@ -9,7 +9,7 @@ import android.os.Bundle;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
+import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
@@ -24,7 +24,6 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.timber.TimberWrapper;
-import com.tokopedia.tkpd.utils.SplashScreenPerformanceTracker;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -42,8 +41,6 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
-    public PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback = SplashScreenPerformanceTracker.getInstance();
-
     private boolean isApkTempered;
 
     @DeepLink(ApplinkConst.CONSUMER_SPLASH_SCREEN)
@@ -58,7 +55,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        SplashScreenPerformanceTracker.startMonitoring(false);
+        SplashScreenPerformanceTracker.startMonitoring();
         super.onCreate(savedInstanceState);
         executeInBackground();
     }

@@ -1,7 +1,7 @@
 package com.tokopedia.customer_mid_app.activity
 
 import com.tokopedia.tkpd.ConsumerSplashScreen
-import com.tokopedia.tkpd.utils.SplashScreenPerformanceTracker
+import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker
 
 /**
  * Created by Devara Fikry Akmal 07/01/2021
