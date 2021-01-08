@@ -56,17 +56,13 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify CPM at the top of list`() {
-        visitableList.first().shouldBeInstanceOf<CpmViewModel>()
-
-        for (i in 1 until visitableList.size) {
-            visitableList[i].shouldBeInstanceOf<ProductItemViewModel>()
-        }
+        visitableList[1].shouldBeInstanceOf<CpmViewModel>()
     }
 
     @Test
     fun `Additional headline ads in page 1`() {
         val searchProductModel = searchProductHeadlineAdsAdditionalPosition14JSON.jsonToObject<SearchProductModel>()
-        val additionalCpmIndex = 15
+        val additionalCpmIndex = 16
         val expectedCpmPosition = 14
         val expectedAdditionalCpmLayout = 2
 
@@ -80,17 +76,12 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify CPM at the top and at additional position between product cards`(additionalCpmIndex: Int) {
-        visitableList.first().shouldBeInstanceOf<CpmViewModel>()
+        visitableList[1].shouldBeInstanceOf<CpmViewModel>()
         visitableList[additionalCpmIndex].shouldBeInstanceOf<CpmViewModel>()
-
-        visitableList.forEachIndexed { index, visitable ->
-            if (index != 0 && index != additionalCpmIndex)
-                visitable.shouldBeInstanceOf<ProductItemViewModel>()
-        }
     }
 
     private fun `Then verify CPM data`(additionalCpmIndex: Int, expectedAdditionalCpmPosition: Int, expectedAdditionalCpmLayout: Int) {
-        val firstCpm = (visitableList.first() as CpmViewModel).getCpm()
+        val firstCpm = (visitableList[1] as CpmViewModel).getCpm()
         firstCpm.position shouldBe 1
         firstCpm.layout shouldBe 1
 
@@ -104,7 +95,7 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
     @Test
     fun `Additional headline ads in page 2`() {
         val searchProductModel = searchProductHeadlineAdsAdditionalPosition24JSON.jsonToObject<SearchProductModel>()
-        val additionalCpmIndex = 25
+        val additionalCpmIndex = 26
         val expectedCpmPosition = 24
         val expectedAdditionalCpmLayout = 2
 

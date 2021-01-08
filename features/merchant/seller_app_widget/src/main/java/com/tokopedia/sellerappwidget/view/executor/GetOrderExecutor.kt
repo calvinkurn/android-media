@@ -31,12 +31,11 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
     companion object {
         private var INSTANCE: GetOrderExecutor? = null
 
-        @JvmStatic
-        fun run(context: Context, orderStatusId: Int) {
+        fun run(context: Context, orderStatusId: Int, showLoadingState: Boolean = false) {
             if (INSTANCE == null) {
                 INSTANCE = GetOrderExecutor(context)
             }
-            INSTANCE?.run(orderStatusId)
+            INSTANCE?.run(orderStatusId, showLoadingState)
         }
     }
 
@@ -52,20 +51,23 @@ class GetOrderExecutor(private val context: Context) : AppWidgetView<OrderUiMode
     }
     private var orderStatusId = OrderAppWidget.DEFAULT_ORDER_STATUS_ID
 
-    fun run(orderStatusId: Int) {
+    fun run(orderStatusId: Int, showLoadingState: Boolean) {
         this.orderStatusId = orderStatusId
 
         val dateFormat = "dd/MM/yyyy"
         val endDateFmt = TimeHelper.formatDate(Date(TimeHelper.getNowTimeStamp()), dateFormat)
         val startDateFmt = TimeHelper.getNPastMonthTimeText(3)
 
-        showLoadingState()
+        if (showLoadingState) {
+            showLoadingState()
+        }
         viewModel.bindView(this)
         viewModel.getOrderList(startDateFmt, endDateFmt)
     }
 
     override fun onSuccess(result: OrderUiModel) {
         cacheHandler.putLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
+        cacheHandler.applyEditor()
         OrderAppWidget.setOnSuccess(context, result, orderStatusId)
         GetOrderWorker.runWorker(context)
         viewModel.unbind()
