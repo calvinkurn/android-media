@@ -16,11 +16,10 @@
         android:layout_width="@dimen/dp_30"
         android:layout_height="@dimen/dp_30"
         android:layout_marginStart="@dimen/dp_16"
-        android:tint="@color/black"
         app:layout_constraintBottom_toBottomOf="@id/box_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/box_1"
-        app:srcCompat="@drawable/ic_action_back" />
+        app:srcCompat="@drawable/ic_tp_arrow_back" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/box_1"

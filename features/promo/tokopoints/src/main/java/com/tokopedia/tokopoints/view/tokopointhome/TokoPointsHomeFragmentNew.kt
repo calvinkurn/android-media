@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
@@ -56,6 +57,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinde
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
+import kotlinx.android.synthetic.main.tp_layout_emptystate.*
 import javax.inject.Inject
 
 typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder>
@@ -66,6 +68,7 @@ typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder
  * */
 class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener {
     private var mContainerMain: ViewFlipper? = null
+    private var mContainerData: ViewFlipper? = null
     private var mPagerPromos: RecyclerView? = null
 
     @Inject
@@ -207,7 +210,12 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 is Loading -> showLoading()
                 is ErrorMessage -> {
                     hideLoading()
-                    onError(it.data, NetworkDetector.isConnectedToInternet(context))
+                    val internetStatus = NetworkDetector.isConnectedToInternet(context)
+                    if (!internetStatus) {
+                        onError(it.data, internetStatus)
+                    } else {
+                        showEmptyState()
+                    }
                 }
                 is Success -> {
                     hideLoading()
@@ -227,6 +235,15 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     }
 
+    private fun showEmptyState() {
+        if (mContainerMain != null) {
+            mContainerMain?.displayedChild = CONTAINER_MAIN
+            mContainerData?.displayedChild = CONTAINER_EMPTYSTATE
+            globalerror_view.setActionClickListener {
+                mPresenter.getTokoPointDetail()
+            }
+        }
+    }
     private fun initViews(view: View) {
         coordinatorLayout = view.findViewById(R.id.container)
         mContainerMain = view.findViewById(R.id.container_main)
@@ -235,6 +252,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         statusBarBgView = view.findViewById(R.id.status_bar_bg)
         tokoPointToolbar = view.findViewById(R.id.toolbar_tokopoint)
         serverErrorView = view.findViewById(R.id.server_error_view)
+        mContainerData = view.findViewById(R.id.container_data)
+
 
         setStatusBarViewHeight()
     }
@@ -289,7 +308,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun renderRewardUi(topSectionData: TopSectionResponse?,sections: List<SectionContent>) {
-        mContainerMain?.displayedChild = CONTAINER_DATA
+        mContainerMain?.displayedChild = CONTAINER_MAIN
+        mContainerData?.displayedChild = CONTAINER_DATA
         addDynamicToolbar(topSectionData?.tokopediaRewardTopSection?.dynamicActionList)
 
         if (adapter == null) {
@@ -438,7 +458,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun hideLoading() {
-        mContainerMain?.displayedChild = CONTAINER_DATA
+        mContainerMain?.displayedChild = CONTAINER_MAIN
     }
 
     override fun getAppContext(): Context {
@@ -479,8 +499,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     companion object {
         private const val CONTAINER_LOADER = 0
-        private const val CONTAINER_DATA = 1
+        private const val CONTAINER_MAIN = 1
         private const val CONTAINER_ERROR = 2
+        private const val CONTAINER_DATA = 0
+        private const val CONTAINER_EMPTYSTATE = 1
 
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()

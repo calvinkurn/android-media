@@ -49,7 +49,6 @@ dependencies {
     
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.unifyDependencies.global_error
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
