@@ -7,12 +7,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
@@ -555,11 +560,28 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 if(fcmManager == null) {
                     provideFcmManager();
                 }
-                fcmManager.onNewToken(newAccessToken);
+                newGcmUpdate(sessionRefresh);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void newGcmUpdate(SessionRefresh sessionRefresh) {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (!task.isSuccessful() || task.getResult() == null) {
+                    try {
+                        sessionRefresh.gcmUpdate();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    fcmManager.onNewToken(task.getResult().getToken());
+                }
+            }
+        });
     }
 
     @Override
