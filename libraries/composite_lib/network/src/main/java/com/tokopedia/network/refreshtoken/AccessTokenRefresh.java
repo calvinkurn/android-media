@@ -71,7 +71,7 @@ public class AccessTokenRefresh {
         } catch (Exception e) {
             e.printStackTrace();
             networkRouter.sendRefreshTokenAnalytics(e.toString());
-            Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';exception='%s', path='%s'", "failed_refresh_token", userSession.getAccessToken(), TkpdAuthenticator.Companion.formatThrowable(e), path);
+            Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "failed_refresh_token", userSession.getAccessToken(), TkpdAuthenticator.Companion.formatThrowable(e), path);
         }
 
         TokenModel model = null;
