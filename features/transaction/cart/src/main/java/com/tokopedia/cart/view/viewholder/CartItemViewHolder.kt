@@ -7,7 +7,10 @@ import android.text.*
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -23,10 +26,7 @@ import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME
 import com.tokopedia.purchase_platform.common.utils.QuantityWrapper
@@ -34,6 +34,7 @@ import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
@@ -73,9 +74,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private val textMoveToWishlist: Typography
 
-    private val etQty: AppCompatEditText
-    private val btnQtyPlus: ImageView
-    private val btnQtyMinus: ImageView
+    private val qtyEditor: QuantityEditorUnify
     private val etRemark: AppCompatEditText
     private val tvLabelRemarkOption: TextView
     private val btnDelete: IconUnify
@@ -95,6 +94,7 @@ class CartItemViewHolder constructor(itemView: View,
     private val llShopNoteSection: LinearLayout
 
     private var cartItemHolderData: CartItemHolderData? = null
+    private var quantityTextWatcher: QuantityTextWatcher? = null
     private var quantityTextwatcherListener: QuantityTextWatcher.QuantityTextwatcherListener? = null
     private var parentPosition: Int = 0
     private var dataSize: Int = 0
@@ -120,9 +120,7 @@ class CartItemViewHolder constructor(itemView: View,
         textSlashPrice = itemView.findViewById(R.id.text_slash_price)
         textIncidentLabel = itemView.findViewById(R.id.text_incident)
         textMoveToWishlist = itemView.findViewById(R.id.text_move_to_wishlist)
-        etQty = itemView.findViewById(R.id.et_qty)
-        btnQtyPlus = itemView.findViewById(R.id.btn_qty_plus)
-        btnQtyMinus = itemView.findViewById(R.id.btn_qty_min)
+        qtyEditor = itemView.findViewById(R.id.qty_editor_cart)
         tvLabelRemarkOption = itemView.findViewById(R.id.tv_label_remark_option)
         etRemark = itemView.findViewById(R.id.et_remark)
         tvLabelRemarkTitle = itemView.findViewById(R.id.tv_label_remark_title)
@@ -579,63 +577,49 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderQuantity(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
-        val quantity = data.cartItemData?.updatedData?.quantity.toString()
-        this.etQty.setText(data.cartItemData?.updatedData?.quantity.toString())
-        etQty.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                etQty.clearFocus()
-                KeyboardHandler.DropKeyboard(etQty.context, itemView)
-                true
-            } else false
+        if (quantityTextWatcher != null) {
+            // remove previous listener
+            qtyEditor.editText.removeTextChangedListener(quantityTextWatcher)
         }
 
-        if (quantity.isNotEmpty()) {
-            this.etQty.setSelection(quantity.length)
+        qtyEditor.autoHideKeyboard = true
+        qtyEditor.minValue = data.cartItemData?.originData?.minOrder ?: 0
+        qtyEditor.maxValue = data.cartItemData?.originData?.maxOrder ?: 0
+        // reset listener
+        qtyEditor.setValueChangedListener { _, _, _ -> /* no-op */ }
+        qtyEditor.setValue(data.cartItemData?.updatedData?.quantity ?: 0)
+        qtyEditor.setValueChangedListener { newValue, _, _ ->
+            cartItemHolderData!!.cartItemData!!.updatedData!!.quantity = newValue
+            actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
+            handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)
         }
-        this.etQty.setOnClickListener { v ->
-            if (data.cartItemData?.isError == false) {
-                val qtyStr = (v as AppCompatEditText).text?.toString()
+        qtyEditor.setSubstractListener {
+            if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
+                actionListener?.onCartItemQuantityMinusButtonClicked(data, adapterPosition, parentPosition)
+            }
+        }
+        qtyEditor.setAddClickListener {
+            if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
+                actionListener?.onCartItemQuantityPlusButtonClicked(data, adapterPosition, parentPosition)
+            }
+        }
+        qtyEditor.editText.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                val qtyStr = (v as? AppCompatEditText)?.text?.toString()
                 actionListener?.onCartItemQuantityInputFormClicked(
                         if (!TextUtils.isEmpty(qtyStr)) qtyStr else ""
                 )
             }
         }
-
-        this.btnQtyPlus.setOnClickListener {
-            if (data.cartItemData?.isError == false) {
-                try {
-                    if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-                        actionListener?.onCartItemQuantityPlusButtonClicked(data, adapterPosition, parentPosition)
-                        validateWithAvailableQuantity(cartItemHolderData!!, Integer.parseInt(etQty.text.toString()
-                                ?: "0"))
-                        handleRefreshType(data, viewHolderListener, parentPosition)
-                    }
-                } catch (e: NumberFormatException) {
-                    e.printStackTrace()
-                }
-            }
+        qtyEditor.editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                KeyboardHandler.DropKeyboard(qtyEditor.editText.context, itemView)
+                true
+            } else false
         }
-
-        this.btnQtyMinus.setOnClickListener {
-            if (data.cartItemData?.isError == false) {
-                try {
-                    if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-                        actionListener?.onCartItemQuantityMinusButtonClicked(data, adapterPosition, parentPosition)
-                        validateWithAvailableQuantity(cartItemHolderData!!, Integer.parseInt(etQty.text.toString()))
-                        handleRefreshType(data, viewHolderListener, parentPosition)
-                    }
-                } catch (e: NumberFormatException) {
-                    e.printStackTrace()
-                }
-
-            }
-        }
-
-        if (!TextUtils.isEmpty(etQty.text.toString()) && cartItemHolderData != null) {
-            checkQtyMustDisabled(cartItemHolderData!!, Integer.parseInt(etQty.text.toString()))
-        }
-        this.etQty.addTextChangedListener(QuantityTextWatcher(quantityTextwatcherListener))
-        this.etQty.isEnabled = data.cartItemData?.isError == false
+        quantityTextWatcher = QuantityTextWatcher(quantityTextwatcherListener)
+        qtyEditor.editText.addTextChangedListener(quantityTextWatcher)
+        qtyEditor.editText.isEnabled = data.cartItemData?.isError == false
     }
 
     private fun handleRefreshType(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, parentPosition: Int) {
@@ -733,44 +717,6 @@ class CartItemViewHolder constructor(itemView: View,
         }
     }
 
-    private fun checkQtyMustDisabled(cartItemHolderData: CartItemHolderData, qty: Int) {
-        if (qty <= cartItemHolderData.cartItemData?.originData?.minOrder ?: 0 && qty >= cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0) {
-            btnQtyMinus.isEnabled = false
-            btnQtyPlus.isEnabled = false
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(btnQtyMinus.context, R.drawable.bg_button_counter_minus_checkout_disabled))
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.context, R.drawable.bg_button_counter_plus_checkout_disabled))
-        } else if (qty <= cartItemHolderData.cartItemData?.originData?.minOrder ?: 0) {
-            btnQtyMinus.isEnabled = false
-            btnQtyPlus.isEnabled = true
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(btnQtyMinus.context, R.drawable.bg_button_counter_minus_checkout_disabled))
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.context, R.drawable.bg_button_counter_plus_checkout))
-        } else if (qty >= cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0) {
-            btnQtyPlus.isEnabled = false
-            btnQtyMinus.isEnabled = true
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.context, R.drawable.bg_button_counter_plus_checkout_disabled))
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(btnQtyMinus.context, R.drawable.bg_button_counter_minus_checkout))
-        } else {
-            btnQtyPlus.isEnabled = true
-            btnQtyMinus.isEnabled = true
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.context, R.drawable.bg_button_counter_plus_checkout))
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(btnQtyMinus.context, R.drawable.bg_button_counter_minus_checkout))
-        }
-    }
-
-    private fun validateWithAvailableQuantity(data: CartItemHolderData, qty: Int): Boolean {
-        val maxOrder = data.cartItemData?.originData?.maxOrder ?: 0
-        val minOrder = data.cartItemData?.originData?.minOrder ?: 0
-        if (qty > maxOrder) {
-            etQty.setText(maxOrder.toString())
-            return false
-        } else if (qty < minOrder) {
-            etQty.setText(minOrder.toString())
-            return false
-        }
-
-        return true
-    }
-
     private fun itemNoteTextWatcherAction(editable: Editable) {
         if (cartItemHolderData != null) {
             cartItemHolderData?.cartItemData?.updatedData?.remark = editable.toString()
@@ -779,51 +725,13 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun itemQuantityTextWatcherAction(quantity: QuantityWrapper) {
         if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-            var needToUpdateView = quantity.qtyBefore.toString() != quantity.editable.toString()
-            if (quantity.editable.length != 0) {
-                var zeroCount = 0
-                for (i in 0 until quantity.editable.length) {
-                    if (quantity.editable[i] == '0') {
-                        zeroCount++
-                    } else {
-                        break
-                    }
-                }
-                if (zeroCount == quantity.editable.length) {
-                    actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition, needToUpdateView)
-                    if (needToUpdateView) {
-                        handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)
-                        needToUpdateView = false
-                    }
-                } else if (quantity.editable[0] == '0') {
-                    etQty.setText(quantity.editable.toString()
-                            .substring(zeroCount, quantity.editable.toString().length))
-                    etQty.setSelection(etQty.length())
-                    needToUpdateView = true
-                }
-            } else if (TextUtils.isEmpty(etQty.text)) {
-                actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition,
-                        quantity.qtyBefore.toString() != quantity.editable.toString())
-                if (needToUpdateView) {
-                    handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)
-                    needToUpdateView = false
-                }
-            }
-
-            var qty = 0
-            try {
-                qty = Integer.parseInt(quantity.editable.toString())
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
-            }
-
-            checkQtyMustDisabled(cartItemHolderData!!, qty)
-            cartItemHolderData!!.cartItemData!!.updatedData!!.quantity = qty
-            val tmpNeedToUpdateView = validateWithAvailableQuantity(cartItemHolderData!!, qty)
-            if (!tmpNeedToUpdateView) needToUpdateView = tmpNeedToUpdateView
+            val qty = quantity.editable.toString().replace("[^0-9]".toRegex(), "").toIntOrZero()
+            val needToUpdateView = cartItemHolderData?.cartItemData?.updatedData?.quantity != qty
             if (needToUpdateView) {
-                actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
-                handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)
+                if (qty <= 0) {
+                    actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition, needToUpdateView)
+                }
+                qtyEditor.setValue(qty)
             }
         }
     }

@@ -321,32 +321,10 @@ barangnya gan! coy coy coy" />
                                 android:layout_marginEnd="@dimen/dp_18"
                                 app:icon_name="DELETE" />
 
-                            <ImageView
-                                android:id="@+id/btn_qty_min"
-                                android:layout_width="@dimen/dp_24"
-                                android:layout_height="@dimen/dp_24"
-                                app:srcCompat="@drawable/bg_button_counter_minus_checkout" />
-
-                            <androidx.appcompat.widget.AppCompatEditText
-                                android:id="@+id/et_qty"
-                                android:layout_width="@dimen/dp_60"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_horizontal"
-                                android:imeOptions="actionDone"
-                                android:inputType="number"
-                                android:maxLength="6"
-                                android:textColor="@color/Unify_N700_68"
-                                android:textColorHighlight="@color/Unify_G400"
-                                android:textSize="@dimen/sp_16"
-                                app:backgroundTint="@color/Unify_G400"
-                                tools:text="10000" />
-
-                            <ImageView
-                                android:id="@+id/btn_qty_plus"
-                                android:layout_width="@dimen/dp_24"
-                                android:layout_height="@dimen/dp_24"
-                                app:srcCompat="@drawable/bg_button_counter_plus_checkout"
-                                tools:ignore="ContentDescription" />
+                            <com.tokopedia.unifycomponents.QuantityEditorUnify
+                                android:id="@+id/qty_editor_cart"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
                         </LinearLayout>
 
