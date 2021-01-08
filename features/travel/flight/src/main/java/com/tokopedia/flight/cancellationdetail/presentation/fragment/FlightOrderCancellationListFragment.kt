@@ -8,7 +8,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.flight.R
+import com.tokopedia.flight.cancellationdetail.presentation.activity.FlightOrderCancellationDetailActivity
+import com.tokopedia.flight.cancellationdetail.presentation.activity.FlightOrderCancellationDetailActivity.Companion.EXTRA_SAVED_CANCELLATION_DETAIL
 import com.tokopedia.flight.cancellationdetail.presentation.activity.FlightOrderCancellationListActivity.Companion.EXTRA_INVOICE_ID
 import com.tokopedia.flight.cancellationdetail.presentation.adapter.FlightOrderCancellationListAdapterTypeFactory
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
@@ -23,12 +26,18 @@ import javax.inject.Inject
  */
 class FlightOrderCancellationListFragment : BaseListFragment<FlightOrderCancellationListModel, FlightOrderCancellationListAdapterTypeFactory>() {
 
+    private var savedInstanceManagerId: String = ""
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var flightOrderCancellationViewModel: FlightOrderCancellationListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        savedInstanceState?.let {
+            savedInstanceManagerId = it.getString(EXTRA_SAVED_INSTANCE_KEY) ?: ""
+        }
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         flightOrderCancellationViewModel = viewModelProvider.get(FlightOrderCancellationListViewModel::class.java)
@@ -53,6 +62,11 @@ class FlightOrderCancellationListFragment : BaseListFragment<FlightOrderCancella
         })
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(EXTRA_SAVED_INSTANCE_KEY, savedInstanceManagerId)
+    }
+
     override fun getRecyclerViewResourceId(): Int =
             R.id.rvFlightOrderCancellationList
 
@@ -75,10 +89,24 @@ class FlightOrderCancellationListFragment : BaseListFragment<FlightOrderCancella
     }
 
     private fun navigateToDetailPage(cancellationListModel: FlightOrderCancellationListModel) {
+        context?.let {
+            val manager = if (savedInstanceManagerId.isNotEmpty())
+                SaveInstanceCacheManager(it, savedInstanceManagerId)
+            else SaveInstanceCacheManager(it, true)
 
+            manager.put(EXTRA_SAVED_CANCELLATION_DETAIL, cancellationListModel)
+            savedInstanceManagerId = manager.id ?: ""
+
+            startActivity(FlightOrderCancellationDetailActivity.getIntent(it,
+                    savedInstanceManagerId,
+                    cancellationListModel.cancellationDetail.refundId))
+        }
     }
 
     companion object {
+
+        private const val EXTRA_SAVED_INSTANCE_KEY = "EXTRA_SAVED_INSTANCE_KEY"
+
         fun getInstance(invoiceId: String): FlightOrderCancellationListFragment =
                 FlightOrderCancellationListFragment().also {
                     it.arguments = Bundle().apply {
