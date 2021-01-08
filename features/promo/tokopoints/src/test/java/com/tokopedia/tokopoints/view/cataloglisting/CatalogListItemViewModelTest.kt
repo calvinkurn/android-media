@@ -141,7 +141,7 @@ class CatalogListItemViewModelTest {
             every { id } returns 1
         }
         val data = mockk<RedeemCouponEntity> {
-            every { coupons[0] } returns mockk {
+            every { coupons?.get(0) } returns mockk {
                 every { code } returns "200"
                 every { cta } returns "cta"
                 every { title } returns "title"
@@ -157,10 +157,10 @@ class CatalogListItemViewModelTest {
 
         verify(exactly = 1) { observer.onChanged(ofType(Success::class as KClass<Success<ConfirmRedeemDialog>>)) }
         val result = (viewModel.startSaveCouponLiveData.value as Success).data
-        assert(result.code == data.coupons[0].code)
-        assert(result.cta == data.coupons[0].cta)
-        assert(result.title == data.coupons[0].title)
-        assert(result.description == data.coupons[0].description)
+        assert(result.code == data.coupons?.get(0)?.code)
+        assert(result.cta == data.coupons?.get(0)?.cta)
+        assert(result.title == data.coupons?.get(0)?.title)
+        assert(result.description == data.coupons?.get(0)?.description)
     }
 
     @Test
