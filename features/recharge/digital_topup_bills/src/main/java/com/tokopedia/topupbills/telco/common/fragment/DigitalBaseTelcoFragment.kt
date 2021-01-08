@@ -359,7 +359,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                         bannerImage.startAnimation(fadeOut)
                     }
                     (activity as? BaseTelcoActivity)?.onCollapseAppBar()
-                } else {
+                } else if (verticalOffSet >= actionBarHeight) {
                     //Expanded
                     onExpandAppBar()
                     if (!fadeIn.hasStarted()) {
