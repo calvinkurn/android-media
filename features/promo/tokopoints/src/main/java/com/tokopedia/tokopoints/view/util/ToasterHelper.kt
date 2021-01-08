@@ -11,7 +11,7 @@ object ToasterHelper {
             view.let {
                 Toaster.apply {
                     toasterCustomBottomHeight = bottomHeight.toPx()
-                }.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+                }.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
             }
         }
     }

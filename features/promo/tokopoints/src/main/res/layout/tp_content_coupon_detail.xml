@@ -188,7 +188,8 @@
                     android:lineSpacingExtra="@dimen/sp_6"
                     android:text="@string/tnc_coupon_catalog"
                     android:textColor="@color/clr_f531353b"
-                    app:layout_constraintLeft_toLeftOf="@+id/top_separator"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginStart="@dimen/dp_16"
                     app:layout_constraintTop_toBottomOf="@+id/top_separator"
                     app:typographyType="heading_3"
                     app:typographyWeight="bold" />
@@ -222,7 +223,8 @@
                     android:lineSpacingExtra="@dimen/sp_6"
                     android:text="@string/how_to_use_coupon_catalog"
                     android:textColor="@color/clr_f531353b"
-                    app:layout_constraintLeft_toLeftOf="@+id/mid_separator"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginStart="@dimen/dp_16"
                     app:layout_constraintTop_toBottomOf="@+id/mid_separator"
                     app:typographyType="heading_3"
                     app:typographyWeight="bold" />
