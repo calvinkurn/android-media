@@ -101,7 +101,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         mainContainer = view.findViewById(R.id.telco_main_container)
         pageContainer = view.findViewById(R.id.telco_page_container)
         appBarLayout = view.findViewById(R.id.telco_appbar_input_number)
-        toolbarSpacer = view.findViewById(R.id.digital_telco_action_bar_spacer)
         bannerImage = view.findViewById(R.id.telco_bg_img_banner)
         postpaidClientNumberWidget = view.findViewById(R.id.telco_input_number)
         buyWidget = view.findViewById(R.id.telco_buy_widget)

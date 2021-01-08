@@ -56,7 +56,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected lateinit var pageContainer: RelativeLayout
     protected lateinit var tickerView: Ticker
     protected lateinit var appBarLayout: AppBarLayout
-    protected lateinit var toolbarSpacer: View
     protected lateinit var bannerImage: ImageView
     private lateinit var viewModel: SharedTelcoViewModel
     protected var listMenu = mutableListOf<TelcoTabItem>()
@@ -344,25 +343,23 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         fadeOut.duration = 300
         fadeOut.fillAfter = true
 
-        var actionBarHeight = toolbarSpacer.height
-
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var lastOffset = -1
             override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
                 if (lastOffset == verticalOffSet) return
 
                 lastOffset = verticalOffSet
-                if (abs(verticalOffSet) >= appBarLayout.totalScrollRange - actionBarHeight) {
+                if (verticalOffSet <= appBarLayout.totalScrollRange) {
                     //Collapsed
                     onCollapseAppBar()
-                    if (!fadeOut.hasStarted()) {
+                    if (!fadeOut.hasStarted() || fadeOut.hasEnded()) {
                         bannerImage.startAnimation(fadeOut)
                     }
                     (activity as? BaseTelcoActivity)?.onCollapseAppBar()
-                } else if (verticalOffSet >= actionBarHeight) {
+                } else if (verticalOffSet == 0) {
                     //Expanded
                     onExpandAppBar()
-                    if (!fadeIn.hasStarted()) {
+                    if (!fadeIn.hasStarted() || fadeIn.hasEnded()) {
                         bannerImage.startAnimation(fadeIn)
                     }
                     (activity as? BaseTelcoActivity)?.onExpandAppBar()
