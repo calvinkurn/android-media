@@ -57,6 +57,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
         setHasOptionsMenu(true)
+        productAdapter = createAdapterInstance()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -138,11 +139,9 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     private fun setupRecyclerView(view: View) {
         rvPdp = view.findViewById<View>(R.id.rv_pdp) as RecyclerView
-        productAdapter = createAdapterInstance()
 
         rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvPdp?.itemAnimator = null
-        rvPdp?.setItemViewCacheSize(20)
         showLoading()
 
         rvPdp?.adapter = productAdapter
