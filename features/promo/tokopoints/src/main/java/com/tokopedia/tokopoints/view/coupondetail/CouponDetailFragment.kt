@@ -414,7 +414,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             }
         }
 
-        if (TextUtils.isEmpty(data.minimumUsage)) {
+        if (data.minimumUsageLabel.isNullOrEmpty()) {
             textMinExchangeLabel.hide()
             imgMinExchange.hide()
             textMinExchangeValue.hide()
