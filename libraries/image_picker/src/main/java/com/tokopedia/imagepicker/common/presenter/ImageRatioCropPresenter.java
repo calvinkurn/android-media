@@ -6,7 +6,7 @@ import android.media.ExifInterface;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.ImageRatioType;
-import com.tokopedia.utils.image.ImageUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,11 +62,11 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                                 }
                                 // if the dimension is not expected dimension, crop it
                                 float expectedRatio = (float) ratioX / ratioY;
-                                Pair<Integer, Integer> widthHeight = ImageUtil.getWidthAndHeight(imagePath);
+                                Pair<Integer, Integer> widthHeight = ImageProcessingUtil.getWidthAndHeight(imagePath);
                                 int defaultOrientation;
                                 if (needCheckRotate) {
                                     try {
-                                        defaultOrientation = ImageUtil.getOrientation(imagePath);
+                                        defaultOrientation = ImageProcessingUtil.getOrientation(imagePath);
                                     } catch (Throwable e) {
                                         defaultOrientation = ExifInterface.ORIENTATION_NORMAL;
                                     }
@@ -88,7 +88,7 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                                     return imagePath;
                                 } else {
                                     String outputPath;
-                                    outputPath = ImageUtil.trimBitmap(imagePath, expectedRatio, currentRatio, needCheckRotate);
+                                    outputPath = ImageProcessingUtil.trimBitmap(imagePath, expectedRatio, currentRatio, needCheckRotate);
                                     return outputPath;
                                 }
                             }

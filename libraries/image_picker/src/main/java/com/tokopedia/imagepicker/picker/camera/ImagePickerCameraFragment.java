@@ -38,7 +38,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
-import com.tokopedia.utils.image.ImageUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -306,13 +306,13 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
                         mCaptureNativeSize.getWidth(),
                         mCaptureNativeSize.getHeight(), bitmap -> {
                             if (bitmap!= null) {
-                                File cameraResultFile = ImageUtil.writeImageToTkpdPath(bitmap, false);
+                                File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, false);
                                 onSuccessImageTakenFromCamera(cameraResultFile);
                             }
                         });
             }
         } catch (Throwable error) {
-            File cameraResultFile = ImageUtil.writeImageToTkpdPath(imageByte, false);
+            File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, false);
             onSuccessImageTakenFromCamera(cameraResultFile);
         }
     }

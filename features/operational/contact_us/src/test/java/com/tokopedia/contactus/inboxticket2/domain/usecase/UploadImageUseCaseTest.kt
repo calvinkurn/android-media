@@ -7,7 +7,7 @@ import com.tokopedia.contactus.inboxticket2.data.UploadImageResponse
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.image.ImageUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -78,8 +78,8 @@ class UploadImageUseCaseTest {
         list.add(ImageUpload("", "", "", ""))
         val path = "absolute_path"
 
-        mockkStatic(ImageUtil::class)
-        every { ImageUtil.compressImageFile(any(), any()).absolutePath } returns path
+        mockkStatic(ImageProcessingUtil::class)
+        every { ImageProcessingUtil.compressImageFile(any(), any()).absolutePath } returns path
 
         val result = contactUsUploadImageUseCase.getFile(list)
 
@@ -91,8 +91,8 @@ class UploadImageUseCaseTest {
         list.add(ImageUpload("", "", "", ""))
         val exception = IOException("io")
 
-        mockkStatic(ImageUtil::class)
-        every { ImageUtil.compressImageFile(any(), any()).absolutePath } throws exception
+        mockkStatic(ImageProcessingUtil::class)
+        every { ImageProcessingUtil.compressImageFile(any(), any()).absolutePath } throws exception
         every { context.getString(any()) } returns ""
 
         var result: List<String> = arrayListOf()

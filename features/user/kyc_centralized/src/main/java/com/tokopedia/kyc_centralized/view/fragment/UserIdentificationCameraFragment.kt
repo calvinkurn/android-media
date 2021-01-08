@@ -22,7 +22,7 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
-import com.tokopedia.utils.image.ImageUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
 import java.io.File
@@ -281,14 +281,14 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize?.width
                     ?: 0, mCaptureNativeSize?.height ?: 0) { bitmap: Bitmap? ->
                 if (bitmap != null) {
-                    val cameraResultFile = ImageUtil.writeImageToTkpdPath(bitmap, false)
+                    val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, false)
                     if (cameraResultFile!= null) {
                         onSuccessImageTakenFromCamera(cameraResultFile)
                     }
                 }
             }
         } catch (error: Throwable) {
-            val cameraResultFile = ImageUtil.writeImageToTkpdPath(imageByte, false)
+            val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, false)
             if (cameraResultFile != null) {
                 onSuccessImageTakenFromCamera(cameraResultFile)
             }

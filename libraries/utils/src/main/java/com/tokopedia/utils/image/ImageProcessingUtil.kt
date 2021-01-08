@@ -18,7 +18,18 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-object ImageUtil {
+/**
+ * Utility collection for Image Processing
+ * e.g:
+ * - rotate, contrast, brightness, trim
+ * - image file path -> bitmap
+ * - bitmap/byte/filestream -> file
+ * - compress bitmap or image file
+ * - resize bitmap
+ * Please make sure to do the processing in the background
+ * to prevent UI blocking, especially for collections or large images
+ */
+object ImageProcessingUtil {
 
     const val PNG_EXT = ".png"
     const val JPG_EXT = ".jpg"
@@ -376,7 +387,7 @@ object ImageUtil {
     }
 
     @JvmStatic
-    fun brightBitmap(bitmap: Bitmap, brightness: Float): Bitmap? {
+    fun brightBitmap(bitmap: Bitmap, brightness: Float): Bitmap {
         val colorTransform = floatArrayOf(1f, 0f, 0f, 0f, brightness, 0f, 1f, 0f, 0f, brightness, 0f, 0f, 1f, 0f, brightness, 0f, 0f, 0f, 1f, 0f)
         val colorMatrix = ColorMatrix()
         colorMatrix.setSaturation(0f)
@@ -396,7 +407,7 @@ object ImageUtil {
     }
 
     @JvmStatic
-    fun contrastBitmap(bitmap: Bitmap, contrast: Float): Bitmap? {
+    fun contrastBitmap(bitmap: Bitmap, contrast: Float): Bitmap {
         val colorTransform = floatArrayOf(
                 contrast, 0f, 0f, 0f, 0f, 0f, contrast, 0f, 0f, 0f, 0f, 0f, contrast, 0f, 0f, 0f, 0f, 0f, 1f, 0f)
         val colorMatrix = ColorMatrix()
@@ -417,7 +428,7 @@ object ImageUtil {
     }
 
     @JvmStatic
-    fun rotateBitmapByDegree(bitmap: Bitmap, degree: Float): Bitmap? {
+    fun rotateBitmapByDegree(bitmap: Bitmap, degree: Float): Bitmap {
         val matrix = Matrix()
         matrix.setRotate(degree)
         return try {
@@ -425,7 +436,7 @@ object ImageUtil {
             bitmap.recycle()
             bmRotated
         } catch (ignore: OutOfMemoryError) {
-            null
+            bitmap
         }
     }
 

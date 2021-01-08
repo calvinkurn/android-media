@@ -27,7 +27,7 @@ import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.utils.image.ImageUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import org.json.JSONException;
 
@@ -305,7 +305,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
 
                         File file;
                         try {
-                            file = ImageUtil.compressImageFile(imageUpload.getFileLoc(), IMAGE_QUALITY);
+                            file = ImageProcessingUtil.compressImageFile(imageUpload.getFileLoc(), IMAGE_QUALITY);
                         } catch (IOException e) {
                             throw new RuntimeException(context.getString(R.string.contact_us_error_upload_image));
                         }

@@ -22,7 +22,7 @@ import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.utils.image.ImageUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -193,7 +193,7 @@ public class SubmitTicketDataStore {
 
                         File file;
                         try {
-                            file = ImageUtil.compressImageFile(imageUpload.getFileLoc(), IMAGE_QUALITY);
+                            file = ImageProcessingUtil.compressImageFile(imageUpload.getFileLoc(), IMAGE_QUALITY);
                         } catch (IOException e) {
                             throw new RuntimeException(context.getString(R.string.contact_us_error_upload_image));
                         }

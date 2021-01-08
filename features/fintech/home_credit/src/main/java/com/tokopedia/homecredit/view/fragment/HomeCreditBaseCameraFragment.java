@@ -32,7 +32,7 @@ import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.utils.image.ImageUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -193,14 +193,14 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         try {
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), bitmap -> {
                 if (bitmap != null) {
-                    File cameraResultFile = ImageUtil.writeImageToTkpdPath(bitmap, false);
+                    File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, false);
                     if (cameraResultFile!= null) {
                         onSuccessImageTakenFromCamera(cameraResultFile);
                     }
                 }
             });
         } catch (Throwable error) {
-            File cameraResultFile = ImageUtil.writeImageToTkpdPath(imageByte, false);
+            File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, false);
             if (cameraResultFile != null) {
                 onSuccessImageTakenFromCamera(cameraResultFile);
             }

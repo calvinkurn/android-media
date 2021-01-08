@@ -9,7 +9,7 @@ import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApi
 import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApiClient
 import com.tokopedia.updateinactivephone.domain.data.ImageUploadDataModel
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.utils.image.ImageUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
@@ -45,7 +45,7 @@ class ImageUploadUseCase @Inject constructor(
     private fun generateParamFile(): RequestBody {
         val file: File
         try {
-            file = ImageUtil.compressImageFile(useCaseRequestParams.getString(PARAM_FILE_TO_UPLOAD, ""), 100)
+            file = ImageProcessingUtil.compressImageFile(useCaseRequestParams.getString(PARAM_FILE_TO_UPLOAD, ""), 100)
         } catch (e: Exception) {
             throw RuntimeException(ERROR_FAILED_UPLOAD_IMAGE)
         }

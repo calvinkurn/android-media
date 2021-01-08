@@ -41,7 +41,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.FileUtil
-import com.tokopedia.utils.image.ImageUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -411,7 +411,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     private fun writeImageToTkpdPath(bitmap: Bitmap): File {
-        val cacheDir = File(context?.externalCacheDir, FileUtil.generateUniqueFileName() + ImageUtil.JPG_EXT)
+        val cacheDir = File(context?.externalCacheDir, FileUtil.generateUniqueFileName() + ImageProcessingUtil.JPG_EXT)
         val cachePath = cacheDir.absolutePath
         val file = File(cachePath)
         if (file.exists()) {

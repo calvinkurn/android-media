@@ -34,7 +34,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
-import com.tokopedia.utils.image.ImageUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 import javax.inject.Inject
 
@@ -233,7 +233,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 //                    .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
 //            onSuccessCaptureImageFromCamera(cameraResultFile)
 //        }
-        val cameraResultFile = ImageUtil.writeImageToTkpdPath(imageByte, false)
+        val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, false)
         if (cameraResultFile!= null) {
             onSuccessCaptureImageFromCamera(cameraResultFile)
         }

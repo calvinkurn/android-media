@@ -31,7 +31,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.image.ImageUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -347,9 +347,9 @@ class ShopPageViewModelTest {
             (thirdArg() as CustomTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
 
-        mockkStatic(ImageUtil::class)
+        mockkStatic(ImageProcessingUtil::class)
         every {
-            ImageUtil.writeImageToTkpdPath(
+            ImageProcessingUtil.writeImageToTkpdPath(
                     mockBitmap,
                     true)
         } returns File("path")

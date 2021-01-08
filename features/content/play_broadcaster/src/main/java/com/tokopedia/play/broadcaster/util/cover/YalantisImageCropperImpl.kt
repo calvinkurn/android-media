@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.RectF
 import android.net.Uri
 import android.os.AsyncTask
-import com.tokopedia.utils.image.ImageUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.model.CropParameters
 import com.yalantis.ucrop.model.ExifInfo
@@ -20,11 +20,11 @@ import kotlin.coroutines.resumeWithException
 class YalantisImageCropperImpl(private val mContext: Context) : YalantisImageCropper {
 
     override suspend fun cropImage(inputPath: String, cropRect: RectF, currentRect: RectF, currentScale: Float, currentAngle: Float, exifInfo: ExifInfo, viewBitmap: Bitmap): Uri = suspendCancellableCoroutine {
-        val isPng = ImageUtil.isPng(inputPath)
-        val imageOutputDirectory = ImageUtil.getTokopediaPhotoPath(isPng)
+        val isPng = ImageProcessingUtil.isPng(inputPath)
+        val imageOutputDirectory = ImageProcessingUtil.getTokopediaPhotoPath(isPng)
         val imageState = ImageState(cropRect, currentRect,
                 currentScale, currentAngle)
-        val cropParams = CropParameters(ImageUtil.DEF_WIDTH, ImageUtil.DEF_HEIGHT,
+        val cropParams = CropParameters(ImageProcessingUtil.DEF_WIDTH, ImageProcessingUtil.DEF_HEIGHT,
                 DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY,
                 inputPath, imageOutputDirectory.absolutePath, exifInfo)
 

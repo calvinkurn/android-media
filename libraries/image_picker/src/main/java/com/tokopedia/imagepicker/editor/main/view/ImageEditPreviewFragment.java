@@ -24,7 +24,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
-import com.tokopedia.utils.image.ImageUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
@@ -281,7 +281,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             return;
         }
         uCropView.getCropImageView().cropAndSaveImage(
-                ImageUtil.isPng(edittedImagePath) ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, new BitmapCropCallback() {
+                ImageProcessingUtil.isPng(edittedImagePath) ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, new BitmapCropCallback() {
                     @Override
                     public void onBitmapCropped(@NonNull Uri resultUri, int offsetX, int offsetY, int imageWidth, int imageHeight) {
                         onImageEditPreviewFragmentListener.onSuccessSaveEditImage(resultUri.getPath());
@@ -303,7 +303,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         if (gestureCropImageView.getCurrentAngle() % 90 == 0) {
             imageEditPreviewPresenter.rotateImage(gestureCropImageView.getViewBitmap(),
                     gestureCropImageView.getCurrentAngle(),
-                    ImageUtil.isPng(edittedImagePath));
+                    ImageProcessingUtil.isPng(edittedImagePath));
             return;
         }
         cropAndSaveImage();
@@ -315,7 +315,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             return;
         }
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
-        imageEditPreviewPresenter.saveBrightnessImage(bitmap, brightness / BRIGHTNESS_PRECISION, ImageUtil.isPng(edittedImagePath));
+        imageEditPreviewPresenter.saveBrightnessImage(bitmap, brightness / BRIGHTNESS_PRECISION, ImageProcessingUtil.isPng(edittedImagePath));
     }
 
     public void saveContrastImage() {
@@ -324,7 +324,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             return;
         }
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
-        imageEditPreviewPresenter.saveContrastImage(bitmap, contrast / CONTRAST_PRECISION, ImageUtil.isPng(edittedImagePath));
+        imageEditPreviewPresenter.saveContrastImage(bitmap, contrast / CONTRAST_PRECISION, ImageProcessingUtil.isPng(edittedImagePath));
     }
 
     @Override
@@ -366,7 +366,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         try {
             Uri inputUri = Uri.fromFile(new File(edittedImagePath));
             gestureCropImageView.setImageUri(inputUri,
-                    Uri.parse(ImageUtil.getTokopediaPhotoPath(edittedImagePath).toString()));
+                    Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(edittedImagePath).toString()));
         } catch (Exception e) {
 
         }
@@ -382,12 +382,12 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         // set preview max bitmap, so it will fit the screen can also be zoomed.
         // default: BitmapLoadUtils.calculateMaxBitmapSize(getContext());
-        int maxPreviewWidth = ImageUtil.DEF_WIDTH;
+        int maxPreviewWidth = ImageProcessingUtil.DEF_WIDTH;
         gestureCropImageView.setMaxBitmapSize(maxPreviewWidth);
 
         // set max scale so it cannnot be zoomed under min resolution
         // same logic with the calculateInSampleSize;
-        Pair<Integer, Integer> widthHeight = ImageUtil.getWidthAndHeight(edittedImagePath);
+        Pair<Integer, Integer> widthHeight = ImageProcessingUtil.getWidthAndHeight(edittedImagePath);
         int maxWidthHeight = Math.max(widthHeight.getFirst(), widthHeight.getSecond());
         while (maxWidthHeight > maxPreviewWidth) {
             maxWidthHeight = maxWidthHeight / 2;
@@ -421,8 +421,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         setToInitialRatio();
 
-        int maxSizeX = ImageUtil.DEF_WIDTH;
-        int maxSizeY = ImageUtil.DEF_HEIGHT;
+        int maxSizeX = ImageProcessingUtil.DEF_WIDTH;
+        int maxSizeY = ImageProcessingUtil.DEF_HEIGHT;
         gestureCropImageView.setMaxResultImageSizeX(maxSizeX);
         gestureCropImageView.setMaxResultImageSizeY(maxSizeY);
     }

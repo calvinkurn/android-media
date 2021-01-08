@@ -18,7 +18,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.product.share.ekstensions.getShareContent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.utils.image.ImageUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
 class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
@@ -38,7 +38,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     val sticker = ProductImageSticker(activity, resource, data)
                     try {
                         val bitmap = sticker.buildBitmapImage()
-                        val file = ImageUtil.writeImageToTkpdPath(bitmap, false)
+                        val file = ImageProcessingUtil.writeImageToTkpdPath(bitmap, false)
                         bitmap.recycle()
                         generateBranchLink(file, data)
                     } catch (t: Throwable){

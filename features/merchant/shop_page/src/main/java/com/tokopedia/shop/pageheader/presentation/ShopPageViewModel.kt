@@ -54,7 +54,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.image.ImageUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -195,7 +195,7 @@ class ShopPageViewModel @Inject constructor(
         launchCatchError(dispatcherProvider.io, {
             ImageHandler.loadImageWithTarget(context, shopSnippetUrl, object : CustomTarget<Bitmap>(){
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    val savedFile = ImageUtil.writeImageToTkpdPath(
+                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
                             resource,
                             true
                     )

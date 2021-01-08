@@ -38,7 +38,7 @@ import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
 import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import com.tokopedia.utils.file.FileUtil;
-import com.tokopedia.utils.image.ImageUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -347,7 +347,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
         // check the size is must be higher than the minimum resolution
         // we need to recheck this even though the maxScale has been set (in case there is OOM)
-        int resultMinResolution = ImageUtil.getMinResolution(file);
+        int resultMinResolution = ImageProcessingUtil.getMinResolution(file);
         if (resultMinResolution < minResolution) {
             file.delete();
             NetworkErrorHelper.showRedCloseSnackbar(this, belowMinResolutionErrorMessage);
@@ -852,7 +852,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
      */
     private boolean isResolutionValid(ArrayList<String> localPaths) {
         for (String localPath : localPaths) {
-            if (ImageUtil.getMinResolution(localPath) < minResolution) {
+            if (ImageProcessingUtil.getMinResolution(localPath) < minResolution) {
                 return false;
             }
         }

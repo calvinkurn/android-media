@@ -22,7 +22,7 @@ import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics
 import com.tokopedia.rechargeocr.di.RechargeCameraInstance
 import com.tokopedia.rechargeocr.viewmodel.RechargeUploadImageViewModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.utils.image.ImageUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_recharge_camera.*
 import java.io.File
@@ -139,7 +139,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             mCaptureNativeSize?.let {
                 CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.width, mCaptureNativeSize.height) { bitmap ->
                     if (bitmap != null) {
-                        val cameraResultFile = ImageUtil.writeImageToTkpdPath(bitmap, false)
+                        val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, false)
                         if (cameraResultFile!= null) {
                             onSuccessImageTakenFromCamera(cameraResultFile)
                         }
@@ -147,7 +147,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
                 }
             }
         } catch (error: Throwable) {
-            val cameraResultFile = ImageUtil.writeImageToTkpdPath(imageByte, false)
+            val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, false)
             if (cameraResultFile!= null) {
                 onSuccessImageTakenFromCamera(cameraResultFile)
             }

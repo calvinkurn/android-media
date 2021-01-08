@@ -7,7 +7,7 @@ import android.graphics.ColorMatrixColorFilter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.utils.image.ImageUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -135,8 +135,8 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                 Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<String>>() {
                     @Override
                     public Observable<String> call(Bitmap bitmap) {
-                        Bitmap resultBitmap = ImageUtil.brightBitmap(bitmap, brightnessValue);
-                        File file = ImageUtil.writeImageToTkpdPath(resultBitmap, isPng);
+                        Bitmap resultBitmap = ImageProcessingUtil.brightBitmap(bitmap, brightnessValue);
+                        File file = ImageProcessingUtil.writeImageToTkpdPath(resultBitmap, isPng);
                         return Observable.just(file.getAbsolutePath());
                     }
                 })
@@ -173,8 +173,8 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                 Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<String>>() {
                     @Override
                     public Observable<String> call(Bitmap bitmap) {
-                        Bitmap resultBitmap = ImageUtil.contrastBitmap(bitmap, contrastValue);
-                        File file = ImageUtil.writeImageToTkpdPath(resultBitmap, isPng);
+                        Bitmap resultBitmap = ImageProcessingUtil.contrastBitmap(bitmap, contrastValue);
+                        File file = ImageProcessingUtil.writeImageToTkpdPath(resultBitmap, isPng);
                         return Observable.just(file.getAbsolutePath());
                     }
                 })
@@ -211,13 +211,9 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                 Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<String>>() {
                     @Override
                     public Observable<String> call(Bitmap bitmap) {
-                        Bitmap resultBitmap = ImageUtil.rotateBitmapByDegree(bitmap, angle);
-                        if (resultBitmap != null) {
-                            File file = ImageUtil.writeImageToTkpdPath(resultBitmap, isPng);
-                            return Observable.just(file.getAbsolutePath());
-                        } else {
-                            return null;
-                        }
+                        Bitmap resultBitmap = ImageProcessingUtil.rotateBitmapByDegree(bitmap, angle);
+                        File file = ImageProcessingUtil.writeImageToTkpdPath(resultBitmap, isPng);
+                        return Observable.just(file.getAbsolutePath());
                     }
                 })
                         .subscribeOn(Schedulers.newThread())
