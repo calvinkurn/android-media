@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
@@ -56,8 +55,8 @@ import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinde
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.NotificationUnify
+import kotlinx.android.synthetic.main.tp_home_layout_new.*
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
-import kotlinx.android.synthetic.main.tp_layout_emptystate.*
 import javax.inject.Inject
 
 typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder>
