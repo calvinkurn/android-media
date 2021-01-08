@@ -37,7 +37,7 @@ class FlightOrderCancellationDetailJourneyViewHolder(private val listener: Liste
 
             // expandable action
             layout_expendable_flight.setOnClickListener {
-                image_expendable_passenger.startAnimation(AnimationUtils
+                image_expendable_journey.startAnimation(AnimationUtils
                         .loadAnimation(context, R.anim.flight_rotate_reverse))
                 toggleFlightInfo()
             }
@@ -59,13 +59,13 @@ class FlightOrderCancellationDetailJourneyViewHolder(private val listener: Liste
                 recycler_view_flight_detail_journey.visibility = View.GONE
                 text_view_flight_cek_syarat.visibility = View.GONE
                 flight_detail_order_separator_line.visibility = View.GONE
-                image_expendable_passenger.rotation = 180f
+                image_expendable_journey.rotation = 180f
             } else {
                 isFlightInfoShowed = true
                 recycler_view_flight_detail_journey.visibility = View.VISIBLE
                 text_view_flight_cek_syarat.visibility = View.VISIBLE
                 flight_detail_order_separator_line.visibility = View.VISIBLE
-                image_expendable_passenger.rotation = 0f
+                image_expendable_journey.rotation = 0f
                 listener.onCloseExpand(adapterPosition)
             }
         }

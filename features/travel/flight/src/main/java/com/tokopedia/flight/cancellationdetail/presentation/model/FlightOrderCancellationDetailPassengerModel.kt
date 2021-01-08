@@ -1,6 +1,8 @@
 package com.tokopedia.flight.cancellationdetail.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.flight.cancellationdetail.presentation.adapter.FlightOrderCancellationDetailPassengerTypeFactory
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailAmenityModel
 import kotlinx.android.parcel.Parcelize
 
@@ -20,4 +22,8 @@ data class FlightOrderCancellationDetailPassengerModel(
         val arrivalAirportId: String,
         val journeyId: Int,
         val amenities: List<FlightOrderDetailAmenityModel>
-) : Parcelable
+) : Parcelable, Visitable<FlightOrderCancellationDetailPassengerTypeFactory> {
+    override fun type(typeFactory: FlightOrderCancellationDetailPassengerTypeFactory): Int =
+            typeFactory.type(this)
+
+}
