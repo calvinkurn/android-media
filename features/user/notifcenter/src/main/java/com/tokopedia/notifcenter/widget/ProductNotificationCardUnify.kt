@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -100,8 +101,19 @@ class ProductNotificationCardUnify(
             bindReminder(product)
             bindDeleteReminder(product)
             bindEmptyStock(product)
+            bindImpressionTrack(notification, product)
         } else {
             hide()
+        }
+    }
+
+    private fun bindImpressionTrack(
+            notification: NotificationUiModel?,
+            product: ProductData
+    ) {
+        if (notification == null) return
+        productContainer?.addOnImpressionListener(product.impressHolder) {
+            listener?.trackProductImpression(notification, product)
         }
     }
 

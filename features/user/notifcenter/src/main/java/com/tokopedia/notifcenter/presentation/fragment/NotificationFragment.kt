@@ -27,6 +27,7 @@ import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
@@ -69,6 +70,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     @Inject
     lateinit var topAdsAnalytic: NotificationTopAdsAnalytic
+
+    @Inject
+    lateinit var analytic: NotificationAnalytic
 
     private var rvLm = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
     private var rv: RecyclerView? = null
@@ -423,6 +427,13 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     ) {
         createViewHolderState(notification, adapterPosition, product)
         viewModel.deleteReminder(product, notification)
+    }
+
+    override fun trackProductImpression(
+            notification: NotificationUiModel,
+            product: ProductData
+    ) {
+        analytic.trackProductImpression(notification, product)
     }
 
     private fun createViewHolderState(

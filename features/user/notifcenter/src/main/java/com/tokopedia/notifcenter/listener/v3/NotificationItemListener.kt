@@ -19,4 +19,6 @@ interface NotificationItemListener {
     fun deleteReminder(
             product: ProductData, notification: NotificationUiModel, adapterPosition: Int
     )
+
+    fun trackProductImpression(notification: NotificationUiModel, product: ProductData)
 }
