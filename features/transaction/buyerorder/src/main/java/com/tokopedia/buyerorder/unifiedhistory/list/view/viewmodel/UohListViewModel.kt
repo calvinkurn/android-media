@@ -80,6 +80,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         UohIdlingResource.increment()
         launch {
             _orderHistoryListResult.value = (uohListUseCase.execute(paramOrder, orderQuery))
+            UohIdlingResource.decrement()
         }
     }
 
@@ -91,6 +92,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                             pageNumber = pageNumber,
                             pageName = UohConsts.PAGE_NAME))
             _recommendationListResult.value = (recommendationData.asSuccess())
+            UohIdlingResource.decrement()
         }
     }
 
@@ -98,6 +100,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         UohIdlingResource.increment()
         launch {
             _finishOrderResult.value = (uohFinishOrderUseCase.execute(finishOrderQuery, paramFinishOrder))
+            UohIdlingResource.decrement()
         }
     }
 
@@ -105,6 +108,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         UohIdlingResource.increment()
         launch {
             _atcMultiResult.value = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            UohIdlingResource.decrement()
         }
     }
 
@@ -112,6 +116,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         UohIdlingResource.increment()
         launch {
             _lsPrintFinishOrderResult.value = (lsPrintFinishOrderUseCase.execute(lsPrintQuery, verticalId))
+            UohIdlingResource.decrement()
         }
     }
 
@@ -119,6 +124,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         UohIdlingResource.increment()
         launch {
             _flightResendEmailResult.value = (flightResendEmailUseCase.execute(flightResendQuery, invoiceId, email))
+            UohIdlingResource.decrement()
         }
     }
 
@@ -126,6 +132,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         UohIdlingResource.increment()
         launch {
             _trainResendEmailResult.value = (trainResendEmailUseCase.execute(trainResendQuery, param))
+            UohIdlingResource.decrement()
         }
     }
 
@@ -134,17 +141,20 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
 
         launch {
             _rechargeSetFailResult.value = (rechargeSetFailUseCase.execute(rechargeSetFailQuery, orderId))
+            UohIdlingResource.decrement()
         }
     }
 
 
     fun doAtc(atcParams: AddToCartRequestParams) {
+        UohIdlingResource.increment()
         val requestParams = RequestParams.create()
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
         atcUseCase.execute(requestParams, object : Subscriber<AddToCartDataModel>() {
             override fun onNext(addToCartDataModel: AddToCartDataModel?) {
                 addToCartDataModel?.let {
                     _atcResult.value = (Success(it))
+                    UohIdlingResource.decrement()
                 }
             }
 
@@ -152,6 +162,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
 
             override fun onError(e: Throwable?) {
                 _atcResult.value = (e?.let { Fail(it) })
+                UohIdlingResource.decrement()
             }
         })
     }

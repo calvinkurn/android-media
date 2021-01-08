@@ -522,17 +522,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                                 }
                             }
                         }
-                        userSession.isLoggedIn?.let { it1 -> userSession.userId?.let { it2 -> UohAnalytics.viewOrderListPage(it1, it2) } }
+                        userSession.isLoggedIn.let { it1 -> userSession.userId?.let { it2 -> UohAnalytics.viewOrderListPage(it1, it2) } }
                     } else {
                         if (currPage == 1) {
                             loadRecommendationList()
                         }
                     }
-                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
-                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -547,10 +545,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (recommendationList.isNotEmpty()) {
                         renderEmptyList()
                     }
-                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
-                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -573,11 +569,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
-                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
-                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -593,11 +587,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     } else {
                         showToaster(msg, Toaster.TYPE_ERROR)
                     }
-                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
-                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -620,11 +612,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
-                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_ERROR)
-                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -645,12 +635,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
-                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     bottomSheetResendEmail?.tf_email?.setError(true)
                     bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
-                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -671,12 +659,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
-                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     bottomSheetResendEmail?.tf_email?.setError(true)
                     bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
-                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -692,11 +678,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     } else {
                         showToaster(it.data.rechargeSetOrderToFail.attributes.errorMessage, Toaster.TYPE_ERROR)
                     }
-                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
-                    UohIdlingResource.decrement()
                 }
             }
         })
