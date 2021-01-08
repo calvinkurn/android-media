@@ -120,10 +120,6 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         viewModel.loadNotificationFilter(containerListener?.role)
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     private fun initRecommendationComponent() {
         context?.let {
             trackingQueue = TrackingQueue(it)
