@@ -344,7 +344,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
 
         try {
-            val btnAction2 = view!!.findViewById<TextView>(R.id.btn_continue)
+            val btnAction2 = view!!.findViewById<UnifyButton>(R.id.btn_continue)
             val progressBar = view!!.findViewById<ProgressBar>(R.id.progress_refetch_code)
             btnAction2.setText(R.string.tp_label_refresh_repeat)
             btnAction2.isEnabled = true
@@ -683,7 +683,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     private fun showToasterAndRedirect(data: String) {
-        view?.let { Toaster.build(it, resources.getString(R.string.tp_coupon_autoapply_msg), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
+        view?.let { ToasterHelper.showCouponClaimToast(resources.getString(R.string.tp_coupon_autoapply_msg), it,BOTTOM_HEIGHT_TOASTER) }
         Handler().postDelayed({ RouteManager.route(context, data) }, 1000)
     }
 
