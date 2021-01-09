@@ -1,0 +1,16 @@
+{
+  "data": {
+    "tokopointsCatalogMVCSummary": {
+      "resultStatus": {
+        "code": "200",
+        "status": "OK",
+        "message": [
+          "Success"
+        ]
+      },
+      "isShown": true,
+      "subTitle": "Masih ada 7 kupon toko lainnya",
+      "imageURL": "https://ecs7.tokopedia.net/img/tokopoints/MVC/CouponIconWhite/coupon-1.png"
+    }
+  }
+}

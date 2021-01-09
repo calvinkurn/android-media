@@ -1,0 +1,12 @@
+query mvcCatalogSummaryQuery($shopID: String!,$limit: Int!){
+    tokopointsCatalogMVCSummary(shopID: $shopID,limit: $limit) {
+       resultStatus {
+          code
+          status
+          message
+        }
+        isShown
+        subTitle
+        imageURL
+    }
+}

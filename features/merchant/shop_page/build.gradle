@@ -115,6 +115,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.promoMvcWidget)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.features.filter)

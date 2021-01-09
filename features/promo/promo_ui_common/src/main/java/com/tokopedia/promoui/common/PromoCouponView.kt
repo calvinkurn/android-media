@@ -8,7 +8,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 
-class CouponView @JvmOverloads constructor(
+class PromoCouponView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
@@ -35,7 +35,12 @@ class CouponView @JvmOverloads constructor(
     val bottomRectF = RectF()
     val bottomPaint = Paint()
 
+    val VIEW_TYPE_NORMAL = 0
+    val VIEW_TYPE_MVC = 1
+    var viewType = VIEW_TYPE_NORMAL
+
     init {
+
         cornerRadius = dpToPx(8)
         shadowRadius = dpToPx(0)
 
@@ -59,6 +64,21 @@ class CouponView @JvmOverloads constructor(
         bottomPaint.isAntiAlias = true
 
         shadowColor = ContextCompat.getColor(context, R.color.promo_ui_com_shadow_color)
+        readDataFromAttrs(attrs)
+    }
+
+    private fun readDataFromAttrs(attrs: AttributeSet?) {
+        if (attrs != null) {
+            val typedArray = context.obtainStyledAttributes(attrs, R.styleable.PromoCouponView, 0, 0)
+            try {
+                viewType = typedArray.getInt(R.styleable.PromoCouponView_promo_coupon_view_type, VIEW_TYPE_NORMAL)
+                if (viewType == VIEW_TYPE_MVC) {
+                    cornerRadius = 0f
+                }
+            } finally {
+                typedArray.recycle();
+            }
+        }
     }
 
 
@@ -79,10 +99,11 @@ class CouponView @JvmOverloads constructor(
                     break
                 }
             }
+            val subtractForMvcType = if (viewType == VIEW_TYPE_MVC) dpToPx(10) else 0f
             bottomRoundPath.reset()
             bottomRectF.top = bottomOfBigImage
-            bottomRectF.left = bottomPadding.toFloat()
-            bottomRectF.right = width - bottomPadding.toFloat()
+            bottomRectF.left = bottomPadding.toFloat() + subtractForMvcType
+            bottomRectF.right = width - bottomPadding.toFloat() - subtractForMvcType
             bottomRectF.bottom = height - bottomPadding.toFloat()
             val radii = floatArrayOf(0f, 0f, 0f, 0f, cornerRadius, cornerRadius, cornerRadius, cornerRadius)
             bottomRoundPath.addRoundRect(bottomRectF, radii, Path.Direction.CW)
