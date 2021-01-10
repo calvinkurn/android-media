@@ -117,7 +117,6 @@ public class OrderListAnalytics {
     private static final String CLICK_ON_WIDGET_RECOMMENDATION = "click on widget recommendation";
     private static final String PRODUCT_VIEW = "productView";
     private static final String IMPRESSION_ON_WIDGET_RECOMMENDATION = "impression on widget recommendation";
-    private static final String PROMO_VIEW = "promoView";
     private static final String CLICK_CHECKOUT = "clickCheckout";
     private static final String EVENT = "event";
     private static final String EVENT_CATEGORY = "eventCategory";
@@ -136,13 +135,8 @@ public class OrderListAnalytics {
 
     private static final String BUSINESS_UNIT = "businessUnit";
     private static final String CURRENT_SITE = "currentSite";
-    private static final String CREATIVE_SLOT = "creativeSlot";
-    private static final String PROMOTIONS = "promotions";
     private static final String USER_ID = "userId";
-
-    private static final String CREATIVE_NAME = "creative_name";
-    private static final String ITEM_ID = "item_id";
-    private static final String ITEM_NAME = "item_name";
+    private static final String IS_LOGIN_STATUS = "isLoggedInStatus";
 
     private static final String ORDER_LIST = "/order list";
 
@@ -624,24 +618,16 @@ public class OrderListAnalytics {
     }
 
     public void sendOrderDetailImpression(String categoryName, String productName, String userId) {
-        Bundle eventDataLayer = new Bundle();
-        eventDataLayer.putString(TrackAppUtils.EVENT, PROMO_VIEW);
-        eventDataLayer.putString(TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE);
-        eventDataLayer.putString(TrackAppUtils.EVENT_ACTION, EVENT_ACTION_ORDER_DETAIL_IMPRESSION);
-        eventDataLayer.putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, productName));
-        eventDataLayer.putString(BUSINESS_UNIT, "recharge");
-        eventDataLayer.putString(CURRENT_SITE, "tokopediadigital");
-        eventDataLayer.putString(USER_ID, userId);
-
-        ArrayList<Bundle> promotions = new ArrayList<>();
-        Bundle promotion = new Bundle();
-        promotion.putString(CREATIVE_NAME, "");
-        promotion.putString(ITEM_ID, "");
-        promotion.putString(ITEM_NAME, productName);
-        promotions.add(promotion);
-        eventDataLayer.putParcelableArrayList(PROMOTIONS, promotions);
-
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(PROMO_VIEW, eventDataLayer);
+        String isLoggedInStatus = "true";
+        if (userId.isEmpty()) {
+            isLoggedInStatus = "false";
+        }
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated("order-detail-digital", DataLayer.mapStringsOf(
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId,
+                IS_LOGIN_STATUS, isLoggedInStatus
+        ));
     }
 
     public void sendInvoiceClickEvent(String categoryName, String productName, String userId) {
