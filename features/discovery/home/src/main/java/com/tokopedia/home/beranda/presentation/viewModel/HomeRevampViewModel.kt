@@ -868,6 +868,7 @@ open class HomeRevampViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             addInitialShimmering()
             homeFlowData.collect { homeDataModel ->
+                removeInitialShimmering()
                 if (homeDataModel?.isCache == false) {
                     onRefreshState = false
                     _isRequestNetworkLiveData.postValue(Event(false))
