@@ -7,6 +7,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
@@ -62,4 +63,6 @@ interface HomeTypeFactory {
     fun type(dataModel: CarouselPlayWidgetDataModel): Int
 
     fun type(emptyBannerDataModel: EmptyBannerDataModel): Int
+
+    fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int
 }
