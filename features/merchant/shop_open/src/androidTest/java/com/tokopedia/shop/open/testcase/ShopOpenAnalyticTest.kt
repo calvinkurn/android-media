@@ -1,21 +1,23 @@
 package com.tokopedia.shop.open.testcase
 
+import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.test.espresso.Espresso
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.open.presentation.view.activity.ShopOpenRevampActivity
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -23,9 +25,13 @@ import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHe
 import com.tokopedia.trackingoptimizer.constant.Constant
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.mock.ShopOpenMockResponseConfig
+import com.tokopedia.shop.open.presentation.view.fragment.ShopOpenRevampQuisionerFragment
+import com.tokopedia.shop.open.util.clickClickableSpan
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsString
+import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -34,7 +40,6 @@ import org.junit.Test
 class ShopOpenAnalyticTest {
 
     companion object {
-        private const val SHOP_OPEN_LANDING_MATCHER_PATH = "tracker/shop_open/shop_open_landing_tracker.json"
         private const val SHOP_OPEN_SHOP_REGISTRATION_MATCHER_PATH = "tracker/shop_open/shop_open_shop_registration_tracker.json"
     }
 
@@ -59,40 +64,99 @@ class ShopOpenAnalyticTest {
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
-    private fun doAnalyticDebuggerTest(fileName: String) {
-        assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, fileName),
-                hasAllSuccess()
-        )
-    }
-
     @Test
     fun testShopOpenResultJourney() {
-        waitForData(5000)
+        Intents.intending(IntentMatchers.anyIntent())
+                .respondWith(Instrumentation.ActivityResult(0, null))
+        waitForData(2000)
+
         testInputShopNameAndDomain()
+        testCheckTheSurvey()
+        validateTracker()
     }
 
-    fun testInputShopNameAndDomain() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(0, null));
-        Espresso.onView(firstView(withId(R.id.btn_back_input_shop)))
+    private fun testInputShopNameAndDomain() {
+        onView(firstView(withId(R.id.btn_back_input_shop)))
                 .perform(click())
 
-        onView(withText("Batal")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click());
+        onView(withText("Batal"))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+                .perform(click())
 
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.text_input_shop_open_revamp_shop_name))))
+                .perform(typeText("hello world"), closeSoftKeyboard())
+        waitForData(2000)
 
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.text_input_shop_open_revamp_domain_name))))
+                .perform(replaceText("helloworld"))
 
-//        Espresso.onView(allOf(withId(R.id.text_field_input),
-//                ViewMatchers.isDescendantOfA(withId(R.id.text_input_shop_open_revamp_shop_name))))
-//                .perform(typeText("hello world"), closeSoftKeyboard())
-//        waitForData(2000)
-//
-//        Espresso.onView(allOf(withId(R.id.text_field_input),
-//                ViewMatchers.isDescendantOfA(withId(R.id.text_input_shop_open_revamp_domain_name))))
-//                .perform(replaceText("helloworld"))
-//        waitForData(2000)
-//
-//        Espresso.onView(firstView(withId(R.id.shop_registration_button)))
-//                .perform(click())
+        onView(firstView(AllOf.allOf(withId(R.id.recycler_view_shop_suggestions))))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2,  click()))
+
+        onView(withId(R.id.txt_shop_open_revamp_tnc))
+                .check(matches(isDisplayed()))
+                .perform(clickClickableSpan("Syarat dan Ketentuan"))
+
+        onView(withId(R.id.txt_shop_open_revamp_tnc))
+                .check(matches(isDisplayed()))
+                .perform(clickClickableSpan("Kebijakan Privasi."))
+
+        onView(firstView(withId(R.id.shop_registration_button)))
+                .perform(click())
+        waitForData(5000)
+    }
+
+    private fun testCheckTheSurvey() {
+        val mockIntentData = Intent().apply {
+            putExtra(ShopOpenRevampQuisionerFragment.EXTRA_ADDRESS_MODEL, SaveAddressDataModel(
+                    id = 2132414,
+                    title = "for the best",
+                    formattedAddress = "Jl. Damai",
+                    addressName = "Jl. Damai",
+                    receiverName = "kumon,",
+                    address1 = "Jl. Damai",
+                    address2 = "Jl. Damai",
+                    postalCode = "20634",
+                    phone = "088888888",
+                    cityId = 12,
+                    provinceId = 12,
+                    districtId = 12,
+                    latitude = "3.3096248",
+                    longitude = "99.1677132",
+                    editDetailAddress = "Jl. Damai",
+                    selectedDistrict = "District A",
+                    zipCodes = listOf("1222", "1111")
+            ))
+        }
+
+        onView(firstView(withId(R.id.btn_back_quisioner_page)))
+                .perform(click())
+
+        onView(withText("Batal"))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+        onView(firstView(AllOf.allOf(
+                withId(R.id.checkbox_choice))))
+                .perform(click())
+        waitForData(2000)
+
+        onView(firstView(withId(R.id.btn_skip_quisioner_page)))
+                .perform(click())
+
+        onView(withText("Batal"))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+                .perform(pressBack())
+
+        Intents.intending(IntentMatchers.anyIntent())
+                .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
+
+        onView(firstView(withId(R.id.next_button_quisioner_page)))
+                .perform(click())
+        waitForData(5000)
     }
 
     private fun waitForData(ms: Long) {
@@ -102,7 +166,13 @@ class ShopOpenAnalyticTest {
     private fun validateTracker() {
         activityRule.activity.finish()
         waitForData(5000)
-        doAnalyticDebuggerTest(SHOP_OPEN_LANDING_MATCHER_PATH)
-        doAnalyticDebuggerTest(SHOP_OPEN_SHOP_REGISTRATION_MATCHER_PATH)
+        doAnalyticDebuggerTest()
+    }
+
+    private fun doAnalyticDebuggerTest() {
+        assertThat(
+                getAnalyticsWithQuery(gtmLogDBSource, context, SHOP_OPEN_SHOP_REGISTRATION_MATCHER_PATH),
+                hasAllSuccess()
+        )
     }
 }
