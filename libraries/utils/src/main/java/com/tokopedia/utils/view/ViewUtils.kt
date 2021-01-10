@@ -3,8 +3,8 @@ package com.tokopedia.utils.view
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.util.Log
 import android.view.View
-import android.widget.Toast
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -40,11 +40,11 @@ object ViewUtils {
             bitmap?.compress(Bitmap.CompressFormat.PNG, 100, fos)
             fos.flush()
             fos.close()
-            Toast.makeText(activity.applicationContext, "Screen shoot success", Toast.LENGTH_LONG).show()
+            Log.e("screenshot","success")
         } catch (e: FileNotFoundException) {
-            Toast.makeText(activity.applicationContext, "Screen shoot fail : ${e.message}", Toast.LENGTH_LONG).show()
+            Log.e("screenshot","fail : ${e.message}")
         } catch (e: IOException) {
-            Toast.makeText(activity.applicationContext, "Screen shoot fail : ${e.message}", Toast.LENGTH_LONG).show()
+            Log.e("screenshot","fail : ${e.message}")
         }
     }
 }
