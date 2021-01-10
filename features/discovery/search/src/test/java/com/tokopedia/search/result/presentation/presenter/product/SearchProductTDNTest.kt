@@ -130,7 +130,6 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify TDN is not shown`() {
-        visitableList.size shouldBe 8
         visitableList.any { it is SearchProductTopAdsImageViewModel } shouldBe false
     }
 

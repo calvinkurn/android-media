@@ -4,32 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
-    <com.tokopedia.design.component.EditTextCompat
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/field_search_operator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
-        android:layout_margin="@dimen/dp_10"
-        android:background="@color/digital_operator_search_bar_color"
-        android:drawablePadding="@dimen/dp_10"
+        android:layout_height="@dimen/layout_lvl7"
+        android:layout_margin="@dimen/layout_lvl1"
+        android:background="@color/Unify_N50"
+        android:drawablePadding="@dimen/layout_lvl1"
         android:hint="@string/digital_action_search"
         android:inputType="text"
         android:lines="1"
         android:maxLines="1"
-        android:paddingStart="@dimen/dp_20"
-        android:paddingLeft="@dimen/dp_20"
-        android:paddingEnd="@dimen/dp_20"
-        android:paddingRight="@dimen/dp_20"
-        android:visibility="gone"
-        app:drawableLeftCompat="@drawable/digital_search_operator" />
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list_chooser_operator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/field_search_operator"
-        android:layout_marginTop="@dimen/dp_5" />
+        android:layout_marginTop="@dimen/spacing_lvl2" />
 
     <ProgressBar
         android:id="@+id/pb_main_loading"

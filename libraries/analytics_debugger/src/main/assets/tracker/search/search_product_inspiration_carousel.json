@@ -1,6 +1,6 @@
 {
   "readme": "Search Product Inspiration Carousel Tracking",
-  "query" : [
+  "query": [
     {
       "event": "clickSearchResult",
       "eventCategory": "search result",
@@ -76,6 +76,24 @@
           "creative_name": "{{.*}}",
           "creative_slot": "{{.*}}",
           "category": "none / other"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "search result",
+      "eventAction": "click lihat sekarang - carousel banner",
+      "eventLabel": "{{.+ - .+}}",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}",
+      "businessUnit": "search",
+      "sessionIris": "{{.+}}",
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{/search - .+}}"
         }
       ]
     }

@@ -294,53 +294,10 @@ public class DigitalAnalytics {
         ));
     }
 
-
-    public void eventUssd(String categoryName, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
-                DigitalEventTracking.Category.RECHARGE + categoryName,
-                DigitalEventTracking.Action.CLICK_USSD_CEK_SALDO,
-                label
-        ));
-    }
-
-    public void eventUssd2(String action, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
-                DigitalEventTracking.Category.RECHARGE + DigitalEventTracking.Category.PULSA,
-                action,
-                label
-        ));
-    }
-
-
-    public void eventUssdAttempt(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.EVENT_IMPRESSION_HOME_PAGE,
-                DigitalEventTracking.Category.DIGITAL + DigitalEventTracking.Category.PULSA,
-                DigitalEventTracking.Action.USSD_ATTEMPT,
-                label
-        ));
-    }
-
-
-    public void eventUssdAttempt(String categoryName, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.EVENT_IMPRESSION_HOME_PAGE,
-                DigitalEventTracking.Category.DIGITAL + categoryName,
-                DigitalEventTracking.Action.USSD_ATTEMPT,
-                label
-        ));
-    }
-
     public void eventSelectNumberOnUserProfileNative(String categoryName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.EVENT_IMPRESSION_HOME_PAGE,
                 DigitalEventTracking.Category.DIGITAL + categoryName,
                 DigitalEventTracking.Action.CLICK_BILL,
-                DigitalEventTracking.Label.DIGITAL
-        ));
-    }
-
-    public void eventBillShortcut() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.LONG_CLICK,
-                DigitalEventTracking.Category.LONG_PRESS,
-                DigitalEventTracking.Action.USSD_ATTEMPT,
                 DigitalEventTracking.Label.DIGITAL
         ));
     }
@@ -351,41 +308,6 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Action.CLICK_SEARCH_BAR,
                 DigitalEventTracking.Label.PRODUCT + categoryName
         ));
-    }
-
-    public void eventClickProductOnDigitalHomepage(String categoryName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
-                DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
-                DigitalEventTracking.Action.SELECT_CATEGORY,
-                categoryName));
-    }
-
-    public void eventClickBuyOnWidget(String categoryName, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
-                DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
-                DigitalEventTracking.Action.CLICK_BELI + " - " + categoryName,
-                label));
-    }
-
-    public void eventSelectNumberOnUserProfileWidget(String name) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.EVENT_CLICK_USER_PROFILE,
-                DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
-                DigitalEventTracking.Action.SELECT_NUMBER_ON_USER_PROFILE,
-                name));
-    }
-
-    public void eventSelectOperatorOnWidget(String categoryName, String operatorName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
-                DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
-                DigitalEventTracking.Action.SELECT_OPERATOR,
-                categoryName + " - " + operatorName));
-    }
-
-    public void eventSelectProductOnWidget(String categoryName, String productDesc) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
-                DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
-                DigitalEventTracking.Action.SELECT_PRODUCT,
-                categoryName + " - " + productDesc));
     }
 
     public void eventCheckInstantSaldo(String categoryName, boolean isChecked) {

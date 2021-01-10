@@ -6,11 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
-import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.activity.DigitalYoutubeActivity;
 import com.tokopedia.digital.product.view.model.GuideData;
@@ -106,7 +106,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
     class GuideViewHolder extends RecyclerView.ViewHolder {
 
-        TextViewCompat tvTitle;
+        TextView tvTitle;
         YouTubeThumbnailView youtubeTV;
         ProgressBar progressBar;
 

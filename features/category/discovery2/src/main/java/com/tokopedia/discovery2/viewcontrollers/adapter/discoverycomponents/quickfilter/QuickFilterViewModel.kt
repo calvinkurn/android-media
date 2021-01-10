@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.qui
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
@@ -16,8 +15,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import timber.log.Timber
 import javax.inject.Inject
-import kotlin.collections.set
 import kotlin.coroutines.CoroutineContext
 
 class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
@@ -45,6 +44,15 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         fetchQuickFilters()
     }
 
+    fun fetchQuickFilters() {
+        launchCatchError(block = {
+            val filters = quickFilterRepository.getQuickFilterData(components.id, components.pageEndPoint)
+            addFilterOptions(components.data?.firstOrNull()?.filter ?: filters ?: arrayListOf())
+        }, onError = {
+            Timber.e(it)
+        })
+    }
+
     private fun addFilterOptions(filters: ArrayList<Filter>) {
         quickFilterOptionList.clear()
         for (item in filters) {
@@ -55,7 +63,6 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         quickFiltersLiveData.value = quickFilterOptionList
     }
 
-
     fun getTargetComponent(): ComponentsItem? {
         return getComponent(components.properties?.targetId ?: "", components.pageEndPoint)
     }
@@ -65,14 +72,14 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     private fun onFilterApplied(selectedFilter: HashMap<String, String>?, selectedSort: HashMap<String, String>?) {
         getTargetComponent()?.let { component ->
-            component.selectedFilters = selectedFilter
-            component.selectedSort = selectedSort
+            components.selectedFilters = selectedFilter
+            components.selectedSort = selectedSort
             launchCatchError(block = {
                 if (quickFilterUseCase.onFilterApplied(component, selectedFilter, selectedSort)) {
                     syncData.value = true
                 }
             }, onError = {
-                it.printStackTrace()
+                Timber.e(it)
             })
         }
     }
@@ -82,16 +89,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             dynamicFilterModel.value = filterRepository.getFilterData(components.id, mutableMapOf(), components.pageEndPoint)
             renderDynamicFilter(dynamicFilterModel.value?.data)
         }, onError = {
-            it.printStackTrace()
-        })
-    }
-
-    fun fetchQuickFilters() {
-        launchCatchError(block = {
-            val filters = quickFilterRepository.getQuickFilterData(components.id, components.pageEndPoint)
-            addFilterOptions(components.data?.firstOrNull()?.filter ?: filters ?: arrayListOf())
-        }, onError = {
-            it.printStackTrace()
+            Timber.e(it)
         })
     }
 
@@ -149,13 +147,6 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     private fun applyFilterToSearchParameter(filterParameter: Map<String, String>) {
         components.searchParameter.getSearchParameterHashMap().clear()
         components.searchParameter.getSearchParameterHashMap().putAll(filterParameter)
-    }
-
-    private fun refreshFilterController(queryParams: HashMap<String, String>) {
-        val params = HashMap(queryParams)
-        params[SearchApiConst.ORIGIN_FILTER] = SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
-        val initializedFilterList = FilterHelper.initializeFilterList(components.filters)
-        components.filterController.initFilterController(params, initializedFilterList)
     }
 
     private fun setSelectedSort(selectedSortMapParameter: Map<String, String>) {
