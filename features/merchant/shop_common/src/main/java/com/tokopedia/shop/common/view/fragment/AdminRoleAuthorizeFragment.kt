@@ -1,0 +1,151 @@
+package com.tokopedia.shop.common.view.fragment
+
+import android.graphics.Typeface
+import android.os.Bundle
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.shop.common.R
+import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
+import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
+import com.tokopedia.shop.common.di.DaggerShopCommonComponent
+import com.tokopedia.shop.common.view.activity.AdminRoleAuthorizeActivity
+import com.tokopedia.shop.common.view.viewmodel.AdminRoleAuthorizeViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
+
+class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
+
+    companion object {
+        private const val TOKOPEDIA_CARE_PATH = "help"
+
+        @JvmStatic
+        fun createInstance(@AccessId accessId: Int): AdminRoleAuthorizeFragment = AdminRoleAuthorizeFragment().apply {
+            Bundle().apply {
+                putInt(AdminRoleAuthorizeActivity.KEY_ACCESS_ID, accessId)
+            }.let {
+                arguments = it
+            }
+        }
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: AdminRoleAuthorizeViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(AdminRoleAuthorizeViewModel::class.java)
+    }
+
+    private val accessId by lazy {
+        arguments?.getInt(AdminRoleAuthorizeActivity.KEY_ACCESS_ID, 0) ?: 0
+    }
+
+    private var adminErrorView: GlobalError? = null
+    private var adminLoadingView: LoaderUnify? = null
+    private var adminHelpText: Typography? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        observeAdminAuthorize()
+        return inflater.inflate(R.layout.fragment_admin_role_authorize, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.setupAdminView()
+    }
+
+    override fun getScreenName(): String = ""
+
+    override fun initInjector() {
+        DaggerShopCommonComponent.builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
+
+    private fun View.setupAdminView() {
+        adminErrorView = findViewById(R.id.error_admin_role)
+        adminLoadingView = findViewById(R.id.loader_admin_role)
+        adminHelpText = findViewById(R.id.tv_admin_role_help)
+
+        viewModel.checkAccess(accessId)
+    }
+
+    private fun observeAdminAuthorize() {
+        viewModel.isRoleAuthorizedLiveData.observe(viewLifecycleOwner) { result ->
+            adminLoadingView?.visibility = View.GONE
+            if ((result as? Success)?.data == true) {
+                adminErrorView?.visibility = View.GONE
+                adminHelpText?.visibility = View.GONE
+                goToDestination()
+            } else {
+                adminErrorView?.shopAdminError()
+                adminHelpText?.shopHelpMessage()
+            }
+        }
+    }
+
+    private fun goToDestination() {
+        // TODO: map to access id
+    }
+
+    private fun GlobalError.shopAdminError() {
+        val permissionGroup = SellerHomePermissionGroup.DEFAULT
+        ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+        errorTitle.text = context?.getString(R.string.admin_no_permission_oops)
+        errorDescription.text = context?.getString(R.string.admin_no_permission_desc, permissionGroup)
+        errorAction.text = context?.getString(R.string.admin_no_permission_general_next)
+
+        setActionClickListener {
+            activity?.finish()
+        }
+        visibility = View.VISIBLE
+    }
+
+    private fun Typography.shopHelpMessage() {
+        context?.getString(R.string.admin_no_permission_need_help)?.let { helpMessage ->
+            context?.getString(R.string.admin_no_permission_contact_tocare)?.let { clickableMessage ->
+                helpMessage.indexOf(clickableMessage).let { clickableIndex ->
+                    SpannableString(helpMessage).apply {
+                        setSpan(
+                                object : ClickableSpan() {
+                                    override fun onClick(widget: View) {
+                                        RouteManager.route(context, ApplinkConst.WEBVIEW,
+                                                TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH)
+                                    }
+
+                                    override fun updateDrawState(ds: TextPaint) {
+                                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                                    }
+                                },
+                                clickableIndex,
+                                clickableIndex + clickableMessage.length,
+                                0)
+                    }.let { spannableString ->
+                        movementMethod = LinkMovementMethod.getInstance()
+                        setText(spannableString, TextView.BufferType.SPANNABLE)
+                        visibility = View.VISIBLE
+                    }
+                }
+            }
+        }
+    }
+}

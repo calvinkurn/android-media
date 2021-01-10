@@ -14,5 +14,6 @@ annotation class SellerHomePermissionGroup {
         const val PRODUCT = "Produk"
         const val CHAT = "Chat"
         const val ORDER = "Penjualan"
+        const val DEFAULT = "ini"
     }
 }
