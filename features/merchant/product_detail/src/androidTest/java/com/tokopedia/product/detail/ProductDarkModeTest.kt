@@ -21,9 +21,6 @@ class ProductDarkModeTest {
     @get:Rule
     var activityRule: ActivityTestRule<ProductDetailActivityTest> = ActivityTestRule(ProductDetailActivityTest::class.java, false, false)
 
-    @get:Rule
-    var testRepeatRule: TestRepeatRule = TestRepeatRule()
-
     @Before
     fun doBeforeRun() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
