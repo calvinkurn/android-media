@@ -311,7 +311,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         }
         val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
             tvToolTipText = this.findViewById(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.topads_common_tip_memilih_kata_kunci)
+            tvToolTipText?.text = getString(R.string.topads_empty_tip_memilih_kata_kunci_title)
 
             imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
             imgTooltipIcon?.setImageDrawable(AppCompatResources.getDrawable(this.context, com.tokopedia.topads.common.R.drawable.topads_ic_tips))
