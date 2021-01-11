@@ -1,5 +1,7 @@
 package com.tokopedia.digital_checkout.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfoAdapter
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.utils.DeviceUtil
+import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
+import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
+import com.tokopedia.network.constant.ErrorNetMessage
 import kotlinx.android.synthetic.main.fragment_digital_checkout_page.*
 import javax.inject.Inject
 
@@ -58,30 +64,41 @@ class DigitalCartFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loadData()
+        initViews()
+    }
+
+    private fun loadData() {
         cartPassData?.let {
             if (it.needGetCart) {
-                viewModel.getCart(it)
+                viewModel.getCart(it, getString(R.string.digital_cart_login_message))
             } else {
-                viewModel.addToCart(it, getDigitalIdentifierParam(), digitalSubscriptionParams)
+                viewModel.addToCart(it, getDigitalIdentifierParam(), digitalSubscriptionParams,
+                getString(R.string.digital_cart_login_message))
             }
         }
-
-        initViews()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.cartTitle.observe(viewLifecycleOwner, Observer {
-            productTitle.text = it
-        })
+        viewModel.cartTitle.observe(viewLifecycleOwner, Observer { productTitle.text = it })
 
         viewModel.cartItemDigitalList.observe(viewLifecycleOwner, Observer {
             cartDetailInfoAdapter.setInfoItems(it)
         })
 
         viewModel.cartAdditionalInfoList.observe(viewLifecycleOwner, Observer {
-            cartDetailInfoAdapter.setAdditionalInfoItems(it)
+            if (it.isEmpty()) {
+                tvSeeDetailToggle.visibility = View.GONE
+            } else {
+                tvSeeDetailToggle.visibility = View.VISIBLE
+                cartDetailInfoAdapter.setAdditionalInfoItems(it)
+            }
+        })
+
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
+            closeViewWithMessageAlert(it)
         })
     }
 
@@ -100,6 +117,32 @@ class DigitalCartFragment : BaseDaggerFragment() {
             } else {
                 tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_see_detail_label)
             }
+        }
+    }
+
+    fun closeViewWithMessageAlert(message: String?) {
+        if (cartPassData?.isFromPDP == true) {
+            val intent = Intent()
+            intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        } else {
+            showError(message ?: "")
+        }
+    }
+
+    private fun showError(message: String) {
+        if (viewGlobalError != null) {
+            viewGlobalError.setActionClickListener {
+                viewGlobalError.visibility = View.GONE
+                loadData()
+            }
+            var errorType = SERVER_ERROR
+            if (message == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL) {
+                errorType = NO_CONNECTION
+            }
+            viewGlobalError.setType(errorType)
+            viewGlobalError.visibility = View.VISIBLE
         }
     }
 

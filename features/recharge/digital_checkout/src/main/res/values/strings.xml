@@ -11,5 +11,7 @@
     <string name="digital_cart_checkout_pay_label">Bayar</string>
     <string name="digital_hint_input_price">Contoh: 422500</string>
 
+    <string name="digital_cart_login_message">Silakan login terlebih dahulu</string>
+
     <string name="digital_generate_token_checkout">%1$s_%2$s</string>
 </resources>

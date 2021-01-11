@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -15,12 +16,18 @@ import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.digital_checkout.usecase.DigitalAddToCartUseCase
 import com.tokopedia.digital_checkout.usecase.DigitalGetCartUseCase
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
+import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.network.exception.ResponseDataNullException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import java.lang.reflect.Type
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -46,12 +53,19 @@ class DigitalCartViewModel @Inject constructor(
     val cartAdditionalInfoList: LiveData<List<CartItemDigitalWithTitle>>
         get() = _cartAdditionalInfoList
 
-    fun getCart(digitalCheckoutPassData: DigitalCheckoutPassData) {
-        if (!userSession.isLoggedIn) {
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String>
+        get() = _errorMessage
 
+    private val _isNeedOtp = MutableLiveData<Boolean>()
+    val isNeedOtp: LiveData<Boolean>
+        get() = _isNeedOtp
+
+    fun getCart(digitalCheckoutPassData: DigitalCheckoutPassData,
+                errorNotLoginMessage: String = "") {
+        if (!userSession.isLoggedIn) {
+            _errorMessage.postValue(errorNotLoginMessage)
         } else {
-            //show loading
-            //start performance monitoring trace
             digitalCheckoutPassData.categoryId?.let { categoryId ->
                 digitalGetCartUseCase.execute(
                         DigitalGetCartUseCase.createParams(categoryId.toInt()),
@@ -64,9 +78,10 @@ class DigitalCartViewModel @Inject constructor(
 
     fun addToCart(digitalCheckoutPassData: DigitalCheckoutPassData,
                   digitalIdentifierParam: RequestBodyIdentifier,
-                  digitalSubscriptionParams: DigitalSubscriptionParams) {
+                  digitalSubscriptionParams: DigitalSubscriptionParams,
+                  errorNotLoginMessage: String = "") {
         if (!userSession.isLoggedIn) {
-
+            _errorMessage.postValue(errorNotLoginMessage)
         } else {
             val requestParams: RequestParams = digitalAddToCartUseCase.createRequestParams(
                     DigitalAddToCartUseCase.getRequestBodyAtcDigital(
@@ -77,7 +92,6 @@ class DigitalCartViewModel @Inject constructor(
                     ), digitalCheckoutPassData.idemPotencyKey)
             digitalAddToCartUseCase.execute(requestParams, getSubscriberCart())
         }
-
     }
 
     private fun onSuccessGetCart(): (RechargeGetCart.Response) -> Unit {
@@ -93,7 +107,19 @@ class DigitalCartViewModel @Inject constructor(
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
                 e.printStackTrace()
-                //if error update livedata
+                if (e is UnknownHostException) {
+                    _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
+                } else if (e is SocketTimeoutException || e is ConnectException) {
+                    _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
+                } else if (e is ResponseErrorException) {
+                    _errorMessage.postValue(e.message)
+                } else if (e is ResponseDataNullException) {
+                    _errorMessage.postValue(e.message)
+                } else if (e is HttpErrorException) {
+                    _errorMessage.postValue(e.message)
+                } else {
+                    _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                }
             }
 
             override fun onNext(typeRestResponseMap: Map<Type, RestResponse>) {
@@ -102,9 +128,15 @@ class DigitalCartViewModel @Inject constructor(
                 val data = restResponse!!.getData<DataResponse<*>>()
                 val responseCartData: ResponseCartData = data.data as ResponseCartData
 
-                _cartTitle.postValue(responseCartData.attributes?.categoryName ?: "")
-                _cartItemDigitalList.postValue(DigitalCheckoutMapper.mapDigitalInfo(responseCartData.attributes?.mainInfo ?: listOf()))
-                _cartAdditionalInfoList.postValue(DigitalCheckoutMapper.mapAdditionalInfo(responseCartData.attributes?.additionalInfo ?: listOf()))
+                if (responseCartData.attributes?.isNeedOtp == true) {
+                    _isNeedOtp.postValue(true)
+                } else {
+                    _cartTitle.postValue(responseCartData.attributes?.categoryName ?: "")
+                    _cartItemDigitalList.postValue(DigitalCheckoutMapper.mapDigitalInfo(
+                            responseCartData.attributes?.mainInfo ?: listOf()))
+                    _cartAdditionalInfoList.postValue(DigitalCheckoutMapper.mapAdditionalInfo(
+                            responseCartData.attributes?.additionalInfo ?: listOf()))
+                }
             }
         }
     }

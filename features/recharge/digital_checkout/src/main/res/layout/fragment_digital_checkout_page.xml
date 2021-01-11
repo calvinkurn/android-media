@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     android:background="@color/Neutral_N0">
 
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/viewGlobalError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone" />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
@@ -39,7 +46,8 @@
                 android:layout_marginVertical="@dimen/spacing_lvl3"
                 android:text="@string/digital_cart_detail_see_detail_label"
                 android:textColor="@color/Green_G500"
-                app:typographyType="body_2" />
+                app:typographyType="body_2"
+                android:visibility="gone"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
