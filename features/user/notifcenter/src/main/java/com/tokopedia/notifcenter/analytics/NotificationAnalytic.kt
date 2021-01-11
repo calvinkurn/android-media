@@ -1,5 +1,7 @@
 package com.tokopedia.notifcenter.analytics
 
+import com.tokopedia.abstraction.processor.beta.ProductListClickBundler
+import com.tokopedia.abstraction.processor.beta.ProductListClickProduct
 import com.tokopedia.abstraction.processor.beta.ProductListImpressionBundler
 import com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct
 import com.tokopedia.inboxcommon.analytic.InboxAnalyticCommon
@@ -12,34 +14,43 @@ class NotificationAnalytic @Inject constructor() {
 
     private val LIST_NOTIFCENTER = "/notifcenter"
     private val CURRENCY_IDR = "IDR"
+    private val KEY_EVENT_LABEL = "eventLabel"
 
-    class Event private constructor() {
+    private class Event private constructor() {
         companion object {
             const val PRODUCT_VIEW = "productView"
+            const val PRODUCT_CLICK = "productClick"
         }
     }
 
-    class EventCategory private constructor() {
+    private class EventCategory private constructor() {
         companion object {
-            const val INBOX_PAGE = "notif center"
+            const val NOTIFCENTER = "notif center"
         }
     }
 
-    class EventAction private constructor() {
+    private class EventAction private constructor() {
         companion object {
             const val VIEW_PRODUCT = "view on product thumbnail"
+            const val CLICK_PRODUCT = "click on product thumbnail"
         }
     }
 
-    class BusinessUnit private constructor() {
+    private class BusinessUnit private constructor() {
         companion object {
             const val COMMUNICATION = "communication"
         }
     }
 
-    class CurrentSite private constructor() {
+    private class CurrentSite private constructor() {
         companion object {
             const val MARKETPLACE = "tokopediamarketplace"
+        }
+    }
+
+    private class Product private constructor() {
+        companion object {
+            const val KEY_LIST = "list"
         }
     }
 
@@ -72,12 +83,53 @@ class NotificationAnalytic @Inject constructor() {
                 products,
                 CurrentSite.MARKETPLACE,
                 Event.PRODUCT_VIEW,
-                EventCategory.INBOX_PAGE,
+                EventCategory.NOTIFCENTER,
                 EventAction.VIEW_PRODUCT,
                 BusinessUnit.COMMUNICATION,
                 null,
                 InboxAnalyticCommon.createGeneralEvent(
                         eventLabel = getEventLabel(notification)
+                )
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                ProductListImpressionBundler.KEY, bundle
+        )
+    }
+
+    fun trackProductClick(
+            notification: NotificationUiModel,
+            product: ProductData,
+            position: Int
+    ) {
+        product.hashCode()
+        val products: ArrayList<ProductListClickProduct> = arrayListOf(
+                ProductListClickProduct(
+                        id = product.productId.toString(),
+                        name = product.name,
+                        brand = null,
+                        category = "",
+                        variant = "",
+                        price = product.price.toDouble(),
+                        currency = CURRENCY_IDR,
+                        index = position.toLong(),
+                        keyDimension40 = "",
+                        stringCollection = hashMapOf(
+                                Product.KEY_LIST to LIST_NOTIFCENTER
+                        )
+                )
+        )
+
+        val bundle = ProductListClickBundler.getBundle(
+                LIST_NOTIFCENTER,
+                products,
+                CurrentSite.MARKETPLACE,
+                Event.PRODUCT_CLICK,
+                EventCategory.NOTIFCENTER,
+                EventAction.CLICK_PRODUCT,
+                BusinessUnit.COMMUNICATION,
+                null,
+                hashMapOf(
+                        KEY_EVENT_LABEL to getEventLabel(notification)
                 )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(

@@ -245,6 +245,9 @@ class ProductNotificationCardUnify(
 
     private fun bindProductClick(product: ProductData) {
         setOnClickListener {
+            notification?.let{
+                listener?.trackProductClick(it, product, adapterPosition ?: 0)
+            }
             goToPdp(product)
         }
     }
