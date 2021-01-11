@@ -269,6 +269,9 @@ class ProductNotificationCardUnify(
         } else {
             btnAtc?.show()
             btnAtc?.setOnClickListener {
+                notification?.let {
+                    listener?.trackClickAtc(it, product)
+                }
                 listener?.addProductToCart(product)
             }
         }

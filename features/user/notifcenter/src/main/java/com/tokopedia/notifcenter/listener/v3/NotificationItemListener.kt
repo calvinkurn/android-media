@@ -26,4 +26,6 @@ interface NotificationItemListener {
     fun trackProductClick(
             notification: NotificationUiModel, product: ProductData, position: Int
     )
+
+    fun trackClickAtc(notificationUiModel: NotificationUiModel, product: ProductData)
 }

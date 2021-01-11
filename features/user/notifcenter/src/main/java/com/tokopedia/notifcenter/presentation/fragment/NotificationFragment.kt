@@ -445,6 +445,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         analytic.trackProductClick(notification, product, position)
     }
 
+    override fun trackClickAtc(notificationUiModel: NotificationUiModel, product: ProductData) {
+        analytic.trackClickAtc(notificationUiModel, product)
+    }
+
     private fun createViewHolderState(
             notification: NotificationUiModel,
             adapterPosition: Int,
