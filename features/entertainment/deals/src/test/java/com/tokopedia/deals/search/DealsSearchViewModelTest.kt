@@ -161,4 +161,40 @@ class DealsSearchViewModelTest {
         // then
         assert((viewModel.dealsSearchResponse.value as Success).data == mockEventSearchData.eventSearch)
     }
+
+    @Test
+    fun getInitialData_fetchSuccessCoordinateNotNull_initialLoadShouldBeSuccess() {
+        // given
+        coEvery {
+            loadInitialDataUseCase.getDealsInitialLoadResult(
+                    any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            firstArg<(InitialLoadData) -> Unit>().invoke(mockInitialLoadData)
+        }
+
+        // when
+        viewModel.getInitialData(Location(coordinates = "0,0"), "1")
+
+        // then
+        assert((viewModel.dealsInitialResponse.value as Success).data == mockInitialLoadData)
+    }
+
+    @Test
+    fun getInitialData_fetchSuccessLocationNull_initialLoadShouldBeSuccess() {
+        // given
+        coEvery {
+            loadInitialDataUseCase.getDealsInitialLoadResult(
+                    any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            firstArg<(InitialLoadData) -> Unit>().invoke(mockInitialLoadData)
+        }
+
+        // when
+        viewModel.getInitialData(null, "1")
+
+        // then
+        assert((viewModel.dealsInitialResponse.value as Success).data == mockInitialLoadData)
+    }
 }

@@ -18,7 +18,7 @@ class GetChatWorker(
 
     companion object {
         private const val TAG_WORKER = "get_chat_worker"
-        private const val REPEAT_INTERVAL = 900L
+        private const val REPEAT_INTERVAL = 15L
         private var workRequest: OneTimeWorkRequest? = null
 
         @JvmStatic
@@ -30,7 +30,7 @@ class GetChatWorker(
 
                 workRequest = OneTimeWorkRequest.Builder(GetChatWorker::class.java)
                         .setConstraints(constraints)
-                        .setInitialDelay(REPEAT_INTERVAL, TimeUnit.SECONDS)
+                        .setInitialDelay(REPEAT_INTERVAL, TimeUnit.MINUTES)
                         .build()
             }
 

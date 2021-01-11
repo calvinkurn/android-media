@@ -3,15 +3,15 @@ package com.tokopedia.network.refreshtoken;
 import android.content.Context;
 
 import com.google.gson.GsonBuilder;
-import com.tokopedia.network.interceptor.akamai.AkamaiBotInterceptor;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthenticator;
+import com.tokopedia.network.interceptor.akamai.AkamaiBotInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +19,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import timber.log.Timber;
 
 /**
  * @author ricoharisin .
@@ -57,17 +58,20 @@ public class AccessTokenRefresh {
 
             if (response.errorBody() != null) {
                 tokenResponseError = response.errorBody().string();
+                Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "error_refresh_token", userSession.getAccessToken(), tokenResponseError, path);
+                networkRouter.sendRefreshTokenAnalytics(tokenResponseError);
                 checkShowForceLogout(tokenResponseError, networkRouter, path);
             } else if (response.body() != null) {
                 tokenResponse = response.body();
+                networkRouter.sendRefreshTokenAnalytics("");
             } else {
                 return "";
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+            networkRouter.sendRefreshTokenAnalytics(e.toString());
+            Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "failed_refresh_token", userSession.getAccessToken(), TkpdAuthenticator.Companion.formatThrowable(e), path);
         }
 
         TokenModel model = null;

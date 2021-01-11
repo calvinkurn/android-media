@@ -218,6 +218,7 @@ class DiscoveryDataMapper {
                 shopBadgeList = getShopBadgeList(dataItem),
                 stockBarPercentage = setStockProgress(dataItem),
                 stockBarLabel = dataItem.stockWording?.title ?: "",
+                stockBarLabelColor = dataItem.stockWording?.color ?: "",
                 isOutOfStock = isOutOfStock,
                 hasNotifyMeButton =  dataItem.hasNotifyMe,
                 hasThreeDots = dataItem.hasThreeDots
