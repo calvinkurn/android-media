@@ -45,20 +45,28 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        handleLihatSemuaHeader()
+        fetchProductCarouselData()
+    }
 
-    init {
-        components.lihatSemua?.run {
-            val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
-            val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
-                    creativeName = components.creativeName)
-            productCarouselHeaderData.value = lihatSemuaComponentData
+    private fun handleLihatSemuaHeader() {
+        if (components.lihatSemua != null) {
+            components.lihatSemua.run {
+                val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
+                addLihatHeader(lihatSemuaDataItem)
+            }
+        } else {
+            val lihatSemuaDataItem = DataItem(title = "", subtitle = "", btnApplink = "")
+            addLihatHeader(lihatSemuaDataItem)
         }
     }
 
-
-    override fun onAttachToViewHolder() {
-        super.onAttachToViewHolder()
-        fetchProductCarouselData()
+    private fun addLihatHeader(lihatSemuaDataItem: DataItem) {
+        val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
+                creativeName = components.creativeName)
+        productCarouselHeaderData.value = lihatSemuaComponentData
     }
 
     private fun fetchProductCarouselData() {

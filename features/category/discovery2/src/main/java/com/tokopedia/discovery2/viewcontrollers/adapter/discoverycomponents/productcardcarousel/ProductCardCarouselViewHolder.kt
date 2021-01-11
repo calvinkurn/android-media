@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.ComponentNames
@@ -73,21 +72,21 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
-            mProductCarouselComponentViewModel.getProductCardHeaderData().observe(lifecycle, Observer { component ->
+            mProductCarouselComponentViewModel.getProductCardHeaderData().observe(lifecycle, { component ->
                 addCardHeader(component)
             })
-            mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(lifecycle, Observer { item ->
+            mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(lifecycle, { item ->
                 mDiscoveryRecycleAdapter.setDataList(item)
             })
-            mProductCarouselComponentViewModel.syncData.observe(lifecycle, Observer { sync ->
+            mProductCarouselComponentViewModel.syncData.observe(lifecycle, { sync ->
                 if (sync) {
                     mDiscoveryRecycleAdapter.notifyDataSetChanged()
                 }
             })
-            mProductCarouselComponentViewModel.getProductCardMaxHeight().observe(lifecycle, Observer { height ->
+            mProductCarouselComponentViewModel.getProductCardMaxHeight().observe(lifecycle, { height ->
                 setMaxHeight(height)
             })
-            mProductCarouselComponentViewModel.getProductLoadState().observe(lifecycle, Observer {
+            mProductCarouselComponentViewModel.getProductLoadState().observe(lifecycle, {
                 if (it) handleErrorState()
             })
         }
@@ -122,7 +121,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         mDiscoveryRecycleAdapter.notifyDataSetChanged()
     }
 
-    override fun getInnerRecycleView(): RecyclerView? {
+    override fun getInnerRecycleView(): RecyclerView {
         return mProductCarouselRecyclerView
     }
 }
