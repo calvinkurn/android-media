@@ -80,7 +80,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     init {
         initShopNameValidation()
         initShopDomainValidation()
-        initUploadImage()
+        initUploadShopImage()
         initGetShopDomainNameSuggestion()
         initGetShopBasicData()
         initUpdateShopBasicData()
@@ -136,20 +136,20 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         currentShopName = data.name
     }
 
-    private fun getShopDomainSuggestion(shopName: String) {
-        getShopDomainNameSuggestionParams.value = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
-    }
-
-    private fun updateShopBasicData(requestParams: RequestParams) {
-        updateShopBasicDataParams.value = requestParams
-    }
-
     fun getAllowShopNameDomainChanges() {
         launchCatchError(dispatchers.io, block = {
             _allowShopNameDomainChanges.postValue(Success(getAllowShopNameDomainChangesAsync().await()))
         }, onError = {
             _allowShopNameDomainChanges.postValue(Fail(it))
         })
+    }
+
+    private fun getShopDomainSuggestion(shopName: String) {
+        getShopDomainNameSuggestionParams.value = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
+    }
+
+    private fun updateShopBasicData(requestParams: RequestParams) {
+        updateShopBasicDataParams.value = requestParams
     }
 
     private fun initGetShopBasicData() = launch {
@@ -204,7 +204,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                 }
     }
 
-    private fun initUploadImage() = launch {
+    private fun initUploadShopImage() = launch {
         uploadShopImageParams
                 .asFlow()
                 .map {
