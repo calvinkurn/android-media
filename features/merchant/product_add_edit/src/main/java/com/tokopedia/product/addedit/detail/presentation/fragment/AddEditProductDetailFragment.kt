@@ -153,6 +153,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var categoryAlertDialog: DialogUnify? = null
 
     // product specification
+    private var productSpecificationLayout: ViewGroup? = null
     private var productSpecificationTextView: Typography? = null
     private var addProductSpecificationButton: Typography? = null
     private var productSpecificationReloadLayout: View? = null
@@ -326,6 +327,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
 
         // add product specification button
+        productSpecificationLayout = view.findViewById(R.id.add_edit_product_specification_layout)
         productSpecificationTextView = view.findViewById(R.id.tv_product_specification)
         addProductSpecificationButton = view.findViewById(R.id.tv_add_product_specification)
         productSpecificationReloadLayout = view.findViewById(R.id.reload_product_specification_layout)
@@ -658,26 +660,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToProductSkuInputStatus()
         subscribeToShopShowCases()
         subscribeToSpecificationList()
+        subscribeToSpecificationText()
         subscribeToInputStatus()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
-    }
-
-    private fun setupSpecificationField() {
-        val productId = viewModel.productInputModel.productId
-        val categoryId = viewModel.productInputModel.detailInputModel.categoryId
-
-        viewModel.getAnnotationCategory(categoryId, if (productId > 0) {
-            productId.toString()
-        } else {
-            ""
-        })
-
-        addProductSpecificationButton?.setOnClickListener {
-            showSpecificationPicker()
-        }
     }
 
     override fun onDestroyView() {
@@ -865,6 +853,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     selectedCategoryItemUnify.isBold = false
                     selectedCategory.add(selectedCategoryItemUnify)
                     productCategoryRecListView?.setData(selectedCategory)
+
+                    // clear specification, get new annotation spec
+                    getAnnotationCategory()
                 }
                 SHOWCASE_PICKER_RESULT_REQUEST_CODE -> {
                     val selectedShowcaseList: ArrayList<ShowcaseItemPicker> = data.getParcelableArrayListExtra(EXTRA_PICKER_SELECTED_SHOWCASE)
@@ -882,7 +873,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
                     saveInstanceCacheManager.get(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL,
                             ProductInputModel::class.java, viewModel.productInputModel)?.apply {
-                        viewModel.productInputModel = this
+                        viewModel.updateSpecification(detailInputModel.specifications)
                     }
                 }
             }
@@ -1045,6 +1036,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
             wholesaleList = getWholesaleInput()
             productShowCases = viewModel.productShowCases
+            specifications = viewModel.specificationList
         }
     }
 
@@ -1152,6 +1144,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             listItemUnify.isBold = false
             selectedCategory.add(listItemUnify)
             productCategoryRecListView?.setData(selectedCategory)
+            productCategoryId = detailInputModel.categoryId
         }
 
         // product wholesale
@@ -1340,23 +1333,25 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeToSpecificationList() {
-        viewModel.specificationList.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.annotationCategoryData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
-                    if (result.data.isNotEmpty()) {
-                        val selectedTitles = viewModel.getSpecificationTitles(result.data)
-                        productSpecificationTextView?.text = selectedTitles.joinToString(", ")
-
-                        viewModel.updateSpecification(result.data)
-                    }
+                    productSpecificationLayout?.isVisible = result.data.isNotEmpty()
                     productSpecificationTextView?.show()
                     productSpecificationReloadLayout?.hide()
+                    viewModel.updateSpecificationByAnnotationCategory(result.data)
                 }
                 is Fail -> {
                     productSpecificationTextView?.hide()
                     productSpecificationReloadLayout?.show()
                 }
             }
+        })
+    }
+
+    private fun subscribeToSpecificationText() {
+        viewModel.specificationText.observe(viewLifecycleOwner, Observer {
+            productSpecificationTextView?.text = it
         })
     }
 
@@ -1415,12 +1410,42 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 
+    private fun setupSpecificationField() {
+        // update specification and tips text if already having spec
+        if (viewModel.productInputModel.detailInputModel.specifications.isNotEmpty()) {
+            val specifications = viewModel.productInputModel.detailInputModel.specifications
+            viewModel.updateSpecification(specifications)
+        } else {
+            getAnnotationCategory()
+        }
+
+        addProductSpecificationButton?.setOnClickListener {
+            showSpecificationPicker()
+        }
+
+        productSpecificationReloadButton?.setOnClickListener {
+            getAnnotationCategory()
+        }
+    }
+
+    private fun getAnnotationCategory() {
+        val productId = viewModel.productInputModel.productId
+
+        productSpecificationLayout?.gone()
+        viewModel.getAnnotationCategory(productCategoryId, if (productId > 0) {
+            productId.toString()
+        } else {
+            ""
+        })
+    }
+
     private fun showSpecificationPicker(){
         context?.run {
             val productInputModel = viewModel.productInputModel
             productInputModel.detailInputModel.apply {
                 if (productCategoryId.isNotBlank()) categoryId = productCategoryId
                 if (productCategoryName.isNotBlank()) categoryName = productCategoryName
+                specifications = viewModel.specificationList
             }
 
             val cacheManager = SaveInstanceCacheManager(this, true)
@@ -1650,6 +1675,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 val categoryName = it.getCategoryName()
                 productCategoryId = categoryId
                 productCategoryName = categoryName
+                getAnnotationCategory() // update annotation specification
                 true
             }
         }

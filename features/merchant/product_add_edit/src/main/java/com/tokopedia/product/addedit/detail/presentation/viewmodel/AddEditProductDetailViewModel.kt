@@ -11,6 +11,7 @@ import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
@@ -25,6 +26,7 @@ import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
@@ -34,6 +36,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import javax.inject.Inject
@@ -163,9 +166,13 @@ class AddEditProductDetailViewModel @Inject constructor(
     val shopShowCases: LiveData<Result<List<ShopEtalaseModel>>>
         get() = mShopShowCases
 
-    private val mSpecificationList = MutableLiveData<Result<List<AnnotationCategoryData>>>()
-    val specificationList: LiveData<Result<List<AnnotationCategoryData>>>
-        get() = mSpecificationList
+    var specificationList: List<SpecificationInputModel> = emptyList()
+    private val mAnnotationCategoryData = MutableLiveData<Result<List<AnnotationCategoryData>>>()
+    val annotationCategoryData: LiveData<Result<List<AnnotationCategoryData>>>
+        get() = mAnnotationCategoryData
+    private val mSpecificationText = MutableLiveData<String>()
+    val specificationText: LiveData<String>
+        get() = mSpecificationText
 
     private fun isInputValid(): Boolean {
 
@@ -478,38 +485,42 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun getAnnotationCategory(categoryId: String, productId: String) {
         launchCatchError(block = {
-            mSpecificationList.value = Success(withContext(Dispatchers.IO) {
+            mAnnotationCategoryData.value = Success(withContext(Dispatchers.IO) {
+                delay(DEBOUNCE_DELAY_MILLIS)
                 annotationCategoryUseCase.setParamsCategoryId(categoryId)
                 annotationCategoryUseCase.setParamsProductId(productId)
                 val response = annotationCategoryUseCase.executeOnBackground()
                 response.drogonAnnotationCategoryV2.data
             })
         }, onError = {
-            mSpecificationList.value = Fail(it)
+            mAnnotationCategoryData.value = Fail(it)
         })
     }
 
-    fun updateSpecification (specificationList: List<AnnotationCategoryData>) {
-        val result: MutableList<String> = mutableListOf()
-        specificationList.forEach {
-            val selectedValue = it.data.firstOrNull { value -> value.selected }
-            selectedValue?.apply {
-                result.add(id.toString())
-            }
-        }
-
-        productInputModel.detailInputModel.specifications = result
+    fun updateSpecification(specificationList: List<SpecificationInputModel>) {
+        this.specificationList = specificationList
+        updateSpecificationText(specificationList)
     }
 
-    fun getSpecificationTitles (specificationList: List<AnnotationCategoryData>): List<String> {
-        val result: MutableList<String> = mutableListOf()
-        specificationList.forEach {
+    fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
+        val result: MutableList<SpecificationInputModel> = mutableListOf()
+        annotationCategoryList.forEach {
             val selectedValue = it.data.firstOrNull { value -> value.selected }
             selectedValue?.apply {
-                result.add(name)
+                val specificationInputModel = SpecificationInputModel(id.toString(), name)
+                result.add(specificationInputModel)
             }
         }
 
-        return result
+        updateSpecification(result)
+    }
+
+    fun updateSpecificationText(specificationList: List<SpecificationInputModel>) {
+        val specificationNames = specificationList.map { it.data }
+        mSpecificationText.value =  if (specificationNames.isEmpty()) {
+            provider.getProductSpecificationTips()
+        } else {
+            specificationNames.joinToString(", ")
+        }
     }
 }

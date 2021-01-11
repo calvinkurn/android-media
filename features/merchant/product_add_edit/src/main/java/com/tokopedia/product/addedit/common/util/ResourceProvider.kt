@@ -170,6 +170,12 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_invalid_photo_reach_maximum)
     }
 
+    // Product specification properties
+
+    fun getProductSpecificationTips(): String {
+        return getString(R.string.label_product_specification_tips).orEmpty()
+    }
+
     // Network errors
 
     fun getGqlErrorMessage(): String? {

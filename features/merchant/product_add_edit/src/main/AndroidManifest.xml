@@ -69,6 +69,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".specification.presentation.activity.AddEditProductSpecificationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
         <service
             android:name=".preview.presentation.service.AddEditProductAddService"
             android:enabled="true"

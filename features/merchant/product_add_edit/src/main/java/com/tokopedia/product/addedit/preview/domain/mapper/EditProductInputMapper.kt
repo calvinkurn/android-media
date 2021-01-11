@@ -11,6 +11,7 @@ import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputMod
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.preview.data.model.params.edit.ProductEditParam
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
@@ -73,7 +74,7 @@ class EditProductInputMapper @Inject constructor() {
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
                 mapVariantParam(variantInputModel),
-                detailInputModel.specifications
+                mapSpecificationParam(detailInputModel.specifications)
         )
     }
 
@@ -248,4 +249,7 @@ class EditProductInputMapper @Inject constructor() {
                 preorder.isActive
         )
     }
+
+    private fun mapSpecificationParam(specifications: List<SpecificationInputModel>) =
+            specifications.map { it.id }
 }

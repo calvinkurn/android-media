@@ -51,7 +51,7 @@ class AddEditProductSpecificationViewModel @Inject constructor(
         if (productInputModel != null) {
             val specificationList = productInputModel.detailInputModel.specifications
             valueResult = annotationCategoryData.data.firstOrNull { value ->
-                specificationList.any { id -> id == value.id.toString() }
+                specificationList.any { it.id == value.id.toString() }
             }
         }
 
@@ -66,8 +66,6 @@ class AddEditProductSpecificationViewModel @Inject constructor(
 
     fun updateProductInputModelSpecifications(specificationList: List<SpecificationInputModel>) {
         mProductInputModel.value?.detailInputModel?.specifications = specificationList
-                .filter { it.id.isNotEmpty() }
-                .map { it.id }
     }
 
 }
