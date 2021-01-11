@@ -148,7 +148,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private val coachMarkToShow: MutableSet<CoachMarkItem> = mutableSetOf()
 
     private val FLAG_DETAIL = 3333
-    private val FLAG_CONFIRM_REQ_PICKUP = 3553
     private val ANIMATION_DURATION_IN_MILIS = 250L
     private val ANIMATION_TYPE = "translationY"
     private val TRANSLATION_LENGTH = 500f

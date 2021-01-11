@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/saw_shape_rectangle_white_radius_16dp"
     android:orientation="vertical"
+    android:visibility="gone"
+    tools:visibility="visible"
     android:padding="@dimen/layout_lvl2">
 
     <ImageButton
