@@ -75,10 +75,10 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkWhitelistedUser()
+//        checkWhitelistedUser()
         initViews()
         initViewModel()
-//        fetchData()
+        fetchData()
     }
 
     private fun checkWhitelistedUser() {
@@ -162,8 +162,8 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     private fun fetchData() {
-//        viewModel.getShopLocationList(480735)
-        viewModel.getShopLocationList(userSession.shopId.toIntOrNull())
+        viewModel.getShopLocationList(480735)
+//        viewModel.getShopLocationList(userSession.shopId.toIntOrNull())
     }
 
     private fun updateData(data: List<Warehouse>) {

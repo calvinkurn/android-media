@@ -8,6 +8,7 @@ import com.tokopedia.editshipping.domain.mapper.AutoCompleteMapper
 import com.tokopedia.editshipping.domain.model.shopeditaddress.DistrictLocation
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
+import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocUpdateWarehouse
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,6 +34,10 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
     val saveEditShop: LiveData<Result<ShopLocUpdateWarehouse>>
         get() = _saveEditShop
 
+    private val _zipCodeList = MutableLiveData<Result<KeroDistrictRecommendation>>()
+    val zipCodeList: LiveData<Result<KeroDistrictRecommendation>>
+        get() = _zipCodeList
+
 
     fun getAutoCompleteList(keyword: String) {
         viewModelScope.launch(onErrorAutoComplete) {
@@ -54,6 +59,17 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
 
     private val onErrorGetDistrictLocation = CoroutineExceptionHandler { _, e ->
         _districtLocation.value = Fail(e)
+    }
+
+    fun getZipCode(districtId: String) {
+        viewModelScope.launch {
+            val zipCode = repo.getZipCode(districtId)
+            _zipCodeList.value = Success(zipCode.keroDistrictDetails)
+        }
+    }
+
+    private val onErrorGetZipCode = CoroutineExceptionHandler { _, e ->
+        _zipCodeList.value = Fail(e)
     }
 
     fun saveEditShopLocation(shopId: Int, warehouseId: Int, warehouseName: String,

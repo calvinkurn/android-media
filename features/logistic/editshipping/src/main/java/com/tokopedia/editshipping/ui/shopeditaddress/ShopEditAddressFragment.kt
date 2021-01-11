@@ -37,7 +37,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
@@ -151,7 +150,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun initZipCode() {
-        etZipCode?.setText("")
         val zipCodeAdapter = context?.let {
             ArrayAdapter(
                     it,
@@ -211,6 +209,23 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun initViewModel() {
+        viewModel.zipCodeList.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    zipCodes = ArrayList(it.data.district[0].zipCode)
+                    initZipCode()
+                    if (zipCodes.isEmpty()) {
+                        etZipCode?.apply {
+                            isFocusableInTouchMode = true
+                            isFocusable = true
+                            setOnClickListener(null)
+                        }
+                    }
+                }
+                is Fail -> Timber.d(it.throwable)
+            }
+        })
+
         viewModel.autoCompleteList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> viewModel.getDistrictLocation(it.data.data.first().placeId)
@@ -277,6 +292,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         it.districtId, latLong, userSession.email, etShopDetail?.text.toString(),
                         etZipCode?.text.toString(), userSession.phoneNumber) }
         }
+
+        viewModel.getZipCode(warehouseModel?.districtId.toString())
 
     }
 

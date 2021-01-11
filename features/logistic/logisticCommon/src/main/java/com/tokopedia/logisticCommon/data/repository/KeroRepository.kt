@@ -40,10 +40,10 @@ class KeroRepository @Inject constructor(private val gql: GraphqlRepository) {
     }
 
     /*for editshoplocation*/
-    suspend fun getZipCode(placeId: String): GetDistrictDetailsResponse {
+    suspend fun getZipCode(districtId: String): GetDistrictDetailsResponse {
         val param = mapOf(
-                "param" to placeId,
-                "err" to true
+                "query" to districtId,
+                "page" to "1"
         )
         val request = GraphqlRequest(KeroLogisticQuery.getDistrictDetails,
                 GetDistrictDetailsResponse::class.java, param)
