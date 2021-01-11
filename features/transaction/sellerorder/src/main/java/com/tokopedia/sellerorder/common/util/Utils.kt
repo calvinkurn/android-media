@@ -156,8 +156,6 @@ object Utils {
         return this.map { it }
     }
 
-    fun getFormattedDate(daysBefore: Long, format: String) = format(getNPastDaysTimestamp(daysBefore), format)
-
     fun String.toStringFormatted(maxChar: Int): Spanned {
         return if (MethodChecker.fromHtml(this).toString().length > maxChar) {
             val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar)
