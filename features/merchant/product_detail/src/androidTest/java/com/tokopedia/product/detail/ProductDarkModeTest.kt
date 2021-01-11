@@ -53,16 +53,16 @@ class ProductDarkModeTest {
     fun screenShot() {
         waitForData()
         scrollToTop()
-        activityRule.activity.takeScreenShot(darkModePrefixKey + "-top")
+        activityRule.activity.takeScreenShot(darkModePrefixKey + "-1")
 
         scrollToCenter()
-        activityRule.activity.takeScreenShot(darkModePrefixKey + "-center")
+        activityRule.activity.takeScreenShot(darkModePrefixKey + "-2")
 
         scrollToBottom()
         waitForData()
         scrollToBottom()
 
-        activityRule.activity.takeScreenShot(darkModePrefixKey + "-bottom")
+        activityRule.activity.takeScreenShot(darkModePrefixKey + "-3")
         activityRule.activity.finishAndRemoveTask()
     }
 
