@@ -59,7 +59,16 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
 
     private fun addCardHeader(componentsItem: ComponentsItem) {
         mHeaderView.removeAllViews()
-        mHeaderView.addView(CustomViewCreator.getCustomViewObject(itemView.context, ComponentsList.LihatSemua, componentsItem, fragment))
+        checkHeaderVisibility(componentsItem)
+
+    }
+
+    private fun checkHeaderVisibility(componentsItem: ComponentsItem) {
+        componentsItem.data?.firstOrNull()?.let {
+            if (!it.title.isNullOrEmpty() || !it.subtitle.isNullOrEmpty()) {
+                mHeaderView.addView(CustomViewCreator.getCustomViewObject(itemView.context, ComponentsList.LihatSemua, componentsItem, fragment))
+            }
+        }
     }
 
     private fun addDefaultItemDecorator() {
