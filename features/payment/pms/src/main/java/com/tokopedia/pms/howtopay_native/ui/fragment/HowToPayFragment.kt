@@ -313,6 +313,11 @@ class HowToPayFragment : BaseDaggerFragment() {
         screenshotHelper.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
     }
 
+    override fun onDestroyView() {
+        screenshotHelper.cancel()
+        super.onDestroyView()
+    }
+
     companion object {
         private val COPY_BOARD_LABEL = "Tokopedia"
         fun getInstance(activity: Activity, bundle: Bundle?): HowToPayFragment? {

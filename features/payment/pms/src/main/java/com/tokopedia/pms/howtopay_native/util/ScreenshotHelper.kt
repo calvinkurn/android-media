@@ -8,17 +8,26 @@ import android.os.Build
 import android.os.Environment
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
+import java.lang.Exception
+import kotlin.coroutines.CoroutineContext
 
-class ScreenshotHelper(private val onSuccess: () -> Unit) : PermissionCheckerHelper.PermissionCheckListener {
+class ScreenshotHelper(private val onSuccess: () -> Unit) : PermissionCheckerHelper.PermissionCheckListener, CoroutineScope {
 
     private var view: View? = null
     private val permissionCheckerHelper = PermissionCheckerHelper()
     private val filePrefix = "store_"
     private val fileExt = ".jpg"
 
+    private val job: Job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     fun takeScreenShot(view: View?, fragment: Fragment) {
         this.view = view;
@@ -27,14 +36,15 @@ class ScreenshotHelper(private val onSuccess: () -> Unit) : PermissionCheckerHel
                 this)
     }
 
-    private fun getScreenShotBitmap(): Bitmap? {
+    private fun getScreenShotBitmap(onBitmap: (Bitmap?) -> Unit) {
         view?.let { view ->
-            val b = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-            val c = Canvas(b)
-            view.draw(c)
-            return b
+            view.post {
+                val b = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+                val c = Canvas(b)
+                view.draw(c)
+                onBitmap(b)
+            }
         }
-        return null
     }
 
     fun onRequestPermissionsResult(context: Context?, requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -46,31 +56,6 @@ class ScreenshotHelper(private val onSuccess: () -> Unit) : PermissionCheckerHel
         }
     }
 
-    private fun saveToExtDirectory(bitmap: Bitmap?) {
-        bitmap?.let {
-            val context = view?.context?.applicationContext
-            context?.let { context ->
-                val filename = "$filePrefix${System.currentTimeMillis()}$fileExt"
-                val root = Environment.getExternalStorageDirectory().toString()
-                val sd = File("$root/${Environment.DIRECTORY_PICTURES}")
-                if (!sd.exists())
-                    sd.mkdir()
-                val dest = File(sd, filename)
-                try {
-                    val out = FileOutputStream(dest)
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 95, out)
-                    out.flush()
-                    out.close()
-                    MediaScannerConnection.scanFile(context, arrayOf(dest.toString()), null, null)
-                    onSuccess.invoke()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            bitmap.recycle()
-        }
-    }
-
     override fun onPermissionDenied(permissionText: String) {
     }
 
@@ -78,7 +63,50 @@ class ScreenshotHelper(private val onSuccess: () -> Unit) : PermissionCheckerHel
     }
 
     override fun onPermissionGranted() {
-        saveToExtDirectory(getScreenShotBitmap())
+        getScreenShotBitmap(::saveToExtDirectory)
+    }
+
+    private fun saveToExtDirectory(bitmap: Bitmap?) {
+        bitmap?.let {
+            val applicationContext = view?.context?.applicationContext
+            launchCatchError(block = {
+                val dest = getDestinationFile()
+                writeBitmapToFile(bitmap, dest)
+                applicationContext?.let {
+                    MediaScannerConnection.scanFile(applicationContext,
+                            arrayOf(dest.toString()), null, null)
+                }
+                onSuccess.invoke()
+                bitmap.recycle()
+            }, onError = {
+                it.stackTrace
+            })
+
+        }
+    }
+
+    private suspend fun writeBitmapToFile(bitmap: Bitmap, file: File) = withContext(Dispatchers.IO) {
+        try {
+            val out = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 95, out)
+            out.flush()
+            out.close()
+        } catch (e: IOException) {
+        }
+    }
+
+    private suspend fun getDestinationFile(): File = withContext(Dispatchers.IO) {
+        val filename = "$filePrefix${System.currentTimeMillis()}$fileExt"
+        val root = Environment.getExternalStorageDirectory().toString()
+        val sd = File("$root/${Environment.DIRECTORY_PICTURES}")
+        if (!sd.exists())
+            sd.mkdir()
+        return@withContext File(sd, filename)
+    }
+
+    fun cancel() {
+        if (job.isActive)
+            job.cancel()
     }
 
 }
