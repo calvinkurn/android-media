@@ -33,6 +33,7 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -206,7 +207,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     private void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+            registerActivityLifecycleCallbacks(new DevOptsSubscriber());
+        }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
     }
 

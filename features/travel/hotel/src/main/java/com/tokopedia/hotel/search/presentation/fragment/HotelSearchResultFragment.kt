@@ -29,8 +29,6 @@ import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.SEARCH_SCREEN_NAME
-import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
-import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.SpaceItemDecoration
@@ -129,7 +127,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        hotelSearchResultTicker.setHtmlDescription(travelTickerModel.message)
+        if (travelTickerModel.title.isNotEmpty()) hotelSearchResultTicker.tickerTitle = travelTickerModel.title
+        var message = travelTickerModel.message
+        if (travelTickerModel.url.isNotEmpty()) message += getString(R.string.hotel_ticker_desc, travelTickerModel.url)
+        hotelSearchResultTicker.setHtmlDescription(message)
         hotelSearchResultTicker.tickerType = Ticker.TYPE_WARNING
         hotelSearchResultTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {

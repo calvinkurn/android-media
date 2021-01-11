@@ -47,6 +47,7 @@ public class HomeEventAdapter extends RecyclerView.Adapter<HomeEventViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull HomeEventViewHolder holder, int position) {
+        holder.setIsRecyclable(false);
         holder.bind(items.get(position));
     }
 

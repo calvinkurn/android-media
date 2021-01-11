@@ -52,8 +52,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val reviewDetails: LiveData<ReviewViewState<ProductrevGetReviewDetail>>
         get() = _reviewDetails
 
-    private val _submitReviewResult = MutableLiveData<ReviewViewState<Boolean>>()
-    val submitReviewResult: LiveData<ReviewViewState<Boolean>>
+    private val _submitReviewResult = MutableLiveData<ReviewViewState<String>>()
+    val submitReviewResult: LiveData<ReviewViewState<String>>
         get() = _submitReviewResult
 
     private val _editReviewResult = MutableLiveData<ReviewViewState<Boolean>>()
@@ -103,6 +103,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             if (edited[index]) urlOrPath else pictureList.find { it == originalImageUrl[index] }
                     ?: urlOrPath
         }.toMutableList()
+
+        originalImages = originalImageUrl
 
         when (imagePickerResult.size) {
             5 -> {
@@ -221,7 +223,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             }
             if (response.productrevSuccessIndicator != null) {
                 if (response.productrevSuccessIndicator.success) {
-                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
+                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.feedbackID))
                 } else {
                     _submitReviewResult.postValue(Fail(Throwable()))
                 }
@@ -249,7 +251,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             }
             if (response.productrevSuccessIndicator != null) {
                 if (response.productrevSuccessIndicator.success) {
-                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
+                    _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.feedbackID))
                 } else {
                     _submitReviewResult.postValue(Fail(Throwable()))
                 }

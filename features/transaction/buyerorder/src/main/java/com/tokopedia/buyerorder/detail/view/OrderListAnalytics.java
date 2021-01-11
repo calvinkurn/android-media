@@ -9,10 +9,10 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
-import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationsItem;
+import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationsItem;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.WidgetGridItem;
 import com.tokopedia.buyerorder.list.data.Order;
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomViewModel;
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -397,29 +397,29 @@ public class OrderListAnalytics {
                 "position", String.valueOf(position)));
     }
 
-    public void eventRecommendationAddToCart(OrderListRecomViewModel orderListRecomViewModel, AddToCartDataModel addToCartDataModel){
+    public void eventRecommendationAddToCart(OrderListRecomUiModel orderListRecomUiModel, AddToCartDataModel addToCartDataModel){
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent((HashMap<String, Object>) DataLayer.mapOf(
                 "event", "addToCart",
                 "eventCategory", "my purchase list - mp - bom_empty",
                 "eventAction", "click add to cart on my purchase list page",
-                "eventLabel", orderListRecomViewModel.getRecomTitle(),
+                "eventLabel", orderListRecomUiModel.getRecomTitle(),
                 "ecommerce", DataLayer.mapOf(
                         "currencyCode", "IDR",
                         "add", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : "")),
+                                "actionField", DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomUiModel.getRecommendationItem().getRecommendationType() + (orderListRecomUiModel.getRecommendationItem().isTopAds() ? " - product topads" : "")),
                                 "products", DataLayer.listOf(DataLayer.mapOf(
-                                        "name", orderListRecomViewModel.getRecommendationItem().getName(),
-                                        "id", orderListRecomViewModel.getRecommendationItem().getProductId(),
-                                        "price", orderListRecomViewModel.getRecommendationItem().getPrice().replaceAll("[^0-9]", ""),
+                                        "name", orderListRecomUiModel.getRecommendationItem().getName(),
+                                        "id", orderListRecomUiModel.getRecommendationItem().getProductId(),
+                                        "price", orderListRecomUiModel.getRecommendationItem().getPrice().replaceAll("[^0-9]", ""),
                                         "brand", "none/other",
-                                        "category", orderListRecomViewModel.getRecommendationItem().getCategoryBreadcrumbs(),
+                                        "category", orderListRecomUiModel.getRecommendationItem().getCategoryBreadcrumbs(),
                                         "variant", "none/other",
-                                        "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
+                                        "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomUiModel.getRecommendationItem().getRecommendationType() + (orderListRecomUiModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
                                         "dimension45", addToCartDataModel.getData().getCartId(),
-                                        "quantity", orderListRecomViewModel.getRecommendationItem().getMinOrder(),
-                                        "shop_id", String.valueOf(orderListRecomViewModel.getRecommendationItem().getShopId()),
-                                        "shop_type", orderListRecomViewModel.getRecommendationItem().getShopType(),
-                                        "shop_name", orderListRecomViewModel.getRecommendationItem().getShopName(),
+                                        "quantity", orderListRecomUiModel.getRecommendationItem().getMinOrder(),
+                                        "shop_id", String.valueOf(orderListRecomUiModel.getRecommendationItem().getShopId()),
+                                        "shop_type", orderListRecomUiModel.getRecommendationItem().getShopType(),
+                                        "shop_name", orderListRecomUiModel.getRecommendationItem().getShopName(),
                                         "category_id", NONE
                                 )))
                 )));

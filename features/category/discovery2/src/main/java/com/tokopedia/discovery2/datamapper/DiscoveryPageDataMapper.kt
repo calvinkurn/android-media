@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.datamapper
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
+import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
 import com.tokopedia.discovery2.Utils.Companion.isSaleOver
 import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -98,12 +99,21 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                 }
             }
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
-            ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName -> listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
+            ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName ->
+                listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
+            ComponentNames.BannerTimer.componentName -> {
+                if (addBannerTimerComp(component)) {
+                    listComponents.add(component)
+                }
+            }
             else -> listComponents.add(component)
         }
         return listComponents
     }
 
+    private fun addBannerTimerComp(component: ComponentsItem): Boolean {
+        return getElapsedTime(component.data?.firstOrNull()?.endDate ?: "") > 0
+    }
 
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
@@ -275,4 +285,11 @@ fun updateComponentsQueryParams(categoryId : String){
     discoComponentQuery?.let {
         it[CATEGORY_ID] = categoryId
     }
+}
+
+fun getPageInfo(pageName: String) : PageInfo {
+    discoveryPageData[pageName]?.let {
+        return it.pageInfo
+    }
+    return PageInfo()
 }

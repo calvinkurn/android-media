@@ -144,13 +144,19 @@ public class DeveloperOptionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (GlobalConfig.isAllowDebuggingTools() && getIntent() != null && getIntent().getData() != null) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             userSession = new UserSession(this);
 
-            Uri uri = getIntent().getData();
-            boolean isChangeUrlApplink
-                    = (uri.getPathSegments().size() == 3) && uri.getPathSegments().get(1).equals(CHANGEURL);
-
+            Intent intent = getIntent();
+            Uri uri = null;
+            boolean isChangeUrlApplink = false;
+            if (intent != null) {
+                uri = intent.getData();
+                if (uri!= null) {
+                    isChangeUrlApplink = (uri.getPathSegments().size() == 3) &&
+                            uri.getPathSegments().get(1).equals(CHANGEURL);
+                }
+            }
             if (isChangeUrlApplink) {
                 handleUri(uri);
             } else {
