@@ -3,17 +3,17 @@
 
     <item>
         <shape>
-            <solid android:color="@color/white" />
+            <solid android:color="@color/Unify_N0" />
 
             <stroke
                 android:width="0.5dp"
-                android:color="@color/grey_400"/>
+                android:color="@color/Unify_N150"/>
 
             <corners android:radius="3dp" />
 
             <padding
                 android:bottom="0dp"
-                android:left="@dimen/dp_10"
+                android:left="@dimen/layout_lvl1"
                 android:right="0dp"
                 android:top="0dp" />
         </shape>

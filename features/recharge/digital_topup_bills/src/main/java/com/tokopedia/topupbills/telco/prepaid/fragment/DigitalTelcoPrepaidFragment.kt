@@ -16,8 +16,8 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
@@ -599,27 +599,27 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun showOnBoarding() {
-        val coachMarkHasShown = localCacheHandler.getBoolean(TELCO_COACH_MARK_HAS_SHOWN, false)
-        if (coachMarkHasShown) {
-            return
-        }
+        context?.run {
+            val coachMarkHasShown = localCacheHandler.getBoolean(TELCO_COACH_MARK_HAS_SHOWN, false)
+            if (coachMarkHasShown) {
+                return
+            }
 
-        val coachMarks = ArrayList<CoachMarkItem>()
-        coachMarks.add(CoachMarkItem(telcoClientNumberWidget,
-                getString(R.string.Telco_title_showcase_client_number),
-                getString(R.string.telco_label_showcase_client_number)))
-        coachMarks.add(CoachMarkItem(viewPager,
-                getString(R.string.telco_title_showcase_promo),
-                getString(R.string.telco_label_showcase_promo)))
+            val coachMarks = ArrayList<CoachMark2Item>()
+            coachMarks.add(CoachMark2Item(telcoClientNumberWidget,
+                    getString(R.string.Telco_title_showcase_client_number),
+                    getString(R.string.telco_label_showcase_client_number)))
+            coachMarks.add(CoachMark2Item(viewPager,
+                    getString(R.string.telco_title_showcase_promo),
+                    getString(R.string.telco_label_showcase_promo)))
 
-        val coachMark = CoachMarkBuilder().build().apply {
-            enableSkip = true
-        }
-        coachMark.show(activity, javaClass.name, coachMarks)
+            val coachMark = CoachMark2(this)
+            coachMark.showCoachMark(coachMarks)
 
-        localCacheHandler.apply {
-            putBoolean(TELCO_COACH_MARK_HAS_SHOWN, true)
-            applyEditor()
+            localCacheHandler.apply {
+                putBoolean(TELCO_COACH_MARK_HAS_SHOWN, true)
+                applyEditor()
+            }
         }
     }
 

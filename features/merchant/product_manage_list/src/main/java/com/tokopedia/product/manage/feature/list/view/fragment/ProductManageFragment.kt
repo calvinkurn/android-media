@@ -5,7 +5,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.app.ProgressDialog
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -43,8 +46,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -62,7 +63,6 @@ import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
-import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
@@ -86,7 +86,6 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_CHAT_CREATE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.PRODUCT_ID
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
@@ -97,7 +96,6 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.URL_TIPS_TRICK
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
-import com.tokopedia.product.manage.feature.list.extension.isMoreOneMonth
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
@@ -216,7 +214,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private var isProductVariant = false
     private var isProductActive = false
 
-    private var productManageSession: ProductManageSession? = null
     private var progressDialog: ProgressDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -237,7 +234,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             isProductVariant = this.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_VARIANT).toBoolean()
             isProductActive = this.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_ACTIVE).toBoolean()
         }
-        productManageSession = ProductManageSession(requireContext())
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -270,7 +266,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupInterceptor()
         setupSearchBar()
         setupProductList()
-        setupTickerBroadcast()
         setupProgressDialogVariant()
         setupFiltersTab()
         setupBottomSheet()
@@ -322,33 +317,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun hideProgressDialogVariant() {
         progressDialog?.hide()
-    }
-
-    private fun setupTickerBroadcast() {
-        productManageSession?.run {
-            if (!getHasTickerBroadcastChat()) {
-                tickerBroadcastChat?.apply {
-                    setTextDescription(getString(R.string.ticker_broadcast_chat))
-                    show()
-                    if (getHasTickerDateBC().isBlank())
-                        setHasTickerDateBC(getHasTickerDateBC())
-
-                    if (getHasTickerDateBC().isNotEmpty())
-                        if (getHasTickerDateBC().isMoreOneMonth) hide()
-
-                    setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {}
-
-                        override fun onDismiss() {
-                            hide()
-                            setHasTickerBroadcastChat(true)
-                        }
-                    })
-                }
-            } else {
-                tickerBroadcastChat.hide()
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -1695,11 +1663,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         intent?.let {
             when (requestCode) {
-                INSTAGRAM_SELECT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                    val imageUrls = it.getStringArrayListExtra(PICKER_RESULT_PATHS)
-                    val imageDescList = it.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST)
-                    goToProductDraft(imageUrls, imageDescList)
-                }
                 REQUEST_CODE_PICK_ETALASE -> if (resultCode == Activity.RESULT_OK) {
                     val productIds = itemsChecked.map { product -> product.id }
                     val etalaseId = it.getStringExtra(EXTRA_ETALASE_ID).orEmpty()

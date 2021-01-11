@@ -1,0 +1,264 @@
+[
+  {
+    "data": {
+      "flightGetOrderDetail": {
+        "data": {
+          "omsID": 570816091,
+          "createTime": "2020-11-27T13:57:30Z",
+          "status": 700,
+          "statusString": "Transaksi berhasil",
+          "flight": {
+            "id": 3627681,
+            "invoiceID": "",
+            "contactName": "Hefdy Wiguna",
+            "email": "hefdy.elpramah5@tokopedia.com",
+            "phone": "+6281908878110",
+            "countryID": "",
+            "hasEticket": true,
+            "totalAdult": "Rp 14.800",
+            "totalAdultNumeric": 14800,
+            "totalChild": "Rp 0",
+            "totalChildNumeric": 0,
+            "totalInfant": "Rp 0",
+            "totalInfantNumeric": 0,
+            "totalPrice": "Rp 14.800",
+            "totalPriceNumeric": 14800,
+            "currency": "IDR",
+            "pdf": "e4fb3dff73347df8a8d65f478fccc8c3.pdf",
+            "isDomestic": true,
+            "mandatoryDOB": false,
+            "classText": "ECONOMY",
+            "contactUsURL": "https://tokopedia.com/help/reference-article?refnum=QKG-0NUCX-SMG1&refnum_id=0&transaction_type_id=2&order_status=700&invoice_type_id=4&product_type_id=0&payment_gateway_id=-99&payment_status_id=-99",
+            "payment": {
+              "id": 1569315313,
+              "status": 2,
+              "statusStr": "Verified",
+              "gatewayName": "Saldo Tokopedia",
+              "gatewayIcon": "https://ecs7.tokopedia.net/img/toppay/payment-logo/saldo-tokopedia.png",
+              "paymentDate": "2020-11-27T13:57:49Z",
+              "expireOn": "",
+              "transactionCode": "",
+              "promoCode": "",
+              "adminFeeAmt": 0,
+              "adminFeeAmtStr": "",
+              "voucherAmt": 0,
+              "voucherAmtStr": "",
+              "tokocashAmt": 0,
+              "tokocashAmtStr": "",
+              "saldoAmt": 14800,
+              "saldoAmtStr": "Rp 14.800",
+              "totalAmt": 14800,
+              "totalAmtString": "Rp 14.800",
+              "needToPayAmt": 0,
+              "needToPayAmtStr": "",
+              "manualTransfer": {
+                "uniqueCode": 0,
+                "accountBankName": "",
+                "accountBranch": "",
+                "accountNo": "",
+                "accountName": "",
+                "total": ""
+              }
+            },
+            "journeys": [
+              {
+                "id": 4176163,
+                "status": 7,
+                "departureID": "CGK",
+                "departureTime": "2020-12-04T06:00:00Z",
+                "departureAirportName": "Soekarno Hatta",
+                "departureCityName": "Jakarta",
+                "arrivalID": "DPS",
+                "arrivalTime": "2020-12-04T08:00:00Z",
+                "arrivalAirportName": "Ngurah Rai",
+                "arrivalCityName": "Denpasar",
+                "totalTransit": 0,
+                "totalStop": 0,
+                "addDayArrival": 0,
+                "duration": "2j",
+                "durationMinute": 120,
+                "fare": {
+                  "adultNumeric": 14800,
+                  "childNumeric": 0,
+                  "infantNumeric": 0
+                },
+                "routes": [
+                  {
+                    "departureID": "CGK",
+                    "departureTime": "2020-12-04T06:00:00Z",
+                    "departureAirportName": "Soekarno Hatta",
+                    "departureCityName": "Jakarta",
+                    "arrivalID": "DPS",
+                    "arrivalTime": "2020-12-04T08:00:00Z",
+                    "arrivalAirportName": "Ngurah Rai",
+                    "arrivalCityName": "Denpasar",
+                    "pnr": "DUMMY294",
+                    "airlineID": "SI",
+                    "airlineName": "Susi Air",
+                    "airlineLogo": "",
+                    "operatorAirlineID": "",
+                    "flightNumber": "101",
+                    "duration": "2 jam",
+                    "durationMinute": 120,
+                    "layover": "",
+                    "layoverMinute": 0,
+                    "refundable": true,
+                    "departureTerminal": "X1",
+                    "arrivalTerminal": "Z1",
+                    "stop": 0,
+                    "carrier": "",
+                    "stopDetails": [],
+                    "ticketNumbers": [
+                      {
+                        "passengerID": 5147802,
+                        "ticketNumber": "TICKET125"
+                      }
+                    ],
+                    "freeAmenities": {
+                      "cabinBaggage": {
+                        "isUpTo": false,
+                        "unit": "kg",
+                        "value": 7
+                      },
+                      "freeBaggage": {
+                        "isUpTo": false,
+                        "unit": "",
+                        "value": 0
+                      },
+                      "meal": true,
+                      "usbPort": false,
+                      "wifi": false,
+                      "others": []
+                    }
+                  }
+                ],
+                "webCheckIn": {
+                  "title": "Web Check-in",
+                  "subTitle": "Maskapai ini tidak menerima web check-in",
+                  "startTime": "2020-11-11T00:00:00Z",
+                  "endTime": "2030-11-11T00:00:00Z",
+                  "iconURL": "https://ecs7.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png",
+                  "appURL": "",
+                  "webURL": "https://ecs7.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png"
+                }
+              },
+              {
+                "id": 4176163,
+                "status": 7,
+                "departureID": "CGK",
+                "departureTime": "2020-12-04T06:00:00Z",
+                "departureAirportName": "Soekarno Hatta",
+                "departureCityName": "Jakarta",
+                "arrivalID": "DPS",
+                "arrivalTime": "2020-12-04T08:00:00Z",
+                "arrivalAirportName": "Ngurah Rai",
+                "arrivalCityName": "Denpasar",
+                "totalTransit": 0,
+                "totalStop": 0,
+                "addDayArrival": 0,
+                "duration": "2j",
+                "durationMinute": 120,
+                "fare": {
+                  "adultNumeric": 14800,
+                  "childNumeric": 0,
+                  "infantNumeric": 0
+                },
+                "routes": [
+                  {
+                    "departureID": "CGK",
+                    "departureTime": "2020-12-04T06:00:00Z",
+                    "departureAirportName": "Soekarno Hatta",
+                    "departureCityName": "Jakarta",
+                    "arrivalID": "DPS",
+                    "arrivalTime": "2020-12-04T08:00:00Z",
+                    "arrivalAirportName": "Ngurah Rai",
+                    "arrivalCityName": "Denpasar",
+                    "pnr": "DUMMY294",
+                    "airlineID": "SI",
+                    "airlineName": "Susi Air",
+                    "airlineLogo": "",
+                    "operatorAirlineID": "",
+                    "flightNumber": "101",
+                    "duration": "2 jam",
+                    "durationMinute": 120,
+                    "layover": "",
+                    "layoverMinute": 0,
+                    "refundable": true,
+                    "departureTerminal": "X1",
+                    "arrivalTerminal": "Z1",
+                    "stop": 0,
+                    "carrier": "",
+                    "stopDetails": [],
+                    "ticketNumbers": [
+                      {
+                        "passengerID": 5147802,
+                        "ticketNumber": "TICKET125"
+                      }
+                    ],
+                    "freeAmenities": {
+                      "cabinBaggage": {
+                        "isUpTo": false,
+                        "unit": "kg",
+                        "value": 7
+                      },
+                      "freeBaggage": {
+                        "isUpTo": false,
+                        "unit": "",
+                        "value": 0
+                      },
+                      "meal": true,
+                      "usbPort": false,
+                      "wifi": false,
+                      "others": []
+                    }
+                  }
+                ],
+                "webCheckIn": {
+                  "title": "Web Check-in",
+                  "subTitle": "Maskapai ini tidak menerima web check-in",
+                  "startTime": "2020-11-11T00:00:00Z",
+                  "endTime": "2030-11-11T00:00:00Z",
+                  "iconURL": "https://ecs7.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png",
+                  "appURL": "",
+                  "webURL": "https://ecs7.tokopedia.net/img/attachment/2020/10/5/8966442/8966442_4b34a5a1-dd0d-4da3-8092-5e86f6ea78f7.png"
+                }
+              }
+            ],
+            "passengers": [
+              {
+                "id": 5147802,
+                "type": 0,
+                "title": 1,
+                "firstName": "Hefdy Wiguna",
+                "lastName": "elprama",
+                "dob": "",
+                "nationality": "",
+                "passportNo": "",
+                "passportCountry": "",
+                "passportExpiry": "",
+                "amenities": [],
+                "cancelStatus": []
+              }
+            ],
+            "actionButtons": [
+              {
+                "id": 0,
+                "label": "Batalkan",
+                "buttonType": "secondary",
+                "uri": "https://www.tokopedia.com/flight/cancellation?iv=QKG-0NUCX-SMG1",
+                "uriWeb": "https://www.tokopedia.com/flight/cancellation?iv=QKG-0NUCX-SMG1",
+                "mappingURL": "cancel_order",
+                "method": "",
+                "weight": 1
+              }
+            ],
+            "conditionalInfo": [],
+            "insurances": [],
+            "cancellations": []
+          }
+        },
+        "error": []
+      }
+    }
+  }
+]
