@@ -194,7 +194,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         val message = getString(R.string.title_change_role, name)
         container?.let {
             Toaster.toasterCustomBottomHeight = 50.toPx()
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
                     .show()
         }
     }
