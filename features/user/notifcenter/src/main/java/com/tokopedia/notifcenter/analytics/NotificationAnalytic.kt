@@ -45,7 +45,8 @@ class NotificationAnalytic @Inject constructor() {
 
     fun trackProductImpression(
             notification: NotificationUiModel,
-            product: ProductData
+            product: ProductData,
+            position: Int
     ) {
         product.hashCode()
         val products: List<ProductListImpressionProduct> = List(1) {
@@ -57,7 +58,7 @@ class NotificationAnalytic @Inject constructor() {
                     variant = "",
                     price = product.price.toDouble(),
                     currency = CURRENCY_IDR,
-                    index = 0,
+                    index = position.toLong(),
                     list = LIST_NOTIFCENTER,
                     dimension40 = null,
                     dimension87 = null,

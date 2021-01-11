@@ -431,9 +431,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun trackProductImpression(
             notification: NotificationUiModel,
-            product: ProductData
+            product: ProductData,
+            position: Int
     ) {
-        analytic.trackProductImpression(notification, product)
+        analytic.trackProductImpression(notification, product, position)
     }
 
     private fun createViewHolderState(

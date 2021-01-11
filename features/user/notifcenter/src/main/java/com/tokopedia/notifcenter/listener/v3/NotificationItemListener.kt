@@ -20,5 +20,5 @@ interface NotificationItemListener {
             product: ProductData, notification: NotificationUiModel, adapterPosition: Int
     )
 
-    fun trackProductImpression(notification: NotificationUiModel, product: ProductData)
+    fun trackProductImpression(notification: NotificationUiModel, product: ProductData, position: Int)
 }

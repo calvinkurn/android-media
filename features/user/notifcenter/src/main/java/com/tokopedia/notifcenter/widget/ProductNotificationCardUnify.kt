@@ -113,7 +113,9 @@ class ProductNotificationCardUnify(
     ) {
         if (notification == null) return
         productContainer?.addOnImpressionListener(product.impressHolder) {
-            listener?.trackProductImpression(notification, product)
+            listener?.trackProductImpression(
+                    notification, product, adapterPosition ?: 0
+            )
         }
     }
 
