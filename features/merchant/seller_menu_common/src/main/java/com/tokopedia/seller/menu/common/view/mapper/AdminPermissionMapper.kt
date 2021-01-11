@@ -13,9 +13,7 @@ import com.tokopedia.seller.menu.common.constant.PermissionId
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import javax.inject.Inject
 
-class AdminPermissionMapper @Inject constructor(
-        private val context: Context,
-        private val remoteConfig: RemoteConfig) {
+class AdminPermissionMapper @Inject constructor(private val remoteConfig: RemoteConfig) {
 
     companion object {
         private const val GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW"
@@ -38,7 +36,7 @@ class AdminPermissionMapper @Inject constructor(
         }
     }
 
-    fun mapFeatureToDestination(@AdminFeature adminFeature: String): Intent? {
+    fun mapFeatureToDestination(context: Context, @AdminFeature adminFeature: String): Intent? {
         return when (adminFeature) {
             AdminFeature.SALDO -> {
                 if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))

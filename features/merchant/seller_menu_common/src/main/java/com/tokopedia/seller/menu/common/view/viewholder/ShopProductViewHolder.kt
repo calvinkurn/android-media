@@ -8,6 +8,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
+import com.tokopedia.seller.menu.common.constant.AdminFeature
+import com.tokopedia.seller.menu.common.view.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import kotlinx.android.synthetic.main.item_seller_menu_product_section.view.*
 
@@ -29,7 +31,9 @@ class ShopProductViewHolder(
         itemView.imageChevronRight.setImageDrawable(chevronRight)
 
         itemView.setOnClickListener {
-            RouteManager.route(itemView.context, ApplinkConst.PRODUCT_MANAGE)
+            AdminRoleAuthorizeActivity.createIntent(itemView.context, AdminFeature.MANAGE_PRODUCT).let {
+                itemView.context?.startActivity(it)
+            }
             tracker?.sendEventClickProductList()
         }
     }

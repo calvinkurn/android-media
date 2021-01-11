@@ -6,8 +6,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
+import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.MenuItemType
+import com.tokopedia.seller.menu.common.constant.PermissionId
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.view.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
@@ -21,8 +24,6 @@ import com.tokopedia.user.session.UserSessionInterface
 object SellerMenuList {
 
     private const val APPLINK_FORMAT = "%s?url=%s%s"
-    private const val GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW"
-    private const val GO_TO_MY_PRODUCT = "GO_TO_MY_PRODUCT"
 
     fun create(context: Context, userSession: UserSessionInterface): List<SettingUiModel> {
         val menuList = mutableListOf<SettingUiModel>()
@@ -46,8 +47,6 @@ object SellerMenuList {
 
     private fun createBuyerInfoMenu(context: Context): List<SettingUiModel> {
         val sectionTitle = context.getString(R.string.setting_menu_buyer_info)
-        val resolutionInboxApplink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW,
-            SellerBaseUrl.HOSTNAME, SellerBaseUrl.RESO_INBOX_SELLER)
 
         return listOf(
                 SettingTitleUiModel(sectionTitle, R.dimen.spacing_lvl4),
@@ -56,18 +55,18 @@ object SellerMenuList {
                         R.drawable.ic_star_setting,
                         type = MenuItemType.REVIEW,
                         eventActionSuffix = SettingTrackingConstant.REVIEW) {
-                    val intent = RouteManager.getIntent(context, ApplinkConst.REPUTATION)
-                    intent.putExtra(GO_TO_BUYER_REVIEW, true)
-                    context.startActivity(intent)
+                    AdminRoleAuthorizeActivity.createIntent(context, AdminFeature.REVIEW).let {
+                        context.startActivity(it)
+                    }
                 },
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_discussion),
                         R.drawable.ic_setting_discussion,
                         type = MenuItemType.DISCUSSION,
                         eventActionSuffix = SettingTrackingConstant.DISCUSSION) {
-                    val intent = RouteManager.getIntent(context, ApplinkConst.TALK)
-                    intent.putExtra(GO_TO_MY_PRODUCT, true)
-                    context.startActivity(intent)
+                    AdminRoleAuthorizeActivity.createIntent(context, AdminFeature.DISCUSSION).let {
+                        context.startActivity(it)
+                    }
                 },
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_complaint),
@@ -75,8 +74,9 @@ object SellerMenuList {
                         null,
                         type = MenuItemType.COMPLAIN,
                         eventActionSuffix = SettingTrackingConstant.COMPLAINT) {
-                    val intent = RouteManager.getIntent(context, resolutionInboxApplink)
-                    context.startActivity(intent)
+                    AdminRoleAuthorizeActivity.createIntent(context, AdminFeature.COMPLAINT).let {
+                        context.startActivity(it)
+                    }
                 }
         )
     }
@@ -109,7 +109,9 @@ object SellerMenuList {
                         null,
                         type = MenuItemType.SHOP_SETTINGS,
                         eventActionSuffix = SettingTrackingConstant.SETTINGS) {
-                    context.startActivity(Intent(context, SellerSettingsActivity::class.java))
+                    AdminRoleAuthorizeActivity.createIntent(context, AdminFeature.MANAGE_SHOP).let {
+                        context.startActivity(it)
+                    }
                 }
         )
     }

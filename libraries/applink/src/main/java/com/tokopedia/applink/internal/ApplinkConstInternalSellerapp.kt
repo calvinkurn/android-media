@@ -13,6 +13,7 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val HOST_SELLERAPP = "sellerapp"
 
+
     @JvmField
     val INTERNAL_SELLERAPP = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_SELLERAPP}"
 
@@ -95,4 +96,8 @@ object ApplinkConstInternalSellerapp {
     // SellerSettingsActivity
     @JvmField
     val SELLER_SETTINGS = "$INTERNAL_SELLERAPP/seller-settings"
+
+    //AdminRoleAuthorizeActivity
+    @JvmField
+    val ADMIN_AUTHORIZE = "$INTERNAL_SELLERAPP/admin-authorize/{feature}/"
 }

@@ -18,11 +18,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.di.DaggerSellerMenuCommonComponent
 import com.tokopedia.seller.menu.common.view.viewmodel.AdminRoleAuthorizeViewModel
 import com.tokopedia.seller.menu.common.view.activity.AdminRoleAuthorizeActivity
+import com.tokopedia.seller.menu.common.view.mapper.AdminPermissionMapper
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
@@ -46,6 +48,12 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var adminPermissionMapper: AdminPermissionMapper
 
     private val viewModel: AdminRoleAuthorizeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AdminRoleAuthorizeViewModel::class.java)
@@ -94,17 +102,21 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
                 adminHelpText?.visibility = View.GONE
                 goToDestination()
             } else {
-                adminErrorView?.shopAdminError()
-                adminHelpText?.shopHelpMessage()
+                adminErrorView?.showAdminError()
+                adminHelpText?.showHelpMessage()
             }
         }
     }
 
     private fun goToDestination() {
-        // TODO: map to access id
+        context?.run {
+            adminPermissionMapper.mapFeatureToDestination(this, adminFeature)?.let {
+                startActivity(it)
+            }
+        }
     }
 
-    private fun GlobalError.shopAdminError() {
+    private fun GlobalError.showAdminError() {
         ImageHandler.loadImageAndCache(errorIllustration, SellerBaseUrl.ADMIN_ERROR_ILLUSTRATION)
         errorTitle.text = context?.getString(R.string.admin_no_permission_oops)
         errorDescription.text = context?.getString(R.string.admin_no_permission_contact_shop_owner)
@@ -116,7 +128,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         visibility = View.VISIBLE
     }
 
-    private fun Typography.shopHelpMessage() {
+    private fun Typography.showHelpMessage() {
         context?.getString(R.string.admin_no_permission_need_help)?.let { helpMessage ->
             context?.getString(R.string.admin_no_permission_contact_tocare)?.let { clickableMessage ->
                 helpMessage.indexOf(clickableMessage).let { clickableIndex ->

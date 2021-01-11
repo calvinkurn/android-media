@@ -19,8 +19,9 @@ class AdminRoleAuthorizeActivity: BaseSimpleActivity() {
 
     }
 
+    // Manually get feature from manual intent or applink (tokopedia-android-internal://sellerapp/admin-authorize/{feature}/)
     private val adminFeature: String by lazy {
-        intent?.getStringExtra(KEY_ADMIN_FEATURE).orEmpty()
+        intent?.getStringExtra(KEY_ADMIN_FEATURE) ?: intent?.data?.lastPathSegment.orEmpty()
     }
 
     override fun getNewFragment(): Fragment = AdminRoleAuthorizeFragment.createInstance(adminFeature)

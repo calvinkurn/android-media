@@ -9,6 +9,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
+import com.tokopedia.seller.menu.common.constant.AdminFeature
+import com.tokopedia.seller.menu.common.view.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import kotlinx.android.synthetic.main.item_seller_menu_order_section.view.*
 
@@ -48,12 +50,16 @@ class ShopOrderViewHolder(
 
     private fun setClickListeners() {
         itemView.cardNewOrder.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.SELLER_NEW_ORDER)
+            AdminRoleAuthorizeActivity.createIntent(context, AdminFeature.NEW_ORDER).let {
+                context.startActivity(it)
+            }
             sellerMenuTracker?.sendEventClickOrderNew()
         }
 
         itemView.cardReadyToShip.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)
+            AdminRoleAuthorizeActivity.createIntent(context, AdminFeature.READY_TO_SHIP_ORDER).let {
+                context.startActivity(it)
+            }
             sellerMenuTracker?.sendEventClickOrderReadyToShip()
         }
     }
