@@ -74,6 +74,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -92,11 +93,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
         val SEARCH_MENU_ID = R.id.menu_sah_search
         private const val NOTIFICATION_BADGE_DELAY = 2000L
+        private const val WIDGET_UPDATE_DELAY = 100L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
         private const val ERROR_LAYOUT = "Error get layout data."
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
+        private const val ERROR_WIDGET_UPDATE_REQUEST_FULL = "Error adding widget update process, because the channel cannot accept the request."
         private const val TOAST_DURATION = 5000L
+        private const val WIDGET_UPDATE_RETRY_LIMIT = 10
     }
 
     @Inject
@@ -196,7 +200,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             view?.post {
                 requestVisibleWidgetsData()
             }
-            widgetUpdateStream.offer { resetWidgetImpressionHolder() }
+            addWidgetUpdate(process = {
+                resetWidgetImpressionHolder()
+            }, onError = {
+                setOnErrorGetLayout(it)
+            })
         }
     }
 
@@ -541,11 +549,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val postFilterBottomSheet = (childFragmentManager.findFragmentByTag(PostFilterBottomSheet.TAG) as? PostFilterBottomSheet)
                 ?: PostFilterBottomSheet.newInstance()
         postFilterBottomSheet.init(requireContext(), element.postFilter) {
-            widgetUpdateStream.offer {
+            addWidgetUpdate(process = {
                 val copiedWidget = element.copy().apply { data = null }
                 notifyWidgetChanged(copiedWidget)
                 getPostData(listOf(element))
-            }
+            }, onError = {
+                it.setOnErrorWidgetState<PostListDataUiModel, PostListWidgetUiModel>(element.widgetType)
+            })
         }.show(childFragmentManager)
     }
 
@@ -579,12 +589,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
-            widgetUpdateStream.offer {
+            addWidgetUpdate(process = {
                 when (result) {
                     is Success -> setOnSuccessGetLayout(result.data)
                     is Fail -> setOnErrorGetLayout(result.throwable)
                 }
-            }
+            }, onError = {
+                setOnErrorGetLayout(it)
+            })
         })
 
         view?.swipeRefreshLayout?.isRefreshing = true
@@ -665,7 +677,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.BAR_CHART]?.run { getBarChartData(this) }
         groupedWidgets[WidgetType.MULTI_LINE_GRAPH]?.run { getMultiLineGraphData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
-            widgetUpdateStream.offer {
+            addWidgetUpdate(process = {
                 val newWidgetList = adapter.data.toMutableList()
                 forEach { section ->
                     newWidgetList.indexOf(section).takeIf { it > -1 }?.let { index ->
@@ -674,7 +686,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
                 updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
                 checkLoadingWidgets()
-            }
+            }, onError = {
+                setOnErrorGetLayout(it)
+            })
         }
     }
 
@@ -760,7 +774,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
-            widgetUpdateStream.offer {
+            addWidgetUpdate(process = {
                 startHomeLayoutRenderMonitoring()
                 when (result) {
                     is Success -> result.data.setOnSuccessWidgetState(type)
@@ -770,7 +784,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     }
                 }
                 stopSellerHomeFragmentWidgetPerformanceMonitoring(type)
-            }
+            }, onError = {
+                it.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
+            })
         })
     }
 
@@ -943,6 +959,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             view?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
         }
+    }
+
+    private fun addWidgetUpdate(process: () -> Unit, onError: (it: Throwable) -> Unit) {
+        launchCatchError(block = {
+            var retryCount = 0
+            while (!widgetUpdateStream.offer { process() } && retryCount < WIDGET_UPDATE_RETRY_LIMIT) {
+                retryCount += 1
+                delay(WIDGET_UPDATE_DELAY)
+            }
+            if (retryCount >= WIDGET_UPDATE_RETRY_LIMIT) {
+                onError(Throwable(ERROR_WIDGET_UPDATE_REQUEST_FULL))
+            }
+        }, onError = {
+            onError(it)
+        })
     }
 
     @Suppress("UNCHECKED_CAST")
