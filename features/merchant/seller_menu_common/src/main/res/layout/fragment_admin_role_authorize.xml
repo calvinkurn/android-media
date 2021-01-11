@@ -6,13 +6,11 @@
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/error_admin_role"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@id/tv_admin_role_help"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_admin_role"
@@ -25,12 +23,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_admin_role_help"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_lvl4"
         android:layout_marginHorizontal="@dimen/layout_lvl2"
         android:textColor="@color/Neutral_N700_68"
         android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         app:layout_constraintBottom_toBottomOf="parent"/>

@@ -62,7 +62,7 @@
     <string name="admin_no_permission_oops">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
     <string name="admin_no_permission_contact_shop_owner">Hubungi pemilik toko untuk bisa mengakses halaman ini, ya.</string>
     <string name="admin_no_permission_general_next">Oke, Saya Mengerti</string>
-    <string name="admin_no_permission_need_help">Butuh bantuan? Hubungi Tokopedia Care</string>
+    <string name="admin_no_permission_need_help">Butuh bantuan?  Hubungi Tokopedia Care</string>
     <string name="admin_no_permission_contact_tocare">Hubungi Tokopedia Care</string>
 
 </resources>

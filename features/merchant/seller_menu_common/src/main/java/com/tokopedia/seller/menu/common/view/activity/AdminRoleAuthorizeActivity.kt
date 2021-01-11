@@ -2,8 +2,11 @@ package com.tokopedia.seller.menu.common.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.view.fragment.AdminRoleAuthorizeFragment
 
@@ -22,6 +25,13 @@ class AdminRoleAuthorizeActivity: BaseSimpleActivity() {
     // Manually get feature from manual intent or applink (tokopedia-android-internal://sellerapp/admin-authorize/{feature}/)
     private val adminFeature: String by lazy {
         intent?.getStringExtra(KEY_ADMIN_FEATURE) ?: intent?.data?.lastPathSegment.orEmpty()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+        toolbar?.gone()
     }
 
     override fun getNewFragment(): Fragment = AdminRoleAuthorizeFragment.createInstance(adminFeature)

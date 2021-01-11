@@ -117,6 +117,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     }
 
     private fun GlobalError.showAdminError() {
+        setType(GlobalError.PAGE_NOT_FOUND)
         ImageHandler.loadImageAndCache(errorIllustration, SellerBaseUrl.ADMIN_ERROR_ILLUSTRATION)
         errorTitle.text = context?.getString(R.string.admin_no_permission_oops)
         errorDescription.text = context?.getString(R.string.admin_no_permission_contact_shop_owner)
@@ -136,8 +137,8 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
                         setSpan(
                                 object : ClickableSpan() {
                                     override fun onClick(widget: View) {
-                                        RouteManager.route(context, ApplinkConst.WEBVIEW,
-                                                TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH)
+                                        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                                                TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
                                     }
 
                                     override fun updateDrawState(ds: TextPaint) {
