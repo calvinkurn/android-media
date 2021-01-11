@@ -33,7 +33,7 @@ class ChatAttachmentUseCaseTest {
     private lateinit var useCase: ChatAttachmentUseCase
 
     object Dummy {
-        const val msgId: Int = 123123
+        const val msgId: Long = 123123L
         const val attachmentId: String = "213213"
 
         val throwable = Throwable()

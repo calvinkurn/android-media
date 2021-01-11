@@ -16,5 +16,6 @@ data class ImageEditorBuilder(
         var ratioOptionList: ArrayList<ImageRatioType> = arrayListOf(ImageRatioType.ORIGINAL),
         var belowMinResolutionErrorMessage: String = "",
         var imageTooLargeErrorMessage: String = "",
-        var recheckSizeAfterResize: Boolean = false
+        var recheckSizeAfterResize: Boolean = false,
+        var convertToWebp: Boolean = false
 ) : Parcelable

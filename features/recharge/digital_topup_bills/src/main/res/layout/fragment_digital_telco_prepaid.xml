@@ -62,10 +62,10 @@
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginRight="@dimen/layout_lvl2"
                 android:visibility="gone"
-                app:tickerShapeType="loose"
                 app:closeButtonVisibility="visible"
                 app:enableAutoSlide="true"
                 app:layout_scrollFlags="scroll"
+                app:tickerShapeType="loose"
                 tools:visibility="gone" />
 
             <androidx.cardview.widget.CardView
@@ -102,7 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/telco_space_1"
                 android:layout_below="@+id/telco_tab_layout"
-                android:background="@color/Neutral_N75" />
+                android:background="@color/Unify_N75" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -123,6 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/spacing_lvl1"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardElevation="@dimen/spacing_lvl2">
 
         <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
