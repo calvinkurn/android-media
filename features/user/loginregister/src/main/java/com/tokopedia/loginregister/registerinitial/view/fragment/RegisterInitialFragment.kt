@@ -70,6 +70,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
@@ -122,6 +124,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private var isShowBanner: Boolean = false
     private var isHitRegisterPushNotif: Boolean = false
     private var activityShouldEnd: Boolean = true
+    private var enableOvoRegister: Boolean = false
 
     @field:Named(SESSION_MODULE)
     @Inject
@@ -178,6 +181,20 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     override fun getScreenName(): String {
         return RegisterAnalytics.SCREEN_REGISTER_INITIAL
+    }
+
+    private fun getAbTestingRemoteConfig(): RemoteConfig {
+        return RemoteConfigInstance.getInstance().abTestPlatform
+    }
+
+    private fun useOvoRegister(): Boolean {
+        return try {
+            val remoteConfigValue = getAbTestingRemoteConfig().getString(ExternalRegisterConstants.OVO_REGISTER_AB_TEST_VALUE, "")
+            val rollence = remoteConfigValue.equals(ExternalRegisterConstants.OVO_REGISTER_AB_TEST_VALUE, ignoreCase = true)
+            (rollence && enableOvoRegister)
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -288,6 +305,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             isShowTicker = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
             isShowBanner = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_BANNER_REGISTER, false)
             isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
+            enableOvoRegister = firebaseRemoteConfig.getBoolean(ExternalRegisterConstants.CONFIG_EXTERNAL_REGISTER, false)
         }
     }
 
@@ -763,7 +781,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 setTempPhoneNumber(registerCheckData.view)
                 if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
-                } else if(registerCheckData.isShowRegisterOvo){
+                } else if(registerCheckData.isShowRegisterOvo && useOvoRegister()){
                     registerInitialViewModel.checkHasOvoAccount(registerCheckData.view)
                 } else {
                     showProceedWithPhoneDialog(registerCheckData.view)

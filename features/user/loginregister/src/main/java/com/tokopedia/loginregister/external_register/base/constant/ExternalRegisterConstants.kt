@@ -21,6 +21,9 @@ object ExternalRegisterConstants {
     const val PREF_KEY_NAME = "externalRegisterFullname"
     const val PREF_KEY_PHONE = "externalRegisterPhone"
 
+    const val CONFIG_EXTERNAL_REGISTER = "user_external_register_enable"
+    const val OVO_REGISTER_AB_TEST_VALUE = "ovo_auto_account"
+
     const val REQUEST_OVO_REGISTER = 1001
 
     object PARAM {
