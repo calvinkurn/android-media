@@ -5,9 +5,12 @@ import com.tokopedia.inboxcommon.analytic.InboxAnalyticCommon
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.track.TrackApp
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class NotificationAnalytic @Inject constructor() {
+class NotificationAnalytic @Inject constructor(
+        private val userSession: UserSessionInterface
+) {
 
     private val LIST_NOTIFCENTER = "/notifcenter"
     private val CURRENCY_IDR = "IDR"
@@ -18,6 +21,7 @@ class NotificationAnalytic @Inject constructor() {
             const val PRODUCT_VIEW = "productView"
             const val PRODUCT_CLICK = "productClick"
             const val ADD_TO_CART = "addToCart"
+            const val CLICK_NOTIF_CENTER = "clickNotifCenter"
         }
     }
 
@@ -33,6 +37,7 @@ class NotificationAnalytic @Inject constructor() {
             const val CLICK_PRODUCT = "click on product thumbnail"
             const val CLICK_PRODUCT_ATC = "click on atc button"
             const val CLICK_PRODUCT_BUY = "click on buy button"
+            const val CLICK_REMIND_ME = "click on ingatkan saya"
         }
     }
 
@@ -216,6 +221,20 @@ class NotificationAnalytic @Inject constructor() {
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 AddToCartBundler.KEY, bundle
+        )
+    }
+
+    fun trackBumpReminder() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                InboxAnalyticCommon.createGeneralEvent(
+                        event = Event.CLICK_NOTIF_CENTER,
+                        eventCategory = EventCategory.NOTIFCENTER,
+                        eventAction = EventAction.CLICK_REMIND_ME,
+                        eventLabel = "ingatkan saya",
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId
+                )
         )
     }
 

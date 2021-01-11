@@ -167,6 +167,7 @@ class ProductNotificationCardUnify(
                     product.loadingReminderState = true
                     bindBumpReminderState(product)
                     listener?.bumpReminder(product, notification, adapterPosition)
+                    listener?.trackBumpReminder()
                 }
             }
         } else {

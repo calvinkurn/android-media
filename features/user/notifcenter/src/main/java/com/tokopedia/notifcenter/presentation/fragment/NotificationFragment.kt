@@ -453,6 +453,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         analytic.trackClickBuy(notification, product)
     }
 
+    override fun trackBumpReminder() {
+        analytic.trackBumpReminder()
+    }
+
     private fun createViewHolderState(
             notification: NotificationUiModel,
             adapterPosition: Int,

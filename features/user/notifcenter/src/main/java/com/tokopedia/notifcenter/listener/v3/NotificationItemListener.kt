@@ -26,5 +26,6 @@ interface NotificationItemListener {
     )
     fun trackClickAtc(notification: NotificationUiModel, product: ProductData)
     fun trackClickBuy(notification: NotificationUiModel, product: ProductData)
+    fun trackBumpReminder()
 
 }
