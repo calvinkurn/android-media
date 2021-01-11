@@ -2547,7 +2547,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void resetCourier(int position) {
-        shipmentPresenter.setLatValidateUseRequest(null);
         shipmentAdapter.resetCourier(position);
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
         if (shipmentCartItemModel != null) {
@@ -2944,7 +2943,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void resetCourier(ShipmentCartItemModel shipmentCartItemModel) {
         int index = shipmentAdapter.getShipmentDataList().indexOf(shipmentCartItemModel);
         if (index != -1) {
-            shipmentPresenter.setLatValidateUseRequest(null);
             shipmentAdapter.resetCourier(index);
             addShippingCompletionTicker(shipmentCartItemModel.isEligibleNewShippingExperience());
         }
