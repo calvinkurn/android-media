@@ -38,6 +38,8 @@ class NotificationAnalytic @Inject constructor(
             const val CLICK_PRODUCT_ATC = "click on atc button"
             const val CLICK_PRODUCT_BUY = "click on buy button"
             const val CLICK_REMIND_ME = "click on ingatkan saya"
+            const val CLICK_SEE_MORE_NEW = "click on see more at new section"
+            const val CLICK_SEE_MORE_EARLIER = "click on see more at earlier section"
         }
     }
 
@@ -245,6 +247,34 @@ class NotificationAnalytic @Inject constructor(
                         eventCategory = EventCategory.NOTIFCENTER,
                         eventAction = EventAction.CLICK_REMIND_ME,
                         eventLabel = "hapus pengingat",
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId
+                )
+        )
+    }
+
+    fun trackLoadMoreNew() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                InboxAnalyticCommon.createGeneralEvent(
+                        event = Event.CLICK_NOTIF_CENTER,
+                        eventCategory = EventCategory.NOTIFCENTER,
+                        eventAction = EventAction.CLICK_SEE_MORE_NEW,
+                        eventLabel = "",
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId
+                )
+        )
+    }
+
+    fun trackLoadMoreEarlier() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                InboxAnalyticCommon.createGeneralEvent(
+                        event = Event.CLICK_NOTIF_CENTER,
+                        eventCategory = EventCategory.NOTIFCENTER,
+                        eventAction = EventAction.CLICK_SEE_MORE_EARLIER,
+                        eventLabel = "",
                         businessUnit = BusinessUnit.COMMUNICATION,
                         currentSite = CurrentSite.MARKETPLACE,
                         userId = userSession.userId

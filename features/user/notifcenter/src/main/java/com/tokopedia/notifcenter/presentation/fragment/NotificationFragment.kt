@@ -326,6 +326,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun loadMoreNew(lastKnownPosition: Int, element: LoadMoreUiModel) {
+        analytic.trackLoadMoreNew()
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreNew(containerListener?.role,
                 {
@@ -342,6 +343,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
             lastKnownPosition: Int,
             element: LoadMoreUiModel
     ) {
+        analytic.trackLoadMoreEarlier()
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreEarlier(containerListener?.role,
                 {
