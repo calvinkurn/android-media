@@ -392,7 +392,6 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun navigateToCancellationDetailPage() {
-//        startActivity(FlightCancellationListActivity.createIntent(context, flightOrderDetailViewModel.orderId))
         context?.let {
             startActivity(FlightOrderCancellationListActivity.createIntent(it, flightOrderDetailViewModel.orderId))
         }
