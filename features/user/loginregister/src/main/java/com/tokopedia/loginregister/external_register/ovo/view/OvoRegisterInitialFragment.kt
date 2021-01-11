@@ -1,6 +1,5 @@
 package com.tokopedia.loginregister.external_register.ovo.view
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -86,12 +85,15 @@ class OvoRegisterInitialFragment: BaseDaggerFragment() {
     }
 
     fun onSuccessOvoRegister(){
-        startActivity(Intent(activity, OvoFinalPageActivity::class.java))
+        val intent = OvoFinalPageActivity.createIntentSuccess(activity)
+        startActivity(intent)
         activity?.finish()
     }
 
     fun onFailedOvoRegister(){
-
+        val intent = OvoFinalPageActivity.createIntentError(activity)
+        startActivity(intent)
+        activity?.finish()
     }
 
     companion object {

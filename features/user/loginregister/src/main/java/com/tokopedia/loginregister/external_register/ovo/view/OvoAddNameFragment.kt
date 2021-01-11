@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.external_register.base.activity.ExternalRegisterWebViewActivity
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
@@ -15,7 +14,6 @@ import com.tokopedia.loginregister.external_register.base.fragment.BaseAddNameFr
 import com.tokopedia.loginregister.external_register.base.listener.BaseAddNameListener
 import com.tokopedia.loginregister.external_register.ovo.data.ActivateOvoData
 import com.tokopedia.loginregister.external_register.ovo.viewmodel.OvoAddNameViewModel
-import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -27,7 +25,7 @@ import javax.inject.Inject
 
 class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
 
-    var mPhone = ""
+    var mPhone = "082242454511"
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

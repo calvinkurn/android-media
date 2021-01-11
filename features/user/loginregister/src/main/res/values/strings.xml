@@ -385,6 +385,7 @@
 
     <!-- External Register -->
     <string name="title_external_register">Daftar</string>
+    <string name="title_external_register_verify">Verifikasi</string>
     <string name="title_external_register_add_name">Siapa nama kamu?</string>
     <string name="ovo_connect_account_description">Kamu bisa menghubungkan akun Tokopedia dan OVO agar transaksi jadi lebih praktis.</string>
     <string name="ovo_connect_account_title">Hubungkan akun ini ke OVO?</string>

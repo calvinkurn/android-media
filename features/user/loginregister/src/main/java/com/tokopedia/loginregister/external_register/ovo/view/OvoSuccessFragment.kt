@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.external_register.base.fragment.ExternalAccountFinalFragment
 import com.tokopedia.loginregister.external_register.base.listener.BaseFinalListener
@@ -15,11 +14,11 @@ import com.tokopedia.loginregister.external_register.base.listener.BaseFinalList
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class OvoFinalFragment: ExternalAccountFinalFragment(), BaseFinalListener {
+class OvoSuccessFragment: ExternalAccountFinalFragment(), BaseFinalListener {
 
     companion object {
-        fun createInstance(): OvoFinalFragment {
-            return OvoFinalFragment()
+        fun createInstance(): OvoSuccessFragment {
+            return OvoSuccessFragment()
         }
     }
 
@@ -28,8 +27,8 @@ class OvoFinalFragment: ExternalAccountFinalFragment(), BaseFinalListener {
         context?.run {
             setTitle(getString(R.string.ovo_external_register_title_success))
             setDescription(getString(R.string.ovo_external_register_description_success))
-            setMainImage(imgResId = R.drawable.img_ovo_collaboration)
-            setSuccessListener(this@OvoFinalFragment)
+            setMainImage(imgResId = R.drawable.img_register_success)
+            setSuccessListener(this@OvoSuccessFragment)
         }
     }
 

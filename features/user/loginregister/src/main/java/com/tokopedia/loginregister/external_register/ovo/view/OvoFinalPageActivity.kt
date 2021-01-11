@@ -1,14 +1,52 @@
 package com.tokopedia.loginregister.external_register.ovo.view
 
+import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.loginregister.R
 
 /**
  * Created by Yoris Prayogo on 17/11/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 class OvoFinalPageActivity: BaseSimpleActivity() {
+    companion object {
+        const val TYPE_SUCCESS = 1
+        const val TYPE_ERROR = 0
+        const val TYPE_PARAM = "typeParam"
+
+
+        fun createIntentSuccess(activity: FragmentActivity?): Intent {
+            return Intent(activity, OvoFinalPageActivity::class.java).apply {
+                putExtra(TYPE_PARAM, TYPE_SUCCESS)
+            }
+        }
+
+        fun createIntentError(activity: FragmentActivity?): Intent {
+            return Intent(activity, OvoFinalPageActivity::class.java).apply {
+                putExtra(TYPE_PARAM, TYPE_ERROR)
+            }
+        }
+    }
+
     override fun getNewFragment(): Fragment? {
-        return OvoFinalFragment.createInstance()
+        return if(intent?.getIntExtra(TYPE_PARAM, TYPE_SUCCESS) == TYPE_ERROR){
+            OvoErrorFragment.createInstance()
+        } else {
+            OvoSuccessFragment.createInstance()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if(intent?.getIntExtra(TYPE_PARAM, TYPE_SUCCESS) == TYPE_SUCCESS){
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            supportActionBar?.title = "    ${getString(R.string.title_external_register)}"
+        } else {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.title = getString(R.string.title_external_register_verify)
+        }
     }
 }

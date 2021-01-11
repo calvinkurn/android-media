@@ -54,6 +54,10 @@ open class ExternalAccountFinalFragment: Fragment() {
         view?.fragment_base_success_description?.text = description
     }
 
+    fun setButtonText(text: String) {
+        view?.fragment_base_success_main_btn?.text = text
+    }
+
     fun setSuccessListener(listener: BaseFinalListener) {
         this.listener = listener
     }
