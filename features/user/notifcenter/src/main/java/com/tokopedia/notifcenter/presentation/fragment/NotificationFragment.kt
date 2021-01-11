@@ -184,7 +184,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     private fun initView(view: View) {
         rv = view.findViewById(R.id.recycler_view)
-        filter = view.findViewById(R.id.sv_filter)
+        filter = view.findViewById<NotificationFilterView>(R.id.sv_filter)?.also {
+            it.initConfig(analytic)
+        }
     }
 
     private fun setupObserver() {

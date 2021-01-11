@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.state.Status
@@ -21,6 +22,7 @@ class NotificationFilterView : LinearLayout {
     private var rvFilter: RecyclerView? = null
     private var settingBtn: ImageView? = null
     private var rvFilterAdapter: NotificationFilterAdapter? = null
+    private var analytic: NotificationAnalytic? = null
 
     interface FilterListener {
         fun onFilterChanged(filterType: Int)
@@ -42,6 +44,10 @@ class NotificationFilterView : LinearLayout {
 
     private fun initView(context: Context?) {
         initViewInflation(context)
+    }
+
+    fun initConfig(analytic: NotificationAnalytic) {
+        this.analytic = analytic
     }
 
     fun updateFilterState(dataState: Resource<NotifcenterFilterResponse>) {
@@ -70,6 +76,7 @@ class NotificationFilterView : LinearLayout {
 
     private fun bindClickNavigation() {
         settingBtn?.setOnClickListener {
+            analytic?.trackClickSettingNotif()
             RouteManager.route(context, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING)
         }
     }
