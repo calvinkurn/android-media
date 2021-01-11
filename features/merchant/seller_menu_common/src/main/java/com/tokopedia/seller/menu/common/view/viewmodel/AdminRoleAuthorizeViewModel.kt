@@ -1,12 +1,12 @@
-package com.tokopedia.shop.common.view.viewmodel
+package com.tokopedia.seller.menu.common.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.shop.common.constant.AccessId
-import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.AdminPermissionUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -16,14 +16,14 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AdminRoleAuthorizeViewModel @Inject constructor(
-        private val authorizeAccessUseCase: AuthorizeAccessUseCase,
+        private val adminPermissionUseCase: AdminPermissionUseCase,
         private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatchersProvider): BaseViewModel(dispatchers.main) {
+        private val dispatchers: CoroutineDispatchers): BaseViewModel(dispatchers.main) {
 
-    private val accessIdLiveData = MutableLiveData<Int>()
+    private val permissionIdsLiveData = MutableLiveData<List<String>>()
 
     private val _isRoleAuthorizedLiveData = MediatorLiveData<Result<Boolean>>().apply {
-        addSource(accessIdLiveData) { id ->
+        addSource(permissionIdsLiveData) { id ->
             launchCatchError(
                     block = {
                         value = authorizeAccess(id)
@@ -37,20 +37,19 @@ class AdminRoleAuthorizeViewModel @Inject constructor(
     val isRoleAuthorizedLiveData: LiveData<Result<Boolean>>
         get() = _isRoleAuthorizedLiveData
 
-    fun checkAccess(@AccessId accessId: Int) {
-        accessIdLiveData.value = accessId
+    fun checkAccess(adminFeature: String) {
+        permissionIdsLiveData.value = listOf()
     }
 
-    private suspend fun authorizeAccess(accessId: Int): Result<Boolean>{
+    private suspend fun authorizeAccess(permissionList: List<String>): Result<Boolean>{
         return Success(
                 withContext(dispatchers.io) {
                     if (userSession.isShopOwner) {
                         true
                     } else {
-                        authorizeAccessUseCase.run {
-                            val requestParams = AuthorizeAccessUseCase.createRequestParams(
-                                    userSession.shopId.toIntOrNull() ?: 0, accessId)
-                            authorizeAccessUseCase.execute(requestParams)
+                        adminPermissionUseCase.run {
+                            permissionIds = permissionList
+                            execute()
                         }
                     }
                 }

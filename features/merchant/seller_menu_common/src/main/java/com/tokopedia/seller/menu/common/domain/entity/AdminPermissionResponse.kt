@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.domain.interactor.model.adminrevamp
+package com.tokopedia.seller.menu.common.domain.entity
 
 import com.google.gson.annotations.SerializedName
 

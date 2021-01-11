@@ -1,25 +1,24 @@
-package com.tokopedia.shop.common.di
+package com.tokopedia.seller.menu.common.di
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.shop.common.view.viewmodel.AdminRoleAuthorizeViewModel
+import com.tokopedia.seller.menu.common.view.viewmodel.AdminRoleAuthorizeViewModel
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.multibindings.IntoMap
 
-@ShopCommonScope
 @Module
-abstract class ShopCommonViewModelModule {
+abstract class SellerMenuCommonViewModelModule {
 
-    @ShopCommonScope
+    @SellerMenuCommonScope
     @Binds
     internal abstract fun provideViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
     @ViewModelKey(AdminRoleAuthorizeViewModel::class)
-    internal abstract fun provideAdminRoleAuthorizeViewModel(adminRoleAuthorizeViewModel: AdminRoleAuthorizeViewModel)
+    internal abstract fun provideAdminRoleAuthorizeViewModel(adminRoleAuthorizeViewModel: AdminRoleAuthorizeViewModel): ViewModel
 
 }

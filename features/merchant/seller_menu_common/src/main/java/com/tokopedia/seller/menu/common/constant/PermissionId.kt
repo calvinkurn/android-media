@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.constant
+package com.tokopedia.seller.menu.common.constant
 
 import androidx.annotation.StringDef
 
@@ -9,7 +9,15 @@ import androidx.annotation.StringDef
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
 @StringDef(
-
+        PermissionId.MANAGE_ORDER,
+        PermissionId.RESPOND_COMPLAINTS,
+        PermissionId.MANAGE_FINANCE,
+        PermissionId.REPLY_REVIEW,
+        PermissionId.REPLY_DISCUSSION,
+        PermissionId.REPLY_CHAT,
+        PermissionId.MANAGE_PRODUCT,
+        PermissionId.MANAGE_SHOP,
+        PermissionId.EDIT_STOCK
 )
 annotation class PermissionId {
     companion object {

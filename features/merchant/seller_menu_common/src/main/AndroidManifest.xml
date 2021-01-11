@@ -1,2 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.seller.menu.common" />
+    package="com.tokopedia.seller.menu.common">
+    <application>
+        <activity
+            android:name=".view.activity.AdminRoleAuthorizeActivity"
+            android:label="@string/admin_authorize_title"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+    </application>
+</manifest>

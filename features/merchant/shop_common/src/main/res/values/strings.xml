@@ -6,12 +6,7 @@
     <string name="merchant_shop_common_follow_label">Follow</string>
 
     // Admin Revamp
-    <string name="admin_authorize_title">Admin Role Access Authorize</string>
     <string name="admin_no_permission_title">Kamu tidak punya izin untuk mengakses halaman %s</string>
     <string name="admin_no_permission_desc">Hubungi pemilik toko untuk bisa mengakses halaman %s, ya.</string>
     <string name="admin_no_permission_action">Kembali ke Home</string>
-    <string name="admin_no_permission_oops">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
-    <string name="admin_no_permission_general_next">Oke, Saya Mengerti</string>
-    <string name="admin_no_permission_need_help">Butuh bantuan? Hubungi Tokopedia Care</string>
-    <string name="admin_no_permission_contact_tocare">Hubungi Tokopedia Care</string>
 </resources>

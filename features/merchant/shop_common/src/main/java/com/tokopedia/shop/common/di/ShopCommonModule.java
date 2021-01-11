@@ -7,9 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
@@ -28,8 +26,6 @@ import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.shop.common.util.CacheApiTKPDResponseValidator;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
 
@@ -235,20 +231,6 @@ public class ShopCommonModule {
                                                                     @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS)
                                                                             String gqlQuery) {
         return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
-    }
-
-    @ShopQualifier
-    @ShopCommonScope
-    @Provides
-    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
-
-    @ShopQualifier
-    @ShopCommonScope
-    @Provides
-    GraphqlRepository provideGraphqlRepository() {
-        return GraphqlInteractor.getInstance().getGraphqlRepository();
     }
 
 }

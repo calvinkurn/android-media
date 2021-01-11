@@ -15,6 +15,8 @@ class SellerBaseUrl {
         const val SELLER_EDU = "edu/articles/"
         const val SELLER_ORDER_PRIORITY = "edu/order-prioritas/"
         const val RESO_INBOX_SELLER = RESO_INBOX + "seller" + MOBILE
+
+        const val ADMIN_ERROR_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/ic_admin_no_permission.png"
     }
 
 }

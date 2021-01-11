@@ -91,4 +91,8 @@ object ApplinkConstInternalSellerapp {
     // SellerActionActivity
     @JvmField
     val SELLER_ACTION = "$INTERNAL_SELLERAPP/seller-action"
+
+    // SellerSettingsActivity
+    @JvmField
+    val SELLER_SETTINGS = "$INTERNAL_SELLERAPP/seller-settings"
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.view.fragment
+package com.tokopedia.seller.menu.common.view.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
@@ -18,13 +18,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.shop.common.R
-import com.tokopedia.shop.common.constant.AccessId
-import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
-import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
-import com.tokopedia.shop.common.di.DaggerShopCommonComponent
-import com.tokopedia.shop.common.view.activity.AdminRoleAuthorizeActivity
-import com.tokopedia.shop.common.view.viewmodel.AdminRoleAuthorizeViewModel
+import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.di.DaggerSellerMenuCommonComponent
+import com.tokopedia.seller.menu.common.view.viewmodel.AdminRoleAuthorizeViewModel
+import com.tokopedia.seller.menu.common.view.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
@@ -37,9 +35,9 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         private const val TOKOPEDIA_CARE_PATH = "help"
 
         @JvmStatic
-        fun createInstance(@AccessId accessId: Int): AdminRoleAuthorizeFragment = AdminRoleAuthorizeFragment().apply {
+        fun createInstance(adminFeature: String): AdminRoleAuthorizeFragment = AdminRoleAuthorizeFragment().apply {
             Bundle().apply {
-                putInt(AdminRoleAuthorizeActivity.KEY_ACCESS_ID, accessId)
+                putString(AdminRoleAuthorizeActivity.KEY_ADMIN_FEATURE, adminFeature)
             }.let {
                 arguments = it
             }
@@ -53,8 +51,8 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory).get(AdminRoleAuthorizeViewModel::class.java)
     }
 
-    private val accessId by lazy {
-        arguments?.getInt(AdminRoleAuthorizeActivity.KEY_ACCESS_ID, 0) ?: 0
+    private val adminFeature: String by lazy {
+        arguments?.getString(AdminRoleAuthorizeActivity.KEY_ADMIN_FEATURE).orEmpty()
     }
 
     private var adminErrorView: GlobalError? = null
@@ -74,7 +72,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        DaggerShopCommonComponent.builder()
+        DaggerSellerMenuCommonComponent.builder()
                 .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
@@ -85,7 +83,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         adminLoadingView = findViewById(R.id.loader_admin_role)
         adminHelpText = findViewById(R.id.tv_admin_role_help)
 
-        viewModel.checkAccess(accessId)
+        viewModel.checkAccess(adminFeature)
     }
 
     private fun observeAdminAuthorize() {
@@ -107,10 +105,9 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     }
 
     private fun GlobalError.shopAdminError() {
-        val permissionGroup = SellerHomePermissionGroup.DEFAULT
-        ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+        ImageHandler.loadImageAndCache(errorIllustration, SellerBaseUrl.ADMIN_ERROR_ILLUSTRATION)
         errorTitle.text = context?.getString(R.string.admin_no_permission_oops)
-        errorDescription.text = context?.getString(R.string.admin_no_permission_desc, permissionGroup)
+        errorDescription.text = context?.getString(R.string.admin_no_permission_contact_shop_owner)
         errorAction.text = context?.getString(R.string.admin_no_permission_general_next)
 
         setActionClickListener {
