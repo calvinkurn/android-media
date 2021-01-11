@@ -5,27 +5,19 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
-import com.tokopedia.topads.auto.data.network.response.TopAdsDepositResponse
-import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
-import com.tokopedia.topads.auto.view.AutoAdsTestDispatcherProvider
-import com.tokopedia.topads.auto.view.RequestHelper
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
-import com.tokopedia.topads.common.data.model.AutoAdsParam
-import com.tokopedia.topads.common.data.response.TopAdsAutoAds
-import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
 import kotlinx.coroutines.withContext
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -40,28 +32,25 @@ import org.junit.runners.JUnit4
 class DailyBudgetViewModelTest {
 
     @get:Rule
+    val testRule = CoroutineTestRule()
+
+    @get:Rule
     val rule = InstantTaskExecutorRule()
 
     private lateinit var viewModel: DailyBudgetViewModel
     private var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase = mockk(relaxed = true)
 
     private lateinit var bidInfoUseCase: BidInfoUseCase
-    private lateinit var dispatcher: AutoAdsDispatcherProvider
     private lateinit var repository: GraphqlRepository
     private lateinit var context: Context
     private val rawQueries: Map<String, String> = mapOf()
 
     @Before
     fun setUp() {
-        dispatcher = AutoAdsTestDispatcherProvider()
-        Dispatchers.setMain(TestCoroutineDispatcher())
         repository = mockk()
         context = mockk()
         bidInfoUseCase = mockk(relaxed = true)
-        viewModel = spyk(DailyBudgetViewModel(context, dispatcher, repository, rawQueries, bidInfoUseCase, topAdsGetShopDepositUseCase))
-        mockkObject(RequestHelper)
-        every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
-        every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
+        viewModel = spyk(DailyBudgetViewModel(context, testRule.dispatchers, repository, rawQueries, topAdsGetShopDepositUseCase, bidInfoUseCase))
     }
 
 
@@ -81,26 +70,22 @@ class DailyBudgetViewModelTest {
 
 
     @Test
-    fun `test result in getBudgetInfo`() {
+    fun `test result in getBudgetInfo`() = testRule.runBlockingTest {
         val expected = 2
         var actual = 0
         val bidInfoData: ResponseBidInfo.Result = ResponseBidInfo.Result(com.tokopedia.topads.common.data.response.TopadsBidInfo(data =
         listOf(com.tokopedia.topads.common.data.response.TopadsBidInfo.DataItem(shopStatus = expected))))
-        val response: GraphqlResponse = mockk(relaxed = true)
 
-        coEvery { repository.getReseponse(any(), any()) } returns response
-        every { response.getError(ResponseBidInfo.Result::class.java) } returns listOf()
-        every { response.getData<ResponseBidInfo.Result>(ResponseBidInfo.Result::class.java) } returns bidInfoData
-
-        viewModel.getBudgetInfo("reqType", "source") {
+        val onSuccess:(ResponseBidInfo.Result) -> Unit = {
             actual = it.topadsBidInfo.data[0].shopStatus
         }
-
+        every {
+            bidInfoUseCase.executeQuerySafeMode(captureLambda(), any())
+        } answers {
+            onSuccess.invoke(bidInfoData)
+        }
+        viewModel.getBudgetInfo("reqType", "source", onSuccess)
         assertEquals(expected, actual)
-//        viewModel.getBudgetInfo("reqType", "source") {
-//        }
-//        verify { bidInfoUseCase.setParams(any(),any(),any()) }
-//        verify { bidInfoUseCase.executeQuerySafeMode(any(),any()) }
     }
 
     @Test
@@ -143,7 +128,7 @@ class DailyBudgetViewModelTest {
 
     @Test
     fun `test result in getTopAdsDeposit`() = runBlocking {
-        withContext(dispatcher.ui()) {
+        withContext(testRule.dispatchers.io) {
             viewModel.getTopAdsDeposit()
             verify {
                 topAdsGetShopDepositUseCase.execute(any(), any())

@@ -1,26 +1,24 @@
 package com.tokopedia.topads.view.model
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Author errysuprayogi on 06,November,2019
  */
 class CreateGroupAdsViewModel @Inject constructor(
-        @Named("Main")
-        private val dispatcher: CoroutineDispatcher,
+        dispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
-        private val topAdsGroupValidateNameUseCase: TopAdsGroupValidateNameUseCase) : BaseViewModel(dispatcher) {
+        private val topAdsGroupValidateNameUseCase: TopAdsGroupValidateNameUseCase) : BaseViewModel(dispatcher.main) {
 
     fun validateGroup(groupName: String, onSuccess: (() -> Unit),
                       onError: ((Throwable) -> Unit)) {
-        launch {
+        launchCatchError( block = {
             topAdsGroupValidateNameUseCase.setParams(userSession.shopId.toIntOrZero(), groupName)
             topAdsGroupValidateNameUseCase.execute(
                     {
@@ -34,6 +32,8 @@ class CreateGroupAdsViewModel @Inject constructor(
                         onError(it)
                     }
             )
-        }
+        }, onError = {
+            onError(it)
+        })
     }
 }

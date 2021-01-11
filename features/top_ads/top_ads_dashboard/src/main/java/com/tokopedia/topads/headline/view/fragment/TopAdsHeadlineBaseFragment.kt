@@ -361,8 +361,8 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         if (adapter.items.size.isZero()) {
             onEmptyResult()
         } else if (groupIds.isNotEmpty()) {
-            presenter.getGroupStatisticsData(resources, 1, ",", "", 0,
-                    "", "", groupIds, ::onSuccessStatistics)
+            presenter.getGroupStatisticsData(1, ",", "", 0, "",
+                    "", groupIds, ::onSuccessStatistics)
             presenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
         }
         setFilterCount()

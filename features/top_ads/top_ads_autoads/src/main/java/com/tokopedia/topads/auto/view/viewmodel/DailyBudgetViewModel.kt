@@ -4,13 +4,12 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
-import com.tokopedia.topads.auto.data.network.response.TopAdsDepositResponse
-import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject
 import com.tokopedia.topads.auto.view.RequestHelper
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
@@ -20,8 +19,8 @@ import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.util.Utils
-import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.withContext
 import org.json.JSONException
@@ -32,12 +31,11 @@ import javax.inject.Inject
  */
 class DailyBudgetViewModel @Inject constructor(
         private val context: Context,
-        private val dispatcher: AutoAdsDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val repository: GraphqlRepository,
         private val rawQueries: Map<String, String>,
-        private val bidInfoUseCase: BidInfoUseCase,
         private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
-        ) : BaseViewModel(dispatcher.ui()) {
+        private val bidInfoUseCase: BidInfoUseCase) : BaseViewModel(dispatcher.io) {
 
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
     val topAdsDeposit = MutableLiveData<Int>()
@@ -60,7 +58,7 @@ class DailyBudgetViewModel @Inject constructor(
 
     fun postAutoAds(param: AutoAdsParam) {
         launchCatchError(block = {
-            val data = withContext(dispatcher.io()) {
+            val data = withContext(dispatcher.io) {
                 val request = RequestHelper.getGraphQlRequest(rawQueries[RawQueryKeyObject.QUERY_POST_AUTO_ADS],
                         TopAdsAutoAds.Response::class.java, getParams(param).parameters)
                 val cacheStrategy = RequestHelper.getCacheStrategy()
@@ -85,7 +83,7 @@ class DailyBudgetViewModel @Inject constructor(
 
     fun topadsStatisticsEstimationPotentialReach(onSuccess: (EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) -> Unit, shopId: String, source: String) {
         launchCatchError(block = {
-            val data = withContext(dispatcher.io()) {
+            val data = withContext(dispatcher.io) {
                 val request = RequestHelper.getGraphQlRequest(rawQueries[RawQueryKeyObject.QUERY_POTENTIAL_REACH_ESTIMATION],
                         EstimationResponse::class.java, hashMapOf(SHOP_ID to shopId, TYPE to 1, SOURCE to source))
                 val cacheStrategy = RequestHelper.getCacheStrategy()
@@ -97,7 +95,7 @@ class DailyBudgetViewModel @Inject constructor(
         }
     }
 
-    fun getParams(dataParams: AutoAdsParam): RequestParams {
+    private fun getParams(dataParams: AutoAdsParam): RequestParams {
         val params = RequestParams.create()
         try {
             params.putAll(Utils.jsonToMap(Gson().toJson(dataParams)))
@@ -130,10 +128,7 @@ class DailyBudgetViewModel @Inject constructor(
     companion object {
         const val BUDGET_MULTIPLE_BY = 1000.0
         const val SHOP_ID = "shopId"
-        const val REQUEST_TYPE = "requestType"
         const val SOURCE = "source"
         const val TYPE = "type"
-        const val CREDIT_DATA = "creditData"
-        const val SHOP_DATA = "shopData"
     }
 }

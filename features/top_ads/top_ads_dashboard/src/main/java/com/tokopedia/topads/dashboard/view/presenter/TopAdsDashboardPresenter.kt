@@ -198,8 +198,8 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         })
     }
 
-    fun getGroupStatisticsData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
-                               startDate: String, endDate: String, groupIds: List<String>, onSuccess: ((GetTopadsDashboardGroupStatistics) -> Unit)) {
+    fun getGroupStatisticsData(page: Int, search: String, sort: String, status: Int?, startDate: String,
+                               endDate: String, groupIds: List<String>, onSuccess: (GetTopadsDashboardGroupStatistics) -> Unit) {
         val params = topAdsGetGroupStatisticsUseCase.setParams(search, page, sort, status, startDate, endDate, groupIds)
         topAdsGetGroupStatisticsUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
@@ -214,7 +214,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
                 val token = object : TypeToken<DataResponse<GroupStatisticsResponse?>>() {}.type
                 val restResponse: RestResponse? = typeResponse[token]
                 val response = restResponse?.getData() as DataResponse<GroupStatisticsResponse>
-                response?.data?.getTopadsDashboardGroupStatistics?.let { onSuccess(it) }
+                response.data?.getTopadsDashboardGroupStatistics?.let { onSuccess(it) }
             }
         })
     }
@@ -334,7 +334,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         })
     }
 
-    @GqlQuery("ShopInfo", TopAdsDashboardPresenter.SHOP_AD_INFO)
+    @GqlQuery("ShopInfo", SHOP_AD_INFO)
     fun getShopAdsInfo(onSuccess: ((ShopAdInfo)) -> Unit) {
         val params = mapOf(ParamObject.SHOP_ID to userSession.shopId.toIntOrZero())
         shopAdInfoUseCase.setTypeClass(ShopAdInfo::class.java)

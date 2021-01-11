@@ -1,13 +1,13 @@
 package com.tokopedia.topads.view.model
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE_VALUE
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,9 +15,8 @@ import javax.inject.Inject
  * Author errysuprayogi on 06,November,2019
  */
 class BudgetingAdsViewModel @Inject constructor(
-        @Named("Main")
-        private val dispatcher: CoroutineDispatcher,
-        private val bidInfoUseCase: BidInfoUseCase) : BaseViewModel(dispatcher) {
+        dispatcher: CoroutineDispatchers,
+        private val bidInfoUseCase: BidInfoUseCase) : BaseViewModel(dispatcher.main) {
 
 
     fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit, onEmpty: (() -> Unit)) {

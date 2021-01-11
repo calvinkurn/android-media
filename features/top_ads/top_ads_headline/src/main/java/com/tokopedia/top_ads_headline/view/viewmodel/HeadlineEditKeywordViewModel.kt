@@ -9,7 +9,6 @@ import com.tokopedia.top_ads_headline.Constants.KEYWORD_TYPE_PHRASE
 import com.tokopedia.top_ads_headline.view.fragment.KEYWORD_POSITIVE
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.domain.usecase.GetAdKeywordUseCase
-
 import javax.inject.Inject
 
 class HeadlineEditKeywordViewModel @Inject constructor(
