@@ -264,4 +264,8 @@ class TalkReplyViewModel @Inject constructor(
     fun getIsFollowing(): Boolean {
         return isFollowing
     }
+
+    fun getShopName(): String {
+        return userSession.shopName
+    }
 }

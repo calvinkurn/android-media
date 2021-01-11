@@ -12,6 +12,8 @@ import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -25,9 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
@@ -52,6 +52,7 @@ import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewMode
 import com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyReportBottomSheet
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
 import com.tokopedia.talk.R
+import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyTemplateAdapter
 import com.tokopedia.talk.feature.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -67,7 +68,7 @@ import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReplyBottomSheetClickedListener,
         OnKebabClickedListener, AttachedProductCardListener, TalkReplyHeaderListener,
-        TalkReplyTextboxListener, TalkPerformanceMonitoringContract, ThreadListener, TalkReplyProductHeaderListener {
+        TalkReplyTextboxListener, TalkPerformanceMonitoringContract, ThreadListener, TalkReplyProductHeaderListener, TalkReplyTemplateListener {
 
     companion object {
 
@@ -106,6 +107,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var toaster: Snackbar? = null
     private var inboxType = ""
+    private var templateAdapter: TalkReplyTemplateAdapter? = null
 
     override fun getScreenName(): String {
         return TalkReplyTrackingConstants.REPLY_SCREEN_NAME
@@ -152,6 +154,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         observeUnmaskQuestion()
         observeReportComment()
         observeReportTalk()
+        observeTemplateList()
         super.onViewCreated(view, savedInstanceState)
         getDiscussionData()
     }
@@ -211,6 +214,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         removeObservers(viewModel.markNotFraudResult)
         removeObservers(viewModel.reportCommentResult)
         removeObservers(viewModel.reportTalkResult)
+        removeObservers(viewModel.templateList)
         super.onDestroy()
     }
 
@@ -312,6 +316,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun onKebabClicked() {
         showBottomSheet(commentId = "", allowReport = false, allowDelete = false, allowEdit = true)
+    }
+
+    override fun onTemplateClicked(template: String) {
+        // to do
     }
 
     private fun goToReportActivity(commentId: String) {
@@ -547,6 +555,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     with(it.data) {
                         stopNetworkRequestPerformanceMonitoring()
                         startRenderPerformanceMonitoring()
+                        viewModel.getAllTemplates(viewModel.isMyShop)
                         talkReplyRecyclerView.visibility = View.VISIBLE
                         if(isFromInbox() || isFromNotif()) {
                             adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail, discussionDataByQuestionID.productStock, discussionDataByQuestionID.productStockMessage, discussionDataByQuestionID.isSellerView))
@@ -648,6 +657,33 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             when(it) {
                 is Success -> onHideReportedContent()
                 is Fail -> onFailUnmaskCommentOrQuestion()
+            }
+        })
+    }
+
+    private fun observeTemplateList() {
+        viewModel.templateList.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> {
+                    if(templateAdapter == null) {
+                        templateAdapter = TalkReplyTemplateAdapter(this)
+                        replyTemplates.apply {
+                            adapter = templateAdapter
+                            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                        }
+                    }
+                    if(viewModel.isMyShop) {
+                        if(it.data.sellerTemplate.templates.isEmpty()) return@Observer
+                        templateAdapter?.setData(it.data.sellerTemplate.templates)
+                    } else {
+                        if(it.data.buyerTemplate.templates.isEmpty()) return@Observer
+                        templateAdapter?.setData(it.data.buyerTemplate.templates)
+                    }
+                    replyTemplateContainer.show()
+                }
+                is Fail -> {
+                    replyTemplateContainer.hide()
+                }
             }
         })
     }
