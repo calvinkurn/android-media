@@ -17,7 +17,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.graphql.CommonUtils
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -70,13 +70,20 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_sah.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener {
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener, CoroutineScope {
 
     companion object {
         @JvmStatic
@@ -115,6 +122,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var notifCenterCount = 0
     private var isFirstLoad = true
     private var isErrorToastShown = false
+    private val widgetUpdateStream = BroadcastChannel<() -> Unit>(Channel.BUFFERED)
+    private var widgetUpdateNotifier: Channel<Unit> = Channel(0)
 
     private var performanceMonitoringSellerHomePltCompleted = false
     private var performanceMonitoringSellerHomeCard: PerformanceMonitoring? = null
@@ -130,6 +139,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
 
     override fun initInjector() {
         DaggerSellerHomeComponent.builder()
@@ -149,6 +160,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         hideTooltipIfExist()
         setupView()
 
+        collectWidgetsUpdateStream()
         observeWidgetLayoutLiveData()
         observeShopLocationLiveData()
         observeWidgetData(sellerHomeViewModel.cardWidgetData, WidgetType.CARD)
@@ -184,7 +196,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             view?.post {
                 requestVisibleWidgetsData()
             }
-            resetWidgetImpressionHolder()
+            widgetUpdateStream.offer { resetWidgetImpressionHolder() }
         }
     }
 
@@ -529,9 +541,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val postFilterBottomSheet = (childFragmentManager.findFragmentByTag(PostFilterBottomSheet.TAG) as? PostFilterBottomSheet)
                 ?: PostFilterBottomSheet.newInstance()
         postFilterBottomSheet.init(requireContext(), element.postFilter) {
-            element.data = null
-            notifyWidgetChanged(adapterPosition)
-            getPostData(listOf(element))
+            widgetUpdateStream.offer {
+                val copiedWidget = element.copy().apply { data = null }
+                notifyWidgetChanged(copiedWidget)
+                getPostData(listOf(element))
+            }
         }.show(childFragmentManager)
     }
 
@@ -565,9 +579,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> setOnSuccessGetLayout(result.data)
-                is Fail -> setOnErrorGetLayout(result.throwable)
+            widgetUpdateStream.offer {
+                when (result) {
+                    is Success -> setOnSuccessGetLayout(result.data)
+                    is Fail -> setOnErrorGetLayout(result.throwable)
+                }
             }
         })
 
@@ -635,6 +651,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
         val groupedWidgets = widgets.groupBy { it.widgetType }
         groupedWidgets[WidgetType.ANNOUNCEMENT]?.run { getAnnouncementData(this) }
@@ -648,11 +665,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.BAR_CHART]?.run { getBarChartData(this) }
         groupedWidgets[WidgetType.MULTI_LINE_GRAPH]?.run { getMultiLineGraphData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
-            forEach {
-                if (!it.isLoaded) {
-                    it.isLoaded = true
-                    notifyWidgetChanged(it)
+            widgetUpdateStream.offer {
+                val newWidgetList = adapter.data.toMutableList()
+                forEach { section ->
+                    newWidgetList.indexOf(section).takeIf { it > -1 }?.let { index ->
+                        newWidgetList[index] = section.copy().apply { isLoaded = true }
+                    }
                 }
+                updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+                checkLoadingWidgets()
             }
         }
     }
@@ -739,15 +760,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
-            startHomeLayoutRenderMonitoring()
-            when (result) {
-                is Success -> result.data.setOnSuccessWidgetState(type)
-                is Fail -> {
-                    logToCrashlytics(result.throwable, "$ERROR_WIDGET $type")
-                    result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
+            widgetUpdateStream.offer {
+                startHomeLayoutRenderMonitoring()
+                when (result) {
+                    is Success -> result.data.setOnSuccessWidgetState(type)
+                    is Fail -> {
+                        logToCrashlytics(result.throwable, "$ERROR_WIDGET $type")
+                        result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
+                    }
                 }
+                stopSellerHomeFragmentWidgetPerformanceMonitoring(type)
             }
-            stopSellerHomeFragmentWidgetPerformanceMonitoring(type)
         })
     }
 
@@ -797,38 +820,38 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
         val message = this.message.orEmpty()
-        adapter.data.forEachIndexed { index, widget ->
+        val newWidgetList = adapter.data.map { widget ->
             val isSameWidgetType = widget.widgetType == widgetType
             if (widget is W && widget.data == null && widget.isLoaded && isSameWidgetType) {
-                widget.data = D::class.java.newInstance().apply {
-                    error = message
+                widget.copy().apply {
+                    data = D::class.java.newInstance().apply {
+                        error = message
+                    }
+                    isLoading = widget.data?.isFromCache ?: false
                 }
-                widget.isLoading = widget.data?.isFromCache ?: false
-                notifyWidgetChanged(index)
+            } else {
+                widget
             }
         }
+        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         showErrorToaster()
         view?.addOneTimeGlobalLayoutListener {
             requestVisibleWidgetsData()
-        }
-    }
-
-    private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
-        recyclerView.post {
-            val widgetPosition = adapter.data.indexOf(widget)
-            if (widgetPosition != RecyclerView.NO_POSITION) {
-                notifyWidgetChanged(widgetPosition)
-            }
-        }
-    }
-
-    private fun notifyWidgetChanged(position: Int) {
-        recyclerView.post {
-            adapter.notifyItemChanged(position)
             checkLoadingWidgets()
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
+        val newWidgetList = adapter.data.map {
+            if (it.dataKey == widget.dataKey && it.widgetType == widget.widgetType) widget
+            else it
+        }
+        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        checkLoadingWidgets()
     }
 
     private fun onSuccessGetTickers(tickers: List<TickerItemUiModel>) {
@@ -884,31 +907,34 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         showNotificationBadge()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun resetWidgetImpressionHolder() {
-        adapter.data.forEachIndexed { i, widget ->
+        val newWidgetList = adapter.data.map { widget ->
             val isInvoked = widget.impressHolder.isInvoke
             when (widget) {
                 !is SectionWidgetUiModel,
                 !is TickerWidgetUiModel,
                 !is WhiteSpaceUiModel -> {
                     if (isInvoked) {
-                        widget.impressHolder = ImpressHolder()
-                        notifyWidgetChanged(i)
+                        widget.copy().apply { impressHolder = ImpressHolder() }
+                    } else {
+                        widget
                     }
                 }
+                else -> widget
             }
         }
+        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        checkLoadingWidgets()
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
-        val diffUtilCallback = SellerHomeDiffUtilCallback(
-                adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-                newWidgets)
+        val diffUtilCallback = SellerHomeDiffUtilCallback(adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>, newWidgets)
         val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
-        diffUtilResult.dispatchUpdatesTo(adapter)
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
+        diffUtilResult.dispatchUpdatesTo(adapter)
     }
 
     private fun checkLoadingWidgets() {
@@ -917,6 +943,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             view?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun collectWidgetsUpdateStream() {
+        launchCatchError(block = {
+            widgetUpdateStream.asFlow()
+                    .collect {
+                        recyclerView.post {
+                            it()
+                            widgetUpdateNotifier.offer(Unit)
+                        }
+                        widgetUpdateNotifier.receive()
+                    }
+        }, onError = {
+            setOnErrorGetLayout(it)
+        })
     }
 
     interface Listener {
