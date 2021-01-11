@@ -113,7 +113,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info, this) }
-    private val pipView by viewComponent(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
+    private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -421,8 +421,8 @@ class PlayUserInteractionFragment @Inject constructor(
         if (orientation.isLandscape) setupLandscapeView()
         else setupPortraitView()
 
-        if (playViewModel.isPiPAllowed) pipView.show()
-        else pipView.hide()
+        if (playViewModel.isPiPAllowed) pipView?.show()
+        else pipView?.hide()
     }
 
     private fun setupInsets(view: View) {
@@ -1148,12 +1148,12 @@ class PlayUserInteractionFragment @Inject constructor(
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral || isFreezeOrBanned) {
-            pipView.hide()
+            pipView?.hide()
             return
         }
 
-        if (!bottomInsets.isAnyShown) pipView.show()
-        else pipView.hide()
+        if (!bottomInsets.isAnyShown) pipView?.show()
+        else pipView?.hide()
     }
     //endregion
 
