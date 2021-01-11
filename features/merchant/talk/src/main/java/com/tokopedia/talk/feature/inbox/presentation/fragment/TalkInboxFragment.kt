@@ -99,6 +99,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private var inboxType = ""
     private var containerListener: InboxFragmentContainer? = null
     private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private var shouldHitRoleChangedTracker = false
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REPLY_REQUEST_CODE) {
@@ -197,7 +198,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         clearAllData()
         setInboxType()
         initSortFilter()
-        talkInboxTracking.eventClickTab(inboxType, viewModel.getUserId(), viewModel.getShopId(), getCounterForTracking())
+        shouldHitRoleChangedTracker = true
     }
 
     override fun onPageClickedAgain() {
@@ -275,6 +276,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                         hideFullPageLoading()
                         hideLoading()
                         if (it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
+                            hitOnRoleChangeTracker()
                             talkInboxListener?.updateUnreadCounter(it.data.sellerUnread, it.data.buyerUnread)
                             setFilterCounter()
                             hideLoading()
@@ -569,5 +571,12 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             return viewModel.getUnrespondedCount()
         }
         return viewModel.getUnreadCount()
+    }
+
+    private fun hitOnRoleChangeTracker() {
+        if(shouldHitRoleChangedTracker)  {
+            talkInboxTracking.eventClickTab(inboxType, viewModel.getUserId(), viewModel.getShopId(), getCounterForTracking())
+            shouldHitRoleChangedTracker = false
+        }
     }
 }
