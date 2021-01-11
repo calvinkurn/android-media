@@ -32,7 +32,7 @@ fun MockKVerificationScope.verifyProcessingData(
     productListView.saveLastProductItemPositionToCache(any())
 
     productListView.setAutocompleteApplink(searchProductModel.searchProduct.data.autocompleteApplink)
-    productListView.setDefaultLayoutType(0, searchProductModel.searchProduct.header.defaultView)
+    productListView.setDefaultLayoutType(searchProductModel.searchProduct.header.defaultView)
     productListView.removeLoading()
     productListView.setProductList(capture(visitableListSlot))
     productListView.backToTop()
@@ -78,6 +78,7 @@ fun MockKVerificationScope.verifyProcessingNextPage(productListView: ProductList
 }
 
 fun MockKVerificationScope.verifyIsVisible(productListView: ProductListSectionContract.View) {
+    productListView.setupSearchNavigation()
     productListView.trackScreenAuthenticated()
 }
 

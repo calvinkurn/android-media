@@ -30,11 +30,23 @@ fun getLessDisplayData(data: String, seeMore: Typography): String {
     return displayString
 }
 
-fun convertLongToHourMinuteSec(l : Long) : String {
+fun convertLongToHourMinuteSec(l: Long): Triple<Int, Int, Int> {
     val seconds = (l / 1000).toInt() % 60
     val minutes = (l / (1000 * 60) % 60).toInt()
     val hours = (l / (1000 * 60 * 60) % 24).toInt()
-    return String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
+    return Triple(hours, minutes, seconds)
+}
+
+fun convertSecondsToHrMmSs(timerValue: Long): Calendar {
+    val seconds = timerValue.rem(60)
+    val minutes = (timerValue.rem((60 * 60))).div(60)
+    val hours = timerValue.div((60 * 60))
+    val cal = Calendar.getInstance()
+    cal.add(Calendar.HOUR, hours.toInt())
+    cal.add(Calendar.MINUTE, minutes.toInt())
+    cal.add(Calendar.SECOND, seconds.toInt())
+
+    return cal
 }
 
 fun convertDpToPixel(dp: Int, context: Context): Int {
@@ -42,3 +54,4 @@ fun convertDpToPixel(dp: Int, context: Context): Int {
     val metrics = resources.displayMetrics
     return dp * (metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
 }
+
