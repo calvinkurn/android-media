@@ -274,6 +274,7 @@
 /libraries/dynamic_features/							@tokopedia/android-core-dev
 /libraries/encryption/							        @tokopedia/android-core-dev
 /libraries/fingerprint/									@tokopedia/android-core-dev
+/libraries/floating_window                              @tokopedia/android-core-dev @tokopedia/android-miniondave-dev
 /libraries/graphql/									    @tokopedia/android-core-dev
 /libraries/image_picker/								@tokopedia/android-core-dev
 /libraries/image_picker_common/						    @tokopedia/android-core-dev
