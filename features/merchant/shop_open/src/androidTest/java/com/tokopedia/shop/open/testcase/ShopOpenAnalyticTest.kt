@@ -5,6 +5,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -24,13 +25,13 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.trackingoptimizer.constant.Constant
 import com.tokopedia.shop.open.R
+import com.tokopedia.shop.open.common.EspressoIdlingResource
 import com.tokopedia.shop.open.mock.ShopOpenMockResponseConfig
 import com.tokopedia.shop.open.presentation.view.fragment.ShopOpenRevampQuisionerFragment
 import com.tokopedia.shop.open.util.clickClickableSpan
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.containsString
 import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
@@ -56,19 +57,20 @@ class ShopOpenAnalyticTest {
         setupGraphqlMockResponse(ShopOpenMockResponseConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser2()
         activityRule.launchActivity(Intent())
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.idlingResource)
     }
 
     @After
     fun afterTest() {
         gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.idlingResource)
     }
 
     @Test
     fun testShopOpenResultJourney() {
         Intents.intending(IntentMatchers.anyIntent())
                 .respondWith(Instrumentation.ActivityResult(0, null))
-        waitForData(2000)
 
         testInputShopNameAndDomain()
         testCheckTheSurvey()
@@ -86,7 +88,6 @@ class ShopOpenAnalyticTest {
 
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.text_input_shop_open_revamp_shop_name))))
                 .perform(typeText("hello world"), closeSoftKeyboard())
-        waitForData(2000)
 
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.text_input_shop_open_revamp_domain_name))))
                 .perform(replaceText("helloworld"))
@@ -104,7 +105,6 @@ class ShopOpenAnalyticTest {
 
         onView(firstView(withId(R.id.shop_registration_button)))
                 .perform(click())
-        waitForData(5000)
     }
 
     private fun testCheckTheSurvey() {
@@ -141,7 +141,6 @@ class ShopOpenAnalyticTest {
         onView(firstView(AllOf.allOf(
                 withId(R.id.checkbox_choice))))
                 .perform(click())
-        waitForData(2000)
 
         onView(firstView(withId(R.id.btn_skip_quisioner_page)))
                 .perform(click())
@@ -156,16 +155,10 @@ class ShopOpenAnalyticTest {
 
         onView(firstView(withId(R.id.next_button_quisioner_page)))
                 .perform(click())
-        waitForData(5000)
-    }
-
-    private fun waitForData(ms: Long) {
-        Thread.sleep(ms)
     }
 
     private fun validateTracker() {
         activityRule.activity.finish()
-        waitForData(5000)
         doAnalyticDebuggerTest()
     }
 

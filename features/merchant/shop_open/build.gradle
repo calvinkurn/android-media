@@ -96,6 +96,7 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 }
