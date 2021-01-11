@@ -136,17 +136,25 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         sharedModelPrepaid.expandView.observe(viewLifecycleOwner, Observer {
             if (it) {
                 telcoClientNumberWidget.setVisibleResultNumber(false)
-                dynamicSpacer.layoutParams.height = 0
-                dynamicSpacer.requestLayout()
+                hideDynamicSpacer()
             }
             else {
                 telcoClientNumberWidget.setVisibleResultNumber(true)
-                val defaultSpaceHeight = 81
-                dynamicSpacer.layoutParams.height =
-                        context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space) ?: defaultSpaceHeight
-                dynamicSpacer.requestLayout()
+                if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) showDynamicSpacer() else hideDynamicSpacer()
             }
         })
+    }
+
+    private fun showDynamicSpacer() {
+        val defaultSpaceHeight = 81
+        dynamicSpacer.layoutParams.height =
+                context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space) ?: defaultSpaceHeight
+        dynamicSpacer.requestLayout()
+    }
+
+    private fun hideDynamicSpacer() {
+        dynamicSpacer.layoutParams.height = 0
+        dynamicSpacer.requestLayout()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
