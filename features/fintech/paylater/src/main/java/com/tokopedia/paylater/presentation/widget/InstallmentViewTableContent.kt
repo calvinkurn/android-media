@@ -44,7 +44,9 @@ class InstallmentViewTableContent(val context: Context, val layoutParams: ViewGr
                 && installmentMap[tenureType]?.installmentPerMonth?.isNotEmpty() == true) {
 
             val priceString = installmentMap[tenureType]?.installmentPerMonth?.toIntOrNull() ?: -1
-            if (priceString != -1) CurrencyFormatUtil.convertPriceValueToIdrFormat(priceString, false)
+            val isInterestZeroPercent = installmentMap[tenureType]?.interestPercent == 0f
+            if (priceString != -1 && isInterestZeroPercent) "${CurrencyFormatUtil.convertPriceValueToIdrFormat(priceString, false)}*"
+            else if (priceString != -1) CurrencyFormatUtil.convertPriceValueToIdrFormat(priceString, false)
             else "-"
         } else "-"
     }

@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -44,7 +45,26 @@ class PayLaterVerificationBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tvApplicationStatus.text = "${context?.getString(R.string.payLater_verification_description_waiting)} ${applicationDetail?.payLaterExpirationDate}"
+        applicationDetail?.payLaterStatusContent?.let {
+            tvPopUpDetail.text = it.verificationContentPopUpDetail
+            if (!it.verificationContentInfo.isNullOrEmpty()) {
+                tvAdditionalInfo.text = it.verificationContentInfo
+            }
+            else  tvAdditionalInfo.gone()
+            if (!it.verificationContentPhoneNumber.isNullOrEmpty()) {
+                tvPhone.text = it.verificationContentPhoneNumber
+            } else {
+                tvPhone.gone()
+                ivPhone.gone()
+            }
+            if(!it.verificationContentEmail.isNullOrEmpty()) {
+                tvEmail.text = it.verificationContentEmail
+            } else {
+                tvEmail.gone()
+                ivEmail.gone()
+            }
+
+        }
     }
 
     private fun initBottomSheet() {

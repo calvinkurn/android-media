@@ -57,7 +57,7 @@
         android:layout_marginTop="@dimen/unify_space_2"
         android:layout_marginBottom="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_8"
-        android:text="Daftar sekarang"
+        android:text="@string/payLater_default_subtitle"
         android:textSize="@dimen/unify_font_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivPayLaterArrow"

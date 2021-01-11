@@ -145,7 +145,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
-        if (PayLaterHelper.isKredivoApplicationStatusEmpty(data.applicationDetailList)) {
+        if (PayLaterHelper.isKredivoApplicationStatusEmpty(data.applicationDetailList?: arrayListOf())) {
             btnDaftarPayLater.visible()
             paylaterDaftarWidget.gone()
         } else {
@@ -180,7 +180,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
                 val contentRow = TableRow(it)
                 for (j in 0 until colCount) {
                     when (i) {
-                        0 -> contentRow.addView(getColumnHeader(contentLayoutParam, simulationDataList[i].installmentMap, j), contentLayoutParam)
+                        0 -> contentRow.addView(getColumnHeader(contentLayoutParam, j), contentLayoutParam)
                         1 -> {
                             contentRow.background = ContextCompat.getDrawable(it, R.drawable.ic_paylater_installment_green_border)
                             contentRow.addView(getInstallmentView(contentLayoutParam, simulationDataList[i - 1].installmentMap, tenureList, i, j), contentLayoutParam)
@@ -213,9 +213,9 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         return installmentView.initUI(installmentMap, tenureList, row, col)
     }
 
-    private fun getColumnHeader(contentLayoutParam: ViewGroup.LayoutParams, installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>, position: Int): View {
+    private fun getColumnHeader(contentLayoutParam: ViewGroup.LayoutParams, position: Int): View {
         val installmentColumnHeader = simulationViewFactory.create(InstallmentViewTableColumnHeader::class.java, contentLayoutParam)
-        return installmentColumnHeader.initUI(installmentMap, position)
+        return installmentColumnHeader.initUI(position)
     }
 
     fun setPayLaterClickedListener(payLaterSimulationCallback: PayLaterSimulationCallback) {

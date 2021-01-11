@@ -118,7 +118,7 @@ class PayLaterFragment : BaseDaggerFragment(),
 
     private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
         payLaterDataList = payLaterViewModel.getPayLaterOptions()
-        applicationStatusList = data.applicationDetailList
+        applicationStatusList = data.applicationDetailList?: arrayListOf()
         setPayLaterUI()
     }
 

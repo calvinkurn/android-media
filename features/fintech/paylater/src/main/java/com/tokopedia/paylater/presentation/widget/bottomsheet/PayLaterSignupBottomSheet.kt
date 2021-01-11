@@ -3,8 +3,6 @@ package com.tokopedia.paylater.presentation.widget.bottomsheet
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -102,7 +100,6 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
         rvPayLaterPaymentMethods.adapter = PayLaterPaymentMethodAdapter(payLaterDataList, payLaterApplicationStatusList) { payLaterData, payLaterApplicationStatus ->
             listener?.onPayLaterSignupClicked(payLaterData, payLaterApplicationStatus)
             dismiss()
-            //openBottomSheet(payLaterData, payLaterApplicationStatus)
         }
         rvPayLaterPaymentMethods.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
@@ -137,11 +134,8 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
 
             val payLaterProductList = ArrayList<PayLaterItemProductData>()
             payLaterProductList.addAll(it.getPayLaterOptions())
-            // @Todo remove below lines
-            payLaterProductList.add(payLaterProductList[0])
-            payLaterProductList.add(payLaterProductList[0])
             this.payLaterDataList = payLaterProductList
-            this.payLaterApplicationStatusList = data.applicationDetailList
+            this.payLaterApplicationStatusList = data.applicationDetailList ?: arrayListOf()
             initAdapter()
         }
     }

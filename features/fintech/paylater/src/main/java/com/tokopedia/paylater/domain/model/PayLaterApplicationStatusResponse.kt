@@ -14,22 +14,56 @@ data class UserCreditApplicationStatus(
         @SerializedName("tkp_user_id")
         val tkpUserId: String,
         @SerializedName("application_detail")
-        val applicationDetailList: ArrayList<PayLaterApplicationDetail> = arrayListOf()
+        val applicationDetailList: ArrayList<PayLaterApplicationDetail>?
 ): Parcelable
 
 @Parcelize
 data class PayLaterApplicationDetail(
         @SerializedName("id")
-        val payLaterApplicationId : Long = 0,
+        val payLaterApplicationId : Long? = 0,
         @SerializedName("gateway_name")
-        val payLaterGatewayName: String,
+        val payLaterGatewayName: String ,
         @SerializedName("gateway_code")
         val payLaterGatewayCode: String,
         @SerializedName("application_status")
         val payLaterApplicationStatus: String,
         @SerializedName("expiration_date")
-        val payLaterExpirationDate: String,
+        val payLaterExpirationDate: String?,
+        @SerializedName("limit")
+        val payLaterOptionLimit: PayLaterOptionLimit?,
+        @SerializedName("app_status_content")
+        val payLaterStatusContent: PayLaterStatusContent?,
         var payLaterApplicationStatusLabelStringId: Int = 0,
         var payLaterApplicationStatusLabelType: Int = 0
 ): Parcelable
 
+@Parcelize
+data class PayLaterOptionLimit(
+        @SerializedName("max")
+        val limitMax: Int?,
+        @SerializedName("one_month")
+        val limitOneMonth: Int?,
+        @SerializedName("three_month")
+        val limitThreeMonth: Int?,
+        @SerializedName("six_month")
+        val limitSixMonth: Int?,
+        @SerializedName("nine_month")
+        val limitNineMonth: Int?,
+        @SerializedName("one_year")
+        val limitOneYear: Int?
+): Parcelable
+
+@Parcelize
+data class PayLaterStatusContent(
+        @SerializedName("email")
+        val verificationContentEmail: String?,
+        @SerializedName("subheader")
+        val verificationContentSubHeader: String?,
+        @SerializedName("phone_number")
+        val verificationContentPhoneNumber: String?,
+        @SerializedName("pop_up_detail")
+        val verificationContentPopUpDetail: String?,
+        @SerializedName("additional_info")
+        val verificationContentInfo: String?
+)
+        :Parcelable

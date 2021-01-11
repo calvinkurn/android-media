@@ -182,8 +182,8 @@ class PayLaterViewModelTest {
         } just Runs
         viewModel.getPayLaterApplicationStatus()
         assert(viewModel.payLaterApplicationStatusResultLiveData.value is Success)
-        val actual = (viewModel.payLaterApplicationStatusResultLiveData.value as Success).data.applicationDetailList[0].payLaterGatewayName
-        val expected = mockApplicationStatusData.userCreditApplicationStatus.applicationDetailList[0].payLaterGatewayName
+        val actual = (viewModel.payLaterApplicationStatusResultLiveData.value as Success).data.applicationDetailList?.getOrNull(0)?.payLaterGatewayName
+        val expected = mockApplicationStatusData.userCreditApplicationStatus.applicationDetailList?.getOrNull(0)?.payLaterGatewayName
         Assertions.assertThat(actual).isEqualTo(expected)
     }
 

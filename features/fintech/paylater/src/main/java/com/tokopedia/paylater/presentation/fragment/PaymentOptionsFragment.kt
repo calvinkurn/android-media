@@ -63,6 +63,7 @@ class PaymentOptionsFragment : Fragment() {
     }
 
     private fun setData() {
+        tvTitlePaylaterPartner.text = responseData?.partnerName
         responseData?.subHeader?.let {
             tvSubTitlePaylaterPartner.text = it
             tvSubTitlePaylaterPartner.visible()

@@ -5,34 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
-import com.tokopedia.paylater.data.mapper.OneMonthInstallment
-import com.tokopedia.paylater.data.mapper.PayLaterSimulationTenureType
-import com.tokopedia.paylater.domain.model.SimulationItemDetail
 
 class InstallmentViewTableColumnHeader(val context: Context, val layoutParams: ViewGroup.LayoutParams) {
 
     fun getLayout() = R.layout.paylater_simulation_table_column_header
 
-    fun initUI(installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>, position: Int): View {
+    fun initUI(position: Int): View {
         val installmentColumnHeader = LayoutInflater.from(context).inflate(getLayout(), null)
         installmentColumnHeader.layoutParams = layoutParams
-        if (isOfferApplied(installmentMap, position)) {
-            installmentColumnHeader.findViewById<TextView>(R.id.offerLabel).visible()
-        } else {
-            installmentColumnHeader.findViewById<TextView>(R.id.offerLabel).gone()
-            installmentColumnHeader.findViewById<TextView>(R.id.tableHeader).text = "Cicil ${3 * position}x"
-        }
+        if (position == 0) installmentColumnHeader.findViewById<TextView>(R.id.tableHeader).text = context.getString(R.string.paylater_column_header_one_month)
+        else installmentColumnHeader.findViewById<TextView>(R.id.tableHeader).text = "Cicil ${3 * position}x"
         return installmentColumnHeader
-    }
-
-    private fun isOfferApplied(installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>, position: Int): Boolean {
-        if (position == 0 && installmentMap.containsKey(OneMonthInstallment)) {
-            val interestRate = installmentMap[OneMonthInstallment]?.interestPercent
-            return interestRate == 0.0f
-        }
-        return false
     }
 }
