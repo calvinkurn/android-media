@@ -136,11 +136,15 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         sharedModelPrepaid.expandView.observe(viewLifecycleOwner, Observer {
             if (it) {
                 telcoClientNumberWidget.setVisibleResultNumber(false)
-                dynamicSpacer.visibility = View.GONE
+                dynamicSpacer.layoutParams.height = 0
+                dynamicSpacer.requestLayout()
             }
             else {
                 telcoClientNumberWidget.setVisibleResultNumber(true)
-                dynamicSpacer.visibility = View.VISIBLE
+                val defaultSpaceHeight = 81
+                dynamicSpacer.layoutParams.height =
+                        context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space) ?: defaultSpaceHeight
+                dynamicSpacer.requestLayout()
             }
         })
     }

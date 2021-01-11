@@ -344,9 +344,12 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         fadeOut.duration = 300
         fadeOut.fillAfter = true
 
+        //initial appBar state is expanded
+        (activity as? BaseTelcoActivity)?.onExpandAppBar()
+
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var lastOffset = -1
-            var lastIsCollapsed = true
+            var lastIsCollapsed = false
 
             override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
                 if (lastOffset == verticalOffSet) return

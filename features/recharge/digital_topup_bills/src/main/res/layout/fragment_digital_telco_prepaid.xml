@@ -50,10 +50,9 @@
             <View
                 android:id="@+id/digital_telco_dynamic_banner_spacer"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/telco_dynamic_banner_space"
+                android:layout_height="0dp"
                 android:layout_below="@+id/digital_telco_banner_spacer"
-                app:layout_scrollFlags="scroll"
-                android:visibility="gone"/>
+                app:layout_scrollFlags="scroll"/>
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/telco_ticker_view"
