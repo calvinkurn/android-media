@@ -72,11 +72,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var separator: View
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var localCacheHandler: LocalCacheHandler
-    private lateinit var rechargeProductFromSlice: String
 
     override var menuId = TelcoComponentType.TELCO_PREPAID
     private var inputNumberActionType = InputNumberActionType.MANUAL
 
+    private var rechargeProductFromSlice: String = ""
     private var clientNumber = ""
     private var operatorId = ""
     private var autoSelectTabProduct = false

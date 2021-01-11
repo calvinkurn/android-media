@@ -289,3 +289,10 @@ fun updateComponentsQueryParams(categoryId : String){
         it[CATEGORY_ID] = categoryId
     }
 }
+
+fun getPageInfo(pageName: String) : PageInfo {
+    discoveryPageData[pageName]?.let {
+        return it.pageInfo
+    }
+    return PageInfo()
+}
