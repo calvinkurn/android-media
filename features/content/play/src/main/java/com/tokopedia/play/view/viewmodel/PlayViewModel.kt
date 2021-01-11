@@ -155,6 +155,7 @@ class PlayViewModel @Inject constructor(
     val isPiPAllowed: Boolean
         get() {
             return remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_PIP, true)
+                    && !videoPlayer.isYouTube
         }
 
     val userId: String
