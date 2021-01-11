@@ -42,8 +42,7 @@ class TalkReplyHeaderViewHolder(view: View,
             showProfilePictureAndNameWithCondition(element.userThumbnail, element.userId.toString())
             showHeaderDateWithCondition(date)
             showUserNameWithCondition(element.userName, element.isMyQuestion)
-            showUnmaskCardWithCondition(element.allowUnmask)
-            showTickerWithCondition(element.isMasked, element.maskedContent)
+            showMaskingState(element.isMasked, element.allowUnmask, element.maskedContent)
             itemView.apply {
                 replyHeaderDate.text = context.getString(R.string.reply_dot_builder, date)
                 replyHeaderTNC.text = HtmlLinkHelper(context, getString(R.string.reply_header_tnc)).spannedString
@@ -57,17 +56,6 @@ class TalkReplyHeaderViewHolder(view: View,
             threadListener.onUnmaskCommentOptionSelected(commentId)
         } else {
             threadListener.onDismissUnmaskCard(commentId)
-        }
-    }
-
-    private fun showUnmaskCardWithCondition(allowUnmask: Boolean) {
-        if (allowUnmask) {
-            itemView.replyUnmaskCard.apply {
-                show()
-                setListener(this@TalkReplyHeaderViewHolder, "")
-            }
-        } else {
-            itemView.replyUnmaskCard.hide()
         }
     }
 
@@ -186,11 +174,19 @@ class TalkReplyHeaderViewHolder(view: View,
         }
     }
 
-    private fun showTickerWithCondition(isMasked: Boolean, maskedContent: String) {
+    private fun showMaskingState(isMasked: Boolean, allowUnmask: Boolean, maskedContent: String) {
         if (isMasked) {
-            itemView.replyQuestionTicker.apply {
-                show()
-                setTextDescription(maskedContent)
+            if (allowUnmask) {
+                itemView.replyUnmaskCard.apply {
+                    show()
+                    setListener(this@TalkReplyHeaderViewHolder, "")
+                }
+            } else {
+                itemView.replyQuestionTicker.apply {
+                    show()
+                    setTextDescription(maskedContent)
+                }
+                itemView.replyUnmaskCard.hide()
             }
         } else {
             itemView.replyQuestionTicker.hide()
