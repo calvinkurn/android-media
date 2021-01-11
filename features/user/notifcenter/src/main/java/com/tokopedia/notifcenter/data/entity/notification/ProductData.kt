@@ -14,7 +14,7 @@ data class ProductData(
         @SerializedName("currency")
         val currency: String = "",
         @SerializedName("department_id")
-        val departmentId: Int = 0,
+        val departmentId: Long = 0,
         @SerializedName("image_url")
         val imageUrl: String = "",
         @SerializedName("is_buyable")
@@ -38,9 +38,9 @@ data class ProductData(
         @SerializedName("price_fmt")
         val priceFmt: String = "",
         @SerializedName("price_idr")
-        val priceIdr: Int = 0,
+        val priceIdr: Long = 0,
         @SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: Long = 0,
         @SerializedName("rating")
         val rating: Int = 0,
         @SerializedName("shop")
