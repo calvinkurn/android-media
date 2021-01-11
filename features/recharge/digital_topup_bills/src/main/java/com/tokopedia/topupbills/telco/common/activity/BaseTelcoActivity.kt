@@ -110,16 +110,16 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     }
 
     fun onCollapseAppBar() {
+        (toolbar as HeaderUnify).transparentMode = false
         if (::menuTelco.isInitialized) {
-            (toolbar as HeaderUnify).transparentMode = false
             menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
                     com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
         }
     }
 
     fun onExpandAppBar() {
+        (toolbar as HeaderUnify).transparentMode = true
         if (::menuTelco.isInitialized) {
-            (toolbar as HeaderUnify).transparentMode = true
             menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
                     com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
         }
