@@ -457,6 +457,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         analytic.trackBumpReminder()
     }
 
+    override fun trackDeleteReminder() {
+        analytic.trackDeleteReminder()
+    }
+
     private fun createViewHolderState(
             notification: NotificationUiModel,
             adapterPosition: Int,

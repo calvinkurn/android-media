@@ -238,6 +238,20 @@ class NotificationAnalytic @Inject constructor(
         )
     }
 
+    fun trackDeleteReminder() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                InboxAnalyticCommon.createGeneralEvent(
+                        event = Event.CLICK_NOTIF_CENTER,
+                        eventCategory = EventCategory.NOTIFCENTER,
+                        eventAction = EventAction.CLICK_REMIND_ME,
+                        eventLabel = "hapus pengingat",
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId
+                )
+        )
+    }
+
     private fun getEventLabel(notification: NotificationUiModel): String {
         return "notif_list - ${notification.templateKey} - ${notification.notifId}"
     }

@@ -187,6 +187,7 @@ class ProductNotificationCardUnify(
                     product.loadingReminderState = true
                     bindDeleteReminderState(product)
                     listener?.deleteReminder(product, notification, adapterPosition)
+                    listener?.trackDeleteReminder()
                 }
             }
         } else {
