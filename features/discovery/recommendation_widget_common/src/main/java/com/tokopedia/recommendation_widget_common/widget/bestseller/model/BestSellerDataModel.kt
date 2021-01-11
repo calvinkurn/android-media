@@ -29,13 +29,14 @@ data class BestSellerDataModel(
     override fun equalsWith(b: Any?): Boolean {
         return b is BestSellerDataModel && b.title == title &&
                 b.pageName == pageName &&
+                b.seeMoreAppLink == seeMoreAppLink &&
                 b.recommendationItemList === recommendationItemList &&
-                b.recommendationItemList.containsAll(b.recommendationItemList)
+                b.recommendationItemList.containsAll(recommendationItemList)
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
         if(b is BestSellerDataModel){
-            if(!b.recommendationItemList.containsAll(recommendationItemList)){
+            if(!b.recommendationItemList.containsAll(recommendationItemList) || (recommendationItemList.isEmpty() && b.recommendationItemList.isNotEmpty())){
                 return Bundle().apply { putBoolean(BEST_SELLER_UPDATE_RECOMMENDATION, true) }
             } else if(b.recommendationItemList !== recommendationItemList){
                 return Bundle().apply { putBoolean(BEST_SELLER_HIDE_LOADING_RECOMMENDATION, true) }
