@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -72,11 +71,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -98,9 +92,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val ERROR_LAYOUT = "Error get layout data."
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
-        private const val ERROR_WIDGET_UPDATE_REQUEST_FULL = "Error adding widget update process, because the channel cannot accept the request."
         private const val TOAST_DURATION = 5000L
-        private const val WIDGET_UPDATE_RETRY_LIMIT = 10
     }
 
     @Inject
@@ -126,8 +118,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var notifCenterCount = 0
     private var isFirstLoad = true
     private var isErrorToastShown = false
-    private val widgetUpdateStream = BroadcastChannel<() -> Unit>(Channel.BUFFERED)
-    private var widgetUpdateNotifier: Channel<Unit> = Channel(0)
 
     private var performanceMonitoringSellerHomePltCompleted = false
     private var performanceMonitoringSellerHomeCard: PerformanceMonitoring? = null
@@ -164,7 +154,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         hideTooltipIfExist()
         setupView()
 
-        collectWidgetsUpdateStream()
         observeWidgetLayoutLiveData()
         observeShopLocationLiveData()
         observeWidgetData(sellerHomeViewModel.cardWidgetData, WidgetType.CARD)
@@ -200,11 +189,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             view?.post {
                 requestVisibleWidgetsData()
             }
-            addWidgetUpdate(process = {
+            recyclerView.post {
                 resetWidgetImpressionHolder()
-            }, onError = {
-                setOnErrorGetLayout(it)
-            })
+            }
         }
     }
 
@@ -549,13 +536,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val postFilterBottomSheet = (childFragmentManager.findFragmentByTag(PostFilterBottomSheet.TAG) as? PostFilterBottomSheet)
                 ?: PostFilterBottomSheet.newInstance()
         postFilterBottomSheet.init(requireContext(), element.postFilter) {
-            addWidgetUpdate(process = {
+            recyclerView.post {
                 val copiedWidget = element.copy().apply { data = null }
                 notifyWidgetChanged(copiedWidget)
                 getPostData(listOf(element))
-            }, onError = {
-                it.setOnErrorWidgetState<PostListDataUiModel, PostListWidgetUiModel>(element.widgetType)
-            })
+            }
         }.show(childFragmentManager)
     }
 
@@ -589,14 +574,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
-            addWidgetUpdate(process = {
+            recyclerView.post {
                 when (result) {
                     is Success -> setOnSuccessGetLayout(result.data)
                     is Fail -> setOnErrorGetLayout(result.throwable)
                 }
-            }, onError = {
-                setOnErrorGetLayout(it)
-            })
+            }
         })
 
         view?.swipeRefreshLayout?.isRefreshing = true
@@ -677,7 +660,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.BAR_CHART]?.run { getBarChartData(this) }
         groupedWidgets[WidgetType.MULTI_LINE_GRAPH]?.run { getMultiLineGraphData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
-            addWidgetUpdate(process = {
+            recyclerView.post {
                 val newWidgetList = adapter.data.toMutableList()
                 forEach { section ->
                     newWidgetList.indexOf(section).takeIf { it > -1 }?.let { index ->
@@ -686,9 +669,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
                 updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
                 checkLoadingWidgets()
-            }, onError = {
-                setOnErrorGetLayout(it)
-            })
+            }
         }
     }
 
@@ -774,7 +755,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
-            addWidgetUpdate(process = {
+            recyclerView.post {
                 startHomeLayoutRenderMonitoring()
                 when (result) {
                     is Success -> result.data.setOnSuccessWidgetState(type)
@@ -784,9 +765,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     }
                 }
                 stopSellerHomeFragmentWidgetPerformanceMonitoring(type)
-            }, onError = {
-                it.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
-            })
+            }
         })
     }
 
@@ -959,37 +938,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             view?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
         }
-    }
-
-    private fun addWidgetUpdate(process: () -> Unit, onError: (it: Throwable) -> Unit) {
-        launchCatchError(block = {
-            var retryCount = 0
-            while (!widgetUpdateStream.offer { process() } && retryCount < WIDGET_UPDATE_RETRY_LIMIT) {
-                retryCount += 1
-                delay(WIDGET_UPDATE_DELAY)
-            }
-            if (retryCount >= WIDGET_UPDATE_RETRY_LIMIT) {
-                onError(Throwable(ERROR_WIDGET_UPDATE_REQUEST_FULL))
-            }
-        }, onError = {
-            onError(it)
-        })
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun collectWidgetsUpdateStream() {
-        launchCatchError(block = {
-            widgetUpdateStream.asFlow()
-                    .collect {
-                        recyclerView.post {
-                            it()
-                            widgetUpdateNotifier.offer(Unit)
-                        }
-                        widgetUpdateNotifier.receive()
-                    }
-        }, onError = {
-            setOnErrorGetLayout(it)
-        })
     }
 
     interface Listener {
