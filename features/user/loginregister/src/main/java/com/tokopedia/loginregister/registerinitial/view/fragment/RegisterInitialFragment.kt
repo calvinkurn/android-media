@@ -504,7 +504,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             } else {
                 phoneNumber?.run {
-                    showProceedWithPhoneDialog(this)
+                    goToRegisterWithPhoneNumber(this)
                 }
             }
         }
@@ -525,7 +525,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     }
 
                     override fun onDialogNegativeBtnClicked() {
-                        showProceedWithPhoneDialog(phoneNumber ?: "")
+                        phoneNumber?.run {
+                            goToRegisterWithPhoneNumber(this)
+                        }
                     }
                 })
             }
@@ -550,18 +552,11 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
 
                 override fun onDialogNegativeBtnClicked() {
-                    showProceedWithPhoneDialog(phoneNumber ?: "")
+                    phoneNumber?.run {
+                        goToRegisterWithPhoneNumber(this)
+                    }
                 }
             })
-//            OvoAccountDialog.showConnectOvoDialog(this, object: BaseDialogConnectAccListener {
-//                override fun onDialogPositiveBtnClicked() {
-//
-//                }
-//
-//                override fun onDialogNegativeBtnClicked() {
-//
-//                }
-//            })
         }
     }
 
@@ -768,8 +763,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 setTempPhoneNumber(registerCheckData.view)
                 if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
-                } else {
+                } else if(registerCheckData.isShowRegisterOvo){
                     registerInitialViewModel.checkHasOvoAccount(registerCheckData.view)
+                } else {
+                    showProceedWithPhoneDialog(registerCheckData.view)
                 }
             }
             EMAIL_TYPE -> {
