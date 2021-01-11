@@ -23,7 +23,7 @@ import org.junit.Test
 /**
  * Created by Yehezkiel on 10/01/21
  */
-class ProductDarkModeTest {
+class ProductDetailScreenshotTest {
 
     var darkModePrefixKey = "product_detail"
 
