@@ -9,9 +9,26 @@
 
         <activity
             android:name=".presentation.activity.DigitalCartActivity"
-            android:theme="@style/Theme.WhiteUnify"
+            android:label="@string/digital_cart_toolbar_title"
             android:screenOrientation="portrait"
-            android:label="@string/digital_cart_toolbar_title"/>
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter android:autoVerify="true">
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_digital"
+                    android:path="@string/path_telco_cart"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_digital"
+                    android:path="@string/path_telco_cart"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

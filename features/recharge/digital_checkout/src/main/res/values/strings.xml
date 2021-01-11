@@ -5,9 +5,11 @@
     <string name="digital_cart_toolbar_title">Checkout</string>
 
     <string name="digital_cart_detail_see_detail_label">Lihat Detail</string>
+    <string name="digital_cart_detail_close_label">Tutup</string>
+
     <string name="digital_cart_total_payment_label">Total Pembayaran</string>
     <string name="digital_cart_checkout_pay_label">Bayar</string>
     <string name="digital_hint_input_price">Contoh: 422500</string>
 
-
+    <string name="digital_generate_token_checkout">%1$s_%2$s</string>
 </resources>

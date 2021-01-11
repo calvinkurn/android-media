@@ -1,15 +1,20 @@
 package com.tokopedia.digital_checkout.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_checkout.data.model.CartItemDigital
+import com.tokopedia.digital_checkout.data.model.CartItemDigitalWithTitle
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.digital_checkout.usecase.DigitalAddToCartUseCase
 import com.tokopedia.digital_checkout.usecase.DigitalGetCartUseCase
+import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,6 +33,18 @@ class DigitalCartViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
+
+    private val _cartTitle = MutableLiveData<String>()
+    val cartTitle: LiveData<String>
+        get() = _cartTitle
+
+    private val _cartItemDigitalList = MutableLiveData<List<CartItemDigital>>()
+    val cartItemDigitalList: LiveData<List<CartItemDigital>>
+        get() = _cartItemDigitalList
+
+    private val _cartAdditionalInfoList = MutableLiveData<List<CartItemDigitalWithTitle>>()
+    val cartAdditionalInfoList: LiveData<List<CartItemDigitalWithTitle>>
+        get() = _cartAdditionalInfoList
 
     fun getCart(digitalCheckoutPassData: DigitalCheckoutPassData) {
         if (!userSession.isLoggedIn) {
@@ -84,7 +101,10 @@ class DigitalCartViewModel @Inject constructor(
                 val restResponse = typeRestResponseMap[token]
                 val data = restResponse!!.getData<DataResponse<*>>()
                 val responseCartData: ResponseCartData = data.data as ResponseCartData
-                //if success update live data
+
+                _cartTitle.postValue(responseCartData.attributes?.categoryName ?: "")
+                _cartItemDigitalList.postValue(DigitalCheckoutMapper.mapDigitalInfo(responseCartData.attributes?.mainInfo ?: listOf()))
+                _cartAdditionalInfoList.postValue(DigitalCheckoutMapper.mapAdditionalInfo(responseCartData.attributes?.additionalInfo ?: listOf()))
             }
         }
     }

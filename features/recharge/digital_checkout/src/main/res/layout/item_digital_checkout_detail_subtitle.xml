@@ -5,6 +5,7 @@
     android:id="@+id/tvCheckoutDetailSubtitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/spacing_lvl2"
     android:textColor="@color/Neutral_N700_96"
     app:typographyType="heading_4"
     tools:text="Data pengguna" />

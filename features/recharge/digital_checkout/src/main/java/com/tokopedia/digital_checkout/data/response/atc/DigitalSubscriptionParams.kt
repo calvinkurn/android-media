@@ -8,4 +8,9 @@ class DigitalSubscriptionParams(
         var isSubscribed: Boolean = false,
         var showSubscribePopUp: Boolean? = null,
         var autoSubscribe: Boolean? = null
-) : Parcelable
+) : Parcelable {
+    companion object {
+        const val ARG_SHOW_SUBSCRIBE_POP_UP = "show_subscribe_pop_up"
+        const val ARG_AUTO_SUBSCRIBE = "auto_subscribe"
+    }
+}
