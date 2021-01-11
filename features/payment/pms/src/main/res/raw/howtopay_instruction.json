@@ -3,7 +3,7 @@
       {
         "gateway_code": "BNIVA",
         "gateway_name": "BNI Virtual Account",
-        "instructions": [
+        "channel": [
           {
             "payment_channel": "OVO",
             "channel_steps": [

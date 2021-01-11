@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.text.*
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
@@ -26,13 +27,13 @@ import com.tokopedia.pms.howtopay_native.ui.adapter.InstructionAdapter
 import com.tokopedia.pms.howtopay_native.ui.adapter.MultiChannelAdapter
 import com.tokopedia.pms.howtopay_native.ui.adapter.viewHolder.NonScrollLinerLayoutManager
 import com.tokopedia.pms.howtopay_native.ui.viewmodel.HowToPayViewModel
+import com.tokopedia.pms.howtopay_native.util.ScreenshotHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.pms_hwp_info.*
 import org.json.JSONObject
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 class HowToPayFragment : BaseDaggerFragment() {
@@ -42,6 +43,10 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private val screenshotHelper: ScreenshotHelper by lazy(LazyThreadSafetyMode.NONE) {
+        ScreenshotHelper { showToast(getString(R.string.pms_hwp_screenshot_success)) }
+    }
 
     private val howToPayViewModel: HowToPayViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, viewModelFactory.get()).get(HowToPayViewModel::class.java)
@@ -118,7 +123,11 @@ class HowToPayFragment : BaseDaggerFragment() {
         appLinkPaymentInfo?.gateway_logo?.let {
             ivGateWayImage.setImageUrl(it)
         }
-        groupPaymentInfoAction.setOnClickListener {
+        ivTakeScreenshot.setOnClickListener {
+            copyTOClipBoard(context, appLinkPaymentInfo?.payment_code ?: "")
+            showToast("Nomor virtual account berhasil disalin.")
+        }
+        tvPaymentInfoAction.setOnClickListener {
             copyTOClipBoard(context, appLinkPaymentInfo?.payment_code ?: "")
             showToast("Nomor virtual account berhasil disalin.")
         }
@@ -138,7 +147,11 @@ class HowToPayFragment : BaseDaggerFragment() {
             ivGateWayImage.setImageUrl(it, ivGateWayImage.heightRatio)
         }
         ivTakeScreenshot.setImage(IconUnify.COPY)
-        groupPaymentInfoAction.setOnClickListener {
+        ivTakeScreenshot.setOnClickListener {
+            copyTOClipBoard(context, appLinkPaymentInfo?.payment_code ?: "")
+            showToast("Kode Pembayaran berhasil disalin.")
+        }
+        tvPaymentInfoAction.setOnClickListener {
             copyTOClipBoard(context, appLinkPaymentInfo?.payment_code ?: "")
             showToast("Kode Pembayaran berhasil disalin.")
         }
@@ -177,7 +190,11 @@ class HowToPayFragment : BaseDaggerFragment() {
             ivGateWayImage.setImageUrl(it)
         }
         ivTakeScreenshot.setImage(IconUnify.COPY)
-        groupPaymentInfoAction.setOnClickListener {
+        ivTakeScreenshot.setOnClickListener {
+            copyTOClipBoard(context, appLinkPaymentInfo?.bank_num ?: "")
+            showToast("Nomor rekening berhasil disalin.")
+        }
+        tvPaymentInfoAction.setOnClickListener {
             copyTOClipBoard(context, appLinkPaymentInfo?.bank_num ?: "")
             showToast("Nomor rekening berhasil disalin.")
         }
@@ -199,7 +216,10 @@ class HowToPayFragment : BaseDaggerFragment() {
         tickerAmountNote.gone()
         tvAccountName.gone()
         tvPaymentNote.visible()
+        tvPaymentInfoAction.setOnClickListener { screenshotHelper.takeScreenShot(view, this) }
+        ivTakeScreenshot.setOnClickListener { screenshotHelper.takeScreenShot(view, this) }
         context?.let {
+            tvPaymentNote.movementMethod = LinkMovementMethod.getInstance()
             tvPaymentNote.text = getSpannableStoreNote(it)
         }
     }
@@ -242,7 +262,9 @@ class HowToPayFragment : BaseDaggerFragment() {
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
-                //todo
+                activity?.let {
+                    StoreListBottomSheet().show(it.supportFragmentManager, "StoreListBottomSheet")
+                }
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -253,7 +275,6 @@ class HowToPayFragment : BaseDaggerFragment() {
         }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return SpannableStringBuilder.valueOf(storeNote).append(" ").append(spannableString)
     }
-
 
     private fun getAppLinkPaymentInfoData(bundle: Bundle): AppLinkPaymentInfo? {
         return try {
@@ -285,6 +306,11 @@ class HowToPayFragment : BaseDaggerFragment() {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        screenshotHelper.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
     }
 
     companion object {
