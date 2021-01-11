@@ -8,6 +8,7 @@ import androidx.annotation.StringDef
         AdminFeature.SALDO,
         AdminFeature.NEW_ORDER,
         AdminFeature.READY_TO_SHIP_ORDER,
+        AdminFeature.ORDER_HISTORY,
         AdminFeature.MANAGE_PRODUCT,
         AdminFeature.ADD_PRODUCT,
         AdminFeature.REVIEW,
@@ -20,6 +21,7 @@ annotation class AdminFeature {
         const val SALDO = "SALDO"
         const val NEW_ORDER = "NEW_ORDER"
         const val READY_TO_SHIP_ORDER = "READY_ORDER"
+        const val ORDER_HISTORY = "ORDER_HISTORY"
         const val MANAGE_PRODUCT = "MANAGE_PRODUCT"
         const val ADD_PRODUCT = "ADD_PRODUCT"
         const val REVIEW = "REVIEW"

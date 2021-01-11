@@ -1,7 +1,10 @@
 package com.tokopedia.seller.menu.presentation.uimodel
 
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.seller.menu.R
+import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel
 
 object OrderSectionTitleUiModel: SectionTitleUiModel(
@@ -11,5 +14,5 @@ object OrderSectionTitleUiModel: SectionTitleUiModel(
 ) {
 
     override val onClickApplink: String?
-        get() = ApplinkConst.SELLER_HISTORY
+        get() = UriUtil.buildUri(ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, AdminFeature.ORDER_HISTORY)
 }

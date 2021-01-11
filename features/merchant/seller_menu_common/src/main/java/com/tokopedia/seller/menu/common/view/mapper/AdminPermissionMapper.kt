@@ -26,6 +26,7 @@ class AdminPermissionMapper @Inject constructor(private val remoteConfig: Remote
             AdminFeature.SALDO -> listOf(PermissionId.MANAGE_FINANCE)
             AdminFeature.NEW_ORDER -> listOf(PermissionId.MANAGE_ORDER)
             AdminFeature.READY_TO_SHIP_ORDER -> listOf(PermissionId.MANAGE_ORDER)
+            AdminFeature.ORDER_HISTORY -> listOf(PermissionId.MANAGE_ORDER)
             AdminFeature.MANAGE_PRODUCT -> listOf(PermissionId.MANAGE_PRODUCT)
             AdminFeature.ADD_PRODUCT -> listOf(PermissionId.MANAGE_PRODUCT)
             AdminFeature.REVIEW -> listOf(PermissionId.REPLY_REVIEW)
@@ -50,6 +51,9 @@ class AdminPermissionMapper @Inject constructor(private val remoteConfig: Remote
             }
             AdminFeature.READY_TO_SHIP_ORDER -> {
                 RouteManager.getIntent(context, ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)
+            }
+            AdminFeature.ORDER_HISTORY -> {
+                RouteManager.getIntent(context, ApplinkConst.SELLER_HISTORY)
             }
             AdminFeature.MANAGE_PRODUCT -> {
                 RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE)
