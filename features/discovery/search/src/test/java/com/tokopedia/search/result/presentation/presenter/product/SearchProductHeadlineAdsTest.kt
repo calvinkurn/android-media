@@ -57,10 +57,6 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
 
     private fun `Then verify CPM at the top of list`() {
         visitableList.first().shouldBeInstanceOf<CpmViewModel>()
-
-        for (i in 1 until visitableList.size) {
-            visitableList[i].shouldBeInstanceOf<ProductItemViewModel>()
-        }
     }
 
     @Test
@@ -82,11 +78,6 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
     private fun `Then verify CPM at the top and at additional position between product cards`(additionalCpmIndex: Int) {
         visitableList.first().shouldBeInstanceOf<CpmViewModel>()
         visitableList[additionalCpmIndex].shouldBeInstanceOf<CpmViewModel>()
-
-        visitableList.forEachIndexed { index, visitable ->
-            if (index != 0 && index != additionalCpmIndex)
-                visitable.shouldBeInstanceOf<ProductItemViewModel>()
-        }
     }
 
     private fun `Then verify CPM data`(additionalCpmIndex: Int, expectedAdditionalCpmPosition: Int, expectedAdditionalCpmLayout: Int) {

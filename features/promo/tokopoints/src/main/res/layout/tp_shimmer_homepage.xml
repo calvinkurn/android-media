@@ -79,7 +79,7 @@
     <View
         android:id="@+id/box_4"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
+        android:layout_height="@dimen/dp_80"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_16"
@@ -103,13 +103,23 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/box_6"
-        android:layout_width="@dimen/dp_200"
+        android:layout_width="@dimen/dp_220"
         android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintCircleRadius="@dimen/dp_8"
         app:layout_constraintStart_toStartOf="@+id/box_5"
         app:layout_constraintTop_toBottomOf="@id/box_5"
         app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintCircleRadius="@dimen/dp_8"
+        app:layout_constraintStart_toStartOf="@+id/box_5"
+        app:layout_constraintTop_toBottomOf="@id/box_6"
+        app:loader_type="rect" />
+
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/circle_1"
