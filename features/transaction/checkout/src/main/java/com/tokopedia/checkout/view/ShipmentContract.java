@@ -111,10 +111,6 @@ public interface ShipmentContract {
 
         void setCourierPromoApplied(int itemPosition);
 
-        void showBottomSheetError(String htmlMessage);
-
-        void navigateToCodConfirmationPage(Data data, CheckoutRequest checkoutRequest);
-
         void stopTrace();
 
         void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo);
@@ -132,7 +128,7 @@ public interface ShipmentContract {
                                                                               int devicePrice,
                                                                               String diagnosticId);
 
-        void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
+        void removeIneligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
 
         boolean isInsuranceEnabled();
 
@@ -272,7 +268,7 @@ public interface ShipmentContract {
 
         void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 
-        void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType);
+        void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList);
 
         void cancelAutoApplyPromoStackLogistic(int itemPosition, String promoCode);
 
@@ -298,8 +294,6 @@ public interface ShipmentContract {
         boolean getCouponStateChanged();
 
         CodModel getCodData();
-
-        void proceedCodCheckout(boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId);
 
         CampaignTimerUi getCampaignTimer();
 

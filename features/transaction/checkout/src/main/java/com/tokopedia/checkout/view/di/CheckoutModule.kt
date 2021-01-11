@@ -116,7 +116,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  editAddressUseCase: EditAddressUseCase,
                                  changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
                                  saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
-                                 codCheckoutUseCase: CodCheckoutUseCase,
                                  ratesUseCase: GetRatesUseCase,
                                  ratesApiUseCase: GetRatesApiUseCase,
                                  stateConverter: RatesResponseStateConverter,
@@ -125,7 +124,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  shippingCourierConverter: ShippingCourierConverter,
                                  userSessionInterface: UserSessionInterface,
                                  analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
-                                 codAnalytics: CodAnalytics,
                                  checkoutAnalytics: CheckoutAnalyticsCourierSelection,
                                  getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                  shipmentDataConverter: ShipmentDataConverter,
@@ -138,9 +136,9 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 editAddressUseCase, changeShippingAddressGqlUseCase,
                 saveShipmentStateGqlUseCase,
                 ratesUseCase, ratesApiUseCase,
-                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
+                clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase,
+                analyticsPurchaseProtection, checkoutAnalytics, getInsuranceCartUseCase,
                 shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson,
                 executorSchedulers)
     }

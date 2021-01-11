@@ -185,8 +185,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_PROMO = 954;
 
-    private static final int REQUEST_CODE_NORMAL_CHECKOUT = 0;
-    private static final int REQUEST_CODE_COD = 1218;
     private static final String SHIPMENT_TRACE = "mp_shipment";
 
     public static final String ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT";
@@ -948,22 +946,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void showBottomSheetError(String htmlMessage) {
-        if (getFragmentManager() != null) {
-            CodBottomSheetFragment bottomSheet = CodBottomSheetFragment.newInstance(htmlMessage);
-            bottomSheet.show(getFragmentManager(), BOTTOM_SHEET_TAG);
-        }
-    }
-
-    @Override
-    public void navigateToCodConfirmationPage(Data data, CheckoutRequest checkoutRequest) {
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.COD);
-        intent.putExtra(EXTRA_CHECKOUT_REQUEST, checkoutRequest);
-        intent.putExtra(EXTRA_COD_DATA, data);
-        startActivity(intent);
-    }
-
-    @Override
     public void renderErrorCheckPromoShipmentData(String message) {
         showToastError(message);
         shipmentAdapter.resetCourierPromoState();
@@ -1616,8 +1598,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCheckoutValidationResult(boolean result, Object shipmentData,
-                                           int errorPosition, int requestCode) {
+    public void onCheckoutValidationResult(boolean result, Object shipmentData, int errorPosition) {
         if (shipmentData == null && result) {
             if (shipmentPresenter.isIneligiblePromoDialogEnabled()) {
                 ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList = new ArrayList<>();
@@ -1671,9 +1652,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 if (notEligiblePromoHolderdataList.size() > 0) {
-                    shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList, requestCode);
+                    shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList);
                 } else {
-                    doCheckout(requestCode);
+                    doCheckout();
                 }
             } else {
                 boolean hasRedStatePromo = false;
@@ -1703,16 +1684,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     showToastError(errorMessage);
                     sendAnalyticsPromoRedState();
                 } else {
-                    doCheckout(requestCode);
+                    doCheckout();
                 }
             }
         } else if (shipmentData != null && !result) {
             hasRunningApiCall = false;
             hideLoading();
             sendAnalyticsDropshipperNotComplete();
-            if (requestCode == REQUEST_CODE_COD) {
-                mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
-            }
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
                 onDataDisableToCheckout(null);
@@ -1729,29 +1707,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 checkoutTradeInAnalytics.eventClickBayarCourierNotComplete();
             }
             sendAnalyticsCourierNotComplete();
-            if (requestCode == REQUEST_CODE_COD) {
-                mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
-            }
             checkShippingCompletion(true);
         }
     }
 
-    private void doCheckout(int requestCode) {
+    private void doCheckout() {
         if (hasInsurance) {
             mTrackerMacroInsurance.eventClickPaymentMethodWithInsurance(shipmentAdapter.getInsuranceProductId(),
                     shipmentAdapter.getInsuranceTitle());
         }
 
-        switch (requestCode) {
-            case REQUEST_CODE_NORMAL_CHECKOUT:
-                shipmentPresenter.processSaveShipmentState();
-                shipmentPresenter.processCheckout(hasInsurance, isOneClickShipment(),
-                        isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId());
-                break;
-            case REQUEST_CODE_COD:
-                shipmentPresenter.proceedCodCheckout(hasInsurance, isOneClickShipment(),
-                        isTradeIn(), getDeviceId(), getCheckoutLeasingId());
-        }
+        shipmentPresenter.processSaveShipmentState();
+        shipmentPresenter.processCheckout(hasInsurance, isOneClickShipment(),
+                isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId());
+
     }
 
     @Override
@@ -1842,7 +1811,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChoosePaymentMethodButtonClicked() {
-        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
+        shipmentAdapter.checkDropshipperValidation();
     }
 
     @Override
@@ -2281,13 +2250,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onProcessToPayment() {
         showLoading();
-        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
-    }
-
-    @Override
-    public void onProcessToPaymentCod() {
-        showLoading();
-        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_COD);
+        shipmentAdapter.checkDropshipperValidation();
     }
 
     public int getResultCode() {
@@ -2617,12 +2580,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onButtonContinueClicked(int checkoutType) {
+    public void onButtonContinueClicked() {
         if (promoNotEligibleBottomsheet != null) {
             checkoutAnalyticsCourierSelection.eventClickLanjutkanOnErrorPromoConfirmation();
             ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList = promoNotEligibleBottomsheet.getNotEligiblePromoHolderDataList();
             promoNotEligibleBottomsheet.dismiss();
-            shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList, checkoutType);
+            shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList);
         }
     }
 
@@ -2673,7 +2636,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList) {
+    public void removeIneligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList) {
         ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
         if (validateUsePromoRevampUiModel != null) {
             if (validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getState().equals("red")) {
@@ -2695,7 +2658,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
 
-        doCheckout(checkoutType);
+        doCheckout();
     }
 
     @Override

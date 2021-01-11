@@ -6,9 +6,9 @@ package com.tokopedia.purchase_platform.common.feature.promonoteligible
 
 interface PromoNotEligibleActionListener {
 
-    fun onShow();
+    fun onShow()
 
-    fun onButtonContinueClicked(checkoutType: Int);
+    fun onButtonContinueClicked()
 
     fun onButtonChooseOtherPromo()
 

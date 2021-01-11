@@ -54,23 +54,6 @@
             </LinearLayout>
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/btn_select_cod"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginEnd="4dp"
-                android:layout_marginRight="4dp"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:text="@string/label_pay_cod"
-                android:visibility="gone"
-                app:unifyButtonSize="medium"
-                app:unifyButtonType="transaction"
-                app:unifyButtonVariant="ghost"
-                tools:visibility="visible" />
-
-            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_select_payment_method"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_40"

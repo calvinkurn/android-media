@@ -610,7 +610,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void checkDropshipperValidation(int requestCode) {
+    public void checkDropshipperValidation() {
         boolean hasSelectAllCourier = checkHasSelectAllCourier(true, -1, "");
         if (hasSelectAllCourier) {
             boolean availableCheckout = true;
@@ -634,7 +634,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
 
-            shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition, requestCode);
+            shipmentAdapterActionListener.onCheckoutValidationResult(availableCheckout, errorSelectedShipmentData, errorPosition);
         } else {
             int errorPosition = 0;
             if (shipmentCartItemModelList != null && shipmentDataList != null) {
@@ -646,7 +646,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             }
-            shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition, requestCode);
+            shipmentAdapterActionListener.onCheckoutValidationResult(false, null, errorPosition);
         }
     }
 
