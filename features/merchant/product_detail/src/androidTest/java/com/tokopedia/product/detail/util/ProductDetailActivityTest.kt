@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
-import com.tokopedia.utils.view.ViewUtils.screenShootAndSave
+import com.tokopedia.utils.view.ViewUtils.screenShotAndSave
 
 /**
  * Created by Yehezkiel on 10/01/21
@@ -46,8 +46,7 @@ class ProductDetailActivityTest : BaseSimpleActivity() {
             isAffiliate = false, trackerAttribution = "",
             trackerListName = "", affiliateString = "", deeplinkUrl = "", layoutId = "")
 
-    fun takeScreenShot() {
-        val fragmentVideoDetail = supportFragmentManager.findFragmentByTag(tagFragment) as DynamicProductDetailFragment
-        screenShootAndSave(this.window.decorView, "darkmode", "pdp")
+    fun takeScreenShot(screenshotName: String) {
+        screenShotAndSave(window.decorView, "dark_mode", screenshotName)
     }
 }

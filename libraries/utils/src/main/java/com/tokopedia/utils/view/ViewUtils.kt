@@ -16,7 +16,7 @@ import java.io.IOException
 object ViewUtils {
 
     @JvmStatic
-    fun Activity.screenShootAndSave(view: View, dir: String, fileName: String) {
+    fun Activity.screenShotAndSave(view: View, dir: String, fileName: String) {
         val bitmap = Bitmap.createBitmap(
                 view.width,
                 view.height, Bitmap.Config.ARGB_8888
@@ -40,11 +40,11 @@ object ViewUtils {
             bitmap?.compress(Bitmap.CompressFormat.PNG, 100, fos)
             fos.flush()
             fos.close()
-            Log.e("screenshot","success")
+            Log.e("screenshot", "success")
         } catch (e: FileNotFoundException) {
-            Log.e("screenshot","fail : ${e.message}")
+            Log.e("screenshot", "fail : ${e.message}")
         } catch (e: IOException) {
-            Log.e("screenshot","fail : ${e.message}")
+            Log.e("screenshot", "fail : ${e.message}")
         }
     }
 }
