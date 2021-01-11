@@ -258,6 +258,9 @@ class ProductNotificationCardUnify(
         } else {
             btnCheckout?.show()
             btnCheckout?.setOnClickListener {
+                notification?.let {
+                    listener?.trackClickBuy(it, product)
+                }
                 listener?.buyProduct(product)
             }
         }

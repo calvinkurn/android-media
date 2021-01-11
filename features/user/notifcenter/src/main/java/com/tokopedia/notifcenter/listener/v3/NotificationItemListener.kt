@@ -15,17 +15,16 @@ interface NotificationItemListener {
     fun bumpReminder(
             product: ProductData, notification: NotificationUiModel, adapterPosition: Int
     )
-
     fun deleteReminder(
             product: ProductData, notification: NotificationUiModel, adapterPosition: Int
     )
-
     fun trackProductImpression(
             notification: NotificationUiModel, product: ProductData, position: Int
     )
     fun trackProductClick(
             notification: NotificationUiModel, product: ProductData, position: Int
     )
+    fun trackClickAtc(notification: NotificationUiModel, product: ProductData)
+    fun trackClickBuy(notification: NotificationUiModel, product: ProductData)
 
-    fun trackClickAtc(notificationUiModel: NotificationUiModel, product: ProductData)
 }
