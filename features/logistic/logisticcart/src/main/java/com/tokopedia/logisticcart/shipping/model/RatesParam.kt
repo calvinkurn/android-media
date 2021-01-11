@@ -152,6 +152,8 @@ data class RatesParam(
 
         fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }
 
+        fun codHistory(history: Int) = apply { this.user_history = history }
+
         fun isLeasing(leasing: Boolean) = apply { this.vehicle_leasing = if (leasing) 1 else 0 }
 
         fun promoCode(code: String?) = apply { this.psl_code = code ?: "" }

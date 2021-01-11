@@ -72,7 +72,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     public void loadCourierRecommendation(ShipmentDetailData shipmentDetailData,
                                           int selectedServiceId,
                                           List<ShopShipment> shopShipmentList,
-                                          boolean isCorner,
+                                          int codHistory, boolean isCorner,
                                           boolean isLeasing, String pslCode,
                                           List<Product> products, String cartString,
                                           boolean isTradeInDropOff,
@@ -87,18 +87,19 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
             if (shipmentDetailData.getSelectedCourier() != null) {
                 selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
             }
-            loadDuration(selectedSpId, selectedServiceId, isCorner, isLeasing,
+            loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
                     shopShipmentList, isTradeInDropOff, shippingParam, pslCode, isFulfillment, preOrderTime, mvc);
         }
     }
 
-    private void loadDuration(int selectedSpId, int selectedServiceId,
+    private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory,
                               boolean isCorner, boolean isLeasing,
                               List<ShopShipment> shopShipmentList, boolean isRatesTradeInApi,
                               ShippingParam shippingParam, String pslCode,
                               boolean isFulfillment, int preOrderTime, String mvc) {
         RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(isCorner)
+                .codHistory(codHistory)
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
                 .mvc(mvc)

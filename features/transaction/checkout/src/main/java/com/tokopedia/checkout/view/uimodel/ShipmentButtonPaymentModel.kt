@@ -12,6 +12,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class ShipmentButtonPaymentModel(
         var totalPrice: String = "-",
+        var isCod: Boolean = false,
         var quantity: Int = 0,
         var abTestButton: ABTestButton = ABTestButton()
 ) : ShipmentData, Parcelable

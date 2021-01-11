@@ -13,17 +13,19 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticCommon.data.entity.address.Token;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.Token;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.cod.Data;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
@@ -109,6 +111,10 @@ public interface ShipmentContract {
 
         void setCourierPromoApplied(int itemPosition);
 
+        void showBottomSheetError(String htmlMessage);
+
+        void navigateToCodConfirmationPage(Data data, CheckoutRequest checkoutRequest);
+
         void stopTrace();
 
         void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo);
@@ -126,7 +132,7 @@ public interface ShipmentContract {
                                                                               int devicePrice,
                                                                               String diagnosticId);
 
-        void removeIneligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
+        void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
 
         boolean isInsuranceEnabled();
 
@@ -266,7 +272,7 @@ public interface ShipmentContract {
 
         void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 
-        void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList);
+        void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType);
 
         void cancelAutoApplyPromoStackLogistic(int itemPosition, String promoCode);
 
@@ -290,6 +296,10 @@ public interface ShipmentContract {
         void setCouponStateChanged(boolean appliedCoupon);
 
         boolean getCouponStateChanged();
+
+        CodModel getCodData();
+
+        void proceedCodCheckout(boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId);
 
         CampaignTimerUi getCampaignTimer();
 

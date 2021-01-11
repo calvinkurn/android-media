@@ -13,6 +13,7 @@ import java.util.*
 
 class ClearNotEligiblePromoSubscriber(val view: ShipmentContract.View?,
                                       val presenter: ShipmentPresenter,
+                                      val checkoutType: Int,
                                       val notEligiblePromoHolderdata: ArrayList<NotEligiblePromoHolderdata>) : Subscriber<ClearPromoUiModel>() {
 
     override fun onCompleted() {
@@ -20,7 +21,7 @@ class ClearNotEligiblePromoSubscriber(val view: ShipmentContract.View?,
 
     override fun onError(e: Throwable) {
         e.printStackTrace()
-        view?.removeIneligiblePromo(notEligiblePromoHolderdata)
+        view?.removeIneligiblePromo(checkoutType, notEligiblePromoHolderdata)
     }
 
     override fun onNext(response: ClearPromoUiModel?) {
@@ -28,7 +29,7 @@ class ClearNotEligiblePromoSubscriber(val view: ShipmentContract.View?,
             presenter.tickerAnnouncementHolderData.message = response.successDataModel.tickerMessage
             view?.updateTickerAnnouncementMessage()
         }
-        view?.removeIneligiblePromo(notEligiblePromoHolderdata)
+        view?.removeIneligiblePromo(checkoutType, notEligiblePromoHolderdata)
     }
 
 }

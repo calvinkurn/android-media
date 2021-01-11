@@ -19,6 +19,14 @@ public class CodAnalytics extends LogisticAnalytics {
     public CodAnalytics() {
     }
 
+    public void eventViewBayarDiTempat() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_BAYAR_DI_TEMPAT
+        );
+    }
+
     public void eventClickPelajariSelengkapnya() {
         sendEventCategoryAction(
                 EventName.CLICK_COURIER,
@@ -87,6 +95,57 @@ public class CodAnalytics extends LogisticAnalytics {
         );
     }
 
+    public void eventClickBayarDiTempatShipmentNotSuccessIneligible() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BAYAR_DI_TEMPAT,
+                ConstantLogisticAnalytics.EventLabel.NOT_SUCCESS_INELIGIBLE
+        );
+    }
+
+    public void eventClickBayarDiTempatShipmentNotSuccessIncomplete() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BAYAR_DI_TEMPAT,
+                ConstantLogisticAnalytics.EventLabel.NOT_SUCCESS_INCOMPLETE
+        );
+    }
+
+    public void eventClickBayarDiTempatShipmentSuccessEligible() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BAYAR_DI_TEMPAT,
+                ConstantLogisticAnalytics.EventLabel.SUCCESS_ELIGIBLE
+        );
+    }
+
+    public void eventViewErrorIneligible() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_ERROR_INELIGIBLE
+        );
+    }
+
+    public void eventClickXIneligible() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_X_INELIGIBLE
+        );
+    }
+
+    public void eventClickMengertiIneligible() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_MENGERTI_INELIGIBLE
+        );
+    }
+
     public void eventClickBackOnConfirmation() {
         sendEventCategoryAction(
                 EventName.CLICK_COD,
@@ -100,6 +159,14 @@ public class CodAnalytics extends LogisticAnalytics {
                 EventName.CLICK_COD,
                 EventCategory.CASH_ON_DELIVERY,
                 EventAction.CLICK_BAYAR_DI_TEMPAT
+        );
+    }
+
+    public void eventImpressionEligibleCod() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.IMPRESSION_ELIGIBLE_COD
         );
     }
 

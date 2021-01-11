@@ -41,7 +41,7 @@ public interface ShippingDurationContract {
 
     interface Presenter extends CustomerPresenter<View> {
         void loadCourierRecommendation(ShipmentDetailData shipmentDetailData, int selectedServiceId,
-                                       List<ShopShipment> shopShipmentList,
+                                       List<ShopShipment> shopShipmentList, int codHistory,
                                        boolean isCorner, boolean isLeasing, String pslCode,
                                        List<Product> products, String cartString, boolean isTradeInDropOff,
                                        RecipientAddressModel recipientAddressModel, boolean isFulfillment, int preOrderTime, String mvc);

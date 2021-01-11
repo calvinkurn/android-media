@@ -458,6 +458,15 @@
         "Nominal": 5000,
         "Description": "Bantu garda terdepan COVID-19, jaga kesehatan para nakes melalui donasi pengadaan APD & Vitamin melalui partner BenihBaik."
       },
+      "cod": {
+        "is_cod": false,
+        "counter_cod": -1
+      },
+      "message": {
+        "message_info": "",
+        "message_link": "",
+        "message_logo": ""
+      },
       "egold_attributes": {
         "eligible": false,
         "is_tiering": false,

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
+import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -26,6 +27,7 @@ data class CartShipmentAddressFormData(
         var keroDiscomToken: String? = null,
         var keroUnixTime: Int = 0,
         var donation: Donation? = null,
+        var cod: CodModel? = null,
         var isHidingCourier: Boolean = false,
         var isBlackbox: Boolean = false,
         var egoldAttributes: EgoldAttributeModel? = null,

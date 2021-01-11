@@ -201,6 +201,7 @@ public class ShipmentDataRequestConverter {
                 .shippingDuration(serviceId)
                 .courier(courierId)
                 .shippingPrice(shippingPrice)
+                .codFlag(cartItem.getAnalyticsProductCheckoutData().getCodFlag())
                 .tokopediaCornerFlag(cartItem.getAnalyticsProductCheckoutData().getTokopediaCornerFlag())
                 .isFulfillment(cartItem.getAnalyticsProductCheckoutData().getIsFulfillment())
                 .setDiscountedPrice(cartItem.getAnalyticsProductCheckoutData().isDiscountedPrice())
