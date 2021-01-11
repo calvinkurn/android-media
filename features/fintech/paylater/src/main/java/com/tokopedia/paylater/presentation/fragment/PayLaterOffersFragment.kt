@@ -42,8 +42,10 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         getComponent(PayLaterComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?,
+    ): View? {
         return inflater.inflate(R.layout.fragment_paylater_offers, container, false)
     }
 
@@ -118,11 +120,9 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         payLaterDataGroup.visible()
         val payLaterProductList = ArrayList<PayLaterItemProductData>()
         payLaterProductList.addAll(payLaterViewModel.getPayLaterOptions())
-        // @Todo remove below lines
-        payLaterProductList.add(payLaterProductList[0])
-        payLaterProductList.add(payLaterProductList[0])
         paymentOptionViewPager.post {
-            pagerAdapter.setPaymentData(payLaterProductList, data.applicationDetailList)
+            pagerAdapter.setPaymentData(payLaterProductList, data.applicationDetailList
+                    ?: arrayListOf())
         }
     }
 
@@ -132,7 +132,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             if (payLaterViewModel.getPayLaterOptions().isEmpty()) {
                 onPayLaterDataLoadingFail(throwable)
             } else
-            pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
+                pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
         }
     }
 
@@ -142,6 +142,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     companion object {
         const val PAGE_MARGIN = 16
+
         @JvmStatic
         fun newInstance() =
                 PayLaterOffersFragment()

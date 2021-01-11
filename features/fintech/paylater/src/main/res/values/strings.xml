@@ -16,13 +16,16 @@
 
     <!-- PayLater Simulation Page -->
     <string name="payLater_simulation_header_title">Simulasi pembayaran*</string>
+    <string name="payLater_simulation_header_sub_title">Tersedia pembayaran dengan</string>
     <string name="paylater_simulation_empty_view_title">Yah, harga tidak sesuai ketentuan PayLater</string>
     <string name="paylater_simulation_empty_view_description">Untuk menggunakan PayLater, min. total transaksi adalah Rp10 Ribu dan maks. total transaksi adalah Rp30 Juta</string>
     <string name="paylater_simulation_ticker_text">*Sudah termasuk biaya layanan. Belum termasuk biaya asuransi &amp; ongkir. Harga final dapat dilihat di halaman Pembayaran.
 **Pelunasan sekali bayar dalam 30 hari, tanpa bunga untuk Kredivo dan Indodana.</string>
-    <string name="paylater_not_applicable_ticker_text">Tenang, kamu bisa coba pakai kartu kredit. Ada cicilan bunga 0% juga! <font fgcolor='#03AC0E'>Lihat Simulasi Kartu Kredit</font> </string>
 
+    <string name="paylater_not_applicable_ticker_text">Tenang, kamu bisa coba pakai kartu kredit. Ada cicilan bunga 0% juga! <font fgcolor='#03AC0E'>Lihat Simulasi Kartu Kredit</font> </string>
+    <string name="paylater_repayment_text">*Pelunasan untuk pilihan durasi pembayaran dengan bunga 0%</string>
     <string name="paylater_simulation_supervised_text">Semua mitra penyedia terdaftar dan diawasi oleh</string>
+    <string name="paylater_column_header_one_month">30 hari</string>
 
     <!-- Credit Card Simulation Page -->
     <string name="credit_card_simulation_empty_view_title">Yaah, harga tidak sesuai ketentuan kartu kredit</string>
@@ -49,7 +52,7 @@
     <!-- PayLater Signup Bottom Sheet -->
     <string name="payLater_registration_submit_subtitle">Ajukan ketika pembayaran</string>
     <string name="payLater_create_account_subtitle">Buat akun di aplikasi</string>
-    <string name="payLater_verification_until_subtitle">Verifikasi hingga:</string>
+    <string name="payLater_default_subtitle">payLater_verification_until_subtitle</string>
     <string name="payLater_reapply_on_subtitle">Ajukan ulang pada:</string>
     <string name="payLater_reapply_now_subtitle">Ajukan ulang sekarang</string>
 
@@ -59,7 +62,7 @@
     <string name="payLater_status_rejected">Ditolak</string>
     <string name="payLater_status_cancelled">Dibatalkan</string>
     <string name="payLater_status_approved">Pengajuan disetujui</string>
-    <string name="payLater_status_suspended">Dinonaktifkan</string>
+    <string name="payLater_status_suspended">Akun dinonaktifkan</string>
     <string name="payLater_status_failed">Pengajuan gagal</string>
     <string name="payLater_status_expired">Pengajuan Kedaluwarsa</string>
 

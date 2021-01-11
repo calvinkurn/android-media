@@ -12,27 +12,12 @@
         android:layout_height="wrap_content"
         android:text="30 hari**"
         android:textSize="@dimen/unify_font_14"
-        app:layout_constraintBottom_toTopOf="@+id/offerLabel"
-        app:layout_constraintEnd_toEndOf="@+id/offerLabel"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/offerLabel"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:typographyType="heading_5"
-        app:typographyWeight="bold" />
-
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/offerLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_4"
-        app:labelTitle="BUNGA 0%"
-        android:textSize="@dimen/unify_font_8"
-        app:labelType="general_dark_green"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableHeader" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

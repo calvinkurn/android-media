@@ -4,15 +4,8 @@ query paylater_getSimulation($amount: Int!){
       gateway_id
       gateway_name
       simulation_detail {
-        installment_per_month
         installment_per_month_ceil
-        total_fee
-        total_fee_ceil
-        total_interest
-        total_interest_ceil
         interest_pct
-        total_with_provision
-        total_with_provision_ceil
         is_recommended
         tenure
       }

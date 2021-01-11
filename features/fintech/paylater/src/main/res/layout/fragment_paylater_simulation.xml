@@ -68,6 +68,39 @@
             app:layout_constraintTop_toBottomOf="@+id/dividerVertical"
             app:loader_type="rect" />
 
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSubtitleSimulation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:text="@string/payLater_simulation_header_sub_title"
+            android:textColor="@color/payLater_register_widget_subtitle"
+            app:layout_constraintStart_toStartOf="@+id/tvTitleSimulation"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleSimulation"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/offerLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bunga 0%"
+            app:labelType="general_dark_green"
+            android:layout_marginStart="@dimen/payLater_benefit_margin_dp_6"
+            app:layout_constraintBottom_toBottomOf="@id/tvSubtitleSimulation"
+            app:layout_constraintStart_toEndOf="@id/tvSubtitleSimulation"
+            app:layout_constraintTop_toTopOf="@id/tvSubtitleSimulation" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/subTitleShimmer"
+            android:layout_width="@dimen/payLater_shimmer_width_dp_256"
+            android:layout_height="@dimen/unify_space_16"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleShimmer"
+            app:loader_type="rect" />
+
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/simulationShimmerView"
             android:layout_width="0dp"
@@ -75,7 +108,7 @@
             android:layout_marginTop="@dimen/unify_space_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleShimmer"
+            app:layout_constraintTop_toBottomOf="@+id/subTitleShimmer"
             app:loader_type="rect" />
 
         <LinearLayout
@@ -85,7 +118,7 @@
             android:layout_marginTop="@dimen/unify_space_16"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTitleSimulation" />
+            app:layout_constraintTop_toBottomOf="@id/tvSubtitleSimulation" />
 
         <HorizontalScrollView
             android:id="@+id/hsvInstallment"
@@ -126,6 +159,20 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="llPayLaterPartner, simulationShimmerView" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvRepaymentDescription"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:text="@string/paylater_repayment_text"
+            android:textColor="@color/payLater_register_widget_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tableBarrier"
+            app:typographyType="body_3" />
+
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/tickerSimulation"
@@ -138,7 +185,7 @@
             app:descriptionText="@string/paylater_simulation_ticker_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tableBarrier"
+            app:layout_constraintTop_toBottomOf="@+id/tvRepaymentDescription"
             app:tickerType="information" />
 
         <include
@@ -175,6 +222,7 @@
             android:layout_marginEnd="@dimen/unify_space_16"
             android:visibility="gone"
             android:text="Daftar PayLater Sekarang"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tickerSimulation"
@@ -197,13 +245,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="tvTitleSimulation,llPayLaterPartner,hsvInstallment,ivShadow,tickerSimulation, supervisorWidget " />
+            app:constraint_referenced_ids="tvTitleSimulation,tvSubtitleSimulation, offerLabel, llPayLaterPartner,hsvInstallment,ivShadow,tvRepaymentDescription, tickerSimulation, supervisorWidget " />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/shimmerGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="titleShimmer, registerShimmer, simulationShimmerView" />
+            app:constraint_referenced_ids="titleShimmer, subTitleShimmer, registerShimmer, simulationShimmerView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

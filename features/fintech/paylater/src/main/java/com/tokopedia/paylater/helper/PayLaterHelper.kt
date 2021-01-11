@@ -10,49 +10,9 @@ import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterVerificationBottomSheet
 import com.tokopedia.unifycomponents.Label
+import java.io.File
 
 object PayLaterHelper {
-
-    /**
-     * setLabelData -> set string resource id and label type once in application status data
-     * @param payLaterApplicationDetail : ApplicationStatus Data
-     */
-    fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {
-        when (PayLaterApplicationStatusMapper.getApplicationStatusType(payLaterApplicationDetail)) {
-            is PayLaterStatusWaiting -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_waiting
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_ORANGE
-            }
-            is PayLaterStatusActive -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_active
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_BLUE
-            }
-            is PayLaterStatusCancelled -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_cancelled
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
-            }
-            is PayLaterStatusRejected -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_rejected
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
-            }
-            is PayLaterStatusApproved -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_approved
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_BLUE
-            }
-            is PayLaterStatusSuspended -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_suspended
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
-            }
-            is PayLaterStatusFailed -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_failed
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
-            }
-            is PayLaterStatusExpired -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.payLater_status_expired
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
-            }
-        }
-    }
 
     /**
      * desc: open required bottom sheet from the signup bottom sheet based on
@@ -91,5 +51,11 @@ object PayLaterHelper {
             if (payLaterItem.payLaterGatewayCode == "KREDIVO" && payLaterItem.payLaterApplicationStatus.isEmpty()) return true
         }
         return false
+    }
+
+    fun getJson(path : String) : String {
+        val uri = this.javaClass.classLoader?.getResource(path)
+        val file = File(uri?.path)
+        return String(file.readBytes())
     }
 }

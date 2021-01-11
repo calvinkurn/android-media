@@ -13,7 +13,6 @@ import com.tokopedia.paylater.domain.usecase.PayLaterApplicationStatusUseCase
 import com.tokopedia.paylater.domain.usecase.PayLaterProductDetailUseCase
 import com.tokopedia.paylater.domain.usecase.PayLaterSimulationUseCase
 import com.tokopedia.paylater.helper.PayLaterException
-import com.tokopedia.paylater.helper.PayLaterHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -101,12 +100,12 @@ class PayLaterViewModel @Inject constructor(
 
     private fun onPayLaterApplicationStatusSuccess(userCreditApplicationStatus: UserCreditApplicationStatus) {
         launchCatchError(block = {
-            withContext(ioDispatcher) {
-                for (applicationDetail in userCreditApplicationStatus.applicationDetailList) {
-                    PayLaterHelper.setLabelData(applicationDetail)
-                }
+            val isResponseValid = withContext(ioDispatcher) {
+                return@withContext PayLaterApplicationStatusMapper.handleApplicationStateResponse(userCreditApplicationStatus)
             }
-            payLaterApplicationStatusResultLiveData.value = Success(userCreditApplicationStatus)
+            if (isResponseValid)
+                payLaterApplicationStatusResultLiveData.value = Success(userCreditApplicationStatus)
+            else onPayLaterApplicationStatusError(PayLaterException.PayLaterNullDataException(APPLICATION_STATE_DATA_FAILURE))
         }, onError = { onPayLaterApplicationStatusError(it) })
     }
 
@@ -117,7 +116,8 @@ class PayLaterViewModel @Inject constructor(
             }
             payLaterData?.also {
                 payLaterActivityResultLiveData.value = Success(it)
-            } ?: onPayLaterDataError(PayLaterException.PayLaterNullDataException(PAY_LATER_DATA_FAILURE))
+            }
+                    ?: onPayLaterDataError(PayLaterException.PayLaterNullDataException(PAY_LATER_DATA_FAILURE))
         }, onError = {
             onPayLaterDataError(it)
         })
@@ -144,6 +144,7 @@ class PayLaterViewModel @Inject constructor(
     companion object {
         const val SIMULATION_DATA_FAILURE = "NULL DATA"
         const val PAY_LATER_DATA_FAILURE = "NULL DATA"
+        const val APPLICATION_STATE_DATA_FAILURE = "NULL_DATA"
         const val PAY_LATER_NOT_APPLICABLE = "PayLater Not Applicable"
     }
 }

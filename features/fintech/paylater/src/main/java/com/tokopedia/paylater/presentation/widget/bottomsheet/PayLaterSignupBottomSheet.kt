@@ -100,7 +100,6 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
         baseList.adapter = PayLaterPaymentMethodAdapter(payLaterDataList, payLaterApplicationStatusList) { payLaterData, payLaterApplicationStatus ->
             listener?.onPayLaterSignupClicked(payLaterData, payLaterApplicationStatus)
             dismiss()
-            //openBottomSheet(payLaterData, payLaterApplicationStatus)
         }
         baseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
@@ -135,11 +134,8 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
 
             val payLaterProductList = ArrayList<PayLaterItemProductData>()
             payLaterProductList.addAll(it.getPayLaterOptions())
-            // @Todo remove below lines
-            payLaterProductList.add(payLaterProductList[0])
-            payLaterProductList.add(payLaterProductList[0])
             this.payLaterDataList = payLaterProductList
-            this.payLaterApplicationStatusList = data.applicationDetailList
+            this.payLaterApplicationStatusList = data.applicationDetailList ?: arrayListOf()
             initAdapter()
         }
     }
