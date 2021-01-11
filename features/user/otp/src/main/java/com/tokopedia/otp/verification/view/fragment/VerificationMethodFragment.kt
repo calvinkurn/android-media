@@ -77,6 +77,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
+        viewmodel.isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)?: false
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
@@ -184,6 +185,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun skipView(modeListData: ModeListData) {
+        viewmodel.done = true
         if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
             (activity as VerificationActivity).goToOnboardingMiscallPage(modeListData)
         } else {

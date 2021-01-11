@@ -48,6 +48,7 @@ class VerificationViewModel @Inject constructor(
         get() = _otpValidateResult
 
     var done = false
+    var isLoginRegisterFlow = false
 
     fun getVerificationMethod2FA(
             otpType: String,
@@ -230,8 +231,8 @@ class VerificationViewModel @Inject constructor(
     override fun onCleared() {
         val clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
         if(clear) {
-            //if user interrupted otp flow (not done), delete the token
-            if(!done) {
+            //if user interrupted login / register otp flow (not done), delete the token
+            if(!done && isLoginRegisterFlow) {
                 userSession.setToken(null, null, null)
             }
         }
