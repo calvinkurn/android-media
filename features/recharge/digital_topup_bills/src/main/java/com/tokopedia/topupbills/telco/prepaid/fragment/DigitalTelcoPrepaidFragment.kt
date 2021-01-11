@@ -55,6 +55,7 @@ import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
  */
 class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
+    private lateinit var dynamicSpacer: View
     private lateinit var telcoClientNumberWidget: DigitalClientNumberWidget
     private lateinit var mainContainer: CoordinatorLayout
     private lateinit var buyWidget: TopupBillsCheckoutWidget
@@ -133,8 +134,14 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         })
 
         sharedModelPrepaid.expandView.observe(viewLifecycleOwner, Observer {
-            if (it) telcoClientNumberWidget.setVisibleResultNumber(false)
-            else telcoClientNumberWidget.setVisibleResultNumber(true)
+            if (it) {
+                telcoClientNumberWidget.setVisibleResultNumber(false)
+                dynamicSpacer.visibility = View.GONE
+            }
+            else {
+                telcoClientNumberWidget.setVisibleResultNumber(true)
+                dynamicSpacer.visibility = View.VISIBLE
+            }
         })
     }
 
@@ -144,6 +151,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         mainContainer = view.findViewById(R.id.telco_main_container)
         appBarLayout = view.findViewById(R.id.telco_appbar_input_number)
         telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
+        dynamicSpacer = view.findViewById(R.id.digital_telco_dynamic_banner_spacer)
         bannerImage = view.findViewById(R.id.telco_bg_img_banner)
         viewPager = view.findViewById(R.id.telco_view_pager)
         tabLayout = view.findViewById(R.id.telco_tab_layout)

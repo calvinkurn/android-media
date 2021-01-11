@@ -42,14 +42,24 @@
             app:elevation="@dimen/spacing_lvl2">
 
             <View
+                android:id="@+id/digital_telco_banner_spacer"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/telco_banner_space"
                 app:layout_scrollFlags="scroll"/>
+
+            <View
+                android:id="@+id/digital_telco_dynamic_banner_spacer"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/telco_dynamic_banner_space"
+                android:layout_below="@+id/digital_telco_banner_spacer"
+                app:layout_scrollFlags="scroll"
+                android:visibility="gone"/>
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/telco_ticker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/digital_telco_dynamic_banner_spacer"
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginRight="@dimen/layout_lvl2"
                 android:visibility="gone"
