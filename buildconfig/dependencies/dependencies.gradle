@@ -37,8 +37,7 @@ ext {
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
     constraintLayoutVersion = '2.0.0-beta3'
-    materialVersion = '1.2.1'
-    swipeRefreshVersion = '1.0.0'
+    materialVersion = '1.0.0'
 
     exoPlayerVersion = '2.11.8'
     stfalconVersion = '1.0.0'
@@ -154,7 +153,7 @@ ext {
             appCompactV7      : "androidx.appcompat:appcompat:${appCompatVersion}",
             supportV13        : "androidx.legacy:legacy-support-v13:${supportLegacyLibraryVersion}",
             design            : "com.google.android.material:material:${materialVersion}",
-            swipeRefresh      : "androidx.swiperefreshlayout:swiperefreshlayout:${swipeRefreshVersion}",
+            swipeRefresh      : "androidx.swiperefreshlayout:swiperefreshlayout:${materialVersion}",
             cardViewV7        : "androidx.cardview:cardview:${supportLegacyLibraryVersion}",
             exifinterface     : "androidx.exifinterface:exifinterface:${supportLibraryVersion}",
             constraintLayout  : "androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}",
