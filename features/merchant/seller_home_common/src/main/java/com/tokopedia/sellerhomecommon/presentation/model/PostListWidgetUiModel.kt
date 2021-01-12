@@ -28,4 +28,8 @@ class PostListWidgetUiModel(
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun copy(): BaseWidgetUiModel<PostListDataUiModel> {
+        return PostListWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState, postFilter)
+    }
 }
