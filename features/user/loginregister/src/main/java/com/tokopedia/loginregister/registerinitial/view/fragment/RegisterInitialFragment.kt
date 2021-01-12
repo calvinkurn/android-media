@@ -73,6 +73,7 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
+import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -876,8 +877,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
                     val source = bundle.getString(ApplinkConstInternalGlobal.PARAM_SOURCE)
-                    if (!email.isNullOrEmpty() && !token.isNullOrEmpty())
+                    if (!email.isNullOrEmpty() && !token.isNullOrEmpty()) {
+                        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
                         registerInitialViewModel.activateUser(email, token)
+                    }
                 }
             } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
                 it.setResult(Activity.RESULT_CANCELED)

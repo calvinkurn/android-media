@@ -96,6 +96,7 @@ import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
+import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -1279,6 +1280,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
                     if (!email.isNullOrEmpty() && !token.isNullOrEmpty()) {
                         showLoadingLogin()
+                        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
                         presenter.activateUser(email, token)
                     }
                 }
