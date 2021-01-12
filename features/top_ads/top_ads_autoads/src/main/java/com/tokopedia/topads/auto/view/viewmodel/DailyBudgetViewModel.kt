@@ -73,12 +73,19 @@ class DailyBudgetViewModel @Inject constructor(
     }
 
     fun getTopAdsDeposit() {
-        topAdsGetShopDepositUseCase.execute(
-                {
-                    topAdsDeposit.value = it.topadsDashboardDeposits.data.amount
-                }, {
-            it.printStackTrace()
-        })
+        launchCatchError(
+                block = {
+                    topAdsGetShopDepositUseCase.execute(
+                            {
+                                topAdsDeposit.value = it.topadsDashboardDeposits.data.amount
+                            },
+                            {
+                                it.printStackTrace()
+                            })
+                },
+                onError = {
+                    it.printStackTrace()
+                })
     }
 
     fun topadsStatisticsEstimationPotentialReach(onSuccess: (EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) -> Unit, shopId: String, source: String) {

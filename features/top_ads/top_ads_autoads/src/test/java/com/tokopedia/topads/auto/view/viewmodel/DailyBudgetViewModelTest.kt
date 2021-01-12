@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
@@ -16,9 +17,7 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.withContext
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -76,7 +75,7 @@ class DailyBudgetViewModelTest {
         val bidInfoData: ResponseBidInfo.Result = ResponseBidInfo.Result(com.tokopedia.topads.common.data.response.TopadsBidInfo(data =
         listOf(com.tokopedia.topads.common.data.response.TopadsBidInfo.DataItem(shopStatus = expected))))
 
-        val onSuccess:(ResponseBidInfo.Result) -> Unit = {
+        val onSuccess: (ResponseBidInfo.Result) -> Unit = {
             actual = it.topadsBidInfo.data[0].shopStatus
         }
         every {
@@ -127,13 +126,19 @@ class DailyBudgetViewModelTest {
     }
 
     @Test
-    fun `test result in getTopAdsDeposit`() = runBlocking {
-        withContext(testRule.dispatchers.io) {
-            viewModel.getTopAdsDeposit()
-            verify {
-                topAdsGetShopDepositUseCase.execute(any(), any())
-            }
+    fun `test result in getTopAdsDeposit`() {
+        var actual = 0
+        val expected = DepositAmount(amount = 100)
+        val onSuccess: (DepositAmount) -> Unit = {
+            actual = it.amount
         }
+        every {
+            topAdsGetShopDepositUseCase.execute(captureLambda(), any())
+        } answers {
+            onSuccess.invoke(expected)
+        }
+        viewModel.getTopAdsDeposit()
+        assertEquals(actual, expected.amount)
     }
 
     @Test

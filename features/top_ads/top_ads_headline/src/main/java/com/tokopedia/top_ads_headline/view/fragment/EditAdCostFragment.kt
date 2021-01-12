@@ -102,8 +102,8 @@ class EditAdCostFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun setAdvertisingCost(minBid: Int) {
-        val cost = Utils.convertToCurrency(minBid.toLong())
+    private fun setAdvertisingCost(adBidPrice: Int) {
+        val cost = Utils.convertToCurrency(adBidPrice.toLong())
         advertisingCost.textFieldInput.setText(cost)
         advertisingCost.textFieldInput.addTextChangedListener(advertisingCostTextWatcher())
     }
@@ -127,7 +127,7 @@ class EditAdCostFragment : BaseDaggerFragment() {
                         saveButtonState?.setButtonState(false)
                     }
                     else -> {
-                        stepperModel?.minBid = input
+                        stepperModel?.adBidPrice = input
                         stepperModel?.dailyBudget = (input * MULTIPLIER).toFloat()
                         onMinBidChange?.onMinBidChange(input)
                         advertisingCost.setMessage("")

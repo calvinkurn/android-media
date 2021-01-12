@@ -21,6 +21,7 @@ import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
+import com.tokopedia.top_ads_headline.view.activity.EditTopAdsHeadlineKeywordActivity
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeyAdapter
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeySelectedAdapter
@@ -34,8 +35,8 @@ import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiHeaderModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
-
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.topads_headline_keyword_list_fragment.*
 import javax.inject.Inject
@@ -125,6 +126,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
         setToolTip()
         setInitialSetup()
         addBtn?.setOnClickListener {
+            Utils.dismissKeyboard(context, view)
             addManualKeywords()
         }
         btnNext?.setOnClickListener {
@@ -202,7 +204,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     override fun updateToolBar() {
-        if (activity is HeadlineStepperActivity) {
+        if (activity is HeadlineStepperActivity || activity is EditTopAdsHeadlineKeywordActivity) {
             (activity as HeadlineStepperActivity).updateToolbarTitle(getString(R.string.topads_headline_keywrod_title))
         }
     }
@@ -269,7 +271,19 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                     addedKeywords.add(item)
                 }
                 setCount()
+            } else {
+                showAlreadyExistError()
             }
+        } else {
+            showAlreadyExistError()
+        }
+    }
+
+    private fun showAlreadyExistError() {
+        view?.let { it1 ->
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
+            Toaster.build(it1, getString(R.string.topads_headline_keyword_already_exist), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                    getString(R.string.topads_headline_oke_button)).show()
         }
     }
 

@@ -331,7 +331,9 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         selectedKeywordsList.remove(deletedItem)
         if (keywordType == KEYWORD_POSITIVE) {
             val removedItem = stepperModel?.selectedKeywords?.find { it.keyword == keywordModel.keywordName }
+            val removedManualItem = stepperModel?.manualSelectedKeywords?.find { it.keyword == keywordModel.keywordName }
             stepperModel?.selectedKeywords?.remove(removedItem)
+            stepperModel?.manualSelectedKeywords?.remove(removedManualItem)
         } else {
             restoreNegativeKeywords.remove(deletedItem)
         }

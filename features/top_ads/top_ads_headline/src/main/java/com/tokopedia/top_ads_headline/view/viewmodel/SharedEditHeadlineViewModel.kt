@@ -136,7 +136,7 @@ class SharedEditHeadlineViewModel @Inject constructor(
 
     fun saveKeywordOperation(stepperModel: HeadlineAdStepperModel) {
         editHeadlineAdLiveData.value?.let {
-            it.minBid = stepperModel.minBid
+            it.adBidPrice = stepperModel.adBidPrice
             it.keywordOperations = stepperModel.keywordOperations
         }
     }

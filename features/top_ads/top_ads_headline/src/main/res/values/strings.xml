@@ -67,6 +67,8 @@
     <string name="topads_headline_keyword_page_title">Iklanmu akan tampil saat pembeli mencari produk menggunakan kata kunci yang kamu pilih.</string>
     <string name="topads_headline_enter_keyword_hint">Ketik kata kunci</string>
     <string name="topads_headline_add_button">Tambah</string>
+    <string name="topads_headline_oke_button">Oke</string>
+    <string name="topads_headline_keyword_already_exist">Kata Kunci sudah dipilih, silahkan coba kata kunci lainnya.</string>
     <string name="topads_headline_keyword_desc">%s orang mencari ini /bulan</string>
     <string name="topads_headline_keyword_recommended_keyword">REKOMENDASI KATA KUNCI</string>
     <string name="topads_headline_keyword_bottomsheet_desc1">Kata kunci akan menentukan di halaman pencarian kata kunci mana saja iklan </string>

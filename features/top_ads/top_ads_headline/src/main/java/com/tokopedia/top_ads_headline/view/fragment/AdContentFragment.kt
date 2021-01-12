@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -131,7 +130,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
             stepperModel?.selectedTopAdsProducts?.size ?: 0 > MAX_PRODUCT_SELECTION -> {
                 view?.let {
                     Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
-                    Toaster.build(it, getString(R.string.topads_headline_over_product_selection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    Toaster.build(it, getString(R.string.topads_headline_over_product_selection), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 }
                 return false
             }

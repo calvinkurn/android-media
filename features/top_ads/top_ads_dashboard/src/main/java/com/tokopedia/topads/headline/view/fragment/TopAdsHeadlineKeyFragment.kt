@@ -88,10 +88,9 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
     }
 
     private fun startEditActivity() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
-            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
-            putExtra(TopAdsDashboardConstant.GROUPNAME, arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
+            putExtra(ParamObject.GROUP_ID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
     }

@@ -122,7 +122,6 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     fun setDailyBudget(minBid: Int) {
         val budget: Long = (minBid * MULTIPLIER).toLong()
-        stepperModel?.minBid = minBid
         stepperModel?.dailyBudget = budget.toFloat()
         budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget))
     }
@@ -212,13 +211,15 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         context?.run {
             setDate()
             startDate.textFieldInput.setOnClickListener {
-                openSetStartDateTimePicker(getString(R.string.topads_headline_start_date_header), "", getToday(), selectedStartDate as GregorianCalendar,
-                        getSpecifiedDateFromToday(years = 50), this@EditAdOthersFragment::onStartDateChanged)
+                (selectedEndDate as? GregorianCalendar)?.let {selectedEndDate ->
+                    openSetDateTimePicker(getString(R.string.topads_headline_start_date_header), "", getToday(), selectedStartDate as GregorianCalendar,
+                            selectedEndDate, this@EditAdOthersFragment::onStartDateChanged)
+                }
             }
             endDate.textFieldInput.setOnClickListener {
                 getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar)?.let { it1 ->
-                    getSpecifiedDateFromStartDate(it1, month = 1)?.let { it2 ->
-                        openSetStartDateTimePicker(getString(R.string.topads_headline_end_date_header), getString(R.string.topads_headline_end_date_info),
+                    (selectedEndDate as? GregorianCalendar)?.let { it2 ->
+                        openSetDateTimePicker(getString(R.string.topads_headline_end_date_header), getString(R.string.topads_headline_end_date_info),
                                 it1, it2, getSpecifiedDateFromToday(years = 50), this@EditAdOthersFragment::onEndDateChanged)
                     }
                 }
@@ -238,8 +239,8 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                 selectedEndDate = getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar, month = 1)
             }
             if (selectedEndDate == null) {
-                selectedEndDate = getSpecifiedDateFromToday(month = 1)
-                val endDateString = getSpecifiedDateFromToday(month = 1).time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
+                selectedEndDate = getSpecifiedDateFromStartDate(month = 1, startCalendar = selectedStartDate as GregorianCalendar?)
+                val endDateString = selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
                 endDate.textFieldInput.setText(endDateString)
             } else {
                 endDate.textFieldInput.setText(selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID))
@@ -268,11 +269,6 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         val startDateString = calendar.time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
         startDate.textFieldInput.setText(startDateString)
         selectedStartDate = calendar
-        val endDateCalendar = getSpecifiedDateFromStartDate(selectedStartDate as GregorianCalendar?, month = 1)
-        endDateCalendar?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)?.let {
-            endDate.textFieldInput.setText(it)
-        }
-        selectedEndDate = endDateCalendar
         setAdAppearanceMessage()
     }
 
@@ -306,8 +302,8 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun openSetStartDateTimePicker(header: String, info: String, minDate: GregorianCalendar, defaultDate: GregorianCalendar,
-                                           maxDate: GregorianCalendar, onDateChanged: (Calendar) -> Unit) {
+    private fun openSetDateTimePicker(header: String, info: String, minDate: GregorianCalendar, defaultDate: GregorianCalendar,
+                                      maxDate: GregorianCalendar, onDateChanged: (Calendar) -> Unit) {
         context?.run {
             val startDateTimePicker = DateTimePickerUnify(this, minDate, defaultDate, maxDate, null,
                     DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
