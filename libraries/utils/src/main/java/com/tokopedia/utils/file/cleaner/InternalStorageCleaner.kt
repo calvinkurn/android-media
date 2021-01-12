@@ -1,10 +1,9 @@
 package com.tokopedia.utils.file.cleaner
 
 import android.content.Context
-import com.tokopedia.utils.file.FileUtil
 
 object InternalStorageCleaner {
-    const val INTERNAL_STORAGE_CLEAN_TIME_DEFAULT = 3_600_000L //1 hour
+    const val INTERNAL_STORAGE_CLEAN_TIME_DEFAULT = 86_400_000L //1 day
     const val SHARED_PREF_STORAGE_CLEANER_NAME = "storage_cleaner"
     const val SHARED_PREF_TS_KEY = "ts"
     var lastClean: MutableMap<String, Long> = mutableMapOf()
