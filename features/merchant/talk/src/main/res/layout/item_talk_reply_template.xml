@@ -6,4 +6,4 @@
     android:layout_marginEnd="@dimen/spacing_lvl2"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:chipType="alternate"
-    app:chipSize="medium" />
+    app:chipSize="small" />
