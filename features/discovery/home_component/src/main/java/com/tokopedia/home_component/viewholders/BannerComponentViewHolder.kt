@@ -19,6 +19,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.LinearCenterLayoutManager
 import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
 import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -79,7 +80,9 @@ class BannerComponentViewHolder(itemView: View,
     override fun bind(element: BannerDataModel) {
         try {
             setHeaderComponent(element)
+            setViewPortImpression(element)
             onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
+
             channelModel = element.channelModel
             channelModel?.let { it ->
                 this.isCache = element.isCache
@@ -94,9 +97,21 @@ class BannerComponentViewHolder(itemView: View,
         }
     }
 
+    private fun setViewPortImpression(element: BannerDataModel) {
+        if (!element.isCache) {
+            itemView.addOnImpressionListener(holder = element, onView = {
+                element.channelModel?.let {
+                    bannerListener?.onChannelBannerImpressed(it, adapterPosition)
+                }
+            })
+        }
+    }
+
     override fun bind(element: BannerDataModel, payloads: MutableList<Any>) {
         try {
             setHeaderComponent(element)
+            setViewPortImpression(element)
+
             onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
             channelModel = element.channelModel
             this.isCache = element.isCache
