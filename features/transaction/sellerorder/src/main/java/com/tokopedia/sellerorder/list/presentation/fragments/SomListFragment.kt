@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,6 +49,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_ORDER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
@@ -68,9 +70,11 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiMod
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListTickerUiModel
+import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CHANGE_COURIER
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CONFIRM_REQUEST_PICKUP
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_DETAIL
+import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToChangeCourierPage
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToConfirmShippingPage
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToRequestPickupPage
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToSomOrderDetail
@@ -155,7 +159,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
-    private val somListLayoutManager by lazy { rvSomList.layoutManager as? LinearLayoutManager }
+    private val somListLayoutManager by lazy { rvSomList?.layoutManager as? LinearLayoutManager }
 
     private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
@@ -356,6 +360,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             REQUEST_DETAIL -> handleSomDetailActivityResult(resultCode, data)
             REQUEST_CONFIRM_SHIPPING -> handleSomConfirmShippingActivityResult(resultCode, data)
             REQUEST_CONFIRM_REQUEST_PICKUP -> handleSomRequestPickUpActivityResult(resultCode, data)
+            REQUEST_CHANGE_COURIER -> handleSomChangeCourierActivityResult(resultCode, data)
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -632,13 +637,18 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
+    override fun onChangeCourierClicked(orderId: String) {
+        selectedOrderId = orderId
+        goToChangeCourierPage(this, orderId)
+    }
+
     override fun onFinishBindNewOrder(view: View, itemIndex: Int) {
         context?.let { context ->
             if (!CoachMarkPreference.hasShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK) &&
                     Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                rvSomList.addOnScrollListener(recyclerViewScrollListener)
+                rvSomList?.addOnScrollListener(recyclerViewScrollListener)
                 setCoachMarkStepListener()
-                coachMark?.onFinishListener = { rvSomList.removeOnScrollListener(recyclerViewScrollListener) }
+                coachMark?.onFinishListener = { rvSomList?.removeOnScrollListener(recyclerViewScrollListener) }
                 CoachMarkPreference.setShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK, true)
                 shouldShowCoachMark = true
                 reshowNewOrderCoachMark(adapter.data.filterIsInstance<SomListOrderUiModel>())
@@ -698,8 +708,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun setupViews() {
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         showWaitingPaymentOrderListMenuShimmer()
-        rvSomList.layoutManager = somListLayoutManager
+        rvSomList?.layoutManager = somListLayoutManager
         bulkActionCheckBoxContainer.layoutTransition.enableTransitionType(CHANGING)
         setupListeners()
     }
@@ -723,7 +734,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 is Success -> {
                     if (adapter.data.filterIsInstance<SomListEmptyStateUiModel>().isNotEmpty()) {
                         showEmptyState()
-                        rvSomList.show()
+                        rvSomList?.show()
                     }
                 }
                 is Fail -> showToasterError(view)
@@ -736,7 +747,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             when (result) {
                 is Success -> renderTickers(result.data)
                 is Fail -> {
-                    tickerSomList.gone()
+                    tickerSomList?.gone()
                     showToasterError(view)
                 }
             }
@@ -1049,7 +1060,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             if (adapter.dataSize > 0) {
                 getSwipeRefreshLayout(view)?.isRefreshing = true
             } else {
-                rvSomList.gone()
+                rvSomList?.gone()
                 somListLoading.show()
             }
         }
@@ -1066,7 +1077,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun setupListeners() {
-        tickerSomList.setDescriptionClickEvent(this)
+        tickerSomList?.setDescriptionClickEvent(this)
         searchBarSomList.setListener(this)
         globalErrorSomList.setActionClickListener {
             scrollViewErrorState.gone()
@@ -1169,6 +1180,15 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
+    private fun handleSomChangeCourierActivityResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            data.getStringExtra(RESULT_CONFIRM_SHIPPING).takeIf { !it.isNullOrBlank() }?.let {
+                onActionCompleted()
+                showCommonToaster(view, it)
+            }
+        }
+    }
+
     private fun handleRequestPickUpResult(message: String?) {
         onActionCompleted()
         showCommonToaster(view, message)
@@ -1248,7 +1268,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun onUserNotAllowedToViewSOM() {
         context?.run {
-            rvSomList.gone()
+            rvSomList?.gone()
             if (userNotAllowedDialog == null) {
                 userNotAllowedDialog = Utils.createUserNotAllowedDialog(this)
             }
@@ -1259,7 +1279,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun showGlobalError(throwable: Throwable) {
         dismissCoachMark()
         somListLoading.gone()
-        rvSomList.gone()
+        rvSomList?.gone()
         multiEditViews.gone()
         containerBtnBulkAction.gone()
         getSwipeRefreshLayout(view)?.apply {
@@ -1285,14 +1305,14 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             tickerPagerAdapter.setPagerDescriptionClickEvent(this)
             this.tickerPagerAdapter = tickerPagerAdapter
         }
-        tickerSomList.addPagerView(tickerPagerAdapter, activeTickers)
-        tickerSomList.showWithCondition(data.isNotEmpty())
+        tickerSomList?.addPagerView(tickerPagerAdapter, activeTickers)
+        tickerSomList?.showWithCondition(data.isNotEmpty())
     }
 
     private fun renderOrderList(data: List<SomListOrderUiModel>) {
         skipSearch = false
         hideLoading()
-        if (rvSomList.visibility != View.VISIBLE) rvSomList.show()
+        if (rvSomList?.visibility != View.VISIBLE) rvSomList?.show()
         // show only if current order list is based on current search keyword
         if (isLoadingInitialData && data.isEmpty()) {
             showEmptyState()
@@ -1309,8 +1329,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 toggleBulkActionButtonVisibility()
                 if (shouldScrollToTop) {
                     shouldScrollToTop = false
-                    rvSomList.addOneTimeGlobalLayoutListener {
-                        rvSomList.smoothScrollToPosition(0)
+                    rvSomList?.addOneTimeGlobalLayoutListener {
+                        rvSomList?.smoothScrollToPosition(0)
                     }
                 }
                 if (coachMark?.currentIndex == COACHMARK_INDEX_ITEM_NEW_ORDER || (coachMark?.currentIndex == COACHMARK_INDEX_ITEM_BULK_ACCEPT && !multiEditViews.isVisible)) {
@@ -1325,7 +1345,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     }
                 }
                 (adapter as SomListOrderAdapter).updateOrders(adapter.data.plus(data))
-                rvSomList.post {
+                rvSomList?.post {
                     updateBulkActionCheckboxStatus()
                 }
             }
@@ -1458,7 +1478,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             viewModel.getWaitingPaymentCounter()
         }
         if (viewModel.tickerResult.value is Fail) {
-            tickerSomList.gone()
+            tickerSomList?.gone()
             viewModel.getTickers()
         }
         if (viewModel.userRoleResult.value is Fail) {
@@ -1491,10 +1511,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun setInitialOrderListParams() {
         val orderTypes = if (filterOrderType == 0) {
-            emptyList()
+            mutableSetOf()
         } else {
             somListSortFilterTab?.addCounter(1)
-            listOf(filterOrderType)
+            mutableSetOf(filterOrderType)
         }
         setDefaultSortByValue()
         viewModel.setOrderTypeFilter(orderTypes)
@@ -1565,6 +1585,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         orderListParam.statusList = filterCancelWrapper.orderStatusIdList
         viewModel.updateGetOrderListParams(orderListParam)
         this.filterDate = filterCancelWrapper.filterDate
+        this.filterOrderType = if (filterCancelWrapper.requestCancelFilterApplied) FILTER_CANCELLATION_REQUEST else 0
     }
 
     private fun setCoachMarkStepListener() {
@@ -1640,7 +1661,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         if (coachMark?.currentIndex != -1 && coachMark?.isDismissed == false) {
             shouldShowCoachMark = true
             if (removeScrollListener)
-                rvSomList.removeOnScrollListener(recyclerViewScrollListener)
+                rvSomList?.removeOnScrollListener(recyclerViewScrollListener)
             coachMarkIndexToShow = coachMark?.currentIndex.orZero()
             coachMark?.dismissCoachMark()
         }

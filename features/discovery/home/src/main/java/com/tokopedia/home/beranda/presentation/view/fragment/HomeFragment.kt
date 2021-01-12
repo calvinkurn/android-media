@@ -573,6 +573,7 @@ open class HomeFragment : BaseDaggerFragment(),
             val bottomSheet = BottomSheetUnify()
             val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
             onboardingView.onboarding_button.setOnClickListener {
+                bottomSheet.dismiss()
                 showCoachMark(bottomSheet)
             }
 
@@ -588,7 +589,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 bottomSheet.dismiss()
             }
             childFragmentManager.run {
-                this.beginTransaction().add(bottomSheet, "onboarding navigation").commitAllowingStateLoss();
+                bottomSheet.show(this, "onboarding navigation")
             }
             saveFirstViewNavigation(false)
         }
@@ -618,7 +619,6 @@ open class HomeFragment : BaseDaggerFragment(),
         //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
         //will be removed along the coachmark removal in the future
         try {
-            bottomSheet.dismiss()
             if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
                 coachMark.showCoachMark(step = coachMarkItem, index = 0)
             }
@@ -901,6 +901,7 @@ open class HomeFragment : BaseDaggerFragment(),
         observeIsNeedRefresh()
         observeSearchHint()
         observePlayWidgetToggleReminder()
+        observeRechargeBUWidget()
     }
           
     private fun observeIsNeedRefresh() {
@@ -910,6 +911,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 adapter?.resetImpressionHomeBanner()
             }
         })
+        getHomeViewModel().setRollanceNavigationType(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
     }
 
     private fun observeHomeRequestNetwork() {
@@ -1095,6 +1097,14 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun observeRechargeBUWidget() {
+        context?.let {
+            getHomeViewModel().rechargeBUWidgetLiveData.observe(viewLifecycleOwner, Observer {
+                getHomeViewModel().insertRechargeBUWidget(it.peekContent())
+            })
+        }
+    }
+
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
@@ -1227,8 +1237,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 FeaturedShopComponentCallback(context, this),
                 playWidgetCoordinator,
                 this,
-                CategoryNavigationCallback(context, this)
-
+                CategoryNavigationCallback(context, this),
+                RechargeBUWidgetCallback(context, getHomeViewModel(), this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2475,11 +2485,10 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun playWidgetOnVisibilityChanged(
             isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
-            isUserVisibleHint: Boolean = userVisibleHint,
-            isParentHidden: Boolean = parentFragment?.isHidden ?: true
+            isUserVisibleHint: Boolean = userVisibleHint
     ) {
         if (::playWidgetCoordinator.isInitialized) {
-            val isViewVisible = isViewResumed && isUserVisibleHint && !isParentHidden
+            val isViewVisible = isViewResumed && isUserVisibleHint
 
             if (isViewVisible) playWidgetCoordinator.onResume()
             else playWidgetCoordinator.onPause()

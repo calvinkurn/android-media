@@ -18,6 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="4dp"
-        android:textColor="#a1a1a1"
+        android:textColor="@color/Unify_N200"
         android:textSize="12sp" />
 </LinearLayout>

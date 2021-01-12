@@ -54,7 +54,7 @@ internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() 
     private fun `Then verify use case request params START should be 0`() {
         val requestParams = requestParamsSlot.captured
 
-        requestParams.getString(SearchApiConst.START, null) shouldBe "0"
+        requestParams.getSearchProductParams()[SearchApiConst.START] shouldBe "0"
     }
 
     private fun `Then verify view interaction for redirection`(redirectApplink: String) {

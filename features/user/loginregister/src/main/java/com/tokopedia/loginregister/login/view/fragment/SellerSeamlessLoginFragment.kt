@@ -26,6 +26,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.RemoteApi
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -165,8 +166,9 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         arguments?.run {
             autoLogin = getBoolean(KEY_AUTO_LOGIN, false)
         }
-        if (context?.applicationContext is LoginRouter) {
-            (context?.applicationContext as LoginRouter).setOnboardingStatus(true)
+        (context?.applicationContext as? LoginRouter)?.let {
+            it.setOnboardingStatus(true)
+            SellerAppWidgetHelper.fetchSellerAppWidgetData(context)
         }
     }
 

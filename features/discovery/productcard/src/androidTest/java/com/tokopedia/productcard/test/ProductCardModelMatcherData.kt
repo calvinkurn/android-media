@@ -63,6 +63,8 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testNotifyMeButton())
     it.add(testLabelVariantColor())
     it.add(testLabelVariantSize())
+    it.add(testLabelBestSeller())
+    it.add(testProductCardWithNameAndStockBarAndStockBarLabelColor())
 }
 
 private fun testOneLineProductName(): ProductCardModelMatcher {
@@ -1716,6 +1718,71 @@ private fun testNotifyMeButton(): ProductCardModelMatcher {
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.buttonNotify] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLabelBestSeller(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelCampaign = LabelGroup(position = LABEL_CAMPAIGN, title = "Waktu Indonesia Belanja", imageUrl = campaignLabelUrl)
+    val labelBestSeller = LabelGroup(position = LABEL_BEST_SELLER, title = "Terlaris", type = "#E1AA1D")
+
+    val productCardModel = ProductCardModel(
+            productName = "Test Label Best Seller",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            countSoldRating = "4.5",
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupList = listOf(labelProductStatus, labelGimmick, labelPrice, labelCampaign, labelBestSeller)
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.labelBestSeller] = isDisplayedWithText(labelBestSeller.title)
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageSalesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testProductCardWithNameAndStockBarAndStockBarLabelColor(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productName = "Product Card With Stock label color",
+            productImageUrl = productImageUrl,
+            pdpViewCount = "17.7k View",
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            stockBarLabel = "Segera Habis",
+            stockBarPercentage = 80,
+            stockBarLabelColor = "#ef144a",
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.imageViewPdpView]= isDisplayed()
+        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
+        it[R.id.progressBarStock] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

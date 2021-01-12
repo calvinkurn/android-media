@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -82,6 +81,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RES
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_SECOND_POSITION;
+import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
 
 public class SearchActivity extends BaseActivity
         implements
@@ -173,11 +173,16 @@ public class SearchActivity extends BaseActivity
     }
 
     private void setStatusBarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!isDarkMode(this)) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            window.setStatusBarColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
     }
 
@@ -296,6 +301,7 @@ public class SearchActivity extends BaseActivity
     private void setSearchNavigationToolbar(){
         if (searchNavigationToolbar == null) return;
 
+        searchNavigationToolbar.bringToFront();
         searchNavigationToolbar.setToolbarPageName(SearchConstant.SEARCH_RESULT_PAGE);
         searchNavigationToolbar.setIcon(
                 new IconBuilder()
@@ -630,14 +636,26 @@ public class SearchActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
 
-        if (isABTestNavigationRevamp) return;
-
-        showButtonCart();
+        if (isABTestNavigationRevamp) setSearchNavigationCartButton();
+        else showButtonCart();
     }
 
     @Override
     public boolean isAllowShake() {
         return false;
+    }
+
+    private void setSearchNavigationCartButton() {
+        if (userSession.isLoggedIn()) {
+            setSearchNavigationCartButtonCount();
+        }
+    }
+
+    private void setSearchNavigationCartButtonCount() {
+        if (searchNavigationToolbar == null) return;
+
+        int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 0);
+        searchNavigationToolbar.setBadgeCounter(IconList.ID_CART, cartCount);
     }
 
     private void showButtonCart() {

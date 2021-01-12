@@ -26,18 +26,16 @@ class ProductMediaViewHolder(private val view: View,
     override fun bind(element: ProductMediaDataModel) {
         with(view) {
             viewMediaPager.shouldRenderViewPager = element.shouldRefreshViewPagger
-            viewMediaPager.renderData(element.listOfMedia, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(), getComponentTrackData(element),
-                    listener::onImageClickedTrack, listener.getLifecycleFragment())
-
-            element.shouldRefreshViewPagger = false
+            viewMediaPager.setup(element.listOfMedia, listener, getComponentTrackData(element))
 
             if (element.shouldRenderImageVariant) {
-                viewMediaPager.updateImage(element.listOfMedia)
+                viewMediaPager.updateImage(element.listOfMedia, listener)
                 element.shouldRenderImageVariant = false
             }
 
-            viewMediaPager?.isVisibleOnTheScreen({},{
-                viewMediaPager?.stopVideo()
+            element.shouldRefreshViewPagger = false
+            viewMediaPager?.isVisibleOnTheScreen({}, {
+                listener.getProductVideoCoordinator()?.onPause()
             })
         }
     }
@@ -50,7 +48,7 @@ class ProductMediaViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_UPDATE_IMAGE -> {
-                view.viewMediaPager.updateImage(element.listOfMedia)
+                view.viewMediaPager.updateImage(element.listOfMedia, listener)
                 element.shouldRenderImageVariant = false
             }
         }

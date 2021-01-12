@@ -100,8 +100,10 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             }.toMutableList()
             if(element.seeMoreAppLink.isNotBlank()) recommendationCarouselList.add(RecommendationSeeMoreDataModel(element.seeMoreAppLink))
             recommendationAdapter.submitList(recommendationCarouselList)
+
             itemView.best_seller_recommendation_recycler_view.show()
             itemView.best_seller_recommendation_recycler_view.layoutParams.height = element.height
+            itemView.best_seller_recommendation_recycler_view.layoutManager?.scrollToPosition(0)
         }
     }
 
@@ -110,7 +112,7 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             annotationChipAdapter.submitList(
                     it.filterChip.map {filter ->
                         filter.copy(
-                                isActivated = annotationChip.name == filter.name
+                                isActivated = annotationChip.title == filter.title
                                         && !annotationChip.isActivated
                         )
                     }

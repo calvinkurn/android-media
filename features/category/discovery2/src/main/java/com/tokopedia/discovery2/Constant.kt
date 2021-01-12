@@ -32,4 +32,27 @@ object Constant {
         const val GRID =  "grid"
         const val LIST = "list"
     }
+
+    object StaticFontColor{
+        const val FONT_COLOR =  "#03AC0E"
+    }
+
+    object ProductCardModel{
+        const val SALE_PRODUCT_STOCK = 100
+        const val PRODUCT_STOCK = 0
+        const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
+        const val SOLD_PERCENTAGE_LOWER_LIMIT = 0
+        const val PDP_VIEW_THRESHOLD = 1000
+    }
+
+    object EmptyStateTexts{
+        const val TITLE = "Awas keduluan pembeli lain!"
+        const val DESCRIPTION = "Aktifkan pengingat supaya kamu nggak ketinggalan penawaran seru dari seller-seller Tokopedia!"
+        const val EMPTY_IMAGE = "ic_product_empty_state.png"
+
+        const val FILTER_TITLE = "Oops, barangnya nggak ketemu"
+        const val FILTER_DESCRIPTION = "Coba kurangi filter yang sedang aktif, atau reset filter buat lanjutkan penjelajahanmu!"
+        const val FILTER_BUTTON_TEXT = "Reset Filter"
+        const val FILTER_EMPTY_IMAGE = "filtered_product_empty_state.png"
+    }
 }

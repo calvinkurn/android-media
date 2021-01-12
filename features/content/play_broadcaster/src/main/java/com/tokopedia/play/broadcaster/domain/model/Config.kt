@@ -36,5 +36,16 @@ data class Config(
         @SerializedName("max_title_length")
         val maxTitleLength: Int = 0,
         @SerializedName("complete_draft")
-        val completeDraft: Boolean = false
-)
+        val completeDraft: Boolean = false,
+        @SerializedName("scheduled_time")
+        val scheduledTime: ScheduledTime = ScheduledTime()
+) {
+        data class ScheduledTime(
+                @SerializedName("minimum")
+                val minimum: String = "",
+                @SerializedName("maximum")
+                val maximum: String = "",
+                @SerializedName("default")
+                val default: String = ""
+        )
+}

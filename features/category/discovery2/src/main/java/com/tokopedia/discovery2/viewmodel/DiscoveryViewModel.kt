@@ -12,8 +12,10 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
+import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
@@ -56,10 +58,12 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
     private val wishlistUpdateLiveData = MutableLiveData<ProductCardOptionsModel>()
+    private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
     var campaignCode: String = ""
+    var bottomTabNavDataComponent : ComponentsItem?  = null
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -71,7 +75,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    fun getDiscoveryData(queryParameterMap: Map<String, String?>) {
+    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>) {
         launchCatchError(
                 block = {
                     pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
@@ -83,6 +87,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                         setDiscoveryLiveState(it.pageInfo)
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
+                            findBottomTabNavDataComponentsIfAny(it.components)
                         }
                         setPageInfo(it)
                     }
@@ -126,6 +131,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryResponseList(): LiveData<Result<List<ComponentsItem>>> = discoveryResponseList
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
     fun getDiscoveryLiveStateData(): LiveData<DiscoveryLiveState> = discoveryLiveStateData
+    fun getDiscoveryBottomNavLiveData(): LiveData<Result<ComponentsItem>> = discoveryBottomNavLiveData
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
         val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
@@ -190,15 +196,48 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         return PINNED_COMPONENT_FAIL_STATUS
     }
 
-    fun getQueryParameterMapFromBundle(bundle: Bundle?): Map<String, String?> {
-        return mapOf(
+    fun getQueryParameterMapFromBundle(bundle: Bundle?): MutableMap<String, String?> {
+        return mutableMapOf(
                 ACTIVE_TAB to bundle?.getString(ACTIVE_TAB, ""),
                 TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
                 PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
                 PIN_PRODUCT to bundle?.getString(PIN_PRODUCT, ""),
-                CATEGORY_ID to bundle?.getString(CATEGORY_ID, ""),
+                CATEGORY_ID to getCategoryId(bundle),
                 EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, "")
         )
+    }
+
+    private fun getCategoryId(bundle: Bundle?): String? {
+        discoComponentQuery?.let {
+            return if (it[CATEGORY_ID].isNullOrEmpty()) {
+                bundle?.getString(CATEGORY_ID, "") ?: ""
+            } else {
+                it[CATEGORY_ID]
+            }
+        }
+        return bundle?.getString(CATEGORY_ID, "") ?: ""
+    }
+
+    private fun findBottomTabNavDataComponentsIfAny(components: List<ComponentsItem>?) {
+        bottomTabNavDataComponent = components?.find {
+            it.name == ComponentNames.BottomNavigation.componentName && it.renderByDefault
+        }
+        if (bottomTabNavDataComponent != null) {
+            discoveryBottomNavLiveData.postValue(Success(bottomTabNavDataComponent!!))
+        } else {
+            discoveryBottomNavLiveData.postValue(Fail(Throwable()))
+        }
+    }
+
+    fun getTabItem(position: Int): DataItem? {
+        bottomTabNavDataComponent?.let {
+            it.data?.let { tabData ->
+                if (tabData.size > position) {
+                    return tabData[position]
+                }
+            }
+        }
+        return null
     }
 
     fun updateWishlist(productCardOptionsModel: ProductCardOptionsModel){

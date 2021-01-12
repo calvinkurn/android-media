@@ -16,8 +16,8 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
@@ -53,6 +53,7 @@ import com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayou
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
+import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -75,6 +76,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override var menuId = TelcoComponentType.TELCO_PREPAID
     private var inputNumberActionType = InputNumberActionType.MANUAL
 
+    private var rechargeProductFromSlice: String = ""
     private var clientNumber = ""
     private var operatorId = ""
     private var autoSelectTabProduct = false
@@ -164,6 +166,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         initViewPager()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
+        if(rechargeProductFromSlice.isNotEmpty()) {
+            rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
+            rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
+        }
     }
 
     private fun prepareProductForCheckout(telcoProduct: TelcoProduct) {
@@ -312,6 +318,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
                     menuId = digitalTelcoExtraParam.menuId.toInt()
                 }
+                rechargeProductFromSlice = this.getString(RECHARGE_PRODUCT_EXTRA, "")
             }
         } else {
             clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER) ?: ""
@@ -592,27 +599,27 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun showOnBoarding() {
-        val coachMarkHasShown = localCacheHandler.getBoolean(TELCO_COACH_MARK_HAS_SHOWN, false)
-        if (coachMarkHasShown) {
-            return
-        }
+        context?.run {
+            val coachMarkHasShown = localCacheHandler.getBoolean(TELCO_COACH_MARK_HAS_SHOWN, false)
+            if (coachMarkHasShown) {
+                return
+            }
 
-        val coachMarks = ArrayList<CoachMarkItem>()
-        coachMarks.add(CoachMarkItem(telcoClientNumberWidget,
-                getString(R.string.Telco_title_showcase_client_number),
-                getString(R.string.telco_label_showcase_client_number)))
-        coachMarks.add(CoachMarkItem(viewPager,
-                getString(R.string.telco_title_showcase_promo),
-                getString(R.string.telco_label_showcase_promo)))
+            val coachMarks = ArrayList<CoachMark2Item>()
+            coachMarks.add(CoachMark2Item(telcoClientNumberWidget,
+                    getString(R.string.Telco_title_showcase_client_number),
+                    getString(R.string.telco_label_showcase_client_number)))
+            coachMarks.add(CoachMark2Item(viewPager,
+                    getString(R.string.telco_title_showcase_promo),
+                    getString(R.string.telco_label_showcase_promo)))
 
-        val coachMark = CoachMarkBuilder().build().apply {
-            enableSkip = true
-        }
-        coachMark.show(activity, javaClass.name, coachMarks)
+            val coachMark = CoachMark2(this)
+            coachMark.showCoachMark(coachMarks)
 
-        localCacheHandler.apply {
-            putBoolean(TELCO_COACH_MARK_HAS_SHOWN, true)
-            applyEditor()
+            localCacheHandler.apply {
+                putBoolean(TELCO_COACH_MARK_HAS_SHOWN, true)
+                applyEditor()
+            }
         }
     }
 
@@ -653,10 +660,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         private const val EXTRA_PARAM = "extra_param"
         private const val DG_TELCO_PREPAID_TRACE = "dg_telco_prepaid_pdp"
 
-        fun newInstance(telcoExtraParam: TopupBillsExtraParam): Fragment {
+        private const val TITLE_PAGE = "telco prepaid"
+
+        fun newInstance(telcoExtraParam: TopupBillsExtraParam, rechargeProductFromSlice: String = ""): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)
+            bundle.putString(RECHARGE_PRODUCT_EXTRA, rechargeProductFromSlice)
             fragment.arguments = bundle
             return fragment
         }

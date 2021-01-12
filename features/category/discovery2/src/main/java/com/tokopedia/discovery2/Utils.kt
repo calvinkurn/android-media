@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,7 +31,8 @@ const val TRANSPARENT_BLACK = "transparentBlack"
 const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
 const val PDP_APPLINK = "tokopedia://product/"
-val TIME_DISPLAY_FORMAT = "%1$02d"
+const val TIME_DISPLAY_FORMAT = "%1$02d"
+const val DEFAULT_TIME_DATA : Long = 0
 
 class Utils {
 
@@ -55,6 +57,10 @@ class Utils {
         private const val DEVICE = "device"
         private const val DEVICE_VALUE = "Android"
         private const val FILTERS = "filters"
+        private const val COUNT_ONLY = "count_only"
+        private const val RPC_USER_ID = "rpc_UserID"
+        private const val RPC_PAGE_NUMBER = "rpc_page_number"
+        private const val RPC_PAGE__SIZE = "rpc_page_size"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -92,24 +98,41 @@ class Utils {
             }
         }
 
-        fun getQueryMap(componentId: String, pageIdentifier: String, rpcDiscoQuery: Map<String, String?>?): Map<String, Any> {
+        fun getQueryMap(componentId: String, pageIdentifier: String,
+                        selectedFilterMapParameter: Map<String, String?>? = null,
+                        userId: String? = "0",
+                        addCountFilters: Boolean = false): Map<String, Any> {
             val queryParameterMap = mutableMapOf<String, Any>()
             queryParameterMap[IDENTIFIER] = pageIdentifier
             queryParameterMap[DEVICE] = DEVICE_VALUE
             queryParameterMap[COMPONENT_ID] = componentId
 
-            rpcDiscoQuery?.let { map ->
-                val queryString = StringBuilder()
-                map.forEach { (key, value) ->
-                    if (!value.isNullOrEmpty()) {
-                        if (queryString.isNotEmpty()) {
-                            queryString.append('&')
-                        }
-                        queryString.append(key).append('=').append(value)
-                    }
-                }
-                if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString.toString()
+            val filtersMasterMapParam = mutableMapOf<String, String?>()
+            discoComponentQuery?.let {
+                filtersMasterMapParam.putAll(it)
             }
+            if (addCountFilters && selectedFilterMapParameter != null) {
+                val filtersMap = selectedFilterMapParameter as MutableMap<String, String?>
+                filtersMap.let {
+                    it[COUNT_ONLY] = "true"
+                    it[RPC_PAGE__SIZE] = "10"
+                    it[RPC_PAGE_NUMBER] = "1"
+                    it[RPC_USER_ID] = if (userId.isNullOrEmpty()) "0" else userId
+
+                }
+                filtersMasterMapParam.putAll(filtersMap)
+            }
+            val queryString = StringBuilder()
+            filtersMasterMapParam.forEach { (key, value) ->
+                if (!value.isNullOrEmpty()) {
+                    if (queryString.isNotEmpty()) {
+                        queryString.append('&')
+                    }
+                    queryString.append(key).append('=').append(value)
+                }
+            }
+            if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString.toString()
+
             return queryParameterMap
         }
 
@@ -137,7 +160,7 @@ class Utils {
             }
         }
 
-        fun isSaleOver(saleEndDate: String, timerFormat : String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
+        fun isSaleOver(saleEndDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
             if (saleEndDate.isEmpty()) return true
             val currentSystemTime = Calendar.getInstance().time
             val parsedDate = parseData(saleEndDate, timerFormat)
@@ -148,7 +171,7 @@ class Utils {
             }
         }
 
-        fun parseData(date: String?, timerFormat : String  = TIMER_SPRINT_SALE_DATE_FORMAT): Date? {
+        fun parseData(date: String?, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Date? {
             return date?.let {
                 try {
                     SimpleDateFormat(timerFormat, Locale.getDefault())
@@ -161,9 +184,9 @@ class Utils {
 
         fun parseFlashSaleDate(saleTime: String?): String {
             if (!saleTime.isNullOrEmpty() && saleTime.length >= 19) {
-                    val date = saleTime.substring(0, 10)
-                    val time = saleTime.substring(11, 19)
-                    return "${date}T${time}"
+                val date = saleTime.substring(0, 10)
+                val time = saleTime.substring(11, 19)
+                return "${date}T${time}"
             }
             return ""
         }
@@ -188,5 +211,19 @@ class Utils {
             }
         }
 
+        fun getElapsedTime(endDate: String): Long {
+            if (endDate.isNotEmpty()) {
+                try {
+                    TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE))
+                    val currentSystemTime = Calendar.getInstance().time
+                    SimpleDateFormat(TIMER_DATE_FORMAT, Locale.getDefault()).parse(endDate)?.let {
+                        return it.time - currentSystemTime.time
+                    }
+                } catch (e: Exception) {
+                    return DEFAULT_TIME_DATA
+                }
+            }
+            return DEFAULT_TIME_DATA
+        }
     }
 }

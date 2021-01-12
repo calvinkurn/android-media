@@ -7,14 +7,17 @@ import android.os.Bundle
 import android.util.Base64
 import android.view.View
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.util.LetUtil
+import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.LoadingDialog
-import com.tokopedia.otp.common.abstraction.BaseOtpFragment
+import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
@@ -24,6 +27,7 @@ import com.tokopedia.otp.notif.view.activity.ResultNotifActivity
 import com.tokopedia.otp.notif.view.viewbinding.ReceiverNotifViewBinding
 import com.tokopedia.otp.notif.viewmodel.NotifViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.security.KeyStore
@@ -36,7 +40,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 14/09/20.
  */
 
-class ReceiverNotifFragment : BaseOtpFragment(), IOnBackPressed {
+class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -56,6 +60,8 @@ class ReceiverNotifFragment : BaseOtpFragment(), IOnBackPressed {
     }
 
     override val viewBound = ReceiverNotifViewBinding()
+
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
 
     override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_PUSH_NOTIF_RECEIVE
 
@@ -178,6 +184,11 @@ class ReceiverNotifFragment : BaseOtpFragment(), IOnBackPressed {
 
     @SuppressLint("SetTextI18n")
     private fun initView() {
+        (activity as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_cancel_grey_otp)
+        viewBound.imagePhoneBell?.setImage(R.drawable.ic_phone_bell, 0f)
+        viewBound.imagePhone?.setImage(R.drawable.ic_phone_otp, 0f)
+        viewBound.imageTime?.setImage(R.drawable.ic_time_otp, 0f)
+        viewBound.imageLocation?.setImage(R.drawable.ic_location_otp, 0f)
         viewBound.textDevice?.text = deviceName
         viewBound.textTime?.text = time
         viewBound.textLocation?.text = "$location • $ip"

@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
@@ -133,7 +134,7 @@ data class DataItem(
         val boxColor: String? = "",
 
         @SerializedName("font_color", alternate = ["text_color"])
-        val fontColor: String? = "",
+        val  fontColor: String? = Constant.StaticFontColor.FONT_COLOR,
 
         @SerializedName("button_text")
         var buttonText: String? = "",
@@ -381,8 +382,6 @@ data class DataItem(
         var tabName: String? = "",
 
         var hasNotifyMe: Boolean = false,
-
-        var isOldRating: Boolean = false,
 
         var departmentID: Int = 0,
 

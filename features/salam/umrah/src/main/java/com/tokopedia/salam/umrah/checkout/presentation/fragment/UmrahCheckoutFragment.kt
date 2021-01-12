@@ -136,9 +136,8 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     performanceMonitoring.stopTrace()
                     val data = it.throwable
                     view?.let {
-                        Toaster.showErrorWithAction(it, data.message
-                                ?: "", Snackbar.LENGTH_LONG, getString(R.string.umrah_checkout_error_confirmation)
-                                , View.OnClickListener { })
+                        Toaster.build(it, data.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.umrah_checkout_error_confirmation),
+                                View.OnClickListener { })
                     }
                     hideLoadingBar()
                     NetworkErrorHelper.showEmptyState(context, view?.rootView,null,null,null,R.drawable.umrah_img_empty_search_png){
@@ -185,9 +184,8 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     hideLoadingBar()
                     val data = it.throwable
                     view?.let {
-                        Toaster.showErrorWithAction(it, data.message
-                                ?: "", Snackbar.LENGTH_LONG, getString(R.string.umrah_checkout_error_confirmation)
-                                , View.OnClickListener { })
+                        Toaster.build(it, data.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.umrah_checkout_error_confirmation),
+                                View.OnClickListener { })
                     }
                 }
             }
@@ -302,8 +300,8 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         } else {
             progressDialog.dismiss()
             view?.let {
-                Toaster.showErrorWithAction(it, getString(R.string.umrah_checkout_validation_error), Snackbar.LENGTH_LONG, getString(R.string.umrah_checkout_error_confirmation)
-                        , View.OnClickListener { })
+                Toaster.build(it, getString(R.string.umrah_checkout_validation_error) ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.umrah_checkout_error_confirmation),
+                        View.OnClickListener { })
             }
         }
 

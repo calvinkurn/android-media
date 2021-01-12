@@ -10,6 +10,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.widget.CompoundButton
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.unifycomponents.Toaster
 import rx.Emitter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -52,6 +53,11 @@ object Utils {
     @JvmStatic
     fun removeDecimalSuffix(currencyString: String): String {
         return currencyString.removeDecimalSuffix()
+    }
+
+    @JvmStatic
+    fun setToasterCustomBottomHeight(bottomHeight: Int) {
+        Toaster.toasterCustomBottomHeight = bottomHeight
     }
 }
 

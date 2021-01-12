@@ -21,19 +21,20 @@ class SearchProductFirstPageGqlUseCase(
 ): UseCase<SearchProductModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
-        val query = getQueryFromParameters(requestParams.parameters)
-        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters)
-        val headlineParams = createHeadlineParams(requestParams.parameters)
+        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, Any>
 
-        val graphqlRequestList = listOf(
-                createAceSearchProductRequest(params = params),
-                createQuickFilterRequest(query = query, params = params),
-                createTopAdsProductRequest(params = params),
-                createHeadlineAdsRequest(headlineParams = headlineParams),
-                createGlobalSearchNavigationRequest(query = query, params = params),
-                createSearchInspirationCarouselRequest(params = params),
-                createSearchInspirationWidgetRequest(params = params)
-        )
+        val query = getQueryFromParameters(searchProductParams)
+        val params = UrlParamUtils.generateUrlParamString(searchProductParams)
+
+        val graphqlRequestList = graphqlRequests {
+            addAceSearchProductRequest(params)
+            addQuickFilterRequest(query, params)
+            addProductAdsRequest(requestParams, params)
+            addHeadlineAdsRequest(requestParams, searchProductParams)
+            addGlobalNavRequest(requestParams, query, params)
+            addInspirationCarouselRequest(requestParams, params)
+            addInspirationWidgetRequest(requestParams, params)
+        }
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequests(graphqlRequestList)
@@ -58,12 +59,23 @@ class SearchProductFirstPageGqlUseCase(
         return UrlParamUtils.generateUrlParamString(headlineParams)
     }
 
+    private fun MutableList<GraphqlRequest>.addQuickFilterRequest(query: String, params: String) {
+        add(createQuickFilterRequest(query = query, params = params))
+    }
+
     private fun createQuickFilterRequest(query: String, params: String) =
             GraphqlRequest(
                     QUICK_FILTER_QUERY,
                     QuickFilterModel::class.java,
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
+
+    private fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(requestParams: RequestParams, searchProductParams: Map<String, Any>) {
+        if (!requestParams.isSkipHeadlineAds()) {
+            val headlineParams = createHeadlineParams(searchProductParams)
+            add(createHeadlineAdsRequest(headlineParams = headlineParams))
+        }
+    }
 
     private fun createHeadlineAdsRequest(headlineParams: String) =
             GraphqlRequest(
@@ -72,6 +84,12 @@ class SearchProductFirstPageGqlUseCase(
                     mapOf(GQL.KEY_HEADLINE_PARAMS to headlineParams)
             )
 
+    private fun MutableList<GraphqlRequest>.addGlobalNavRequest(requestParams: RequestParams, query: String, params: String) {
+        if (!requestParams.isSkipGlobalNav()) {
+            add(createGlobalSearchNavigationRequest(query = query, params = params))
+        }
+    }
+
     private fun createGlobalSearchNavigationRequest(query: String, params: String) =
             GraphqlRequest(
                     GLOBAL_NAV_GQL_QUERY,
@@ -79,12 +97,24 @@ class SearchProductFirstPageGqlUseCase(
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
 
+    private fun MutableList<GraphqlRequest>.addInspirationCarouselRequest(requestParams: RequestParams, params: String) {
+        if (!requestParams.isSkipInspirationCarousel()) {
+            add(createSearchInspirationCarouselRequest(params = params))
+        }
+    }
+
     private fun createSearchInspirationCarouselRequest(params: String) =
             GraphqlRequest(
                     SEARCH_INSPIRATION_CAROUSEL_QUERY,
                     SearchInspirationCarouselModel::class.java,
                     mapOf(GQL.KEY_PARAMS to params)
             )
+
+    private fun MutableList<GraphqlRequest>.addInspirationWidgetRequest(requestParams: RequestParams, params: String) {
+        if (!requestParams.isSkipInspirationWidget()) {
+            add(createSearchInspirationWidgetRequest(params = params))
+        }
+    }
 
     private fun createSearchInspirationWidgetRequest(params: String) =
             GraphqlRequest(
@@ -94,9 +124,9 @@ class SearchProductFirstPageGqlUseCase(
             )
 
     companion object {
-        private const val HEADLINE_PRODUCT_COUNT = 3
+        internal const val HEADLINE_PRODUCT_COUNT = 3
 
-        private const val QUICK_FILTER_QUERY = """
+        internal const val QUICK_FILTER_QUERY = """
             query QuickFilter(${'$'}query: String!, ${'$'}params: String!) {
                 quick_filter(query: ${'$'}query, extraParams: ${'$'}params) {
                     filter {
@@ -134,7 +164,7 @@ class SearchProductFirstPageGqlUseCase(
             }
         """
 
-        private const val HEADLINE_ADS_QUERY = """
+        internal const val HEADLINE_ADS_QUERY = """
             query HeadlineAds(${'$'}headline_params: String!) {
                 headlineAds: displayAdsV3(displayParams: ${'$'}headline_params) {
                     status {
@@ -217,7 +247,7 @@ class SearchProductFirstPageGqlUseCase(
             }
         """
 
-        private const val GLOBAL_NAV_GQL_QUERY = """
+        internal const val GLOBAL_NAV_GQL_QUERY = """
             query GlobalSearchNavigation(${'$'}query: String!, ${'$'}params: String!) {
                 global_search_navigation(keyword:${'$'}query, device:"android", size:5, params:${'$'}params) {
                     data {
@@ -246,7 +276,7 @@ class SearchProductFirstPageGqlUseCase(
             }
         """
 
-        private const val SEARCH_INSPIRATION_CAROUSEL_QUERY = """
+        internal const val SEARCH_INSPIRATION_CAROUSEL_QUERY = """
             query SearchInspirationCarousel(${'$'}params: String!) {
                 searchInspirationCarouselV2(params: ${'$'}params) {
                     data {
@@ -258,6 +288,9 @@ class SearchProductFirstPageGqlUseCase(
                             title
                             url
                             applink
+                            banner_image_url
+                            banner_link_url
+                            banner_applink_url
                             product {
                                 id
                                 name
@@ -269,6 +302,15 @@ class SearchProductFirstPageGqlUseCase(
                                 url
                                 applink
                                 description
+                                rating_average
+                                label_groups {
+                                    title
+                                    type
+                                    position
+                                    url
+                                }
+                                original_price
+                                discount_percentage
                             }
                         }
                     }
@@ -276,7 +318,7 @@ class SearchProductFirstPageGqlUseCase(
             }
         """
 
-        private const val SEARCH_INSPIRATION_WIDGET_QUERY = """
+        internal const val SEARCH_INSPIRATION_WIDGET_QUERY = """
             query SearchInspirationWidget(${'$'}params: String!) {
                 searchInspirationWidget(params:${'$'}params){
                     data {
