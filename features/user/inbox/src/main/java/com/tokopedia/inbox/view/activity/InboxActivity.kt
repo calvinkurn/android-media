@@ -3,6 +3,7 @@ package com.tokopedia.inbox.view.activity
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatDelegate
@@ -13,6 +14,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.analytic.InboxAnalytic
 import com.tokopedia.inbox.common.InboxFragmentType
@@ -63,6 +66,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private var container: CoordinatorLayout? = null
     private var fragmentContainer: FrameLayout? = null
     private var toolbar: NavToolbar? = null
+    private var onBoardingCoachMark: CoachMark2? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InboxViewModel::class.java)
@@ -87,6 +91,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         setupInitialToolbar()
         setupBottomNav()
         setupSwitcher()
+        setupOnBoarding()
     }
 
     override fun onResume() {
@@ -185,6 +190,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         navigator?.notifyRoleChanged(role)
         navHeader.bindValue()
         cacheState.saveRoleCache(role)
+        onBoardingCoachMark?.dismissCoachMark()
         showNotificationRoleChanged(role)
         updateBadgeCounter()
     }
@@ -209,6 +215,93 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         navHeaderContainer?.setOnClickListener {
             switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
             analytic.trackClickSwitchAccount()
+        }
+    }
+
+    private fun setupOnBoarding() {
+        if (!viewModel.hasShowOnBoarding()) {
+            onBoardingCoachMark = CoachMark2(this)
+            if (userSession.hasShop()) {
+                showOnBoardingSeller()
+            } else {
+                showOnBoardingBuyer()
+            }
+        }
+    }
+
+    private fun showOnBoardingSeller() {
+        if (bottomNav == null || navHeaderContainer == null || switcher == null) return
+        val anchors = ArrayList<CoachMark2Item>()
+        anchors.add(
+                CoachMark2Item(
+                        bottomNav!!,
+                        getString(R.string.inbox_title_onboarding_1),
+                        getString(R.string.inbox_desc_onboarding_1)
+                )
+        )
+        anchors.add(
+                CoachMark2Item(
+                        navHeaderContainer!!,
+                        getString(R.string.inbox_title_onboarding_2),
+                        getString(R.string.inbox_desc_onboarding_2)
+                )
+        )
+        anchors.add(
+                CoachMark2Item(
+                        navHeaderContainer!!,
+                        getString(R.string.inbox_title_onboarding_3),
+                        getString(R.string.inbox_desc_onboarding_3),
+                        CoachMark2.POSITION_TOP
+                )
+        )
+        onBoardingCoachMark?.showCoachMark(anchors)
+        onBoardingCoachMark?.onFinishListener = {
+            viewModel.markFinishedSellerOnBoarding()
+        }
+        onBoardingCoachMark?.onDismissListener = {
+            viewModel.markFinishedSellerOnBoarding()
+        }
+        onBoardingCoachMark?.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if (currentIndex == 2) {
+                    onBoardingCoachMark?.isDismissed = true
+                    switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
+                    switcher?.setShowListener {
+                        anchors.last().anchorView = switcher!!.bottomSheetWrapper
+                        Handler().postDelayed({
+                            onBoardingCoachMark?.isDismissed = false
+                            onBoardingCoachMark?.showCoachMark(anchors, index = 2)
+                        }, 500)
+                    }
+                } else if (currentIndex == 1) {
+                    switcher?.dialog?.let {
+                        onBoardingCoachMark?.isDismissed = true
+                        if (it.isShowing) {
+                            switcher?.dismiss()
+                        }
+                        Handler().postDelayed({
+                            onBoardingCoachMark?.isDismissed = false
+                            onBoardingCoachMark?.showCoachMark(anchors, index = 1)
+                        }, 500)
+                    }
+                }
+            }
+        })
+    }
+
+    private fun showOnBoardingBuyer() {
+        if (bottomNav == null) return
+        val anchors = ArrayList<CoachMark2Item>()
+        anchors.add(
+                CoachMark2Item(
+                        bottomNav!!,
+                        getString(R.string.inbox_title_onboarding_1),
+                        getString(R.string.inbox_desc_onboarding_1)
+                )
+        )
+        onBoardingCoachMark?.showCoachMark(anchors)
+        onBoardingCoachMark?.setOnDismissListener {
+            viewModel.markFinishedBuyerOnBoarding()
         }
     }
 
