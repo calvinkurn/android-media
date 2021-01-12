@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
 
-    var mPhone = "082242454511"
+    var mPhone = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -80,18 +80,15 @@ class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
     }
 
     fun onErrorActivateOvo(error: Throwable) {
-//        gotoAdd
+        goToErrorPage()
     }
 
-//    private fun goToAddName(uuid: String) {
-//        if (activity != null) {
-//            val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER
-//            val intent = RouteManager.getIntent(getContext(), applink)
-//            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber)
-//            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
-//            startActivityForResult(intent, RegisterInitialFragment.REQUEST_ADD_NAME_REGISTER_PHONE)
-//        }
-//    }
+    fun goToErrorPage(){
+        val intent = OvoFinalPageActivity.createIntentError(activity)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+        activity?.finish()
+    }
 
     companion object {
         fun createInstance(bundle: Bundle? = null): Fragment {
