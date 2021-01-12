@@ -2,22 +2,26 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
-import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularPageChangeListener
-import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.decoration.BannerChannelDecoration
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.LinearCenterLayoutManager
 import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
 import com.tokopedia.home_component.visitable.BannerDataModel
-import com.tokopedia.unifycomponents.PageControl
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by devarafikry on 11/28/20.
@@ -28,29 +32,54 @@ class BannerComponentViewHolder(itemView: View,
                                 private val homeComponentListener: HomeComponentListener?
 )
     : AbstractViewHolder<BannerDataModel>(itemView),
-        CircularListener {
+        CircularListener, CoroutineScope {
     private var isCache = true
-    private val circularViewPager: CircularViewPager = itemView.findViewById(R.id.circular_view_pager)
-    private val indicatorView: PageControl = itemView.findViewById(R.id.indicator_banner)
+    private val rvBanner: RecyclerView = itemView.findViewById(R.id.rv_banner)
     private val adapter = BannerChannelAdapter(listOf(), this)
+    private val layoutManager = LinearCenterLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+
+    // tracker
+    private val impressionStatusList = mutableMapOf<Int, Boolean>()
+
+    private val masterJob = Job()
+    override val coroutineContext: CoroutineContext
+        get() = masterJob + Dispatchers.Main
 
     private var channelModel: ChannelModel? = null
 
+    //set to true if you want to activate auto-scroll
+    private var isAutoScroll = false
+    private var interval = 5000
+    private var currentPagePosition = 0
+
+    private val state_running = 0
+    private val state_paused = 1
+    private var autoScrollState = state_paused
+
+    private fun autoScrollLauncher() = launch(coroutineContext) {
+        while (autoScrollState == state_running) {
+            delay(interval.toLong())
+            autoScrollCoroutine()
+        }
+    }
+
     init {
-        indicatorView.activeColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0_32)
+        itemView.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
+            override fun onViewDetachedFromWindow(p0: View?) {
+                pauseAutoScroll()
+            }
+
+            override fun onViewAttachedToWindow(p0: View?) {
+                onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
+                resumeAutoScroll()
+            }
+        })
     }
 
     override fun bind(element: BannerDataModel) {
         try {
             setHeaderComponent(element)
-//            slidesList = element.slides
-//            slidesList?.let {
-//                this.isCache = element.isCache
-//                initSeeAllPromo()
-//                initBanner(it.map{ CircularModel(it.id, it.imageUrl) })
-//            }
-
+            onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
             channelModel = element.channelModel
             channelModel?.let { it ->
                 this.isCache = element.isCache
@@ -68,79 +97,97 @@ class BannerComponentViewHolder(itemView: View,
     override fun bind(element: BannerDataModel, payloads: MutableList<Any>) {
         try {
             setHeaderComponent(element)
-//            slidesList = element.slides
-//            this.isCache = element.isCache
-//            element.slides?.let {
-//                if (it.size > 5) {
-//                    indicatorView.setIndicator(it.size)
-//                } else {
-//                    indicatorView.setIndicator(it.size)
-//                }
-//                circularViewPager.setItemList(it.map { CircularModel(it.id, it.imageUrl) })
-//            }
-
+            onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
             channelModel = element.channelModel
             this.isCache = element.isCache
             element.channelModel?.let {
                 val gridCount = it.channelGrids.size
-                if (gridCount > 5) {
-                    indicatorView.setIndicator(gridCount)
-                } else {
-                    indicatorView.setIndicator(gridCount)
-                }
-                circularViewPager.setItemList(it.convertToCircularModel())
+                adapter.setItemList(it.convertToCircularModel())
             }
         }catch (e: Exception){
             e.printStackTrace()
         }
     }
 
-    private fun initBanner(list: List<CircularModel>){
-        circularViewPager.setIndicatorPageChangeListener(object: CircularViewPager.IndicatorPageChangeListener{
-            override fun onIndicatorPageChange(newIndicatorPosition: Int) {
-                indicatorView.setCurrentIndicator(newIndicatorPosition)
-            }
-        })
+    private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
+        if (isAutoScroll) {
+            rvBanner.smoothScrollToPosition(currentPagePosition)
 
-        circularViewPager.setPageChangeListener(object: CircularPageChangeListener {
-            override fun onPageScrolled(position: Int) {
-                onPromoScrolled(position)
+            channelModel?.let {
+                val size = channelModel?.channelGrids?.size?:0
+                if (currentPagePosition == (size-1) ) {
+                    currentPagePosition = 0
+                } else {
+                    currentPagePosition++
+                }
             }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                onPageDragStateChanged(state == CircularViewPager.SCROLL_STATE_DRAGGING)
-            }
-        })
-        circularViewPager.setAdapter(adapter)
-        circularViewPager.setItemList(list)
-        if (list.size > 5) {
-            indicatorView.setIndicator(list.size)
-        } else {
-            indicatorView.setIndicator(list.size)
         }
     }
 
+    private fun resumeAutoScroll() {
+        if (autoScrollState == state_paused) {
+            autoScrollLauncher()
+            autoScrollState = state_running
+        }
+    }
+
+    private fun pauseAutoScroll() {
+        if (autoScrollState == state_running) {
+            masterJob.cancelChildren()
+            autoScrollState = state_paused
+        }
+    }
+
+    private fun initBanner(list: List<CircularModel>){
+        val snapHelper: SnapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(rvBanner)
+        rvBanner.layoutManager = layoutManager
+        rvBanner.clearOnScrollListeners()
+        rvBanner.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                when(newState) {
+                    RecyclerView.SCROLL_STATE_IDLE -> {
+                        onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
+                        onPageDragStateChanged(false)
+                    }
+                    RecyclerView.SCROLL_STATE_DRAGGING -> {
+                        onPageDragStateChanged(true)
+                        pauseAutoScroll()
+                    }
+                }
+            }
+        })
+
+        if (rvBanner.itemDecorationCount == 0) {
+            rvBanner.addItemDecoration(BannerChannelDecoration())
+        }
+        adapter.setItemList(list)
+        rvBanner.adapter = adapter
+    }
+
     override fun onClick(position: Int) {
-//        slidesList?.let {
-//            if(it.size > position) {
-//                listener?.onPromoClick(position, it[position])
-//            }
-//        }
-        channelModel?.selectGridInPosition(position) {
-            bannerListener?.onBannerClickListener(position, it)
+        channelModel?.let {channel ->
+            channel.selectGridInPosition(position) {
+                bannerListener?.onBannerClickListener(position, it, channel)
+            }
         }
     }
 
     private fun onPromoScrolled(position: Int) {
-        if (bannerListener?.isMainViewVisible() == true && !isCache) {
-//            slidesList?.let {
-//                listener?.onPromoScrolled(it[position])
-//                it[position].invoke()
-//            }
-            channelModel?.selectGridInPosition(position) {
-                bannerListener.onPromoScrolled(it)
+        if (bannerListener?.isMainViewVisible() == true && !isCache && !isBannerImpressed(position)) {
+            channelModel?.let {channel ->
+                channel.selectGridInPosition(position) {
+                    bannerListener.onPromoScrolled(channel, it ,position)
+                }
+                impressionStatusList.put(position, true)
             }
         }
+    }
+
+    private fun isBannerImpressed(position: Int): Boolean {
+        return if (impressionStatusList.size > position && position != -1) {
+            impressionStatusList[position]?:false
+        } else false
     }
 
     private fun onPageDragStateChanged(isDrag: Boolean) {
@@ -161,17 +208,9 @@ class BannerComponentViewHolder(itemView: View,
         }
     }
 
-    fun onResume(){
-        circularViewPager.resetScrollToStart()
-        circularViewPager.resumeAutoScroll()
-    }
-
     fun resetImpression(){
-        circularViewPager.resetScrollToStart()
-    }
-
-    fun onPause(){
-        circularViewPager.pauseAutoScroll()
+        impressionStatusList.clear()
+        layoutManager.scrollToPosition(0)
     }
 
     private fun ChannelModel.convertToCircularModel(): List<CircularModel> {
@@ -183,11 +222,13 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     private fun ChannelModel.selectGridInPosition(position: Int, action: (ChannelGrid) -> Unit = {}): ChannelGrid? {
-        return if (this.channelGrids.size > position) {
+        return if (position != -1 && this.channelGrids.size > position) {
             action.invoke(this.channelGrids[position])
             this.channelGrids[position]
         } else null
     }
+
+
 
     companion object {
         @LayoutRes
