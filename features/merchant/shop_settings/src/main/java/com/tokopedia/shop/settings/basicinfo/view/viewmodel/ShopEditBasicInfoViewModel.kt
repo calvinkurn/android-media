@@ -64,26 +64,15 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     private val shopNameValidation = MutableLiveData<String>()
     private val shopDomainValidation = MutableLiveData<String>()
-    private val uploadShopImageParams = MutableLiveData<RequestParams>()
-    private val getShopDomainNameSuggestionParams = MutableLiveData<RequestParams>()
-    private val getShopBasicDataParams = MutableLiveData<RequestParams>()
-    private val updateShopBasicDataParams = MutableLiveData<RequestParams>()
+    private val getShopDomainNameSuggestionParams = MutableLiveData<String>()
 
     private var currentShopName: String? = null
     private var currentShop: ShopBasicDataModel? = null
 
-    private var name: String = ""
-    private var domain: String = ""
-    private var tagLine: String = ""
-    private var description: String = ""
-
     init {
         initShopNameValidation()
         initShopDomainValidation()
-        initUploadShopImage()
         initGetShopDomainNameSuggestion()
-        initGetShopBasicData()
-        initUpdateShopBasicData()
     }
 
     fun validateShopName(shopName: String) {
@@ -97,8 +86,9 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         shopDomainValidation.value = shopDomain
     }
 
-    fun getShopBasicData() = launch {
-        getShopBasicDataParams.value = RequestParams.EMPTY
+    fun setCurrentShopData(data: ShopBasicDataModel) {
+        currentShop = data
+        currentShopName = data.name
     }
 
     fun uploadShopImage(
@@ -108,11 +98,18 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             tagLine: String,
             description: String
     ) {
-        uploadShopImageParams.value = UploadShopImageUseCase.createRequestParams(imagePath)
-        this.name = name
-        this.domain = domain
-        this.tagLine = tagLine
-        this.description = description
+        launchCatchError(block = {
+            val requestParams = UploadShopImageUseCase.createRequestParams(imagePath)
+            val uploadShopImage = withContext(dispatchers.io) {
+                uploadShopImageUseCase.getData(requestParams)
+            }
+            uploadShopImage.data?.image?.picCode?.let { picCode ->
+                updateShopBasicData(name, domain, tagLine, description, picCode)
+            }
+            _uploadShopImage.value = Success(uploadShopImage)
+        }) {
+            _uploadShopImage.value = Fail(it)
+        }
     }
 
     fun updateShopBasicData(
@@ -131,11 +128,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         updateShopBasicData(requestParams)
     }
 
-    fun setCurrentShopData(data: ShopBasicDataModel) {
-        currentShop = data
-        currentShopName = data.name
-    }
-
     fun getAllowShopNameDomainChanges() {
         launchCatchError(dispatchers.io, block = {
             _allowShopNameDomainChanges.postValue(Success(getAllowShopNameDomainChangesAsync().await()))
@@ -144,27 +136,29 @@ class ShopEditBasicInfoViewModel @Inject constructor(
         })
     }
 
-    private fun getShopDomainSuggestion(shopName: String) {
-        getShopDomainNameSuggestionParams.value = GetShopDomainNameSuggestionUseCase.createRequestParams(shopName)
+    fun getShopBasicData() {
+        launchCatchError(block = {
+            val shopBasicData = withContext(dispatchers.io) {
+                getShopBasicDataUseCase.getData(RequestParams.EMPTY)
+            }
+            _shopBasicData.value = Success(shopBasicData)
+        }) {
+            _shopBasicData.value = Fail(it)
+        }
     }
 
     private fun updateShopBasicData(requestParams: RequestParams) {
-        updateShopBasicDataParams.value = requestParams
+        launchCatchError(block = {
+            updateShopBasicDataUseCase.setParams(requestParams)
+            val updateShopBasicData = updateShopBasicDataUseCase.executeOnBackground()
+            _updateShopBasicData.value = Success(updateShopBasicData)
+        }) {
+            _updateShopBasicData.value = Fail(it)
+        }
     }
 
-    private fun initGetShopBasicData() = launch {
-        getShopBasicDataParams
-                .asFlow()
-                .map {
-                    getShopBasicDataUseCase.getData(it)
-                }
-                .flowOn(dispatchers.io)
-                .catch {
-                    _shopBasicData.value = Fail(it)
-                }
-                .collectLatest {
-                    _shopBasicData.value = Success(it)
-                }
+    private fun getShopDomainSuggestion(shopName: String) {
+        getShopDomainNameSuggestionParams.value = shopName
     }
 
     private fun initShopNameValidation() = launch {
@@ -204,27 +198,11 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                 }
     }
 
-    private fun initUploadShopImage() = launch {
-        uploadShopImageParams
-                .asFlow()
-                .map {
-                    uploadShopImageUseCase.getData(it)
-                }.flowOn(dispatchers.io)
-                .catch {
-                    _uploadShopImage.value = Fail(it)
-                }.collectLatest {
-                    it.data?.image?.picCode?.let { picCode ->
-                        updateShopBasicData(name, domain, tagLine, description, picCode)
-                    }
-                    _uploadShopImage.value = Success(it)
-                }
-    }
-
     private fun initGetShopDomainNameSuggestion() = launch {
         getShopDomainNameSuggestionParams
                 .asFlow()
                 .map {
-                    getShopDomainNameSuggestionUseCase.params = it
+                    getShopDomainNameSuggestionUseCase.params = GetShopDomainNameSuggestionUseCase.createRequestParams(it)
                     getShopDomainNameSuggestionUseCase.executeOnBackground()
                 }
                 .flowOn(dispatchers.io)
@@ -233,21 +211,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                     _shopDomainSuggestion.value = Fail(it)
                 }.collectLatest {
                     _shopDomainSuggestion.value = Success(it)
-                }
-    }
-
-    private fun initUpdateShopBasicData() = launch {
-        updateShopBasicDataParams
-                .asFlow()
-                .map {
-                    updateShopBasicDataUseCase.setParams(it)
-                    updateShopBasicDataUseCase.executeOnBackground()
-                }.flowOn(dispatchers.io)
-                .catch {
-                    _updateShopBasicData.value = Fail(it)
-                }
-                .collectLatest {
-                    _updateShopBasicData.value = Success(it)
                 }
     }
 
