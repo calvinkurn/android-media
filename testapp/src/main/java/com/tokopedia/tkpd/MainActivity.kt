@@ -13,6 +13,8 @@ import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
+import com.tokopedia.gamification.giftbox.presentation.activities.GiftBoxDailyActivity
+//import com.tokopedia.mvcwidget.DummyMvcActivity
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
@@ -104,5 +106,6 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+        startActivity(Intent(this, GiftBoxDailyActivity::class.java))
     }
 }

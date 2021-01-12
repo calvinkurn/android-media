@@ -51,13 +51,14 @@
                 android:layout_height="match_parent" />
 
             <com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
+                app:source="daily"
                 android:id="@+id/reward_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
             <include layout="@layout/gf_gift_tap_hint" />
 
-            <include layout="@layout/gami_prize_list"/>
+<!--            <include layout="@layout/gami_prize_list"/>-->
 
             <LinearLayout
                 android:id="@+id/ll_reward_message"
@@ -157,4 +158,11 @@
     </ViewFlipper>
 
     <include layout="@layout/gami_gift_box_toolbar" />
+
+    <com.tokopedia.gamification.giftbox.presentation.views.DirectGiftView
+        android:layout_margin="@dimen/dp_16"
+        android:layout_gravity="bottom"
+        android:id="@+id/direct_gift_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </FrameLayout>

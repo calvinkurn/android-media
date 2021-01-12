@@ -24,6 +24,8 @@ import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.presentation.adapter.CouponAdapter
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
 import com.tokopedia.gamification.giftbox.presentation.helpers.*
+import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardSourceType.Companion.DAILY
+import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardSourceType.Companion.TAP_TAP
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_ONLY
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_WITH_POINTS
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.POINTS_ONLY
@@ -48,6 +50,7 @@ class RewardContainer : FrameLayout {
     val FADE_OUT_REWARDS_DURATION_TAP_TAP = 600L
     val FADE_IN_REWARDS_DURATION_TAP_TAP = 400L
     var userSession: UserSession? = null
+    @RewardSourceType var sourceType = RewardSourceType.TAP_TAP
 
     @RewardState
     var rewardState: Int = RewardState.COUPON_ONLY
@@ -73,6 +76,7 @@ class RewardContainer : FrameLayout {
     }
 
     fun init(attrs: AttributeSet?) {
+        readAttrs(attrs)
         LayoutInflater.from(context).inflate(com.tokopedia.gamification.R.layout.view_reward_container, this, true)
 
         tvSmallReward = findViewById(R.id.tv_small_reward)
@@ -105,7 +109,7 @@ class RewardContainer : FrameLayout {
                 rvCoupons.context.resources.getDimension(R.dimen.gami_rv_coupons_top_margin).toInt(),
                 rvCoupons.context.resources.getDimension(R.dimen.gami_rv_coupons_right_margin).toInt()
         ))
-        couponAdapter = CouponAdapter(couponList, isTablet)
+        couponAdapter = CouponAdapter(sourceType, couponList, isTablet)
         rvCoupons.adapter = couponAdapter
 
         userSession = UserSession(context)
@@ -114,6 +118,16 @@ class RewardContainer : FrameLayout {
             setGreenGlowImagePosition(imageGreenGlow)
             setImageGlowCircle(imageGlowCircleSmall, imageGlowCircleLarge, imageCircleReward)
         }
+    }
+
+    fun readAttrs(attrs: AttributeSet?){
+        attrs?.let {
+            val typedArray =
+                    context.theme.obtainStyledAttributes(it, R.styleable.RewardContainer, 0, 0)
+            sourceType = typedArray.getInt(R.styleable.RewardContainer_source, RewardSourceType.TAP_TAP)
+            typedArray.recycle()
+        }
+
     }
 
     fun setRewards(rewardEntity: GiftBoxRewardEntity, asyncCallback: ((rewardState: Int) -> Unit)) {
@@ -343,6 +357,15 @@ class RewardContainer : FrameLayout {
             const val COUPON_ONLY = 1
             const val POINTS_ONLY = 2
             const val COUPON_WITH_POINTS = 3
+        }
+    }
+
+    @Retention(AnnotationRetention.SOURCE)
+    @IntDef(DAILY, TAP_TAP)
+    annotation class RewardSourceType {
+        companion object {
+            const val DAILY = 1
+            const val TAP_TAP = 2
         }
     }
 

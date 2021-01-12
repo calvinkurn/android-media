@@ -112,4 +112,7 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+//    implementation project(rootProject.ext.features.promoMvcWidget)
+    implementation project(rootProject.ext.features.gamification)
+
 }

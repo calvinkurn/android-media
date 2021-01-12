@@ -63,3 +63,25 @@ include 'libraries:analytics_debugger'
 include 'libraries:analytics_debugger_noop'
 include 'libraries:base_list'
 include 'testapp'
+
+include "features:promo:mvc_widget"
+include "features:transaction:atc_common"
+include "features:im:common_promo"
+include "features:user:fcm_common"
+include "features:merchant:reputation_common"
+include "features:promo:promo_ui_common"
+include "features:common:developer_options"
+
+include "features:promo:gamification"
+include "features:discovery:recommendation_widget_common"
+include "features:discovery:productcard"
+include "features:discovery:topadssdk"
+include "features:merchant:gold_merchant_common"
+include "features:discovery:wishlist_common"
+include "features:discovery:shopwidget"
+include "features:discovery:discovery_common"
+include "features:user:user_identification_common"
+include "features:promo:promo_gamification_common"
+include "testapp-features:user:logintestapp"
+
+

@@ -55,7 +55,7 @@ open class BaseGiftBoxActivity : BaseActivity() {
         }catch (ex:Exception){
             //Binary XML file line #20: Error inflating class com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
             Timber.e(ex)
-            finish()
+//            finish() //todo Rahul remove
         }
 
     }
@@ -69,7 +69,7 @@ open class BaseGiftBoxActivity : BaseActivity() {
     }
 
     fun checkLoggedIn() {
-        if (userSession.isLoggedIn) {
+        if (userSession.isLoggedIn || true) { //todo Rahul remove
             showGiftBoxFragment()
         } else {
             val loginIntent = RouteManager.getIntent(this, ApplinkConst.LOGIN)

@@ -58,7 +58,8 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
                 val params = giftBoxDailyRewardUseCase.getRequestParams(campaignSlug!!, uniqueCode)
                 response = giftBoxDailyRewardUseCase.getResponse(params)
 
-                val couponDetail = composeApi(response)
+//                val couponDetail = composeApi(response)
+                val couponDetail = couponDetailUseCase.getFakeResponse()
                 response.couponDetailResponse = couponDetail
                 rewardLiveData.postValue(LiveDataResult.success(response))
 

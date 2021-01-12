@@ -357,14 +357,14 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         String suffixVersion = versions.getSecond();
 
         if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
-            GlobalConfig.VERSION_NAME = version;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
+            GlobalConfig.VERSION_NAME = "4.00";
+            com.tokopedia.config.GlobalConfig.VERSION_NAME = "4.00";
             com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
         } else {
-            GlobalConfig.VERSION_NAME = versionName();
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = versionName();
+            GlobalConfig.VERSION_NAME = "4.00";
+            com.tokopedia.config.GlobalConfig.VERSION_NAME = "4.00";
         }
-        com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = versionName();// save raw version name
+        com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = "4.00";// save raw version name
     }
 
     /**

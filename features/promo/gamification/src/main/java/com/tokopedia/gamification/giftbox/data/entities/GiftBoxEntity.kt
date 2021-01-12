@@ -18,9 +18,23 @@ data class GamiLuckyHome(
         @SerializedName("tokensUser") val tokensUser: TokensUser,
         @SerializedName("tokenAsset") val tokenAsset: TokenAsset,
         @SerializedName("actionButton") val actionButton: List<ActionButton>?,
-        @SerializedName("prizeList") val prizeList: List<PrizeList>?,
+        @SerializedName("prizeList") val prizeList: List<PrizeListItem>?,
         @SerializedName("reminder") val reminder: Reminder?,
-        @SerializedName("infoURL") val infoUrl: String?
+        @SerializedName("infoURL") val infoUrl: String?,
+        @SerializedName("prizeDetailList") val prizeDetailList: List<PrizeDetailListItem?>?,
+        @SerializedName("prizeDetailListButton") val prizeDetailListButton: PrizeDetailListButton?,
+        @SerializedName("bottomSheetButtonText") val bottomSheetButtonText: String?,
+)
+
+data class PrizeDetailListItem(
+        @SerializedName("isSpecial") val isSpecial: Boolean,
+        @SerializedName("imageURL") val imageURL: String?,
+        @SerializedName("text") val text: String?,
+)
+data class PrizeDetailListButton(
+        @SerializedName("url") val url: String?,
+        @SerializedName("applink") val applink: String?,
+        @SerializedName("text") val text: String?,
 )
 
 data class TokensUser(
@@ -41,7 +55,7 @@ data class ActionButton(
     @SerializedName("backgroundColor") val backgroundColor: String
 )
 
-data class PrizeList(
+data class PrizeListItem(
 
     @SerializedName("isSpecial") val isSpecial: Boolean,
     @SerializedName("imageURL") val imageURL: String,

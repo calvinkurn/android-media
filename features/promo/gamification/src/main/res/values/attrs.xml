@@ -34,6 +34,12 @@
         <attr name="gfCvCircleColor" format="color" />
         <attr name="gfCvCircleRadius" format="dimension" />
     </declare-styleable>
+    <declare-styleable name="RewardContainer">
+        <attr name="source" format="enum" >
+            <enum name="daily" value="1"/>
+            <enum name="tap_tap" value="2"/>
+        </attr>
+    </declare-styleable>
 
     <declare-styleable name="GamificationRoundImageView">
         <attr name="gfRoundImageRadius" format="dimension" />
