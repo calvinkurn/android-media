@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.os.Process;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,12 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.core.app.NotificationManagerCompat;
-
 import com.chuckerteam.chucker.api.Chucker;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
@@ -43,7 +36,7 @@ import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
 import com.tokopedia.appaidl.ReceiverListener;
-import com.tokopedia.appaidl.RemoteService;
+import com.tokopedia.appaidl.data.UserKey;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -57,14 +50,19 @@ import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.TimberWrapper;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
-import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import org.jetbrains.annotations.NotNull;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.app.NotificationManagerCompat;
 import timber.log.Timber;
 
 import static com.tokopedia.appaidl.ExtKt.connectService;
@@ -110,6 +108,7 @@ public class DeveloperOptionActivity extends BaseActivity implements ReceiverLis
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
 
+    private TextView txtAidlUserStatus;
     private TextView vGoToTopAdsDebugger;
     private TextView vGoToApplinkDebugger;
     private TextView vGoToFpm;
@@ -176,10 +175,36 @@ public class DeveloperOptionActivity extends BaseActivity implements ReceiverLis
         }
     }
 
+    private String userSessionData(Bundle data) {
+        String message = "";
+        message += "isLogin -> " + data.getBoolean(UserKey.IS_LOGIN);
+        if (data.getBoolean(UserKey.IS_LOGIN)) {
+            message += "Name -> " + data.getBoolean(UserKey.NAME);
+            message += "Email -> " + data.getBoolean(UserKey.EMAIL);
+        }
+
+        return message;
+    }
+
     @Override
-    public void handleData(String tag, Bundle data) {
-        Log.d("AppApi", "handleData: " + tag);
-        Log.d("AppApi", "bundle: " + data.getString(RemoteService.DATA_INTENT_TEST));
+    public void onAidlReceive(String tag, Bundle data) {
+        String message = "";
+        if (!tag.isEmpty() && !data.isEmpty() && data.containsKey(UserKey.IS_LOGIN)) {
+            if (GlobalConfig.isSellerApp()) {
+                message += "Seller";
+            } else {
+                message += "MainApp";
+            }
+
+            message += userSessionData(data);
+        }
+
+        txtAidlUserStatus.setText(message);
+    }
+
+    @Override
+    public void onAidlError() {
+
     }
 
     private void handleUri(Uri uri) {
@@ -219,6 +244,8 @@ public class DeveloperOptionActivity extends BaseActivity implements ReceiverLis
 
         vGoTochuck = findViewById(R.id.goto_chuck);
         toggleChuck = findViewById(R.id.toggle_chuck);
+
+        txtAidlUserStatus = findViewById(R.id.aidl_user_status);
 
         vGoToTopAdsDebugger = findViewById(R.id.goto_topads_debugger);
         vGoToApplinkDebugger = findViewById(R.id.goto_applink_debugger);
