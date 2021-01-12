@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
 import com.tokopedia.utils.image.ImageProcessingUtil
+import com.tokopedia.utils.image.ImageProcessingUtil.getCompressFormat
 
 class RechargeCameraUtil {
 
@@ -25,8 +26,6 @@ class RechargeCameraUtil {
             var top = 0
             var bottom = height
 
-            val isPng = ImageProcessingUtil.isPng(imagePath)
-
             var outputBitmap: Bitmap? = null
             try {
                 val newLeft = left + (right - left) / LEFT_DIMEN_DIVIDER
@@ -41,7 +40,7 @@ class RechargeCameraUtil {
                 val canvas = Canvas(outputBitmap!!)
                 canvas.drawBitmap(bitmapToEdit, Rect(newLeft, newTop, newRight, newBottom),
                         Rect(0, 0, expectedWidth, expectedHeight), null)
-                val file = ImageProcessingUtil.writeImageToTkpdPath(outputBitmap, isPng)
+                val file = ImageProcessingUtil.writeImageToTkpdPath(outputBitmap, imagePath.getCompressFormat())
                 bitmapToEdit.recycle()
                 outputBitmap.recycle()
                 System.gc()

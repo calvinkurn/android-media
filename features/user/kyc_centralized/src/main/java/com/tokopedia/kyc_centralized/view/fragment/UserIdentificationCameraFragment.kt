@@ -281,14 +281,14 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize?.width
                     ?: 0, mCaptureNativeSize?.height ?: 0) { bitmap: Bitmap? ->
                 if (bitmap != null) {
-                    val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, false)
+                    val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG)
                     if (cameraResultFile!= null) {
                         onSuccessImageTakenFromCamera(cameraResultFile)
                     }
                 }
             }
         } catch (error: Throwable) {
-            val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, false)
+            val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, Bitmap.CompressFormat.JPEG)
             if (cameraResultFile != null) {
                 onSuccessImageTakenFromCamera(cameraResultFile)
             }

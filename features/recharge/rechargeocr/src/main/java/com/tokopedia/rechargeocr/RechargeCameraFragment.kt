@@ -2,6 +2,7 @@ package com.tokopedia.rechargeocr
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -139,7 +140,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             mCaptureNativeSize?.let {
                 CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.width, mCaptureNativeSize.height) { bitmap ->
                     if (bitmap != null) {
-                        val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, false)
+                        val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG)
                         if (cameraResultFile!= null) {
                             onSuccessImageTakenFromCamera(cameraResultFile)
                         }
@@ -147,7 +148,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
                 }
             }
         } catch (error: Throwable) {
-            val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, false)
+            val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, Bitmap.CompressFormat.JPEG)
             if (cameraResultFile!= null) {
                 onSuccessImageTakenFromCamera(cameraResultFile)
             }

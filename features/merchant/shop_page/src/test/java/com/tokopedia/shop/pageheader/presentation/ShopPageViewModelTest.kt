@@ -351,7 +351,7 @@ class ShopPageViewModelTest {
         every {
             ImageProcessingUtil.writeImageToTkpdPath(
                     mockBitmap,
-                    true)
+                    Bitmap.CompressFormat.PNG)
         } returns File("path")
         shopPageViewModel.saveShopImageToPhoneStorage(context, "")
         assert(shopPageViewModel.shopImagePath.value.orEmpty().isNotEmpty())

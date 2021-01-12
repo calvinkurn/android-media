@@ -127,7 +127,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         compositeSubscription.add(subscription);
     }
 
-    public void saveBrightnessImage(Bitmap bitmap, final float brightnessValue, final boolean isPng) {
+    public void saveBrightnessImage(Bitmap bitmap, final float brightnessValue, final Bitmap.CompressFormat compressFormat) {
         if (bitmap == null || bitmap.isRecycled()) {
             return;
         }
@@ -136,7 +136,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                     @Override
                     public Observable<String> call(Bitmap bitmap) {
                         Bitmap resultBitmap = ImageProcessingUtil.brightBitmap(bitmap, brightnessValue);
-                        File file = ImageProcessingUtil.writeImageToTkpdPath(resultBitmap, isPng);
+                        File file = ImageProcessingUtil.writeImageToTkpdPath(resultBitmap, compressFormat);
                         return Observable.just(file.getAbsolutePath());
                     }
                 })
@@ -165,7 +165,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         addToComposite(subscription);
     }
 
-    public void saveContrastImage(Bitmap bitmap, final float contrastValue, final boolean isPng) {
+    public void saveContrastImage(Bitmap bitmap, final float contrastValue, final Bitmap.CompressFormat compressFormat) {
         if (bitmap == null || bitmap.isRecycled()) {
             return;
         }
@@ -174,7 +174,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                     @Override
                     public Observable<String> call(Bitmap bitmap) {
                         Bitmap resultBitmap = ImageProcessingUtil.contrastBitmap(bitmap, contrastValue);
-                        File file = ImageProcessingUtil.writeImageToTkpdPath(resultBitmap, isPng);
+                        File file = ImageProcessingUtil.writeImageToTkpdPath(resultBitmap, compressFormat);
                         return Observable.just(file.getAbsolutePath());
                     }
                 })
@@ -203,7 +203,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         addToComposite(subscription);
     }
 
-    public void rotateImage(Bitmap bitmap, final float angle, final boolean isPng) {
+    public void rotateImage(Bitmap bitmap, final float angle, final Bitmap.CompressFormat compressFormat) {
         if (bitmap == null || bitmap.isRecycled()) {
             return;
         }
@@ -212,7 +212,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                     @Override
                     public Observable<String> call(Bitmap bitmap) {
                         Bitmap resultBitmap = ImageProcessingUtil.rotateBitmapByDegree(bitmap, angle);
-                        File file = ImageProcessingUtil.writeImageToTkpdPath(resultBitmap, isPng);
+                        File file = ImageProcessingUtil.writeImageToTkpdPath(resultBitmap, compressFormat);
                         return Observable.just(file.getAbsolutePath());
                     }
                 })

@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.activity
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -233,7 +234,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 //                    .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
 //            onSuccessCaptureImageFromCamera(cameraResultFile)
 //        }
-        val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, false)
+        val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, Bitmap.CompressFormat.JPEG)
         if (cameraResultFile!= null) {
             onSuccessCaptureImageFromCamera(cameraResultFile)
         }

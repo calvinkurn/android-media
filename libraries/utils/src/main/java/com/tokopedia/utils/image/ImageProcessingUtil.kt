@@ -191,14 +191,13 @@ object ImageProcessingUtil {
             top = (height - expectedHeight) / 2
             bottom = top + expectedHeight
         }
-        val isPng: Boolean = isPng(imagePath)
         var outputBitmap: Bitmap? = null
         return try {
             outputBitmap = Bitmap.createBitmap(expectedWidth, expectedHeight, bitmapToEdit.config)
             val canvas = Canvas(outputBitmap)
             canvas.drawBitmap(bitmapToEdit, Rect(left, top, right, bottom),
                     Rect(0, 0, expectedWidth, expectedHeight), null)
-            val file = writeImageToTkpdPath(outputBitmap, isPng, targetRelativeDirectory)
+            val file = writeImageToTkpdPath(outputBitmap, imagePath.getCompressFormat(), targetRelativeDirectory)
             bitmapToEdit.recycle()
             outputBitmap.recycle()
             System.gc()
@@ -290,7 +289,7 @@ object ImageProcessingUtil {
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
         BitmapFactory.decodeFile(file.absolutePath, options)
-        return Math.min(options.outWidth, options.outHeight)
+        return min(options.outWidth, options.outHeight)
     }
 
     @JvmStatic
@@ -299,22 +298,41 @@ object ImageProcessingUtil {
     @JvmStatic
     fun isWebp(referencePath: String?) = referencePath?.endsWith(WEBP_EXT) ?: false
 
-    fun getTokopediaPhotoPath(isPng: Boolean, relativePathDirectory: String? = DEFAULT_DIRECTORY): File {
+    fun getTokopediaPhotoPath(compressFormat: CompressFormat, relativePathDirectory: String? = DEFAULT_DIRECTORY): File {
         return File(FileUtil.getTokopediaInternalDirectory(relativePathDirectory).absolutePath,
-                FileUtil.generateUniqueFileName() + if (isPng) PNG_EXT else JPG_EXT)
+                FileUtil.generateUniqueFileName() + when (compressFormat) {
+                    CompressFormat.PNG -> PNG_EXT
+                    CompressFormat.JPEG -> {
+                        JPG_EXT
+                    }
+                    else -> {
+                        WEBP_EXT
+                    }
+                })
     }
 
     @JvmOverloads
     @JvmStatic
     fun getTokopediaPhotoPath(referencePath: String?, directory: String? = DEFAULT_DIRECTORY): File {
-        return getTokopediaPhotoPath(isPng(referencePath), directory)
+        return getTokopediaPhotoPath(referencePath.getCompressFormat(), directory)
     }
 
-    @JvmOverloads
     @JvmStatic
-    fun getTokopediaPhotoWebpPath(directory: String? = DEFAULT_DIRECTORY): File {
-        return File(FileUtil.getTokopediaInternalDirectory(directory).absolutePath,
-                FileUtil.generateUniqueFileName() + WEBP_EXT)
+    fun String?.getCompressFormat(): CompressFormat {
+        if (this == null) {
+            return CompressFormat.JPEG
+        }
+        return when {
+            isPng(this) -> {
+                CompressFormat.PNG
+            }
+            isWebp(this) -> {
+                CompressFormat.WEBP
+            }
+            else -> {
+                CompressFormat.JPEG
+            }
+        }
     }
 
     /**
@@ -324,11 +342,11 @@ object ImageProcessingUtil {
      */
     @JvmOverloads
     @JvmStatic
-    fun writeImageToTkpdPath(source: InputStream?, isPng: Boolean, directoryRelativePath: String? = DEFAULT_DIRECTORY): File? {
+    fun writeImageToTkpdPath(source: InputStream?, compressFormat: CompressFormat, directoryRelativePath: String? = DEFAULT_DIRECTORY): File? {
         if (source == null) {
             return null
         }
-        val photo: File = getTokopediaPhotoPath(isPng, directoryRelativePath)
+        val photo: File = getTokopediaPhotoPath(compressFormat, directoryRelativePath)
         if (photo.exists()) {
             photo.delete()
         }
@@ -339,22 +357,27 @@ object ImageProcessingUtil {
 
     @JvmStatic
     fun convertToWebp(context: Context, imagePath: String, quality: Int): String {
-        if (isWebp(imagePath)) {
+        return convertImageFormat(context, imagePath, quality, CompressFormat.WEBP)
+    }
+
+    @JvmStatic
+    fun convertImageFormat(context: Context, imagePath: String, quality: Int, targetCompressFormat: CompressFormat): String {
+        if (imagePath.getCompressFormat() == targetCompressFormat) {
             return imagePath
         }
         // not webp:
         // get bitmap, then compress to webp format.
         try {
             val bitmap = getBitmapFromFile(context, imagePath)
-            val fileOutput = getTokopediaPhotoWebpPath()
-            if (bitmap != null) {
+            val fileOutput = getTokopediaPhotoPath(targetCompressFormat)
+            return if (bitmap != null) {
                 val out = FileOutputStream(fileOutput)
                 bitmap.compress(CompressFormat.WEBP, quality, out)
                 out.flush()
                 out.close()
-                return fileOutput.absolutePath
+                fileOutput.absolutePath
             } else {
-                return imagePath
+                imagePath
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -367,14 +390,14 @@ object ImageProcessingUtil {
      */
     @JvmOverloads
     @JvmStatic
-    fun writeImageToTkpdPath(bitmap: Bitmap, isPng: Boolean, directoryDef: String? = DEFAULT_DIRECTORY, quality: Int = 100): File? {
-        val file: File = getTokopediaPhotoPath(isPng, directoryDef)
+    fun writeImageToTkpdPath(bitmap: Bitmap, compressFormat: CompressFormat, directoryDef: String? = DEFAULT_DIRECTORY, quality: Int = 100): File? {
+        val file: File = getTokopediaPhotoPath(compressFormat, directoryDef)
         if (file.exists()) {
             file.delete()
         }
         try {
             val out = FileOutputStream(file)
-            bitmap.compress(if (isPng) CompressFormat.PNG else CompressFormat.JPEG, quality, out)
+            bitmap.compress(compressFormat, quality, out)
             out.flush()
             out.close()
         } catch (e: Throwable) {
@@ -389,9 +412,9 @@ object ImageProcessingUtil {
      */
     @JvmOverloads
     @JvmStatic
-    fun writeImageToTkpdPath(buffer: ByteArray?, isPng: Boolean, relativePathDirectory: String? = DEFAULT_DIRECTORY): File? {
+    fun writeImageToTkpdPath(buffer: ByteArray?, compressFormat: CompressFormat, relativePathDirectory: String? = DEFAULT_DIRECTORY): File? {
         if (buffer != null) {
-            val photo: File = getTokopediaPhotoPath(isPng, relativePathDirectory)
+            val photo: File = getTokopediaPhotoPath(compressFormat, relativePathDirectory)
             if (photo.exists()) {
                 photo.delete()
             }
@@ -411,7 +434,7 @@ object ImageProcessingUtil {
     fun compressImageFile(filePath: String, quality: Int = 100, reqWidth: Int = DEF_SMALL_WIDTH, reqHeight: Int = DEF_SMALL_HEIGHT): File {
         val bitmap = getBitmapFromPath(filePath, reqWidth, reqHeight, true)
         val file = if (bitmap != null) {
-            writeImageToTkpdPath(bitmap, isPng(filePath), DEFAULT_DIRECTORY, quality)
+            writeImageToTkpdPath(bitmap, filePath.getCompressFormat(), DEFAULT_DIRECTORY, quality)
         } else {
             null
         }
@@ -481,13 +504,12 @@ object ImageProcessingUtil {
     fun resizeBitmap(imagePath: String, maxWidth: Int, maxHeight: Int, needCheckRotate: Boolean,
                      resultRelativeDirectory: String? = DEFAULT_DIRECTORY): String {
         val bitmapToEdit = getBitmapFromPath(imagePath, maxWidth, maxHeight, needCheckRotate)
-        val isPng = isPng(imagePath)
         val outputBitmap: Bitmap
         return try {
             outputBitmap = Bitmap.createBitmap(bitmapToEdit!!.width, bitmapToEdit.height, bitmapToEdit.config)
             val canvas = Canvas(outputBitmap)
             canvas.drawBitmap(bitmapToEdit, 0f, 0f, null)
-            val file = writeImageToTkpdPath(outputBitmap, isPng, resultRelativeDirectory)
+            val file = writeImageToTkpdPath(outputBitmap, imagePath.getCompressFormat(), resultRelativeDirectory)
             bitmapToEdit.recycle()
             outputBitmap.recycle()
             System.gc()

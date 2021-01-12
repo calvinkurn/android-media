@@ -303,7 +303,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         if (gestureCropImageView.getCurrentAngle() % 90 == 0) {
             imageEditPreviewPresenter.rotateImage(gestureCropImageView.getViewBitmap(),
                     gestureCropImageView.getCurrentAngle(),
-                    ImageProcessingUtil.isPng(edittedImagePath));
+                    ImageProcessingUtil.getCompressFormat(edittedImagePath));
             return;
         }
         cropAndSaveImage();
@@ -315,7 +315,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             return;
         }
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
-        imageEditPreviewPresenter.saveBrightnessImage(bitmap, brightness / BRIGHTNESS_PRECISION, ImageProcessingUtil.isPng(edittedImagePath));
+        imageEditPreviewPresenter.saveBrightnessImage(bitmap, brightness / BRIGHTNESS_PRECISION, ImageProcessingUtil.getCompressFormat(edittedImagePath));
     }
 
     public void saveContrastImage() {
@@ -324,7 +324,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             return;
         }
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
-        imageEditPreviewPresenter.saveContrastImage(bitmap, contrast / CONTRAST_PRECISION, ImageProcessingUtil.isPng(edittedImagePath));
+        imageEditPreviewPresenter.saveContrastImage(bitmap, contrast / CONTRAST_PRECISION, ImageProcessingUtil.getCompressFormat(edittedImagePath));
     }
 
     @Override

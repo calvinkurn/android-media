@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBottomSheet
 import com.tokopedia.utils.image.ImageProcessingUtil
+import com.tokopedia.utils.image.ImageProcessingUtil.getCompressFormat
 import java.io.File
 
 /**
@@ -22,7 +23,7 @@ class PlayMinimumCoverImageTransformer : ImageTransformer {
                 newBitmap = Bitmap.createScaledBitmap(imageBitmap, PlayGalleryImagePickerBottomSheet.MINIMUM_COVER_WIDTH, PlayGalleryImagePickerBottomSheet.MINIMUM_COVER_HEIGHT, false)
             }
             ImageProcessingUtil.writeImageToTkpdPath(
-                    newBitmap ?: imageBitmap, isPng)
+                    newBitmap ?: imageBitmap, imageFile.absolutePath.getCompressFormat())
         } catch (t: Throwable) {
             t.printStackTrace()
             null

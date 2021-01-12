@@ -38,7 +38,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     val sticker = ProductImageSticker(activity, resource, data)
                     try {
                         val bitmap = sticker.buildBitmapImage()
-                        val file = ImageProcessingUtil.writeImageToTkpdPath(bitmap, false)
+                        val file = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG)
                         bitmap.recycle()
                         generateBranchLink(file, data)
                     } catch (t: Throwable){

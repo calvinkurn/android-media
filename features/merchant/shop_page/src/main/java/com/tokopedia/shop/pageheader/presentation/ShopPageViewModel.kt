@@ -197,7 +197,7 @@ class ShopPageViewModel @Inject constructor(
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
                             resource,
-                            true
+                            Bitmap.CompressFormat.PNG
                     )
                     if (savedFile!= null) {
                         shopImagePath.postValue(savedFile.absolutePath)

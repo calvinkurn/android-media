@@ -193,14 +193,14 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         try {
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), bitmap -> {
                 if (bitmap != null) {
-                    File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, false);
+                    File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG);
                     if (cameraResultFile!= null) {
                         onSuccessImageTakenFromCamera(cameraResultFile);
                     }
                 }
             });
         } catch (Throwable error) {
-            File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, false);
+            File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, Bitmap.CompressFormat.JPEG);
             if (cameraResultFile != null) {
                 onSuccessImageTakenFromCamera(cameraResultFile);
             }
