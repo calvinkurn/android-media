@@ -725,7 +725,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun itemQuantityTextWatcherAction(quantity: QuantityWrapper) {
         if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-            val qty = quantity.editable.toString().replace("[^0-9]".toRegex(), "").toIntOrZero()
+            val qty = quantity.editable.toString().replace(QUANTITY_REGEX.toRegex(), "").toIntOrZero()
             val needToUpdateView = cartItemHolderData?.cartItemData?.updatedData?.quantity != qty
             if (needToUpdateView) {
                 if (qty <= 0) {
@@ -756,5 +756,7 @@ class CartItemViewHolder constructor(itemView: View,
 
         const val LABEL_CASHBACK = "cashback"
         const val LABEL_DISCOUNT = "label diskon"
+
+        private const val QUANTITY_REGEX = "[^0-9]"
     }
 }

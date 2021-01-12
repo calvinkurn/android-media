@@ -46,17 +46,6 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
         cbDonation.setChecked(shipmentDonationModel.isChecked());
         cbDonation.skipAnimation();
         tvDonationTitle.setText(shipmentDonationModel.getDonation().getTitle());
-//        tvDonationTitle.setOnTouchListener((v, event) -> {
-//            if (event.getAction() == MotionEvent.ACTION_UP) {
-//                int[] textLocation = new int[2];
-//                tvDonationTitle.getLocationOnScreen(textLocation);
-//                if (event.getRawX() >= textLocation[0] + tvDonationTitle.getWidth() - tvDonationTitle.getTotalPaddingRight()){
-//                    showBottomSheet(shipmentDonationModel);
-//                    return true;
-//                }
-//            }
-//            return true;
-//        });
         imgDonationInfo.setOnClickListener(v -> showBottomSheet(shipmentDonationModel));
         cbDonation.setOnCheckedChangeListener((buttonView, isChecked) -> shipmentAdapterActionListener.onDonationChecked(isChecked));
     }
