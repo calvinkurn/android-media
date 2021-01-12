@@ -3,11 +3,10 @@ package com.tokopedia.appaidl.ui
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.os.IBinder
-import android.util.Log
 import com.tokopedia.appaidl.AppApi
 
 class ServiceView(
-        private var appName: String,
+        private var tag: String,
         private val getData: (String, AppApi?) -> Unit,
 ) : ServiceConnection {
 
@@ -15,13 +14,11 @@ class ServiceView(
 
     override fun onServiceConnected(componentName: ComponentName?, boundService: IBinder?) {
         service = AppApi.Stub.asInterface(boundService)
-        Log.d("AppApi", "onServiceConnected")
-        getData(appName, service)
+        getData(tag, service)
     }
 
     override fun onServiceDisconnected(componentName: ComponentName?) {
         service = null
-        Log.d("AppApi", "onServiceDisconnected")
     }
 
 }
