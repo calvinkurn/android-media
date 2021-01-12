@@ -54,6 +54,9 @@
 
     <dimen name="play_landscape_video_chat_margin">58dp</dimen>
 
+    <dimen name="play_pip_icon_radius">8dp</dimen>
+    <dimen name="play_pip_view_radius">6dp</dimen>
+
     <!--General Dimension-->
     <dimen name="play_offset_12">12dp</dimen>
     <dimen name="play_offset_18">18dp</dimen>

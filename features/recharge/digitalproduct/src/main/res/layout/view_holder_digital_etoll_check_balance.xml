@@ -1,79 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16"
-        android:weightSum="3"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="@dimen/layout_lvl2">
 
-        <FrameLayout
-            android:layout_weight="2"
-            android:layout_gravity="center_vertical"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:id="@+id/text_label_note"
-                android:layout_gravity="center_vertical"
-                tools:visibility="gone"
-                android:layout_height="wrap_content"
-                tools:text="Silahkan cek sisa saldo Anda"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/view_remaining_balance"
-                tools:visibility="visible"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/text_card_number"
-                    tools:text="No. Kartu 6032 9860 5038 2497"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/text_remaining_balance"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_18"
-                    android:textStyle="bold"
-                    tools:text="Rp. 590.000"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/grey_500"
-                    android:id="@+id/text_date"
-                    tools:text="12 Mei 2018, 06:50"/>
-
-            </LinearLayout>
-
-        </FrameLayout>
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="0dp"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_label_note"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Button.Secondary.Green"
+            android:layout_marginRight="@dimen/layout_lvl2"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:id="@+id/button_feature"
-            android:text="@string/emoney_button_check_balance"/>
+            android:layout_toLeftOf="@+id/button_feature"
+            android:layout_alignParentLeft="true"
+            app:typographyWeight="reguler"
+            app:typographyType="body_2"
+            android:textColor="@color/Unify_N200"
+            tools:text="Silahkan cek sisa saldo Anda"
+            tools:visibility="gone" />
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/view_remaining_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_toLeftOf="@+id/button_feature"
+            android:layout_alignParentLeft="true"
+            tools:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_card_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyWeight="reguler"
+                app:typographyType="body_2"
+                android:textColor="@color/Unify_N200"
+                tools:text="No. Kartu 6032 9860 5038 2497" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_remaining_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_N700"
+                app:typographyType="heading_3"
+                tools:text="Rp. 590.000" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_N200"
+                app:typographyWeight="reguler"
+                app:typographyType="body_2"
+                tools:text="12 Mei 2018, 06:50" />
+
+        </LinearLayout>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/button_feature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:text="@string/emoney_button_check_balance"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+    </RelativeLayout>
 
     <View
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@color/grey_250" />
+        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_alignParentBottom="true"
+        android:background="@color/Unify_N50" />
 
 </RelativeLayout>
