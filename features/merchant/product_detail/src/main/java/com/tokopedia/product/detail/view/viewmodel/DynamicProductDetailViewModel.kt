@@ -560,14 +560,16 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun loadRecommendation(pageName: String) {
-        launch {
+        launch(dispatcher.main) {
             if (!GlobalConfig.isSellerApp()) {
                 try {
-                    withContext(dispatcher.io) {
+                    val recomData = withContext(dispatcher.io) {
+                        var recomWidget = RecommendationWidget()
+
                         if (!alreadyHitRecom.contains(pageName)) {
                             alreadyHitRecom.add(pageName)
                         } else {
-                            return@withContext
+                            return@withContext recomWidget
                         }
 
                         val productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID
@@ -591,13 +593,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         )).toBlocking().first()
 
                         if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
-                            val recomWidget = recomData.first().copy(
+                            recomWidget = recomData.first().copy(
                                     recommendationFilterChips = recomFilterList
                             )
-                            _loadTopAdsProduct.postValue(recomWidget.asSuccess())
-                        } else {
-                            _loadTopAdsProduct.postValue(Throwable(pageName).asFail())
                         }
+
+                        recomWidget
+                    }
+
+                    if (recomData.recommendationItemList.isNotEmpty()) {
+                        _loadTopAdsProduct.value = recomData.asSuccess()
+                    } else {
+                        _loadTopAdsProduct.value = Throwable(pageName).asFail()
                     }
                 } catch (e: Throwable) {
                     _loadTopAdsProduct.value = Throwable(pageName).asFail()
