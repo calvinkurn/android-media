@@ -121,7 +121,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         arguments?.let {
             hotelHomepageModel.locId = it.getLong(HotelDetailActivity.EXTRA_PROPERTY_ID)
-            source = it.getString(HotelDetailActivity.EXTRA_SOURCE) ?: HotelSourceEnum.SEARCHRESULT.value
+            source = it.getString(HotelDetailActivity.EXTRA_SOURCE)
+                    ?: HotelSourceEnum.SEARCHRESULT.value
 
             if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE)?.isNotEmpty() == true) {
                 hotelHomepageModel.checkInDate = it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE,
@@ -245,7 +246,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
         isTickerValid = true
-        hotelDetailTicker.setHtmlDescription(travelTickerModel.message)
+        if (travelTickerModel.title.isNotEmpty()) hotelDetailTicker.tickerTitle = travelTickerModel.title
+        var message = travelTickerModel.message
+        if (travelTickerModel.url.isNotEmpty()) message += getString(R.string.hotel_ticker_desc, travelTickerModel.url)
+        hotelDetailTicker.setHtmlDescription(message)
         hotelDetailTicker.tickerType = Ticker.TYPE_WARNING
         hotelDetailTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -376,7 +380,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         btn_hotel_detail_show.setOnClickListener {
             context?.run {
                 startActivity(MapViewerActivity.getCallingIntent(this, data.property.name,
-                        data.property.latitude, data.property.longitude, data.property.address,HOTEL_PIN))
+                        data.property.latitude, data.property.longitude, data.property.address, HOTEL_PIN))
             }
         }
 
@@ -657,7 +661,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         trackingHotelUtil.hotelViewDetails(context, hotelHomepageModel, hotelName, hotelId, isAvailable,
                 ceil(data.firstOrNull()?.roomPrice?.priceAmount ?: 0.0).toInt().toString(),
-                data.firstOrNull()?.additionalPropertyInfo?.isDirectPayment ?: isDirectPayment, PDP_SCREEN_NAME)
+                data.firstOrNull()?.additionalPropertyInfo?.isDirectPayment
+                        ?: isDirectPayment, PDP_SCREEN_NAME)
 
         if (!isButtonEnabled) {
             btn_see_room.isEnabled = false

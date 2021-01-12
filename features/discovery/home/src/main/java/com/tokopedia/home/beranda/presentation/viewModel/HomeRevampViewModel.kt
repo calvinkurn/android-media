@@ -95,6 +95,7 @@ open class HomeRevampViewModel @Inject constructor(
         private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
         private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
         private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
+        private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
         private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
         private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
         private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
@@ -340,16 +341,18 @@ open class HomeRevampViewModel @Inject constructor(
                             recommendationFilterChips = bestSellerDataModel.filterChip
                     )
                     val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
+                    val newModel = (it.value as BestSellerDataModel).copy(
+                            seeMoreAppLink = newBestSellerDataModel.seeMoreAppLink,
+                            recommendationItemList = newBestSellerDataModel.recommendationItemList,
+                            productCardModelList = newBestSellerDataModel.productCardModelList,
+                            height = newBestSellerDataModel.height,
+                            filterChip = newBestSellerDataModel.filterChip.map{
+                                it.copy(isActivated = filterChip.name == it.name
+                                        && filterChip.isActivated)
+                            }
+                    )
                     homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
-                            bestSellerDataModel.copy(
-                                    recommendationItemList = newBestSellerDataModel.recommendationItemList,
-                                    productCardModelList = newBestSellerDataModel.productCardModelList,
-                                    height = newBestSellerDataModel.height,
-                                    filterChip = newBestSellerDataModel.filterChip.map{
-                                        it.copy(isActivated = filterChip.name == it.name
-                                                && filterChip.isActivated)
-                                    }
-                            ),
+                            newModel,
                             it.index,
                             this@HomeRevampViewModel
                     ))
@@ -1347,18 +1350,34 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
-        getTokopointJob = launchCatchError(coroutineContext, block = {
-            val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
-            updateHeaderViewModel(
-                    tokopointsDrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(0),
-                    tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(1),
-                    isTokoPointDataError = false
-            )
-        }){
-            updateHeaderViewModel(
-                    tokopointsDrawer = null,
-                    isTokoPointDataError = true
-            )
+        getTokopointJob = if (navRollanceType.equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)) {
+            launchCatchError(coroutineContext, block = {
+                val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+                updateHeaderViewModel(
+                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(0),
+                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(1),
+                        isTokoPointDataError = false
+                )
+            }){
+                updateHeaderViewModel(
+                        tokopointsDrawer = null,
+                        isTokoPointDataError = true
+                )
+            }
+        } else {
+            launchCatchError(coroutineContext, block = {
+                getHomeTokopointsDataUseCase.get().setParams("2.0.0")
+                val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
+                updateHeaderViewModel(
+                        tokopointsDrawer = data.tokopointsDrawer,
+                        isTokoPointDataError = false
+                )
+            }) {
+                updateHeaderViewModel(
+                        tokopointsDrawer = null,
+                        isTokoPointDataError = true
+                )
+            }
         }
     }
 
@@ -1553,5 +1572,9 @@ open class HomeRevampViewModel @Inject constructor(
         launch(coroutineContext) {
             refreshHomeData()
         }
+    }
+
+    fun setRollanceNavigationType(type: String) {
+        navRollanceType = type
     }
 }

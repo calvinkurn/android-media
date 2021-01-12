@@ -3,23 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_4"
-    android:layout_marginTop="@dimen/dp_4"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="@dimen/spacing_lvl2"
+    android:layout_marginTop="@dimen/spacing_lvl2"
     android:orientation="horizontal">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_label"
-        style="@style/TextView.Small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        app:typographyType="body_2"
         tools:text="Data Pengguna" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_value"
-        style="@style/TextView.Small.Bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        app:typographyType="heading_5"
         tools:text="Data Pengguna" />
 </LinearLayout>
