@@ -56,13 +56,13 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify CPM at the top of list`() {
-        visitableList[1].shouldBeInstanceOf<CpmViewModel>()
+        visitableList.first().shouldBeInstanceOf<CpmViewModel>()
     }
 
     @Test
     fun `Additional headline ads in page 1`() {
         val searchProductModel = searchProductHeadlineAdsAdditionalPosition14JSON.jsonToObject<SearchProductModel>()
-        val additionalCpmIndex = 16
+        val additionalCpmIndex = 15
         val expectedCpmPosition = 14
         val expectedAdditionalCpmLayout = 2
 
@@ -76,12 +76,12 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify CPM at the top and at additional position between product cards`(additionalCpmIndex: Int) {
-        visitableList[1].shouldBeInstanceOf<CpmViewModel>()
+        visitableList.first().shouldBeInstanceOf<CpmViewModel>()
         visitableList[additionalCpmIndex].shouldBeInstanceOf<CpmViewModel>()
     }
 
     private fun `Then verify CPM data`(additionalCpmIndex: Int, expectedAdditionalCpmPosition: Int, expectedAdditionalCpmLayout: Int) {
-        val firstCpm = (visitableList[1] as CpmViewModel).getCpm()
+        val firstCpm = (visitableList.first() as CpmViewModel).getCpm()
         firstCpm.position shouldBe 1
         firstCpm.layout shouldBe 1
 
@@ -95,7 +95,7 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
     @Test
     fun `Additional headline ads in page 2`() {
         val searchProductModel = searchProductHeadlineAdsAdditionalPosition24JSON.jsonToObject<SearchProductModel>()
-        val additionalCpmIndex = 26
+        val additionalCpmIndex = 25
         val expectedCpmPosition = 24
         val expectedAdditionalCpmLayout = 2
 
