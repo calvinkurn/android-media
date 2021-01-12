@@ -65,7 +65,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
 import timber.log.Timber;
 
-import static com.tokopedia.appaidl.ExtKt.connectService;
+import static com.tokopedia.appaidl.ApiKt.connectService;
 import static com.tokopedia.developer_options.config.DevOptConfig.CHUCK_ENABLED;
 import static com.tokopedia.developer_options.config.DevOptConfig.IS_CHUCK_ENABLED;
 

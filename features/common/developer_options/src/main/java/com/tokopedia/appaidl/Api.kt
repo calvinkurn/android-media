@@ -17,6 +17,7 @@ fun BaseActivity.connectService(listener: ReceiverListener) {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == CUSTOMER_APP || intent?.action == SELLER_APP) {
                 unregisterReceiver(this)
+
                 intent.action?.let {
                     listener.onAidlReceive(it, intent.extras)
                 }
@@ -32,7 +33,9 @@ fun BaseActivity.connectService(listener: ReceiverListener) {
         }
     }
 
-    val intent = Intent().apply { component = ComponentName(componentTargetName(), REMOTE_SERVICE) }
-    val success = bindService(intent, serviceView, Context.BIND_AUTO_CREATE)
+    val success = bindService(Intent().apply {
+        component = ComponentName(componentTargetName(), REMOTE_SERVICE)
+    }, serviceView, Context.BIND_AUTO_CREATE)
+
     if (!success) listener.onAidlError()
 }
