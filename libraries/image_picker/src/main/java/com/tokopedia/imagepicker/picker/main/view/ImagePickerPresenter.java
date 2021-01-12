@@ -58,7 +58,7 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                     @Override
                     public Observable<String> call(String path) {
                         if (convertToWebp) {
-                            path = ImageUtil.convertToWebp(getView().getContext(), path, 100);
+                            path = ImageProcessingUtil.convertToWebp(getView().getContext(), path, 100);
                         }
                         if (FileUtil.getFileSizeInKb(path) > maxFileSize) {
                             if (FileUtil.isImageType(getView().getContext(), path)) {

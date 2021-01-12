@@ -33,6 +33,7 @@ object ImageProcessingUtil {
 
     const val PNG_EXT = ".png"
     const val JPG_EXT = ".jpg"
+    const val WEBP_EXT = ".webp"
 
     const val DEF_WIDTH = 2560
     const val DEF_HEIGHT = 2560
@@ -295,6 +296,9 @@ object ImageProcessingUtil {
     @JvmStatic
     fun isPng(referencePath: String?) = referencePath?.endsWith(PNG_EXT) ?: false
 
+    @JvmStatic
+    fun isWebp(referencePath: String?) = referencePath?.endsWith(WEBP_EXT) ?: false
+
     fun getTokopediaPhotoPath(isPng: Boolean, relativePathDirectory: String? = DEFAULT_DIRECTORY): File {
         return File(FileUtil.getTokopediaInternalDirectory(relativePathDirectory).absolutePath,
                 FileUtil.generateUniqueFileName() + if (isPng) PNG_EXT else JPG_EXT)
@@ -304,6 +308,13 @@ object ImageProcessingUtil {
     @JvmStatic
     fun getTokopediaPhotoPath(referencePath: String?, directory: String? = DEFAULT_DIRECTORY): File {
         return getTokopediaPhotoPath(isPng(referencePath), directory)
+    }
+
+    @JvmOverloads
+    @JvmStatic
+    fun getTokopediaPhotoWebpPath(directory: String? = DEFAULT_DIRECTORY): File {
+        return File(FileUtil.getTokopediaInternalDirectory(directory).absolutePath,
+                FileUtil.generateUniqueFileName() + WEBP_EXT)
     }
 
     /**
@@ -324,6 +335,31 @@ object ImageProcessingUtil {
         return if (writeStreamToFile(source, photo)) {
             photo
         } else null
+    }
+
+    @JvmStatic
+    fun convertToWebp(context: Context, imagePath: String, quality: Int): String {
+        if (isWebp(imagePath)) {
+            return imagePath
+        }
+        // not webp:
+        // convert to bitmap, then compress to webp format.
+        try {
+            val bitmap = getBitmapFromFile(context, imagePath)
+            val fileOutput = getTokopediaPhotoWebpPath()
+            if (bitmap != null) {
+                val out = FileOutputStream(fileOutput)
+                bitmap.compress(CompressFormat.WEBP, quality, out)
+                out.flush()
+                out.close()
+                return fileOutput.absolutePath
+            } else {
+                return imagePath
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return imagePath
+        }
     }
 
     /**
