@@ -33,7 +33,8 @@ class AutoCompleteMapper @Inject constructor() {
         return DistrictLocation(
                 data.title,
                 data.latitude,
-                data.longitude
+                data.longitude,
+                data.formattedAddress
         )
     }
 

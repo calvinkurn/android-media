@@ -26,7 +26,6 @@ import com.tokopedia.editshipping.di.shopeditaddress.ShopEditAddressComponent
 import com.tokopedia.editshipping.util.*
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -38,6 +37,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.min
 
 class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
@@ -54,7 +54,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var zipCodes: List<String> = ArrayList()
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
-    private var token: Token? = null
+    private var detailAddressHelper: String = ""
 
     private var etShopLocationWrapper: TextInputLayout? = null
     private var etShopLocation: TextInputEditText? = null
@@ -73,7 +73,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private var getSavedInstanceState: Bundle? = null
     private var googleMap: GoogleMap? = null
-    private var isLogisticLabel: Boolean = true
+    private var validate: Boolean = true
     private val FINISH_PINPOINT_FLAG = 8888
 
     override fun getScreenName(): String = ""
@@ -131,6 +131,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                    val addressModel = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
                     addressModel?.let {
                         warehouseModel?.districtId = it.districtId
+                        detailAddressHelper = it.address1
                         adjustMap(it.latitude.toDouble(), it.longitude.toDouble())
                     }
                 }
@@ -222,7 +223,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         }
                     }
                 }
-                is Fail -> Timber.d(it.throwable)
+                is Fail -> zipCodes = arrayListOf()
             }
         })
 
@@ -239,8 +240,16 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     val lat = it.data.latitude.toDouble()
                     val long = it.data.longitude.toDouble()
                     adjustMap(lat, long)
+                    detailAddressHelper = it.data.formattedAddress
                 }
                 is Fail -> Timber.d(it.throwable)
+            }
+        })
+
+        viewModel.districtGeocode.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> detailAddressHelper = it.data.data.formattedAddress
+                is Fail -> detailAddressHelper = ""
             }
         })
 
@@ -288,17 +297,23 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         btnSave?.setOnClickListener {
             warehouseModel?.let { it ->
                 val latLong = "$currentLat,$currentLong"
-                viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation?.text.toString(),
-                        it.districtId, latLong, userSession.email, etShopDetail?.text.toString(),
-                        etZipCode?.text.toString(), userSession.phoneNumber) }
+                if(validate) {
+                    viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation?.text.toString(),
+                            it.districtId, latLong, userSession.email, etShopDetail?.text.toString(),
+                            etZipCode?.text.toString(), userSession.phoneNumber)
+                }
+            }
         }
 
         viewModel.getZipCode(warehouseModel?.districtId.toString())
 
+        if (warehouseModel?.latLon?.isNotEmpty() == true) {
+            viewModel.getDistrictGeocode(warehouseModel?.latLon)
+        } else viewModel.getDistrictGeocode("$DEFAULT_LAT, $DEFAULT_LONG")
+
     }
 
     private fun setViewListener() {
-        /*here text wrapper dsb*/
         etKotaKecamatan?.apply {
             addTextChangedListener(etKotaKecamatanWrapper?.let { setWrapperWatcher(it) })
             setOnClickListener {
@@ -335,12 +350,22 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 if (s.isNotEmpty()) {
                     var helper = ""
                     val strLength = s.toString().length
+                    var addressDetailUser = ""
                     when {
                         strLength < 20 -> {
+                            validate = false
                             helper = "Min. 20 Karakter. Harap tulis alamatmu lebih lengkap."
                         }
                         else -> {
-                            helper = ""
+                            addressDetailUser = normalize(s.toString())
+                            detailAddressHelper = normalize(detailAddressHelper)
+                            if (validatorAddress(detailAddressHelper, addressDetailUser)) {
+                                validate = false
+                                helper = getString(R.string.detail_alamat_error_helper, detailAddressHelper)
+                            } else {
+                                validate = true
+                                helper = ""
+                            }
                         }
 
                     }
@@ -408,6 +433,64 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         intent.putExtra(EXTRA_WAREHOUSE_DATA, warehouseDataModel)
         intent.putExtra(EXTRA_IS_EDIT_WAREHOUSE, true)
         startActivityForResult(intent, OPEN_MAP_REQUEST_CODE)
+    }
+
+    private fun normalize(address: String): String {
+        var newAddress = address.toLowerCase()
+        newAddress = Regex("[^\\w\\s&]").replace(newAddress, " ")
+        val regex = """(jalan|jln|jl|blok|kavling|kav|nomor|no|nmr|kecamatan|kec|kabupaten|kab|kota|unknown|unnamed|location|[0-9])""".toRegex()
+        newAddress = regex.replace(newAddress, " ")
+        newAddress = Regex("\\r?\\n|\\r").replace(newAddress, " ")
+        newAddress = Regex("  +").replace(newAddress, " ")
+        newAddress = newAddress.trim()
+        return newAddress
+    }
+
+    private fun validatorAddress(addr1: String, addr2: String): Boolean {
+        var matchWord = levenshteinDistance(addr1, addr2)
+        var minWordLen = minLenSentence(addr1, addr2)
+        var verboseTest = matchWord.toDouble()/minWordLen.toDouble()
+        return verboseTest >= 0.4
+    }
+
+    private fun levenshteinDistance(addr1: String, addr2: String): Int {
+        var _addr1 = addr1.split(' ')
+        var _addr2 = addr2.split(' ')
+
+        val lhsLength = _addr1.size
+        val rhsLength = _addr2.size
+
+        var cost = Array(lhsLength) { it }
+        var newCost = Array(lhsLength) { 0 }
+
+        for (i in 1..rhsLength-1) {
+            newCost[0] = i
+
+            for (j in 1..lhsLength-1) {
+                val match = if(addr1[j - 1] == addr2[i - 1]) 0 else 1
+
+                val costReplace = cost[j - 1] + match
+                val costInsert = cost[j] + 1
+                val costDelete = newCost[j - 1] + 1
+
+                newCost[j] = min(min(costInsert, costDelete), costReplace)
+            }
+
+            val swap = cost
+            cost = newCost
+            newCost = swap
+        }
+
+        return cost[lhsLength - 1]
+    }
+
+    private fun minLenSentence(addr1: String, addr2: String): Int {
+        var _addr1 = addr1.split(' ')
+        var _addr2 = addr2.split(' ')
+
+        return if (_addr1.size <= _addr2.size) {
+            _addr1.size
+        } else _addr2.size
     }
 
     companion object {

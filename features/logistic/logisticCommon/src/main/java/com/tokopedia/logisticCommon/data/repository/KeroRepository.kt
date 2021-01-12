@@ -2,6 +2,7 @@ package com.tokopedia.logisticCommon.data.repository
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.data.response.AddressResponse
 import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
@@ -39,7 +40,6 @@ class KeroRepository @Inject constructor(private val gql: GraphqlRepository) {
         return gql.getResponse(request)
     }
 
-    /*for editshoplocation*/
     suspend fun getZipCode(districtId: String): GetDistrictDetailsResponse {
         val param = mapOf(
                 "query" to districtId,
@@ -47,6 +47,13 @@ class KeroRepository @Inject constructor(private val gql: GraphqlRepository) {
         )
         val request = GraphqlRequest(KeroLogisticQuery.getDistrictDetails,
                 GetDistrictDetailsResponse::class.java, param)
+        return gql.getResponse(request)
+    }
+
+    suspend fun getDistrictGeocode(latlong: String?): AutoFillResponse {
+        val param = mapOf("latlng" to latlong)
+        val request = GraphqlRequest(KeroLogisticQuery.keroMapsAutofill,
+                AutoFillResponse::class.java, param)
         return gql.getResponse(request)
     }
 

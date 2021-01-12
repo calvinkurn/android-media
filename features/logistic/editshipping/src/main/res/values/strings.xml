@@ -46,5 +46,5 @@
     <string name="et_kota_kecamatan_label">Kota atau Kecamatan</string>
     <string name="et_kode_pos_label">Kode Pos</string>
     <string name="detail_alamat">Detail Alamat</string>
-    ,
+    <string name="detail_alamat_error_helper">Tulis alamat sesuai peta dan tambahkan detail (kompleks/blok/nomor). Lokasi peta: %1$s</string>
 </resources>

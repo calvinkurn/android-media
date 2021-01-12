@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.editshipping.domain.mapper.AutoCompleteMapper
 import com.tokopedia.editshipping.domain.model.shopeditaddress.DistrictLocation
+import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
@@ -38,16 +39,16 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
     val zipCodeList: LiveData<Result<KeroDistrictRecommendation>>
         get() = _zipCodeList
 
+    private val _districtGeocode = MutableLiveData<Result<KeroMapsAutofill>>()
+    val districtGeocode: LiveData<Result<KeroMapsAutofill>>
+        get() = _districtGeocode
+
 
     fun getAutoCompleteList(keyword: String) {
         viewModelScope.launch(onErrorAutoComplete) {
             val autoComplete = repo.getAutoComplete(keyword)
             _autoCompleteList.value = Success(mapper.mapAutoComplete(autoComplete))
         }
-    }
-
-    private val onErrorAutoComplete = CoroutineExceptionHandler { _, e ->
-        _autoCompleteList.value = Fail(e)
     }
 
     fun getDistrictLocation(placeId: String) {
@@ -57,19 +58,18 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
         }
     }
 
-    private val onErrorGetDistrictLocation = CoroutineExceptionHandler { _, e ->
-        _districtLocation.value = Fail(e)
-    }
-
     fun getZipCode(districtId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(onErrorGetZipCode) {
             val zipCode = repo.getZipCode(districtId)
             _zipCodeList.value = Success(zipCode.keroDistrictDetails)
         }
     }
 
-    private val onErrorGetZipCode = CoroutineExceptionHandler { _, e ->
-        _zipCodeList.value = Fail(e)
+    fun getDistrictGeocode(latlon: String?) {
+        viewModelScope.launch {
+            val reverseGeocode = repo.getDistrictGeocode(latlon)
+            _districtGeocode.value = Success(reverseGeocode.keroMapsAutofill)
+        }
     }
 
     fun saveEditShopLocation(shopId: Int, warehouseId: Int, warehouseName: String,
@@ -81,6 +81,21 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
         }
     }
 
+    private val onErrorAutoComplete = CoroutineExceptionHandler { _, e ->
+        _autoCompleteList.value = Fail(e)
+    }
+
+    private val onErrorGetDistrictLocation = CoroutineExceptionHandler { _, e ->
+        _districtLocation.value = Fail(e)
+    }
+
+    private val onErrorGetZipCode = CoroutineExceptionHandler { _, e ->
+        _zipCodeList.value = Fail(e)
+    }
+
+    private val onErrorGetDistrictGeocode = CoroutineExceptionHandler{ _, e ->
+        _districtGeocode.value = Fail(e)
+    }
 
     private val onErrorSaveEditShopLocation = CoroutineExceptionHandler { _, e ->
         _saveEditShop.value = Fail(e)

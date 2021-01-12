@@ -116,4 +116,30 @@ object KeroLogisticQuery {
         }
     """.trimIndent()
 
+    val keroMapsAutofill = """
+        query kero_maps_autofill(${'$'}latlng: String!){
+          kero_maps_autofill(latlng: ${'$'}latlng) {
+            data {
+              title
+              formatted_address
+              city_id
+              province_id
+              district_id
+              district_name
+              postal_code
+              latitude
+              longitude
+              full_data {
+                long_name
+                short_name
+                types
+              }
+            }
+            status
+            message_error
+            error_code
+          }
+        }
+    """.trimIndent()
+
 }
