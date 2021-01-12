@@ -111,6 +111,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     private fun goToDestination() {
         context?.run {
             adminPermissionMapper.mapFeatureToDestination(this, adminFeature)?.let {
+                activity?.finish()
                 startActivity(it)
             }
         }

@@ -1,6 +1,5 @@
 package com.tokopedia.seller.menu.presentation.uimodel
 
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.seller.menu.R

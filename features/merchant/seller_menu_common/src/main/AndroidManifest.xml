@@ -15,7 +15,7 @@
 
                 <data
                     android:host="@string/host_sellerapp"
-                    android:path="@string/path_admin_authorize"
+                    android:pathPattern="@string/path_admin_authorize"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
