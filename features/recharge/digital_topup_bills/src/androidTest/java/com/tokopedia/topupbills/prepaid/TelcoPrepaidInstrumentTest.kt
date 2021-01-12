@@ -130,16 +130,17 @@ class TelcoPrepaidInstrumentTest {
     }
 
     fun validate_coachmark() {
-        Thread.sleep(8000)
+        Thread.sleep(4000)
 //        val localCacheHandler = LocalCacheHandler(context, DigitalTelcoPrepaidFragment.PREFERENCES_NAME)
 //        if (!localCacheHandler.getBoolean(DigitalTelcoPrepaidFragment.TELCO_COACH_MARK_HAS_SHOWN, false)) {
-        onView(withId(R.id.text_next)).perform(click())
-        onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
-        onView(withId(R.id.text_previous)).perform(click())
-        onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
-        onView(withId(R.id.text_next)).perform(click())
-        onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
-        onView(withId(R.id.text_next)).perform(click())
+        onView(withId(R.id.simple_title)).check(matches(isDisplayed()))
+        onView(withId(R.id.step_next)).perform(click())
+        onView(withId(R.id.simple_title)).check(matches(isDisplayed()))
+        onView(withId(R.id.step_prev)).perform(click())
+        onView(withId(R.id.simple_title)).check(matches(isDisplayed()))
+        onView(withId(R.id.step_next)).perform(click())
+        onView(withId(R.id.simple_title)).check(matches(isDisplayed()))
+        onView(withId(R.id.step_next)).perform(click())
 //        }
     }
 
