@@ -7,6 +7,8 @@ data class EgoldAttributes(
     var isEligible: Boolean = false,
     @SerializedName("is_tiering")
     var isTiering: Boolean = false,
+    @SerializedName("is_opt_in")
+    val isOptIn: Boolean = false,
     @SerializedName("range")
     var egoldRange: EgoldRange = EgoldRange(),
     @SerializedName("message")
