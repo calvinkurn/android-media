@@ -65,7 +65,9 @@ class AddEditProductSpecificationViewModel @Inject constructor(
     }
 
     fun updateProductInputModelSpecifications(specificationList: List<SpecificationInputModel>) {
-        mProductInputModel.value?.detailInputModel?.specifications = specificationList
+        mProductInputModel.value?.detailInputModel?.specifications = specificationList.filter {
+            it.id.isNotBlank()
+        }
     }
 
 }

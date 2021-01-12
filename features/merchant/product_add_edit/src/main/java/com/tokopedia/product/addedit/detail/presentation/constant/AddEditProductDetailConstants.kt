@@ -30,6 +30,7 @@ class AddEditProductDetailConstants {
         const val MIN_PREORDER_DURATION = 1
         const val MAX_PREORDER_DAYS = 90
         const val MAX_PREORDER_WEEKS = 13
+        const val MAX_SPECIFICATION_COUNTER = 5
         const val PARAM_SET_CASHBACK_VALUE = "cashback"
         const val PARAM_SET_CASHBACK_PRODUCT_PRICE = "price"
         const val PARAM_SET_CASHBACK_PRODUCT_NAME = "product_name"

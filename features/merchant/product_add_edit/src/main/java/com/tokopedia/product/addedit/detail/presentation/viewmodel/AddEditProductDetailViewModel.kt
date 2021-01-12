@@ -16,6 +16,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_SPECIFICATION_COUNTER
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PREORDER_DURATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
@@ -517,10 +518,15 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun updateSpecificationText(specificationList: List<SpecificationInputModel>) {
         val specificationNames = specificationList.map { it.data }
-        mSpecificationText.value =  if (specificationNames.isEmpty()) {
+        mSpecificationText.value = if (specificationNames.isEmpty()) {
             provider.getProductSpecificationTips()
         } else {
-            specificationNames.joinToString(", ")
+            val result = specificationNames.take(MAX_SPECIFICATION_COUNTER).joinToString(", ")
+            if (specificationNames.size > MAX_SPECIFICATION_COUNTER) {
+                result + provider.getProductSpecificationCounter(specificationNames.size - 5)
+            } else {
+                result
+            }
         }
     }
 }

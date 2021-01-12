@@ -326,6 +326,7 @@
     <string name="action_specification_save">Simpan</string>
     <string name="action_specification_add">Tambah</string>
     <string name="action_specification_refresh">Muat Ulang</string>
+    <string name="action_specification_counter">, +%1$d lainnya</string>
 
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>
@@ -360,7 +361,5 @@
     <string name="content_desc_buttonSave">button simpan</string>
     <string name="content_desc_textFieldUnifyCustomValue">input tambah varian</string>
     <string name="content_desc_textFieldUnifyVariantUnit">dropdown ukuran</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

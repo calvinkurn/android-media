@@ -48,6 +48,13 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
         }
     }
 
+    override fun onSpecificationValueTextCleared(position: Int) {
+        itemsSelected.getOrNull(position)?.let {
+            it.id = ""
+            it.data = ""
+        }
+    }
+
     override fun onSpecificationDataSelected(specificationId: String, specificationData: String) {
         editedPosition?.let {
             setDataSelected(it, specificationId, specificationData)

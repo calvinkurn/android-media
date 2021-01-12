@@ -176,6 +176,14 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.label_product_specification_tips).orEmpty()
     }
 
+    fun getProductSpecificationCounter(count: Int): String {
+        return try {
+            context?.getString(R.string.action_specification_counter, count).orEmpty()
+        } catch (e: Resources.NotFoundException) {
+            ""
+        }
+    }
+
     // Network errors
 
     fun getGqlErrorMessage(): String? {
