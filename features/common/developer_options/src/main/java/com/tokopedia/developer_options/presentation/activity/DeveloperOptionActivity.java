@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Process;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -41,6 +42,7 @@ import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
+import com.tokopedia.appaidl.ReceiverListener;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -64,10 +66,11 @@ import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
+import static com.tokopedia.appaidl.ExtKt.connectService;
 import static com.tokopedia.developer_options.config.DevOptConfig.CHUCK_ENABLED;
 import static com.tokopedia.developer_options.config.DevOptConfig.IS_CHUCK_ENABLED;
 
-public class DeveloperOptionActivity extends BaseActivity {
+public class DeveloperOptionActivity extends BaseActivity implements ReceiverListener {
 
     public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
@@ -165,9 +168,17 @@ public class DeveloperOptionActivity extends BaseActivity {
                 initListener();
                 initTranslator();
             }
+
+            connectService(this, this);
         } else {
             finish();
         }
+    }
+
+    @Override
+    public void handleData(String tag, Bundle data) {
+        Log.d("AppApi", "handleData: " + tag);
+        Log.d("AppApi", "bundle: " + data.toString());
     }
 
     private void handleUri(Uri uri) {
