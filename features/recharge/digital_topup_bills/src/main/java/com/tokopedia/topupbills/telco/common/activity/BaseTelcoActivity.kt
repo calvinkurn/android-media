@@ -58,7 +58,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
         initInjector()
 
         //draw background without overdraw GPU
-        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
 
         setAnimationAppBarLayout()
     }

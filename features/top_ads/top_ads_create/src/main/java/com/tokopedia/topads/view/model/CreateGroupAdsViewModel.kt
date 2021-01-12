@@ -2,6 +2,7 @@ package com.tokopedia.topads.view.model
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -9,10 +10,13 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_NAME
 import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_ID
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.data.response.ResponseBidInfo
 import com.tokopedia.topads.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,21 +30,19 @@ import javax.inject.Named
  */
 class CreateGroupAdsViewModel @Inject constructor(
         private val context: Context,
-        @Named("Main")
-        private val dispatcher: CoroutineDispatcher,
+        private val dispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
-        private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
+        private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher.main) {
 
 
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName.Data) -> Unit),
                       onError: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
-                    val data = withContext(Dispatchers.IO) {
-                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_validate_group_name),
-                                ResponseGroupValidateName::class.java, mapOf(SHOP_ID to userSession.shopId.toIntOrZero(), GROUP_NAME to groupName))
-                        val cacheStrategy = GraphqlCacheStrategy
-                                .Builder(CacheType.CLOUD_THEN_CACHE).build()
+                    val data = withContext(dispatcher.io) {
+                        val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_validate_group_name),
+                                ResponseGroupValidateName::class.java, hashMapOf(SHOP_ID to userSession.shopId.toIntOrZero(), GROUP_NAME to groupName))
+                        val cacheStrategy = RequestHelper.getCacheStrategy()
                         gqlRepository.getReseponse(listOf(request), cacheStrategy)
                     }
                     data.getSuccessData<ResponseGroupValidateName>().let {

@@ -19,6 +19,7 @@ open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlReposit
     private var graphqlQuery: String? = null
     private var requestParams = mapOf<String, Any?>()
     private var tClass: Class<T>? = null
+    private var doQueryHash = false
 
     private var mCacheManager: GraphqlCacheManager? = null
     private var mFingerprintManager: FingerprintManager? = null
@@ -39,12 +40,16 @@ open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlReposit
         this.requestParams = params
     }
 
+    fun setQueryHashFlag(doQueryHash: Boolean){
+        this.doQueryHash = doQueryHash;
+    }
+
     fun clearCache(){
         try {
             Observable.fromCallable {
                 initCacheManager()
                 if (graphqlQuery != null) {
-                    val request = GraphqlRequest(graphqlQuery, tClass, requestParams)
+                    val request = GraphqlRequest(doQueryHash, graphqlQuery, tClass, requestParams)
                     mCacheManager!!.delete(mFingerprintManager!!.generateFingerPrint(
                             request.toString(),
                             cacheStrategy.isSessionIncluded))
@@ -76,7 +81,7 @@ open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlReposit
         }
 
         val type = tClass ?: throw RuntimeException("Please set valid class type before call execute()")
-        val request = GraphqlRequest(graphqlQuery, type, requestParams)
+        val request = GraphqlRequest(doQueryHash, graphqlQuery, type, requestParams)
         val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
 
         val error = response.getError(tClass)

@@ -292,6 +292,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
 
+    @JvmField
+    val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
+
+    @JvmField
+    val IMAGE_EDITOR = "$INTERNAL_GLOBAL/image-editor"
 
     @JvmField
     val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?title={title}&url={url}"
@@ -305,7 +310,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/setting-bank
     @JvmField
     val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
-
 
     @JvmField
     val GLOBAL_INTERNAL_DIGITAL_DEAL = "$INTERNAL_GLOBAL/deals"

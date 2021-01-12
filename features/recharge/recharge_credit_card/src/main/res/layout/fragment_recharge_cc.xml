@@ -14,8 +14,8 @@
         android:layout_marginRight="@dimen/layout_lvl2"
         app:tickerShapeType="loose"
         app:tckv_content_text_size="@dimen/dp_11"
-        app:tckv_indicator_off_color="@color/grey_550"
-        app:tckv_indicator_on_color="@color/tkpd_main_green"
+        app:tckv_indicator_off_color="@color/Unify_N400"
+        app:tckv_indicator_on_color="@color/Unify_G400"
         tools:visibility="visible" />
 
     <androidx.cardview.widget.CardView
@@ -46,14 +46,14 @@
         app:drawableLeftCompat="@drawable/cc_ic_info_full_green"
         android:drawablePadding="@dimen/layout_lvl1"
         android:text="@string/cc_label_list_bank"
-        android:textColor="@color/light_G500"
+        android:textColor="@color/Unify_G500"
         app:typographyType="body_3" />
 
     <FrameLayout
         android:id="@+id/cc_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/cc_transparent"
+        android:background="@color/Unify_N0_68"
         android:visibility="gone">
 
         <com.tokopedia.unifycomponents.LoaderUnify
