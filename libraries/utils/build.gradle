@@ -52,6 +52,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.exifinterface
 
     implementation rootProject.ext.miscDependencies.sliceCore
+    implementation rootProject.ext.miscDependencies.workManager
 }
 
 project.ext {

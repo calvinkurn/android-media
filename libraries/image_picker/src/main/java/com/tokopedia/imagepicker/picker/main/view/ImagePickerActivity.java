@@ -31,7 +31,6 @@ import com.tokopedia.imagepicker.common.ImageEditorBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
-import com.tokopedia.imagepicker.common.util.ImageCacheCleaner;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
@@ -41,6 +40,8 @@ import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter
 import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
 import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
+import com.tokopedia.utils.file.cleaner.InternalStorageCleaner;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,6 +159,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
             tvDone.setVisibility(View.GONE);
         }
         trackOpen();
+        InternalStorageCleaner.cleanUpInternalStorageIfNeeded(this, ImageProcessingUtil.DEFAULT_DIRECTORY);
     }
 
     protected void onDoneClicked() {
