@@ -58,6 +58,14 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+
+
+    //test
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
 }
 
 project.ext {

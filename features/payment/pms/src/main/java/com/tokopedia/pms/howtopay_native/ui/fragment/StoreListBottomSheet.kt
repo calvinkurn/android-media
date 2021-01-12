@@ -18,7 +18,7 @@ class StoreListBottomSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         showCloseIcon = true
         isDragable= true
-        setTitle("Daftar gerai")
+        setTitle(getString(R.string.pms_hwp_store_list))
         childView = LayoutInflater.from(context).inflate(R.layout.pms_hwp_store_list,
                 null, false)
         setChild(childView)

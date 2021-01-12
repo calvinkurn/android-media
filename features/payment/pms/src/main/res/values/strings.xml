@@ -64,6 +64,7 @@
     <string name="pms_hwp_total_pembayaran">Total Pembayaran</string>
     <string name="pms_hwp_pay_on_store">Kamu juga bisa bayar di gerai berikut dengan biaya layanan yang bervariasi.</string>
     <string name="pms_hwp_screenshot_success">Screenshot kode pembayaran berhasil disimpan di Galeri foto HP-mu.</string>
+    <string name="pms_hwp_store_list">Daftar gerai</string>
     <string-array name="payment_list_bank_name">
         <item>BCA</item>
         <item>MANDIRI</item>

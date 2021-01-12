@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -32,13 +31,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.pms_hwp_info.*
-import org.json.JSONObject
 import javax.inject.Inject
 
 
 class HowToPayFragment : BaseDaggerFragment() {
 
-    private var appLinkPaymentInfo: AppLinkPaymentInfo? = null
+    private lateinit var appLinkPaymentInfo: AppLinkPaymentInfo
     private val HIGHLIGHT_DIGIT_COUNT = 3
 
     @Inject
@@ -62,12 +60,9 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            appLinkPaymentInfo = getAppLinkPaymentInfoData(arguments!!)
-            if (appLinkPaymentInfo == null)
-                activity?.finish()
-        } else
+        if (arguments == null) {
             activity?.finish()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -76,17 +71,31 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeLiveData()
-        howToPayViewModel.getHowToPayInstruction(appLinkPaymentInfo!!)
+        arguments?.let {
+            observeLiveData()
+            howToPayViewModel.getAppLinkPaymentInfoData(it)
+        }
     }
 
     private fun observeLiveData() {
-        howToPayViewModel.mutableLiveData.observe(viewLifecycleOwner, Observer {
+        howToPayViewModel.appLinkPaymentLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onAppLinkPaymentInfoLoaded(it.data)
+                is Fail -> activity?.finish()
+            }
+        })
+
+        howToPayViewModel.howToPayLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onInstructionLoaded(it.data)
                 is Fail -> onInstructionLoadingFailed(it.throwable)
             }
         })
+    }
+
+    private fun onAppLinkPaymentInfoLoaded(appLinkPaymentInfo: AppLinkPaymentInfo) {
+        this.appLinkPaymentInfo = appLinkPaymentInfo
+        howToPayViewModel.getHowToPayInstruction(appLinkPaymentInfo)
     }
 
     private fun onInstructionLoadingFailed(throwable: Throwable) {
@@ -97,67 +106,112 @@ class HowToPayFragment : BaseDaggerFragment() {
         when (data) {
             is MultiChannelGatewayResult -> {
                 when (data.type) {
-                    is VirtualAccount -> addVirtualAccountPayment(data)
-                    is Syariah -> addSyariahPayment(data)
+                    is VirtualAccount -> addVirtualAccountPayment()
+                    is Syariah -> addSyariahPayment()
                 }
-
                 addMultipleChannelAdapter(data.gateway.paymentChannels)
             }
             is SingleChannelGatewayResult -> {
                 when (data.type) {
-                    is BankTransfer -> addBankTransferPayment(data)
+                    is BankTransfer -> addBankTransferPayment()
                     is Store -> addStoreTransferPayment(data)
-                    is KlickBCA -> addKlikBCAPayment(data)
+                    is KlickBCA -> addKlikBCAPayment()
                 }
                 addSingleChannelInstruction(data.instructions)
             }
         }
     }
 
-    private fun addVirtualAccountPayment(data: MultiChannelGatewayResult) {
-        tvGateWayName.text = appLinkPaymentInfo?.gateway_name
-        tvPaymentAccountTitle.text = getString(R.string.pms_hwp_VA_code)
-        tvPaymentAccountNumber.text = appLinkPaymentInfo?.payment_code
-        tvTotalPaymentAmount.text = getString(R.string.pms_hwp_rp, appLinkPaymentInfo?.total_amount)
-        tvPaymentInfoAction.text = getString(R.string.pms_hwp_copy)
-        appLinkPaymentInfo?.gateway_logo?.let {
-            ivGateWayImage.setImageUrl(it)
-        }
-        ivTakeScreenshot.setOnClickListener {
-            copyTOClipBoard(context, appLinkPaymentInfo?.payment_code ?: "")
+    private fun addVirtualAccountPayment() {
+        setPaymentInfo(getString(R.string.pms_hwp_VA_code),
+                appLinkPaymentInfo.payment_code,
+                getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
+                getString(R.string.pms_hwp_copy),
+                IconUnify.COPY) {
+            copyTOClipBoard(context, appLinkPaymentInfo.payment_code)
             showToast("Nomor virtual account berhasil disalin.")
         }
-        tvPaymentInfoAction.setOnClickListener {
-            copyTOClipBoard(context, appLinkPaymentInfo?.payment_code ?: "")
-            showToast("Nomor virtual account berhasil disalin.")
-        }
-        ivTakeScreenshot.setImage(IconUnify.COPY)
-        tickerAmountNote.gone()
-        tvAccountName.gone()
-        tvPaymentNote.gone()
     }
 
-    private fun addSyariahPayment(data: MultiChannelGatewayResult) {
-        tvGateWayName.text = appLinkPaymentInfo?.gateway_name
-        tvPaymentAccountTitle.text = getString(R.string.pms_hwp_payment_code)
-        tvPaymentAccountNumber.text = appLinkPaymentInfo?.payment_code
-        tvTotalPaymentAmount.text = getString(R.string.pms_hwp_rp, appLinkPaymentInfo?.total_amount)
-        tvPaymentInfoAction.text = getString(R.string.pms_hwp_copy)
-        appLinkPaymentInfo?.gateway_logo?.let {
+    private fun addSyariahPayment() {
+        setPaymentInfo(getString(R.string.pms_hwp_payment_code),
+                appLinkPaymentInfo.payment_code,
+                getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
+                getString(R.string.pms_hwp_copy),
+                IconUnify.COPY) {
+            copyTOClipBoard(context, appLinkPaymentInfo.payment_code)
+            showToast("Kode Pembayaran berhasil disalin.")
+        }
+    }
+
+    private fun addBankTransferPayment() {
+        setPaymentInfo(getString(R.string.pms_hwp_account_number),
+                appLinkPaymentInfo.bank_num,
+                highlightLastThreeDigits(getString(R.string.pms_hwp_rp,
+                        appLinkPaymentInfo.total_amount)),
+                getString(R.string.pms_hwp_copy),
+                IconUnify.COPY) {
+            copyTOClipBoard(context, appLinkPaymentInfo.payment_code)
+            showToast("Nomor rekening berhasil disalin.")
+        }
+        tvAccountName.visible()
+        tvAccountName.text = getString(R.string.pms_hwp_bank_info,
+                appLinkPaymentInfo.bank_name, appLinkPaymentInfo.bank_info)
+        tickerAmountNote.visible()
+        tickerAmountNote.setTextDescription(getString(R.string.pms_hwp_transfer_3_digit_info))
+    }
+
+    private fun addStoreTransferPayment(data: SingleChannelGatewayResult) {
+
+        setPaymentInfo(getString(R.string.pms_hwp_payment_code),
+                appLinkPaymentInfo.payment_code,
+                getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
+                getString(R.string.pms_hwp_screenshot),
+                IconUnify.DOWNLOAD) {
+            screenshotHelper.takeScreenShot(view, this)
+        }
+        tvStorePaymentNote.visible()
+        context?.let {
+            tvStorePaymentNote.movementMethod = LinkMovementMethod.getInstance()
+            tvStorePaymentNote.text = getSpannableStoreNote(it)
+        }
+    }
+
+    private fun addKlikBCAPayment() {
+        setPaymentInfo(getString(R.string.pms_hwp_user_id),
+                appLinkPaymentInfo.payment_code,
+                getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
+                null, null, null)
+    }
+
+    private fun setPaymentInfo(accountTitle: String,
+                               accountNumber: String,
+                               amountStr: CharSequence,
+                               actionText: String?,
+                               actionIcon: Int?, clickAction: (() -> Unit)?) {
+        tvPaymentAccountTitle.text = accountTitle
+
+        tvGateWayName.text = appLinkPaymentInfo.gateway_name
+        tvPaymentAccountNumber.text = accountNumber
+        tvTotalPaymentAmount.text = amountStr
+
+        appLinkPaymentInfo.gateway_logo?.let {
             ivGateWayImage.setImageUrl(it, ivGateWayImage.heightRatio)
         }
-        ivTakeScreenshot.setImage(IconUnify.COPY)
-        ivTakeScreenshot.setOnClickListener {
-            copyTOClipBoard(context, appLinkPaymentInfo?.payment_code ?: "")
-            showToast("Kode Pembayaran berhasil disalin.")
+
+        actionIcon?.let {
+            ivTakeScreenshot.setImage(actionIcon)
+            ivTakeScreenshot.setOnClickListener { clickAction?.invoke() }
+        } ?: run {
+            ivTakeScreenshot.gone()
         }
-        tvPaymentInfoAction.setOnClickListener {
-            copyTOClipBoard(context, appLinkPaymentInfo?.payment_code ?: "")
-            showToast("Kode Pembayaran berhasil disalin.")
+
+        actionText?.let {
+            tvPaymentInfoAction.text = actionText
+            tvPaymentInfoAction.setOnClickListener { clickAction?.invoke() }
+        } ?: run {
+            tvPaymentInfoAction.gone()
         }
-        tickerAmountNote.gone()
-        tvAccountName.gone()
-        tvPaymentNote.gone()
     }
 
     private fun addMultipleChannelAdapter(paymentChannels: ArrayList<PaymentChannel>?) {
@@ -174,69 +228,6 @@ class HowToPayFragment : BaseDaggerFragment() {
         recyclerView.post {
             recyclerView.adapter?.notifyDataSetChanged()
         }
-    }
-
-    private fun addBankTransferPayment(data: SingleChannelGatewayResult) {
-        tvGateWayName.text = appLinkPaymentInfo?.gateway_name
-        tvPaymentAccountTitle.text = getString(R.string.pms_hwp_account_number)
-        tvPaymentAccountNumber.text = appLinkPaymentInfo?.bank_num
-        tvAccountName.visible()
-        tvAccountName.text = getString(R.string.pms_hwp_bank_info,
-                appLinkPaymentInfo?.bank_name, appLinkPaymentInfo?.bank_info)
-        tvTotalPaymentAmount.text = highlightLastThreeDigits(getString(R.string.pms_hwp_rp,
-                appLinkPaymentInfo?.total_amount))
-        tvPaymentInfoAction.text = getString(R.string.pms_hwp_copy)
-        appLinkPaymentInfo?.gateway_logo?.let {
-            ivGateWayImage.setImageUrl(it)
-        }
-        ivTakeScreenshot.setImage(IconUnify.COPY)
-        ivTakeScreenshot.setOnClickListener {
-            copyTOClipBoard(context, appLinkPaymentInfo?.bank_num ?: "")
-            showToast("Nomor rekening berhasil disalin.")
-        }
-        tvPaymentInfoAction.setOnClickListener {
-            copyTOClipBoard(context, appLinkPaymentInfo?.bank_num ?: "")
-            showToast("Nomor rekening berhasil disalin.")
-        }
-        tickerAmountNote.visible()
-        tickerAmountNote.setTextDescription(getString(R.string.pms_hwp_transfer_3_digit_info))
-        tvPaymentNote.gone()
-    }
-
-    private fun addStoreTransferPayment(data: SingleChannelGatewayResult) {
-        tvGateWayName.text = appLinkPaymentInfo?.gateway_name
-        tvPaymentAccountTitle.text = getString(R.string.pms_hwp_payment_code)
-        tvPaymentAccountNumber.text = appLinkPaymentInfo?.payment_code
-        tvTotalPaymentAmount.text = getString(R.string.pms_hwp_rp, appLinkPaymentInfo?.total_amount)
-        tvPaymentInfoAction.text = getString(R.string.pms_hwp_screenshot)
-        appLinkPaymentInfo?.gateway_logo?.let {
-            ivGateWayImage.setImageUrl(it)
-        }
-        ivTakeScreenshot.setImage(IconUnify.DOWNLOAD)
-        tickerAmountNote.gone()
-        tvAccountName.gone()
-        tvPaymentNote.visible()
-        tvPaymentInfoAction.setOnClickListener { screenshotHelper.takeScreenShot(view, this) }
-        ivTakeScreenshot.setOnClickListener { screenshotHelper.takeScreenShot(view, this) }
-        context?.let {
-            tvPaymentNote.movementMethod = LinkMovementMethod.getInstance()
-            tvPaymentNote.text = getSpannableStoreNote(it)
-        }
-    }
-
-    private fun addKlikBCAPayment(data: SingleChannelGatewayResult) {
-        tvGateWayName.text = appLinkPaymentInfo?.gateway_name
-        tvPaymentAccountTitle.text = getString(R.string.pms_hwp_user_id)
-        tvPaymentAccountNumber.text = appLinkPaymentInfo?.payment_code
-        tvTotalPaymentAmount.text = getString(R.string.pms_hwp_rp, appLinkPaymentInfo?.total_amount)
-        appLinkPaymentInfo?.gateway_logo?.let {
-            ivGateWayImage.setImageUrl(it)
-        }
-        tvPaymentInfoAction.gone()
-        ivTakeScreenshot.gone()
-        tickerAmountNote.gone()
-        tvAccountName.gone()
-        tvPaymentNote.gone()
     }
 
     private fun highlightLastThreeDigits(amountStr: String): SpannableString {
@@ -274,21 +265,6 @@ class HowToPayFragment : BaseDaggerFragment() {
             }
         }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return SpannableStringBuilder.valueOf(storeNote).append(" ").append(spannableString)
-    }
-
-    private fun getAppLinkPaymentInfoData(bundle: Bundle): AppLinkPaymentInfo? {
-        return try {
-            val json = JSONObject()
-            val keys = bundle.keySet()
-            for (key in keys)
-                json.put(key, bundle.getString(key, ""))
-            val appLinkPaymentInfo: AppLinkPaymentInfo = Gson().fromJson(json.toString(), AppLinkPaymentInfo::class.java)
-            if (appLinkPaymentInfo.bank_code.isNullOrBlank())
-                appLinkPaymentInfo.bank_code = null
-            return appLinkPaymentInfo
-        } catch (e: Exception) {
-            null
-        }
     }
 
     private fun copyTOClipBoard(context: Context?, dataStr: String) {
