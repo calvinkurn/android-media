@@ -175,12 +175,13 @@ public class DeveloperOptionActivity extends BaseActivity implements ReceiverLis
         }
     }
 
-    private String userSessionData(Bundle data) {
+    private String userSessionData(String tag, Bundle data) {
         String message = "";
-        message += "isLogin -> " + data.getBoolean(UserKey.IS_LOGIN);
+        message += "TAG -> " + tag + "\n";
+        message += "isLogin -> " + data.getBoolean(UserKey.IS_LOGIN) + "\n";
         if (data.getBoolean(UserKey.IS_LOGIN)) {
-            message += "Name -> " + data.getBoolean(UserKey.NAME);
-            message += "Email -> " + data.getBoolean(UserKey.EMAIL);
+            message += "Name -> " + data.getString(UserKey.NAME) + "\n";
+            message += "Email -> " + data.getString(UserKey.EMAIL) + "\n";
         }
 
         return message;
@@ -191,12 +192,12 @@ public class DeveloperOptionActivity extends BaseActivity implements ReceiverLis
         String message = "";
         if (!tag.isEmpty() && !data.isEmpty() && data.containsKey(UserKey.IS_LOGIN)) {
             if (GlobalConfig.isSellerApp()) {
-                message += "Seller";
+                message += "Seller \n";
             } else {
-                message += "MainApp";
+                message += "MainApp \n";
             }
 
-            message += userSessionData(data);
+            message += userSessionData(tag, data);
         }
 
         txtAidlUserStatus.setText(message);
