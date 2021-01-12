@@ -490,7 +490,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             paramUohOrder.uUID = ""
             paramUohOrder.page = currPage
         }
-        uohListViewModel.loadOrderList(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_get_order_history), paramUohOrder)
+        uohListViewModel.loadOrderList(paramUohOrder)
     }
 
     private fun loadRecommendationList() {
@@ -1164,7 +1164,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
                 }
                 if (paramFinishOrder != null) {
-                    uohListViewModel.doFinishOrder(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_finish_order), paramFinishOrder)
+                    uohListViewModel.doFinishOrder(paramFinishOrder)
                 }
 
                 userSession.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
@@ -1191,7 +1191,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             bottomSheetLsFinishOrder?.dismiss()
             currIndexNeedUpdate = index
             uohItemAdapter.showLoaderAtIndex(index)
-            uohListViewModel.doLsPrintFinishOrder(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_finish_lsprint), orderId)
+            uohListViewModel.doLsPrintFinishOrder(orderId)
         }
 
         viewBottomSheet.btn_ls_kembali?.setOnClickListener {
@@ -1239,14 +1239,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
                 val invoiceId = flightQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
-                uohListViewModel.doFlightResendEmail(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_send_eticket_flight), invoiceId, email)
+                uohListViewModel.doFlightResendEmail(invoiceId, email)
 
             } else if (gqlGroup.equals(GQL_TRAIN_EMAIL, true)) {
                 val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
                 val invoiceId = trainQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
                 val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
-                uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_send_eticket_train), param)
+                uohListViewModel.doTrainResendEmail(param)
             }
             userSession.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
         }
@@ -1570,7 +1570,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     currIndexNeedUpdate = index
                     orderIdNeedUpdated = order.orderUUID
                     if (order.verticalID.isNotEmpty()) {
-                        uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(activity?.resources, R.raw.recharge_set_fail), order.verticalID.toInt())
+                        uohListViewModel.doRechargeSetFail(order.verticalID.toInt())
                     }
                 }
             }

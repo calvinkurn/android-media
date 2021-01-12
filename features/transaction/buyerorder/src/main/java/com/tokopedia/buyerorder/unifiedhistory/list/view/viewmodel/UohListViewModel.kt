@@ -76,10 +76,10 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
 
-    fun loadOrderList(orderQuery: String, paramOrder: UohListParam) {
+    fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
         launch {
-            _orderHistoryListResult.value = (uohListUseCase.execute(paramOrder, orderQuery))
+            _orderHistoryListResult.value = uohListUseCase.executeSuspend(paramOrder)
             UohIdlingResource.decrement()
         }
     }
@@ -96,10 +96,10 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         }
     }
 
-    fun doFinishOrder(finishOrderQuery: String, paramFinishOrder: UohFinishOrderParam) {
+    fun doFinishOrder(paramFinishOrder: UohFinishOrderParam) {
         UohIdlingResource.increment()
         launch {
-            _finishOrderResult.value = (uohFinishOrderUseCase.execute(finishOrderQuery, paramFinishOrder))
+            _finishOrderResult.value = (uohFinishOrderUseCase.executeSuspend(paramFinishOrder))
             UohIdlingResource.decrement()
         }
     }
@@ -112,35 +112,35 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         }
     }
 
-    fun doLsPrintFinishOrder(lsPrintQuery: String, verticalId: String) {
+    fun doLsPrintFinishOrder(verticalId: String) {
         UohIdlingResource.increment()
         launch {
-            _lsPrintFinishOrderResult.value = (lsPrintFinishOrderUseCase.execute(lsPrintQuery, verticalId))
+            _lsPrintFinishOrderResult.value = (lsPrintFinishOrderUseCase.executeSuspend(verticalId))
             UohIdlingResource.decrement()
         }
     }
 
-    fun doFlightResendEmail(flightResendQuery: String, invoiceId: String, email: String) {
+    fun doFlightResendEmail(invoiceId: String, email: String) {
         UohIdlingResource.increment()
         launch {
-            _flightResendEmailResult.value = (flightResendEmailUseCase.execute(flightResendQuery, invoiceId, email))
+            _flightResendEmailResult.value = (flightResendEmailUseCase.executeSuspend(invoiceId, email))
             UohIdlingResource.decrement()
         }
     }
 
-    fun doTrainResendEmail(trainResendQuery: String, param: TrainResendEmailParam) {
+    fun doTrainResendEmail(param: TrainResendEmailParam) {
         UohIdlingResource.increment()
         launch {
-            _trainResendEmailResult.value = (trainResendEmailUseCase.execute(trainResendQuery, param))
+            _trainResendEmailResult.value = (trainResendEmailUseCase.executeSuspend(param))
             UohIdlingResource.decrement()
         }
     }
 
-    fun doRechargeSetFail(rechargeSetFailQuery: String, orderId: Int) {
+    fun doRechargeSetFail(orderId: Int) {
         UohIdlingResource.increment()
 
         launch {
-            _rechargeSetFailResult.value = (rechargeSetFailUseCase.execute(rechargeSetFailQuery, orderId))
+            _rechargeSetFailResult.value = (rechargeSetFailUseCase.executeSuspend(orderId))
             UohIdlingResource.decrement()
         }
     }
