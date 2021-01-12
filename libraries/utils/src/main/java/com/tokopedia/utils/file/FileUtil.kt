@@ -137,7 +137,7 @@ object FileUtil {
     }
 
     private fun getMimeType(context: Context, uri: Uri): String? {
-        var mimeType: String?
+        val mimeType: String?
         mimeType = if (uri.scheme == ContentResolver.SCHEME_CONTENT) {
             val cr = context.contentResolver
             cr.getType(uri)
@@ -145,7 +145,7 @@ object FileUtil {
             val fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
                     .toString())
             MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                    fileExtension.toLowerCase())
+                    fileExtension.toLowerCase(Locale.getDefault()))
         }
         return mimeType
     }

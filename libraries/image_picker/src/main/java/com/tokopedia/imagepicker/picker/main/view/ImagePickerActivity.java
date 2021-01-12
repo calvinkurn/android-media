@@ -31,6 +31,7 @@ import com.tokopedia.imagepicker.common.ImageEditorBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
+import com.tokopedia.imagepicker.common.util.ImageCacheCleaner;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
@@ -43,6 +44,9 @@ import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import kotlin.coroutines.CoroutineContext;
+import kotlinx.coroutines.CoroutineScope;
 
 import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_PICKER_BUILDER;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
@@ -699,4 +703,5 @@ public final class ImagePickerActivity extends BaseSimpleActivity
             ImagePickerGlobalSettings.onImagePickerContinue.invoke();
         }
     }
+
 }
