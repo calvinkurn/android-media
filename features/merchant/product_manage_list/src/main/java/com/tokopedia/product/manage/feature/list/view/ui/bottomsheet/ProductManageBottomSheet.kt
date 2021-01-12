@@ -123,6 +123,8 @@ class ProductManageBottomSheet : BottomSheetUnify() {
 
         arguments?.getParcelable<ProductManageAccess>(EXTRA_FEATURE_ACCESS)?.let { access ->
             menuList.apply {
+                val isFeatured = product.isFeatured == true
+
                 add(Preview(product))
 
                 if(access.duplicateProduct) {
@@ -153,11 +155,11 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                         add(SetCashBack(product))
                     }
 
-                    if(product.isFeatured == true && isPowerMerchantOrOfficialStore && access.setFeatured) {
+                    if(isFeatured && isPowerMerchantOrOfficialStore && access.setFeatured) {
                         add(RemoveFeaturedProduct(product))
                     }
 
-                    if(product.isActive() && access.setFeatured) {
+                    if(!isFeatured && product.isActive() && access.setFeatured) {
                         add(SetFeaturedProduct(product))
                     }
                 }
