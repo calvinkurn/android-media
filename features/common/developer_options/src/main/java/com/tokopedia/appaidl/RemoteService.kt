@@ -13,7 +13,11 @@ class RemoteService: Service() {
     override fun onBind(intent: Intent) = binder
     
     private fun broadcastResult(tag: String, data: Bundle) {
+        // if the app as seller so the package for customerApp
+        val packageName = if (GlobalConfig.isSellerApp()) MAINAPP else SELLERAPP
+
         sendBroadcast(Intent().apply {
+            `package` = packageName
             action = tag
             putExtras(data)
         })
@@ -31,10 +35,10 @@ class RemoteService: Service() {
 //            data.putBoolean("islogin", false)
 //        }
 
-        val sampleData = if (GlobalConfig.isSellerApp()) {
-            "ini dari sellerapp, namaku: ${userSession.name}"
+        val sampleData = if (!GlobalConfig.isSellerApp()) {
+            "ini untuk sellerapp, namaku: ${userSession.name}"
         } else {
-            "ini dari mainapp, namaku: ${userSession.name}"
+            "ini untuk mainapp, namaku: ${userSession.name}"
         }
 
         data.apply {

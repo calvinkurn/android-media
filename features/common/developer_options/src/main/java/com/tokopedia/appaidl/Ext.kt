@@ -9,8 +9,8 @@ import com.tokopedia.config.GlobalConfig
 
 private const val SERVICE = "com.tokopedia.appaidl.RemoteService"
 
-private const val MAINAPP = "com.tokopedia.tkpd"
-private const val SELLERAPP = "com.tokopedia.sellerapp"
+const val MAINAPP = "com.tokopedia.tkpd"
+const val SELLERAPP = "com.tokopedia.sellerapp"
 
 interface ReceiverListener {
     fun handleData(tag: String, bundle: Bundle?)
@@ -42,7 +42,7 @@ fun BaseActivity.connectService(listener: ReceiverListener) {
         }
     }
 
-    val intent = Intent().apply { component = ComponentName(appName, SERVICE) }
+    val intent = Intent().apply { component = ComponentName(if (GlobalConfig.isSellerApp()) MAINAPP else SELLERAPP, SERVICE) }
     val success = bindService(intent, serviceView, Context.BIND_AUTO_CREATE)
 
     if (!success) {
