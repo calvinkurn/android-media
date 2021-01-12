@@ -13,6 +13,7 @@ import androidx.core.app.TaskStackBuilder;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -85,6 +86,10 @@ import timber.log.Timber;
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static final String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
+    private static final String APPLINK_LOG_FORMAT = "P1#WEBVIEW_OPENED#applink;domain='%s';url='%s'";
+    private static final String TOKOPEDIA_DOMAIN = "tokopedia";
+    private static final String URL_QUERY_PARAM = "url";
+    private static final String DOMAIN_PREFIX = "www.";
     private static ApplinkDelegate applinkDelegate;
     private Subscription clearNotifUseCase;
 
@@ -188,6 +193,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         }
         iniBranchIO(this);
         logDeeplink();
+        logWebViewApplink();
         finish();
     }
 
@@ -316,5 +322,27 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
         Timber.w("P1#DEEPLINK_OPEN_APP#%s;referrer='%s';extra_referrer='%s';uri='%s'",
                 getClass().getSimpleName(), referrer, extraReferrer.toString(), uri.toString());
+    }
+
+    private void logWebViewApplink() {
+        Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
+        String uriString = DeeplinkUtils.INSTANCE.getDataUri(this).toString();
+        String domain = getDomainName(getUrlToLoad(uri));
+        if (uriString.contains(ApplinkConst.WEBVIEW) && !domain.contains(TOKOPEDIA_DOMAIN)) {
+            Timber.w(APPLINK_LOG_FORMAT, domain, uri);
+        }
+    }
+
+    private Uri getUrlToLoad(Uri url) {
+        return Uri.parse(url.getQueryParameter(URL_QUERY_PARAM));
+    }
+
+    private String getDomainName(Uri url) {
+        String domain = url.getHost();
+        if (domain.startsWith(DOMAIN_PREFIX)) {
+            return domain.substring(DOMAIN_PREFIX.length());
+        } else {
+            return domain;
+        }
     }
 }

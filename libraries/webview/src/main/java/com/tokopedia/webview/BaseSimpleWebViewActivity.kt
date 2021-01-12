@@ -21,8 +21,7 @@ import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 import timber.log.Timber
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
+import java.net.URI
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -81,7 +80,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val needTitle = getQueryParameter(KEY_TITLE)
             needTitle?.let { webViewTitle = it }
         }
-        Timber.w("P1#WEBVIEW_OPENED#;url='$url'")
+        logWebViewApplink()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -194,7 +193,23 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         return false
     }
 
+    private fun logWebViewApplink() {
+        if(!url.contains(TOKOPEDIA_DOMAIN)) {
+            val domain = getDomainName(url)
+            Timber.w("P1#WEBVIEW_OPENED#webview;domain='$domain';url='$url'")
+        }
+    }
+
+    private fun getDomainName(url: String): String? {
+        val uri = URI(url)
+        val domain: String = uri.host
+        return if (domain.startsWith(DOMAIN_PREFIX)) domain.substring(DOMAIN_PREFIX.length) else domain
+    }
+
     companion object {
+
+        const val TOKOPEDIA_DOMAIN = "tokopedia"
+        const val DOMAIN_PREFIX = "www."
 
         fun getStartIntent(
             context: Context,
