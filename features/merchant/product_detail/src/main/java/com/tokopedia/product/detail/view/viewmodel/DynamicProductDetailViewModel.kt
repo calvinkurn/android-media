@@ -562,15 +562,16 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun loadRecommendation(pageName: String) {
         launch(dispatcher.main) {
             if (!GlobalConfig.isSellerApp()) {
+
+                if (!alreadyHitRecom.contains(pageName)) {
+                    alreadyHitRecom.add(pageName)
+                } else {
+                    return@launch
+                }
+
                 try {
                     val recomData = withContext(dispatcher.io) {
                         var recomWidget = RecommendationWidget()
-
-                        if (!alreadyHitRecom.contains(pageName)) {
-                            alreadyHitRecom.add(pageName)
-                        } else {
-                            return@withContext recomWidget
-                        }
 
                         val productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID
                                 ?: "")
