@@ -28,13 +28,20 @@ import com.tokopedia.stickylogin.analytics.StickyLoginReminderTracker
 import com.tokopedia.stickylogin.analytics.StickyLoginTracking
 import com.tokopedia.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.stickylogin.common.StickyLoginConstant
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_IS_REGISTER_FROM_HOME
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_HOME
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_PDP
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_SHOP
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_PROFILE_PICTURE
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_SHOP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_SHOP
-import com.tokopedia.stickylogin.common.StickyLoginConstant.LAYOUT_FLOATING
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_USER_NAME
+import com.tokopedia.stickylogin.common.StickyLoginConstant.STICKY_LOGIN_REMINDER_PREF
+import com.tokopedia.stickylogin.common.StickyLoginConstant.STICKY_PREF
 import com.tokopedia.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.stickylogin.view.viewModel.StickyLoginViewModel
@@ -399,15 +406,6 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         const val TAG = "StickyTextButton"
 
         private const val DEFAULT_DELAY_TIME_IN_MINUTES = 30
-
-        private const val STICKY_PREF = "sticky_login_widget.pref"
-        private const val KEY_LAST_SEEN_AT_HOME = "last_seen_at_home"
-        private const val KEY_LAST_SEEN_AT_PDP = "last_seen_at_pdp"
-        private const val KEY_LAST_SEEN_AT_SHOP = "last_seen_at_shop"
-
-        private const val STICKY_LOGIN_REMINDER_PREF = "sticky_login_reminder.pref"
-        private const val KEY_USER_NAME = "user_name"
-        private const val KEY_PROFILE_PICTURE = "profile_picture"
 
         private const val TEXT_RE_LOGIN = "Masuk sebagai"
 
