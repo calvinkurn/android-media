@@ -31,7 +31,7 @@
             android:exported="false" />
 
         <service
-            android:name="com.tokopedia.appaidl.RemoteService"
+            android:name="com.tokopedia.appaidl.service.RemoteService"
             android:exported="true" />
 
         <receiver android:name=".notification.ReviewNotificationUpdateExample" />
