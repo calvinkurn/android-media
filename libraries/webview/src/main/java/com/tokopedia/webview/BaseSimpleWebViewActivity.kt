@@ -20,6 +20,7 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
+import timber.log.Timber
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 
@@ -80,6 +81,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val needTitle = getQueryParameter(KEY_TITLE)
             needTitle?.let { webViewTitle = it }
         }
+        Timber.w("P1#WEBVIEW_OPENED#;url='$url'")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
