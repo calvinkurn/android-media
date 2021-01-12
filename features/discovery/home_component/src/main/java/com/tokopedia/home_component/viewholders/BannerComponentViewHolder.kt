@@ -71,7 +71,6 @@ class BannerComponentViewHolder(itemView: View,
             }
 
             override fun onViewAttachedToWindow(p0: View?) {
-                onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
                 resumeAutoScroll()
             }
         })
@@ -81,9 +80,10 @@ class BannerComponentViewHolder(itemView: View,
         try {
             setHeaderComponent(element)
             setViewPortImpression(element)
+            channelModel = element.channelModel
+            isCache = element.isCache
             onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
 
-            channelModel = element.channelModel
             channelModel?.let { it ->
                 this.isCache = element.isCache
                 try {
@@ -111,10 +111,10 @@ class BannerComponentViewHolder(itemView: View,
         try {
             setHeaderComponent(element)
             setViewPortImpression(element)
-
-            onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
             channelModel = element.channelModel
             this.isCache = element.isCache
+
+            onPromoScrolled(layoutManager.findFirstCompletelyVisibleItemPosition())
             element.channelModel?.let {
                 val gridCount = it.channelGrids.size
                 adapter.setItemList(it.convertToCircularModel())
@@ -189,7 +189,7 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     private fun onPromoScrolled(position: Int) {
-        if (bannerListener?.isMainViewVisible() == true && !isCache && !isBannerImpressed(position)) {
+        if (bannerListener?.isMainViewVisible() == true && !isCache && !isBannerImpressed(position) && position != -1) {
             channelModel?.let {channel ->
                 channel.selectGridInPosition(position) {
                     bannerListener.onPromoScrolled(channel, it ,position)
