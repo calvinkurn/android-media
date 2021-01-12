@@ -54,4 +54,10 @@ class ProductDetailActivityTest : BaseSimpleActivity() {
             screenShotAndSave(window.decorView, "dark_mode", screenshotName)
         }
     }
+
+    fun getLastPositionIndex() : Int {
+        val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragment
+
+        return fragment.adapter.dataSize - 1
+    }
 }

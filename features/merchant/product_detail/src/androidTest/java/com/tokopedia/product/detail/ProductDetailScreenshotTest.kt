@@ -46,6 +46,9 @@ class ProductDetailScreenshotTest {
         return object : MockModelConfig() {
             override fun createMockModel(context: Context): MockModelConfig {
                 addMockResponse("pdpGetLayout", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_pdp_get_layout), FIND_BY_CONTAINS)
+                addMockResponse("GetPdpGetData", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_pdp_p2_get_data), FIND_BY_CONTAINS)
+//                addMockResponse("ImageReview", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_pdp_p2_other), FIND_BY_CONTAINS)
+                addMockResponse("productRecommendation", InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_pdp_get_recom), FIND_BY_CONTAINS)
                 return this
             }
         }
@@ -62,11 +65,16 @@ class ProductDetailScreenshotTest {
         activityRule.activity.takeScreenShot(darkModePrefixKey + "-2")
 
         Thread.sleep(3000)
+        scrollToCenter2()
+        activityRule.activity.takeScreenShot(darkModePrefixKey + "-3")
+
+
+        Thread.sleep(3000)
         scrollToBottom()
         waitForData()
         scrollToBottom()
+        activityRule.activity.takeScreenShot(darkModePrefixKey + "-4")
 
-        activityRule.activity.takeScreenShot(darkModePrefixKey + "-3")
         activityRule.activity.finishAndRemoveTask()
     }
 
@@ -74,7 +82,7 @@ class ProductDetailScreenshotTest {
         onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
                 .check(matches(isDisplayed()))
                 .perform(
-                        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(7)
+                        RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(ViewMatchers.withId(com.tokopedia.product.detail.R.id.product_detail_info_title))), ViewActions.scrollTo())
                 )
     }
 
@@ -86,11 +94,19 @@ class ProductDetailScreenshotTest {
                 )
     }
 
-    private fun scrollToBottom() {
+    private fun scrollToCenter2() {
         onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
                 .check(matches(isDisplayed()))
                 .perform(
                         RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(ViewMatchers.withId(com.tokopedia.product.detail.R.id.productDiscussionMostHelpfulSeeAll))), ViewActions.scrollTo())
+                )
+    }
+
+    private fun scrollToBottom() {
+        onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
+                .check(matches(isDisplayed()))
+                .perform(
+                        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(activityRule.activity.getLastPositionIndex())
                 )
     }
 

@@ -1,0 +1,511 @@
+[
+  {
+    "data": {
+      "pdpGetData": {
+        "cartRedirection": {
+          "data": [
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "occ",
+                  "color": "secondary",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli Langsung"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "config_name": "occ",
+              "hide_floating_button": false,
+              "product_id": "1060957408",
+              "unavailable_buttons": [
+                "byme"
+              ]
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "occ",
+                  "color": "secondary",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli Langsung"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "config_name": "occ",
+              "hide_floating_button": false,
+              "product_id": "1060957409",
+              "unavailable_buttons": [
+                "byme"
+              ]
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "occ",
+                  "color": "secondary",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli Langsung"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "config_name": "occ",
+              "hide_floating_button": false,
+              "product_id": "1060957410",
+              "unavailable_buttons": [
+                "byme"
+              ]
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "occ",
+                  "color": "secondary",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli Langsung"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "config_name": "occ",
+              "hide_floating_button": false,
+              "product_id": "1060957411",
+              "unavailable_buttons": [
+                "byme"
+              ]
+            }
+          ],
+          "error_message": [],
+          "status": "OK"
+        },
+        "error": {
+          "Code": 0,
+          "DevMessage": "",
+          "Message": ""
+        },
+        "installmentCalculation": {
+          "data": {
+            "credit_card": [],
+            "non_credit_card": [],
+            "tnc": []
+          },
+          "message": ""
+        },
+        "installmentRecommendation": {
+          "data": {
+            "interest_rate": 0,
+            "maximum_amount": 0,
+            "mdr_type": "",
+            "mdr_value": 0,
+            "minimum_amount": 0,
+            "monthly_price": 0,
+            "os_monthly_price": 0,
+            "partner_code": "",
+            "partner_icon": "",
+            "partner_name": "",
+            "term": 0
+          },
+          "message": ""
+        },
+        "merchantVoucher": {
+          "error_message": "",
+          "error_message_title": "",
+          "vouchers": []
+        },
+        "nearestWarehouse": [
+          {
+            "product_id": "1060957408",
+            "warehouse_info": {
+              "district_id": "2267",
+              "geolocation": "-6.246036,106.8475628",
+              "is_fulfillment": true,
+              "postal_code": "12780",
+              "warehouse_id": "5931369"
+            }
+          },
+          {
+            "product_id": "1060957409",
+            "warehouse_info": {
+              "district_id": "2267",
+              "geolocation": "-6.246036,106.8475628",
+              "is_fulfillment": true,
+              "postal_code": "12780",
+              "warehouse_id": "5931369"
+            }
+          },
+          {
+            "product_id": "1060957410",
+            "warehouse_info": {
+              "district_id": "2267",
+              "geolocation": "-6.246036,106.8475628",
+              "is_fulfillment": true,
+              "postal_code": "12780",
+              "warehouse_id": "5931369"
+            }
+          },
+          {
+            "product_id": "1060957411",
+            "warehouse_info": {
+              "district_id": "2267",
+              "geolocation": "-6.246036,106.8475628",
+              "is_fulfillment": true,
+              "postal_code": "12780",
+              "warehouse_id": "5931369"
+            }
+          }
+        ],
+        "ppGetItemDetailPage": {
+          "program": {
+            "iconURL": "https://ecs7.tokopedia.net/fintech/insurance/icon-proteksi-new.png",
+            "isAppLink": true,
+            "linkURL": "https://www.tokopedia.com/asuransi/proteksi/kerusakan-total/",
+            "partnerLogo": "https://ecs7.tokopedia.net/fintech/partner/MSIG_logo01.png",
+            "partnerText": "Perlindungan Oleh :",
+            "protectionAvailable": true,
+            "subTitle": "Kompensasi 70% jika produk rusak akibat pemakaian dalam 90 hari hanya Rp3.900",
+            "subTitlePDP": "Kompensasi 70% jika produk rusak akibat pemakaian dalam 90 hari hanya Rp3.900",
+            "title": "Proteksi Fashion",
+            "titlePDP": "Proteksi Fashion"
+          }
+        },
+        "productView": "10810",
+        "reputationShop": {
+          "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-4.gif",
+          "badgeHD": "https://ecs7.tokopedia.net/img/repsys/diamond-4-hd.gif",
+          "score": "211.679",
+          "scoreMap": "19"
+        },
+        "restrictionInfo": {
+          "message": "",
+          "restrictionData": []
+        },
+        "shopCommitment": {
+          "error": {
+            "message": ""
+          },
+          "result": {
+            "isNowActive": false,
+            "staticMessages": {
+              "pdpMessage": ""
+            }
+          }
+        },
+        "shopFeature": {
+          "IsGoApotik": false
+        },
+        "shopInfo": {
+          "activeProduct": "111",
+          "closedInfo": {
+            "closedNote": "",
+            "detail": {
+              "openDateUTC": "0"
+            },
+            "reason": "This store is preparing become Official Store",
+            "until": ""
+          },
+          "createInfo": {
+            "epochShopCreated": "1489750601",
+            "epochShopCreatedUTC": "1489725401",
+            "openSince": "March 2017",
+            "shopCreated": "2017-03-17"
+          },
+          "isAllowManage": 0,
+          "isFreeReturns": 0,
+          "location": "Jakarta Timur",
+          "shipmentInfo": [
+            {
+              "awbStatus": 0,
+              "code": "custom_1990266_1990266",
+              "image": "https://ecs7.tokopedia.net/img/kurir-custom.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "Custom Logistik",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Service Normal",
+                  "shipProdID": "999",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "999"
+            },
+            {
+              "awbStatus": 0,
+              "code": "grab",
+              "image": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "GrabExpress",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Same Day",
+                  "shipProdID": "24",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Instant",
+                  "shipProdID": "37",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "13"
+            },
+            {
+              "awbStatus": 0,
+              "code": "anteraja",
+              "image": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "AnterAja",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Reguler",
+                  "shipProdID": "45",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Next Day",
+                  "shipProdID": "46",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "23"
+            },
+            {
+              "awbStatus": 0,
+              "code": "jne",
+              "image": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "JNE",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Reguler",
+                  "shipProdID": "1",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "OKE",
+                  "shipProdID": "2",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "YES",
+                  "shipProdID": "6",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "1"
+            },
+            {
+              "awbStatus": 0,
+              "code": "jnt",
+              "image": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "J&T",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Reguler",
+                  "shipProdID": "27",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "14"
+            },
+            {
+              "awbStatus": 0,
+              "code": "gojek",
+              "image": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "Gojek",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Same Day",
+                  "shipProdID": "20",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Instant Courier",
+                  "shipProdID": "28",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "10"
+            },
+            {
+              "awbStatus": 0,
+              "code": "sicepat",
+              "image": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "SiCepat",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Regular Package",
+                  "shipProdID": "18",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "BEST",
+                  "shipProdID": "33",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "GOKIL",
+                  "shipProdID": "43",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Regular Package",
+                  "shipProdID": "44",
+                  "uiHidden": true
+                }
+              ],
+              "shipmentID": "11"
+            }
+          ],
+          "shippingLoc": {
+            "addressStreet": "",
+            "cityID": "0",
+            "cityName": "",
+            "countryName": "",
+            "districtID": "0",
+            "districtName": "",
+            "latitude": "",
+            "longitude": "",
+            "postalCode": "",
+            "provinceID": "0",
+            "provinceName": ""
+          },
+          "shopAssets": {
+            "avatar": "https://ecs7-p.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/10/d54ad402-71a0-45c8-badd-64d8f78bd66a.png",
+            "cover": "https://ecs7-p.tokopedia.net/img/cache/1190/shops-1/2020/8/19/16620763/16620763_e28a6bad-70fd-4dec-a289-c3a4b40f1c71"
+          },
+          "shopCore": {
+            "description": "Produk-produk lucu berkarakter Toped siap untuk mewarnai harimu. Yuk lengkapi koleksimu, beli merchandise eksklusif Tokopedia hanya di sini!",
+            "domain": "merchandise",
+            "name": "Tokopedia Merchandise",
+            "shopID": "1990266",
+            "tagLine": "Dapatkan eksklusif design Merchandise Tokopedia",
+            "url": "https://www.tokopedia.com/merchandise"
+          },
+          "shopLastActive": "1610447150",
+          "shopStats": {
+            "productSold": "192686",
+            "totalShowcase": "26",
+            "totalTx": "94103"
+          },
+          "shopTerms": "0",
+          "shopType": 0,
+          "statusInfo": {
+            "isIdle": false,
+            "shopStatus": 1,
+            "statusMessage": "",
+            "statusTitle": ""
+          }
+        },
+        "shopPackSpeed": {
+          "hour": 10,
+          "speedFmt": "10 Jam"
+        },
+        "shopRatingsQuery": {
+          "ratingScore": 5
+        },
+        "shopTopChatSpeed": {
+          "messageResponseTime": "10"
+        },
+        "upcomingCampaigns": [],
+        "validateTradeIn": {
+          "isDiagnosed": false,
+          "isEligible": false,
+          "message": "",
+          "remainingPrice": "0",
+          "useKyc": false,
+          "usedPrice": "0",
+          "widgetString": ""
+        },
+        "wishlistCount": "14"
+      }
+    }
+  }
+]
