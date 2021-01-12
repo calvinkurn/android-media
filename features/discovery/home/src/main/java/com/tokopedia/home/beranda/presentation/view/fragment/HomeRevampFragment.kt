@@ -1240,7 +1240,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 playWidgetCoordinator,
                 this,
                 CategoryNavigationCallback(context, this),
-                RechargeBUWidgetCallback(context, this)
+                RechargeBUWidgetCallback(context, this),
+                BannerComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

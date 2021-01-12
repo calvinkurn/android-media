@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.data.repository
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
@@ -49,6 +50,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
 
     var CHANNEL_LIMIT_FOR_PAGINATION = 1
     var isCacheExist = false
+    val gson = Gson()
 
     override fun getHomeData(): Flow<HomeData?> = homeCachedDataSource.getCachedHomeData().map {
         isCacheExist = it != null
@@ -93,34 +95,25 @@ class HomeRevampRepositoryImpl @Inject constructor(
             /**
              * 3. Get above the fold content
              */
-            homeData.atfData?.dataList?.map {
-                when(it.component) {
+            homeData.atfData?.dataList?.map { atfData ->
+                when(atfData.component) {
                     TYPE_TICKER -> {
                         val ticker = homeRemoteDataSource.getHomeTickerUseCase()
-                        ticker?.let { homeData.ticker = ticker.ticker }
-                    }
-                    TYPE_BANNER -> {
-                        val banner = homeRemoteDataSource.getHomePageBannerUseCase()
-                        banner?.let { homeData.banner = banner.banner }
+                        ticker?.let { atfData.content = gson.toJson(ticker.ticker) }
                     }
                     TYPE_CHANNEL -> {
-                        val dynamicChannel = homeRemoteDataSource.getDynamicChannelData(params = it.param)
+                        val dynamicChannel = homeRemoteDataSource.getDynamicChannelData(params = atfData.param)
                         dynamicChannel.let {
-                            val currentDynamicHomeChannel = homeData.dynamicHomeChannel
                             val channelFromResponse = it.dynamicHomeChannel
-
                             /**
                              * 3.1 Combine the channel
                              */
-                            val combinationChannel = currentDynamicHomeChannel.channels.toMutableList()
-                            combinationChannel.addAll(channelFromResponse.channels)
-
-                            homeData.dynamicHomeChannel = DynamicHomeChannel(combinationChannel)
+                            atfData.content = gson.toJson(channelFromResponse)
                         }
                     }
                     TYPE_ICON -> {
                         val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase()
-                        dynamicIcon?.let { homeData.dynamicHomeIcon = dynamicIcon.dynamicHomeIcon }
+                        dynamicIcon?.let { atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon) }
                     }
                     else -> {
 
@@ -130,8 +123,12 @@ class HomeRevampRepositoryImpl @Inject constructor(
 
             /**
              * 4. Submit current data to database, to trigger HomeViewModel flow
+             * if there is no cache, then submit immediately
+             * if cache exist, don't submit to database because it will trigger jumpy experience
              */
-            homeCachedDataSource.saveToDatabase(homeData)
+            if (!isCacheExist) {
+                homeCachedDataSource.saveToDatabase(homeData)
+            }
 
             /**
              * 5.   Get dynamic channel data

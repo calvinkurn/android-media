@@ -176,6 +176,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
                     createBestSellingWidget(channel)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
+                    createBannerChannel(channel, position)
+                }
             }
         }
         if (addLoadingMore) {
@@ -444,6 +447,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
+    }
+
+    private fun createBannerChannel(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        visitableList.add(BannerDataModel(DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition), isCache))
     }
 
     private fun createTopAdsBannerModel(channel: DynamicHomeChannel.Channels) {
