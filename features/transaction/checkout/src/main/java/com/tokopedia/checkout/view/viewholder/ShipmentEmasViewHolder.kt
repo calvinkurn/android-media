@@ -23,14 +23,14 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
     private val llContainer: LinearLayout = itemView.findViewById(R.id.ll_container)
 
     fun bindViewHolder(egoldAttributeModel: EgoldAttributeModel) {
-        llContainer.setOnClickListener { v: View? -> buyEmas.isChecked = !buyEmas.isChecked }
+        llContainer.setOnClickListener { buyEmas.isChecked = !buyEmas.isChecked }
         buyEmas.isChecked = egoldAttributeModel.isChecked
         tvEmasTitle.text = egoldAttributeModel.titleText
-        imgEmasInfo.setOnClickListener { v: View? -> showBottomSheet(egoldAttributeModel) }
+        imgEmasInfo.setOnClickListener { showBottomSheet(egoldAttributeModel) }
         tvEmasDesc.text = Html.fromHtml(String.format(llContainer.context
                 .getString(R.string.emas_checkout_desc), egoldAttributeModel.subText,
                 removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.buyEgoldValue, false))))
-        buyEmas.setOnCheckedChangeListener { buttonView: CompoundButton?, isChecked: Boolean -> shipmentAdapterActionListener.onEgoldChecked(isChecked) }
+        buyEmas.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean -> shipmentAdapterActionListener.onEgoldChecked(isChecked) }
     }
 
     private fun showBottomSheet(egoldAttributeModel: EgoldAttributeModel) {

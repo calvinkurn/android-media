@@ -37,6 +37,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsMacroInsurance;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
+import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
@@ -231,6 +232,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     UserSessionInterface userSessionInterface;
     @Inject
     CheckoutTradeInAnalytics checkoutTradeInAnalytics;
+    @Inject
+    CheckoutEgoldAnalytics checkoutEgoldAnalytics;
 
     SaveInstanceCacheManager saveInstanceCacheManager;
     TickerAnnouncementHolderData savedTickerAnnouncementModel;
@@ -1862,6 +1865,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onEgoldChecked(boolean checked) {
         shipmentAdapter.updateEgold(checked);
+        checkoutEgoldAnalytics.eventClickEgoldRoundup(checked);
         if (isTradeIn()) {
             checkoutTradeInAnalytics.eventTradeInClickEgoldOption(isTradeInByDropOff(), checked);
         }
