@@ -292,8 +292,15 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 it.showProgressLoading()
             }
 
-            val updateCartRequestList = getUpdateCartRequest(it.getAllSelectedCartDataList()
-                    ?: emptyList())
+            val cartItemDataList: List<CartItemData> = if (fireAndForget) {
+                // Update cart to save state
+                it.getAllAvailableCartDataList()
+            } else {
+                // Update cart to go to shipment
+                it.getAllSelectedCartDataList() ?: emptyList()
+            }
+
+            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             if (updateCartRequestList.isNotEmpty()) {
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
@@ -1217,7 +1224,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             quantity = productModel.minOrder
             externalSource = AddToCartRequestParams.ATC_FROM_RECENT_VIEW
             val clickUrl = productModel.clickUrl
-            if(clickUrl.isNotEmpty() && productModel.isTopAds ) view?.sendATCTrackingURLRecent(productModel)
+            if (clickUrl.isNotEmpty() && productModel.isTopAds) view?.sendATCTrackingURLRecent(productModel)
         } else if (productModel is CartRecommendationItemHolderData) {
             val (_, recommendationItem) = productModel
             productId = recommendationItem.productId.toLong()
@@ -1311,8 +1318,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.let {
             it.showProgressLoading()
 
-            val updateCartRequestList = getUpdateCartRequest(it.getAllSelectedCartDataList()
-                    ?: emptyList())
+            val updateCartRequestList = getUpdateCartRequest(it.getAllAvailableCartDataList())
             if (updateCartRequestList.isNotEmpty()) {
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
@@ -1341,7 +1347,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest) {
         view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemData>()
-            cartListView.getAllSelectedCartDataList()?.let { listCartItemData ->
+            cartListView.getAllAvailableCartDataList().let { listCartItemData ->
                 for (data in listCartItemData) {
                     if (!data.isError) {
                         cartItemDataList.add(data)

@@ -42,6 +42,12 @@ public class StorageProvider implements InterfaceDataStore {
         return Completable.fromAction(new Action0() {
             @Override
             public void call() {
+                //if inapp is from test campaign then no need to check for persistence
+                if (value.isTest()) {
+                    value.setPersistentToggle(true);
+                    inAppDataDao.insert(value);
+                    return;
+                }
                 List<CMInApp> dataFromParentIDPerstOff = inAppDataDao.getDataFromParentIdForPerstOff(value.parentId);
                 if (dataFromParentIDPerstOff == null || dataFromParentIDPerstOff.isEmpty()) {
                     CMInApp oldData = inAppDataDao.getInAppData(value.id);
