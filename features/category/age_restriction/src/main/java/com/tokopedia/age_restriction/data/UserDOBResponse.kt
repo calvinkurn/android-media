@@ -15,7 +15,5 @@ data class UserDOBResponse(
         @SerializedName("is_dob_verified")
         var isDobVerified: Boolean,
         @SerializedName("user_id")
-        var userId: Int,
-        @SerializedName("id")
-        var id: Int
+        var userId: Int
 )
