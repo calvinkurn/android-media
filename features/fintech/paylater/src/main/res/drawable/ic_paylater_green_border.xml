@@ -3,21 +3,21 @@
     <item
         android:bottom="1dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/light_G400"/>
+            <solid android:color="@color/Unify_G400"/>
         </shape>
     </item>
 
     <item
         android:top="1dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/light_G400"/>
+            <solid android:color="@color/Unify_G400"/>
         </shape>
     </item>
 
     <item
         android:left="1dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/light_G400"/>
+            <solid android:color="@color/Unify_G400"/>
         </shape>
     </item>
 

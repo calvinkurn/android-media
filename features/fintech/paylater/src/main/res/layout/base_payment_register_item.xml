@@ -90,7 +90,7 @@
         android:id="@+id/dividerUnify"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="@dimen/pay_later_divider_height_dp_1"
-        android:background="@color/light_N50"
+        android:background="@color/Unify_N50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvDescription" />

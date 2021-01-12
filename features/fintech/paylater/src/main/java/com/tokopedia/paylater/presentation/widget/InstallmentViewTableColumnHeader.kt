@@ -15,7 +15,7 @@ class InstallmentViewTableColumnHeader(val context: Context, val layoutParams: V
     fun initUI(position: Int): View {
         val installmentColumnHeader = LayoutInflater.from(context).inflate(getLayout(), null)
         installmentColumnHeader.layoutParams = layoutParams
-        installmentColumnHeader.setBackgroundColor(ContextCompat.getColor(context, R.color.Unify_N50))
+        installmentColumnHeader.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
         val headerTextView = installmentColumnHeader.findViewById<Typography>(R.id.tvContent)
         headerTextView.setType(Typography.HEADING_5)
         headerTextView.setWeight(Typography.BOLD)

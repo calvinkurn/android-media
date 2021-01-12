@@ -23,7 +23,7 @@ class NoRecommendationViewTableRowHeader(val context: Context, val layoutParams:
                 "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
                 R.drawable.ic_loading_image)
         if (showBackGround)
-            rowHeaderNoRecom.setBackgroundColor(ContextCompat.getColor(context, R.color.Unify_N50))
+            rowHeaderNoRecom.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
         val recomBadge = rowHeaderNoRecom.findViewById<ImageView>(R.id.ivRecommendationBadge)
         recomBadge.gone()
         return rowHeaderNoRecom

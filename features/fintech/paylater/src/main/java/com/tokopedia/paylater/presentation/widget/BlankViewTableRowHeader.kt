@@ -1,8 +1,6 @@
 package com.tokopedia.paylater.presentation.widget
 
-import android.app.ActionBar
 import android.content.Context
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +18,7 @@ class BlankViewTableRowHeader(val context: Context, val layoutParams: ViewGroup.
     fun initUI(): View {
         val rowHeaderBlank = LayoutInflater.from(context).inflate(getLayout(), null)
         val parent = rowHeaderBlank.findViewById<ConstraintLayout>(R.id.clSimulationTableRowHeader)
-        parent.setBackgroundColor(ContextCompat.getColor(context, R.color.Neutral_N50))
+        parent.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
         parent.layoutParams = layoutParams
         val recomBadge = rowHeaderBlank.findViewById<ImageView>(R.id.ivRecommendationBadge)
         val image = rowHeaderBlank.findViewById<ImageView>(R.id.ivPaylaterPartner)

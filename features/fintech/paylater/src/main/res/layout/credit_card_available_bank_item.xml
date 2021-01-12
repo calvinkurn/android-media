@@ -65,7 +65,7 @@
             android:layout_marginEnd="@dimen/credit_card_dp_10"
             android:layout_marginBottom="@dimen/unify_space_12"
             android:text="Cicilan 3, 6, 12, 18, 24 bulan"
-            android:textColor="@color/light_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/llBenefits"
