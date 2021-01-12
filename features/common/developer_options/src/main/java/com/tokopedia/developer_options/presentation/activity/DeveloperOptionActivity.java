@@ -43,6 +43,7 @@ import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
 import com.tokopedia.appaidl.ReceiverListener;
+import com.tokopedia.appaidl.RemoteService;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -178,7 +179,7 @@ public class DeveloperOptionActivity extends BaseActivity implements ReceiverLis
     @Override
     public void handleData(String tag, Bundle data) {
         Log.d("AppApi", "handleData: " + tag);
-        Log.d("AppApi", "bundle: " + data.toString());
+        Log.d("AppApi", "bundle: " + data.getString(RemoteService.DATA_INTENT_TEST));
     }
 
     private void handleUri(Uri uri) {
