@@ -204,8 +204,13 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     override fun updateToolBar() {
-        if (activity is HeadlineStepperActivity || activity is EditTopAdsHeadlineKeywordActivity) {
-            (activity as HeadlineStepperActivity).updateToolbarTitle(getString(R.string.topads_headline_keywrod_title))
+        when(activity){
+            is HeadlineStepperActivity -> {
+                (activity as HeadlineStepperActivity).updateToolbarTitle(getString(R.string.topads_headline_keywrod_title))
+            }
+            is EditTopAdsHeadlineKeywordActivity -> {
+                (activity as EditTopAdsHeadlineKeywordActivity).updateToolbarTitle(getString(R.string.topads_headline_keywrod_title))
+            }
         }
     }
 

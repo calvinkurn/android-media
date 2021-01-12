@@ -8,10 +8,7 @@ import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.view.RequestHelper
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.common.data.model.AutoAdsParam
-import com.tokopedia.topads.common.data.response.DepositAmount
-import com.tokopedia.topads.common.data.response.ResponseBidInfo
-import com.tokopedia.topads.common.data.response.TopAdsAutoAds
-import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
+import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -131,18 +128,13 @@ class DailyBudgetViewModelTest {
 
     @Test
     fun `test result in getTopAdsDeposit`() {
-        var actual = 0
-        val expected = DepositAmount(amount = 100)
-        val onSuccess: (DepositAmount) -> Unit = {
-            actual = it.amount
-        }
-        every {
-            topAdsGetShopDepositUseCase.execute(captureLambda(), any())
-        } answers {
-            onSuccess.invoke(expected)
-        }
-        viewModel.getTopAdsDeposit()
-        assertEquals(actual, expected.amount)
+            val expected = Deposit(TopadsDashboardDeposits(DepositAmount(amount = 100)))
+            coEvery {
+                topAdsGetShopDepositUseCase.executeOnBackground()
+            } returns expected
+            viewModel.getTopAdsDeposit()
+            coVerify { topAdsGetShopDepositUseCase.executeOnBackground() }
+            assertEquals(viewModel.getTopAdsDepositLiveData().value, expected.topadsDashboardDeposits.data.amount)
     }
 
     @Test

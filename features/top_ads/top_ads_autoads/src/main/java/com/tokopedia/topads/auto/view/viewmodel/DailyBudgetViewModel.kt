@@ -1,6 +1,7 @@
 package com.tokopedia.topads.auto.view.viewmodel
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -35,10 +36,12 @@ class DailyBudgetViewModel @Inject constructor(
         private val repository: GraphqlRepository,
         private val rawQueries: Map<String, String>,
         private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
-        private val bidInfoUseCase: BidInfoUseCase) : BaseViewModel(dispatcher.io) {
+        private val bidInfoUseCase: BidInfoUseCase) : BaseViewModel(dispatcher.main) {
 
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
-    val topAdsDeposit = MutableLiveData<Int>()
+    val topAdsDeposit : MutableLiveData<Int> = MutableLiveData()
+
+    fun getTopAdsDepositLiveData() : LiveData<Int> = topAdsDeposit
 
     fun getBudgetInfo(requestType: String, source: String, onSuccess: (ResponseBidInfo.Result) -> Unit) {
         launchCatchError(block = {
@@ -75,13 +78,8 @@ class DailyBudgetViewModel @Inject constructor(
     fun getTopAdsDeposit() {
         launchCatchError(
                 block = {
-                    topAdsGetShopDepositUseCase.execute(
-                            {
-                                topAdsDeposit.value = it.topadsDashboardDeposits.data.amount
-                            },
-                            {
-                                it.printStackTrace()
-                            })
+                    val response = topAdsGetShopDepositUseCase.executeOnBackground()
+                    topAdsDeposit.value = response.topadsDashboardDeposits.data.amount
                 },
                 onError = {
                     it.printStackTrace()

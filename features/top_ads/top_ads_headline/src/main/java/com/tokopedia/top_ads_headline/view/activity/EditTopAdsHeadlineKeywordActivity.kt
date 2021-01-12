@@ -16,4 +16,8 @@ class EditTopAdsHeadlineKeywordActivity : BaseSimpleActivity() {
         return fragment
     }
 
+    fun updateToolbarTitle(title: String) {
+        supportActionBar?.title = title
+    }
+
 }
