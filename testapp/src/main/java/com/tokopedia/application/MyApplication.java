@@ -296,6 +296,11 @@ public class MyApplication extends BaseMainApplication
 
     }
 
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
+
+    }
+
     /**
      * Use UserSession object from library usersession directly.
      */

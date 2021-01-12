@@ -223,6 +223,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return EmptyBannerViewHolder.LAYOUT
     }
 
+    override fun type(homeHeaderOvoDataModel: HomeHeaderOvoDataModel): Int {
+        return HomeHeaderOvoViewHolder.LAYOUT
+    }
+
     override fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int {
         return HomeInitialShimmerViewHolder.LAYOUT
     }
@@ -283,6 +287,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         val viewHolder: AbstractViewHolder<*>
         when (type) {
             EmptyBannerViewHolder.LAYOUT -> viewHolder = EmptyBannerViewHolder(view, listener)
+            HomeHeaderOvoViewHolder.LAYOUT -> viewHolder = HomeHeaderOvoViewHolder(view, listener)
             HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
             DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, parentRecycledViewPool)
             ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, parentRecycledViewPool)
