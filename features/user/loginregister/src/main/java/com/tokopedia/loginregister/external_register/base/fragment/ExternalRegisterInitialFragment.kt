@@ -22,7 +22,7 @@ import java.net.URLDecoder
  * Created by Yoris Prayogo on 12/01/21.
  * Copyright (c) 2021 PT. Tokopedia All rights reserved.
  */
-abstract class ExternalRegisterInitialFragment: BaseDaggerFragment() {
+open class ExternalRegisterInitialFragment: BaseDaggerFragment() {
 
     override fun initInjector() {}
     override fun getScreenName(): String = ""
