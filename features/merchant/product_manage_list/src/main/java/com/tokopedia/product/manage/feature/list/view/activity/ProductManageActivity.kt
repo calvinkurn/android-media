@@ -47,10 +47,6 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
             window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             setupLayout(savedInstanceState)
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        }
     }
 
     private fun initInjector() {

@@ -15,7 +15,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@id/etalaseList"
         app:search_bar_placeholder="@string/product_manage_etalase_search_hint"
-        android:background="@color/Unify_N0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
