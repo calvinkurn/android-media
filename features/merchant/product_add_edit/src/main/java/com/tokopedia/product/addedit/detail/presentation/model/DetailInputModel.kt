@@ -31,7 +31,7 @@ data class DetailInputModel(
         var wholesaleList: List<WholeSaleInputModel> = emptyList(),
         var pictureList: List<PictureInputModel> = emptyList(),
         var productShowCases: List<ShowcaseItemPicker> = emptyList(),
-        var specifications: List<SpecificationInputModel> = emptyList()
+        var specifications: List<SpecificationInputModel>? = null
 ) : Parcelable
 
 @Parcelize

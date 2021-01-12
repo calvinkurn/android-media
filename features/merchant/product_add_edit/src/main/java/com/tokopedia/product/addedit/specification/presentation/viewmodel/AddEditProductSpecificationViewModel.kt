@@ -49,7 +49,7 @@ class AddEditProductSpecificationViewModel @Inject constructor(
         var valueResult: Values? = null
 
         if (productInputModel != null) {
-            val specificationList = productInputModel.detailInputModel.specifications
+            val specificationList = productInputModel.detailInputModel.specifications.orEmpty()
             valueResult = annotationCategoryData.data.firstOrNull { value ->
                 specificationList.any { it.id == value.id.toString() }
             }

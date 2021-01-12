@@ -873,7 +873,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
                     saveInstanceCacheManager.get(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL,
                             ProductInputModel::class.java, viewModel.productInputModel)?.apply {
-                        viewModel.updateSpecification(detailInputModel.specifications)
+                        viewModel.updateSpecification(detailInputModel.specifications.orEmpty())
                     }
                 }
             }
@@ -1411,9 +1411,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setupSpecificationField() {
-        // update specification and tips text if already having spec
-        if (viewModel.productInputModel.detailInputModel.specifications.isNotEmpty()) {
-            val specifications = viewModel.productInputModel.detailInputModel.specifications
+        // get annotation category, if not already obtained from the server (specifications == null)
+        val specifications = viewModel.productInputModel.detailInputModel.specifications
+        if (specifications != null) {
             viewModel.updateSpecification(specifications)
         } else {
             getAnnotationCategory()

@@ -224,6 +224,6 @@ class AddProductInputMapper @Inject constructor() {
         )
     }
 
-    private fun mapSpecificationParam(specifications: List<SpecificationInputModel>) =
-            specifications.map { it.id }
+    private fun mapSpecificationParam(specifications: List<SpecificationInputModel>?) =
+            specifications?.map { it.id }
 }
