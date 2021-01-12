@@ -6,8 +6,8 @@ import com.tokopedia.utils.file.FileUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-// Work Manager to clean up File in fileDir or cache Dir in default Folder ("Tokopedia/")
-// only clean up files that at least 1 week old.
+// Work Manager to clean up File in fileDir or cache Dir
+// only clean up files that at least 1 week old (defined at THRES_LAST_MODIF_FILE_TO_DELETE)
 class InternalStorageWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.Default) {
