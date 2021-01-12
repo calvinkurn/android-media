@@ -9,7 +9,7 @@ import com.tokopedia.loginregister.external_register.ovo.data.ActivateOvoRespons
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.ActivateOvoUseCase
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
-import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
+import com.tokopedia.sessioncommon.data.register.RegisterPojo
 import dagger.Module
 import dagger.Provides
 
@@ -46,7 +46,7 @@ class ExternalRegisterUseCaseModules {
 
     @Provides
     fun provideExternalRegisterUsecase(graphqlRepository: GraphqlRepository): ExternalRegisterUseCase {
-        val useCase = GraphqlUseCase<RegisterRequestPojo>(graphqlRepository)
+        val useCase = GraphqlUseCase<RegisterPojo>(graphqlRepository)
         return ExternalRegisterUseCase(useCase)
     }
 }

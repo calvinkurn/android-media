@@ -1560,7 +1560,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         private val REQUEST_LOGIN_GOOGLE = 112
         private val REQUEST_OTP_VALIDATE = 113
         private val REQUEST_PENDING_OTP_VALIDATE = 114
-        private val REQUEST_ADD_PIN = 115
+        const val REQUEST_ADD_PIN = 115
 
         private const val OTP_TYPE_ACTIVATE = 143
         private const val OTP_TYPE_REGISTER = 126

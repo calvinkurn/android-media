@@ -75,6 +75,8 @@ object QueryCheckHasOvoAcc {
                 token_type
                 is_active
                 action
+                enable_2fa
+                enable_skip_2fa
                 errors {
                     name
                     message
