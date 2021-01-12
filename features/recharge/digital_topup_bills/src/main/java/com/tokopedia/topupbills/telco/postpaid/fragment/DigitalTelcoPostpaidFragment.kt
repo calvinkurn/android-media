@@ -65,7 +65,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabsUnify
     private lateinit var separator: View
-    private lateinit var rechargeProductFromSlice: String
+    private var rechargeProductFromSlice: String = ""
     private var traceStop = false
     private var operatorSelected: RechargePrefix? = null
         set(value) {
