@@ -46,9 +46,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import kotlin.coroutines.CoroutineContext;
-import kotlinx.coroutines.CoroutineScope;
-
 import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_PICKER_BUILDER;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.RESULT_IS_EDITTED;
