@@ -119,7 +119,7 @@ public class StorageProvider implements InterfaceDataStore {
         if (fetchInapp) {
             list = inAppDataDao.getDataForScreen(key);
         } else
-            list =inAppDataDao.getDataForScreenTestCampaign(key);
+            list = inAppDataDao.getDataForScreenTestCampaign(key);
         List<CMInApp> finalList = new ArrayList<>();
         if (list != null) {
             for (CMInApp cmInApp : list) {
@@ -174,16 +174,11 @@ public class StorageProvider implements InterfaceDataStore {
             @Override
             public void call() {
                 CMInApp inAppData = inAppDataDao.getInAppData(id);
-                boolean isFreqUpdated = false;
                 if (inAppData != null) {
-                    List<CMInApp> allDataForParentId = inAppDataDao.getAllDataForParentId(inAppData.parentId);
-                    for (CMInApp data : allDataForParentId) {
-                        inAppDataDao.updateFrequency(data.id);
-                        isFreqUpdated = true;
-                    }
-                }
-                if (isFreqUpdated)
+                    inAppDataDao.updateFrequency(inAppData.parentId);
+                    inAppDataDao.updateShown(id);
                     storageProviderListener.onInappFreqUpdated();
+                }
             }
         }).subscribeOn(Schedulers.io());
     }
