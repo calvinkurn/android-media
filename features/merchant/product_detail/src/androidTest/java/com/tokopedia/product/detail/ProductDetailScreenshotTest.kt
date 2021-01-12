@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.instrumentation.test.R
@@ -55,9 +57,11 @@ class ProductDetailScreenshotTest {
         scrollToTop()
         activityRule.activity.takeScreenShot(darkModePrefixKey + "-1")
 
+        Thread.sleep(3000)
         scrollToCenter()
         activityRule.activity.takeScreenShot(darkModePrefixKey + "-2")
 
+        Thread.sleep(3000)
         scrollToBottom()
         waitForData()
         scrollToBottom()
@@ -68,20 +72,26 @@ class ProductDetailScreenshotTest {
 
     private fun scrollToTop() {
         onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
+                .check(matches(isDisplayed()))
                 .perform(
-                        RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(7, ViewActions.scrollTo())
+                        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(7)
                 )
     }
 
     private fun scrollToCenter() {
         onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
+                .check(matches(isDisplayed()))
                 .perform(
-                        RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(8, ViewActions.scrollTo())
+                        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(8)
                 )
     }
 
     private fun scrollToBottom() {
-        onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(ViewMatchers.withId(com.tokopedia.product.detail.R.id.productDiscussionMostHelpfulSeeAll))), ViewActions.scrollTo()))
+        onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
+                .check(matches(isDisplayed()))
+                .perform(
+                        RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(ViewMatchers.withId(com.tokopedia.product.detail.R.id.productDiscussionMostHelpfulSeeAll))), ViewActions.scrollTo())
+                )
     }
 
     private fun waitForData() {

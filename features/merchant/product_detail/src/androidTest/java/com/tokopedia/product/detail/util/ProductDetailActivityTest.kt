@@ -3,11 +3,14 @@ package com.tokopedia.product.detail.util
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.utils.view.ViewUtils.screenShotAndSave
+
 
 /**
  * Created by Yehezkiel on 10/01/21
@@ -47,6 +50,8 @@ class ProductDetailActivityTest : BaseSimpleActivity() {
             trackerListName = "", affiliateString = "", deeplinkUrl = "", layoutId = "")
 
     fun takeScreenShot(screenshotName: String) {
-        screenShotAndSave(window.decorView, "dark_mode", screenshotName)
+        Handler(Looper.getMainLooper()).post {
+            screenShotAndSave(window.decorView, "dark_mode", screenshotName)
+        }
     }
 }
