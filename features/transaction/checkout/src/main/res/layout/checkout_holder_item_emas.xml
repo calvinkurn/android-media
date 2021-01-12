@@ -55,16 +55,15 @@
                 app:typographyWeight="reguler"
                 tools:text="Pembulatan Emas sebesar Rp600" />
 
-            <ImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/img_emas_info"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
                 android:layout_gravity="end|center_vertical"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_weight="0.2"
-                android:padding="@dimen/dp_2"
-                android:src="@drawable/info_icon" />
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:paddingStart="@dimen/spacing_lvl2"
+                android:paddingEnd="@dimen/spacing_lvl2"
+                app:icon_name="INFORMATION" />
         </LinearLayout>
 
     </LinearLayout>
