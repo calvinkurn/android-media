@@ -68,17 +68,15 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify TDN on first page`() {
-        visitableList.getTDNCount() shouldBe 3
+        visitableList.size shouldBe 11
 
-        visitableList[1].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
-        (visitableList[1] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn1
-        visitableList[6].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
-        (visitableList[6] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn4
-        visitableList[11].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
-        (visitableList[11] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn8
+        visitableList[0].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
+        (visitableList[0] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn1
+        visitableList[5].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
+        (visitableList[5] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn4
+        visitableList[10].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
+        (visitableList[10] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn8
     }
-
-    private fun List<Visitable<*>>.getTDNCount(): Int = this.filterIsInstance<SearchProductTopAdsImageViewModel>().size
 
     @Test
     fun `Test TDN on load more`() {
@@ -110,12 +108,12 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify TDN on second page`() {
-        visitableList.size shouldBe 22
+        visitableList.size shouldBe 21
 
-        visitableList[16].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
-        (visitableList[16] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn12
-        visitableList[21].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
-        (visitableList[21] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn16
+        visitableList[15].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
+        (visitableList[15] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn12
+        visitableList[20].shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
+        (visitableList[20] as SearchProductTopAdsImageViewModel).topAdsImageViewModel shouldBe tdn16
     }
 
     @Test
@@ -149,16 +147,16 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list with TDN above headline ads in first page`() {
-        visitableList.size shouldBe 19
+        visitableList.size shouldBe 18
 
         visitableList.forEachIndexed { index, visitable ->
-            if (index == 1 || index == 15) {
+            if (index == 0 || index == 14) {
                 visitable.shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
             }
-            else if (index == 2 || index == 16) {
+            else if (index == 1 || index == 15) {
                 visitable.shouldBeInstanceOf<CpmViewModel>()
             }
-            else if (index != 0) {
+            else {
                 visitable.shouldBeInstanceOf<ProductItemViewModel>()
             }
         }
@@ -182,16 +180,16 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list with TDN above headline ads after load more`() {
-        visitableList.size shouldBe 34
+        visitableList.size shouldBe 33
 
         visitableList.forEachIndexed { index, visitable ->
-            if (index == 1 || index == 15 || index == 28) {
+            if (index == 0 || index == 14 || index == 27) {
                 visitable.shouldBeInstanceOf<SearchProductTopAdsImageViewModel>()
             }
-            else if (index == 2 || index == 29) {
+            else if (index == 1 || index == 28) {
                 visitable.shouldBeInstanceOf<CpmViewModel>()
             }
-            else if (index != 0) {
+            else {
                 visitable.shouldBeInstanceOf<ProductItemViewModel>()
             }
         }
