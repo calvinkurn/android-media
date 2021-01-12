@@ -3,28 +3,28 @@
     <item
         android:bottom="1dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/payLater_recommendation_border_green"/>
+            <solid android:color="@color/light_G400"/>
         </shape>
     </item>
 
     <item
         android:top="1dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/payLater_recommendation_border_green"/>
+            <solid android:color="@color/light_G400"/>
         </shape>
     </item>
 
     <item
         android:left="1dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/payLater_recommendation_border_green"/>
+            <solid android:color="@color/light_G400"/>
         </shape>
     </item>
 
     <item
         android:top="1dp" android:bottom="1dp" android:left="1dp">
         <shape android:shape="rectangle">
-            <solid android:color="#ffffff"/>
+            <solid android:color="@color/Unify_N0"/>
         </shape>
     </item>
 </layer-list>

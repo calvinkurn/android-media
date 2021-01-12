@@ -1,53 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
-   <com.tokopedia.unifyprinciples.Typography
-       android:id="@+id/tvFaqHeading"
-       android:layout_width="@dimen/unify_space_0"
-       android:layout_height="wrap_content"
-       android:layout_marginTop="@dimen/unify_space_12"
-       android:layout_marginEnd="@dimen/unify_space_24"
-       android:layout_marginStart="@dimen/unify_space_16"
-       android:text="Berapa lama proses persetujuan aplikasi kredit online Kredivo?"
-       android:textSize="@dimen/unify_font_14"
-       app:typographyType="body_2"
-       app:typographyWeight="bold"
-       app:layout_constraintTop_toTopOf="parent"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintEnd_toStartOf="@+id/ivArrowBottom"
-       />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFaqHeading"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_24"
+        android:text="Berapa lama proses persetujuan aplikasi kredit online Kredivo?"
+        android:textSize="@dimen/unify_font_14"
+        app:layout_constraintEnd_toStartOf="@+id/ivArrowBottom"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFaqDescription"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginEnd="@dimen/unify_space_16"
-        app:layout_constraintTop_toBottomOf="@id/tvFaqHeading"
-        app:layout_constraintStart_toStartOf="@id/tvFaqHeading"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Kredivo-mu sudah aktif. Kamu tinggal pilih Kredivo di halaman pembayaran untuk menggunakannya"
         android:textSize="@dimen/unify_font_12"
-        app:typographyType="body_2"
         android:visibility="gone"
-        android:text="Kredivo-mu sudah aktif. Kamu tinggal pilih Kredivo di halaman pembayaran untuk menggunakannya"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvFaqHeading"
+        app:layout_constraintTop_toBottomOf="@id/tvFaqHeading"
+        app:typographyType="body_2" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivArrowBottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/payLater_right_arrow_margin_dp_22"
-        android:layout_marginTop="@dimen/unify_space_16"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_paylater_faq_arrow_drop_down"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/pay_later_right_arrow_margin_dp_22"
+        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintBottom_toBottomOf="@id/tvFaqHeading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvFaqHeading" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="@dimen/unify_space_0"
-        android:layout_height="@dimen/payLater_divider_height_dp_1"
+        android:layout_height="@dimen/pay_later_divider_height_dp_1"
         android:layout_marginTop="@dimen/unify_space_12"
         app:layout_constraintEnd_toEndOf="@id/ivArrowBottom"
         app:layout_constraintStart_toStartOf="@id/tvFaqHeading"

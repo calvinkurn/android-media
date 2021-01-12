@@ -3,9 +3,10 @@ package com.tokopedia.paylater.presentation.widget.bottomsheet
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
@@ -49,10 +50,13 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         fbViewAllCards.apply {
             visible()
             addItem(arrayListOf(FloatingButtonItem(
-                    "Lihat Semua Kartu",
-                    true)))
+                    context.getString(R.string.credit_card_view_all_cards)
+            ) {
+                openUrlWebView("ccpage")
+            }))
         }
     }
+
 
     private fun getArgumentData() {
         arguments?.let {
@@ -74,6 +78,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         }
         baseList.adapter = CreditCardRegistrationAdapter(bankList) {
             listener?.showCreditCardList()
+            dismiss()
         }
         baseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
@@ -91,11 +96,16 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         this.listener = listener
     }
 
+    private fun openUrlWebView(urlString: String) {
+        val webViewApplink = ApplinkConst.WEBVIEW + "?url=" + urlString
+        RouteManager.route(context, webViewApplink)
+    }
+
     companion object {
         const val CREDIT_CARD_BANK_DATA = "BANK_DATA"
         const val TAG = "FT_TAG"
 
-        fun getInstance(bundle: Bundle, childFragmentManager: FragmentManager): CreditCardRegistrationBottomSheet {
+        fun getInstance(bundle: Bundle): CreditCardRegistrationBottomSheet {
             return CreditCardRegistrationBottomSheet().apply {
                 arguments = bundle
             }
@@ -103,7 +113,6 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun
-                showCreditCardList()
+        fun showCreditCardList()
     }
 }

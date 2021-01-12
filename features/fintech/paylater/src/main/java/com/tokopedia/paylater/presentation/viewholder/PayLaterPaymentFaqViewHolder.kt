@@ -4,15 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.PayLaterPartnerFaq
-import com.tokopedia.paylater.presentation.adapter.PayLaterOfferDescriptionAdapter
 import kotlinx.android.synthetic.main.paylater_card_faq_item.view.*
 
-class PayLaterPaymentFaqViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+class PayLaterPaymentFaqViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bindData(faqData: PayLaterPartnerFaq) {
         view.tvFaqHeading.text = faqData.faqQuestion ?: ""
@@ -24,9 +22,9 @@ class PayLaterPaymentFaqViewHolder(val view: View): RecyclerView.ViewHolder(view
     }
 
     private fun setLayout(faqData: PayLaterPartnerFaq) {
-        if(faqData.expandLayout) {
+        if (faqData.expandLayout) {
             view.ivArrowBottom.animate().rotation(180f).duration = 300
-            view.tvFaqDescription.text = faqData.faqAnswer?: ""
+            view.tvFaqDescription.text = faqData.faqAnswer ?: ""
             view.tvFaqDescription.visible()
         } else {
             view.ivArrowBottom.animate().rotation(0f).duration = 300

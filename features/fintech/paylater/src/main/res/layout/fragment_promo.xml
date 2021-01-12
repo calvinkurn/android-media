@@ -5,5 +5,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/unify_space_16"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"/>

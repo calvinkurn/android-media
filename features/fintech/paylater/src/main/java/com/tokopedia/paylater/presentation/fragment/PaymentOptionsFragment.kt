@@ -63,7 +63,7 @@ class PaymentOptionsFragment : Fragment() {
     }
 
     private fun setData() {
-        tvTitlePaylaterPartner.text = responseData?.partnerName
+        tvTitlePaymentPartner.text = responseData?.partnerName
         responseData?.subHeader?.let {
             tvSubTitlePaylaterPartner.text = it
             tvSubTitlePaylaterPartner.visible()
@@ -98,11 +98,11 @@ class PaymentOptionsFragment : Fragment() {
             when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data, null)) {
                 is RegisterStepsPartnerType -> {
                     bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, data.partnerApplyDetails)
-                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.payLater_how_to_register)} ${data.partnerName}")
+                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.pay_later_how_to_register)} ${data.partnerName}")
                 }
                 is UsageStepsPartnerType -> {
                     bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, data.partnerUsageDetails)
-                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.payLater_how_to_use)} ${data.partnerName}")
+                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.pay_later_how_to_use)} ${data.partnerName}")
                 }
             }
         }

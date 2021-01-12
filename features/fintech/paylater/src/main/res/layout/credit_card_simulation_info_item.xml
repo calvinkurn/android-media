@@ -4,15 +4,17 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivPopular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:elevation="@dimen/unify_space_2"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_credit_card_popular" />
+        app:srcCompat="@drawable/ic_credit_card_popular"
+        app:unify_image_corner_radius="0"
+        />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/ccSimulationCard"
@@ -28,15 +30,15 @@
             android:id="@+id/clSimulationCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/Neutral_N0">
+            android:background="@color/Unify_N0">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvInstallmentHeader"
                 android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/credit_card_dp_10"
-                android:layout_marginEnd="@dimen/credit_card_dp_10"
                 android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginEnd="@dimen/credit_card_dp_10"
                 android:lineSpacingExtra="4sp"
                 android:text="@string/credit_card_simulation_card_header"
                 app:layout_constraintEnd_toEndOf="parent"

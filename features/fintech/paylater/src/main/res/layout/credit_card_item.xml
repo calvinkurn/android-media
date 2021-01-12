@@ -11,7 +11,7 @@
         android:id="@+id/clCreditCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Neutral_N0">
+        android:background="@color/Unify_N0">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivRecommendationBadge"
@@ -24,9 +24,9 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/icRecommendationLike"
-            android:layout_width="18dp"
+            android:layout_width="@dimen/pay_later_dp_18"
             android:layout_height="@dimen/unify_space_16"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="@dimen/unify_space_2"
             app:layout_constraintBottom_toBottomOf="@+id/tvBestOffer"
             app:layout_constraintEnd_toStartOf="@+id/tvBestOffer"
             app:layout_constraintHorizontal_bias="0.5"
@@ -40,9 +40,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_8"
-            android:layout_marginTop="@dimen/payLater_benefit_margin_dp_6"
+            android:layout_marginTop="@dimen/pay_later_benefit_margin_dp_6"
             android:text="Penawaran Terbaik"
-            android:textColor="@color/Unify_Static_White"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/icRecommendationLike"
@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_4"
             android:text="Citibank"
-            android:textColor="@color/credit_card_all_installment_text_color"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="@+id/tvCreditCardName"
             app:layout_constraintStart_toStartOf="@+id/tvCreditCardName"
             app:layout_constraintTop_toBottomOf="@+id/tvCreditCardName"
@@ -124,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+2 Lainnya"
-            android:textColor="@color/credit_card_all_installment_text_color"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@id/benefitLabel2"
             app:layout_constraintTop_toTopOf="@id/benefitLabel2"
             app:layout_constraintBottom_toBottomOf="@id/benefitLabel2"

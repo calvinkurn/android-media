@@ -26,9 +26,9 @@ class CreditCardSimulationViewHolder(val view: View) : RecyclerView.ViewHolder(v
     fun setBackGround(simulationData: SimulationTableResponse) {
         view.apply {
             if (simulationData.isSelected)
-                clSimulationCard.setBackgroundColor(ContextCompat.getColor(context, R.color.credit_card_installment_bg_color))
+                clSimulationCard.setBackgroundColor(ContextCompat.getColor(context, R.color.Unify_G100))
             else
-                clSimulationCard.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+                clSimulationCard.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
 
     }

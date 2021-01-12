@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.paylater.data.mapper.CreditCardResponseMapper
+import com.tokopedia.paylater.data.mapper.PayLaterApplicationStatusMapper
 import com.tokopedia.paylater.data.mapper.PayLaterPartnerTypeMapper
 import com.tokopedia.paylater.data.mapper.PayLaterSimulationResponseMapper
 import com.tokopedia.paylater.di.qualifier.CoroutineBackgroundDispatcher

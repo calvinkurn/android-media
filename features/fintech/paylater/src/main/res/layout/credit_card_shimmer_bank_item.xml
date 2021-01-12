@@ -10,7 +10,7 @@
         android:id="@+id/clAvailableBank"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Neutral_N0">
+        android:background="@color/Unify_N0">
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/ivBank"

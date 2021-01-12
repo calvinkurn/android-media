@@ -6,7 +6,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -117,7 +116,7 @@ class PayLaterFragment : BaseDaggerFragment(),
 
     private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
         payLaterDataList = payLaterViewModel.getPayLaterOptions()
-        applicationStatusList = data.applicationDetailList?: arrayListOf()
+        applicationStatusList = data.applicationDetailList ?: arrayListOf()
         setPayLaterUI()
     }
 
@@ -150,10 +149,10 @@ class PayLaterFragment : BaseDaggerFragment(),
         paylaterTabLayout?.run {
             setupWithViewPager(payLaterViewPager)
             getUnifyTabLayout().removeAllTabs()
-            addNewTab(context.getString(R.string.payLater_simulation_tab_title))
+            addNewTab(context.getString(R.string.pay_later_simulation_tab_title))
             when (paymentMode) {
-                is CreditCard -> addNewTab(context.getString(R.string.payLater_credit_card_tnc_title))
-                else -> addNewTab(context.getString(R.string.payLater_offer_details_tab_title))
+                is CreditCard -> addNewTab(context.getString(R.string.pay_later_credit_card_tnc_title))
+                else -> addNewTab(context.getString(R.string.pay_later_offer_details_tab_title))
             }
         }
     }
@@ -234,9 +233,6 @@ class PayLaterFragment : BaseDaggerFragment(),
     }
 
     override fun onCheckedChanged(modeButton: CompoundButton, isChecked: Boolean) {
-        val text = if (isChecked) "This is Kartu Kredit" else "This is PayLater"
-        // @Todo comment it out afterwards
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
         if (isChecked) {
             paymentMode = CreditCard
             if (payLaterViewModel.creditCardSimulationResultLiveData.value == null) {
@@ -260,13 +256,14 @@ class PayLaterFragment : BaseDaggerFragment(),
     }
 
     override fun onTouch(view: View, event: MotionEvent): Boolean {
-        return when(event.action) {
+        return when (event.action) {
             MotionEvent.ACTION_UP -> {
                 val xPosition = event.x.toInt()
                 val isModeChanged = xPosition >= modeSwitcher.width / 2
                 modeSwitcher.isChecked = isModeChanged
                 true
-            } else -> false
+            }
+            else -> false
         }
     }
 

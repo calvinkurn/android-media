@@ -124,7 +124,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             }
             is PayLaterException.PayLaterNotApplicableException -> {
                 payLaterTermsEmptyView.visible()
-                tickerSimulation.setHtmlDescription(context?.getString(R.string.paylater_not_applicable_ticker_text)
+                tickerSimulation.setHtmlDescription(context?.getString(R.string.pay_later_not_applicable_ticker_text)
                         ?: "")
                 return
             }
@@ -147,13 +147,15 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
-        if (PayLaterHelper.isKredivoApplicationStatusEmpty(data.applicationDetailList?: arrayListOf())) {
+        if (PayLaterHelper.isKredivoApplicationStatusEmpty(data.applicationDetailList
+                        ?: arrayListOf())) {
             btnDaftarPayLater.visible()
             paylaterDaftarWidget.gone()
         } else {
             btnDaftarPayLater.gone()
             paylaterDaftarWidget.visible()
         }
+        supervisorWidget.visible()
     }
 
     private fun populateRowHeaders() {

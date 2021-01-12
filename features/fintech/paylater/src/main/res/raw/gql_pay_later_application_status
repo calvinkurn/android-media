@@ -7,14 +7,6 @@ query getUserApplicationStatus{
         gateway_code
         application_status
         expiration_date
-        limit {
-          max
-          one_month
-          three_month
-          six_month
-          nine_month
-          one_year
-        }
         app_status_content {
           email
           subheader

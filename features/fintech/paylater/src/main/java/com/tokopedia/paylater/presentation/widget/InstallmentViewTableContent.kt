@@ -22,8 +22,7 @@ class InstallmentViewTableContent(val context: Context, val layoutParams: ViewGr
         installmentView.layoutParams = layoutParams
         if (showBackground(row))
             installmentView.setBackgroundColor(ContextCompat.getColor(context, R.color.Unify_N50))
-        val tvInstallmentPrice = installmentView.findViewById<Typography>(R.id.tvInstallmentPrice)
-
+        val tvInstallmentPrice = installmentView.findViewById<Typography>(R.id.tvContent)
         tvInstallmentPrice.text = getInstallmentText(tenureList[col], installmentMap)
         if (isRecommendedInstallment(row)) tvInstallmentPrice.setWeight(Typography.BOLD)
         return installmentView

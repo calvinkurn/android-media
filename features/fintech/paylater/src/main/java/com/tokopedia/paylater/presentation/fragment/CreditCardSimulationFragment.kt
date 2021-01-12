@@ -153,7 +153,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment(), CreditCardRegistratio
                 val list = ArrayList(bankList.slice(0..3))
                 putParcelableArrayList(CreditCardRegistrationBottomSheet.CREDIT_CARD_BANK_DATA, list)
             }
-            CreditCardRegistrationBottomSheet.getInstance(bundle, childFragmentManager).also {
+            CreditCardRegistrationBottomSheet.getInstance(bundle).also {
                 it.setActionListener(this)
                 it.show(childFragmentManager, CreditCardRegistrationBottomSheet.TAG)
             }

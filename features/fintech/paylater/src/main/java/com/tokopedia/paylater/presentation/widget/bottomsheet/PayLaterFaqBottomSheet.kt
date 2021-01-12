@@ -62,7 +62,7 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
         val childView = LayoutInflater.from(context).inflate(childLayoutRes,
                 null, false)
         setChild(childView)
-        setTitle(getString(R.string.paylater_find_out_more_heading))
+        setTitle(getString(R.string.pay_later_find_out_more_heading))
     }
 
 

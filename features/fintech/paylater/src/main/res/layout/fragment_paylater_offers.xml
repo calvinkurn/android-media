@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/unify_space_16"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <com.tokopedia.globalerror.GlobalError
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
-        android:text="@string/paylater_title_detail"
+        android:text="@string/pay_later_title_detail"
         android:textSize="@dimen/unify_font_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -31,7 +31,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/titleShimmer"
-        android:layout_width="@dimen/payLater_shimmer_width_dp_256"
+        android:layout_width="@dimen/pay_later_shimmer_width_dp_256"
         android:layout_height="@dimen/unify_space_24"
         android:layout_marginStart="@dimen/unify_space_16"
         app:layout_constraintStart_toStartOf="parent"

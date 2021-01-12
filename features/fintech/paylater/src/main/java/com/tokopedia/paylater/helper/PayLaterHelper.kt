@@ -9,7 +9,6 @@ import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterVerificationBottomSheet
-import com.tokopedia.unifycomponents.Label
 import java.io.File
 
 object PayLaterHelper {
@@ -29,13 +28,13 @@ object PayLaterHelper {
             when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data, partnerApplicationDetail)) {
                 is RegisterStepsPartnerType -> {
                     bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, data.partnerApplyDetails)
-                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.payLater_how_to_register)} ${data.partnerName}")
+                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.pay_later_how_to_register)} ${data.partnerName}")
                     PayLaterActionStepsBottomSheet.show(bundle, childFragmentManager)
 
                 }
                 is UsageStepsPartnerType -> {
                     bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, data.partnerUsageDetails)
-                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.payLater_how_to_use)} ${data.partnerName}")
+                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.pay_later_how_to_use)} ${data.partnerName}")
                     PayLaterActionStepsBottomSheet.show(bundle, childFragmentManager)
                 }
                 is ProcessingApplicationPartnerType -> {

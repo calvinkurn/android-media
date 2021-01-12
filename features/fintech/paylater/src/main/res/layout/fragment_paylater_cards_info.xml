@@ -9,9 +9,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/payLater_payment_cl_margin_dp_14"
-        android:layout_marginEnd="@dimen/payLater_payment_cl_margin_dp_14"
-        android:background="@color/Neutral_N0"
+        android:layout_marginStart="@dimen/pay_later_payment_cl_margin_dp_14"
+        android:layout_marginEnd="@dimen/pay_later_payment_cl_margin_dp_14"
+        android:background="@color/Unify_N0"
         android:orientation="vertical">
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -28,7 +28,7 @@
             android:id="@+id/tvTitlePaymentPartner"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/payLater_payment_cl_margin_dp_14"
+            android:layout_marginStart="@dimen/pay_later_payment_cl_margin_dp_14"
             android:layout_marginEnd="@dimen/unify_space_16"
             android:text="@string/kredivo"
             android:textSize="@dimen/unify_font_14"
@@ -78,7 +78,7 @@
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/borderGrey"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/payLater_divider_height_dp_1"
+            android:layout_height="@dimen/pay_later_divider_height_dp_1"
             android:layout_marginTop="@dimen/unify_space_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginBottom="@dimen/unify_space_8"
-            android:text="@string/payLater_see_how_to_use"
+            android:text="@string/pay_later_see_how_to_use"
             android:textSize="@dimen/unify_font_12"
             app:layout_constraintBottom_toTopOf="@+id/btnSeeMore"
             app:layout_constraintEnd_toEndOf="parent"
@@ -118,7 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginBottom="@dimen/unify_space_16"
-            android:text="@string/payLater_see_more"
+            android:text="@string/pay_later_see_more"
             android:textSize="@dimen/unify_font_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

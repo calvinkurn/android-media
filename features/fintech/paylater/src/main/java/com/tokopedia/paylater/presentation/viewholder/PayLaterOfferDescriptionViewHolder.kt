@@ -4,19 +4,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.PayLaterPartnerBenefit
 import kotlinx.android.synthetic.main.paylater_cards_content_info_item.view.*
+
 
 class PayLaterOfferDescriptionViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bindData(descriptionData: PayLaterPartnerBenefit) {
         view.apply {
             if (descriptionData.isHighlighted == true) {
-                ivBenifitsHeader.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.ic_paylater_card_info_star))
+                ivBenefitsHeader.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_paylater_card_info_star))
             } else {
-                ivBenifitsHeader.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.ic_paylater_card_info_check))
+                AppCompatResources.getDrawable(context, R.drawable.iconunify_check_big)?.let {
+                    val backgroundDrawable = DrawableCompat.wrap(it).mutate()
+                    DrawableCompat.setTint(backgroundDrawable, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                    ivBenefitsHeader.setImageDrawable(backgroundDrawable)
+
+                }
             }
             tvBenefitsDesc.text = descriptionData.partnerBenefitContent ?: ""
         }

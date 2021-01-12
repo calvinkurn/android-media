@@ -9,25 +9,29 @@
         android:id="@+id/ivPartnerLogo"
         android:layout_width="@dimen/unify_space_48"
         android:layout_height="@dimen/unify_space_48"
-        android:scaleType="centerInside"
-        app:unify_image_corner_radius="0"
         android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/unify_space_12"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0"
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitlePaymentPartner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/pay_later_register_title_padding"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/kredivo"
         android:textSize="@dimen/unify_font_14"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginStart="@dimen/payLater_register_title_padding"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@+id/tvDescription"
+        app:layout_constraintEnd_toStartOf="@+id/paymenyOfferLabel"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/ivPartnerLogo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
@@ -43,12 +47,14 @@
         android:paddingTop="@dimen/unify_space_2"
         android:paddingEnd="@dimen/unify_space_4"
         android:paddingBottom="@dimen/unify_space_2"
-        android:visibility="gone"
         android:text="Aktif"
+        android:visibility="visible"
         app:labelType="general_dark_blue"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitlePaymentPartner"
         app:layout_constraintStart_toEndOf="@+id/tvTitlePaymentPartner"
         app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"
+        app:layout_constraintEnd_toStartOf="@+id/ivActionArrow"
+        app:layout_constraintHorizontal_bias="0"
         app:typographyType="small" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -57,8 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_2"
         android:layout_marginBottom="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_8"
-        android:text="@string/payLater_default_subtitle"
+        android:text="@string/pay_later_default_subtitle"
         android:textSize="@dimen/unify_font_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivActionArrow"
@@ -67,21 +72,25 @@
         app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
         app:typographyType="body_3" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivActionArrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36"
         android:layout_marginEnd="@dimen/unify_space_8"
+        app:icon_color_light_disabled="@color/Unify_N400"
+        app:icon_color_light_enable="@color/Unify_N400"
+        app:icon_color_night_disabled="@color/Unify_N400"
+        app:icon_color_night_enable="@color/Unify_N400"
+        app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_paylater_register_right_arrow" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerUnify"
         android:layout_width="@dimen/unify_space_0"
-        android:layout_height="@dimen/payLater_divider_height_dp_1"
-        android:background="@color/paylater_grey_border"
+        android:layout_height="@dimen/pay_later_divider_height_dp_1"
+        android:background="@color/light_N50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvDescription" />

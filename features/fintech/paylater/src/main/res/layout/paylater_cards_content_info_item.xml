@@ -6,31 +6,30 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/unify_space_4">
 
-    <ImageView
-        android:id="@+id/ivBenifitsHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivBenefitsHeader"
+        android:layout_width="@dimen/pay_later_dp_18"
+        android:layout_height="@dimen/pay_later_dp_18"
         android:scaleType="centerInside"
         app:layout_constraintEnd_toStartOf="@+id/tvBenefitsDesc"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvBenefitsDesc"
-        app:srcCompat="@drawable/ic_paylater_card_info_check" />
+        app:srcCompat="@drawable/ic_paylater_card_info_star" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBenefitsDesc"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/payLater_margin_dp_10"
-        android:layout_marginTop="@dimen/payLater_benefit_margin_dp_6"
-        android:layout_marginEnd="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/pay_later_margin_dp_10"
+        android:layout_marginTop="@dimen/pay_later_benefit_margin_dp_6"
         android:lineSpacingExtra="@dimen/unify_space_4"
-        android:paddingBottom="@dimen/payLater_benefit_margin_dp_6"
+        android:paddingBottom="@dimen/pay_later_benefit_margin_dp_6"
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/unify_font_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ivBenifitsHeader"
+        app:layout_constraintStart_toEndOf="@+id/ivBenefitsHeader"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:typographyType="body_3"

@@ -6,6 +6,8 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
@@ -48,8 +50,10 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
         fbViewAllCards.apply {
             visible()
             addItem(arrayListOf(FloatingButtonItem(
-                    "Lihat Semua Kartu",
-                    true)))
+                    context.getString(R.string.credit_card_view_more)
+            ) {
+                openUrlWebView("bankUrl")
+            }))
         }
     }
 
@@ -72,7 +76,9 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
             true
         }
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        baseList.adapter = CreditCardListAdapter(bankList)
+        baseList.adapter = CreditCardListAdapter(bankList) { pdpPageUrl ->
+            openUrlWebView(pdpPageUrl)
+        }
         baseList.layoutManager = linearLayoutManager
     }
 
@@ -84,6 +90,11 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
         showCloseIcon = true
         showHeader = true
         customPeekHeight = getScreenHeight() / 2
+    }
+
+    private fun openUrlWebView(urlString: String) {
+        val webViewApplink = ApplinkConst.WEBVIEW + "?url=" + urlString
+        RouteManager.route(context, webViewApplink)
     }
 
     companion object {

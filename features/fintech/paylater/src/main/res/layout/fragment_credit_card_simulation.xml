@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:background="@color/Neutral_N0"
+        android:background="@color/Unify_N0"
         android:orientation="vertical">
 
         <com.tokopedia.unifycomponents.EmptyState
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_16"
-            android:text="@string/payLater_simulation_header_title"
+            android:text="@string/pay_later_simulation_header_title"
             android:textSize="@dimen/unify_font_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dividerVertical"
@@ -90,8 +90,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Semua cicilan"
-            android:textColor="@color/credit_card_all_installment_text_color"
-            android:layout_marginTop="@dimen/payLater_benefit_margin_dp_6"
+            android:textColor="@color/light_N700_68"
+            android:layout_marginTop="@dimen/pay_later_benefit_margin_dp_6"
             app:layout_constraintStart_toStartOf="@+id/tvTitleSimulation"
             app:layout_constraintTop_toBottomOf="@+id/rvCreditCardSimulation"
             app:typographyType="body_3" />
@@ -100,7 +100,7 @@
             android:id="@+id/offerLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/payLater_benefit_margin_dp_6"
+            android:layout_marginStart="@dimen/pay_later_benefit_margin_dp_6"
             app:labelTitle="BUNGA 0%"
             android:textSize="@dimen/credit_card_offer_label_sp_10"
             app:labelType="general_dark_green"
@@ -111,7 +111,7 @@
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/ccDivider"
             android:layout_width="@dimen/unify_space_0"
-            android:layout_height="@dimen/payLater_divider_height_dp_1"
+            android:layout_height="@dimen/pay_later_divider_height_dp_1"
             android:layout_marginTop="@dimen/unify_space_16"
             app:layout_constraintStart_toStartOf="@+id/tvAllInstallments"
             app:layout_constraintTop_toBottomOf="@id/tvAllInstallments"
@@ -134,7 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/credit_card_dp_10"
             android:layout_marginEnd="@dimen/credit_card_dp_10"
-            android:layout_marginTop="@dimen/payLater_benefit_margin_dp_6"
+            android:layout_marginTop="@dimen/pay_later_benefit_margin_dp_6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvValidCreditCardBanks"
@@ -145,7 +145,7 @@
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             tools:text="Lihat Semua (10)"
-            android:textColor="@color/paylater_common_tab_green"
+            android:textColor="@color/light_G500"
             android:gravity="center"
             android:layout_marginTop="@dimen/unify_space_16"
             app:layout_constraintStart_toStartOf="parent"
@@ -158,7 +158,7 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/titleShimmer"
-            android:layout_width="@dimen/payLater_shimmer_width_dp_256"
+            android:layout_width="@dimen/pay_later_shimmer_width_dp_256"
             android:layout_height="@dimen/unify_space_16"
             android:layout_marginStart="@dimen/unify_space_16"
             android:visibility="gone"
@@ -175,7 +175,7 @@
             android:layout_marginTop="@dimen/unify_space_16"
             android:layout_marginEnd="@dimen/unify_space_16"
             app:closeButtonVisibility="gone"
-            app:descriptionText="@string/paylater_simulation_ticker_text"
+            app:descriptionText="@string/pay_later_simulation_ticker_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvSeeAll"
