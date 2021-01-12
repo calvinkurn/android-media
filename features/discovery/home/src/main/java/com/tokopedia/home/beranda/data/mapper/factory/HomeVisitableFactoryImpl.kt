@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.data.model.AtfData
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeFlag
@@ -17,12 +18,16 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
+import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_INFORMATION
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import com.tokopedia.user.session.UserSessionInterface
 
 class HomeVisitableFactoryImpl(
@@ -93,16 +98,93 @@ class HomeVisitableFactoryImpl(
         return this
     }
 
-    private fun addTickerData() {
+    private fun addTickerData(defaultTicker: Ticker? = null) {
         if (!isCache) {
-            homeData?.ticker?.tickers?.let { ticker ->
-                if (!HomeRevampFragment.HIDE_TICKER) {
-                    ticker.filter { it.layout != StickyLoginConstant.LAYOUT_FLOATING }.let {
-                        if (it.isNotEmpty()) {
-                            visitableList.add(TickerDataModel(tickers = mappingTickerFromServer(it)))
+            if (defaultTicker != null) {
+                defaultTicker.tickers.let { ticker ->
+                    if (!HomeRevampFragment.HIDE_TICKER) {
+                        ticker.filter { it.layout != StickyLoginConstant.LAYOUT_FLOATING }.let {
+                            if (it.isNotEmpty()) {
+                                visitableList.add(TickerDataModel(tickers = mappingTickerFromServer(it)))
+                            }
                         }
                     }
                 }
+            } else {
+                homeData?.ticker?.tickers?.let { ticker ->
+                    if (!HomeRevampFragment.HIDE_TICKER) {
+                        ticker.filter { it.layout != StickyLoginConstant.LAYOUT_FLOATING }.let {
+                            if (it.isNotEmpty()) {
+                                visitableList.add(TickerDataModel(tickers = mappingTickerFromServer(it)))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addDynamicIconData(defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf()) {
+        var isDynamicIconWrapType = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)?: false
+        var iconList = defaultIconList
+        if (iconList.isEmpty()) {
+            iconList = homeData?.dynamicHomeIcon?.dynamicIcon?: listOf()
+        }
+
+        if (iconList.isEmpty()) {
+            iconList = homeDefaultDataSource.createDefaultHomeDynamicIcon().dynamicIcon
+            isDynamicIconWrapType = true
+        }
+
+        val viewModelDynamicIcon = DynamicIconSectionDataModel(
+                dynamicIconWrap = isDynamicIconWrapType,
+                itemList = iconList
+        )
+
+        if (!isCache) {
+            viewModelDynamicIcon.setTrackingData(
+                    HomePageTracking.getEnhanceImpressionDynamicIconHomePage(viewModelDynamicIcon.itemList))
+            viewModelDynamicIcon.isTrackingCombined = false
+        }
+        visitableList.add(viewModelDynamicIcon)
+    }
+
+    private fun addDynamicChannelData(addLoadingMore: Boolean, defaultDynamicHomeChannel: DynamicHomeChannel? = null) {
+        if (defaultDynamicHomeChannel != null) {
+            defaultDynamicHomeChannel?.let {
+                val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
+                        HomeChannelData(it), isCache, addLoadingMore)
+                data?.let { it1 -> visitableList.addAll(it1) }
+            }
+        } else {
+            homeData?.let {
+                val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
+                        HomeChannelData(it.dynamicHomeChannel), isCache, addLoadingMore)
+                data?.let { it1 -> visitableList.addAll(it1) }
+            }
+        }
+    }
+
+    private fun addAtfData(atfData: AtfData) {
+        when(atfData.component) {
+            TYPE_ICON -> {
+                addDynamicIconData(
+                        atfData.getAtfContent<DynamicHomeIcon>()?.dynamicIcon?: listOf()
+                )
+            }
+
+            TYPE_BANNER -> {
+
+            }
+
+            TYPE_TICKER -> {
+                addTickerData(atfData.getAtfContent<Ticker>())
+            }
+
+            TYPE_CHANNEL -> {
+                addDynamicChannelData(
+                        false,
+                        atfData.getAtfContent<DynamicHomeChannel>())
             }
         }
     }
@@ -115,11 +197,11 @@ class HomeVisitableFactoryImpl(
     }
 
     private fun mapTickerType(ticker: Tickers): Int = when(ticker.tickerType) {
-        0 -> Ticker.TYPE_ANNOUNCEMENT
-        1 -> Ticker.TYPE_INFORMATION
-        2 -> Ticker.TYPE_WARNING
-        3 -> Ticker.TYPE_ERROR
-        else -> Ticker.TYPE_ANNOUNCEMENT
+        0 -> TYPE_ANNOUNCEMENT
+        1 -> TYPE_INFORMATION
+        2 -> TYPE_WARNING
+        3 -> TYPE_ERROR
+        else -> TYPE_ANNOUNCEMENT
     }
 
     override fun addUserWalletVisitable(): HomeVisitableFactory {
@@ -138,52 +220,21 @@ class HomeVisitableFactoryImpl(
     }
 
     override fun addDynamicIconVisitable(): HomeVisitableFactory {
-        var isDynamicIconWrapType = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)?: false
-        var iconList = homeData?.dynamicHomeIcon?.dynamicIcon?: listOf()
-        if (iconList.isEmpty()) {
-            iconList = homeDefaultDataSource.createDefaultHomeDynamicIcon().dynamicIcon
-            isDynamicIconWrapType = true
-        }
-
-        val viewModelDynamicIcon = DynamicIconSectionDataModel(
-                dynamicIconWrap = isDynamicIconWrapType,
-                itemList = iconList
-        )
-
-        if (!isCache) {
-            viewModelDynamicIcon.setTrackingData(
-                    HomePageTracking.getEnhanceImpressionDynamicIconHomePage(viewModelDynamicIcon.itemList))
-            viewModelDynamicIcon.isTrackingCombined = false
-        }
-        visitableList.add(viewModelDynamicIcon)
+        addDynamicIconData()
         return this
     }
 
     override fun addAtfComponentVisitable(): HomeVisitableFactory {
         homeData?.atfData?.let {
             it.dataList.forEach { data ->
-                when(data.component) {
-                    TYPE_TICKER -> {
-                        addTickerData()
-                    }
-                    TYPE_BANNER -> {
-//                        addBannerVisitable()
-                    }
-                    TYPE_ICON -> {
-                        addDynamicIconVisitable()
-                    }
-                }
+                addAtfData(data)
             }
         }
         return this
     }
 
     override fun addDynamicChannelVisitable(addLoadingMore: Boolean): HomeVisitableFactory {
-        homeData?.let {
-            val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
-                    HomeChannelData(it.dynamicHomeChannel), isCache, addLoadingMore)
-            data?.let { it1 -> visitableList.addAll(it1) }
-        }
+        addDynamicChannelData(addLoadingMore)
         return this
     }
 
