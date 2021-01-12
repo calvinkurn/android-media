@@ -63,6 +63,8 @@ import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -327,12 +329,28 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
         String uriString = DeeplinkUtils.INSTANCE.getDataUri(this).toString();
         String domain = getUrlToLoad(uri).getHost();
-        if (uriString.contains(ApplinkConst.WEBVIEW) && !domain.contains(TOKOPEDIA_DOMAIN)) {
+        if (uriString.contains(ApplinkConst.WEBVIEW) && !getBaseDomain(domain).equalsIgnoreCase(TOKOPEDIA_DOMAIN)) {
             Timber.w(APPLINK_LOG_FORMAT, domain, uri);
         }
     }
 
+    private String getBaseDomain(String host) {
+        if(host == null) {
+            return "";
+        }
+        String[] split = host.split("\\.");
+        if (split.length > 2) {
+            return split[1];
+        } else {
+            return split[0];
+        }
+    }
+
     private Uri getUrlToLoad(Uri url) {
-        return Uri.parse(url.getQueryParameter(URL_QUERY_PARAM));
+        try {
+            return Uri.parse(url.getQueryParameter(URL_QUERY_PARAM));
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

@@ -194,14 +194,19 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun logWebViewApplink() {
-        if(!url.contains(TOKOPEDIA_DOMAIN)) {
-            val domain = getDomainName(url)
+        val domain = getDomainName(url)
+        if(!getBaseDomain(domain).equals(TOKOPEDIA_DOMAIN, ignoreCase = true)) {
             Timber.w("P1#WEBVIEW_OPENED#webview;domain='$domain';url='$url'")
         }
     }
 
-    private fun getDomainName(url: String): String? {
-        return URI(url).host
+    private fun getBaseDomain(host: String): String {
+        val split = host.split('.')
+        return if (split.size > 2) split[1] else split[0]
+    }
+
+    private fun getDomainName(url: String): String {
+        return Uri.parse(url).host ?: ""
     }
 
     companion object {
