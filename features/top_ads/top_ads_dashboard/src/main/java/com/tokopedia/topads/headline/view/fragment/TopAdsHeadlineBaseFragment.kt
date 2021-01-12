@@ -34,8 +34,8 @@ import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity
 import com.tokopedia.topads.headline.view.adapter.HeadLineAdItemsAdapterTypeFactoryImpl
 import com.tokopedia.topads.headline.view.adapter.HeadLineAdItemsListAdapter
-import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyViewModel
-import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemViewModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_headline_group_list.*
@@ -225,17 +225,17 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     private fun singleItemDelete(pos: Int) {
-        singleDelGroupId = (adapter.items[pos] as HeadLineAdItemsItemViewModel).data.groupId.toString()
+        singleDelGroupId = (adapter.items[pos] as HeadLineAdItemsItemModel).data.groupId.toString()
         performAction(TopAdsDashboardConstant.ACTION_DELETE)
     }
 
     private fun statusChange(pos: Int, status: Int) {
         if (status != CUREENTY_ACTIVATED)
             presenter.setGroupAction(::onSuccessAction, TopAdsDashboardConstant.ACTION_ACTIVATE,
-                    listOf((adapter.items[pos] as HeadLineAdItemsItemViewModel).data.groupId.toString()), resources)
+                    listOf((adapter.items[pos] as HeadLineAdItemsItemModel).data.groupId.toString()), resources)
         else
             presenter.setGroupAction(::onSuccessAction, TopAdsDashboardConstant.ACTION_DEACTIVATE,
-                    listOf((adapter.items[pos] as HeadLineAdItemsItemViewModel).data.groupId.toString()), resources)
+                    listOf((adapter.items[pos] as HeadLineAdItemsItemModel).data.groupId.toString()), resources)
     }
 
     private fun performAction(actionActivate: String) {
@@ -348,7 +348,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         loader.visibility = View.GONE
         response.data.forEach {
             groupIds.add(it.groupId.toString())
-            adapter.items.add(HeadLineAdItemsItemViewModel(it))
+            adapter.items.add(HeadLineAdItemsItemModel(it))
         }
         if (adapter.items.size.isZero()) {
             onEmptyResult()
@@ -378,7 +378,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     private fun onEmptyResult() {
-        adapter.items.add(HeadLineAdItemsEmptyViewModel())
+        adapter.items.add(HeadLineAdItemsEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW, groupFilterSheet.getSelectedText(context))
         } else {

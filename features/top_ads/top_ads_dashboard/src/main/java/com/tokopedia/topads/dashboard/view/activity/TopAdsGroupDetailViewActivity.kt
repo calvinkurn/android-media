@@ -37,15 +37,19 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_NAME
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_TOTAL
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KATA_KUNCI
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NEG_KATA_KUNCI
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PRODUK
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
+import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.data.utils.Utils.outputFormat
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashGroupDetailPagerAdapter
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.fragment.*
@@ -92,7 +96,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         viewModelProvider.get(GroupDetailViewModel::class.java)
     }
 
-    private lateinit var detailPagerAdapter: TopAdsDashGroupDetailPagerAdapter
+    private lateinit var detailPagerAdapter: TopAdsDashboardBasePagerAdapter
     private val topAdsTabAdapter: TopAdsTabAdapter? by lazy {
         this.run { TopAdsTabAdapter(this) }
     }
@@ -128,15 +132,15 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
-        val list: MutableList<Fragment> = mutableListOf()
+        val list: MutableList<FragmentTabItem> = mutableListOf()
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
         bundle.putString(GROUP_NAME, groupName)
         bundle.putInt(GROUP_TOTAL, groupTotal)
-        list.add(ProductTabFragment.createInstance(bundle))
-        list.add(KeywordTabFragment.createInstance(bundle))
-        list.add(NegKeywordTabFragment.createInstance(bundle))
-        detailPagerAdapter = TopAdsDashGroupDetailPagerAdapter(supportFragmentManager, 0)
+        list.add(FragmentTabItem(PRODUK, ProductTabFragment.createInstance(bundle)))
+        list.add(FragmentTabItem(KATA_KUNCI, KeywordTabFragment.createInstance(bundle)))
+        list.add(FragmentTabItem(NEG_KATA_KUNCI, NegKeywordTabFragment.createInstance(bundle)))
+        detailPagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
         detailPagerAdapter.setList(list)
         return detailPagerAdapter
     }
@@ -388,15 +392,15 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     fun setProductCount(size: Int) {
-        detailPagerAdapter.setTitleProduct(String.format(getString(R.string.topads_dash_product_count), size))
+        detailPagerAdapter.setTitle(String.format(getString(R.string.topads_dash_product_count), size), 0)
     }
 
     fun setKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_1)
+        detailPagerAdapter.setTitle(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_1)
     }
 
     fun setNegKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleNegKeyword(String.format(getString(R.string.topads_dash_neg_key_count), size), CONST_2)
+        detailPagerAdapter.setTitle(String.format(getString(R.string.topads_dash_neg_key_count), size), CONST_2)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {

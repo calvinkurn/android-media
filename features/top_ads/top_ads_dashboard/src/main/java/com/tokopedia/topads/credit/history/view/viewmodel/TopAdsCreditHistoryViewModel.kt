@@ -9,12 +9,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
-import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.response.Deposit
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
-import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -31,6 +28,7 @@ import javax.inject.Named
 
 class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                        private val userSessionInterface: UserSessionInterface,
+                                                       private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
                                                        private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
                                                        @Named("Main")
                                                        val dispatcher: CoroutineDispatcher)
@@ -64,22 +62,18 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
     }
 
     fun getAutoTopUpStatus(rawQuery: String) {
-        val params = mapOf(PARAM_SHOP_ID to userSessionInterface.shopId)
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(rawQuery, AutoTopUpData.Response::class.java, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<AutoTopUpData.Response>()
+        autoTopUpUSeCase.setQuery(rawQuery)
+        autoTopUpUSeCase.setParams()
+        autoTopUpUSeCase.execute({ data ->
+            when {
+                data.response == null -> getAutoTopUpStatus.value = Fail(Exception("Gagal mengambil status"))
+                data.response.errors.isEmpty() -> getAutoTopUpStatus.value = Success(data.response.data)
+                else -> getAutoTopUpStatus.value = Fail(ResponseErrorException(data.response.errors))
+            }
 
-            if (data.response == null)
-                getAutoTopUpStatus.value = Fail(Exception("Gagal mengambil status"))
-            else if (data.response.errors.isEmpty())
-                getAutoTopUpStatus.value = Success(data.response.data)
-            else
-                getAutoTopUpStatus.value = Fail(ResponseErrorException(data.response.errors))
-        }) {
+        }, {
             getAutoTopUpStatus.value = Fail(it)
-        }
+        })
     }
 
     fun getShopDeposit() {

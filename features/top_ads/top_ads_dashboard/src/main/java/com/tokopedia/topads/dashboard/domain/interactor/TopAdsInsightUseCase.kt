@@ -1,28 +1,18 @@
 package com.tokopedia.topads.dashboard.domain.interactor
 
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject.INSIGHT_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
-import com.tokopedia.topads.dashboard.data.model.StatsData
-import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 
 

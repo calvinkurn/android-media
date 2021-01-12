@@ -6,6 +6,6 @@ import com.tokopedia.topads.headline.view.adapter.HeadLineAdItemsAdapterTypeFact
  * Created by Pika on 16/10/20.
  */
 
-abstract class HeadLineAdItemsViewModel {
+abstract class HeadLineAdItemsModel {
     abstract fun type(typesFactory: HeadLineAdItemsAdapterTypeFactory): Int
 }

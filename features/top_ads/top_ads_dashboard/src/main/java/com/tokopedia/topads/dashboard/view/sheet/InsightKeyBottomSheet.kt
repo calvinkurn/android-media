@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
+import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsInsightSheetScreen1
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsInsightSheetScreen2
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsInsightSheetScreen3
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.topads_insight_bottom_sheet.*
 class InsightKeyBottomSheet : BottomSheetUnify() {
 
     private var contentView: View? = null
-    private lateinit var adapter: TopAdsDashInsightPagerAdapter
+    private lateinit var adapter: TopAdsDashboardBasePagerAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,12 +61,12 @@ class InsightKeyBottomSheet : BottomSheetUnify() {
         viewPagerBottomSheet?.currentItem = POSITION
     }
 
-    private fun getViewPagerAdapter(): TopAdsDashInsightPagerAdapter {
-        val list: ArrayList<Fragment> = ArrayList()
-        list.add(TopAdsInsightSheetScreen1())
-        list.add(TopAdsInsightSheetScreen2())
-        list.add(TopAdsInsightSheetScreen3())
-        adapter = TopAdsDashInsightPagerAdapter(childFragmentManager, 0)
+    private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter {
+        val list: ArrayList<FragmentTabItem> = ArrayList()
+        list.add(FragmentTabItem("", TopAdsInsightSheetScreen1()))
+        list.add(FragmentTabItem("", TopAdsInsightSheetScreen2()))
+        list.add(FragmentTabItem("", TopAdsInsightSheetScreen3()))
+        adapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
         adapter.setList(list)
         return adapter
     }

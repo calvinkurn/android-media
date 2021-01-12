@@ -62,7 +62,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
-    
+
     implementation rootProject.ext.playServicesDependencies.maps
     implementation project(rootProject.ext.libraries.charts)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -72,10 +72,14 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
-
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.mockitorCore
+    //test
+    testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation project(rootProject.ext.libraries.unitTest)
+
 }
 
 project.ext {
@@ -86,3 +90,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

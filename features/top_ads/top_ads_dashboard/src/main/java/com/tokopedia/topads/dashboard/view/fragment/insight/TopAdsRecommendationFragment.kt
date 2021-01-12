@@ -4,17 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.*
@@ -79,9 +79,9 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun onSearch() {
-        val fragments = (view_pager?.adapter as TopAdsDashInsightPagerAdapter?)?.listFrag
-        if (fragments?.get(0) is TopadsInsightBaseKeywordFragment) {
-            (fragments[0] as TopadsInsightBaseKeywordFragment).searchAction(searchBar.searchBarTextField.text.toString())
+        val fragments = (view_pager?.adapter as TopAdsDashboardBasePagerAdapter?)?.getList()
+        if (fragments?.get(0)?.fragment is TopadsInsightBaseKeywordFragment) {
+            (fragments[0].fragment as TopadsInsightBaseKeywordFragment).searchAction(searchBar.searchBarTextField.text.toString())
         }
     }
 
@@ -106,10 +106,10 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         topAdsInsightTabAdapter?.setTabTitles(resources, count, 0, 0)
     }
 
-    private fun getViewPagerAdapter(): TopAdsDashInsightPagerAdapter? {
-        val list: ArrayList<Fragment> = arrayListOf()
-        list.add(TopadsInsightBaseKeywordFragment.createInstance())
-        val pagerAdapter = TopAdsDashInsightPagerAdapter(childFragmentManager, 0)
+    private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter? {
+        val list: ArrayList<FragmentTabItem> = arrayListOf()
+        list.add(FragmentTabItem("", TopadsInsightBaseKeywordFragment.createInstance()))
+        val pagerAdapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
         pagerAdapter.setList(list)
         return pagerAdapter
     }

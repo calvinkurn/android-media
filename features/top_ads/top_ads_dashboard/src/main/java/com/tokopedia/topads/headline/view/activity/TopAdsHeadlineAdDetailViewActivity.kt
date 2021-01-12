@@ -32,16 +32,18 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KATA_KUNCI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SEVEN_DAYS_RANGE_INDEX
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
+import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.data.utils.Utils.outputFormat
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashGroupDetailPagerAdapter
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.fragment.ProductTabFragment
@@ -94,7 +96,7 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
         ViewModelProvider(this, viewModelFactory).get(GroupDetailViewModel::class.java)
     }
 
-    private lateinit var detailPagerAdapter: TopAdsDashGroupDetailPagerAdapter
+    private lateinit var detailPagerAdapter: TopAdsDashboardBasePagerAdapter
     private val topAdsTabAdapter: TopAdsTabAdapter? by lazy {
         this.run { TopAdsTabAdapter(this) }
     }
@@ -125,16 +127,15 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
         viewPagerHeadline.adapter = getViewPagerAdapter()
         viewPagerHeadline.offscreenPageLimit = 2
         viewPagerHeadline.currentItem = 0
-        //  viewPagerHeadline.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
         tab_layout?.setupWithViewPager(viewPagerHeadline)
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
-        val list: MutableList<Fragment> = mutableListOf()
+        val list: MutableList<FragmentTabItem> = mutableListOf()
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
-        list.add(TopAdsHeadlineKeyFragment.createInstance(bundle))
-        detailPagerAdapter = TopAdsDashGroupDetailPagerAdapter(supportFragmentManager, 0)
+        list.add(FragmentTabItem(KATA_KUNCI, TopAdsHeadlineKeyFragment.createInstance(bundle)))
+        detailPagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
         detailPagerAdapter.setList(list)
         return detailPagerAdapter
     }
@@ -376,11 +377,11 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
     }
 
     fun setKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_0)
+        detailPagerAdapter.setTitle(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_0)
     }
 
     fun setNegKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleNegKeyword(String.format(getString(R.string.topads_dash_neg_key_count), size), CONST_1)
+        detailPagerAdapter.setTitle(String.format(getString(R.string.topads_dash_neg_key_count), size), CONST_1)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {

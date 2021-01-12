@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
@@ -33,7 +32,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import kotlinx.android.synthetic.main.topads_dash_auto_topup_off_layout.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_edit_auto_topup.*
 import javax.inject.Inject
@@ -140,9 +138,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
         autoTopupStatus?.availableNominals?.let {
             selectedItem = it[pos]
         }
-        viewModel.saveSelection(GraphqlHelper
-                .loadRawString(resources, R.raw.gql_topads_save_auto_topup_selection),
-                auto_topup_status.isChecked, selectedItem)
+        viewModel.saveSelection(auto_topup_status.isChecked, selectedItem)
         setupText()
 
     }
@@ -223,14 +219,12 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
             dialog.setSecondaryCTAClickListener {
                 autoTopupEnabled = false
                 dialog.dismiss()
-                viewModel.saveSelection(GraphqlHelper
-                        .loadRawString(resources, R.raw.gql_topads_save_auto_topup_selection),
-                        auto_topup_status.isChecked, selectedItem)
+                viewModel.saveSelection(auto_topup_status.isChecked, selectedItem)
                 setLayoutOnToggle(false)
                 showToastSuccess(TYPE_AUTOTOPUP_DISABLED)
             }
             dialog.setOnDismissListener {
-                if(autoTopupEnabled)
+                if (autoTopupEnabled)
                     setLayoutOnToggle(true)
             }
             dialog.show()

@@ -66,4 +66,7 @@ object ParamObject {
     const val ACTION_CREATE = "create"
     const val HEADLINE_KEYWORD_TYPE = "positive_phrase"
     const val ACTIVE_STATUS = "active"
+    const val PARAM_DASH_SELECTION_ITEM = "selectionId"
+    const val PARAM_TOGGLE_ON = "toggle_on"
+    const val PARAM_TOGGLE_OFF = "toggle_off"
 }
