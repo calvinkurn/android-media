@@ -2,20 +2,20 @@ package com.tokopedia.product.manage.feature.list.view.model
 
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.ProductManageAdapterFactory
-import com.tokopedia.product.manage.data.createProductViewModel
+import com.tokopedia.product.manage.data.createProductUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ProductViewModelTest {
+class ProductUiModelTest {
 
     @Test
     fun `when get view model type should return view type resourceId`() {
         val viewType = 10000
         val typeFactory = mockk<ProductManageAdapterFactory>(relaxed = true)
-        val viewModel = createProductViewModel()
+        val viewModel = createProductUiModel()
 
         every { typeFactory.type(any()) } returns viewType
 
@@ -24,7 +24,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when isVariant null should return isVariant false`() {
-        val viewModel = createProductViewModel(isVariant = null)
+        val viewModel = createProductUiModel(isVariant = null)
 
         val expected = false
         val actual = viewModel.isVariant()
@@ -34,7 +34,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when isVariant true should return isVariant true`() {
-        val viewModel = createProductViewModel(isVariant = true)
+        val viewModel = createProductUiModel(isVariant = true)
 
         val expected = true
         val actual = viewModel.isVariant()
@@ -44,7 +44,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when isVariant null should return isNotVariant true`() {
-        val viewModel = createProductViewModel(isVariant = null)
+        val viewModel = createProductUiModel(isVariant = null)
 
         val expected = true
         val actual = viewModel.isNotVariant()
@@ -54,7 +54,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when isVariant true should return isNotVariant false`() {
-        val viewModel = createProductViewModel(isVariant = true)
+        val viewModel = createProductUiModel(isVariant = true)
 
         val expected = false
         val actual = viewModel.isNotVariant()
@@ -64,7 +64,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when product status active should return isActive true`() {
-        val viewModel = createProductViewModel(status = ProductStatus.ACTIVE)
+        val viewModel = createProductUiModel(status = ProductStatus.ACTIVE)
 
         val expected = true
         val actual = viewModel.isActive()
@@ -74,7 +74,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when product status NOT active should return isActive false`() {
-        val viewModel = createProductViewModel(status = ProductStatus.INACTIVE)
+        val viewModel = createProductUiModel(status = ProductStatus.INACTIVE)
 
         val expected = false
         val actual = viewModel.isActive()
@@ -84,7 +84,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when product status inactive should return isInactive true`() {
-        val viewModel = createProductViewModel(status = ProductStatus.INACTIVE)
+        val viewModel = createProductUiModel(status = ProductStatus.INACTIVE)
 
         val expected = true
         val actual = viewModel.isInactive()
@@ -94,7 +94,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when product status NOT inactive should return isInactive false`() {
-        val viewModel = createProductViewModel(status = ProductStatus.VIOLATION)
+        val viewModel = createProductUiModel(status = ProductStatus.VIOLATION)
 
         val expected = false
         val actual = viewModel.isInactive()
@@ -104,7 +104,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when product status violation should return isViolation true`() {
-        val viewModel = createProductViewModel(status = ProductStatus.VIOLATION)
+        val viewModel = createProductUiModel(status = ProductStatus.VIOLATION)
 
         val expected = true
         val actual = viewModel.isViolation()
@@ -114,7 +114,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when product status NOT violation should return isViolation false`() {
-        val viewModel = createProductViewModel(status = ProductStatus.ACTIVE)
+        val viewModel = createProductUiModel(status = ProductStatus.ACTIVE)
 
         val expected = false
         val actual = viewModel.isViolation()
@@ -124,7 +124,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when product status violation should return isNotViolation false`() {
-        val viewModel = createProductViewModel(status = ProductStatus.VIOLATION)
+        val viewModel = createProductUiModel(status = ProductStatus.VIOLATION)
 
         val expected = false
         val actual = viewModel.isNotViolation()
@@ -134,7 +134,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when product status NOT violation should return isNotViolation true`() {
-        val viewModel = createProductViewModel(status = ProductStatus.ACTIVE)
+        val viewModel = createProductUiModel(status = ProductStatus.ACTIVE)
 
         val expected = true
         val actual = viewModel.isNotViolation()
@@ -144,7 +144,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when product status empty and stock zero should return isEmpty true`() {
-        val viewModel = createProductViewModel(status = ProductStatus.ACTIVE, stock = 0)
+        val viewModel = createProductUiModel(status = ProductStatus.ACTIVE, stock = 0)
 
         val expected = true
         val actual = viewModel.isEmpty()
@@ -154,7 +154,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when product status NOT empty and stock more than zero should return isEmpty false`() {
-        val viewModel = createProductViewModel(status = ProductStatus.INACTIVE, stock = 1)
+        val viewModel = createProductUiModel(status = ProductStatus.INACTIVE, stock = 1)
 
         val expected = false
         val actual = viewModel.isEmpty()
@@ -164,7 +164,7 @@ class ProductViewModelTest {
 
     @Test
     fun `when product status null and stock more than zero should return isEmpty false`() {
-        val viewModel = createProductViewModel(status = null, stock = 1)
+        val viewModel = createProductUiModel(status = null, stock = 1)
 
         val expected = false
         val actual = viewModel.isEmpty()
@@ -188,7 +188,7 @@ class ProductViewModelTest {
         val multiSelectActive = false
         val isChecked = false
 
-       val viewModel = createProductViewModel(
+       val viewModel = createProductUiModel(
             id,
             name,
             imageUrl,

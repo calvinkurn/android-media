@@ -2,20 +2,20 @@ package com.tokopedia.product.manage.feature.list.view.model
 
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductFilterAdapterFactory
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel.*
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.*
 import org.junit.Test
 
-class FilterTabViewModelTest {
+class FilterTabUiModelTest {
 
     @Test
     fun `when get view model type should return view type resourceId`() {
         val viewType = 10000
         val count = 1
-        val tab: FilterTabViewModel = Active(count)
+        val tab: FilterTabUiModel = Active(count)
         val typeFactory = mockk<ProductFilterAdapterFactory>(relaxed = true)
 
         every { typeFactory.type(any()) } returns viewType

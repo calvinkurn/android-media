@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
-data class ProductViewModel(
+data class ProductUiModel(
         val id: String,
         val title: String?,
         val imageUrl: String?,
