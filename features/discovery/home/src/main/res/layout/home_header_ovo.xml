@@ -12,10 +12,11 @@
         android:clickable="true"
         android:focusable="true"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_ovo"
+
+    <com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoWidgetView
+        android:id="@+id/view_ovo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/view_empty"/>
+        android:layout_above="@id/view_empty"/>
 
 </RelativeLayout>

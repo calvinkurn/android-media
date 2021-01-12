@@ -18,7 +18,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoWidgetView
 import com.tokopedia.home.beranda.presentation.view.listener.*
+import com.tokopedia.kotlin.extensions.view.visible
 import java.util.concurrent.Executors
 
 class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategoryListener)
@@ -36,16 +38,15 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
     }
 
     private fun renderOvoLayout(data: HeaderDataModel) {
-//        val layoutManager = LinearLayoutManager(itemView.context)
-//        val rv = itemView.findViewById<RecyclerView>(R.id.rv_ovo)
-//        rv?.layoutManager = layoutManager
-//
-//        val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
-//                .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
-//                .build()
-//        adapter = HomeRecycleAdapter(asyncDifferConfig, adapterFactory, ArrayList<HomeVisitable>())
-//        homeRecyclerView?.adapter = adapter
+        val ovoView = itemView.findViewById<OvoWidgetView>(R.id.view_ovo)
+        if (data.isUserLogin) {
+            ovoView.visible()
+            ovoView.bind(data, listener)
+        }
+
     }
+
+
 
 
 

@@ -50,9 +50,9 @@ import kotlin.math.roundToInt
 class OvoWidgetView: FrameLayout {
 
 
-    private val itemView: View
+    private var itemView: View
     private val itemContext: Context
-    private lateinit var listener: HomeCategoryListener
+    private var listener: HomeCategoryListener? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -79,11 +79,14 @@ class OvoWidgetView: FrameLayout {
     private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
     private var navRollanceType: String = ""
 
-    fun bind(element: HeaderDataModel, listener: HomeCategoryListener) {
+    fun bind(element: HeaderDataModel, listener: HomeCategoryListener?) {
         this.listener = listener
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_OVO_VIEWHOLDER)
         if (element.isUserLogin) renderLogin(element)
-        else renderNonLogin()
+        else {
+            this.itemView = LayoutInflater.from(context).inflate(R.layout.layout_item_widget_ovo_tokopoint_nonlogin, this)
+            renderNonLogin()
+        }
         BenchmarkHelper.endSystraceSection()
     }
 
