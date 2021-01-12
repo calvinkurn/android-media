@@ -319,7 +319,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onTemplateClicked(template: String) {
-        // to do
+        replyTextBox.setText(template)
     }
 
     private fun goToReportActivity(commentId: String) {
