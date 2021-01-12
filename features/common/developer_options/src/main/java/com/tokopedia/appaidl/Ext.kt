@@ -2,50 +2,37 @@ package com.tokopedia.appaidl
 
 import android.content.*
 import android.os.Bundle
-import android.util.Log
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.appaidl.data.*
 import com.tokopedia.appaidl.ui.ServiceView
-import com.tokopedia.config.GlobalConfig
-
-private const val SERVICE = "com.tokopedia.appaidl.RemoteService"
-
-const val MAINAPP = "com.tokopedia.tkpd"
-const val SELLERAPP = "com.tokopedia.sellerapp"
 
 interface ReceiverListener {
-    fun handleData(tag: String, bundle: Bundle?)
+    fun onAidlReceive(tag: String, bundle: Bundle?)
+    fun onAidlError()
 }
 
 fun BaseActivity.connectService(listener: ReceiverListener) {
-    // appName is tag
-    val appName = if (GlobalConfig.isSellerApp()) SELLERAPP else MAINAPP
-
     // this broadcastReceiver for receiving the intent data from RemoteService
     val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == MAINAPP || intent?.action == SELLERAPP) {
-                Log.d("AppApi", "broadcastReceiver")
+            if (intent?.action == CUSTOMER_APP || intent?.action == SELLER_APP) {
                 unregisterReceiver(this)
                 intent.action?.let {
-                    listener.handleData(it, intent.extras)
+                    listener.onAidlReceive(it, intent.extras)
                 }
             }
         }
     }
 
     // the serviceView is serviceConnection to register the receiver in activity and send the data
-    val serviceView = ServiceView(appName) { tag, service ->
+    val serviceView = ServiceView(aidlTag()) { tag, service ->
         if (service != null) {
-            Log.d("AppApi", "onServiceConnected stub on serviceView; send() is executed")
             registerReceiver(broadcastReceiver, IntentFilter().apply { addAction(tag) })
             service.send(tag)
         }
     }
 
-    val intent = Intent().apply { component = ComponentName(if (GlobalConfig.isSellerApp()) MAINAPP else SELLERAPP, SERVICE) }
+    val intent = Intent().apply { component = ComponentName(componentTargetName(), REMOTE_SERVICE) }
     val success = bindService(intent, serviceView, Context.BIND_AUTO_CREATE)
-
-    if (!success) {
-        Log.d("AppApi", "bindService failed")
-    }
+    if (!success) listener.onAidlError()
 }
