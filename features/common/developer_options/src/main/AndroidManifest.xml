@@ -30,6 +30,10 @@
             android:name=".presentation.service.DeleteFirebaseTokenService"
             android:exported="false" />
 
+        <service
+            android:name="com.tokopedia.appaidl.RemoteService"
+            android:exported="true" />
+
         <receiver android:name=".notification.ReviewNotificationUpdateExample" />
 
     </application>
