@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
 import com.tokopedia.homenav.mainnav.MainNavConst
@@ -15,7 +16,16 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.*
 import com.tokopedia.homenav.rule.CoroutinesTestRule
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sessioncommon.data.admin.AdminData
+import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
+import com.tokopedia.sessioncommon.data.admin.AdminDetailInformation
+import com.tokopedia.sessioncommon.data.admin.AdminRoleType
+import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
+import com.tokopedia.sessioncommon.domain.usecase.RefreshShopBasicDataUseCase
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
@@ -303,6 +313,58 @@ class TestMainNavViewModel {
     }
 
     @Test
+    fun `Success get account admin info`() {
+        val position = 0
+        val isLocationAdmin: Boolean = true
+        val expectedAdminRoleText = "Joko Tingkir"
+        val adminDataResponse =
+                AdminDataResponse(
+                        data = AdminData(
+                                adminTypeText = expectedAdminRoleText,
+                                detail = AdminDetailInformation(
+                                        roleType = AdminRoleType(
+                                                isLocationAdmin = isLocationAdmin
+                                        )
+                                )
+                        )
+                )
+        val expectedCanGoToSellerAccount = !isLocationAdmin
+        val accountInfoPair = Pair(adminDataResponse, null)
+        val refreshShopBasicDataUseCase = mockk<RefreshShopBasicDataUseCase>()
+        val gqlRepository = mockk<GraphqlRepository>()
+        val accountAdminInfoUseCase = spyk(AccountAdminInfoUseCase(refreshShopBasicDataUseCase, gqlRepository))
+        val userSession = mockk<UserSessionInterface>(relaxed = true)
+        coEvery {
+            accountAdminInfoUseCase.executeOnBackground()
+        } returns accountInfoPair
+        coEvery {
+            userSession.hasShop()
+        } returns true
+        coEvery {
+            userSession.isShopOwner
+        } returns false
+        coEvery {
+            userSession.isLocationAdmin
+        } returns false
+        coEvery {
+            userSession.isLoggedIn
+        } returns true
+
+        viewModel = createViewModel(
+                accountAdminInfoUseCase = accountAdminInfoUseCase,
+                userSession = userSession)
+        viewModel.getMainNavData(false)
+
+        val mainNavDataModel = viewModel.mainNavLiveData.value
+        (mainNavDataModel?.dataList?.getOrNull(position) as? AccountHeaderViewModel).let { actualResult ->
+            val actualCanGoToSellerAccount = actualResult?.canGoToSellerAccount
+            val actualAdminRoleText = actualResult?.adminRoleText
+            Assert.assertEquals(expectedAdminRoleText, actualAdminRoleText)
+            Assert.assertEquals(expectedCanGoToSellerAccount, actualCanGoToSellerAccount)
+        }
+    }
+
+    @Test
     fun `Error getUserNameAndPictureData missing name`(){
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
@@ -348,6 +410,40 @@ class TestMainNavViewModel {
         Assert.assertNotNull(accountHeaderViewModel)
         Assert.assertTrue(accountHeaderViewModel.userName.isEmpty()
                 && accountHeaderViewModel.userImage.isEmpty())
+    }
+
+    @Test
+    fun `Error get account admin info`() {
+        val position = 0
+        val refreshShopBasicDataUseCase = mockk<RefreshShopBasicDataUseCase>()
+        val gqlRepository = mockk<GraphqlRepository>()
+        val accountAdminInfoUseCase = spyk(AccountAdminInfoUseCase(refreshShopBasicDataUseCase, gqlRepository))
+        val userSession = mockk<UserSessionInterface>(relaxed = true)
+        coEvery {
+            accountAdminInfoUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+        coEvery {
+            userSession.hasShop()
+        } returns true
+        coEvery {
+            userSession.isShopOwner
+        } returns false
+        coEvery {
+            userSession.isLocationAdmin
+        } returns false
+        coEvery {
+            userSession.isLoggedIn
+        } returns true
+
+        viewModel = createViewModel(
+                accountAdminInfoUseCase = accountAdminInfoUseCase,
+                userSession = userSession)
+        viewModel.getMainNavData(false)
+
+        val mainNavDataModel = viewModel.mainNavLiveData.value
+        (mainNavDataModel?.dataList?.getOrNull(position) as? AccountHeaderViewModel).let { actualResult ->
+            Assert.assertFalse(actualResult?.isProfileLoading == true)
+        }
     }
 
 }
