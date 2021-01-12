@@ -133,7 +133,6 @@ class TelcoPrepaidInstrumentTest {
         Thread.sleep(8000)
 //        val localCacheHandler = LocalCacheHandler(context, DigitalTelcoPrepaidFragment.PREFERENCES_NAME)
 //        if (!localCacheHandler.getBoolean(DigitalTelcoPrepaidFragment.TELCO_COACH_MARK_HAS_SHOWN, false)) {
-        onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
         onView(withId(R.id.text_next)).perform(click())
         onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
         onView(withId(R.id.text_previous)).perform(click())
