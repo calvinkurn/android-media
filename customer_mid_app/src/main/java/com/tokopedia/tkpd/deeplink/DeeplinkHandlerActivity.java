@@ -89,7 +89,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     private static final String APPLINK_LOG_FORMAT = "P1#WEBVIEW_OPENED#applink;domain='%s';url='%s'";
     private static final String TOKOPEDIA_DOMAIN = "tokopedia";
     private static final String URL_QUERY_PARAM = "url";
-    private static final String DOMAIN_PREFIX = "www.";
     private static ApplinkDelegate applinkDelegate;
     private Subscription clearNotifUseCase;
 
@@ -327,7 +326,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     private void logWebViewApplink() {
         Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
         String uriString = DeeplinkUtils.INSTANCE.getDataUri(this).toString();
-        String domain = getDomainName(getUrlToLoad(uri));
+        String domain = getUrlToLoad(uri).getHost();
         if (uriString.contains(ApplinkConst.WEBVIEW) && !domain.contains(TOKOPEDIA_DOMAIN)) {
             Timber.w(APPLINK_LOG_FORMAT, domain, uri);
         }
@@ -335,14 +334,5 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     private Uri getUrlToLoad(Uri url) {
         return Uri.parse(url.getQueryParameter(URL_QUERY_PARAM));
-    }
-
-    private String getDomainName(Uri url) {
-        String domain = url.getHost();
-        if (domain.startsWith(DOMAIN_PREFIX)) {
-            return domain.substring(DOMAIN_PREFIX.length());
-        } else {
-            return domain;
-        }
     }
 }

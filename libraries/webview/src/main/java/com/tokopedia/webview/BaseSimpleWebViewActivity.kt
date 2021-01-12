@@ -201,15 +201,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun getDomainName(url: String): String? {
-        val uri = URI(url)
-        val domain: String = uri.host
-        return if (domain.startsWith(DOMAIN_PREFIX)) domain.substring(DOMAIN_PREFIX.length) else domain
+        return URI(url).host
     }
 
     companion object {
 
         const val TOKOPEDIA_DOMAIN = "tokopedia"
-        const val DOMAIN_PREFIX = "www."
 
         fun getStartIntent(
             context: Context,
