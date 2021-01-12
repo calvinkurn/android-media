@@ -589,9 +589,9 @@ class CartItemViewHolder constructor(itemView: View,
         qtyEditor.setValueChangedListener { _, _, _ -> /* no-op */ }
         qtyEditor.setValue(data.cartItemData?.updatedData?.quantity ?: 0)
         qtyEditor.setValueChangedListener { newValue, _, _ ->
-            cartItemHolderData!!.cartItemData!!.updatedData!!.quantity = newValue
+            cartItemHolderData?.cartItemData?.updatedData?.quantity = newValue
             actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
-            handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)
+            cartItemHolderData?.let { handleRefreshType(it, viewHolderListener, parentPosition) }
         }
         qtyEditor.setSubstractListener {
             if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
