@@ -101,10 +101,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         val ticker = homeRemoteDataSource.getHomeTickerUseCase()
                         ticker?.let { atfData.content = gson.toJson(ticker.ticker) }
                     }
-                    TYPE_BANNER -> {
-//                        val banner = homeRemoteDataSource.getHomePageBannerUseCase()
-//                        banner?.let { homeData.banner = banner.banner }
-                    }
                     TYPE_CHANNEL -> {
                         val dynamicChannel = homeRemoteDataSource.getDynamicChannelData(params = atfData.param)
                         dynamicChannel.let {
