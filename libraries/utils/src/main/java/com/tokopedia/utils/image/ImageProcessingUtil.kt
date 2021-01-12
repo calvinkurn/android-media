@@ -343,7 +343,7 @@ object ImageProcessingUtil {
             return imagePath
         }
         // not webp:
-        // convert to bitmap, then compress to webp format.
+        // get bitmap, then compress to webp format.
         try {
             val bitmap = getBitmapFromFile(context, imagePath)
             val fileOutput = getTokopediaPhotoWebpPath()
