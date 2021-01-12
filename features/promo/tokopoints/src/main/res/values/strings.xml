@@ -112,4 +112,7 @@
     <string name="tp_catalog_empty_button">Lihat Kupon Tersedia</string>
     <string name="tp_webview_format">"%s?url=%s"</string>
     <string name="tp_share">Share</string>
+    <string name="tp_catalog_expire">Berlaku Hingga</string>
+    <string name="tp_catalog_timer_expire">Kupon Expired</string>
+    <string name="tp_coupon_autoapply_msg">Kupon sudah terpasang, transaksi sekarang yuk!</string>
 </resources>

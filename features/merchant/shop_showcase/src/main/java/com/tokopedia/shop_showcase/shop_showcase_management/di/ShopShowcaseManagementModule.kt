@@ -7,6 +7,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.mapper.ProductMapper
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.usecase.GetProductListUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -39,6 +41,15 @@ class ShopShowcaseManagementModule(val context: Context) {
             gqlRepository: GraphqlRepository
     ): CreateShopShowcaseUseCase {
         return CreateShopShowcaseUseCase(gqlRepository)
+    }
+
+    @ShopShowcaseManagementScope
+    @Provides
+    fun provideGetProductListUseCase(
+            gqlRepository: GraphqlRepository,
+            productMapper: ProductMapper
+    ): GetProductListUseCase {
+        return GetProductListUseCase(gqlRepository, productMapper)
     }
 
 }

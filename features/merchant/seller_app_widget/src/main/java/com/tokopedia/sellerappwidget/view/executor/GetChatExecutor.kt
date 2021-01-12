@@ -26,12 +26,11 @@ class GetChatExecutor(private val context: Context) : AppWidgetView<ChatUiModel>
     companion object {
         private var INSTANCE: GetChatExecutor? = null
 
-        @JvmStatic
-        fun run(context: Context) {
+        fun run(context: Context, showLoadingState: Boolean = false) {
             if (INSTANCE == null) {
                 INSTANCE = GetChatExecutor(context)
             }
-            INSTANCE?.run()
+            INSTANCE?.run(showLoadingState)
         }
     }
 
@@ -41,14 +40,17 @@ class GetChatExecutor(private val context: Context) : AppWidgetView<ChatUiModel>
     }
     private val cacheHandler by lazy { AppWidgetHelper.getCacheHandler(context) }
 
-    fun run() {
-        showLoadingState()
+    fun run(showLoadingState: Boolean) {
+        if (showLoadingState) {
+            showLoadingState()
+        }
         viewModel.bindView(this)
         viewModel.getChatList()
     }
 
     override fun onSuccess(result: ChatUiModel) {
         cacheHandler.putLong(Const.SharedPrefKey.CHAT_LAST_UPDATED, System.currentTimeMillis())
+        cacheHandler.applyEditor()
         ChatAppWidget.setOnSuccess(context, result)
         GetChatWorker.runWorkerPeriodically(context)
         viewModel.unbind()
