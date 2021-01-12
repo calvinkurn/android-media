@@ -78,6 +78,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private String belowMinResolutionErrorMessage = "";
     private String imageTooLargeErrorMessage = "";
     private boolean recheckSizeAfterResize;
+    private boolean convertToWebp;
 
     private ArrayList<ArrayList<String>> edittedImagePaths;
 
@@ -173,6 +174,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         defaultRatio = imageEditorBuilder.getDefaultRatio();
         imageRatioOptionList = imageEditorBuilder.getRatioOptionList();
         recheckSizeAfterResize = imageEditorBuilder.getRecheckSizeAfterResize();
+        convertToWebp = imageEditorBuilder.getConvertToWebp();
 
         if (belowMinResolutionErrorMessage == null || belowMinResolutionErrorMessage.isEmpty()) {
             belowMinResolutionErrorMessage = getString(R.string.image_under_x_resolution, minResolution);
@@ -766,7 +768,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private void onFinishWithMultipleImageValidateFileSize(ArrayList<String> imagePathList) {
         showDoneLoading();
         initImagePickerPresenter();
-        imagePickerPresenter.resizeImage(imagePathList, maxFileSize, recheckSizeAfterResize);
+        imagePickerPresenter.resizeImage(imagePathList, maxFileSize, recheckSizeAfterResize, convertToWebp);
     }
 
     @Override

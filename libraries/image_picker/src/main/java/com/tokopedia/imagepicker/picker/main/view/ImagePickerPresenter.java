@@ -50,13 +50,16 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
         }
     }
 
-    public void resizeImage(List<String> imagePath, final long maxFileSize, boolean recheckSizeAfterResize) {
+    public void resizeImage(List<String> imagePath, final long maxFileSize,
+                            boolean recheckSizeAfterResize, boolean convertToWebp) {
 
         Subscription subscription = Observable.from(imagePath)
                 .concatMap(new Func1<String, Observable<String>>() {
                     @Override
                     public Observable<String> call(String path) {
-
+                        if (convertToWebp) {
+                            path = ImageUtil.convertToWebp(getView().getContext(), path, 100);
+                        }
                         if (FileUtil.getFileSizeInKb(path) > maxFileSize) {
                             if (FileUtil.isImageType(getView().getContext(), path)) {
                                 //resize image
