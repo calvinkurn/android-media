@@ -31,7 +31,6 @@ class AdminRoleAuthorizeActivity: BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
 
         window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-        toolbar?.gone()
     }
 
     override fun getNewFragment(): Fragment = AdminRoleAuthorizeFragment.createInstance(adminFeature)

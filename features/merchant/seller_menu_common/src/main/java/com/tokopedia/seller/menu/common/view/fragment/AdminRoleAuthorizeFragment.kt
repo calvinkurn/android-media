@@ -118,11 +118,11 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     }
 
     private fun GlobalError.showAdminError() {
-        setType(GlobalError.PAGE_NOT_FOUND)
         ImageHandler.loadImageAndCache(errorIllustration, SellerBaseUrl.ADMIN_ERROR_ILLUSTRATION)
         errorTitle.text = context?.getString(R.string.admin_no_permission_oops)
         errorDescription.text = context?.getString(R.string.admin_no_permission_contact_shop_owner)
         errorAction.text = context?.getString(R.string.admin_no_permission_general_next)
+        errorSecondaryAction.visibility = View.GONE
 
         setActionClickListener {
             activity?.finish()
