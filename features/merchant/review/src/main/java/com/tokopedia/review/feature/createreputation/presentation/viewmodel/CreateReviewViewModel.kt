@@ -94,7 +94,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getAfterEditImageList(imagePickerResult: ArrayList<String>, originalImageUrl: java.util.ArrayList<String>, edited: ArrayList<Boolean>): MutableList<BaseImageReviewUiModel> {
+    fun getAfterEditImageList(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, edited: ArrayList<Boolean>): MutableList<BaseImageReviewUiModel> {
         val pictureList = originalImages.filter {
             originalImageUrl.contains(it)
         }.filterIndexed { index, _ -> !edited[index] }
@@ -103,6 +103,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             if (edited[index]) urlOrPath else pictureList.find { it == originalImageUrl[index] }
                     ?: urlOrPath
         }.toMutableList()
+
+        originalImages = originalImageUrl
 
         when (imagePickerResult.size) {
             5 -> {
