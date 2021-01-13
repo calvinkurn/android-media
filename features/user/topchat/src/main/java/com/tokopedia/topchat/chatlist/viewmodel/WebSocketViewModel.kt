@@ -5,10 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_TYPING
@@ -20,10 +17,8 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -33,47 +28,32 @@ import javax.inject.Inject
 
 open class WebSocketViewModel @Inject constructor(
         protected val dispatchers: TopchatCoroutineContextProvider,
-        protected val userSession: UserSessionInterface,
-        protected val tkpdAuthInterceptor: TkpdAuthInterceptor,
-        protected val fingerprintInterceptor: FingerprintInterceptor
+        protected val webSocket: TopChatWebSocket
 ) : BaseViewModel(dispatchers.ioDispatcher), LifecycleObserver {
 
-    protected val client = OkHttpClient()
-    protected val webSocketUrl: String = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
-            "?os_type=1" +
-            "&device_id=" + userSession.deviceId +
-            "&user_id=" + userSession.userId
-    protected var easyWS: EasyWS? = null
-    protected var isOnStop = false
     protected val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
     val itemChat: LiveData<Result<BaseIncomingItemWebSocketModel>>
         get() = _itemChat
 
+    protected var isOnStop = false
+
     open fun connectWebSocket() {
         launch {
-            client.run {
-                newBuilder().addInterceptor(tkpdAuthInterceptor)
-                        .addInterceptor(fingerprintInterceptor)
-            }
-            easyWS = client.easyWebSocket(webSocketUrl, userSession.accessToken)
-            Timber.d(" Open: ${easyWS?.response}")
-            easyWS?.let {
-                for (response in it.textChannel) {
-                    Timber.d(" Response: $response")
-                    if (isOnStop) continue
-                    when (response.code) {
-                        EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                            val chat = Success(mapToIncomingChat(response))
-                            _itemChat.postValue(chat)
-                        }
-                        EVENT_TOPCHAT_TYPING -> {
-                            val stateTyping = Success(mapToIncomingTypeState(response, true))
-                            _itemChat.postValue(stateTyping)
-                        }
-                        EVENT_TOPCHAT_END_TYPING -> {
-                            val stateEndTyping = Success(mapToIncomingTypeState(response, false))
-                            _itemChat.postValue(stateEndTyping)
-                        }
+            for (response in webSocket.createWebSocket()) {
+                Timber.d(" Response: $response")
+                if (isOnStop) continue
+                when (response.code) {
+                    EVENT_TOPCHAT_REPLY_MESSAGE -> {
+                        val chat = Success(mapToIncomingChat(response))
+                        _itemChat.postValue(chat)
+                    }
+                    EVENT_TOPCHAT_TYPING -> {
+                        val stateTyping = Success(mapToIncomingTypeState(response, true))
+                        _itemChat.postValue(stateTyping)
+                    }
+                    EVENT_TOPCHAT_END_TYPING -> {
+                        val stateEndTyping = Success(mapToIncomingTypeState(response, false))
+                        _itemChat.postValue(stateEndTyping)
                     }
                 }
             }
@@ -120,7 +100,7 @@ open class WebSocketViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        easyWS?.webSocket?.close(1000, "Bye!")
+        webSocket.cancelChannel()
         Timber.d(" OnCleared")
     }
 
