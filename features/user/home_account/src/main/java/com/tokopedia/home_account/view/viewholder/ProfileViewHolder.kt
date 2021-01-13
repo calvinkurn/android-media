@@ -1,9 +1,11 @@
 package com.tokopedia.home_account.view.viewholder
 
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.PorterDuff
 import android.view.View
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,20 +53,23 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
             setupMemberAdapter(itemView, profile)
             setupFinancialAdapter(itemView, profile)
 
-            val mode = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
-            when (mode) {
-                Configuration.UI_MODE_NIGHT_YES -> {
-                    account_user_item_profile_container?.setBackgroundResource(R.drawable.ic_account_backdrop_dark)
-                }
-                Configuration.UI_MODE_NIGHT_NO -> {
-                    account_user_item_profile_container?.setBackgroundResource(R.drawable.ic_account_backdrop)
-                }
-                Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-                else -> {}
-            }
-
+            setBackground(context, account_user_item_profile_container)
             listener.onItemViewBinded(adapterPosition, itemView, profile)
             listener.onProfileAdapterReady(financialAdapter!!, memberAdapter!!)
+        }
+    }
+
+    private fun setBackground(context: Context?, accountUserItemProfileContainer: ConstraintLayout?) {
+        val mode = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+        when (mode) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                accountUserItemProfileContainer?.setBackgroundResource(R.drawable.ic_account_backdrop_dark)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                accountUserItemProfileContainer?.setBackgroundResource(R.drawable.ic_account_backdrop)
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+            else -> {}
         }
     }
 
