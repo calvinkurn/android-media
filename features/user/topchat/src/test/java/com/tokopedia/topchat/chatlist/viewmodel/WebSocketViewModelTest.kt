@@ -2,10 +2,13 @@ package com.tokopedia.topchat.chatlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE
+import com.tokopedia.inboxcommon.util.FileUtil
+import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
+import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.websocket.WebSocketResponse
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -18,7 +21,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-//TODO: mock json response
 class WebSocketViewModelTest {
 
     @get:Rule val rule = InstantTaskExecutorRule()
@@ -34,16 +36,26 @@ class WebSocketViewModelTest {
         viewModel.itemChat.observeForever(itemChatObserver)
     }
 
+    @Test fun `connectWebSocket should be do nothing`() {
+        runBlocking {
+            // Given
+            viewModel.isOnStop = true
+
+            // When
+            viewModel.connectWebSocket()
+
+            // Then
+            assertTrue(viewModel.itemChat.value == null)
+        }
+    }
+
     @Test fun `connectWebSocket should response EVENT_TOPCHAT_REPLY_MESSAGE`() {
         runBlocking {
             // Given
-            val expectedValue = WebSocketResponse().apply {
-                code = EVENT_TOPCHAT_REPLY_MESSAGE
-                type = "test-isfa"
-            }
+            val expectedValue = Success(mapToIncomingChat(eventReplyMessage))
 
             val channel = Channel<WebSocketResponse>()
-            launch { channel.send(expectedValue) }
+            launch { channel.send(eventReplyMessage) }
 
             coEvery { webSocket.createWebSocket() } returns channel
 
@@ -51,11 +63,96 @@ class WebSocketViewModelTest {
             viewModel.connectWebSocket()
 
             // Then
-//            verify(exactly = 1) { wsResponseObserver.onChanged(expectedValue) }
-//            assertTrue(viewModel.testWebSocketResult.value == expectedValue)
+            verify(exactly = 1) { itemChatObserver.onChanged(expectedValue) }
+            assertTrue(viewModel.itemChat.value == expectedValue)
 
             channel.close()
         }
+    }
+
+    @Test fun `connectWebSocket should response EVENT_TOPCHAT_TYPING`() {
+        runBlocking {
+            // Given
+            val response = mapToIncomingTypeState(eventTyping, true)
+            val expectedValue = Success(response)
+
+            val channel = Channel<WebSocketResponse>()
+            launch { channel.send(eventTyping) }
+
+            coEvery { webSocket.createWebSocket() } returns channel
+
+            // When
+            viewModel.connectWebSocket()
+
+            // Then
+            verify(exactly = 1) { itemChatObserver.onChanged(expectedValue) }
+            assertTrue(viewModel.itemChat.value == expectedValue)
+
+            channel.close()
+        }
+    }
+
+    @Test fun `connectWebSocket should response EVENT_TOPCHAT_END_TYPING`() {
+        runBlocking {
+            // Given
+            val response = mapToIncomingTypeState(eventEndTyping, false)
+            val expectedValue = Success(response)
+
+            val channel = Channel<WebSocketResponse>()
+            launch { channel.send(eventEndTyping) }
+
+            coEvery { webSocket.createWebSocket() } returns channel
+
+            // When
+            viewModel.connectWebSocket()
+
+            // Then
+            verify(exactly = 1) { itemChatObserver.onChanged(expectedValue) }
+            assertTrue(viewModel.itemChat.value == expectedValue)
+
+            channel.close()
+        }
+    }
+
+    @Test fun `clearItemChatValue should clearning the value of itemChat`() {
+        // When
+        viewModel.clearItemChatValue()
+
+        // Then
+        assertTrue(viewModel.itemChat.value == null)
+    }
+
+    @Test fun `onStop should return isStop true`() {
+        // When
+        viewModel.onStop()
+
+        // Then
+        assertTrue(viewModel.isOnStop)
+    }
+
+    @Test fun `onStart should return isStop false`() {
+        // When
+        viewModel.onStart()
+
+        // Then
+        assertTrue(!viewModel.isOnStop)
+    }
+
+    companion object {
+        private val eventReplyMessage: WebSocketResponse = FileUtil.parse(
+                "/ws_response_reply_text_is_opposite.json",
+                WebSocketResponse::class.java
+        )
+
+        private val eventTyping: WebSocketResponse = FileUtil.parse(
+                "/ws_response_typing.json",
+                WebSocketResponse::class.java
+        )
+
+        private val eventEndTyping: WebSocketResponse = FileUtil.parse(
+                "/ws_response_end_typing.json",
+                WebSocketResponse::class.java
+        )
     }
 
 }
