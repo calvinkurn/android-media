@@ -3,21 +3,16 @@ package com.tokopedia.topchat.chatlist.viewmodel
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_TYPING
-import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponseData
+import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
+import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
-import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
-import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
-import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -35,7 +30,7 @@ open class WebSocketViewModel @Inject constructor(
     val itemChat: LiveData<Result<BaseIncomingItemWebSocketModel>>
         get() = _itemChat
 
-    protected var isOnStop = false
+    var isOnStop = false
 
     open fun connectWebSocket() {
         launch {
@@ -60,47 +55,9 @@ open class WebSocketViewModel @Inject constructor(
         }
     }
 
-    protected fun mapToIncomingChat(response: WebSocketResponse): IncomingChatWebSocketModel {
-        val json = response.jsonObject
-        val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
-        val msgId = responseData.msgId.toString()
-        val message = responseData.message.censoredReply.trim().toEmptyStringIfNull()
-        val time = responseData.message.timeStampUnix.toEmptyStringIfNull()
-
-        val contact = ItemChatAttributesContactPojo(
-                responseData?.fromUid.toString(),
-                responseData?.fromRole.toString(),
-                "",
-                responseData?.from.toString(),
-                0,
-                responseData?.fromRole.toString(),
-                responseData?.imageUri.toString(),
-                responseData.isAutoReply
-        )
-        return IncomingChatWebSocketModel(msgId, message, time, contact)
-    }
-
-    protected fun mapToIncomingTypeState(response: WebSocketResponse, isTyping: Boolean): IncomingTypingWebSocketModel {
-        val json = response.jsonObject
-        val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
-        val msgId = responseData?.msgId.toString()
-
-        val contact = ItemChatAttributesContactPojo(
-                responseData?.fromUid.toString(),
-                responseData?.fromRole.toString(),
-                "",
-                responseData?.from.toString(),
-                0,
-                responseData?.fromRole.toString(),
-                ""
-        )
-
-        return IncomingTypingWebSocketModel(msgId, isTyping, contact)
-    }
-
     override fun onCleared() {
         super.onCleared()
-        webSocket.cancelChannel()
+        webSocket.cancel()
         Timber.d(" OnCleared")
     }
 
