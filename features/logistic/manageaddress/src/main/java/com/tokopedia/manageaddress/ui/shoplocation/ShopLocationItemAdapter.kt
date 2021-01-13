@@ -46,6 +46,11 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
         notifyDataSetChanged()
     }
 
+    fun clearData() {
+        shopLocationList.clear()
+        notifyDataSetChanged()
+    }
+
     inner class ShopLocationViewHolder(itemView: View, private val listener: ShopLocationItemAdapterListener) : RecyclerView.ViewHolder(itemView) {
 
         private val tvShopName = itemView.findViewById<Typography>(R.id.tv_shop_name)

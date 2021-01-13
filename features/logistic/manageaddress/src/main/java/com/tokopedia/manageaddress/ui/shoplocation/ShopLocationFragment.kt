@@ -75,10 +75,10 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        checkWhitelistedUser()
+        checkWhitelistedUser()
         initViews()
         initViewModel()
-        fetchData()
+//        fetchData()
     }
 
     private fun checkWhitelistedUser() {
@@ -162,11 +162,12 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     private fun fetchData() {
-        viewModel.getShopLocationList(480735)
-//        viewModel.getShopLocationList(userSession.shopId.toIntOrNull())
+//        viewModel.getShopLocationList(480735)
+        viewModel.getShopLocationList(userSession.shopId.toIntOrNull())
     }
 
     private fun updateData(data: List<Warehouse>) {
+        adapter.clearData()
         tickerShopLocation?.visibility = View.GONE
         adapter.addList(data)
     }
@@ -195,8 +196,14 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         } else if (data.status == 2)   {
             buttonSetLocationStatus?.text = getString(R.string.activate_location)
         }
+
         buttonSetLocationStatus?.setOnClickListener {
-            openBottomSheetAddressConfirmation(data)
+            if (data.status == 1) {
+                openBottomSheetAddressConfirmation(data)
+            } else {
+                bottomSheetAddressType?.dismiss()
+                viewModel.setShopLocationState(data.warehouseId, 1)
+            }
         }
     }
 
@@ -224,7 +231,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         tvDeactivateConfirmation?.text = getString(R.string.text_deactivate_confirmation, data.warehouseName)
         buttonBackAddressConfirm?.setOnClickListener { bottomSheetAddressConfirmation?.dismiss() }
         buttonDeactivateAddressConfirm?.setOnClickListener {
-            viewModel.setShopLocationState(data.warehouseId, data.status)
+            viewModel.setShopLocationState(data.warehouseId, 2)
             warehouseStatus = data.status
             warehouseName = data.warehouseName
             bottomSheetAddressConfirmation?.dismiss()
