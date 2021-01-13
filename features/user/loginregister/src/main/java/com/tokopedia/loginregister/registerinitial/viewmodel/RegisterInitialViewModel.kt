@@ -298,7 +298,7 @@ class RegisterInitialViewModel @Inject constructor(
             val params = activateUserUseCase.getParams(email, validateToken)
             val data = activateUserUseCase.getData(params).data
             when {
-                data.isSuccess -> {
+                data.isSuccess == 1 -> {
                     onSuccessActivateUser().invoke(data)
                 }
                 data.message.isNotEmpty() -> {
@@ -505,7 +505,7 @@ class RegisterInitialViewModel @Inject constructor(
     private fun onSuccessActivateUser(): (ActivateUserData) -> Unit {
         return {
             userSession.clearToken()
-            if (it.isSuccess &&
+            if (it.isSuccess == 1 &&
                     it.accessToken.isNotEmpty() &&
                     it.refreshToken.isNotEmpty() &&
                     it.tokenType.isNotEmpty()) {

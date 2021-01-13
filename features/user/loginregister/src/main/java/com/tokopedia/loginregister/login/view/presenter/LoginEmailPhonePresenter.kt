@@ -362,7 +362,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             val params = activateUserUseCase.getParams(email, validateToken)
             val data = activateUserUseCase.getData(params).data
             when {
-                data.isSuccess -> {
+                data.isSuccess == 1 -> {
                     view.onSuccessActivateUser(data)
                 }
                 data.message.isNotEmpty() -> {

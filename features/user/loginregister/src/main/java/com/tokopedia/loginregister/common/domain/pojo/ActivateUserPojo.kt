@@ -17,7 +17,7 @@ data class ActivateUserPojo(
 data class ActivateUserData(
         @SerializedName("is_success")
         @Expose
-        var isSuccess: Boolean = false,
+        var isSuccess: Int = 0,
         @SerializedName("message")
         @Expose
         var message: String = "",
