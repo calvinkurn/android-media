@@ -56,7 +56,6 @@
     <string name="cp_product_suggestion_title">Rekomendasi Barang Buatmu</string>
     <string name="cp_label_add_product">Masukkan Barang</string>
     <string name="cp_label_add_sticker">Aa</string>
-    <string name="cp_cancel">Batal</string>
 
     <string name="string_attach_product_warning_max_product_format">Hanya bisa masukkan %1$s barang ya.</string>
 </resources>
