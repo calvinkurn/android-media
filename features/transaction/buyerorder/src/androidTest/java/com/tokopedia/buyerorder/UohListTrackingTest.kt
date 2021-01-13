@@ -2,7 +2,6 @@ package com.tokopedia.buyerorder
 
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.idling.CountingIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
 import com.tokopedia.buyerorder.test.R
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -31,7 +30,6 @@ class UohListTrackingTest {
     var activityRule = ActivityTestRule(UohListActivity::class.java, false, false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val idlingResourceLogin: CountingIdlingResource = CountingIdlingResource(IDLING_RESOURCE)
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
@@ -48,14 +46,13 @@ class UohListTrackingTest {
     @After
     fun cleanup() {
         IdlingRegistry.getInstance().unregister(UohIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().unregister(idlingResourceLogin)
         activityRule.finishActivity()
     }
 
     @Test
     fun test_uoh_summary() {
-        activityRule.launchActivity(null)
         IdlingRegistry.getInstance().register(UohIdlingResource.countingIdlingResource)
+        activityRule.launchActivity(null)
         onIdle()
 
         val query = getJsonDataFromAsset(context, QUERY_SUMMARY_UOH)
