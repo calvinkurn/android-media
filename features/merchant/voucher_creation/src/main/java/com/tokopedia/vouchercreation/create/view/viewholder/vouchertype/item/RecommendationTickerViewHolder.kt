@@ -40,6 +40,7 @@ class RecommendationTickerViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.mvc_voucher_recommendation
+        private const val CTA_LENGTH = 8
     }
 
     override fun bind(element: RecommendationTickerUiModel?) {
@@ -77,7 +78,7 @@ class RecommendationTickerViewHolder(itemView: View,
                 }
             }
         }
-        ss.setSpan(clickableSpan, (text.length - 7), text.length , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        ss.setSpan(clickableSpan, (text.length - CTA_LENGTH), text.length , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         descView?.text = ss
         descView?.movementMethod = LinkMovementMethod.getInstance()
     }

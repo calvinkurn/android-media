@@ -158,9 +158,9 @@
     <string name="mvc_private_voucher_tips_trick_info"><![CDATA[Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.]]></string>
     <string name="mvc_public_voucher_tips_trick_info"><![CDATA[Kode promo akan tampil ditokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.]]></string>
     <string name="mvc_voucher_recommendation_title">Rekomendasi terbaik buat voucher tokomu</string>
-    <string name="mvc_voucher_recommendation">Gunakan rekomendasi di bawah berpotensi\nmeningkatkan <b>75 &#37;</b> penjualanmu, loh. </string>
+    <string name="mvc_voucher_recommendation">Yuk, tingkatkan minat pembeli dengan\npakai rekomendasi voucher dibawah ini.</string>
     <string name="mvc_voucher_recommendation_cta_title">Yuk, Gunakan Rekomendasi Voucher</string>
-    <string name="mvc_voucher_recommendation_cta">Gausah ribet bikin voucher! Kamu bisa\ngunakan rekomendasi dari kami. Gunakan</string>
+    <string name="mvc_voucher_recommendation_cta">Nggak palai ribet, tarik banyak pembeli\ndengan rekomendasi dari kami. Terapkan</string>
 
     <!-- common -->
     <string name="mvc_create_set_period">Tentukan periode voucher aktif</string>
