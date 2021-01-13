@@ -20,7 +20,6 @@ import dagger.Provides
  * Author errysuprayogi on 16,May,2019
  */
 @Module
-@AutoAdsScope
 class AutoAdsModule {
 
     @AutoAdsScope
