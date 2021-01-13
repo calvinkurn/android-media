@@ -21,7 +21,7 @@
         android:id="@+id/typography2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
         android:gravity="top"
         android:text="@string/edit_auto_ads_sheet_desc1"
         android:textColor="@color/topads_heading_color"

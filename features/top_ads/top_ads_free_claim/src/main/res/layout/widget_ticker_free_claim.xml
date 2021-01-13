@@ -14,7 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_top_ads_announcement"
-        android:layout_marginRight="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"/>
 
     <com.tokopedia.unifyprinciples.Typography
