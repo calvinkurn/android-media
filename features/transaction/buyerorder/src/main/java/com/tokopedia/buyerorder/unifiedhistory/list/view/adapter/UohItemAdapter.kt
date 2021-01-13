@@ -170,8 +170,6 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
         val diffUtil = UohDiffUtil(oldList, newList)
         val diffResult = DiffUtil.calculateDiff(diffUtil)
         diffResult.dispatchUpdatesTo(this)
-
-        // notifyDataSetChanged()
     }
 
     fun setActionListener(fragment: UohListFragment) {
