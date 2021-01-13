@@ -7,4 +7,8 @@ object ManagePasswordConstant {
 
     // WebView
     const val KEY_IS_CONTAINS_LOGIN_APPLINK = "is_contains_login_appljnk"
+
+    // Pref
+    const val KEY_MANAGE_PASSWORD = "KEY_MANAGE_PASSWORD"
+    const val IS_SUCCESS_RESET = "IS_SUCCESS_RESET"
 }

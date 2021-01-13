@@ -94,6 +94,8 @@ import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
+import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
+import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
@@ -691,6 +693,14 @@ open class HomeFragment : BaseDaggerFragment(),
             val floatingEggButtonFragment = floatingEggButtonFragment
             floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
         })
+
+        if (isSuccessReset()) {
+            view?.let {
+                Toaster.build(it, "Kata sandimu berhasil diubah, masuk ke Tokopedia lagi untuk lanjut bertransaksi.", 60000, Toaster.TYPE_NORMAL, "Oke", View.OnClickListener {
+                    saveStateReset(false)
+                })
+            }
+        }
     }
 
     private fun scrollToRecommendList() {
@@ -2310,6 +2320,26 @@ open class HomeFragment : BaseDaggerFragment(),
         }
         catch(throwable: Throwable) {
             ""
+        }
+    }
+
+    private fun isSuccessReset(): Boolean {
+        context?.let {
+            val isResetPasswordSuccess = it.getSharedPreferences(KEY_MANAGE_PASSWORD, Context.MODE_PRIVATE).getBoolean(IS_SUCCESS_RESET, false)
+            if (isResetPasswordSuccess) {
+                saveStateReset(false)
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun saveStateReset(state: Boolean) {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(KEY_MANAGE_PASSWORD, Context.MODE_PRIVATE)
+            sharedPrefs.run {
+                edit().putBoolean(IS_SUCCESS_RESET, state).apply()
+            }
         }
     }
 }

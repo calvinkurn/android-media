@@ -47,4 +47,9 @@ public class ConstantKey {
         public static final String VALUE_NEW_REVIEW_FLOW = "New Review Flow";
         public static final String AUTO_TRANSITION_VARIANT = "auto_transition";
     }
+
+    public class ResetPassword {
+        public static final String KEY_MANAGE_PASSWORD = "KEY_MANAGE_PASSWORD";
+        public static final String IS_SUCCESS_RESET = "IS_SUCCESS_RESET";
+    }
 }
