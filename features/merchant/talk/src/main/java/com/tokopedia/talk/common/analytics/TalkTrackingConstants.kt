@@ -23,6 +23,7 @@ object TalkTrackingConstants {
     const val TRACKING_POSITION = "position"
     const val TRACKING_PROMOTIONS = "promotions"
     const val TRACKING_CREATIVE = "creative"
+    const val TRACKING_CREATIVE_URL = "creative_url"
 
     const val EVENT_ACTION_CLICK = "click -"
     const val EVENT_TALK = "clickPDP"

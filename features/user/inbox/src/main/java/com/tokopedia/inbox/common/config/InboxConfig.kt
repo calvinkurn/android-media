@@ -11,7 +11,8 @@ object InboxConfig {
         private set
 
     @InboxFragmentType
-    var initialPage = InboxFragmentType.NOTIFICATION
+    var page = InboxFragmentType.NOTIFICATION
+
     var notifications: Notifications = Notifications()
     val inboxCounter get() = notifications.inboxCounter
 

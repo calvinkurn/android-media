@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.lifecycle.Observer
@@ -26,6 +28,7 @@ import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
+import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
@@ -66,6 +69,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
+    lateinit var topAdsAnalytic: NotificationTopAdsAnalytic
+
+    @Inject
     lateinit var analytic: NotificationAnalytic
 
     private var rvLm = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -86,7 +92,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun hasInitialSwipeRefresh(): Boolean = true
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
-    override fun getScreenName(): String = "Notification"
+    override fun getScreenName(): String = "/new-inbox/notif"
     override fun onItemClicked(t: Visitable<*>?) {}
     override fun isAutoLoadEnabled(): Boolean = true
 
@@ -122,7 +128,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         context?.let {
             trackingQueue = TrackingQueue(it)
             recommendationLifeCycleAware = RecommendationLifeCycleAware(
-                    analytic, trackingQueue, rvAdapter, viewModel, this, it
+                    topAdsAnalytic, trackingQueue, rvAdapter, viewModel, this, it
             )
         }
         rvTypeFactory?.recommendationListener = recommendationLifeCycleAware
@@ -178,7 +184,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     private fun initView(view: View) {
         rv = view.findViewById(R.id.recycler_view)
-        filter = view.findViewById(R.id.sv_filter)
+        filter = view.findViewById<NotificationFilterView>(R.id.sv_filter)?.also {
+            it.initConfig(analytic)
+        }
     }
 
     private fun setupObserver() {
@@ -320,6 +328,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun loadMoreNew(lastKnownPosition: Int, element: LoadMoreUiModel) {
+        analytic.trackLoadMoreNew()
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreNew(containerListener?.role,
                 {
@@ -336,6 +345,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
             lastKnownPosition: Int,
             element: LoadMoreUiModel
     ) {
+        analytic.trackLoadMoreEarlier()
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreEarlier(containerListener?.role,
                 {
@@ -421,6 +431,38 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     ) {
         createViewHolderState(notification, adapterPosition, product)
         viewModel.deleteReminder(product, notification)
+    }
+
+    override fun trackProductImpression(
+            notification: NotificationUiModel,
+            product: ProductData,
+            position: Int
+    ) {
+        analytic.trackProductImpression(notification, product, position)
+    }
+
+    override fun trackProductClick(
+            notification: NotificationUiModel,
+            product: ProductData,
+            position: Int
+    ) {
+        analytic.trackProductClick(notification, product, position)
+    }
+
+    override fun trackClickAtc(notification: NotificationUiModel, product: ProductData) {
+        analytic.trackClickAtc(notification, product)
+    }
+
+    override fun trackClickBuy(notification: NotificationUiModel, product: ProductData) {
+        analytic.trackClickBuy(notification, product)
+    }
+
+    override fun trackBumpReminder() {
+        analytic.trackBumpReminder()
+    }
+
+    override fun trackDeleteReminder() {
+        analytic.trackDeleteReminder()
     }
 
     private fun createViewHolderState(

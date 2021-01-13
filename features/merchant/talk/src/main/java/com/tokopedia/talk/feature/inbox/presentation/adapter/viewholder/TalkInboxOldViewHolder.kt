@@ -34,7 +34,7 @@ class TalkInboxOldViewHolder(
                 talkInboxViewHolderListener.onInboxItemImpressed(questionID, adapterPosition, isUnread)
             }
             itemView.setOnClickListener {
-                talkInboxViewHolderListener.onInboxItemClicked(null, element)
+                talkInboxViewHolderListener.onInboxItemClicked(null, element, adapterPosition)
             }
         }
     }

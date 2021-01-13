@@ -52,10 +52,10 @@ class TalkReplyViewHolder(view: View,
             showDisplayName(userName, userId, isSeller, element.shopId)
             showDate(createTimeFormatted)
             showLabelWithCondition(isSeller, element.isMyQuestion)
-            showAnswer(content, state.isMasked, maskedContent, state.allowUnmask)
+            showAnswer(content, state.isMasked, element.isSellerView, maskedContent, state.allowUnmask)
             showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
-            showUnmaskCardWithCondition(state.allowUnmask, answerID)
+            showMaskingState(state.isMasked, state.allowUnmask, maskedContent, answerID)
         }
     }
 
@@ -121,10 +121,10 @@ class TalkReplyViewHolder(view: View,
         return String.format(itemView.context.getString(R.string.talk_formatted_date), date)
     }
 
-    private fun showAnswer(answer: String, isMasked: Boolean, maskedContent: String, allowUnmask: Boolean) {
+    private fun showAnswer(answer: String, isMasked: Boolean, isSeller: Boolean, maskedContent: String, allowUnmask: Boolean) {
         if(isMasked) {
             itemView.replyMessage.apply {
-                text = if(allowUnmask) HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString() else maskedContent
+                text = if(allowUnmask || isSeller) HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString() else maskedContent
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 show()
             }
@@ -192,14 +192,26 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showUnmaskCardWithCondition(allowUnmask: Boolean, commentId: String) {
-        if(allowUnmask) {
-            itemView.replyCommentUnmaskCard.apply {
-                show()
-                setListener(this@TalkReplyViewHolder, commentId)
+    private fun showMaskingState(isMasked: Boolean, allowUnmask: Boolean, maskedContent: String, commentId: String) {
+        when {
+            isMasked && allowUnmask -> {
+                itemView.replyCommentUnmaskCard.apply {
+                    show()
+                    setListener(this@TalkReplyViewHolder, commentId)
+                }
+                itemView.replyCommentTicker.hide()
             }
-        } else {
-            itemView.replyCommentUnmaskCard.hide()
+            isMasked && !allowUnmask -> {
+                itemView.replyCommentTicker.apply {
+                    show()
+                    setTextDescription(maskedContent)
+                }
+                itemView.replyCommentUnmaskCard.hide()
+            }
+            else -> {
+                itemView.replyCommentUnmaskCard.hide()
+                itemView.replyCommentTicker.hide()
+            }
         }
     }
 }

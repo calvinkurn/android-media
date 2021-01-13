@@ -22,6 +22,6 @@ class InboxFragmentFactoryImpl : InboxFragmentFactory {
     }
 
     override fun createTalkInboxFragment(): Fragment {
-        return  TalkInboxFragment.createNewInstance(TalkInboxTab.TalkBuyerInboxTab())
+        return  TalkInboxFragment.createNewInstance()
     }
 }

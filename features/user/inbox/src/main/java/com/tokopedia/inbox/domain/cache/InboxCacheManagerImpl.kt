@@ -39,4 +39,18 @@ class InboxCacheManagerImpl @Inject constructor(
         }
     }
 
+    override fun saveCacheBoolean(key: String, bool: Boolean) {
+        sharedPreferences.edit()
+                .putBoolean(key, bool)
+                .apply()
+    }
+
+    override fun loadCacheBoolean(key: String): Boolean? {
+        return try {
+            return sharedPreferences.getBoolean(key, false)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
 }
