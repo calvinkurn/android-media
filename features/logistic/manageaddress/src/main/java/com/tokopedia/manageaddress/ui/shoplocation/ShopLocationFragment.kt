@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress.ui.shoplocation
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,7 @@ import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingsAddressActivity
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.BOTTOMSHEET_TITLE_ATUR_LOKASI
+import com.tokopedia.manageaddress.util.ShopLocationConstant.EDIT_WAREHOUSE_REQUEST_CODE
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -79,6 +81,13 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         initViews()
         initViewModel()
 //        fetchData()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == EDIT_WAREHOUSE_REQUEST_CODE ) {
+            viewModel.getShopLocationList(userSession?.shopId.toInt())
+        }
     }
 
     private fun checkWhitelistedUser() {
@@ -163,7 +172,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     private fun fetchData() {
 //        viewModel.getShopLocationList(480735)
-        viewModel.getShopLocationList(userSession.shopId.toIntOrNull())
+        viewModel.getShopLocationList(userSession.shopId.toInt())
     }
 
     private fun updateData(data: List<Warehouse>) {
@@ -321,7 +330,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
             intent.putExtra("EXTRA_LONG", data.latLon.substringAfter(",").toDouble())
         }
         intent.putExtra("EXTRA_WAREHOUSE_DATA", data)
-        startActivityForResult(intent, 121)
+        startActivityForResult(intent, EDIT_WAREHOUSE_REQUEST_CODE)
     }
 
 }

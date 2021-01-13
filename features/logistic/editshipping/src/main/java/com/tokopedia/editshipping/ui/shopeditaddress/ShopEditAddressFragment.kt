@@ -256,10 +256,11 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         viewModel.saveEditShop.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val intent = RouteManager.getIntent(
-                            activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS)
-                    startActivityForResult(intent, 1234)
                     view?.let { view -> Toaster.build(view, "Detail lokasi telah diubah", Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
+                    activity?.run {
+                        setResult(Activity.RESULT_OK)
+                        finish()
+                    }
                 }
                 is Fail -> {
                     view?.let { view -> Toaster.build(view, DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
