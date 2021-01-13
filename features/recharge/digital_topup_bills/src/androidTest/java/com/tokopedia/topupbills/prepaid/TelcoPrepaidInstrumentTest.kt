@@ -27,6 +27,8 @@ import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragm
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher
+import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.TelcoContactHelper
@@ -133,14 +135,14 @@ class TelcoPrepaidInstrumentTest {
         Thread.sleep(10000)
 //        val localCacheHandler = LocalCacheHandler(context, DigitalTelcoPrepaidFragment.PREFERENCES_NAME)
 //        if (!localCacheHandler.getBoolean(DigitalTelcoPrepaidFragment.TELCO_COACH_MARK_HAS_SHOWN, false)) {
-        onView(withId(R.id.simple_title)).check(matches(isDisplayed()))
-        onView(withId(R.id.step_next)).perform(click())
-        onView(withId(R.id.simple_title)).check(matches(isDisplayed()))
-        onView(withId(R.id.step_prev)).perform(click())
-        onView(withId(R.id.simple_title)).check(matches(isDisplayed()))
-        onView(withId(R.id.step_next)).perform(click())
-        onView(withId(R.id.simple_title)).check(matches(isDisplayed()))
-        onView(withId(R.id.step_next)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.simple_title),0)).check(matches(isDisplayed()))
+        onView(getElementFromMatchAtPosition(withId(R.id.step_next), 0)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.simple_title),0)).check(matches(isDisplayed()))
+        onView(getElementFromMatchAtPosition(withId(R.id.step_prev), 0)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.simple_title),0)).check(matches(isDisplayed()))
+        onView(getElementFromMatchAtPosition(withId(R.id.step_next), 0)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.simple_title),0)).check(matches(isDisplayed()))
+        onView(getElementFromMatchAtPosition(withId(R.id.step_next), 0)).perform(click())
 //        }
     }
 
