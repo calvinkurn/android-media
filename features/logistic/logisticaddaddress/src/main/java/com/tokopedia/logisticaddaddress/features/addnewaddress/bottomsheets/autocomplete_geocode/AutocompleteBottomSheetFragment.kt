@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -59,7 +60,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var token: Token? = null
-    private var saveAddressDataModel: SaveAddressDataModel? = null
+    private var saveAddressDataModel = SaveAddressDataModel()
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -80,7 +81,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
             isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
             isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
             token = it.getParcelable(KERO_TOKEN)
-            saveAddressDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
         }
     }
 
@@ -205,6 +205,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
         }
     }
 
+    @SuppressLint("FragmentLiveDataObserve")
     private fun setObservers() {
         viewModel.autoCompleteList.observe(this, Observer {
             when(it) {
@@ -255,7 +256,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
     }
 
     private fun hideListLocation() {
-        llPoi.visibility = View.GONE
+        rvPoiList.visibility = View.GONE
         llLoading.visibility = View.GONE
     }
 
@@ -265,7 +266,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
     }
 
     private fun showLoadingList() {
-        llPoi.visibility = View.GONE
+        rvPoiList.visibility = View.GONE
         llLoading.visibility = View.VISIBLE
     }
 
@@ -274,13 +275,13 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
         rvPoiList.visibility = View.VISIBLE
         mDisabledGps.visibility = View.GONE
         if (suggestedPlaces.data.isNotEmpty()) {
-            llPoi.visibility = View.VISIBLE
+            rvPoiList.visibility = View.VISIBLE
             adapter.addAutoComplete(suggestedPlaces.data)
         }
     }
 
     private fun goToAddNewAddressNegative() {
-        val saveModel = getUnnamedRoadModelFormat(saveAddressDataModel)
+        val saveModel = getUnnamedRoadModelFormat()
 
         Intent(context, AddEditAddressActivity::class.java).apply {
             putExtra(EXTRA_IS_MISMATCH, true)
@@ -304,9 +305,9 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
         AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList(isFullFlow, isLogisticLabel)
     }
 
-    private fun getUnnamedRoadModelFormat(data: SaveAddressDataModel?): SaveAddressDataModel? {
-        val fmt = data?.formattedAddress?.replaceAfter("Unnamed Road, ", "")
-        return fmt?.let { data.copy(formattedAddress = it, selectedDistrict = fmt) }
+    private fun getUnnamedRoadModelFormat(): SaveAddressDataModel? {
+        val fmt = saveAddressDataModel.formattedAddress.replaceAfter("Unnamed Road, ", "")
+        return saveAddressDataModel.copy(formattedAddress = fmt, selectedDistrict = fmt)
     }
 
     private fun showLocationInfoBottomSheet() {

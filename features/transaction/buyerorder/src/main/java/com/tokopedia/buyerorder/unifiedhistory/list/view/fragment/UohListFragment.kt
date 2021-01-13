@@ -432,6 +432,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
                     paramUohOrder.searchableText = s.toString()
                     refreshHandler?.startRefresh()
+                    scrollRecommendationListener.resetState()
                     userSession.userId?.let { UohAnalytics.submitSearch(s.toString(), it) }
                 }
             }
@@ -817,6 +818,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             resetMsg?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
             resetFilter()
             refreshHandler?.startRefresh()
+            scrollRecommendationListener.resetState()
             userSession.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
         }
 
@@ -957,6 +959,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         if (!onLoadMore) {
             uohItemAdapter.addList(listOrder)
+            scrollRecommendationListener.resetState()
         } else {
             uohItemAdapter.appendList(listOrder)
             scrollRecommendationListener.updateStateAfterGetData()
@@ -1121,6 +1124,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 bottomSheetOption?.dismiss()
                 isFirstLoad = false
                 refreshHandler?.startRefresh()
+                scrollRecommendationListener.resetState()
             }
         }
 
@@ -1582,6 +1586,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onEmptyResultResetBtnClicked() {
         resetFilter()
         refreshHandler?.startRefresh()
+        scrollRecommendationListener.resetState()
         userSession.userId?.let { UohAnalytics.clickResetFilterOnEmptyFilterResult(it) }
     }
 
