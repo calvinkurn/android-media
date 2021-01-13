@@ -210,7 +210,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 is Loading -> showLoading()
                 is ErrorMessage -> {
                     hideLoading()
-                    onError(it.data, NetworkDetector.isConnectedToInternet(context))
+                    onError(1, NetworkDetector.isConnectedToInternet(context))
                 }
                 is Success -> {
                     hideLoading()
@@ -223,10 +223,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     })
 
-    override fun onError(error: String, hasInternet: Boolean) {
+    override fun onError(error: Int, hasInternet: Boolean) {
         if (mContainerMain != null) {
             mContainerMain?.displayedChild = CONTAINER_ERROR
-            serverErrorView?.showErrorUi(hasInternet)
+            serverErrorView?.showErrorUi(hasInternet,error)
         }
     }
     private fun initViews(view: View) {
@@ -295,7 +295,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
         if (topSectionData?.tokopediaRewardTopSection?.dynamicActionList.isNullOrEmpty() &&
                 topSectionData?.tokopediaRewardTopSection?.tier != null && sections.isEmpty()) {
-            onError("", true)
+            onError(1, true)
             return
         }
         mContainerMain?.displayedChild = CONTAINER_MAIN

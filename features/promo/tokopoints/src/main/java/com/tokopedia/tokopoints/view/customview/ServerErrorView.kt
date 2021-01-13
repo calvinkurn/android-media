@@ -7,8 +7,11 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.NestedScrollView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.unifycomponents.ImageUnify
 
@@ -23,6 +26,7 @@ class ServerErrorView : NestedScrollView {
     private var buttonFontSize: Int? = null
     private var buttonColor: Int? = null
     private var buttonFontColor: Int? = null
+    private var containerToolbar: Toolbar?= null
 
     constructor(context: Context) : super(context) {
         init(null)
@@ -71,9 +75,13 @@ class ServerErrorView : NestedScrollView {
         tvLabelError = findViewById(R.id.text_label_error)
         btnError = findViewById(R.id.text_failed_action)
         errorBackArrow = findViewById(R.id.iv_back_error)
+        containerToolbar = findViewById(R.id.top_container)
     }
 
-    fun showErrorUi(hasInternet: Boolean) {
+    fun showErrorUi(hasInternet: Boolean, error: Int = 0) {
+        if (error == 1) {
+            containerToolbar?.show()
+        }
         var noConnectionImageId = com.tokopedia.globalerror.R.drawable.unify_globalerrors_500
         if (!hasInternet) {
             noConnectionImageId = com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
