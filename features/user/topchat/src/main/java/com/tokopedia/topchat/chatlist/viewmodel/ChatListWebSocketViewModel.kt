@@ -17,13 +17,13 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ChatListWebSocketViewModel @Inject constructor(
-        dispatchers: TopchatCoroutineContextProvider,
         webSocket: TopChatWebSocket,
         private val userSession: UserSessionInterface,
+        private val dispatchers: TopchatCoroutineContextProvider,
         private val pendingMessageHandler: PendingMessageHandler
 ) : WebSocketViewModel(
-        dispatchers,
-        webSocket
+        webSocket,
+        dispatchers
 ), LifecycleObserver {
 
     val pendingMessages get() = pendingMessageHandler.pendingMessages

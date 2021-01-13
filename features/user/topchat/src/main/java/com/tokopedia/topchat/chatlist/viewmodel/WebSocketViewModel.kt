@@ -22,8 +22,8 @@ import javax.inject.Inject
  */
 
 open class WebSocketViewModel @Inject constructor(
-        protected val dispatchers: TopchatCoroutineContextProvider,
-        protected val webSocket: TopChatWebSocket
+        protected val webSocket: TopChatWebSocket,
+        dispatchers: TopchatCoroutineContextProvider
 ) : BaseViewModel(dispatchers.ioDispatcher), LifecycleObserver {
 
     protected val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()

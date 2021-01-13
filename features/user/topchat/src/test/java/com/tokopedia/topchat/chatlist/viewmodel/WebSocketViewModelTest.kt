@@ -3,16 +3,14 @@ package com.tokopedia.topchat.chatlist.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.inboxcommon.util.FileUtil
+import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.websocket.WebSocketResponse
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -26,9 +24,8 @@ class WebSocketViewModelTest {
     @get:Rule val rule = InstantTaskExecutorRule()
 
     private val webSocket: TopChatWebSocket = mockk(relaxed = true)
-    private val dispatchers = TopchatCoroutineContextProvider()
-
-    private val viewModel = WebSocketViewModel(dispatchers, webSocket)
+    private val dispatchers = TopchatTestCoroutineContextDispatcher()
+    private val viewModel = WebSocketViewModel(webSocket, dispatchers)
 
     private val itemChatObserver: Observer<Result<BaseIncomingItemWebSocketModel>> = mockk(relaxed = true)
 
@@ -39,6 +36,10 @@ class WebSocketViewModelTest {
     @Test fun `connectWebSocket should be do nothing`() {
         runBlocking {
             // Given
+            val channel = Channel<WebSocketResponse>()
+            launch { channel.send(eventReplyMessage) }
+            coEvery { webSocket.createWebSocket() } returns channel
+
             viewModel.isOnStop = true
 
             // When
@@ -122,7 +123,7 @@ class WebSocketViewModelTest {
         assertTrue(viewModel.itemChat.value == null)
     }
 
-    @Test fun `onStop should return isStop true`() {
+    @Test fun `onStop should return isOnStop true`() {
         // When
         viewModel.onStop()
 
@@ -130,12 +131,29 @@ class WebSocketViewModelTest {
         assertTrue(viewModel.isOnStop)
     }
 
-    @Test fun `onStart should return isStop false`() {
+    @Test fun `onStart should return isOnStop false`() {
         // When
         viewModel.onStart()
 
         // Then
         assertTrue(!viewModel.isOnStop)
+    }
+
+    @Test fun `onCleared should cancelling the webSocket`() {
+        // Given
+        val viewModelSpyk = spyk(WebSocketViewModelTest())
+        every { webSocket.cancel() } just runs
+
+        // When
+        viewModelSpyk.onClearedTest()
+
+        // Then
+        verify(exactly = 1) { webSocket.cancel() }
+    }
+
+    internal inner class WebSocketViewModelTest
+        : WebSocketViewModel(webSocket, dispatchers) {
+        fun onClearedTest() = onCleared()
     }
 
     companion object {
