@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorder
 
-import android.app.Application
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.idling.CountingIdlingResource
@@ -39,18 +38,11 @@ class UohListTrackingTest {
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
 
-        IdlingRegistry.getInstance().register(idlingResourceLogin)
-        IdlingRegistry.getInstance().register(UohIdlingResource.countingIdlingResource)
-
         setupGraphqlMockResponse {
             addMockResponse(KEY_UOH_ORDERS, InstrumentationMockHelper.getRawString(context, R.raw.response_mock_uoh_orders_succeed_manual), MockModelConfig.FIND_BY_CONTAINS)
         }
 
-        InstrumentationAuthHelper.loginToAnUser(context.applicationContext as Application, idlingResourceLogin)
-        onIdle()
-
-        activityRule.launchActivity(null)
-        onIdle()
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
     }
 
     @After
@@ -62,6 +54,10 @@ class UohListTrackingTest {
 
     @Test
     fun test_uoh_summary() {
+        activityRule.launchActivity(null)
+        IdlingRegistry.getInstance().register(UohIdlingResource.countingIdlingResource)
+        onIdle()
+
         val query = getJsonDataFromAsset(context, QUERY_SUMMARY_UOH)
                 ?: throw AssertionError("Validator Query not found")
 
