@@ -35,7 +35,6 @@ import rx.subscriptions.CompositeSubscription
 /**
  * @author by nisie on 13/11/18.
  */
-@UserIdentificationCommonScope
 @Module(includes = [
     ImageUploaderModule::class,
     MediaUploaderModule::class,

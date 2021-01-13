@@ -30,7 +30,6 @@ import javax.inject.Named
 /**
  * A class module for dagger recommendation page
  */
-@WishlistScope
 @Module(includes = [TopAdsWishlistModule::class])
 open class WishlistModule {
     @WishlistScope

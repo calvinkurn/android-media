@@ -14,7 +14,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@MerchantReportScope
 @Module(includes = [ViewModelModule::class, MediaUploaderModule::class])
 class MerchantReportModule {
 
