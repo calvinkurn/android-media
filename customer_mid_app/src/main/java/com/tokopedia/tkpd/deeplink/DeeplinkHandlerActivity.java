@@ -327,10 +327,16 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     private void logWebViewApplink() {
         Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
-        String uriString = DeeplinkUtils.INSTANCE.getDataUri(this).toString();
-        String domain = getUrlToLoad(uri).getHost();
-        if (uriString.contains(ApplinkConst.WEBVIEW) && !getBaseDomain(domain).equalsIgnoreCase(TOKOPEDIA_DOMAIN)) {
-            Timber.w(APPLINK_LOG_FORMAT, domain, uri);
+        if(uri.toString().contains(ApplinkConst.WEBVIEW)) {
+            Uri urlToLoad = getUrlToLoad(uri);
+            if(urlToLoad != null) {
+                String domain = urlToLoad.getHost();
+                if(domain != null) {
+                    if (!getBaseDomain(domain).equalsIgnoreCase(TOKOPEDIA_DOMAIN)) {
+                        Timber.w(APPLINK_LOG_FORMAT, domain, uri);
+                    }
+                }
+            }
         }
     }
 
