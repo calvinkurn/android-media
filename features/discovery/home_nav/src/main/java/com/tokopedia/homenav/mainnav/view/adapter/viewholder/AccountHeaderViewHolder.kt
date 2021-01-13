@@ -124,7 +124,7 @@ class AccountHeaderViewHolder(itemView: View,
         btnTryAgain.gone()
         shimmerShopInfo.gone()
 
-        userImage.loadImageCircle(element.userImage)
+        userImage.setImageUrl(url = element.userImage)
         userImage.isClickable = false
         tvName.isClickable = false
         if (element.isGetUserNameError) {

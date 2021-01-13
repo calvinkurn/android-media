@@ -10,12 +10,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductMenuAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder.ProductMenuListener
 import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -44,7 +44,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     private var sellerFeatureCarouselListener: SellerFeatureCarousel.SellerFeatureClickListener? = null
     private var menuAdapter: ProductMenuAdapter? = null
     private var sellerFeatureCarousel: SellerFeatureCarousel? = null
-    private var product: ProductViewModel? = null
+    private var product: ProductUiModel? = null
     private var isPowerMerchantOrOfficialStore: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -116,7 +116,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     }
 
     private fun createProductManageMenu(
-        product: ProductViewModel,
+        product: ProductUiModel,
         isPowerMerchantOrOfficialStore: Boolean
     ): List<Visitable<*>> {
         val menuList = mutableListOf<Visitable<*>>()
@@ -151,9 +151,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
 
                     add(CreateBroadcastChat(product))
 
-                    if(access.setCashBack) {
-                        add(SetCashBack(product))
-                    }
+                    add(SetCashBack(product))
 
                     if(isFeatured && isPowerMerchantOrOfficialStore && access.setFeatured) {
                         add(RemoveFeaturedProduct(product))
@@ -178,7 +176,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         this.sellerFeatureCarouselListener = sellerFeatureCarouselListener
     }
 
-    fun show(fm: FragmentManager, product: ProductViewModel, isPowerMerchantOrOfficialStore: Boolean) {
+    fun show(fm: FragmentManager, product: ProductUiModel, isPowerMerchantOrOfficialStore: Boolean) {
         this.product = product
         this.isPowerMerchantOrOfficialStore = isPowerMerchantOrOfficialStore
         show(fm, TAG)

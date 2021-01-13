@@ -76,12 +76,16 @@ class ChatAppWidget : AppWidgetProvider() {
     }
 
     override fun onEnabled(context: Context) {
-        AppWidgetHelper.setChatAppWidgetEnabled(context, true)
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+        cacheHandler.putBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, true)
+        cacheHandler.applyEditor()
         super.onEnabled(context)
     }
 
     override fun onDisabled(context: Context) {
-        AppWidgetHelper.setChatAppWidgetEnabled(context, false)
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+        cacheHandler.putBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, false)
+        cacheHandler.applyEditor()
         super.onDisabled(context)
     }
 

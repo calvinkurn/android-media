@@ -20,9 +20,9 @@ import com.tokopedia.product.manage.data.createEditVariantResult
 import com.tokopedia.product.manage.data.createGetVariantResponse
 import com.tokopedia.product.manage.data.createOptionResponse
 import com.tokopedia.product.manage.data.createProduct
+import com.tokopedia.product.manage.data.createProductUiModel
 import com.tokopedia.product.manage.data.createProductVariant
 import com.tokopedia.product.manage.data.createProductVariantResponse
-import com.tokopedia.product.manage.data.createProductViewModel
 import com.tokopedia.product.manage.data.createSelectionResponse
 import com.tokopedia.product.manage.data.createShopOwnerAccess
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
@@ -30,7 +30,7 @@ import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductRespo
 import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
 import com.tokopedia.product.manage.feature.list.data.model.Header
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.Active
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel.Active
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
@@ -339,7 +339,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.getProductList(shopId)
 
             val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
-            val productViewModelList = listOf(createProductViewModel(
+            val productViewModelList = listOf(createProductUiModel(
                 name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice, topAds = topAdsInfo))
             val expectedProductList = Success(productViewModelList)
 

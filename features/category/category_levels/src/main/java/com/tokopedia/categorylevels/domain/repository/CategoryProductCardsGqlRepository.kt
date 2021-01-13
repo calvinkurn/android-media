@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.datamapper.getPageInfo
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -28,7 +29,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         val page = queryParamterMap[RPC_PAGE_NUMBER] as String
         val filters = getComponent(componentId, pageEndPoint)?.selectedFilters
         val recommendationData =
-                recommendationUseCase.getData(createRequestParams(page, pageEndPoint, filters))
+                recommendationUseCase.getData(createRequestParams(page, getPageInfo(pageEndPoint).id.toString(), filters))
         return mapRecommendationToDiscoveryResponse(recommendationData)
     }
 
