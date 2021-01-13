@@ -1,6 +1,5 @@
 package com.tokopedia.recentview.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +18,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.recentview.R
 import com.tokopedia.recentview.analytics.RecentViewTracking
 import com.tokopedia.recentview.di.DaggerRecentViewComponent
@@ -83,8 +80,8 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
                     is Success -> {
                         if (it.data.isNotEmpty()) {
                             val visitableList: ArrayList<Visitable<*>> = ArrayList(it.data)
+                            RecentViewTracking.trackEventImpressionOnProductRecentView(activity, it.data)
                             onSuccessGetRecentView(visitableList)
-                            sendRecentViewImpressionTracking(it.data)
                         } else {
                             onEmptyGetRecentView()
                         }
@@ -142,27 +139,12 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         RecentViewTracking.trackEventOpenScreen(context)
     }
 
-    override fun onWishlistClicked(adapterPosition: Int, productId: Int, isWishlist: Boolean) {
+    fun onWishlistClicked(adapterPosition: Int, productId: Int, isWishlist: Boolean) {
         showLoadingProgress()
         if (!isWishlist) {
             viewModel.addToWishlist(adapterPosition, productId.toString())
         } else {
             viewModel.removeFromWishlist(adapterPosition, productId.toString())
-        }
-    }
-
-    override fun onGoToProductDetail(productId: String,
-                                     productName: String,
-                                     productPrice: String,
-                                     productImage: String) {
-        activity?.startActivity(getProductIntent(productId))
-    }
-
-    private fun getProductIntent(productId: String): Intent? {
-        return if (context != null) {
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-        } else {
-            null
         }
     }
 
@@ -181,7 +163,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         }
     }
 
-    override fun onSuccessGetRecentView(recentViewProductViewModels: ArrayList<Visitable<*>>) {
+    private fun onSuccessGetRecentView(recentViewProductViewModels: ArrayList<Visitable<*>>) {
         adapter.dismissLoading()
         adapter.addList(recentViewProductViewModels)
         adapter.notifyDataSetChanged()
@@ -193,7 +175,8 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
     }
 
     override fun sendRecentViewClickTracking(element: RecentViewDetailProductDataModel) {
-        RecentViewTracking.trackEventClickOnProductRecentView(activity,
+        activity?.let {
+            RecentViewTracking.trackEventClickOnProductRecentView(it,
                 DataLayer.mapOf(
                         "name", element.name,
                         "id", element.productId,
@@ -203,26 +186,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
                         "position", element.positionForRecentViewTracking.toString()
                 )
         )
-    }
-
-    override fun sendRecentViewImpressionTracking(recentViewDetailProductDataModel: List<RecentViewDetailProductDataModel>) {
-        RecentViewTracking.trackEventImpressionOnProductRecentView(activity,
-                getRecentViewAsDataLayerForImpression(recentViewDetailProductDataModel))
-    }
-
-    private fun getRecentViewAsDataLayerForImpression(recentViewDetailProductDataModel: List<RecentViewDetailProductDataModel>): List<Any> {
-        val objects: MutableList<Any> = ArrayList()
-        for (model in recentViewDetailProductDataModel) {
-            objects.add(DataLayer.mapOf(
-                    "name", model.name,
-                    "id", model.productId,
-                    "price", model.price.convertRupiahToInt().toString(),
-                    "list", "/recent",
-                    "brand", DEFAULT_VALUE_NONE_OTHER,
-                    "category", "",
-                    "position", model.positionForRecentViewTracking.toString()))
         }
-        return objects
     }
 
     private fun onErrorAddWishList(errorMessage: String) {
