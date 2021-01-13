@@ -209,12 +209,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When check has original variant level Expect should return expected result`() {
-        viewModel.hasOriginalVariantLevel = true
-        assertEquals(true, viewModel.hasOriginalVariantLevel)
-    }
-
-    @Test
     fun `When update product photos Expect updated product photos`() {
         var pictureInputModel = PictureInputModel().apply {
             urlOriginal = "www.blank.com"

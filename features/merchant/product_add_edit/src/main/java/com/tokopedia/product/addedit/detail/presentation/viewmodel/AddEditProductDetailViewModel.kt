@@ -523,7 +523,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         } else {
             val result = specificationNames.take(MAX_SPECIFICATION_COUNTER).joinToString(", ")
             if (specificationNames.size > MAX_SPECIFICATION_COUNTER) {
-                result + provider.getProductSpecificationCounter(specificationNames.size - 5)
+                result + provider.getProductSpecificationCounter(specificationNames.size - MAX_SPECIFICATION_COUNTER)
             } else {
                 result
             }

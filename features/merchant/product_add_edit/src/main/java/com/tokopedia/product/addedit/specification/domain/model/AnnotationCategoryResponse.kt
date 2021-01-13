@@ -10,43 +10,9 @@ data class AnnotationCategoryResponse (
 )
 
 data class DrogonAnnotationCategoryV2 (
-		@SerializedName("header")
-		@Expose
-		val header : Header,
-
-		@SerializedName("categoryID")
-		@Expose
-		val categoryID : Int,
-
-		@SerializedName("productID")
-		@Expose
-		val productID : Int,
-
-		@SerializedName("vendorName")
-		@Expose
-		val vendorName : String,
-
 		@SerializedName("data")
 		@Expose
 		val data : List<AnnotationCategoryData>
-)
-
-data class Header (
-		@SerializedName("processTime")
-		@Expose
-		val processTime : String,
-
-		@SerializedName("messages")
-		@Expose
-		val messages : List<String>,
-
-		@SerializedName("reason")
-		@Expose
-		val reason : String,
-
-		@SerializedName("errorCode")
-		@Expose
-		val errorCode : String
 )
 
 data class AnnotationCategoryData (
@@ -78,9 +44,5 @@ data class Values (
 
 		@SerializedName("data")
 		@Expose
-		val data : String,
-
-		@SerializedName("isAgg")
-		@Expose
-		val isAgg : Boolean
+		val data : String
 )

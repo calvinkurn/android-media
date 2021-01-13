@@ -9,6 +9,7 @@ import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
+import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -42,6 +43,9 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     lateinit var saveShopShipmentLocationUseCase: ShopOpenRevampSaveShipmentLocationUseCase
 
     @RelaxedMockK
+    lateinit var annotationCategoryUseCase: AnnotationCategoryUseCase
+
+    @RelaxedMockK
     lateinit var getProductMapper: GetProductMapper
 
     @RelaxedMockK
@@ -62,6 +66,7 @@ abstract class AddEditProductPreviewViewModelTestFixture {
                 validateProductNameUseCase,
                 getShopInfoLocationUseCase,
                 saveShopShipmentLocationUseCase,
+                annotationCategoryUseCase,
                 CoroutineTestDispatchersProvider)
     }
 

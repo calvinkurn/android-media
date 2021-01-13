@@ -18,10 +18,14 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryResponse
+import com.tokopedia.product.addedit.specification.domain.model.DrogonAnnotationCategoryV2
+import com.tokopedia.product.addedit.specification.domain.model.Values
+import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -54,6 +58,9 @@ class AddEditProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var getShopEtalaseUseCase: GetShopEtalaseUseCase
+
+    @RelaxedMockK
+    lateinit var annotationCategoryUseCase: AnnotationCategoryUseCase
 
     @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
@@ -106,7 +113,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     private val viewModel: AddEditProductDetailViewModel by lazy {
-        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase)
+        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase, annotationCategoryUseCase)
     }
 
     @Test
@@ -902,6 +909,139 @@ class AddEditProductDetailViewModelTest {
             val expectedResponse = Success(listOf<ShopEtalaseModel>())
             val actualResponse = viewModel.shopShowCases.getOrAwaitValue()
             assertEquals(expectedResponse, actualResponse)
+        }
+    }
+
+    @Test
+    fun `getAnnotationCategory should return unfilled data when productId is not provided`() = runBlocking {
+        val annotationCategoryData = listOf<AnnotationCategoryData>()
+
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } returns AnnotationCategoryResponse(
+                DrogonAnnotationCategoryV2(annotationCategoryData)
+        )
+
+        viewModel.getAnnotationCategory("", "")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+        Assert.assertTrue(result is Success)
+
+        if (result is Success) {
+            viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val specificationText = viewModel.specificationText.getOrAwaitValue()
+            Assert.assertTrue(specificationText.isEmpty())
+        }
+    }
+
+    @Test
+    fun `getAnnotationCategory should return specification data when productId is provided`() = runBlocking {
+        val annotationCategoryData = listOf(
+                AnnotationCategoryData(
+                        variant = "Merek",
+                        data = listOf(
+                                Values(1, "Indomie", true, ""),
+                                Values(1, "Seedap", false, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa",
+                        data = listOf(
+                                Values(1, "Soto", false, ""),
+                                Values(1, "Bawang", true, ""))
+                )
+        )
+
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } returns AnnotationCategoryResponse(
+                DrogonAnnotationCategoryV2(annotationCategoryData)
+        )
+
+        viewModel.getAnnotationCategory("", "11090")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+        Assert.assertTrue(result is Success)
+
+        if (result is Success) {
+            viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val specificationText = viewModel.specificationText.getOrAwaitValue()
+            Assert.assertEquals("Indomie, Bawang", specificationText)
+        }
+    }
+
+    @Test
+    fun `getAnnotationCategory should return simplified specification data when having more than 5 specification`() = runBlocking {
+        val annotationCategoryData = listOf(
+                AnnotationCategoryData(
+                        variant = "Merek",
+                        data = listOf(
+                                Values(1, "Indomie", true, ""),
+                                Values(1, "Seedap", false, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa1",
+                        data = listOf(
+                                Values(1, "Soto1", false, ""),
+                                Values(1, "Bawang1", true, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa2",
+                        data = listOf(
+                                Values(1, "Soto2", false, ""),
+                                Values(1, "Bawang2", true, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa3",
+                        data = listOf(
+                                Values(1, "Soto3", false, ""),
+                                Values(1, "Bawang3", true, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa4",
+                        data = listOf(
+                                Values(1, "Soto4", false, ""),
+                                Values(1, "Bawang4", true, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa5",
+                        data = listOf(
+                                Values(1, "Soto5", false, ""),
+                                Values(1, "Bawang5", true, ""))
+                )
+        )
+
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } returns AnnotationCategoryResponse(
+                DrogonAnnotationCategoryV2(annotationCategoryData)
+        )
+
+        every { provider.getProductSpecificationCounter(any()) } returns ", +1 lainnya"
+
+        viewModel.getAnnotationCategory("", "11090")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+        Assert.assertTrue(result is Success)
+
+        if (result is Success) {
+            viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val specificationText = viewModel.specificationText.getOrAwaitValue()
+            Assert.assertEquals("Indomie, Bawang1, Bawang2, Bawang3, Bawang4, +1 lainnya", specificationText)
         }
     }
 
