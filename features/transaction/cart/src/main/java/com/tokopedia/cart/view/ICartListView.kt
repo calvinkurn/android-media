@@ -9,8 +9,6 @@ import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData
 import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -36,8 +34,6 @@ interface ICartListView : CustomerView {
     fun getAllSelectedCartDataList(): List<CartItemData>?
 
     fun getCartId(): String
-
-    fun getInsuranceCartShopData(): ArrayList<InsuranceCartDigitalProduct>?
 
     fun showProgressLoading()
 
@@ -101,14 +97,6 @@ interface ICartListView : CustomerView {
     fun setHasTriedToLoadRecommendation()
 
     fun triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataResponseModel: AddToCartDataModel, productModel: Any)
-
-    fun renderInsuranceCartData(insuranceCartResponse: InsuranceCartResponse?, isRecommendation: Boolean)
-
-    fun removeInsuranceProductItem(productId: List<Long>)
-
-    fun showMessageRemoveInsuranceProductSuccess()
-
-    fun showMessageUpdateInsuranceProductSuccess()
 
     fun getAdsId(): String?
 
