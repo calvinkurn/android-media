@@ -49,7 +49,7 @@ data class ProductNotifyMeDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
         return if (newData is ProductNotifyMeDataModel) {
-            if (campaignID != newData.campaignID) {
+            if (campaignID != newData.campaignID && startDate != newData.startDate && campaignTypeName != newData.campaignTypeName && campaignType != newData.campaignType) {
                 //Update the whole data
                 return null
             }

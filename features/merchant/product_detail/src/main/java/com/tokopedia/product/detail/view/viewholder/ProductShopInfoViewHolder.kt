@@ -54,7 +54,7 @@ class ProductShopInfoViewHolder(private val view: View, private val listener: Dy
             return
         }
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE -> shopInfoView.enableButton()
+            ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE -> shopInfoView.enableButton() // Will only invoke if fail follow shop
             else -> {
                 shopInfoView.updateFavorite(element.isFavorite)
             }

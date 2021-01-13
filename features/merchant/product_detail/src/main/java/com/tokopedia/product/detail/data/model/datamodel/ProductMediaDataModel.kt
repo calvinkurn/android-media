@@ -30,7 +30,12 @@ data class ProductMediaDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductMediaDataModel) {
-            listOfMedia.hashCode() == newData.listOfMedia.hashCode()
+            val isMediaTheSame = listOfMedia.hashCode() == newData.listOfMedia.hashCode()
+            if (isMediaTheSame) {
+                // we dont want to re-render the data if its bind because the data are same
+                newData.shouldRefreshViewPagger = false
+            }
+            isMediaTheSame
         } else {
             false
         }

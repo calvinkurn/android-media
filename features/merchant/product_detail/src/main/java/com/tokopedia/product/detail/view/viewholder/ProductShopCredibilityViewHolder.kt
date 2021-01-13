@@ -63,7 +63,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
             return
         }
         when (payloads[0] as Int) {
-            PAYLOAD_TOOGLE_FAVORITE -> enableButton()
+            PAYLOAD_TOOGLE_FAVORITE -> enableButton() //Will only invoke if fail follow shop
             else -> {
                 renderFollow(element.isFavorite)
             }

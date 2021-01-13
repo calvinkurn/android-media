@@ -130,7 +130,8 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
 
             updateData(ProductDetailConstant.MEDIA, loadInitialData) {
                 mediaMap?.run {
-                    shouldRenderImageVariant = true
+                    shouldRenderImageVariant = !loadInitialData
+
                     listOfMedia = if (enableVideo) {
                         DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
                     } else {
@@ -368,7 +369,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
 
     }
 
-    fun updateNotifyMeButton(notifyMe:Boolean) {
+    fun updateNotifyMeButton(notifyMe: Boolean) {
         updateData(ProductDetailConstant.UPCOMING_DEALS) {
             notifyMeMap?.notifyMe = !notifyMe
         }
