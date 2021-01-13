@@ -66,4 +66,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_unify"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl8"
+        app:layout_constraintBottom_toTopOf="@id/btn_submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        app:loader_type="circular" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

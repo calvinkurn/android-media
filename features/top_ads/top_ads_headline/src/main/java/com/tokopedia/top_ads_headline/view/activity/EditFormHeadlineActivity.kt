@@ -3,13 +3,17 @@ package com.tokopedia.top_ads_headline.view.activity
 import android.app.Activity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.Constants.ACTION_EDIT
 import com.tokopedia.top_ads_headline.Constants.AD_AND_KEYWORD_COST
@@ -29,6 +33,7 @@ import com.tokopedia.top_ads_headline.view.viewmodel.EditFormHeadlineViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,6 +49,7 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
     private lateinit var adapter: TopAdsEditPagerAdapter
 
     private lateinit var submitButton: UnifyButton
+    private lateinit var loaderUnify: LoaderUnify
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -60,8 +66,10 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topads_edit_headline_activity)
         submitButton = findViewById(R.id.btn_submit)
+        loaderUnify = findViewById(R.id.loader_unify)
         component.inject(this)
         setUpToolbar()
+        showLoader()
         getDataFromIntent()
         setUpObservers()
         fetchAdDetails()
@@ -98,7 +106,7 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
         }
     }
 
-    private fun onSuccess(){
+    private fun onSuccess() {
         setResult(Activity.RESULT_OK)
         finish()
     }
@@ -126,6 +134,19 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
     private fun setUpObservers() {
         editFormHeadlineViewModel = ViewModelProvider(this, viewModelFactory).get(EditFormHeadlineViewModel::class.java)
         sharedEditHeadlineViewModel = ViewModelProvider(this, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
+        sharedEditHeadlineViewModel.getEditHeadlineAdLiveData().observe(this, Observer {
+            hideLoader()
+        })
+    }
+
+    private fun showLoader() {
+        loaderUnify.show()
+        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+
+    private fun hideLoader() {
+        loaderUnify.hide()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     private fun onError(message: String) {
