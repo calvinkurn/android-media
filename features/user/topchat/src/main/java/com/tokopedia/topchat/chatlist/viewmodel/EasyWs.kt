@@ -14,10 +14,14 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * @author : Steven 2019-08-09
  */
+
+@Deprecated("please use TopchatWebSocket instead")
 class EasyWS(val webSocket: WebSocket, val response: Response) {
     val textChannel = Channel<WebSocketResponse>()
 }
 
+
+@Deprecated("please use TopchatWebSocket instead")
 suspend fun OkHttpClient.easyWebSocket(url: String, accessToken: String) = suspendCoroutine<EasyWS> {
     val TAG = "coroutineWebSocket"
     var easyWs: EasyWS? = null
