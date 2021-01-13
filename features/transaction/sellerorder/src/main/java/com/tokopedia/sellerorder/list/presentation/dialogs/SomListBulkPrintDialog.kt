@@ -4,7 +4,9 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.dialog_multi_print_awb.*
 
 class SomListBulkPrintDialog(context: Context) {
@@ -27,6 +29,8 @@ class SomListBulkPrintDialog(context: Context) {
                     dismiss()
                 }
                 btnSomListBulkPrintDialogSecondaryButton?.setOnClickListener {
+                    val userSession = UserSession(context)
+                    SomAnalytics.eventClickCancelOnBulkPrintAwb(userSession.userId)
                     dismiss()
                 }
             }

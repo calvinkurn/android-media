@@ -678,6 +678,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         setListener(this@SomListFragment)
                         show()
                     }
+                    SomAnalytics.eventClickBulkPrintAwb(userSession.userId)
                 }
             }
         }
@@ -690,6 +691,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 markAsPrinted,
                 remoteConfig.getString("android_som_print_url_staging", "https://186-staging-feature.tokopedia.com/shipping-label"),
                 remoteConfig.getString("android_som_print_url_beta", "https://110-beta-feature.tokopedia.com/shipping-label"))
+        SomAnalytics.eventClickYesOnBulkPrintAwb(userSession.userId)
     }
 
     private fun setDefaultSortByValue() {
