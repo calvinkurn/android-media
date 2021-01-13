@@ -113,7 +113,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             ::getVoucherReviewUiModel,
                             isCreateNew,
                             isEditVoucher))
-            put(VoucherCreationStepInfo.STEP_TWO,
+                put(VoucherCreationStepInfo.STEP_TWO,
                     PromotionBudgetAndTypeFragment.createInstance(
                             ::setVoucherBenefit,
                             ::setVoucherRecommendationStatus,

@@ -49,12 +49,14 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                            setRecommendationStatus: (Int) -> Unit,
                            onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                            context: Context,
-                           getVoucherReviewUiModel: () -> VoucherReviewUiModel?) = CashbackVoucherCreateFragment().apply {
+                           getVoucherReviewUiModel: () -> VoucherReviewUiModel?,
+                           isCreateNew: Boolean) = CashbackVoucherCreateFragment().apply {
             this.onNextStep = onNextStep
             this.setRecommendationStatus = setRecommendationStatus
             this.onShouldChangeBannerValue = onShouldChangeBannerValue
             viewContext = context
             this.getVoucherReviewUiModel = getVoucherReviewUiModel
+            this.isCreateNew = isCreateNew
 
             getVoucherReviewUiModel()?.run {
                 voucherImageType = voucherType
@@ -68,8 +70,6 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
         }
 
         private const val INPUT_FIELD_ADAPTER_SIZE = 1
-
-        private const val TICKER_INDEX_POSITION = 0
     }
 
     private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _, _, _ -> }
@@ -77,6 +77,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     private var onShouldChangeBannerValue: (VoucherImageType) -> Unit = { _ -> }
     private var viewContext = context
     private var getVoucherReviewUiModel: () -> VoucherReviewUiModel? = { null }
+    private var isCreateNew: Boolean = true
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -95,11 +96,6 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     private val voucherTitleUiModel by lazy {
         VoucherTitleUiModel(context?.getString(R.string.mvc_create_cashback).toBlankOrString())
     }
-
-    // Commented temporary because of product requirement
-//    private val promoDescTickerModel by lazy {
-//        PromotionTypeTickerUiModel(R.string.mvc_create_promo_type_cashback_ticker, ::onDismissTicker)
-//    }
 
     private val recommendationTickerUiModel by lazy {
         RecommendationTickerUiModel(true)
@@ -461,32 +457,58 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
             observe(viewModel.idrVoucherRecommendationResult) { result ->
                 when (result) {
                     is Success -> {
+
                         val recommendationData = result.data
-                        updateTextFieldValues(CashbackType.Rupiah, recommendationData)
                         viewModel.updateVoucherRecommendation(CashbackType.Rupiah, recommendationData)
-                        rupiahCashbackTextFieldList.forEach { uiModel ->
-                            viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
+
+                        val isActiveCashBackType = activeCashbackType is CashbackType.Rupiah
+
+                        // only applied the recommendation data for :
+                        // 1. new voucher creation process
+                        // 2. inactive cash back type
+                        if (isCreateNew || !isActiveCashBackType) {
+                            updateTextFieldValues(CashbackType.Rupiah, recommendationData)
+                            rupiahCashbackTextFieldList.forEach { uiModel ->
+                                viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
+                            }
+                            // only render the recommendation data if the cash back type is active
+                            if (isActiveCashBackType) adapter.notifyDataSetChanged()
                         }
-                        if (activeCashbackType == CashbackType.Rupiah) adapter.notifyDataSetChanged()
+                        // only change the ticker content based on the active cash back type
+                        if (isActiveCashBackType) viewModel.updateRecommendationStatus(CashbackType.Rupiah)
                     }
                     is Fail -> {
                         viewModel.updateVoucherRecommendation(CashbackType.Rupiah, viewModel.getStaticRecommendationData())
+                        if (activeCashbackType is CashbackType.Rupiah) viewModel.updateRecommendationStatus(CashbackType.Rupiah)
                     }
                 }
             }
             observe(viewModel.percentageVoucherRecommendationResult) { result ->
                 when (result) {
                     is Success -> {
+
                         val recommendationData = result.data
-                        updateTextFieldValues(CashbackType.Percentage, recommendationData)
                         viewModel.updateVoucherRecommendation(CashbackType.Percentage, recommendationData)
-                        percentageCashbackTextFieldList.forEach { uiModel ->
-                            viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
+
+                        val isActiveCashBackType = activeCashbackType is CashbackType.Percentage
+
+                        // only applied the recommendation data for :
+                        // 1. new voucher creation process
+                        // 2. inactive cash back type
+                        if (isCreateNew || !isActiveCashBackType) {
+                            updateTextFieldValues(CashbackType.Percentage, recommendationData)
+                            percentageCashbackTextFieldList.forEach { uiModel ->
+                                viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
+                            }
+                            // only render the recommendation data if the cash back type is active
+                            if (isActiveCashBackType) adapter.notifyDataSetChanged()
                         }
-                        if (activeCashbackType == CashbackType.Percentage) adapter.notifyDataSetChanged()
+                        // only change the ticker content based on the active cash back type
+                        if (isActiveCashBackType) viewModel.updateRecommendationStatus(CashbackType.Percentage)
                     }
                     is Fail -> {
                         viewModel.updateVoucherRecommendation(CashbackType.Percentage, viewModel.getStaticRecommendationData())
+                        if (activeCashbackType is CashbackType.Percentage) viewModel.updateRecommendationStatus(CashbackType.Percentage)
                     }
                 }
             }
@@ -585,14 +607,6 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
             KeyboardHandler.hideSoftKeyboard(this)
         }
         expensesInfoBottomSheetFragment.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment::class.java.name)
-    }
-
-    private fun onCloseTicker() {
-        VoucherCreationTracking.sendCreateVoucherClickTracking(
-                step = VoucherCreationStep.BENEFIT,
-                action = VoucherCreationAnalyticConstant.EventAction.Click.CLOSE_INFO_SECTION,
-                userId = userSession.userId
-        )
     }
 
     override fun onClickableSpanClicked() {

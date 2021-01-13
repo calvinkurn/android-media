@@ -112,7 +112,7 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     }
 
     private val cashbackVoucherCreateFragment by lazy {
-        context?.let { CashbackVoucherCreateFragment.createInstance(onNextStep, setRecommendationStatus, ::onShouldChangeBannerValue, it, getVoucherReviewData) }
+        context?.let { CashbackVoucherCreateFragment.createInstance(onNextStep, setRecommendationStatus, ::onShouldChangeBannerValue, it, getVoucherReviewData, isCreateNew) }
     }
 
     private val impressHolder = ImpressHolder()
