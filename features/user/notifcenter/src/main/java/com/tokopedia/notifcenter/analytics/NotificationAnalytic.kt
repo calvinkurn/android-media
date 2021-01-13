@@ -81,7 +81,9 @@ class NotificationAnalytic @Inject constructor(
                     dimension40 = null,
                     dimension87 = null,
                     dimension88 = null,
-                    stringCollection = emptyMap()
+                    stringCollection = mapOf(
+                            "dimension79" to product.shop.id.toString()
+                    )
             )
         }
 
@@ -120,7 +122,9 @@ class NotificationAnalytic @Inject constructor(
                         index = position.toLong(),
                         keyDimension40 = "",
                         stringCollection = hashMapOf(
-                                Product.KEY_LIST to LIST_NOTIFCENTER
+                                Product.KEY_LIST to LIST_NOTIFCENTER,
+                                "dimension79" to product.shop.id.toString(),
+                                "attribution" to ""
                         )
                 )
         )
