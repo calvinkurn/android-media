@@ -37,6 +37,7 @@ object ImagePickerAddEditNavigation {
                     this.imagePickerEditorBuilder = ImagePickerEditorBuilder.getSimpleEditBuilder().apply {
                         belowMinResolutionErrorMessage = context.getString(R.string.error_image_under_x_resolution, DEFAULT_MIN_RESOLUTION, DEFAULT_MIN_RESOLUTION)
                         imageTooLargeErrorMessage = context.getString(R.string.error_image_too_large, (AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB / 1024))
+                        convertToWebp = true
                     }
                     this.imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
                             usePrimaryImageString = true,

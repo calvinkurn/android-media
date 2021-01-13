@@ -41,6 +41,7 @@ import com.tokopedia.digital.newcart.presentation.model.cart.CartItemDigital;
 import com.tokopedia.digital.newcart.presentation.model.cart.UserInputPriceDigital;
 import com.tokopedia.digital.newcart.presentation.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.empty_state.EmptyStateUnify;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.utils.ErrorHandler;
@@ -59,6 +60,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
         implements DigitalBaseContract.View,
@@ -94,7 +96,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     protected P presenter;
 
-    protected GlobalError errorView;
+    protected EmptyStateUnify emptyState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -482,20 +484,18 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void showError(String message) {
-        if (errorView != null) {
-            errorView.setActionClickListener(view -> {
-                errorView.setVisibility(View.GONE);
+        if (emptyState != null) {
+            emptyState.setDescription(message);
+            emptyState.setPrimaryCTAClickListener(() -> {
+                emptyState.setVisibility(View.GONE);
                 presenter.onViewCreated();
                 return Unit.INSTANCE;
             });
 
-            int errorType = GlobalError.Companion.getSERVER_ERROR();
-            if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)) {
-                errorType = GlobalError.Companion.getNO_CONNECTION();
-            }
-            errorView.setType(errorType);
-
-            errorView.setVisibility(View.VISIBLE);
+            emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500));
+            emptyState.setPrimaryCTAText(getString(R.string.digital_empty_state_checkout_btn));
+            emptyState.setTitle(getString(R.string.digital_empty_state_checkout_title));
+            emptyState.setVisibility(View.VISIBLE);
         }
     }
 
