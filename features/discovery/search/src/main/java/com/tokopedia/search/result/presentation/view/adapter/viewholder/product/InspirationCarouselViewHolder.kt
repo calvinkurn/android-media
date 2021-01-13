@@ -88,13 +88,9 @@ class InspirationCarouselViewHolder(
 
     private fun createGridProductList(option: InspirationCarouselViewModel.Option): List<Visitable<*>> {
         val list = mutableListOf<Visitable<*>>()
-        if(shouldAddBannerCard(option)) list.add(createBannerOption(option))
+        if(option.shouldAddBannerCard()) list.add(createBannerOption(option))
         list.addAll(option.product)
         return list
-    }
-
-    private fun shouldAddBannerCard(option: InspirationCarouselViewModel.Option): Boolean {
-        return option.bannerImageUrl.isNotEmpty() && option.title.isNotEmpty()
     }
 
     private fun createBannerOption(option: InspirationCarouselViewModel.Option): InspirationCarouselViewModel.Option {
