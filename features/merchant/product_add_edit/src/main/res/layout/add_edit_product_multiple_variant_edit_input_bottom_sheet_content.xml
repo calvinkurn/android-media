@@ -11,6 +11,7 @@
         android:id="@+id/ticker_multiple_variant_multi_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:tickerType="information"
         app:tickerShapeType="loose"
         app:closeButtonVisibility="gone"

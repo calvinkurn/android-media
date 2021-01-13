@@ -18,6 +18,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS
@@ -86,6 +87,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         (userSession.isShopOwner || userSession.isShopAdmin) && userSession.isMultiLocationShop
     }
 
+    private var multiLocationTicker: Ticker? = null
+
     override fun getScreenName(): String {
         return ""
     }
@@ -125,7 +128,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         // set bg color programatically, to reduce overdraw
         context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
-        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
+        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_variant_multi_location)
+        multiLocationTicker?.showWithCondition(couldShowMultiLocationTicker)
+
+        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this, couldShowMultiLocationTicker)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
@@ -360,7 +366,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun showMultipleEditBottomSheet() {
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
-        val bottomSheet = MultipleVariantEditSelectBottomSheet(this)
+        val bottomSheet = MultipleVariantEditSelectBottomSheet(this, couldShowMultiLocationTicker)
         val hasWholesale = viewModel.hasWholesale.value ?: false
         bottomSheet.setData(variantInputModel)
         bottomSheet.setEnableEditSku(switchUnifySku.isChecked)
