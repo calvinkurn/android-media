@@ -67,7 +67,6 @@ typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder
  * */
 class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener {
     private var mContainerMain: ViewFlipper? = null
-    private var mContainerData: ViewFlipper? = null
     private var mPagerPromos: RecyclerView? = null
 
     @Inject
@@ -146,25 +145,27 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     private fun hideStatusBar() {
-        coordinatorLayout!!.fitsSystemWindows = false
+        coordinatorLayout?.fitsSystemWindows = false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            coordinatorLayout!!.requestApplyInsets()
+            coordinatorLayout?.requestApplyInsets()
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            var flags = coordinatorLayout!!.systemUiVisibility
-            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            coordinatorLayout!!.systemUiVisibility = flags
-            activity!!.window.statusBarColor = Color.WHITE
+            var flags = coordinatorLayout?.systemUiVisibility
+            flags = flags?.or(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+            if (flags != null) {
+                coordinatorLayout?.systemUiVisibility = flags
+            }
+            activity?.window?.statusBarColor = Color.WHITE
         }
         if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
             setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
         }
         if (Build.VERSION.SDK_INT >= 19) {
-            activity!!.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
         if (Build.VERSION.SDK_INT >= 21) {
             setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-            activity!!.window.statusBarColor = Color.TRANSPARENT
+            activity?.window?.statusBarColor = Color.TRANSPARENT
         }
     }
 
@@ -209,12 +210,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 is Loading -> showLoading()
                 is ErrorMessage -> {
                     hideLoading()
-                    val internetStatus = NetworkDetector.isConnectedToInternet(context)
-                    if (!internetStatus) {
-                        onError(it.data, internetStatus)
-                    } else {
-                        showEmptyState()
-                    }
+                    onError(it.data, NetworkDetector.isConnectedToInternet(context))
                 }
                 is Success -> {
                     hideLoading()
@@ -233,16 +229,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             serverErrorView?.showErrorUi(hasInternet)
         }
     }
-
-    private fun showEmptyState() {
-        if (mContainerMain != null) {
-            mContainerMain?.displayedChild = CONTAINER_MAIN
-            mContainerData?.displayedChild = CONTAINER_EMPTYSTATE
-            globalerror_view.setActionClickListener {
-                mPresenter.getTokoPointDetail()
-            }
-        }
-    }
     private fun initViews(view: View) {
         coordinatorLayout = view.findViewById(R.id.container)
         mContainerMain = view.findViewById(R.id.container_main)
@@ -251,8 +237,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         statusBarBgView = view.findViewById(R.id.status_bar_bg)
         tokoPointToolbar = view.findViewById(R.id.toolbar_tokopoint)
         serverErrorView = view.findViewById(R.id.server_error_view)
-        mContainerData = view.findViewById(R.id.container_data)
-
 
         setStatusBarViewHeight()
     }
@@ -264,6 +248,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         view?.findViewById<View>(R.id.img_egg)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_membership_value)?.setOnClickListener(this)
         serverErrorView?.setErrorButtonClickListener { mPresenter.getTokoPointDetail() }
+        serverErrorView?.setErrorBackButtonClickListener { activity?.onBackPressed() }
     }
 
     override fun openWebView(url: String) {
@@ -307,8 +292,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun renderRewardUi(topSectionData: TopSectionResponse?,sections: List<SectionContent>) {
+
+        if (topSectionData?.tokopediaRewardTopSection?.dynamicActionList.isNullOrEmpty() &&
+                topSectionData?.tokopediaRewardTopSection?.tier != null && sections.isEmpty()) {
+            onError("", true)
+            return
+        }
         mContainerMain?.displayedChild = CONTAINER_MAIN
-        mContainerData?.displayedChild = CONTAINER_DATA
         addDynamicToolbar(topSectionData?.tokopediaRewardTopSection?.dynamicActionList)
 
         if (adapter == null) {
@@ -500,8 +490,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_MAIN = 1
         private const val CONTAINER_ERROR = 2
-        private const val CONTAINER_DATA = 0
-        private const val CONTAINER_EMPTYSTATE = 1
 
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()
