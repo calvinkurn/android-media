@@ -5,6 +5,7 @@ object TopAdsDashboardConstant {
     const val PARAM_START_DATE = "startDate"
     const val PARAM_END_DATE = "endDate"
     const val PATH_DASHBOARD_STATISTIC = "/v1.1/dashboard/statistics"
+    const val PARAM_SOURCE_CREDIT_HISTORY = "dashboard_credit_history_app"
 
     const val SHOP_ID = "shopId"
     const val OFFSCREEN_PAGE_LIMIT = 3

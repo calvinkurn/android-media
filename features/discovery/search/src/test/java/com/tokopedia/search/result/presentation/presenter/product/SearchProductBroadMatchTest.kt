@@ -391,6 +391,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val expectedTopSeparatorPosition = -1
         val expectedBottomSeparatorPosition = 5
         val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
+
         `Test broad match with position`(
                 searchProductModelPage1, searchProductModelPage2,
                 expectedTopSeparatorPosition, expectedBottomSeparatorPosition
@@ -405,10 +406,11 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val expectedTopSeparatorPosition = 4
         val expectedBottomSeparatorPosition = 10
         val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
-            `Test broad match with position`(
-                    searchProductModelPage1, searchProductModelPage2,
-                    expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
-            { expectedSuggestionViewModelPosition }
+
+        `Test broad match with position`(
+                searchProductModelPage1, searchProductModelPage2,
+                expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
+        { expectedSuggestionViewModelPosition }
     }
 
     @Test
@@ -419,6 +421,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val expectedTopSeparatorPosition = 12
         val expectedBottomSeparatorPosition = 18
         val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
+
         `Test broad match with position`(
                 searchProductModelPage1, searchProductModelPage2,
                 expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
@@ -439,7 +442,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         `When load first page and load more data`(visitableList)
 
-        var expectedSuggestionViewModelPosition = getExpectedSuggestionViewModelPosition(visitableList)
+        val expectedSuggestionViewModelPosition = getExpectedSuggestionViewModelPosition(visitableList)
 
         `Then assert top separator view model is positioned before suggestion`(expectedTopSeparatorPosition, expectedSuggestionViewModelPosition, visitableList)
 

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
@@ -68,6 +69,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
@@ -87,6 +89,7 @@ import com.tokopedia.search.result.presentation.view.listener.SearchNavigationLi
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
+import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
@@ -103,6 +106,7 @@ import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 
@@ -141,7 +145,8 @@ public class ProductListFragment
         QuickFilterElevation,
         SortFilterBottomSheet.Callback,
         SearchInTokopediaListener,
-        SearchNavigationClickListener {
+        SearchNavigationClickListener,
+        TopAdsImageViewListener  {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -315,7 +320,8 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this,
-                this, this, this, this, this,
+                this, this, this,
+                this, this, this,
                 topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
@@ -1385,8 +1391,12 @@ public class ProductListFragment
     }
 
     @Override
-    public void onInspirationCarouselGridBannerClicked(@NotNull InspirationCarouselViewModel.Option product) {
-        redirectionStartActivity(product.getBannerApplinkUrl(), product.getBannerLinkUrl());
+    public void onInspirationCarouselGridBannerClicked(@NotNull InspirationCarouselViewModel.Option option) {
+        redirectionStartActivity(option.getBannerApplinkUrl(), option.getBannerLinkUrl());
+
+        SearchTracking.trackEventClickInspirationCarouselGridBanner(
+                option.getInspirationCarouselType(), getQueryKey(), option.getBannerDataLayer(getQueryKey()), getUserId()
+        );
     }
 
     @Override
@@ -1444,20 +1454,20 @@ public class ProductListFragment
 
     @Override
     public void showMessageSuccessWishlistAction(boolean isWishlisted) {
-        if (isWishlisted) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
-        }
+        if (getView() == null) return;
+
+        if (isWishlisted)
+            Toaster.build(getView(), getString(R.string.msg_add_wishlist), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+        else Toaster.build(getView(), getString(R.string.msg_remove_wishlist), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
     }
 
     @Override
-    public void showMessageFailedWishlistAction(boolean isWishlisited) {
-        if (isWishlisited) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist_failed));
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist_failed));
-        }
+    public void showMessageFailedWishlistAction(boolean isWishlisted) {
+        if (getView() == null) return;
+
+        if (isWishlisted)
+            Toaster.build(getView(), getString(R.string.msg_add_wishlist_failed), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show();
+        else Toaster.build(getView(), getString(R.string.msg_remove_wishlist_failed), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show();
     }
 
     @Override
@@ -1809,5 +1819,28 @@ public class ProductListFragment
 
         staggeredGridLayoutManager.setSpanCount(2);
         adapter.changeSearchNavigationDoubleGridView(position);
+    }
+
+    @Override
+    public void onTopAdsImageViewImpressed(
+            String className,
+            @NotNull SearchProductTopAdsImageViewModel searchTopAdsImageViewModel
+    ) {
+        if (className == null || getContext() == null) return;
+
+        new TopAdsUrlHitter(getContext()).hitImpressionUrl(
+                className,
+                searchTopAdsImageViewModel.getTopAdsImageViewModel().getAdViewUrl(),
+                "",
+                "",
+                searchTopAdsImageViewModel.getTopAdsImageViewModel().getImageUrl()
+        );
+    }
+
+    @Override
+    public void onTopAdsImageViewClick(@NotNull SearchProductTopAdsImageViewModel searchTopAdsImageViewModel) {
+        if (getContext() == null) return;
+
+        RouteManager.route(getContext(), searchTopAdsImageViewModel.getTopAdsImageViewModel().getApplink());
     }
 }

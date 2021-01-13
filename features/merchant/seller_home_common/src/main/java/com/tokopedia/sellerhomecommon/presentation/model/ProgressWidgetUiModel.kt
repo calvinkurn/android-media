@@ -27,4 +27,8 @@ class ProgressWidgetUiModel(
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun copy(): BaseWidgetUiModel<ProgressDataUiModel> {
+        return ProgressWidgetUiModel(widgetType, title, appLink, subtitle, tooltip, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+    }
 }

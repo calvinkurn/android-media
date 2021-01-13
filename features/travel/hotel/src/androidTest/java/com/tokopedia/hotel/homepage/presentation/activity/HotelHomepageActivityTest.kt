@@ -36,6 +36,7 @@ import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Co
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_TYPE
 import com.tokopedia.hotel.homepage.presentation.activity.mock.HotelHomepageMockResponseConfig
 import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
+import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
@@ -90,7 +91,6 @@ class HotelHomepageActivityTest {
         clickSubmitButton()
 
         slidePromoBanner()
-        clickPromoBanner()
 
         clickRecentSearchWidget()
 
@@ -106,17 +106,17 @@ class HotelHomepageActivityTest {
     private fun clickOnChangeDestination() {
         Thread.sleep(4000)
         intending(hasComponent(HotelDestinationActivity::class.java.name)).respondWith(createDummyDestination())
-        onView(withId(R.id.tv_hotel_homepage_destination)).perform(ViewActions.click())
+        onView(withTagStringValue(R.id.tv_hotel_homepage_destination.toString())).perform(ViewActions.click())
         intended(AllOf.allOf(hasComponent(HotelDestinationActivity::class.java.name)))
 
-        onView(withId(R.id.tv_hotel_homepage_destination)).check(matches(withText("Jakarta")))
+        onView(withTagStringValue(R.id.tv_hotel_homepage_destination.toString())).check(matches(withText("Jakarta")))
 
         Thread.sleep(2000)
     }
 
     private fun modifyGuestAndRoomCount() {
         Thread.sleep(1000)
-        onView(withId(R.id.tv_hotel_homepage_guest_info)).perform(ViewActions.click())
+        onView(withTagStringValue(R.id.tv_hotel_homepage_guest_info.toString())).perform(ViewActions.click())
         Thread.sleep(1000)
 
         onView(AllOf.allOf(withId(R.id.image_button_plus),
@@ -142,6 +142,7 @@ class HotelHomepageActivityTest {
         if (getBannerItemCount() > 0) {
             onView(withId(R.id.banner_hotel_homepage_promo)).perform(nestedScrollTo())
             onView(withId(R.id.banner_hotel_homepage_promo)).check(matches(isDisplayed()))
+            onView(withId(R.id.banner_hotel_homepage_promo)).perform(click())
             Thread.sleep(1000)
         } else {
             Thread.sleep(1000)
@@ -159,14 +160,6 @@ class HotelHomepageActivityTest {
         return recyclerView.adapter?.itemCount ?: 0
     }
 
-    private fun clickPromoBanner() {
-        Thread.sleep(2000)
-
-        if (getBannerItemCount() > 0) {
-            onView(withId(R.id.banner_hotel_homepage_promo)).perform(click())
-        }
-    }
-
     private fun clickRecentSearchWidget() {
         Thread.sleep(4000)
 
@@ -178,7 +171,7 @@ class HotelHomepageActivityTest {
 
     private fun changeDate() {
         Thread.sleep(3000)
-        onView(withId(R.id.tv_hotel_homepage_checkout_date)).perform(click())
+        onView(withTagStringValue(R.id.tv_hotel_homepage_checkout_date.toString())).perform(click())
 
         Thread.sleep(3000)
         val cal = Calendar.getInstance()
@@ -241,7 +234,7 @@ class HotelHomepageActivityTest {
                 try {
                     val nestedScrollView = findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView?
                     if (nestedScrollView != null) {
-                        nestedScrollView.scrollTo(0, view.top)
+                        nestedScrollView.scrollTo(0, view.top + view.measuredHeight + 250)
                     } else {
                         throw java.lang.Exception("Unable to find NestedScrollView parent.")
                     }
