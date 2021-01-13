@@ -82,7 +82,7 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     @Override
     protected void setupView(View view) {
         progressBar = view.findViewById(R.id.progress_bar);
-        errorView = view.findViewById(R.id.view_error);
+        emptyState = view.findViewById(R.id.empty_state);
         containerLayout = view.findViewById(R.id.container);
         categoryTextView = view.findViewById(R.id.tv_category_name);
         detailHolderView = view.findViewById(R.id.view_cart_detail);

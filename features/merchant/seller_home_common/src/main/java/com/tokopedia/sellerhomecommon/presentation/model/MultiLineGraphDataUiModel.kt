@@ -11,7 +11,11 @@ data class MultiLineGraphDataUiModel(
         override var error: String = "",
         override var isFromCache: Boolean = false,
         val metrics: List<MultiLineMetricUiModel> = emptyList()
-) : BaseDataUiModel
+) : BaseDataUiModel {
+    override fun shouldRemove(): Boolean {
+        return !isFromCache && metrics.all { it.yAxis.all { it.yValue == 0f } }
+    }
+}
 
 data class MultiLineMetricUiModel(
         val isError: Boolean = true,

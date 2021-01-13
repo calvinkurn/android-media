@@ -988,16 +988,15 @@ class AddEditProductPreviewFragment :
                     if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
                         viewModel.productInputModel.value?.apply {
                             startProductEditService(this)
-                            showLoading()
-                            Handler().postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                         }
                     } else {
                         viewModel.productInputModel.value?.let { productInputModel ->
                             startProductAddService(productInputModel)
                             activity?.setResult(RESULT_OK)
-                            activity?.finish()
                         }
                     }
+                    showLoading()
+                    Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                 }
                 ValidationResultModel.Result.VALIDATION_ERROR -> {
                     view?.let { Toaster.make(it, result.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }

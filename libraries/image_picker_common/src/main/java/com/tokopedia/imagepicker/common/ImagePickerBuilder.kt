@@ -35,6 +35,7 @@ data class ImagePickerBuilder(
 
     fun isCirclePreview() = imagePickerEditorBuilder?.circlePreview ?: false
     fun getRatioOptionList() = imagePickerEditorBuilder?.imageRatioTypeList ?: arrayListOf()
+    fun getConvertToWebp() = imagePickerEditorBuilder?.convertToWebp ?: false
 
     fun withSimpleEditor():ImagePickerBuilder {
         imagePickerEditorBuilder = ImagePickerEditorBuilder.getSimpleEditBuilder()
@@ -81,6 +82,7 @@ data class ImagePickerEditorBuilder(
         var belowMinResolutionErrorMessage: String = "",
         var imageTooLargeErrorMessage: String = "",
         var recheckSizeAfterResize: Boolean = false,
+        var convertToWebp: Boolean = false
 ) : Parcelable {
     companion object {
         fun getSimpleEditBuilder(): ImagePickerEditorBuilder {

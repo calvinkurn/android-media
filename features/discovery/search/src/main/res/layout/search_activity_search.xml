@@ -21,6 +21,141 @@
         app:toolbarContentType="typeSearchbar"
         app:toolbarInitialTheme="light" />
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="?attr/actionBarSize"
+        app:contentInsetLeft="@dimen/dp_0"
+        app:contentInsetStart="@dimen/dp_0"
+        app:contentInsetRight="@dimen/dp_0"
+        app:contentInsetEnd="@dimen/dp_0"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_4"
+        android:background="@color/Unify_N0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:titleTextColor="@color/Unify_N700_68">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/action_up_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginLeft="@dimen/dp_12"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/searchTextView"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/search_ic_back" />
+
+            <TextView
+                android:id="@+id/searchTextView"
+                android:contentDescription="@string/content_desc_searchTextView"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_weight="1"
+                android:background="@drawable/search_bg_autocomplete_input"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/dp_28"
+                android:paddingLeft="@dimen/dp_28"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingEnd="@dimen/dp_32"
+                android:paddingRight="@dimen/dp_32"
+                android:paddingBottom="@dimen/dp_8"
+                android:textSize="@dimen/sp_14"
+                android:inputType="none"
+                android:focusable="false"
+                android:enabled="true"
+                android:focusableInTouchMode="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/Unify_N700_96"
+                android:textColorHint="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/action_up_btn"
+                app:layout_constraintRight_toLeftOf="@id/search_home_button"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/search_ic_search"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_4"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="@id/searchTextView"
+                app:srcCompat="@drawable/search_ic_search" />
+
+            <View
+                android:layout_width="@dimen/dp_1"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+            <ImageView
+                android:id="@+id/search_home_button"
+                android:contentDescription="@string/content_desc_search_home_button"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:scaleType="centerInside"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/searchTextView"
+                app:layout_constraintRight_toLeftOf="@id/search_cart_button"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_product_discovery_home_grayscale_24" />
+
+            <ImageView
+                android:id="@+id/search_cart_button"
+                android:contentDescription="@string/content_desc_search_cart_button"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:scaleType="centerInside"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/search_home_button"
+                app:layout_constraintRight_toLeftOf="@id/search_change_grid_button"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/search_ic_cart" />
+
+            <ImageView
+                android:id="@+id/search_change_grid_button"
+                android:contentDescription="@string/content_desc_search_change_grid_button"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/search_cart_button"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/search_ic_grid" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/searchBottomToolbarBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="toolbar, searchNavigationToolbar" />
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressBar"
         android:layout_width="@dimen/dp_50"
@@ -40,7 +175,7 @@
         android:layout_height="@dimen/dp_0"
         android:orientation="vertical"
         android:background="@color/Unify_N0"
-        app:layout_constraintTop_toBottomOf="@id/searchNavigationToolbar"
+        app:layout_constraintTop_toBottomOf="@id/searchBottomToolbarBarrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
