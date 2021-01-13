@@ -59,6 +59,10 @@ class TopAdsTabAdapter(private val context: Context) : RecyclerView.Adapter<TabL
         else -> context.getString(R.string.label_top_ads_conversion)
     }
 
+    fun setItemLayout(@LayoutRes itemLayout: Int) {
+        this.itemLayout = itemLayout
+    }
+
     fun setListener(listener: OnRecyclerTabItemClick) {
         this.listener = listener
     }
@@ -82,6 +86,12 @@ class TopAdsTabAdapter(private val context: Context) : RecyclerView.Adapter<TabL
 
     fun selected(position: Int) {
         selectedTabPosition = position
+        notifyDataSetChanged()
+    }
+
+    fun setStatisticsType(@TopAdsStatisticsType selectedStatisticType: Int) {
+        this.selectedStatisticType = selectedStatisticType
+        tabMenus[INDEX_CONVERSION].subTitle = getStringConversion(selectedStatisticType)
         notifyDataSetChanged()
     }
 

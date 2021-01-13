@@ -203,7 +203,6 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
                 tabLayoutManager.startSmoothScroll(smoothScroller)
                 topAdsTabAdapter?.selected(position)
                 renderGraph()
-
             }
 
             override fun onPageScrollStateChanged(state: Int) {}

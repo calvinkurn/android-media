@@ -39,6 +39,7 @@ import com.tokopedia.topads.dashboard.view.adapter.product.ProductAdapter
 import com.tokopedia.topads.dashboard.view.adapter.product.ProductAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductEmptyViewModel
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemViewModel
+import com.tokopedia.topads.dashboard.view.interfaces.FetchDate
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
@@ -60,7 +61,6 @@ import javax.inject.Inject
 private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
 
 class ProductTabFragment : BaseDaggerFragment() {
-
 
     private lateinit var adapter: ProductAdapter
     private var totalProductCount = -1
@@ -406,9 +406,5 @@ class ProductTabFragment : BaseDaggerFragment() {
         getDateCallBack = null
     }
 
-    interface FetchDate {
-        fun getStartDate(): String
-        fun getEndDate(): String
-    }
 
 }
