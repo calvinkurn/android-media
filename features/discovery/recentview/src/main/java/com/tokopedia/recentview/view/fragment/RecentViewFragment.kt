@@ -176,16 +176,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
 
     override fun sendRecentViewClickTracking(element: RecentViewDetailProductDataModel) {
         activity?.let {
-            RecentViewTracking.trackEventClickOnProductRecentView(it,
-                DataLayer.mapOf(
-                        "name", element.name,
-                        "id", element.productId,
-                        "price", element.price.convertRupiahToInt().toString(),
-                        "brand", "none / other",
-                        "category", "",
-                        "position", element.positionForRecentViewTracking.toString()
-                )
-        )
+            RecentViewTracking.trackEventClickOnProductRecentView(it, element)
         }
     }
 
