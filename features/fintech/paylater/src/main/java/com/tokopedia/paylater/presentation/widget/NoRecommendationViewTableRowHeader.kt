@@ -9,18 +9,24 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.paylater.R
+import com.tokopedia.paylater.domain.model.PayLaterSimulationGatewayItem
 
 class NoRecommendationViewTableRowHeader(val context: Context, val layoutParams: ViewGroup.LayoutParams) {
 
     fun getLayout() = R.layout.paylater_simulation_table_row_header
 
-    fun initUI(showBackGround: Boolean): View {
+    fun initUI(simulationDataItem: PayLaterSimulationGatewayItem, showBackGround: Boolean): View {
         val rowHeaderNoRecom = LayoutInflater.from(context).inflate(getLayout(), null)
         rowHeaderNoRecom.layoutParams = layoutParams
         val ivPayLaterPartner = rowHeaderNoRecom.findViewById<ImageView>(R.id.ivPaylaterPartner)
+        var partnerLogo = "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png"
+
+        if (simulationDataItem.imgLightUrl.isNullOrEmpty()) {
+            partnerLogo = simulationDataItem.imgLightUrl?: ""
+        }
         ImageHandler.loadImage(context,
                 ivPayLaterPartner,
-                "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                partnerLogo,
                 R.drawable.ic_loading_image)
         if (showBackGround)
             rowHeaderNoRecom.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))

@@ -27,6 +27,7 @@ import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.paylater.helper.PayLaterHelper
 import com.tokopedia.paylater.presentation.adapter.PayLaterPagerAdapter
+import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterSignupBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
@@ -34,7 +35,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_paylater.*
 import javax.inject.Inject
 
-class PayLaterFragment : BaseDaggerFragment(),
+class PdpSimulationFragment : BaseDaggerFragment(),
         PayLaterSimulationFragment.PayLaterSimulationCallback,
         PayLaterOffersFragment.PayLaterOfferCallback,
         TabLayout.OnTabSelectedListener,
@@ -48,6 +49,12 @@ class PayLaterFragment : BaseDaggerFragment(),
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(PayLaterViewModel::class.java)
     }
+
+    private val creditCardViewModel: CreditCardViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
+        viewModelProvider.get(CreditCardViewModel::class.java)
+    }
+
 
     private val productPrice: Int by lazy {
         arguments?.getInt(PRODUCT_PRICE) ?: 0
@@ -235,10 +242,13 @@ class PayLaterFragment : BaseDaggerFragment(),
     override fun onCheckedChanged(modeButton: CompoundButton, isChecked: Boolean) {
         if (isChecked) {
             paymentMode = CreditCard
-            if (payLaterViewModel.creditCardSimulationResultLiveData.value == null) {
-                payLaterViewModel.getCreditCardData()
+            if (creditCardViewModel.creditCardSimulationResultLiveData.value == null) {
+                creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
             }
-        } else paymentMode = PayLater
+        } else {
+            paymentMode = PayLater
+
+        }
 
         renderTabAndViewPager()
     }
@@ -248,8 +258,8 @@ class PayLaterFragment : BaseDaggerFragment(),
         const val PAY_LATER_PRODUCT_DETAIL_TAB_INDEX = 1
 
         @JvmStatic
-        fun newInstance(bundle: Bundle): PayLaterFragment {
-            val fragment = PayLaterFragment()
+        fun newInstance(bundle: Bundle): PdpSimulationFragment {
+            val fragment = PdpSimulationFragment()
             fragment.arguments = bundle
             return fragment
         }

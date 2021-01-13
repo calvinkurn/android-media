@@ -16,7 +16,7 @@ import com.tokopedia.paylater.domain.model.CreditCardBank
 import com.tokopedia.paylater.domain.model.SimulationTableResponse
 import com.tokopedia.paylater.presentation.adapter.CreditCardAvailableBanksAdapter
 import com.tokopedia.paylater.presentation.adapter.CreditCardSimulationAdapter
-import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
+import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
 import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardAvailableBanksBottomSheet
 import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardRegistrationBottomSheet
 import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardsListBottomSheet
@@ -31,9 +31,9 @@ class CreditCardSimulationFragment : BaseDaggerFragment(), CreditCardRegistratio
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
-        viewModelProvider.get(PayLaterViewModel::class.java)
+    private val creditCardViewModel: CreditCardViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
+        viewModelProvider.get(CreditCardViewModel::class.java)
     }
 
     private var bankList = ArrayList<CreditCardBank>()
@@ -59,6 +59,10 @@ class CreditCardSimulationFragment : BaseDaggerFragment(), CreditCardRegistratio
         super.onViewCreated(view, savedInstanceState)
         initRegisterWidget()
         initListeners()
+        initAdapter()
+    }
+
+    private fun initAdapter() {
         rvAvailableBanks.adapter = CreditCardAvailableBanksAdapter()
         rvAvailableBanks.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         (rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).setBankList(bankList)
@@ -82,7 +86,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment(), CreditCardRegistratio
     }
 
     private fun observeViewModel() {
-        payLaterViewModel.creditCardSimulationResultLiveData.observe(viewLifecycleOwner, {
+        creditCardViewModel.creditCardSimulationResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSimulationDataLoaded(it.data)
                 is Fail -> onSimulationLoadingFail(it.throwable)

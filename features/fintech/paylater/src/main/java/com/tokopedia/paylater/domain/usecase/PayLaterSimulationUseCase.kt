@@ -1,23 +1,26 @@
 package com.tokopedia.paylater.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.paylater.GQL_PAY_LATER_SIMULATION_DATA
 import com.tokopedia.paylater.domain.model.PayLaterGetSimulationResponse
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.paylater.domain.query.GQL_PAY_LATER_SIMULATION
 import javax.inject.Inject
-import javax.inject.Named
 
+@GqlQuery("PayLaterSimulationQuery", GQL_PAY_LATER_SIMULATION)
 class PayLaterSimulationUseCase @Inject constructor(
-        @Named(GQL_PAY_LATER_SIMULATION_DATA) val query: String, graphqlRepository: GraphqlRepository)
+        graphqlRepository: GraphqlRepository,
+)
     : GraphqlUseCase<PayLaterGetSimulationResponse>(graphqlRepository) {
 
-    fun getSimulationData(onSuccess: (PayLaterGetSimulationResponse?) -> Unit,
-                          onError: (Throwable) -> Unit, amount: Int) {
+    fun getSimulationData(
+            onSuccess: (PayLaterGetSimulationResponse?) -> Unit,
+            onError: (Throwable) -> Unit, amount: Int,
+    ) {
         try {
             this.setTypeClass(PayLaterGetSimulationResponse::class.java)
             this.setRequestParams(getRequestParams(amount))
-            this.setGraphqlQuery(query)
+            this.setGraphqlQuery(PayLaterSimulationQuery.GQL_QUERY)
             this.execute(
                     { result ->
                         onSuccess(result)

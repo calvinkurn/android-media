@@ -7,20 +7,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PayLaterComponent
-import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.domain.model.PayLaterProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
-import com.tokopedia.paylater.presentation.adapter.PayLaterOfferPagerAdapter
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_credit_card_tnc.*
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CreditCardTncFragment : BaseDaggerFragment() {

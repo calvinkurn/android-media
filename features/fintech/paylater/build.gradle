@@ -35,6 +35,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModel
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.couroutinesTest

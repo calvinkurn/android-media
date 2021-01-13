@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.paylater.data.mapper.PayLaterPartnerTypeMapper
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
-import com.tokopedia.paylater.presentation.fragment.PaymentOptionsFragment
+import com.tokopedia.paylater.presentation.fragment.PayLaterPaymentOptionsFragment
 
 class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int): FragmentStatePagerAdapter(fm, behaviour) {
     private val paymentOptionsFragmentArray = SparseArrayCompat<Fragment>()
@@ -19,16 +19,16 @@ class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int): FragmentSt
 
     override fun getItem(position: Int): Fragment {
         val bundle = setBundleData(position)
-        return PaymentOptionsFragment.newInstance(bundle)
+        return PayLaterPaymentOptionsFragment.newInstance(bundle)
     }
 
     private fun setBundleData(position: Int): Bundle {
         val paymentOption = paymentProductList[position]
         val applicationStatus: PayLaterApplicationDetail? = PayLaterPartnerTypeMapper.getPayLaterApplicationDataForPartner(paymentOption, applicationStatusList)
         return Bundle().apply {
-            putParcelable(PaymentOptionsFragment.PAY_LATER_PARTNER_DATA, paymentProductList[position])
+            putParcelable(PayLaterPaymentOptionsFragment.PAY_LATER_PARTNER_DATA, paymentProductList[position])
             applicationStatus?.let {
-                putParcelable(PaymentOptionsFragment.PAY_LATER_APPLICATION_DATA, applicationStatus)
+                putParcelable(PayLaterPaymentOptionsFragment.PAY_LATER_APPLICATION_DATA, applicationStatus)
             }
         }
     }

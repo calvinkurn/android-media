@@ -3,7 +3,6 @@ package com.tokopedia.paylater.presentation.viewModel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.paylater.data.mapper.CreditCardResponseMapper
 import com.tokopedia.paylater.data.mapper.PayLaterApplicationStatusMapper
 import com.tokopedia.paylater.data.mapper.PayLaterPartnerTypeMapper
 import com.tokopedia.paylater.data.mapper.PayLaterSimulationResponseMapper
@@ -18,7 +17,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -27,14 +25,12 @@ class PayLaterViewModel @Inject constructor(
         private val payLaterApplicationStatusUseCase: PayLaterApplicationStatusUseCase,
         private val payLaterSimulationDataUseCase: PayLaterSimulationUseCase,
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
-        @CoroutineBackgroundDispatcher val ioDispatcher: CoroutineDispatcher
+        @CoroutineBackgroundDispatcher val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
     val payLaterActivityResultLiveData = MutableLiveData<Result<PayLaterProductData>>()
     val payLaterApplicationStatusResultLiveData = MutableLiveData<Result<UserCreditApplicationStatus>>()
     val payLaterSimulationResultLiveData = MutableLiveData<Result<ArrayList<PayLaterSimulationGatewayItem>>>()
-    val creditCardSimulationResultLiveData = MutableLiveData<Result<ArrayList<SimulationTableResponse>>>()
-
 
     fun getPayLaterProductData() {
         payLaterProductDetailUseCase.cancelJobs()
@@ -52,46 +48,33 @@ class PayLaterViewModel @Inject constructor(
         )
     }
 
-    /**
-     * invoke only when amount in 10000..30000000
-     */
-    fun getPayLaterSimulationData(amount: Int = 1000000) {
+    // invoke only when amount in 10000..30000000
+    fun getPayLaterSimulationData(amount: Int) {
         payLaterSimulationDataUseCase.cancelJobs()
         if (amount in 10000..25000000)
             payLaterSimulationDataUseCase.getSimulationData(
-                    ::onSimulationDataSuccess,
-                    ::onSimulationDataError,
+                    ::onPayLaterSimulationDataSuccess,
+                    ::onPayLaterSimulationDataError,
                     amount
             )
-        else onSimulationDataError(PayLaterException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
+        else onPayLaterSimulationDataError(PayLaterException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
     }
 
-    fun getCreditCardData() {
-        launchCatchError(block = {
-            val creditCardData = withContext(ioDispatcher) {
-                delay(250)
-                return@withContext CreditCardResponseMapper.populateDummyCreditCardData()
-            }
-            creditCardSimulationResultLiveData.value = Success(creditCardData)
-        }, onError = {
-            creditCardSimulationResultLiveData.value = Fail(it)
-        })
-    }
 
-    private fun onSimulationDataSuccess(payLaterGetSimulationResponse: PayLaterGetSimulationResponse?) {
+    private fun onPayLaterSimulationDataSuccess(payLaterGetSimulationResponse: PayLaterGetSimulationResponse?) {
         launchCatchError(block = {
             val payLaterGatewayList = withContext(ioDispatcher) {
                 return@withContext PayLaterSimulationResponseMapper.handleSimulationResponse(payLaterGetSimulationResponse)
             }
             if (payLaterGatewayList.isNotEmpty())
                 payLaterSimulationResultLiveData.value = Success(payLaterGatewayList)
-            else onSimulationDataError(PayLaterException.PayLaterNullDataException(SIMULATION_DATA_FAILURE))
+            else onPayLaterSimulationDataError(PayLaterException.PayLaterNullDataException(SIMULATION_DATA_FAILURE))
         }, onError = {
-            onSimulationDataError(it)
+            onPayLaterSimulationDataError(it)
         })
     }
 
-    private fun onSimulationDataError(throwable: Throwable) {
+    private fun onPayLaterSimulationDataError(throwable: Throwable) {
         payLaterSimulationResultLiveData.value = Fail(throwable)
     }
 

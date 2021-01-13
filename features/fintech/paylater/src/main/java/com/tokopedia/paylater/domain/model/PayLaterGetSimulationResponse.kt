@@ -19,6 +19,10 @@ data class PayLaterSimulationGatewayItem(
         val gatewayId: Int?,
         @SerializedName("gateway_name")
         val gatewayName: String?,
+        @SerializedName("img_light_url")
+        val imgLightUrl: String?,
+        @SerializedName("img_dark_url")
+        val imgDarkUrl: String?,
         @SerializedName("simulation_detail")
         val simulationDetailList: ArrayList<SimulationItemDetail>,
         // To have a map of tenure to installment item aiding in setting in table

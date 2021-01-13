@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.DaggerPayLaterComponent
 import com.tokopedia.paylater.di.component.PayLaterComponent
-import com.tokopedia.paylater.presentation.fragment.PayLaterFragment
+import com.tokopedia.paylater.presentation.fragment.PdpSimulationFragment
 
 class PayLaterActivity : BaseSimpleActivity(), HasComponent<PayLaterComponent> {
 
@@ -33,7 +33,7 @@ class PayLaterActivity : BaseSimpleActivity(), HasComponent<PayLaterComponent> {
         val bundle = Bundle()
         if (intent.extras != null)
             bundle.putAll(intent.extras)
-        return PayLaterFragment.newInstance(bundle)
+        return PdpSimulationFragment.newInstance(bundle)
     }
 
     companion object {

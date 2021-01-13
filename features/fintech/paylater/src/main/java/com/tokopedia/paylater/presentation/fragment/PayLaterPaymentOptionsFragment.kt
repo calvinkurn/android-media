@@ -21,7 +21,7 @@ import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterActionStep
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterFaqBottomSheet
 import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
 
-class PaymentOptionsFragment : Fragment() {
+class PayLaterPaymentOptionsFragment : Fragment() {
 
     private val responseData by lazy {
         arguments?.getParcelable<PayLaterItemProductData>(PAY_LATER_PARTNER_DATA)
@@ -111,8 +111,8 @@ class PaymentOptionsFragment : Fragment() {
     companion object {
         const val PAY_LATER_PARTNER_DATA = "payLaterPartnerData"
         const val PAY_LATER_APPLICATION_DATA = "payLaterApplicationData"
-        fun newInstance(bundle: Bundle): PaymentOptionsFragment {
-            return PaymentOptionsFragment().apply {
+        fun newInstance(bundle: Bundle): PayLaterPaymentOptionsFragment {
+            return PayLaterPaymentOptionsFragment().apply {
                 arguments = bundle
             }
         }

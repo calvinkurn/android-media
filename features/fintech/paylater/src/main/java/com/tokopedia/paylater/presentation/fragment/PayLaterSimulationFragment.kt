@@ -1,5 +1,6 @@
 package com.tokopedia.paylater.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -67,7 +68,6 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListeners()
-        populateRowHeaders()
     }
 
     override fun getScreenName(): String {
@@ -158,17 +158,13 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         supervisorWidget.visible()
     }
 
-    private fun populateRowHeaders() {
-        context?.let {
-            val layoutParam = ViewGroup.LayoutParams(it.dpToPx(ROW_HEADER_WIDTH).toInt(), it.dpToPx(TABLE_ITEM_HEIGHT).toInt())
-            llPayLaterPartner.apply {
-                for (i in 0..4) {
-                    when (i) {
-                        0 -> addView(getBlankView(layoutParam))
-                        1 -> addView(getRecomView(layoutParam))
-                        else -> addView(getNoRecomView(layoutParam, i % 2 == 0))
-                    }
-                }
+    private fun populateRowHeaders(context: Context, simulationDataItem: ArrayList<PayLaterSimulationGatewayItem>, position: Int) {
+        val layoutParam = ViewGroup.LayoutParams(context.dpToPx(ROW_HEADER_WIDTH).toInt(), context.dpToPx(TABLE_ITEM_HEIGHT).toInt())
+        llPayLaterPartner.apply {
+            when (position) {
+                0 -> addView(getBlankView(layoutParam))
+                1 -> addView(getRecomView(layoutParam, simulationDataItem[position-1]))
+                else -> addView(getNoRecomView(layoutParam, simulationDataItem[position-1], position % 2 == 0))
             }
         }
     }
@@ -182,6 +178,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             val tableLayoutParams = TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT)
             for (i in 0 until rowCount) {
                 val contentRow = TableRow(it)
+                populateRowHeaders(it, simulationDataList, i)
                 for (j in 0 until colCount) {
                     when (i) {
                         0 -> contentRow.addView(getColumnHeader(contentLayoutParam, j), contentLayoutParam)
@@ -202,14 +199,14 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         return blankSimulationTableHeading.initUI()
     }
 
-    private fun getNoRecomView(layoutParam: ViewGroup.LayoutParams, showBackGround: Boolean): View? {
+    private fun getNoRecomView(layoutParam: ViewGroup.LayoutParams, simulationDataItem: PayLaterSimulationGatewayItem, showBackGround: Boolean): View? {
         val noRecommendationViewSimulationTable = simulationViewFactory.create(NoRecommendationViewTableRowHeader::class.java, layoutParam)
-        return noRecommendationViewSimulationTable.initUI(showBackGround)
+        return noRecommendationViewSimulationTable.initUI(simulationDataItem, showBackGround)
     }
 
-    private fun getRecomView(layoutParam: ViewGroup.LayoutParams): View {
+    private fun getRecomView(layoutParam: ViewGroup.LayoutParams, simulationDataItem: PayLaterSimulationGatewayItem): View {
         val recommendationView = simulationViewFactory.create(RecommendationViewTableRowHeader::class.java, layoutParam)
-        return recommendationView.initUI()
+        return recommendationView.initUI(simulationDataItem)
     }
 
     private fun getInstallmentView(contentLayoutParam: ViewGroup.LayoutParams, installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>, tenureList: Array<Int>, row: Int, col: Int): View {
