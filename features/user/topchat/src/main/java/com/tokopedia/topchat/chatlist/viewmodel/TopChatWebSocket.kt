@@ -11,10 +11,6 @@ import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-/**
- * @author : Steven 2019-08-09
- */
-
 class TopChatWebSocket(
         private val okHttpClient: OkHttpClient,
         private val webSocketUrl: String,
@@ -22,6 +18,7 @@ class TopChatWebSocket(
 ) {
 
     val textChannel = Channel<WebSocketResponse>()
+    var webSocket: WebSocket? = null
 
     suspend fun createWebSocket() = suspendCoroutine<Channel<WebSocketResponse>> {
         okHttpClient.newWebSocket(
@@ -33,6 +30,8 @@ class TopChatWebSocket(
 
                 object : WebSocketListener() {
                     override fun onOpen(webSocket: WebSocket, response: Response) {
+                        this@TopChatWebSocket.webSocket = webSocket
+
                         Timber.d(" Open")
                         it.resume(textChannel)
                     }
@@ -67,7 +66,8 @@ class TopChatWebSocket(
         )
     }
 
-    fun cancelChannel() {
+    fun cancel() {
+        webSocket?.cancel()
         textChannel.close()
     }
 
