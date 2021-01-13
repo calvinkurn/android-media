@@ -334,14 +334,19 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
             iconImage.gone()
             iconAnimatedImage.show()
 
-            val animation: AnimatedVectorDrawableCompat = AnimatedVectorDrawableCompat.create(context, it)!!
-            iconAnimatedImage.background = animation
-            animation.start()
+            val animation: AnimatedVectorDrawableCompat? = AnimatedVectorDrawableCompat.create(context, it)
+            if (animation != null) {
+                iconAnimatedImage.background = animation
+                animation.start()
 
-            Handler().postDelayed({
+                Handler().postDelayed({
+                    iconAnimatedImage.gone()
+                    iconImage.show()
+                }, 1000)
+            } else {
                 iconAnimatedImage.gone()
                 iconImage.show()
-            }, 1000)
+            }
         }
     }
 
