@@ -253,8 +253,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
         )
     }
 
-    fun updateVoucherRecommendation(cashbackType: CashbackType,
-                                    recommendationData: VoucherRecommendationData) {
+    fun updateVoucherRecommendation(cashbackType: CashbackType, recommendationData: VoucherRecommendationData) {
         when (cashbackType) {
             CashbackType.Rupiah -> {
                 idrRecommendationData = recommendationData
@@ -403,13 +402,11 @@ class CashbackVoucherCreateViewModel @Inject constructor(
                     mIdrVoucherRecommendationResult.value = Success(withContext(dispatchers.io) {
                         getVoucherRecommendationUseCase.params = GetVoucherRecommendationUseCase.createRequestParam(VoucherTypeConst.CASHBACK, VoucherDiscountTypeConst.IDR)
                         getVoucherRecommendationUseCase.executeOnBackground()
-//                        getStaticRecommendationData()
                     })
                     // param for percentage cash back recommendation request
                     mPercentageVoucherRecommendationResult.value = Success(withContext(dispatchers.io) {
                         getVoucherRecommendationUseCase.params = GetVoucherRecommendationUseCase.createRequestParam(VoucherTypeConst.CASHBACK, VoucherDiscountTypeConst.PERCENTAGE)
                         getVoucherRecommendationUseCase.executeOnBackground()
-//                        getStaticRecommendationData()
                     })
                 },
                 onError = {
