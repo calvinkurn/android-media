@@ -20,6 +20,7 @@ class InboxViewModel @Inject constructor(
         dispatchers: InboxCoroutineDispatcher
 ) : BaseViewModel(dispatchers.IO) {
 
+    private val keyPageVisited = "${userSession.userId}_inbox_activity"
     private val _notifications = MutableLiveData<Result<Notifications>>()
     val notifications: LiveData<Result<Notifications>>
         get() = _notifications
@@ -52,6 +53,14 @@ class InboxViewModel @Inject constructor(
 
     fun markFinishedSellerOnBoarding() {
         cacheManager.saveCacheBoolean(KEY_ONBOARDING_SELLER, true)
+    }
+
+    fun hasBeenVisited(): Boolean {
+        return cacheManager.loadCacheBoolean(keyPageVisited) ?: false
+    }
+
+    fun markAsVisited() {
+        cacheManager.saveCacheBoolean(keyPageVisited, true)
     }
 
     companion object {
