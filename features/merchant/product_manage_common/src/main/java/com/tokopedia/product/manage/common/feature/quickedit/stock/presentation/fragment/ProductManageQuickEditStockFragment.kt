@@ -166,6 +166,7 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
         observeStock()
         observeStockTicker()
 
+        setupQuantityEditor()
         setStockAndStatus()
         setupSaveButton()
         setupStatusSwitch()
@@ -174,7 +175,6 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
         requestStockEditorFocus()
         setAddButtonClickListener()
         setSubtractButtonClickListener()
-        setupQuantityEditor()
         getStockTicker()
     }
 
