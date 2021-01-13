@@ -163,8 +163,8 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
     private fun registerIncomingPhoneCall(it: Context) {
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
         val disableAutoReadMissCall = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_DISABLE_AUTOREAD_MISSCALL, false)
-        if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
-            if (disableAutoReadMissCall) {
+        if (disableAutoReadMissCall) {
+            if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
                 return
             }
             phoneCallBroadcastReceiver.registerReceiver(it, this)
