@@ -1,6 +1,8 @@
 package com.tokopedia.flight.orderdetail.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.flight.cancellationdetail.presentation.adapter.FlightOrderCancellationDetailRouteTypeFactory
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -34,10 +36,15 @@ data class FlightOrderDetailRouteModel(
         val stopDetails: List<String>,
         val ticketNumbers: List<OrderDetailTicketNumberModel>,
         val freeAmenities: FlightOrderDetailFreeAmenityModel
-) : Parcelable {
+) : Parcelable, Visitable<FlightOrderCancellationDetailRouteTypeFactory> {
+
     @Parcelize
     data class OrderDetailTicketNumberModel(
             val passengerId: Int,
             val ticketNumber: String
     ) : Parcelable
+
+    override fun type(typeFactory: FlightOrderCancellationDetailRouteTypeFactory): Int =
+            typeFactory.type(this)
+
 }

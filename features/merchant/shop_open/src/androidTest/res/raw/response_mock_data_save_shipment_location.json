@@ -1,0 +1,13 @@
+[
+  {
+    "data": {
+      "ongkirOpenShopShipmentLocation": {
+        "data": {
+          "success": true,
+          "message": "Success"
+        },
+        "errors": []
+      }
+    }
+  }
+]
