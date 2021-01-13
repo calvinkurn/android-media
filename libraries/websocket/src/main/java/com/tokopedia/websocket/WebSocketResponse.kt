@@ -12,11 +12,11 @@ import com.google.gson.annotations.SerializedName
 data class WebSocketResponse(
         @SerializedName("type")
         @Expose
-        val type: String = "",
+        var type: String = "",
 
         @SerializedName("code")
         @Expose
-        val code: Int = 0,
+        var code: Int = 0,
 
         @SerializedName("data")
         @Expose
