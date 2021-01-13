@@ -238,4 +238,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_USING_OLD_ACCOUNT = "android_mainapp_old_account_page";
 
     public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
+
+    public static final String SWITCH_TO_WEBVIEW = "android_switch_to_webview";
 }

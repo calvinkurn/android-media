@@ -2,8 +2,8 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
+import android.text.TextUtils
 import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
-import com.tokopedia.applink.ApplinkConst.Navigation.MAIN_NAV
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
@@ -67,6 +67,9 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import org.json.JSONObject
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -109,7 +112,37 @@ object DeeplinkMapper {
             }
             else -> deeplink
         }
-        return mappedDeepLink
+        return switchToWebviewIfNeeded(context, mappedDeepLink)
+    }
+
+    private fun switchToWebviewIfNeeded(context: Context, deeplink: String) : String {
+        try {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            val webviewSwitchConfig = remoteConfig.getString(RemoteConfigKey.SWITCH_TO_WEBVIEW)
+
+            if (TextUtils.isEmpty(webviewSwitchConfig)) return deeplink
+
+            val configJSON = JSONObject(webviewSwitchConfig)
+
+            val uri = Uri.parse(deeplink)
+            val trimmedDeeplink = trimDeeplink(uri, deeplink)
+
+            val switchData = configJSON.optJSONObject(trimmedDeeplink)
+
+            if (switchData == null) return deeplink
+
+            val environment = switchData.optString("environment")
+            val versions = switchData.optString("versions")
+            val weblink = switchData.optString("weblink")
+
+            if (GlobalConfig.isAllowDebuggingTools() && environment != "dev") return deeplink
+            if (!GlobalConfig.isAllowDebuggingTools() && environment != "prod") return deeplink
+
+            val versionList = versions.split(",")
+            if (GlobalConfig.VERSION_NAME !in versionList) return deeplink
+
+            return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, weblink)
+        } catch (e: Exception) { return deeplink }
     }
 
     private fun getRegisteredNavigationOrderHistory(uri: Uri?): String {
