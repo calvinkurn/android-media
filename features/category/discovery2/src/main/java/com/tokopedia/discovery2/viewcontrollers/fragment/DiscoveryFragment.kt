@@ -390,28 +390,30 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         } else {
             handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
         }
+        linkerDataMapper(data)
         LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                linkerDataMapper(data?.id?.toString(), data?.name, data?.share?.url), object : ShareCallback {
+                linkerDataMapper(data), object : ShareCallback {
             override fun urlCreated(linkerShareData: LinkerShareResult) {
                 if(linkerShareData.url != null) {
                     Utils.shareData(activity, data?.share?.description, linkerShareData.url)
                 }
             }
-
             override fun onError(linkerError: LinkerError) {
                 Utils.shareData(activity, data?.share?.description, data?.share?.url)
             }
         }))
     }
 
-    private fun linkerDataMapper(
-            id: String?, name: String?, url: String?): LinkerShareData {
+    private fun linkerDataMapper(data : PageInfo?): LinkerShareData {
         val linkerData = LinkerData()
-        linkerData.id = id
-        linkerData.name = name
+        linkerData.id = data?.id?.toString() ?: ""
+        linkerData.name = data?.name ?: ""
         linkerData.ogUrl = null
         linkerData.type = "Category"
-        linkerData.uri =  url
+//        linkerData.uri =  data?.share?.url ?: ""
+        linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url ?: "", discoveryViewModel.getDeepLinkQueryParam())
+        linkerData.description = data?.share?.description ?: ""
+        linkerData.isThrowOnError = true
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData

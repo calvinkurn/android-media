@@ -59,6 +59,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
     private val wishlistUpdateLiveData = MutableLiveData<ProductCardOptionsModel>()
     private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
+    private var deepLinkQueryParam : Map<String, String?>? = null
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
@@ -175,7 +176,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun getMapOfQueryParameter(intentUri: Uri): Map<String, String?> {
-        return mapOf(
+        deepLinkQueryParam = mapOf(
                 SOURCE to intentUri.getQueryParameter(SOURCE),
                 COMPONENT_ID to intentUri.getQueryParameter(COMPONENT_ID),
                 ACTIVE_TAB to intentUri.getQueryParameter(ACTIVE_TAB),
@@ -185,6 +186,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 CATEGORY_ID to intentUri.getQueryParameter(CATEGORY_ID),
                 EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY)
         )
+        return deepLinkQueryParam as Map<String, String?>
     }
 
     fun scrollToPinnedComponent(listComponent: List<ComponentsItem>, pinnedComponentId: String?): Int {
@@ -245,4 +247,5 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun getWishListLiveData() = wishlistUpdateLiveData
+    fun getDeepLinkQueryParam() = deepLinkQueryParam
 }
