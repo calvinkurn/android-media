@@ -169,6 +169,9 @@ class TalkInboxTracking @Inject constructor() {
 
     private fun getInboxType(inboxType: String): String {
         return when (inboxType) {
+            TalkInboxTab.SHOP_OLD -> {
+                TalkInboxTrackingConstants.TAB_SELLER
+            }
             TalkInboxTab.SHOP_TAB -> {
                 TalkInboxTrackingConstants.TAB_SELLER
             }
