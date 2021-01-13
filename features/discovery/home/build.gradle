@@ -53,6 +53,7 @@ dependencies {
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.dynamicBanner)
+    implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.homeComponent)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.kolCommon)
