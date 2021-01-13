@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.ImageEditActionType;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
-import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 
 /**
  * Created by hendry on 30/04/18.
@@ -24,7 +24,7 @@ public class ImageEditActionMainWidget extends FrameLayout implements ImageEdito
 
     private OnImageEditActionMainWidgetListener onImageEditActionMainWidgetListener;
     public interface OnImageEditActionMainWidgetListener{
-        void onEditActionClicked (@ImageEditActionTypeDef int editActionType);
+        void onEditActionClicked (ImageEditActionType editActionType);
     }
 
     public ImageEditActionMainWidget(@NonNull Context context) {
@@ -57,14 +57,14 @@ public class ImageEditActionMainWidget extends FrameLayout implements ImageEdito
         viewGroupMainContent = findViewById(R.id.vg_editor_main_content);
     }
 
-    public void setData(@ImageEditActionTypeDef int[] imageEditActionType) {
+    public void setData( ImageEditActionType[] imageEditActionType) {
         ImageEditorEditActionAdapter imageEditorEditActionAdapter =
                 new ImageEditorEditActionAdapter(viewGroupMainContent, getContext(), imageEditActionType, this);
         imageEditorEditActionAdapter.renderView();
     }
 
     @Override
-    public void onEditActionClicked(@ImageEditActionTypeDef int actionEditType) {
+    public void onEditActionClicked(ImageEditActionType actionEditType) {
         if (onImageEditActionMainWidgetListener!= null) {
             onImageEditActionMainWidgetListener.onEditActionClicked(actionEditType);
         }

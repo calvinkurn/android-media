@@ -596,7 +596,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         3 -> layoutPayment
                         else -> null
                     }
-                    coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = Color.WHITE))
+                    val color = context?.let { ctx ->
+                        ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                    } ?: com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = color))
                 }
                 val coachMark = CoachMarkBuilder().build()
                 coachMark.enableSkip = true

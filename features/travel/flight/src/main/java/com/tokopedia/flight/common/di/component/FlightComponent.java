@@ -14,8 +14,6 @@ import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
-import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
-import com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.searchV4.data.FlightRouteDao;
 import com.tokopedia.flight.searchV4.data.cache.db.FlightSearchRoomDb;
@@ -70,7 +68,4 @@ public interface FlightComponent {
 
     void inject(BaseFlightActivity baseFlightActivity);
 
-    void inject(FlightDetailOrderFragment flightDetailOrderFragment);
-
-    void inject(FlightDetailOrderActivity flightDetailOrderActivity);
 }

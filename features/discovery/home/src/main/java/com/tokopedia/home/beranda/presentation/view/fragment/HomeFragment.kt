@@ -322,7 +322,7 @@ open class HomeFragment : BaseDaggerFragment(),
             getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
         } catch (e: Exception) {
             e.printStackTrace()
-            true
+            false
         }
     }
     private fun isNavOld(): Boolean {
@@ -330,16 +330,16 @@ open class HomeFragment : BaseDaggerFragment(),
             getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_OLD
         } catch (e: Exception) {
             e.printStackTrace()
-            false
+            true
         }
     }
 
     private fun navAbTestCondition(ifNavRevamp: ()-> Unit = {}, ifNavOld: ()-> Unit = {}) {
-       if (isNavOld()) {
-            ifNavOld.invoke()
-       } else if (isNavRevamp()) {
+        if (isNavRevamp()) {
             ifNavRevamp.invoke()
-       }
+        } else if (isNavOld()) {
+            ifNavOld.invoke()
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -911,6 +911,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 adapter?.resetImpressionHomeBanner()
             }
         })
+        getHomeViewModel().setRollanceNavigationType(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
     }
 
     private fun observeHomeRequestNetwork() {
@@ -2484,11 +2485,10 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun playWidgetOnVisibilityChanged(
             isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
-            isUserVisibleHint: Boolean = userVisibleHint,
-            isParentHidden: Boolean = parentFragment?.isHidden ?: true
+            isUserVisibleHint: Boolean = userVisibleHint
     ) {
         if (::playWidgetCoordinator.isInitialized) {
-            val isViewVisible = isViewResumed && isUserVisibleHint && !isParentHidden
+            val isViewVisible = isViewResumed && isUserVisibleHint
 
             if (isViewVisible) playWidgetCoordinator.onResume()
             else playWidgetCoordinator.onPause()

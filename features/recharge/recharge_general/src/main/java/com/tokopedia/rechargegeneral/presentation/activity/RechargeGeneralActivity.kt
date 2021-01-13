@@ -32,7 +32,8 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
         val menuId = bundle?.getString(PARAM_MENU_ID)?.toIntOrNull() ?: 0
         val operatorId = bundle?.getString(PARAM_OPERATOR_ID)?.toIntOrNull() ?: 0
         val productId = bundle?.getString(PARAM_PRODUCT_ID) ?: ""
-        return RechargeGeneralFragment.newInstance(categoryId, menuId, operatorId, productId)
+        val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA,"") ?: ""
+        return RechargeGeneralFragment.newInstance(categoryId, menuId, operatorId, productId, rechargeProductFromSlice)
     }
 
     override fun getComponent(): RechargeGeneralComponent {
@@ -44,11 +45,6 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
     override fun onBackPressed() {
         (fragment as RechargeGeneralFragment).onBackPressed()
         super.onBackPressed()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        intent?.handleExtra()
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
@@ -88,18 +84,6 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
             intent.putExtra(PARAM_OPERATOR_ID, operatorId.toString())
             intent.putExtra(PARAM_PRODUCT_ID, productId)
             return intent
-        }
-    }
-
-    /* This Method is use to tracking action click when user click and redirect to RechargeGeneral
-    */
-
-    private fun Intent.handleExtra() {
-        if (intent.data != null) {
-            val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
-            if (trackingClick != null) {
-                Timber.w("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
-            }
         }
     }
 }

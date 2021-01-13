@@ -65,6 +65,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -337,16 +338,18 @@ open class HomeViewModel @Inject constructor(
                             recommendationFilterChips = bestSellerDataModel.filterChip
                     )
                     val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
+                    val newModel = (it.value as BestSellerDataModel).copy(
+                            seeMoreAppLink = newBestSellerDataModel.seeMoreAppLink,
+                            recommendationItemList = newBestSellerDataModel.recommendationItemList,
+                            productCardModelList = newBestSellerDataModel.productCardModelList,
+                            height = newBestSellerDataModel.height,
+                            filterChip = newBestSellerDataModel.filterChip.map{
+                                it.copy(isActivated = filterChip.name == it.name
+                                        && filterChip.isActivated)
+                            }
+                    )
                     homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
-                            bestSellerDataModel.copy(
-                                    recommendationItemList = newBestSellerDataModel.recommendationItemList,
-                                    productCardModelList = newBestSellerDataModel.productCardModelList,
-                                    height = newBestSellerDataModel.height,
-                                    filterChip = newBestSellerDataModel.filterChip.map{
-                                        it.copy(isActivated = filterChip.name == it.name
-                                                && filterChip.isActivated)
-                                    }
-                            ),
+                            newModel,
                             it.index,
                             this@HomeViewModel
                     ))

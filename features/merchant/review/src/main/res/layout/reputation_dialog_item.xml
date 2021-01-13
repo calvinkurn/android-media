@@ -2,6 +2,7 @@
     android:id="@android:id/text1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:textColor="@color/Unify_N700_96"
     android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="@dimen/padding_vs"
