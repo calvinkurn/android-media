@@ -5,6 +5,8 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant
+import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
+import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
 import com.tokopedia.topchat.chatlist.domain.websocket.PendingMessageHandler
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
@@ -24,10 +26,10 @@ class ChatListWebSocketViewModel @Inject constructor(
         webSocket
 ), LifecycleObserver {
 
-    var activeRoom: String = ""
     val pendingMessages get() = pendingMessageHandler.pendingMessages
 
     var role: Int = RoleType.BUYER
+    var activeRoom: String = ""
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onLifeCycleStart() {
@@ -39,7 +41,6 @@ class ChatListWebSocketViewModel @Inject constructor(
     fun onLifeCycleStop() {
         isOnStop = true
     }
-
 
     override fun connectWebSocket() {
         launch {
