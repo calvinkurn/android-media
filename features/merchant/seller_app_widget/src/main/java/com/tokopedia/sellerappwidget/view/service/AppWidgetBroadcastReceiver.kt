@@ -49,8 +49,7 @@ class AppWidgetBroadcastReceiver : BroadcastReceiver() {
     private fun fetchOrderWidgetData(context: Context, cacheHandler: LocalCacheHandler) {
         val isOrderWidgetEnabled = cacheHandler.getBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
         if (isOrderWidgetEnabled) {
-            val orderStatusId: Int = AppWidgetHelper.getCacheHandler(context)
-                    .getInt(Const.SharedPrefKey.LAST_SELECTED_ORDER_TYPE, OrderAppWidget.DEFAULT_ORDER_STATUS_ID)
+            val orderStatusId: Int = cacheHandler.getInt(Const.SharedPrefKey.LAST_SELECTED_ORDER_TYPE, OrderAppWidget.DEFAULT_ORDER_STATUS_ID)
             GetOrderExecutor.run(context, orderStatusId)
         }
     }
