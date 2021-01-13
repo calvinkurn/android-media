@@ -1,5 +1,6 @@
 package com.tokopedia.searchbar.navigation_component
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.view.Gravity
@@ -329,6 +330,7 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
         }
     }
 
+    @SuppressLint("AnimatedVectorDrawable")
     fun playAnimation(iconToolbar: IconToolbar) {
         iconToolbar.imageRes?.let {
             iconImage.gone()
