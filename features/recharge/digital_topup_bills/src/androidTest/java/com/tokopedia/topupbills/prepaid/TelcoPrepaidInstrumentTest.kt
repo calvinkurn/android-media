@@ -124,7 +124,6 @@ class TelcoPrepaidInstrumentTest {
 
         Thread.sleep(2000)
 
-        validate_coachmark()
         validate_show_contents_pdp_telco_not_login()
         validate_interaction_menu()
 //        validate_click_on_contact_picker_and_list_fav_number()
@@ -137,20 +136,6 @@ class TelcoPrepaidInstrumentTest {
 
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_NON_LOGIN),
                 hasAllSuccess())
-    }
-
-    fun validate_coachmark() {
-//        val localCacheHandler = LocalCacheHandler(context, DigitalTelcoPrepaidFragment.PREFERENCES_NAME)
-//        if (!localCacheHandler.getBoolean(DigitalTelcoPrepaidFragment.TELCO_COACH_MARK_HAS_SHOWN, false)) {
-//        onView(getElementFromMatchAtPosition(withId(R.id.simple_title),0)).check(matches(isDisplayed()))
-//        onView(getElementFromMatchAtPosition(withId(R.id.step_next), 0)).perform(click())
-//        onView(getElementFromMatchAtPosition(withId(R.id.simple_title),0)).check(matches(isDisplayed()))
-//        onView(getElementFromMatchAtPosition(withId(R.id.step_prev), 0)).perform(click())
-//        onView(getElementFromMatchAtPosition(withId(R.id.simple_title),0)).check(matches(isDisplayed()))
-//        onView(getElementFromMatchAtPosition(withId(R.id.step_next), 0)).perform(click())
-//        onView(getElementFromMatchAtPosition(withId(R.id.simple_title),0)).check(matches(isDisplayed()))
-//        onView(getElementFromMatchAtPosition(withId(R.id.step_next), 0)).perform(click())
-//        }
     }
 
     fun validate_click_done_keyboard_fav_number() {
