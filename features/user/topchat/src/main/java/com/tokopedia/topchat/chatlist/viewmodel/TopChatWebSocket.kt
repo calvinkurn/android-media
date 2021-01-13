@@ -23,11 +23,9 @@ class TopChatWebSocket(
     suspend fun createWebSocket() = suspendCoroutine<Channel<WebSocketResponse>> {
         okHttpClient.newWebSocket(
                 Request.Builder().url(webSocketUrl)
-                        .header("Origin", TokopediaUrl.getInstance().WEB)
-                        .header("Accounts-Authorization",
-                                "Bearer $token")
+                        .header(HEADER_KEY_ORIGIN, TokopediaUrl.getInstance().WEB)
+                        .header(HEADER_KEY_AUTH, "$HEADER_VALUE_BEARER $token")
                         .build(),
-
                 object : WebSocketListener() {
                     override fun onOpen(webSocket: WebSocket, response: Response) {
                         this@TopChatWebSocket.webSocket = webSocket
@@ -69,6 +67,13 @@ class TopChatWebSocket(
     fun cancel() {
         webSocket?.cancel()
         textChannel.close()
+    }
+
+    companion object {
+        private const val HEADER_KEY_ORIGIN = "Origin"
+        private const val HEADER_KEY_AUTH = "Accounts-Authorization"
+
+        private const val HEADER_VALUE_BEARER = "Bearer"
     }
 
 }
