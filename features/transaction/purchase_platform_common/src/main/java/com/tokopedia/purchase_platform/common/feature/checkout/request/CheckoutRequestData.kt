@@ -27,9 +27,7 @@ data class CheckoutRequestGqlData(
         @SerializedName("has_promo_stacking")
         var hasPromoStacking: Boolean = false,
         @SerializedName("leasing_id")
-        var leasingId: Int = 0,
-        @SerializedName("has_insurance_product")
-        var hasMacroInsurance: Boolean = false
+        var leasingId: Int = 0
 )
 
 data class EgoldGqlData(
@@ -147,7 +145,6 @@ object CheckoutRequestGqlDataMapper {
             tokopediaCornerData = if (checkoutRequest.cornerData != null) mapTokopediaCornerData(checkoutRequest.cornerData) else null
             hasPromoStacking = checkoutRequest.hasPromoStacking
             leasingId = checkoutRequest.leasingId
-            hasMacroInsurance = checkoutRequest.hasMacroInsurance
         }
     }
 

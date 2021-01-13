@@ -95,8 +95,6 @@ import com.tokopedia.purchase_platform.common.feature.checkout.request.Tokopedia
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartGqlResponse;
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
@@ -151,7 +149,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final SubmitHelpTicketUseCase submitHelpTicketUseCase;
     private final UserSessionInterface userSessionInterface;
-    private final GetInsuranceCartUseCase getInsuranceCartUseCase;
     private final ShipmentDataConverter shipmentDataConverter;
     private final ReleaseBookingUseCase releaseBookingUseCase;
     private final ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
@@ -204,7 +201,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              UserSessionInterface userSessionInterface,
                              CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection,
                              CheckoutAnalyticsCourierSelection checkoutAnalytics,
-                             GetInsuranceCartUseCase getInsuranceCartUseCase,
                              ShipmentDataConverter shipmentDataConverter,
                              ReleaseBookingUseCase releaseBookingUseCase,
                              ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
@@ -226,7 +222,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.mTrackerPurchaseProtection = analyticsPurchaseProtection;
         this.userSessionInterface = userSessionInterface;
         this.mTrackerShipment = checkoutAnalytics;
-        this.getInsuranceCartUseCase = getInsuranceCartUseCase;
         this.shipmentDataConverter = shipmentDataConverter;
         this.releaseBookingUseCase = releaseBookingUseCase;
         this.validateUsePromoRevampUseCase = validateUsePromoRevampUseCase;
@@ -393,14 +388,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
                                                               Map<String, String> tradeInCustomDimension,
-                                                              boolean hasInsurance,
                                                               String step,
                                                               String eventCategory,
                                                               String eventAction,
                                                               String eventLabel,
                                                               String leasingId) {
-        CheckoutRequest checkoutRequest = generateCheckoutRequest(dataCheckoutRequests, hasInsurance,
-                shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(
+                dataCheckoutRequests, shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
         Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step);
         if (eeDataLayer != null) {
@@ -494,44 +488,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void getInsuranceTechCartOnCheckout() {
-        getInsuranceCartUseCase.execute(getSubscriberInsuranceCart());
-    }
-
-    private Subscriber<GraphqlResponse> getSubscriberInsuranceCart() {
-        return new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (getView() != null) {
-                    getView().renderInsuranceCartData(null);
-                }
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-
-                if (getView() == null) return;
-
-                InsuranceCartGqlResponse insuranceCartGqlResponse = null;
-                if (graphqlResponse != null &&
-                        graphqlResponse.getData(InsuranceCartGqlResponse.class) != null) {
-                    insuranceCartGqlResponse =
-                            graphqlResponse.getData(InsuranceCartGqlResponse.class);
-                    getView().renderInsuranceCartData(insuranceCartGqlResponse.getData());
-                } else {
-                    getView().renderInsuranceCartData(null);
-                }
-
-            }
-        };
-    }
-
-    @Override
     public void processInitialLoadCheckoutPage(boolean isReloadData,
                                                boolean isOneClickShipment,
                                                boolean isTradeIn,
@@ -598,10 +554,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setLatValidateUseRequest(null);
         setValidateUsePromoRevampUiModel(null);
 
-        if (getView().isInsuranceEnabled()) {
-            getInsuranceTechCartOnCheckout();
-        }
-
         if (cartShipmentAddressFormData.getTickerData() != null) {
             setTickerAnnouncementHolderData(
                     new TickerAnnouncementHolderData(String.valueOf(cartShipmentAddressFormData.getTickerData().getId()),
@@ -665,15 +617,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckout(boolean hasInsurance,
-                                boolean isOneClickShipment,
+    public void processCheckout(boolean isOneClickShipment,
                                 boolean isTradeIn,
                                 boolean isTradeInDropOff,
                                 String deviceId,
                                 String cornerId,
                                 String leasingId) {
         removeErrorShopProduct();
-        CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance,
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(null,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
 
@@ -1207,7 +1158,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests,
-                                                   boolean hasInsurance,
                                                    int isDonation,
                                                    String leasingId) {
         if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
@@ -1243,7 +1193,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         CheckoutRequest.Builder builder = new CheckoutRequest.Builder()
                 .isDonation(isDonation)
-                .hasInsurance(hasInsurance)
                 .data(analyticsDataCheckoutRequests != null ? analyticsDataCheckoutRequests : dataCheckoutRequestList)
                 .egoldData(egoldData);
 

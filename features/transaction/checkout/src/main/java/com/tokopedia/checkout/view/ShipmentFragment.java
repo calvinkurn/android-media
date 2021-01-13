@@ -98,12 +98,6 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
-import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener;
-import com.tokopedia.purchase_platform.common.feature.insurance.request.UpdateInsuranceProductApplicationDetails;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShopItems;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
@@ -123,14 +117,10 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotE
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.time.TimeHelper;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -163,7 +153,6 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.P
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -173,7 +162,7 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RE
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
         ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
-        PromoNotEligibleActionListener, InsuranceItemActionListener, SellerCashbackListener,
+        PromoNotEligibleActionListener, SellerCashbackListener,
         ExpireTimeDialogListener {
 
     private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
@@ -237,8 +226,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     LastApplyUiModel savedLastApplyData;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
-    private boolean hasInsurance = false;
-    private boolean isInsuranceEnabled = false;
     private boolean hasRunningApiCall = false;
     private ArrayList<String> bboPromoCodes = new ArrayList<>();
 
@@ -306,9 +293,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentSelectionStateDataHashSet = new HashSet<>(shipmentSelectionStateData);
             }
         }
-
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-        isInsuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false);
 
         shipmentPresenter.attachView(this);
         shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE);
@@ -504,7 +488,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
-        shipmentAdapter.setCartIds(cartIdsStringBuilder.toString());
 
         if (shipmentDonationModel != null) {
             shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
@@ -623,7 +606,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 dataCheckoutRequests,
                 null,
-                hasInsurance,
                 EnhancedECommerceActionField.STEP_2,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
@@ -733,28 +715,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             intent.putExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE, message);
             getActivity().setResult(CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED, intent);
             getActivity().finish();
-        }
-    }
-
-    @Override
-    public void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse) {
-        if (shipmentAdapter != null) {
-            hasInsurance = false;
-            if (insuranceCartResponse != null &&
-                    !insuranceCartResponse.getCartShopsList().isEmpty()) {
-                for (InsuranceCartShops insuranceCartShops : insuranceCartResponse.getCartShopsList()) {
-                    for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
-                        for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
-                            if (!insuranceCartDigitalProduct.isProductLevel()) {
-                                hasInsurance = true;
-                                shipmentAdapter.addInsuranceDataList(insuranceCartShops);
-                            }
-                        }
-                    }
-                }
-                shipmentAdapter.notifyDataSetChanged();
-                shipmentAdapter.updateShipmentCostModel();
-            }
         }
     }
 
@@ -1560,7 +1520,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                     dataCheckoutRequests,
                     null,
-                    hasInsurance,
                     EnhancedECommerceActionField.STEP_3,
                     ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                     ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
@@ -1707,14 +1666,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void doCheckout() {
-        if (hasInsurance) {
-            mTrackerMacroInsurance.eventClickPaymentMethodWithInsurance(shipmentAdapter.getInsuranceProductId(),
-                    shipmentAdapter.getInsuranceTitle());
-        }
-
         shipmentPresenter.processSaveShipmentState();
-        shipmentPresenter.processCheckout(hasInsurance, isOneClickShipment(),
-                isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId());
+        shipmentPresenter.processCheckout(isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId());
 
     }
 
@@ -2537,7 +2490,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 dataCheckoutRequests,
                 tradeInCustomDimension,
-                hasInsurance,
                 EnhancedECommerceActionField.STEP_4,
                 eventCategory,
                 eventAction,
@@ -2626,11 +2578,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public boolean isInsuranceEnabled() {
-        return isInsuranceEnabled;
-    }
-
-    @Override
     public void removeIneligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList) {
         ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
         if (validateUsePromoRevampUiModel != null) {
@@ -2654,41 +2601,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         doCheckout();
-    }
-
-    @Override
-    public void deleteMacroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductList, boolean showconfirmationDialog) {
-
-    }
-
-    @Override
-    public void sendEventChangeInsuranceState(boolean isChecked, String title) {
-
-    }
-
-    @Override
-    public void sendEventDeleteInsurance(String title) {
-
-    }
-
-    @Override
-    public void updateInsuranceProductData(@NotNull InsuranceCartShops insuranceCartShops, @NotNull ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
-
-    }
-
-    @Override
-    public void onInsuranceSelectStateChanges() {
-
-    }
-
-    @Override
-    public void sendEventInsuranceImpression(String title) {
-
-    }
-
-    @Override
-    public void sendEventInsuranceImpressionForShipment(String title) {
-        mTrackerMacroInsurance.eventImpressionOfInsuranceProductOnCheckout(title);
     }
 
     @Override

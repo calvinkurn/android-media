@@ -45,8 +45,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvOrderPrioritasFee;
     private TextView mTvBookingFeeLabel;
     private TextView mTvBookingFee;
-    private TextView mTvMacroInsuranceLabel;
-    private TextView mTvMacroInsurancePrice;
     private TextView mTvDiscountLabel;
     private TextView mTvDiscountPrice;
     private TextView mTvShippingDiscountLabel;
@@ -54,10 +52,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvProductDiscountLabel;
     private TextView mTvProductDiscountPrice;
 
-    private ShipmentAdapterActionListener shipmentAdapterActionListener;
-
-    public ShipmentCostViewHolder(View itemView,
-                                  ShipmentAdapterActionListener shipmentAdapterActionListener) {
+    public ShipmentCostViewHolder(View itemView) {
         super(itemView);
 
         mRlShipmentCostLayout = itemView.findViewById(R.id.rl_shipment_cost);
@@ -83,16 +78,12 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvOrderPrioritasFee = itemView.findViewById(R.id.tv_order_prioritas_price);
         mTvBookingFeeLabel = itemView.findViewById(R.id.tv_booking_fee_label);
         mTvBookingFee = itemView.findViewById(R.id.tv_booking_fee_price);
-        mTvMacroInsuranceLabel = itemView.findViewById(R.id.tv_macro_insurance_label);
-        mTvMacroInsurancePrice = itemView.findViewById(R.id.tv_macro_insurance_price);
         mTvDiscountLabel = itemView.findViewById(R.id.tv_discount_label);
         mTvDiscountPrice = itemView.findViewById(R.id.tv_discount_price);
         mTvShippingDiscountLabel = itemView.findViewById(R.id.tv_shipping_discount_label);
         mTvShippingDiscountPrice = itemView.findViewById(R.id.tv_shipping_discount_price);
         mTvProductDiscountLabel = itemView.findViewById(R.id.tv_product_discount_label);
         mTvProductDiscountPrice = itemView.findViewById(R.id.tv_product_discount_price);
-
-        this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
 
     public void bindViewHolder(ShipmentCostModel shipmentCost) {
@@ -112,10 +103,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
         mTvDonationPrice.setText(getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.getDonation()));
         mTvEmasPrice.setText(getPriceFormat(mTvEmasLabel, mTvEmasPrice, shipmentCost.getEmasPrice()));
-        mTvMacroInsurancePrice.setText(getPriceFormat(mTvMacroInsuranceLabel, mTvMacroInsurancePrice, shipmentCost.getMacroInsurancePrice()));
-        if (mTvMacroInsuranceLabel.getVisibility() == View.VISIBLE) {
-            mTvMacroInsuranceLabel.setText(shipmentCost.getMacroInsurancePriceLabel());
-        }
         mTvTradeInPrice.setText(String.format(mTvTradeInPrice.getContext().getString(R.string.promo_format),
                 getPriceFormat(mTvTradeInLabel, mTvTradeInPrice, shipmentCost.getTradeInPrice())));
 
