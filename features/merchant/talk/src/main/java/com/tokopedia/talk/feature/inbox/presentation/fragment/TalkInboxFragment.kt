@@ -532,7 +532,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun isSellerView(): Boolean {
-        return viewModel.getType() == TalkInboxTab.SHOP_TAB
+        return viewModel.getType() == TalkInboxTab.SHOP_TAB || viewModel.getType() == TalkInboxTab.SHOP_OLD
     }
 
     private fun getProblemCount(): Int {
@@ -567,7 +567,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun getCounterForTracking(): Int {
-        if(isSellerView()) {
+        if(isSellerView() && isNewView()) {
             return viewModel.getUnrespondedCount()
         }
         return viewModel.getUnreadCount()

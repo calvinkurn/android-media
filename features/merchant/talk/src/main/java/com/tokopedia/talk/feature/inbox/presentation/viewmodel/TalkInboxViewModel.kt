@@ -100,7 +100,7 @@ class TalkInboxViewModel @Inject constructor(
             talkInboxListUseCase.setRequestParam(type, filter.filterParam, page)
             val response = talkInboxListUseCase.executeOnBackground()
             shopId = response.discussionInbox.shopID
-            unreadCount = if(type == TalkInboxTab.SHOP_TAB) {
+            unreadCount = if(type == TalkInboxTab.SHOP_OLD) {
                 response.discussionInbox.sellerUnread
             } else {
                 response.discussionInbox.buyerUnread
