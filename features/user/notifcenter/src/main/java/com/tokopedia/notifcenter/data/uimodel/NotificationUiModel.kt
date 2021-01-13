@@ -85,6 +85,10 @@ data class NotificationUiModel(
         return typeFactory.type(this)
     }
 
+    fun getEventLabel(): String {
+        return "notif_list - $templateKey - $notifId"
+    }
+
     fun isRead(): Boolean {
         return readStatus == STATUS_READ
     }

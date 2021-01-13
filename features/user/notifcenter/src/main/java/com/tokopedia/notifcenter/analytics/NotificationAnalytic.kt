@@ -11,10 +11,12 @@ import javax.inject.Inject
 class NotificationAnalytic @Inject constructor(
         private val userSession: UserSessionInterface
 ) {
-
-    private val LIST_NOTIFCENTER = "/notifcenter"
     private val CURRENCY_IDR = "IDR"
     private val KEY_EVENT_LABEL = "eventLabel"
+
+    companion object {
+        const val LIST_NOTIFCENTER = "/notifcenter"
+    }
 
     private class Event private constructor() {
         companion object {
@@ -31,7 +33,7 @@ class NotificationAnalytic @Inject constructor(
         }
     }
 
-    private class EventAction private constructor() {
+    class EventAction private constructor() {
         companion object {
             const val VIEW_PRODUCT = "view on product thumbnail"
             const val CLICK_PRODUCT = "click on product thumbnail"
@@ -144,90 +146,6 @@ class NotificationAnalytic @Inject constructor(
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 ProductListClickBundler.KEY, bundle
-        )
-    }
-
-    fun trackClickAtc(
-            notification: NotificationUiModel,
-            product: ProductData
-    ) {
-        val products: ArrayList<AddToCartProduct> = arrayListOf(
-                AddToCartProduct(
-                        id = product.productId.toString(),
-                        name = product.name,
-                        brand = null,
-                        category = "",
-                        variant = "",
-                        price = product.price.toDouble(),
-                        quantity = product.minOrder.toLong(),
-                        dimension45 = "",
-                        stringCollection = hashMapOf(
-                                "dimension40" to LIST_NOTIFCENTER,
-                                "category_id" to "",
-                                "quantity" to product.minOrder.toString(),
-                                "shop_id" to product.shop.id.toString(),
-                                "shop_name" to product.shop.name,
-                                "shop_type" to ""
-                        )
-                )
-        )
-
-        val bundle = AddToCartBundler.getBundle(
-                products,
-                Event.ADD_TO_CART,
-                EventAction.CLICK_PRODUCT_ATC,
-                CurrentSite.MARKETPLACE,
-                EventCategory.NOTIFCENTER,
-                BusinessUnit.COMMUNICATION,
-                null,
-                InboxAnalyticCommon.createGeneralEvent(
-                        eventLabel = getEventLabel(notification)
-                )
-        )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                AddToCartBundler.KEY, bundle
-        )
-    }
-
-    fun trackClickBuy(
-            notification: NotificationUiModel,
-            product: ProductData
-    ) {
-        val products: ArrayList<AddToCartProduct> = arrayListOf(
-                AddToCartProduct(
-                        id = product.productId.toString(),
-                        name = product.name,
-                        brand = null,
-                        category = "",
-                        variant = "",
-                        price = product.price.toDouble(),
-                        quantity = product.minOrder.toLong(),
-                        dimension45 = "",
-                        stringCollection = hashMapOf(
-                                "dimension40" to LIST_NOTIFCENTER,
-                                "category_id" to "",
-                                "quantity" to product.minOrder.toString(),
-                                "shop_id" to product.shop.id.toString(),
-                                "shop_name" to product.shop.name,
-                                "shop_type" to ""
-                        )
-                )
-        )
-
-        val bundle = AddToCartBundler.getBundle(
-                products,
-                Event.ADD_TO_CART,
-                EventAction.CLICK_PRODUCT_BUY,
-                CurrentSite.MARKETPLACE,
-                EventCategory.NOTIFCENTER,
-                BusinessUnit.COMMUNICATION,
-                null,
-                InboxAnalyticCommon.createGeneralEvent(
-                        eventLabel = getEventLabel(notification)
-                )
-        )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                AddToCartBundler.KEY, bundle
         )
     }
 

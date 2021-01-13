@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
@@ -401,13 +402,13 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         BottomSheetFactory.showProductBottomSheet(childFragmentManager, element)
     }
 
-    override fun buyProduct(product: ProductData) {
-        val atcPageIntent = getBuyPageIntent(product)
+    override fun buyProduct(notification: NotificationUiModel, product: ProductData) {
+        val atcPageIntent = getBuyPageIntent(notification, product)
         startActivity(atcPageIntent)
     }
 
-    override fun addProductToCart(product: ProductData) {
-        val atcPageIntent = getAtcPageIntent(product)
+    override fun addProductToCart(notification: NotificationUiModel, product: ProductData) {
+        val atcPageIntent = getAtcPageIntent(notification, product)
         startActivityForResult(atcPageIntent, REQUEST_CHECKOUT)
     }
 
@@ -447,14 +448,6 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
             position: Int
     ) {
         analytic.trackProductClick(notification, product, position)
-    }
-
-    override fun trackClickAtc(notification: NotificationUiModel, product: ProductData) {
-        analytic.trackClickAtc(notification, product)
-    }
-
-    override fun trackClickBuy(notification: NotificationUiModel, product: ProductData) {
-        analytic.trackClickBuy(notification, product)
     }
 
     override fun trackBumpReminder() {
@@ -504,7 +497,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         }
     }
 
-    private fun getBuyPageIntent(product: ProductData): Intent {
+    private fun getBuyPageIntent(
+            notification: NotificationUiModel, product: ProductData
+    ): Intent {
         val atcAndBuyAction = ATC_AND_BUY
         val needRefresh = true
         return RouteManager.getIntent(
@@ -522,10 +517,30 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
             putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
             putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, product.name)
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, product.price.toFloat())
+            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.INBOX)
+            putExtra(
+                    ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL,
+                    notification.getEventLabel()
+            )
+            putExtra(
+                    ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION,
+                    NotificationAnalytic.EventAction.CLICK_PRODUCT_BUY
+            )
+            putExtra(
+                    ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40,
+                    NotificationAnalytic.LIST_NOTIFCENTER
+            )
+            putExtra(
+                    ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE,
+                    AddToCartRequestParams.ATC_FROM_NOTIFCENTER
+            )
         }
     }
 
-    private fun getAtcPageIntent(product: ProductData): Intent {
+    private fun getAtcPageIntent(
+            notification: NotificationUiModel, product: ProductData
+    ): Intent {
         val atcOnly = ATC_ONLY
         val needRefresh = true
         return RouteManager.getIntent(
@@ -542,6 +557,23 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
             putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, product.shop.name)
             putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
             putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
+            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.INBOX)
+            putExtra(
+                    ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL,
+                    notification.getEventLabel()
+            )
+            putExtra(
+                    ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION,
+                    NotificationAnalytic.EventAction.CLICK_PRODUCT_ATC
+            )
+            putExtra(
+                    ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40,
+                    NotificationAnalytic.LIST_NOTIFCENTER
+            )
+            putExtra(
+                    ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE,
+                    AddToCartRequestParams.ATC_FROM_NOTIFCENTER
+            )
         }
     }
 

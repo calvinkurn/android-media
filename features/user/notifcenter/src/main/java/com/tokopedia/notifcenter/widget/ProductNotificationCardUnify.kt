@@ -261,9 +261,8 @@ class ProductNotificationCardUnify(
             btnCheckout?.show()
             btnCheckout?.setOnClickListener {
                 notification?.let {
-                    listener?.trackClickBuy(it, product)
+                    listener?.buyProduct(it, product)
                 }
-                listener?.buyProduct(product)
             }
         }
     }
@@ -275,9 +274,8 @@ class ProductNotificationCardUnify(
             btnAtc?.show()
             btnAtc?.setOnClickListener {
                 notification?.let {
-                    listener?.trackClickAtc(it, product)
+                    listener?.addProductToCart(it, product)
                 }
-                listener?.addProductToCart(product)
             }
         }
     }
