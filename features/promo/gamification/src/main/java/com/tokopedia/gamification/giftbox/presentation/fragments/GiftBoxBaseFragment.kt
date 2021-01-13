@@ -26,7 +26,7 @@ import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
 import com.tokopedia.gamification.giftbox.presentation.helpers.GiftBoxTapTapAudio
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
-import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
+import com.tokopedia.gamification.giftbox.presentation.views.RewardContainerDaily
 import com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -43,7 +43,6 @@ open class GiftBoxBaseFragment : Fragment() {
     lateinit var viewFlipper: ViewFlipper
     lateinit var tvTapHint: AppCompatTextView
     lateinit var starsContainer: StarsContainer
-    lateinit var rewardContainer: RewardContainer
     lateinit var giftBoxDailyView: GiftBoxDailyView
     lateinit var tvLoaderTitle: AppCompatTextView
     lateinit var tvLoaderMessage: AppCompatTextView
@@ -87,7 +86,6 @@ open class GiftBoxBaseFragment : Fragment() {
         loader = v.findViewById(R.id.loader)
         tvTapHint = v.findViewById(R.id.tvTapHint)
         starsContainer = v.findViewById(R.id.starsContainer)
-        rewardContainer = v.findViewById(R.id.reward_container)
         viewFlipper = v.findViewById(R.id.viewFlipper)
         tvLoaderTitle = v.findViewById(R.id.tvLoaderTitle)
         tvLoaderMessage = v.findViewById(R.id.tvLoaderMessage)

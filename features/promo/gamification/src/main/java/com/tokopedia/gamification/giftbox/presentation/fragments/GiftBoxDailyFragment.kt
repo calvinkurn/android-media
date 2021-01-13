@@ -39,10 +39,7 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
 import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParams
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyViewModel
-import com.tokopedia.gamification.giftbox.presentation.views.CustomToast
-import com.tokopedia.gamification.giftbox.presentation.views.DirectGiftView
-import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
-import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
+import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -56,6 +53,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //    lateinit var prizeViewSmallFirst: GiftPrizeSmallView
 //    lateinit var prizeViewSmallSecond: GiftPrizeSmallView
 //    lateinit var prizeViewLarge: GiftPrizeLargeView
+    lateinit var rewardContainer: RewardContainerDaily
     lateinit var llRewardMessage: LinearLayout
     lateinit var tvRewardFirstLine: AppCompatTextView
     lateinit var tvRewardSecondLine: AppCompatTextView
@@ -154,6 +152,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //        prizeViewSmallFirst = v.findViewById(R.id.giftPrizeSmallViewFirst)
 //        prizeViewSmallSecond = v.findViewById(R.id.giftPrizeSmallViewSecond)
 //        prizeViewLarge = v.findViewById(R.id.giftPrizeLargeView)
+        rewardContainer = v.findViewById(R.id.reward_container)
         tvRewardFirstLine = v.findViewById(R.id.tvRewardFirstLine)
         tvRewardSecondLine = v.findViewById(R.id.tvRewardSecondLine)
         btnAction = v.findViewById(R.id.btnAction)
@@ -205,38 +204,41 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                         when (rewardState) {
                             RewardContainer.RewardState.COUPON_WITH_POINTS -> {
-
-                                val rewardAnim = rewardContainer.showCouponAndRewardAnimation(giftBoxDailyView.fmGiftBox.top)
-
-                                val animatorSet = AnimatorSet()
-                                animatorSet.playTogether(rewardAnim, stageLightAnim)
-                                animatorSet.startDelay = startDelay
-                                animatorSet.start()
-
-                                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimation()
-                                ovoPointsTextAnim.startDelay = startDelay + 100L
-                                ovoPointsTextAnim.start()
+                                performRewardAnimation(startDelay,stageLightAnim)
+//                                val rewardAnim = rewardContainer.showCouponAndRewardAnimation(giftBoxDailyView.fmGiftBox.top)
+//
+//                                val animatorSet = AnimatorSet()
+//                                animatorSet.playTogether(rewardAnim, stageLightAnim)
+//                                animatorSet.startDelay = startDelay
+//                                animatorSet.start()
+//
+//                                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimation()
+//                                ovoPointsTextAnim.startDelay = startDelay + 100L
+//                                ovoPointsTextAnim.start()
                             }
                             RewardContainer.RewardState.POINTS_ONLY -> {
-                                val rewardAnim = rewardContainer.showSingleLargeRewardAnimation(giftBoxDailyView.fmGiftBox.top)
+                                performRewardAnimation(startDelay,stageLightAnim)
 
-                                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimation()
-                                ovoPointsTextAnim.startDelay = startDelay + 100L
-                                ovoPointsTextAnim.start()
-
-                                val animatorSet = AnimatorSet()
-                                animatorSet.playTogether(stageLightAnim, rewardAnim)
-                                animatorSet.startDelay = startDelay
-                                animatorSet.start()
+//                                val rewardAnim = rewardContainer.showSingleLargeRewardAnimation(giftBoxDailyView.fmGiftBox.top)
+//
+//                                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimation()
+//                                ovoPointsTextAnim.startDelay = startDelay + 100L
+//                                ovoPointsTextAnim.start()
+//
+//                                val animatorSet = AnimatorSet()
+//                                animatorSet.playTogether(stageLightAnim, rewardAnim)
+//                                animatorSet.startDelay = startDelay
+//                                animatorSet.start()
                             }
 
                             RewardContainer.RewardState.COUPON_ONLY -> {
-                                val rewardAnim = rewardContainer.showCouponAndRewardAnimation(giftBoxDailyView.fmGiftBox.top)
-
-                                val animatorSet = AnimatorSet()
-                                animatorSet.playTogether(rewardAnim, stageLightAnim)
-                                animatorSet.startDelay = startDelay
-                                animatorSet.start()
+                                performRewardAnimation(startDelay,stageLightAnim)
+//                                val rewardAnim = rewardContainer.showCouponAndRewardAnimation(giftBoxDailyView.fmGiftBox.top)
+//
+//                                val animatorSet = AnimatorSet()
+//                                animatorSet.playTogether(rewardAnim, stageLightAnim)
+//                                animatorSet.startDelay = startDelay
+//                                animatorSet.start()
                             }
                         }
                     })
@@ -469,6 +471,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         })
     }
 
+    fun performRewardAnimation(startDelay:Long,stageLightAnim:Animator){
+        val rewardAnim = rewardContainer.showCouponAndRewardAnimation(giftBoxDailyView.fmGiftBox.top)
+
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(rewardAnim, stageLightAnim)
+        animatorSet.startDelay = startDelay
+        animatorSet.start()
+    }
+
     private fun handleInfoIcon(statusCode: String?, infoUrl: String?) {
         if (statusCode == HTTP_STATUS_OK && !infoUrl.isNullOrEmpty()) {
             imageInfo.show()
@@ -594,8 +605,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
 
             rewardContainer.rvCoupons.translationY = translationY
-            val distanceFromLidTop = fmGiftBox.dpToPx(29)
-            rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
+//            val distanceFromLidTop = fmGiftBox.dpToPx(29)
+//            rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
 
             tvTapHint.doOnLayout { tapHint ->
                 if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
@@ -671,6 +682,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tvTapHint.setBackgroundResource(R.drawable.gami_bg_text_hint_box)
         tvTapHint.setTextColor(ContextCompat.getColor(tvTapHint.context, R.color.gf_tap_hint))
 //        llBenefits.alpha = 0f
+        directGiftView.alpha = 0f
         llRewardMessage.alpha = 0f
         reminderLayout.alpha = 0f
         loaderReminder.visibility = View.GONE
@@ -776,12 +788,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
         val tapHintAnim = ObjectAnimator.ofPropertyValuesHolder(tvTapHint, alphaProp)
 //        val tvBenefitsAnim = ObjectAnimator.ofPropertyValuesHolder(tvBenefits, alphaProp)
-//        val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(llBenefits, alphaProp)
+        val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(directGiftView, alphaProp)
         val infoAnim = ObjectAnimator.ofPropertyValuesHolder(imageInfo, alphaProp)
 
         val animatorSet = AnimatorSet()
 //        animatorSet.playTogether(tapHintAnim, prizeListContainerAnim, tvBenefitsAnim, infoAnim)
-        animatorSet.playTogether(tapHintAnim, infoAnim)
+        animatorSet.playTogether(tapHintAnim, infoAnim, prizeListContainerAnim)
         animatorSet.duration = 300L
 
         animatorSet.start()
@@ -798,16 +810,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 val tapHintAnim = ObjectAnimator.ofPropertyValuesHolder(tvTapHint, alphaProp)
                 val giftBoxAnim = ObjectAnimator.ofPropertyValuesHolder(giftBoxDailyView, alphaProp)
 //                val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(llBenefits, alphaProp)
+                val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(directGiftView, alphaProp)
 
                 val animatorSet = AnimatorSet()
                 if (tokenUserState == TokenUserState.EMPTY) {
                     val rewardAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardMessage, alphaProp)
                     val reminderAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(reminderLayout, alphaProp)
-//                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim, rewardAlphaAnim, reminderAlphaAnim)
-                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, rewardAlphaAnim, reminderAlphaAnim)
+                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim, rewardAlphaAnim, reminderAlphaAnim)
+//                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, rewardAlphaAnim, reminderAlphaAnim)
                 } else {
-//                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim)
-                    animatorSet.playTogether(tapHintAnim, giftBoxAnim)
+                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim)
+//                    animatorSet.playTogether(tapHintAnim, giftBoxAnim)
                 }
 
                 animatorSet.duration = FADE_IN_DURATION

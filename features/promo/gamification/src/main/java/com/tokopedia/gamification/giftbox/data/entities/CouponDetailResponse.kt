@@ -11,5 +11,6 @@ data class GetCouponDetail(
         @SerializedName("image_url_mobile") val imageUrl: String?) : CouponType
 
 data class CouponTapTap(val imageUrl: String?) : CouponType
+data class OvoListItem(val imageUrl: String?, val text:String) : CouponType
 
 interface CouponType

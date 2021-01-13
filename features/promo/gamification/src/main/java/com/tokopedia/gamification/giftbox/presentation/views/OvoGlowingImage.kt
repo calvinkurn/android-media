@@ -12,11 +12,10 @@ class OvoGlowingImage @JvmOverloads constructor(
     var h: Int = 0
 
     var shadowPaint = Paint()
-    var shadowPath = Path()
     var porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
     open var shadowColor = Color.BLACK
     var shadowStrokeWidth = 15f
-    open var blurRadius = 50f
+    open var blurRadius = 10f
     var blurMaskFilter: BlurMaskFilter
 
     init {
@@ -44,16 +43,6 @@ class OvoGlowingImage @JvmOverloads constructor(
     }
 
     private fun drawGlowingCircle(canvas: Canvas) {
-        canvas.save()
-        shadowPath.reset()
-//        shadowPath.moveTo((width + xOffset).toFloat(), shadowStartY)
-//        shadowPath.lineTo((-xOffset).toFloat(), shadowStartY)
-//        shadowPath.lineTo((-xOffset).toFloat(), (height + yOffset).toFloat())
-//        shadowPath.lineTo((width + xOffset).toFloat(), (height + yOffset).toFloat())
-//        shadowPath.lineTo((width + xOffset).toFloat(), shadowStartY)
-        shadowPath.addCircle(0f, 0f, w.toFloat(), Path.Direction.CW)
-        canvas.drawPath(shadowPath, shadowPaint)
-        canvas.restore()
-
+        canvas.drawCircle(w/2f,w/2f,w/2f,shadowPaint)
     }
 }
