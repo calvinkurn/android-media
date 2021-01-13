@@ -9,6 +9,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * https://docs.google.com/spreadsheets/d/1efo8NsCI_ECqvd77pdy6F0J_053drVjmGbAb4hJOKlg/edit#gid=292707357
  * Row 8 - 69
  * Save Live to VOD https://mynakama.tokopedia.com/datatracker/product/requestdetail/161
+ * Channel Scheduling https://mynakama.tokopedia.com/datatracker/product/requestdetail/247
  */
 class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
 
@@ -539,7 +540,7 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
     fun viewErrorOnReportPage(channelId: String, titleChannel: String, errorMessage: String) {
         viewCustomGeneralEvent(
                 "error state on report page",
-                "- $errorMessage - $channelId - $titleChannel"
+                "- $channelId - $titleChannel - $errorMessage"
         )
     }
 
@@ -580,6 +581,79 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         clickGeneralEvent(
                 "delete on pop up delete",
                 "- $channelId"
+        )
+    }
+
+    /**
+     * Seller click pencil icon channel schedule
+     */
+    fun clickAddEditScheduleOnFinalSetupPage(isEdit: Boolean) {
+        clickGeneralEvent(
+                "${if (isEdit) "edit" else "add"} schedule"
+        )
+    }
+
+    /**
+     * Seller click save channel schedule
+     */
+    fun clickSaveScheduleOnFinalSetupPage() {
+        clickGeneralEvent(
+                "simpan jadwal"
+        )
+    }
+
+    /**
+     * Seller view bottom sheet channel schedule
+     */
+    fun viewBottomSheetScheduleOnFinalSetupPage() {
+        viewGeneralEvent(
+                "bottom sheet schedule"
+        )
+    }
+
+    /**
+     * Seller click delete (trash icon) channel schedule
+     */
+    fun clickDeleteScheduleOnFinalSetupPage() {
+        clickGeneralEvent(
+                "icon delete schedule"
+        )
+    }
+
+    /**
+     * Seller click delete channel schedule
+     */
+    fun clickDeleteScheduleOnConfirmDeleteDialog() {
+        clickGeneralEvent(
+                "delete on pop up message"
+        )
+    }
+
+    /**
+     * Seller view pop up confirmation delete channel schedule
+     */
+    fun viewDialogConfirmDeleteOnFinalSetupPage() {
+        viewGeneralEvent(
+                "pop up delete confirmation"
+        )
+    }
+
+    /**
+     * Seller click start live on pop up live before scheduled date
+     */
+    fun clickStartLiveOnBeforeScheduledDialog() {
+        clickGeneralEvent(
+                "mulai live streaming"
+        )
+    }
+
+
+    /**
+     * Seller view pop up live before scheduled date
+     */
+    fun viewDialogConfirmStartLiveBeforeScheduledOnFinalSetupPage() {
+        viewGeneralEvent(
+                "pop up message before start live"
         )
     }
 
