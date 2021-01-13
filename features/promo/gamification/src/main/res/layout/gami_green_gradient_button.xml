@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/btnContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="@drawable/gami_green_grad_btn"
+    tools:padding="@dimen/dp_11">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/cta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/white"
+        app:typographyType="heading_5"
+        tools:text="Cek Hadiah Yang Bisa Didapat" />
+</merge>

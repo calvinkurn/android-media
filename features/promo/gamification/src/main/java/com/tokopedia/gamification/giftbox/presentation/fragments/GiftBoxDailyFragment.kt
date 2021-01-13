@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.R
@@ -41,6 +43,8 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParam
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyViewModel
 import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
+import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
+import com.tokopedia.gamification.pdp.presentation.views.Wishlist
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.LoaderUnify
 import timber.log.Timber
@@ -65,6 +69,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     lateinit var fmReminder: FrameLayout
     lateinit var imageInfo: AppCompatImageView
     lateinit var directGiftView: DirectGiftView
+    lateinit var pdpGamificationView: PdpGamificationView
+    lateinit var bottomSheetContainer: ViewGroup
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -164,10 +171,21 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         fmReminder = v.findViewById(R.id.fmReminder)
         imageInfo = v.findViewById(R.id.imageInfo)
         directGiftView = v.findViewById(R.id.direct_gift_view)
+        pdpGamificationView = v.findViewById(R.id.pdpGamificationView)
+        bottomSheetContainer = v.findViewById(R.id.bottomSheetContainer)
+
         super.initViews(v)
         setTextSize()
         setShadows()
         setListeners()
+        setupBottomSheet()
+    }
+
+    private fun setupBottomSheet() {
+        val peekHeight = bottomSheetContainer.dpToPx(0).toInt()
+        val bottomSheetBehavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<ViewGroup>(bottomSheetContainer)
+        bottomSheetBehavior.peekHeight = peekHeight
+        pdpGamificationView.fragment = this
     }
 
     fun setShadows() {
@@ -857,6 +875,19 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 showNoInterNetDialog(viewModel::getGiftBox, context!!)
             } else {
                 showRedError(fmParent, message, actionText, viewModel::getGiftBox)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode){
+            Wishlist.REQUEST_FROM_PDP->{
+                if (data != null) {
+                    val wishlistStatusFromPdp = data.getBooleanExtra(Wishlist.PDP_WIHSLIST_STATUS_IS_WISHLIST, false)
+                    val position = data.getIntExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, -1)
+                    pdpGamificationView.onActivityResult(position, wishlistStatusFromPdp)
+                }
             }
         }
     }

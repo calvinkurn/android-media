@@ -49,7 +49,7 @@ open class GiftBoxBaseFragment : Fragment() {
     lateinit var toolbar: Toolbar
     lateinit var imageToolbarIcon: AppCompatImageView
     lateinit var tvToolbarTitle: AppCompatTextView
-    lateinit var fmParent: FrameLayout
+    lateinit var fmParent: ViewGroup
     lateinit var imageSound: AppCompatImageView
 
     val CONTAINER_LOADER = 1

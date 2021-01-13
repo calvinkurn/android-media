@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -51,7 +52,7 @@ class PdpGamificationView : FrameLayout {
     private lateinit var loadingView: LinearLayout
     private lateinit var viewFlipper: ViewFlipper
     private lateinit var globalError: GlobalError
-    var fragment: BaseDaggerFragment? = null
+    var fragment: Fragment? = null
 
     private lateinit var adapter: PdpGamificationAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener

@@ -19,18 +19,16 @@ class BmPrizeDetailView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
     val LAYOUT = R.layout.gami_prize_detail
-    lateinit var image: AppCompatImageView
-    lateinit var prizeListItemContainer: LinearLayout
-    lateinit var btnContainer: View
-    lateinit var btn: Typography
+    var image: AppCompatImageView
+    var prizeListItemContainer: LinearLayout
+    var btn: GreenGradientButton
 
     init {
         View.inflate(context, LAYOUT, this)
         orientation = LinearLayout.VERTICAL
         image = findViewById(R.id.image)
         prizeListItemContainer = findViewById(R.id.prizeListItemContainer)
-        btn = findViewById(R.id.cta)
-        btnContainer = findViewById(R.id.btnContainer)
+        btn = findViewById(R.id.greenBtn)
     }
 
     fun setData(prizDetailList: List<PrizeDetailListItem?>?, prizeDetailListButton: PrizeDetailListButton?) {
@@ -58,8 +56,8 @@ class BmPrizeDetailView @JvmOverloads constructor(
                 }
             }
 
-            btn.text = prizeDetailListButton?.text
-            btnContainer.setOnClickListener {
+            btn.setText(prizeDetailListButton?.text)
+            btn.setOnClickListener {
                 if (!prizeDetailListButton?.applink.isNullOrEmpty()) {
                     RouteManager.route(context, prizeDetailListButton!!.applink)
                 }

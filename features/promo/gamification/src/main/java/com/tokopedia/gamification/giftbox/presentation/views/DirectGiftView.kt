@@ -21,8 +21,8 @@ class DirectGiftView @JvmOverloads constructor(
     lateinit var image: AppCompatImageView
     lateinit var tvTitle: Typography
     lateinit var tvMessage: Typography
-    lateinit var btn: Typography
-    lateinit var btnContainer: View
+    lateinit var greenBtn: GreenGradientButton
+//    lateinit var btnContainer: View
 
     init {
         View.inflate(context, LAYOUT, this)
@@ -33,8 +33,8 @@ class DirectGiftView @JvmOverloads constructor(
         image = findViewById(R.id.image)
         tvTitle = findViewById(R.id.tvTitle)
         tvMessage = findViewById(R.id.tvMessage)
-        btn = findViewById(R.id.cta)
-        btnContainer = findViewById(R.id.btnContainer)
+        greenBtn = findViewById(R.id.greenBtn)
+//        btnContainer = findViewById(R.id.btnContainer)
     }
 
     fun setData(prizeList: List<PrizeListItem>?,
@@ -56,8 +56,8 @@ class DirectGiftView @JvmOverloads constructor(
                     }
                 }
 
-                btn.text = bottomSheetButtonText
-                btnContainer.setOnClickListener {
+                greenBtn.setText(bottomSheetButtonText)
+                greenBtn.setOnClickListener {
                     showBmPrizeDetails(prizeDetailList, prizeDetailListButton)
                 }
             }

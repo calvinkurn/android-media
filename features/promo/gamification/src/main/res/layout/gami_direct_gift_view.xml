@@ -46,21 +46,9 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <FrameLayout
-        android:id="@+id/btnContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.tokopedia.gamification.giftbox.presentation.views.GreenGradientButton
+        android:id="@+id/greenBtn"
         android:layout_marginTop="@dimen/dp_12"
-        android:background="@drawable/gami_green_grad_btn"
-        android:padding="@dimen/dp_11">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/cta"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/white"
-            app:typographyType="heading_5"
-            tools:text="Cek Hadiah Yang Bisa Didapat" />
-    </FrameLayout>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

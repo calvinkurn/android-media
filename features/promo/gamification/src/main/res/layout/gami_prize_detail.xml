@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_16">
 
     <com.tokopedia.gamification.giftbox.presentation.views.CouponImageView
         android:id="@+id/image"
@@ -19,34 +19,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        app:layout_constraintTop_toBottomOf="@+id/image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/prizeListItemContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
-
-    <FrameLayout
-        app:layout_constraintTop_toBottomOf="@+id/prizeListItemContainer"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        android:id="@+id/btnContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image" />
+
+    <com.tokopedia.gamification.giftbox.presentation.views.GreenGradientButton
+        android:id="@+id/greenBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:background="@drawable/gami_green_grad_btn"
-        android:padding="@dimen/dp_11">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/cta"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/white"
-            app:typographyType="heading_5"
-            tools:text="Cek Hadiah Yang Bisa Didapat" />
-    </FrameLayout>
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/prizeListItemContainer" />
 </androidx.constraintlayout.widget.ConstraintLayout>
