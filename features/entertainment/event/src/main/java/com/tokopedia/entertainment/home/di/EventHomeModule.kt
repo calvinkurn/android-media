@@ -25,7 +25,6 @@ import okhttp3.logging.HttpLoggingInterceptor
  * Author errysuprayogi on 06,February,2020
  */
 
-@EventHomeScope
 @Module
 class EventHomeModule {
 

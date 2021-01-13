@@ -18,7 +18,6 @@ import dagger.Provides
  * Created By @ilhamsuaib on 2020-01-15
  */
 
-@SellerHomeScope
 @Module
 class SellerHomeUseCaseModule {
 

@@ -12,7 +12,6 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 import javax.inject.Named
 
-@ProductDetailScope
 @Module
 class GqlRawQueryModule {
 

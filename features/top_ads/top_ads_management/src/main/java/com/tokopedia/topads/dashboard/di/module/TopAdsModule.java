@@ -31,7 +31,6 @@ import retrofit2.Retrofit;
  * Created by zulfikarrahman on 9/18/17.
  */
 
-@TopAdsScope
 @Module
 public class TopAdsModule {
 
