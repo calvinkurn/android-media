@@ -296,18 +296,23 @@ class RegisterInitialViewModel @Inject constructor(
     ) {
         launchCatchError(coroutineContext, {
             val params = activateUserUseCase.getParams(email, validateToken)
-            val data = activateUserUseCase.getData(params).data
-            when {
-                data.isSuccess == 1 -> {
-                    onSuccessActivateUser().invoke(data)
+            val data: ActivateUserData? = activateUserUseCase.getData(params).data
+            if (data != null) {
+                when {
+                    data.isSuccess == 1 -> {
+                        onSuccessActivateUser().invoke(data)
+                    }
+                    data.message.isNotEmpty() -> {
+                        onFailedActivateUser().invoke(MessageErrorException(data.message))
+                    }
+                    else -> {
+                        onFailedActivateUser().invoke(Throwable())
+                    }
                 }
-                data.message.isNotEmpty() -> {
-                    onFailedActivateUser().invoke(MessageErrorException(data.message))
-                }
-                else -> {
-                    onFailedActivateUser().invoke(Throwable())
-                }
+            } else {
+                onFailedActivateUser().invoke(Throwable())
             }
+
         }, {
             onFailedActivateUser().invoke(it)
         })

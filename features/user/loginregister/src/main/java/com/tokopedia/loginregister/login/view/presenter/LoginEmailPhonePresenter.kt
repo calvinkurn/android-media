@@ -12,6 +12,7 @@ import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
 import com.tokopedia.loginregister.common.DispatcherProvider
+import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
@@ -360,17 +361,21 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     ) {
         launchCatchError(coroutineContext, {
             val params = activateUserUseCase.getParams(email, validateToken)
-            val data = activateUserUseCase.getData(params).data
-            when {
-                data.isSuccess == 1 -> {
-                    view.onSuccessActivateUser(data)
+            val data: ActivateUserData? = activateUserUseCase.getData(params).data
+            if (data != null) {
+                when {
+                    data.isSuccess == 1 -> {
+                        view.onSuccessActivateUser(data)
+                    }
+                    data.message.isNotEmpty() -> {
+                        view.onFailedActivateUser(MessageErrorException(data.message))
+                    }
+                    else -> {
+                        view.onFailedActivateUser(Throwable())
+                    }
                 }
-                data.message.isNotEmpty() -> {
-                    view.onFailedActivateUser(MessageErrorException(data.message))
-                }
-                else -> {
-                    view.onFailedActivateUser(Throwable())
-                }
+            } else {
+                view.onFailedActivateUser(Throwable())
             }
         }, {
             view.onFailedActivateUser(it)
