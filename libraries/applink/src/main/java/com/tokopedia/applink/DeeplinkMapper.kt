@@ -141,7 +141,9 @@ object DeeplinkMapper {
             val versionList = versions.split(",")
             if (GlobalConfig.VERSION_NAME !in versionList) return deeplink
 
-            return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, weblink)
+            val webviewApplink = UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, weblink)
+
+            return createAppendDeeplinkWithQuery(webviewApplink, uri.query)
         } catch (e: Exception) { return deeplink }
     }
 
