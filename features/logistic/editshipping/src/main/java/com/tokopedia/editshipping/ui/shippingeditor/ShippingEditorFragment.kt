@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.ShippingEditorItemAdapterListener {
+class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorListItemAdapter.ShippingEditorItemAdapterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
