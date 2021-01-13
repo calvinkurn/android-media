@@ -408,8 +408,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         val linkerData = LinkerData()
         linkerData.id = data?.id?.toString() ?: ""
         linkerData.name = data?.name ?: ""
-        linkerData.ogUrl = null
-        linkerData.type = "Category"
         linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url ?: "", discoveryViewModel.getDeepLinkQueryParam())
         linkerData.description = data?.share?.description ?: ""
         linkerData.isThrowOnError = true
