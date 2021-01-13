@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital_checkout.R
-import com.tokopedia.digital_checkout.data.model.CartItemDigital
-import com.tokopedia.digital_checkout.data.model.CartItemDigitalWithTitle
+import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
+import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
 import kotlinx.android.synthetic.main.item_digital_checkout_detail.view.*
 import kotlinx.android.synthetic.main.item_digital_checkout_detail_subtitle.view.*
 

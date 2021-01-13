@@ -58,8 +58,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-            android:id="@+id/promo_ticker_view"
+        <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+            android:id="@+id/digitalPromoTickerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent" />
@@ -74,7 +74,7 @@
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/promo_ticker_view"
+            app:layout_constraintTop_toBottomOf="@id/digitalPromoTickerView"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -82,7 +82,6 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:text="testes"
             android:textColor="@color/Yellow_Y500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tvTotalPaymentLabel"
@@ -108,7 +107,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/promo_ticker_view"
+            app:layout_constraintTop_toBottomOf="@id/digitalPromoTickerView"
             app:unifyButtonSize="medium"
             app:unifyButtonType="transaction" />
     </androidx.constraintlayout.widget.ConstraintLayout>
