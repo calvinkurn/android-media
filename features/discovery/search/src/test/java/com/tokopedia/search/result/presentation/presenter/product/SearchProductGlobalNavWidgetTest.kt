@@ -159,7 +159,7 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list does not have global nav widget`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<CpmViewModel>()
+        visitableList.any { it is GlobalNavViewModel } shouldBe false
     }
 
     @Test

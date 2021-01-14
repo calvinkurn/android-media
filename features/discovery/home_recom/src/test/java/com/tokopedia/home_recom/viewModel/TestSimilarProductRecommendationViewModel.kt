@@ -157,7 +157,7 @@ class TestSimilarProductRecommendationViewModel {
 
     @Test
     fun `get success quick filter click`(){
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns RecommendationFilterChipsEntity.FilterAndSort()
+        coEvery { getRecommendationFilterChips.executeOnBackground(any()) } returns RecommendationFilterChipsEntity.FilterAndSort()
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
         every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns listOf(RecommendationItem())
         viewModel.getRecommendationFromQuickFilter("", "", "","")

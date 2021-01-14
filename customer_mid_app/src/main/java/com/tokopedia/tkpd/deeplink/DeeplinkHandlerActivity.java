@@ -40,8 +40,6 @@ import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
-import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
-import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.data.repository.HistoryRepository;
@@ -72,7 +70,6 @@ import timber.log.Timber;
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         SellerApplinkModule.class,
-        ProductDetailApplinkModule.class,
         FeedDeeplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
@@ -94,7 +91,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ConsumerDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
-                    new ProductDetailApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),

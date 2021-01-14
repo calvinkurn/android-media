@@ -26,7 +26,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -668,9 +671,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun updateCartAfterDetached() {
         val hasChanges = dPresenter.dataHasChanged()
         try {
-            val cartItemDataList = getAllSelectedCartDataList()
+            val cartItemDataList = getAllAvailableCartDataList()
             activity?.let {
-                if (hasChanges && cartItemDataList?.isNotEmpty() == true && !FLAG_BEGIN_SHIPMENT_PROCESS) {
+                if (hasChanges && cartItemDataList.isNotEmpty() && !FLAG_BEGIN_SHIPMENT_PROCESS) {
                     dPresenter.processUpdateCartData(true)
                 }
             }
@@ -1828,10 +1831,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun setActivityBackgroundColor() {
         activity?.let {
             if (activity !is CartActivity) {
-                llCartContainer.setBackgroundColor(ContextCompat.getColor(it, R.color.checkout_module_color_background))
+                llCartContainer.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N50))
             }
 
-            it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, R.color.checkout_module_color_background))
+            it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N50))
         }
     }
 
@@ -2780,9 +2783,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartListData?.shoppingSummaryData?.sellerCashbackValue = cashback.toInt()
     }
 
-    override fun showToastMessageRed(message: String, ctaText: String, ctaClickListener: View.OnClickListener?) {
+    override fun showToastMessageRed(message: String, actionText: String, ctaClickListener: View.OnClickListener?) {
         view?.let {
-
             var tmpMessage = message
             if (TextUtils.isEmpty(tmpMessage)) {
                 tmpMessage = CART_ERROR_GLOBAL
@@ -2794,22 +2796,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 tmpCtaClickListener = ctaClickListener
             }
 
-            if (ctaText.isNotBlank()) {
-                Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, tmpCtaClickListener).show()
+            initializeToasterLocation()
+            if (actionText.isNotBlank()) {
+                Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, actionText, tmpCtaClickListener)
+                        .show()
             } else {
-                Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, it.resources.getString(R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
+                        .show()
             }
-
         }
-    }
-
-    override fun showToastMessageRed(throwable: Throwable, ctaText: String, ctaClickListener: View.OnClickListener?) {
-        var errorMessage = throwable.message ?: ""
-        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
-            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
-        }
-
-        showToastMessageRed(errorMessage, ctaText, ctaClickListener)
     }
 
     override fun showToastMessageRed(throwable: Throwable) {
@@ -2821,33 +2816,32 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         showToastMessageRed(errorMessage)
     }
 
-    override fun showToastMessageGreen(message: String, showDefaultAction: Boolean) {
-        view?.let {
-            if (showDefaultAction) {
-                Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, activity?.getString(R.string.label_action_snackbar_close)
-                        ?: "", View.OnClickListener { })
+    override fun showToastMessageGreen(message: String, actionText: String, onClickListener: View.OnClickListener?) {
+        view?.let { v ->
+            var tmpCtaClickListener = View.OnClickListener { }
+
+            if (onClickListener != null) {
+                tmpCtaClickListener = onClickListener
+            }
+
+            initializeToasterLocation()
+            if (actionText.isNotBlank()) {
+                Toaster.toasterCustomCtaWidth = v.resources.getDimensionPixelOffset(R.dimen.dp_100)
+                Toaster.build(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, actionText, tmpCtaClickListener)
                         .show()
             } else {
-                Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                Toaster.build(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, v.resources.getString(R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
                         .show()
             }
         }
     }
 
-    override fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener?) {
-        val toasterInfo = Toaster
-        view?.let { v ->
-            if (action.isNotBlank()) {
-                var tmpCtaClickListener = View.OnClickListener { }
-
-                if (onClickListener != null) {
-                    tmpCtaClickListener = onClickListener
-                }
-
-                toasterInfo.toasterCustomCtaWidth = v.resources.getDimensionPixelOffset(R.dimen.dp_100)
-                toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, action, tmpCtaClickListener)
+    private fun initializeToasterLocation() {
+        activity?.let {
+            if (it is CartActivity) {
+                Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_140)
             } else {
-                toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_210)
             }
         }
     }
@@ -2973,11 +2967,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun animateProductImage(message: String) {
         var target: Pair<Int, Int>? = null
 
-        if (toolbarType.equals(TOOLBAR_VARIANT_BASIC, true)) {
-            target = toolbar.getWishlistIconPosition()
-        } else {
+        if (toolbarType.equals(TOOLBAR_VARIANT_NAVIGATION, true)) {
             val targetX = getScreenWidth() - resources.getDimensionPixelSize(R.dimen.dp_64)
             target = Pair(targetX, 0)
+        } else {
+            target = toolbar.getWishlistIconPosition()
         }
 
         tmpAnimatedImage.show()
@@ -3003,13 +2997,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onAnimationEnd(animation: Animator) {
                     tmpAnimatedImage.gone()
 
-                    if (toolbarType.equals(TOOLBAR_VARIANT_BASIC, true)) {
-                        toolbar.animateWishlistIcon()
-                    } else {
+                    if (toolbarType.equals(TOOLBAR_VARIANT_NAVIGATION, true)) {
                         navToolbar.triggerLottieAnimation(IconList.ID_NAV_LOTTIE_WISHLIST)
+                    } else {
+                        toolbar.animateWishlistIcon()
                     }
 
-                    showToastMessageGreen(message, false)
+                    showToastMessageGreen(message)
                     dPresenter.processGetWishlistData()
                 }
 

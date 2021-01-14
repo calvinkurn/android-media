@@ -82,7 +82,6 @@ fun createHomeViewModel(
             getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
             getBusinessWidgetTab = Lazy{getBusinessWidgetTab},
             getHomeReviewSuggestedUseCase = Lazy{getHomeReviewSuggestedUseCase},
-            getHomeTokopointsDataUseCase = Lazy{getHomeTokopointsDataUseCase},
             getHomeTokopointsListDataUseCase = Lazy{getHomeTokopointsListDataUseCase},
             getKeywordSearchUseCase = Lazy{getKeywordSearchUseCase},
             getPendingCashbackUseCase = Lazy{getCoroutinePendingCashbackUseCase},
@@ -109,7 +108,8 @@ fun createHomeViewModel(
             getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
             playWidgetTools = Lazy { playWidgetTools },
             bestSellerMapper = Lazy { bestSellerMapper },
-            homeProcessor = Lazy{ homeProcessor }
+            homeProcessor = Lazy{ homeProcessor },
+            getHomeTokopointsDataUseCase = Lazy { getHomeTokopointsDataUseCase }
     )
 }
 

@@ -23,6 +23,7 @@ class GetRecommendationFilterChips (
             "        name\n" +
             "        templateName\n" +
             "        isActivated\n" +
+            "        value\n" +
             "        options {\n" +
             "          name\n" +
             "          icon\n" +
@@ -72,6 +73,11 @@ class GetRecommendationFilterChips (
         return recommendationFilterChipsEntity.recommendationFilterChips.data
     }
 
+    suspend fun executeOnBackground(params: RequestParams): RecommendationFilterChipsEntity.FilterAndSort{
+        graphqlUseCase.setRequestParams(params.parameters)
+        return executeOnBackground()
+    }
+
     fun setParams(userId: Int=0, productIDs: String="", pageName: String="", xSource: String="", queryParam: String="", type: String=""){
         params.parameters.clear()
         if (userId != 0 ) params.putInt(PARAM_USER_ID, userId)
@@ -82,6 +88,8 @@ class GetRecommendationFilterChips (
         if (type.isNotEmpty()) params.putString(PARAM_FILTER_TYPE, type)
 //        params.putString("injectionID", "01EGFJGX3076CT8K1607XESK16")
     }
+
+    fun getParams() = params
 
     companion object{
         private const val PARAM_USER_ID = "userId"

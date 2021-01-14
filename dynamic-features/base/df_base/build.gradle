@@ -78,6 +78,7 @@ dependencies {
     implementation project(rootProject.ext.features.digitalBrizzi)
     implementation project(rootProject.ext.features.smartBills)
     implementation project(rootProject.ext.features.recharge_slice)
+    implementation project(rootProject.ext.features.travel_slice)
 
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
@@ -105,6 +106,7 @@ dependencies {
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.brandlist)
+    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.reviewProduct)
     implementation project(rootProject.ext.features.shopPage)

@@ -36,9 +36,7 @@ import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationTypeFac
 import com.tokopedia.home_recom.view.viewholder.RecommendationEmptyViewHolder
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel.Companion.DEFAULT_VALUE_SORT
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.sortfilter.SortFilter
@@ -70,6 +68,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     private var source: String = ""
     private var productId: String = ""
     private var internalRef: String = ""
+    private var hasNextPage: Boolean = true
 
     companion object{
         private const val SPAN_COUNT = 2
@@ -146,6 +145,12 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         }
     }
 
+    override fun showLoading() {
+        if(hasNextPage){
+            super.showLoading()
+        }
+    }
+
     override fun showEmpty() {
         adapter.clearAllElements()
         adapter.addElement(RecommendationEmptyDataModel())
@@ -163,8 +168,12 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                     super.onScrolled(recyclerView, dx, dy)
                     val lastItems = staggeredGrid.findFirstCompletelyVisibleItemPositions(null)
                     if (lastItems.isNotEmpty() && lastItems[0] >= 2) {
-                        view.recom_back_to_top?.show()
+                        if(!view.recom_back_to_top.isShown) {
+                            view.recom_back_to_top?.show()
+                            view.recom_back_to_top.visible()
+                        }
                     } else {
+                        view.recom_back_to_top.gone()
                         view.recom_back_to_top?.hide()
                     }
                 }
@@ -197,9 +206,13 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                                     (this as AppCompatActivity).supportActionBar?.title = if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
                                 }
                             }
+                            hasNextPage = true
                             renderList(mapDataModel(it.data), true)
                         }else{
-                            showGetListError(Throwable())
+                            hasNextPage = false
+                            hideLoading()
+                            updateScrollListenerState(false)
+                            showToastSuccess(getString(R.string.recom_msg_empty_next_page))
                         }
                     }
                 }
