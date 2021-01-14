@@ -11,6 +11,7 @@ import android.os.Bundle;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.data.repository.TransactionRepository;
@@ -22,6 +23,8 @@ import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.util.NotificationTracker;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import timber.log.Timber;
 
 import static com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase.STATUS_DELIVERED;
 import static com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase.STATUS_DROPPED;
