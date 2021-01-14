@@ -187,15 +187,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         return RemoteConfigInstance.getInstance().abTestPlatform
     }
 
-    private fun useOvoRegister(): Boolean {
-        return try {
-            val remoteConfigValue = getAbTestingRemoteConfig().getString(ExternalRegisterConstants.OVO_REGISTER_AB_TEST_VALUE, "")
-            val rollence = remoteConfigValue.equals(ExternalRegisterConstants.OVO_REGISTER_AB_TEST_VALUE, ignoreCase = true)
-            (rollence && enableOvoRegister)
-        } catch (e: Exception) {
-            false
-        }
-    }
+    private fun useOvoRegister(): Boolean = enableOvoRegister
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
