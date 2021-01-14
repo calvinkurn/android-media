@@ -100,12 +100,12 @@ object DeeplinkMapper {
             DeeplinkConstant.SCHEME_TOKOPEDIA -> {
                 val query = uri.query
                 val tempDeeplink = getRegisteredNavigationFromTokopedia(context, uri, deeplink)
-                return createAppendDeeplinkWithQuery(tempDeeplink, query)
+                createAppendDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_SELLERAPP -> {
                 val query = uri.query
                 val tempDeeplink = getRegisteredNavigationFromSellerapp(uri, deeplink)
-                return createAppendDeeplinkWithQuery(tempDeeplink, query)
+                createAppendDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_INTERNAL -> {
                 getRegisteredNavigationFromInternalTokopedia(context, uri, deeplink)
