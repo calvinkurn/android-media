@@ -127,8 +127,6 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
             listTypeData.add(UohTypeData("", TYPE_LOADER))
         }
         val newList = listTypeData
-        // notifyDataSetChanged()
-
         val diffUtil = UohDiffUtil(oldList, newList)
         val diffResult = DiffUtil.calculateDiff(diffUtil)
         diffResult.dispatchUpdatesTo(this)
