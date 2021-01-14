@@ -8,6 +8,10 @@ import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputMod
 import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryResponse
+import com.tokopedia.product.addedit.specification.domain.model.DrogonAnnotationCategoryV2
+import com.tokopedia.product.addedit.specification.domain.model.Values
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
@@ -20,6 +24,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -398,6 +403,41 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.validationResult.getOrAwaitValue()
 
         assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.UNVALIDATED))
+    }
+
+    @Test
+    fun `getAnnotationCategory should return specification data when productId is provided`() = runBlocking {
+        val annotationCategoryData = listOf(
+                AnnotationCategoryData(
+                        variant = "Merek",
+                        data = listOf(
+                                Values(1, "Indomie", true, ""),
+                                Values(1, "Seedap", false, ""))
+                ),
+                AnnotationCategoryData(
+                        variant = "Rasa",
+                        data = listOf(
+                                Values(1, "Soto", false, ""),
+                                Values(1, "Bawang", true, ""))
+                )
+        )
+
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } returns AnnotationCategoryResponse(
+                DrogonAnnotationCategoryV2(annotationCategoryData)
+        )
+
+        viewModel.productInputModel.value = ProductInputModel()
+        viewModel.updateSpecificationFromRemote("", "11090")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.productInputModel.getOrAwaitValue()
+        assertEquals(2, result?.detailInputModel?.specifications?.size)
     }
 
     private fun onGetProductDraft_thenReturn(draft: ProductDraft) {
