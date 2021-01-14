@@ -51,6 +51,15 @@
             app:layout_constraintTop_toBottomOf="@id/shipment_name"
             app:typographyType="heading_6" />
 
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+            android:id="@+id/cb_shipment_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_20"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/img_shipment_item"
+            app:layout_constraintBottom_toBottomOf="@id/img_shipment_item" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_shipment_label"
             android:layout_width="match_parent"

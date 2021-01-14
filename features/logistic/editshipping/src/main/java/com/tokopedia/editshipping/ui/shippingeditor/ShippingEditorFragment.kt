@@ -63,7 +63,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorListItemAdapte
         globalErrorLayout = view?.findViewById(R.id.global_error)
     }
 
-    override fun onShipperInfoClicker() {
+    override fun onShipperInfoClicked() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
