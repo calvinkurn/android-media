@@ -5,6 +5,10 @@
         <meta-data
             android:name="com.tokopedia.abstraction.common.utils.image.TkpdGlideModule"
             android:value="GlideModule" />
+
+        <service
+            android:name="com.tokopedia.appaidl.service.RemoteService"
+            android:exported="true" />
     </application>
 
 </manifest>
