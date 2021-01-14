@@ -474,6 +474,8 @@ class AddEditProductDetailViewModel @Inject constructor(
                     } else {
                         ""
                     }
+                }.also { defaultMessage ->
+                    productStockMessage = defaultMessage
                 }
     }
 

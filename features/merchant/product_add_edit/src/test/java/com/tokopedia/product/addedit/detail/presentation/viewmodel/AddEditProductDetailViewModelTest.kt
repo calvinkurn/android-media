@@ -920,6 +920,7 @@ class AddEditProductDetailViewModelTest {
         viewModel.setupDefaultStockAllocationMessage()
 
         assert(stockAllocationDefaultMessage.isEmpty())
+        assert(viewModel.productStockMessage.isEmpty())
     }
 
     @Test
@@ -930,6 +931,7 @@ class AddEditProductDetailViewModelTest {
         viewModel.setupDefaultStockAllocationMessage()
 
         assert(stockAllocationDefaultMessage.isEmpty())
+        assert(viewModel.productStockMessage.isEmpty())
     }
 
     @Test
@@ -942,6 +944,7 @@ class AddEditProductDetailViewModelTest {
         viewModel.setupDefaultStockAllocationMessage()
 
         assert(stockAllocationDefaultMessage.isEmpty())
+        assert(viewModel.productStockMessage.isEmpty())
     }
 
     @Test
@@ -955,6 +958,7 @@ class AddEditProductDetailViewModelTest {
         viewModel.setupDefaultStockAllocationMessage()
 
         assert(stockAllocationDefaultMessage == editMessage)
+        assert(viewModel.productStockMessage == editMessage)
     }
 
     @Test
@@ -969,6 +973,7 @@ class AddEditProductDetailViewModelTest {
         viewModel.setupDefaultStockAllocationMessage()
 
         assert(stockAllocationDefaultMessage == addMessage)
+        assert(viewModel.productStockMessage == addMessage)
     }
 
     private fun getSampleProductPhotos(): List<PictureInputModel> {
