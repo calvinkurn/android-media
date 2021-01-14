@@ -100,26 +100,33 @@
                             app:typographyType="heading_4"
                             app:typographyWeight="bold" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/btnAction"
-                            android:layout_width="wrap_content"
+                        <com.tokopedia.gamification.giftbox.presentation.views.CekTokoButtonContainer
+                            android:id="@+id/tokoBtnContainer"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/gf_bg_orange_3d"
-                            android:fontFamily="sans-serif"
-                            android:paddingStart="@dimen/dp_64"
-                            android:paddingLeft="@dimen/dp_64"
-                            android:paddingTop="@dimen/dp_11"
-                            android:paddingEnd="@dimen/dp_64"
-                            android:paddingRight="@dimen/dp_64"
-                            android:paddingBottom="@dimen/dp_15"
-                            android:textColor="@android:color/white"
-                            android:textSize="@dimen/sp_16"
-                            android:textStyle="bold"
-                            tools:text="@string/gami_palai_kupon_ovo_points" />
+                            android:layout_marginStart="@dimen/dp_16"
+                            android:layout_marginEnd="@dimen/dp_16" />
+
+<!--                        <androidx.appcompat.widget.AppCompatTextView-->
+<!--                            android:id="@+id/btnAction"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:background="@drawable/gf_bg_orange_3d"-->
+<!--                            android:fontFamily="sans-serif"-->
+<!--                            android:paddingStart="@dimen/dp_64"-->
+<!--                            android:paddingLeft="@dimen/dp_64"-->
+<!--                            android:paddingTop="@dimen/dp_11"-->
+<!--                            android:paddingEnd="@dimen/dp_64"-->
+<!--                            android:paddingRight="@dimen/dp_64"-->
+<!--                            android:paddingBottom="@dimen/dp_15"-->
+<!--                            android:textColor="@android:color/white"-->
+<!--                            android:textSize="@dimen/sp_16"-->
+<!--                            android:textStyle="bold"-->
+<!--                            tools:text="@string/gami_palai_kupon_ovo_points" />-->
 
                     </LinearLayout>
 
-                    <include layout="@layout/gami_gift_reminder" />
+<!--                    <include layout="@layout/gami_gift_reminder" />-->
 
                 </FrameLayout>
 

@@ -46,7 +46,7 @@ import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.LoaderUnify
+import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -61,12 +61,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     lateinit var llRewardMessage: LinearLayout
     lateinit var tvRewardFirstLine: AppCompatTextView
     lateinit var tvRewardSecondLine: AppCompatTextView
-    lateinit var btnAction: AppCompatTextView
-    lateinit var tvReminderBtn: AppCompatTextView
-    lateinit var tvReminderMessage: AppCompatTextView
-    lateinit var loaderReminder: LoaderUnify
-    lateinit var reminderLayout: RelativeLayout
-    lateinit var fmReminder: FrameLayout
+//    lateinit var btnAction: AppCompatTextView
+    lateinit var tokoButtonContainer: CekTokoButtonContainer
+//    lateinit var tvReminderBtn: AppCompatTextView
+//    lateinit var tvReminderMessage: AppCompatTextView
+//    lateinit var loaderReminder: LoaderUnify
+//    lateinit var reminderLayout: RelativeLayout
+//    lateinit var fmReminder: FrameLayout
     lateinit var imageInfo: AppCompatImageView
     lateinit var directGiftView: DirectGiftView
     lateinit var pdpGamificationView: PdpGamificationView
@@ -162,13 +163,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         rewardContainer = v.findViewById(R.id.reward_container)
         tvRewardFirstLine = v.findViewById(R.id.tvRewardFirstLine)
         tvRewardSecondLine = v.findViewById(R.id.tvRewardSecondLine)
-        btnAction = v.findViewById(R.id.btnAction)
+//        btnAction = v.findViewById(R.id.btnAction)
+        tokoButtonContainer = v.findViewById(R.id.tokoBtnContainer)
         tvLoaderMessage = v.findViewById(R.id.tvLoaderMessage)
-        tvReminderBtn = v.findViewById(R.id.tvReminderBtn)
-        tvReminderMessage = v.findViewById(R.id.tvReminderMessage)
-        loaderReminder = v.findViewById(R.id.loaderReminder)
-        reminderLayout = v.findViewById(R.id.reminderLayout)
-        fmReminder = v.findViewById(R.id.fmReminder)
+//        tvReminderBtn = v.findViewById(R.id.tvReminderBtn)
+//        tvReminderMessage = v.findViewById(R.id.tvReminderMessage)
+//        loaderReminder = v.findViewById(R.id.loaderReminder)
+//        reminderLayout = v.findViewById(R.id.reminderLayout)
+//        fmReminder = v.findViewById(R.id.fmReminder)
         imageInfo = v.findViewById(R.id.imageInfo)
         directGiftView = v.findViewById(R.id.direct_gift_view)
         pdpGamificationView = v.findViewById(R.id.pdpGamificationView)
@@ -298,7 +300,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     if (!viewModel.campaignSlug.isNullOrEmpty()) {
                                         GtmEvents.viewGiftBoxPage(viewModel.campaignSlug!!, userSession?.userId)
                                     }
-                                    reminderLayout.visibility = View.VISIBLE
+                                    tokoButtonContainer.toggleReminderVisibility(true)
+//                                    reminderLayout.visibility = View.VISIBLE
                                     renderGiftBoxActive(giftBoxEntity)
                                     giftBoxDailyView.fmGiftBox.setOnClickListener {
                                         if (!disableGiftBoxTap) {
@@ -311,18 +314,20 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                         playTapSound()
                                     }
 
-                                    tvReminderMessage.text = reminder?.text
+//                                    tvReminderMessage.text = reminder?.text
                                     setInitialUiForReminder()
                                     setClickEventOnReminder()
                                 }
                                 TokenUserState.EMPTY -> {
-                                    reminderLayout.visibility = View.VISIBLE
+                                    tokoButtonContainer.toggleReminderVisibility(true)
+//                                    reminderLayout.visibility = View.VISIBLE
                                     renderGiftBoxActive(giftBoxEntity)
                                     tvRewardFirstLine.visibility = View.GONE
                                     tvRewardSecondLine.visibility = View.GONE
-                                    btnAction.visibility = View.GONE
+                                    tokoButtonContainer.visibility = View.GONE
+//                                    btnAction.visibility = View.GONE
 
-                                    tvReminderMessage.text = reminder?.text
+//                                    tvReminderMessage.text = reminder?.text
                                     setInitialUiForReminder()
                                     setClickEventOnReminder()
                                     GtmEvents.emptyBoxImpression(userSession?.userId)
@@ -334,7 +339,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                         renderGiftBoxError(messageList[0], getString(R.string.gami_oke))
                                     }
 
-                                    tvReminderMessage.text = reminder?.text
+//                                    tvReminderMessage.text = reminder?.text
                                     setInitialUiForReminder()
 
                                 }
@@ -342,7 +347,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                             renderUiForReminderCheck(remindMeCheckEntity)
                         } else {
-                            reminderLayout.visibility = View.GONE
+                            tokoButtonContainer.toggleReminderVisibility(false)
+//                            reminderLayout.visibility = View.GONE
 
                             if (remindMeCheckStatusCode != HTTP_STATUS_OK) {
 
@@ -369,7 +375,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     pltPerf?.stopNetworkRequestPerformanceMonitoring()
                     pltPerf?.startRenderPerformanceMonitoring()
                     hideLoader()
-                    reminderLayout.visibility = View.GONE
+                    tokoButtonContainer.toggleReminderVisibility(false)
+//                    reminderLayout.visibility = View.GONE
                     renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
                     pltPerf?.stopRenderPerformanceMonitoring()
                 }
@@ -400,8 +407,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                         val array = benefitText[1].split("&")
                                         val sb = StringBuilder()
                                         sb.append(array[0])
-                                        sb.append(" &")
-                                        sb.append("\n")
+//                                        sb.append(" &")
+                                        sb.append(" & ")
+//                                        sb.append("\n")
                                         sb.append(array[1])
                                         tvRewardSecondLine.text = sb.toString()
                                     } else {
@@ -413,8 +421,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                             val actionButtonList = giftBoxRewardEntity?.gamiCrack?.actionButton
                             if (actionButtonList != null && actionButtonList.isNotEmpty()) {
-                                btnAction.text = actionButtonList[0].text
-                                btnAction.setOnClickListener {
+//                                btnAction.text = actionButtonList[0].text
+//                                btnAction.setOnClickListener {
+//                                    checkInternetOnButtonActionAndRedirect()
+//                                }
+                                tokoBtnContainer.setSecondButtonText(actionButtonList[0].text)
+                                tokoBtnContainer.btnSecond.setOnClickListener {
                                     checkInternetOnButtonActionAndRedirect()
                                 }
                             }
@@ -441,12 +453,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
-                    loaderReminder.visibility = View.VISIBLE
-                    tvReminderBtn.visibility = View.INVISIBLE
+//                    loaderReminder.visibility = View.VISIBLE
+//                    tvReminderBtn.visibility = View.INVISIBLE
+                    tokoButtonContainer.btnReminder.performLoading()
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
-                    loaderReminder.visibility = View.GONE
-                    tvReminderBtn.visibility = View.VISIBLE
+//                    loaderReminder.visibility = View.GONE
+//                    tvReminderBtn.visibility = View.VISIBLE
+
+                    tokoButtonContainer.btnReminder.stopLoading()
 
                     val code = it.data?.gameRemindMe?.resultStatus?.code
                     val reason = it.data?.gameRemindMe?.resultStatus?.reason
@@ -461,8 +476,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
-                    loaderReminder.visibility = View.GONE
-                    tvReminderBtn.visibility = View.VISIBLE
+                    tokoButtonContainer.btnReminder.stopLoading()
+//                    loaderReminder.visibility = View.GONE
+//                    tvReminderBtn.visibility = View.VISIBLE
                     showRemindMeError(defaultErrorMessage, getString(R.string.gami_oke))
                 }
             }
@@ -532,7 +548,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     viewModel.autoApply(dummyCode)
                 }
                 RouteManager.route(context, applink)
-                GtmEvents.clickClaimButton(btnAction.text.toString(), userSession?.userId)
+                GtmEvents.clickClaimButton(tokoButtonContainer.btnSecond.btn.text.toString(), userSession?.userId)
             }
         }
 
@@ -540,7 +556,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun setClickEventOnReminder() {
-        tvReminderBtn.setOnClickListener {
+
+//        tvReminderBtn.setOnClickListener {
+//            if (!isReminderSet) {
+//                viewModel.setReminder()
+//                GtmEvents.clickReminderButton(userSession?.userId)
+//            }
+//        }
+
+        tokoButtonContainer.btnReminder.setOnClickListener {
             if (!isReminderSet) {
                 viewModel.setReminder()
                 GtmEvents.clickReminderButton(userSession?.userId)
@@ -554,14 +578,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun renderUiForReminderCheck(remindMeCheckEntity: RemindMeCheckEntity) {
         this.gameRemindMeCheck = remindMeCheckEntity?.gameRemindMeCheck
-        loaderReminder.visibility = View.GONE
-        tvReminderBtn.visibility = View.VISIBLE
+        tokoButtonContainer.btnReminder.stopLoading()
+//        loaderReminder.visibility = View.GONE
+//        tvReminderBtn.visibility = View.VISIBLE
         val isRemindMe = gameRemindMeCheck?.isRemindMe
         if (isRemindMe != null) {
-            reminderLayout.visibility = View.VISIBLE
+            tokoButtonContainer.toggleReminderVisibility(true)
+//            reminderLayout.visibility = View.VISIBLE
             renderReminderButton(isRemindMe)
         } else {
-            reminderLayout.visibility = View.GONE
+            tokoButtonContainer.toggleReminderVisibility(false)
+//            reminderLayout.visibility = View.GONE
         }
     }
 
@@ -598,15 +625,19 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun renderReminderButton(isUserReminded: Boolean) {
         context?.let {
             if (isUserReminded) {
-                fmReminder.background = ContextCompat.getDrawable(it, com.tokopedia.gamification.R.drawable.gf_bg_disabled_3d)
-                tvReminderBtn.text = reminder?.disableText
+//                fmReminder.background = ContextCompat.getDrawable(it, com.tokopedia.gamification.R.drawable.gf_bg_disabled_3d)
+//                tvReminderBtn.text = reminder?.disableText
+                tokoButtonContainer.btnReminder.setText(reminder?.disableText)
+                tokoButtonContainer.btnReminder.setIcon(false)
                 isReminderSet = true
             } else {
-                tvReminderBtn.text = reminder?.enableText
-                fmReminder.background = ContextCompat.getDrawable(it, com.tokopedia.gamification.R.drawable.gf_bg_green_3d)
+                tokoButtonContainer.btnReminder.setText(reminder?.enableText)
+                tokoButtonContainer.btnReminder.setIcon(true)
+//                tvReminderBtn.text = reminder?.enableText
+//                fmReminder.background = ContextCompat.getDrawable(it, com.tokopedia.gamification.R.drawable.gf_bg_green_3d)
                 isReminderSet = false
             }
-            tvReminderMessage.text = reminder?.text
+//            tvReminderMessage.text = reminder?.text
         }
     }
 
@@ -687,7 +718,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardMessage, alphaProp)
 
-        val alphaAnimReminder = ObjectAnimator.ofPropertyValuesHolder(reminderLayout, alphaProp)
+//        val alphaAnimReminder = ObjectAnimator.ofPropertyValuesHolder(reminderLayout, alphaProp)
+        val alphaAnimReminder = ObjectAnimator.ofPropertyValuesHolder(tokoButtonContainer.btnReminder, alphaProp)
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(alphaAnim, alphaAnimReminder)
         animatorSet.duration = 200L
@@ -702,8 +734,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //        llBenefits.alpha = 0f
         directGiftView.alpha = 0f
         llRewardMessage.alpha = 0f
-        reminderLayout.alpha = 0f
-        loaderReminder.visibility = View.GONE
+//        reminderLayout.alpha = 0f
+        tokoButtonContainer.btnReminder.alpha = 0f
+
+//        loaderReminder.visibility = View.GONE
+        tokoButtonContainer.btnReminder.loaderReminder.visibility = View.GONE
         setDynamicMargin()
     }
 
@@ -833,7 +868,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 val animatorSet = AnimatorSet()
                 if (tokenUserState == TokenUserState.EMPTY) {
                     val rewardAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardMessage, alphaProp)
-                    val reminderAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(reminderLayout, alphaProp)
+//                    val reminderAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(reminderLayout, alphaProp)
+                    val reminderAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(tokoButtonContainer.btnReminder, alphaProp)
                     animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim, rewardAlphaAnim, reminderAlphaAnim)
 //                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, rewardAlphaAnim, reminderAlphaAnim)
                 } else {

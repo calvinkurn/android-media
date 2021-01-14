@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="@color/colorAccent"
+    tools:padding="@dimen/dp_11">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageBell"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_6"
+            app:srcCompat="@drawable/gami_bell_1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvReminderBtn1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/white"
+            app:typographyType="heading_5"
+            android:text="Ingatkan Besok" />
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:visibility="gone"
+        android:id="@+id/loaderReminder1"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        android:layout_gravity="center" />
+</merge>
