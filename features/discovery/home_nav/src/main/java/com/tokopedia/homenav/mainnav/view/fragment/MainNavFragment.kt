@@ -24,7 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
+import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
@@ -40,8 +40,8 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingUserMenuSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.activity.HomeNavPerformanceInterface
 import com.tokopedia.homenav.view.router.NavigationRouter
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -51,7 +51,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_main_nav.*
 import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
@@ -62,6 +61,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val REQUEST_REGISTER = 2345
     }
 
+    private var mainNavDataFetched: Boolean = false
     private var sharedPrefs: SharedPreferences? = null
 
     @Inject
@@ -101,6 +101,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onCreate(savedInstanceState)
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
+        viewModel.setUserHaveLogoutData(haveUserLogoutData())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -148,39 +149,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             populateAdapterData(it)
         })
 
-        viewModel.accountLiveData.observe(viewLifecycleOwner, Observer {
-
-        })
-
-        viewModel.profileResultListener.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Fail -> {
-
-                }
-            }
-        })
-        viewModel.membershipResultListener.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Fail -> {
-
-                }
-            }
-        })
-        viewModel.ovoResultListener.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Fail -> {
-
-                }
-            }
-        })
-        viewModel.shopResultListener.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Fail -> {
-
-                }
-            }
-        })
-
         viewModel.onboardingListLiveData.observe(viewLifecycleOwner, Observer {
             viewModel.setOnboardingSuccess(showNavigationPageOnboarding(it))
         })
@@ -198,7 +166,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onProfileSectionClicked() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OLD_HOME_ACCOUNT)
+        val intent = RouteManager.getIntent(context, ApplinkConst.ACCOUNT)
         startActivity(intent)
     }
 
@@ -210,46 +178,49 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         startActivityForResult(RouteManager.getIntent(context, ApplinkConst.REGISTER), REQUEST_REGISTER)
     }
 
-    override fun onErrorProfileNameClicked(element: AccountHeaderViewModel) {
-        viewModel.reloadUserData(element)
+    override fun onErrorProfileRefreshClicked(position: Int) {
+        viewModel.refreshProfileData()
     }
 
-    override fun onErrorProfileOVOClicked(element: AccountHeaderViewModel) {
-        viewModel.reloadOvoData(element)
-        viewModel.reloadSaldoData(element)
+    override fun onErrorShopInfoRefreshClicked(position: Int) {
+        viewModel.refreshUserShopData()
     }
 
-    override fun onErrorProfileShopClicked(element: AccountHeaderViewModel) {
-        viewModel.reloadShopData(getUserSession().shopId.toInt(), element)
+    override fun onErrorBuListClicked(position: Int) {
+        viewModel.refreshBuListdata()
     }
 
-    override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
+    override fun onErrorTransactionListClicked(position: Int) {
+        viewModel.refreshTransactionListData()
+    }
+
+    override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
-            if (homeNavMenuViewModel.sectionId == MainNavConst.Section.BU_ICON) {
-                if(homeNavMenuViewModel.applink.isNotEmpty()){
-                    RouteManager.route(context, homeNavMenuViewModel.applink)
+            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
+                if(homeNavMenuDataModel.applink.isNotEmpty()){
+                    RouteManager.route(context, homeNavMenuDataModel.applink)
                 } else {
                     NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
-                            bundleOf("title" to homeNavMenuViewModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuViewModel))
+                            bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
                 }
-                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuViewModel.itemTitle, userSession.userId)
+                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
             } else {
-                RouteManager.route(requireContext(), homeNavMenuViewModel.applink)
-                hitClickTrackingBasedOnId(homeNavMenuViewModel)
+                RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
+                hitClickTrackingBasedOnId(homeNavMenuDataModel)
             }
         }
     }
 
-    private fun hitClickTrackingBasedOnId(homeNavMenuViewModel: HomeNavMenuViewModel) {
-        when(homeNavMenuViewModel.id) {
+    private fun hitClickTrackingBasedOnId(homeNavMenuDataModel: HomeNavMenuDataModel) {
+        when(homeNavMenuDataModel.id) {
             ID_ALL_TRANSACTION -> TrackingTransactionSection.clickOnAllTransaction(userSession.userId)
             ID_TICKET -> TrackingTransactionSection.clickOnTicket(userSession.userId)
             ID_REVIEW -> TrackingTransactionSection.clickOnReview(userSession.userId)
-            else -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuViewModel.trackerName, userSession.userId)
+            else -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuDataModel.trackerName, userSession.userId)
         }
     }
 
-    override fun onMenuImpression(homeNavMenuViewModel: HomeNavMenuViewModel) {
+    override fun onMenuImpression(homeNavMenuDataModel: HomeNavMenuDataModel) {
 
     }
 
@@ -274,7 +245,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun initAdapter() {
-        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession(), remoteConfig)
+        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
         adapter = MainNavListAdapter(mainNavFactory)
 
         var windowHeight = 0
@@ -289,7 +260,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         recyclerView.adapter = adapter
     }
 
-    private fun populateAccountHeader(data: AccountHeaderViewModel) {
+    private fun populateAccountHeader(data: AccountHeaderDataModel) {
         val dataList: List<Visitable<*>> = mutableListOf(data)
         adapter.submitList(dataList)
     }
@@ -297,6 +268,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun populateAdapterData(data: MainNavigationDataModel) {
         setupViewPerformanceMonitoring(data)
         adapter.submitList(data.dataList)
+        if (data.dataList.size > 1 && !mainNavDataFetched) {
+            viewModel.getMainNavData(true)
+            mainNavDataFetched = true
+        }
     }
 
     private fun setupViewPerformanceMonitoring(data: MainNavigationDataModel) {
@@ -382,9 +357,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     //return is the function is success or not
     private fun showNavigationPageOnboarding(list: List<Visitable<*>>): Boolean {
-        val profileSectionView = list.indexOf( list.find { it is AccountHeaderViewModel } ).getViewForThisPosition()
-        val allTransactionView = list.indexOf( list.find { it is HomeNavMenuViewModel && it.id == ID_ALL_TRANSACTION } ).getViewForThisPosition()
-        val complainSectionView = list.indexOf( list.find { it is HomeNavMenuViewModel && it.id == ID_COMPLAIN } ).getViewForThisPosition()
+        val profileSectionView = list.indexOf( list.find { it is AccountHeaderDataModel } ).getViewForThisPosition()
+        val allTransactionView = list.indexOf( list.find { it is HomeNavMenuDataModel && it.id == ID_ALL_TRANSACTION } ).getViewForThisPosition()
+        val complainSectionView = list.indexOf( list.find { it is HomeNavMenuDataModel && it.id == ID_COMPLAIN } ).getViewForThisPosition()
 
         if (allTransactionView == null || complainSectionView == null) return false
 
@@ -483,5 +458,14 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun Int.getViewForThisPosition(): View? {
         if (this != -1) return recyclerView.findViewHolderForAdapterPosition(this)?.itemView
         return null
+    }
+
+    private fun haveUserLogoutData(): Boolean {
+        val name = getSharedPreference().getString(AccountHeaderDataModel.KEY_USER_NAME, "") ?: ""
+        return name.isNotEmpty()
+    }
+
+    private fun getSharedPreference(): SharedPreferences {
+        return requireContext().getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 }

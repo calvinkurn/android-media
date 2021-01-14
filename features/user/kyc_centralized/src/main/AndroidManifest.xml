@@ -22,7 +22,7 @@
             android:label="@string/title_kyc_form_upload"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -40,7 +40,7 @@
             android:theme="@style/Theme.White">
 
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

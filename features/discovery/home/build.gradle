@@ -73,6 +73,7 @@ dependencies {
     implementation project(rootProject.ext.features.homeNav)
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.playWidget)
+    implementation project(rootProject.ext.features.rechargeComponent)
 
     // Library
     implementation project(rootProject.ext.libraries.analytics)
@@ -83,6 +84,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.diffUtilRecycler)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
@@ -125,10 +127,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.cameraView
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
-    }
     implementation(rootProject.ext.miscDependencies.viewPager2) {
         ['androidx.collection', 'androidx.fragment'].each {
             exclude group: it

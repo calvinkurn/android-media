@@ -4,20 +4,20 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.di.SettingBankComponent
 import com.tokopedia.settingbank.domain.Bank
 import com.tokopedia.settingbank.domain.SettingBankErrorHandler
+import com.tokopedia.settingbank.view.activity.AddBankActivity
+import com.tokopedia.settingbank.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.view.adapter.BankListAdapter
 import com.tokopedia.settingbank.view.adapter.BankListClickListener
 import com.tokopedia.settingbank.view.viewModel.SelectBankViewModel
@@ -25,12 +25,13 @@ import com.tokopedia.settingbank.view.viewState.OnBankListLoaded
 import com.tokopedia.settingbank.view.viewState.OnBankListLoading
 import com.tokopedia.settingbank.view.viewState.OnBankListLoadingError
 import com.tokopedia.settingbank.view.viewState.OnBankSearchResult
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_choose_bank_v2.*
 import java.util.*
 import javax.inject.Inject
 
-class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, SearchInputView.ResetListener, BankListClickListener {
+class SelectBankFragment : BottomSheetUnify(), SearchInputView.Listener, SearchInputView.ResetListener, BankListClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -42,25 +43,48 @@ class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, Searc
 
     private lateinit var onBankSelectedListener: OnBankSelectedListener
 
-    override fun getScreenName(): String? = null
-
-    override fun initInjector() {
-        getComponent(SettingBankComponent::class.java).inject(this)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initViewModels()
+        val isInjectorInitialized = initInjector()
+        if (isInjectorInitialized) {
+            setChild()
+            initViewModels()
+        } else {
+            dismiss()
+        }
+    }
+
+
+    private fun initInjector(): Boolean {
+        activity?.let {
+            return when (activity) {
+                is ChooseBankActivity -> {
+                    (activity as ChooseBankActivity).component.inject(this)
+                    true
+                }
+                is AddBankActivity -> {
+                    (activity as AddBankActivity).component.inject(this)
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        } ?: run {
+            return false
+        }
+    }
+
+
+    private fun setChild() {
+        val childView = LayoutInflater.from(context).inflate(R.layout.fragment_choose_bank_v2,
+                null, false)
+        setChild(childView)
     }
 
     private fun initViewModels() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         selectBankViewModel = viewModelProvider.get(SelectBankViewModel::class.java)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_choose_bank_v2, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,7 +100,7 @@ class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, Searc
     }
 
     private fun startObservingViewModels() {
-        selectBankViewModel.bankListState.observe(this, Observer {
+        selectBankViewModel.bankListState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OnBankListLoading -> showBankListLoading()
                 is OnBankListLoaded -> showBankList(it.bankList)
@@ -90,7 +114,9 @@ class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, Searc
     }
 
     private fun showBankSearchResult(bankList: ArrayList<Bank>) {
-        bankListAdapter.updateItem(bankList)
+        rvChooseBank.post {
+            bankListAdapter.updateItem(bankList)
+        }
     }
 
     private fun hideUI() {
@@ -112,7 +138,9 @@ class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, Searc
             progressBar.gone()
             searchInputTextView.visible()
             rvChooseBank.visible()
-            bankListAdapter.updateItem(bankList)
+            rvChooseBank.post {
+                bankListAdapter.updateItem(bankList)
+            }
         } else {
             searchInputTextView.gone()
             rvChooseBank.gone()
@@ -134,11 +162,14 @@ class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, Searc
     override fun onBankSelected(bank: Bank) {
         if (::onBankSelectedListener.isInitialized)
             onBankSelectedListener.onBankSelected(bank)
+        dismiss()
     }
 
     private fun setupSearchInputView() {
-        searchInputTextView.searchImageView.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_search_grayscale_24))
-        searchInputTextView.closeImageButton.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_16))
+        searchInputTextView.searchImageView.setImageDrawable(resources.
+                getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_search_grayscale_24))
+        searchInputTextView.closeImageButton.setImageDrawable(resources
+                .getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_16))
         searchInputTextView.setListener(this)
         searchInputTextView.setResetListener(this)
     }
@@ -163,6 +194,20 @@ class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, Searc
         super.onAttach(context)
         if (context is OnBankSelectedListener) {
             onBankSelectedListener = context
+        }
+    }
+
+    companion object {
+        private const val TAG = "SelectBankFragment"
+        fun showChooseBankBottomSheet(context: Context,
+                                      fragmentManager: FragmentManager) : SelectBankFragment{
+            val selectBankFragment = SelectBankFragment()
+            selectBankFragment.setTitle(context.getString(R.string.sbank_choose_a_bank))
+            selectBankFragment.isFullpage = true
+            selectBankFragment.isDragable =  true
+            selectBankFragment.isHideable= true
+            selectBankFragment.show(fragmentManager, TAG)
+            return selectBankFragment
         }
     }
 

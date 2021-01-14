@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics.appsflyer;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -59,7 +60,7 @@ public class AppsflyerEventValidation {
             validateContentType(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_TYPE)));
             validateContent(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT)));
         } catch (Exception e) {
-            logging("error;reason=exception_validatePurchase;data='$eventValue';ex='$e'");
+            logging("error;reason=exception_validatePurchase;data='"+eventValue+"';ex='"+ Log.getStackTraceString(e)+"'");
         }
     }
 
@@ -72,60 +73,60 @@ public class AppsflyerEventValidation {
             validateContentType(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_TYPE)));
             validateContent(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT)));
         } catch (Exception e) {
-            logging("error;reason=exception_validateAddToCart;data='$eventValue';ex='$e'");
+            logging("error;reason=exception_validateAddToCart;data='"+eventValue+"'ex='"+ Log.getStackTraceString(e) +"'");
         }
     }
 
     private void validatePaymentId(String paymentId, String orderID) {
         if (TextUtils.isEmpty(paymentId)) {
-            logging("validation;reason=paymentId_blank;eventName='';data='$orderID'");
+            logging("validation;reason=paymentId_blank;eventName='';data='"+orderID+"'");
         }
         if (TextUtils.isEmpty(orderID)) {
-            logging("validation;reason=orderId_blank;eventName='';data='$paymentId'");
+            logging("validation;reason=orderId_blank;eventName='';data='"+ paymentId+"'");
         }
     }
 
     private void validateRevenue(String revenuePrice) {
         double price = convertToDouble(revenuePrice, "revenue");
-        if (price <= 0) {
-            logging("validation;reason=revenue_blank;eventName='';data='$revenuePrice'");
+        if (price < 0) {
+            logging("validation;reason=revenue_blank;eventName='';data='"+revenuePrice+"'");
         }
     }
 
 
     private void validateShipping(String shippingPrice) {
         double price = convertToDouble(shippingPrice, "shippingPrice");
-        if (price <= 0) {
-            logging("validation;reason=shippingPrice_blank;eventName='';data='$shippingPrice'");
+        if (price < 0) {
+            logging("validation;reason=shippingPrice_blank;eventName='';data='"+shippingPrice+"'");
         }
     }
 
 
     private void exceptionStringToDouble(String ex, String type) {
-        logging("error;reason=exceptionStringToDouble;data='$type';err='$ex'");
+        logging("error;reason=exceptionStringToDouble;data='"+type+"';err='"+ex+"'");
     }
 
     private void validateQuantity(String eventName, String quantity) {
         if (convertToDouble(quantity, eventName + " quantity") <= 0) {
-            logging("validation;reason=quantity_is_0;eventName='$eventName';data='$quantity'");
+            logging("validation;reason=quantity_is_0;eventName='"+eventName+"';data='"+quantity+"'");
         }
     }
 
     private void validateContentId(String eventName, String ids) {
         if (TextUtils.isEmpty(ids)) {
-            logging("validation;reason=ContentId_blank;eventName='$eventName';data=''");
+            logging("validation;reason=ContentId_blank;eventName='"+eventName+"';data=''");
         }
     }
 
     private void validateCurrency(String eventName,String currency) {
         if (!VALUE_IDR.equals(currency)) {
-            logging("validation;reason=currency_invalid;eventName='$eventName';data='$currency'");
+            logging("validation;reason=currency_invalid;eventName='"+ eventName+"';data='"+ currency+"'");
         }
     }
 
     private void validateCategory(String eventName, String category) {
         if (TextUtils.isEmpty(category)) {
-            logging("validation;reason=category_blank;eventName='$eventName';data=''");
+            logging("validation;reason=category_blank;eventName='"+eventName+"';data=''");
         }
     }
 
@@ -136,7 +137,7 @@ public class AppsflyerEventValidation {
             try {
                 JSONArray productarray = new JSONArray(productList);
                 if (productarray.length() < 1) {
-                    logging("validation;reason=product_array_invalid;eventName='';data='$productList'");
+                    logging("validation;reason=product_array_invalid;eventName='';data='"+ productList+"'");
                 }
             } catch (JSONException e) {
                 //logging("error;reason=productList_array_exception;eventName='';data='$productList'");
@@ -152,10 +153,10 @@ public class AppsflyerEventValidation {
             try {
                 JSONArray productCatList = new JSONArray(productCategory);
                 if (productCatList.length() < 1) {
-                    logging("validation;reason=productCategory_array_invalid;eventName='';data='$productCategory'");
+                    logging("validation;reason=productCategory_array_invalid;eventName='';data='"+productCategory+"'");
                 }
             } catch (JSONException e) {
-                logging("error;reason=productCategory_array_exception;eventName='';data='$productCategory'");
+                logging("error;reason=productCategory_array_exception;eventName='';data='" + productCategory+"'");
             }
 
         }
@@ -163,21 +164,21 @@ public class AppsflyerEventValidation {
 
     private void validateContentType(String eventName, String contentType) {
         if (!AF_VALUE_PRODUCTTYPE.equals(contentType)) {
-            logging("validation;reason=contentType_invalid;eventName='$eventName';data='$contentType'");
+            logging("validation;reason=contentType_invalid;eventName='"+eventName+"';data='"+ contentType+"'");
         }
     }
 
     private void validateContent(String eventName, String content) {
         if (TextUtils.isEmpty(content)) {
-            logging("validation;reason=content_array_blank;eventName='$eventName'data=''");
+            logging("validation;reason=content_array_blank;eventName='"+eventName+"'data=''");
         } else {
             try {
                 JSONArray contentarray = new JSONArray(content);
                 if (contentarray.length() < 1) {
-                    logging("validation;reason=content_array_invalid;eventName='$eventName';data='$content'");
+                    logging("validation;reason=content_array_invalid;eventName='"+eventName+"';data='"+content+"'");
                 }
             } catch (JSONException e) {
-                logging("error;reason=content_array_exception;eventName='$eventName';data='$content'");
+                logging("error;reason=content_array_exception;eventName='"+eventName+"';data='"+content+"'");
             }
 
         }
@@ -190,7 +191,7 @@ public class AppsflyerEventValidation {
             result = Double.valueOf(value);
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
-            exceptionStringToDouble("" + ex.getMessage(), type + "=" + value);
+            exceptionStringToDouble("" + Log.getStackTraceString(ex), type + "=" + value);
         }
         return result;
     }

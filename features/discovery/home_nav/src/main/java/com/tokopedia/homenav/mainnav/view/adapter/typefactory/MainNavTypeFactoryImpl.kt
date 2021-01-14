@@ -9,46 +9,44 @@ import com.tokopedia.homenav.base.diffutil.holder.HomeNavGlobalErrorViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavMenuViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
-import com.tokopedia.homenav.base.viewmodel.HomeNavGlobalErrorViewModel
-import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
-import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
-import com.tokopedia.homenav.base.viewmodel.HomeNavTitleViewModel
+import com.tokopedia.homenav.base.datamodel.HomeNavGlobalErrorDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.mainnav.view.viewmodel.*
-import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.user.session.UserSessionInterface
 
 class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
-                             private val userSession: UserSessionInterface,
-                             private val remoteConfig: RemoteConfig)
+                             private val userSession: UserSessionInterface)
     : HomeNavTypeFactory, MainNavTypeFactory {
 
-    override fun type(accountHeaderViewModel: AccountHeaderViewModel): Int {
+    override fun type(accountHeaderDataModel: AccountHeaderDataModel): Int {
         return AccountHeaderViewHolder.LAYOUT
     }
 
-    override fun type(homeNavMenuViewModel: HomeNavMenuViewModel): Int {
+    override fun type(visitable: HomeNavMenuDataModel): Int {
         return HomeNavMenuViewHolder.LAYOUT
     }
 
-    override fun type(visitable: HomeNavTitleViewModel): Int {
+    override fun type(visitable: HomeNavTitleDataModel): Int {
         return HomeNavTitleViewHolder.LAYOUT
     }
 
-    override fun type(visitable: HomeNavGlobalErrorViewModel): Int {
+    override fun type(visitable: HomeNavGlobalErrorDataModel): Int {
         return HomeNavGlobalErrorViewHolder.LAYOUT
     }
 
-    override fun type(separatorViewModel: SeparatorViewModel): Int {
+    override fun type(separatorDataModel: SeparatorDataModel): Int {
         return SeparatorViewHolder.LAYOUT
     }
 
-    override fun type(transactionListItemViewModel: TransactionListItemViewModel): Int {
+    override fun type(transactionListItemDataModel: TransactionListItemDataModel): Int {
         return TransactionListViewHolder.LAYOUT
     }
 
-    override fun type(visitable: HomeNavTickerViewModel): Int {
+    override fun type(visitable: HomeNavTickerDataModel): Int {
         return HomeNavTickerViewHolder.LAYOUT
     }
 
@@ -56,14 +54,34 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return InitialShimmeringDataViewHolder.LAYOUT
     }
 
+    override fun type(initialShimmerProfileDataModel: InitialShimmerProfileDataModel): Int {
+        return InitialShimmeringProfileDataViewHolder.LAYOUT
+    }
+
+    override fun type(initialShimmerTransactionDataModel: InitialShimmerTransactionDataModel): Int {
+        return InitialShimmeringTransactionDataViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateBuDataModel: ErrorStateBuDataModel): Int {
+        return ErrorStateBuViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int {
+        return ErrorStateOngoingTransactionViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
             HomeNavMenuViewHolder.LAYOUT -> HomeNavMenuViewHolder(view, mainNavListener)
-            AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, remoteConfig, userSession)
+            AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, userSession)
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
             HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view, mainNavListener)
+            ErrorStateBuViewHolder.LAYOUT -> ErrorStateBuViewHolder(view, mainNavListener)
+            ErrorStateOngoingTransactionViewHolder.LAYOUT -> ErrorStateOngoingTransactionViewHolder(view, mainNavListener)
             InitialShimmeringDataViewHolder.LAYOUT -> InitialShimmeringDataViewHolder(view)
+            InitialShimmeringProfileDataViewHolder.LAYOUT -> InitialShimmeringProfileDataViewHolder(view)
+            InitialShimmeringTransactionDataViewHolder.LAYOUT -> InitialShimmeringTransactionDataViewHolder(view)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }

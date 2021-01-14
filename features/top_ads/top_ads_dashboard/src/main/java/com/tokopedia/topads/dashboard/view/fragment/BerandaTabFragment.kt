@@ -30,7 +30,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQU
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
-import com.tokopedia.topads.dashboard.data.model.DepositAmount
+import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.data.utils.Utils

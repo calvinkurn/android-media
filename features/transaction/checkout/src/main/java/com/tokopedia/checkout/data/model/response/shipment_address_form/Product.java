@@ -17,7 +17,7 @@ public class Product {
     private List<String> errors = new ArrayList<>();
     @SerializedName("product_id")
     @Expose
-    private int productId;
+    private long productId;
     @SerializedName("cart_id")
     @Expose
     private long cartId;
@@ -29,13 +29,13 @@ public class Product {
     private String productPriceFmt;
     @SerializedName("product_price")
     @Expose
-    private int productPrice;
+    private long productPrice;
     @SerializedName("product_original_price")
     @Expose
-    private int productOriginalPrice;
+    private long productOriginalPrice;
     @SerializedName("product_wholesale_price")
     @Expose
-    private int productWholesalePrice;
+    private long productWholesalePrice;
     @SerializedName("product_wholesale_price_fmt")
     @Expose
     private String productWholesalePriceFmt;
@@ -157,7 +157,7 @@ public class Product {
         return freeReturns;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
@@ -169,15 +169,15 @@ public class Product {
         return productPriceFmt;
     }
 
-    public int getProductPrice() {
+    public long getProductPrice() {
         return productPrice;
     }
 
-    public int getProductOriginalPrice() {
+    public long getProductOriginalPrice() {
         return productOriginalPrice;
     }
 
-    public int getProductWholesalePrice() {
+    public long getProductWholesalePrice() {
         return productWholesalePrice;
     }
 

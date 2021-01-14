@@ -1,7 +1,6 @@
 package com.tokopedia.homenav.mainnav.view.interactor
 
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
-import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 
 interface MainNavListener : HomeNavListener{
 
@@ -11,9 +10,11 @@ interface MainNavListener : HomeNavListener{
 
     fun onProfileSectionClicked()
 
-    fun onErrorProfileNameClicked(element: AccountHeaderViewModel)
+    fun onErrorProfileRefreshClicked(position: Int)
 
-    fun onErrorProfileOVOClicked(element: AccountHeaderViewModel)
+    fun onErrorShopInfoRefreshClicked(position: Int)
 
-    fun onErrorProfileShopClicked(element: AccountHeaderViewModel)
+    fun onErrorBuListClicked(position: Int)
+
+    fun onErrorTransactionListClicked(position: Int)
 }

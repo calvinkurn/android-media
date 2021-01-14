@@ -38,13 +38,6 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifyShopInfo(shopInfoData: ProductShopInfoDataModel?, payload: Int) {
-        shopInfoData?.let {
-            val indexOfShopInfo = list.indexOf(shopInfoData)
-            notifyItemChanged(indexOfShopInfo, payload)
-        }
-    }
-
     fun notifyTopAdsBanner(topAdsImageData: TopAdsImageDataModel?) {
         topAdsImageData?.let {
             val indexOfTopAdsImage = list.indexOf(topAdsImageData)
@@ -148,6 +141,10 @@ class DynamicProductDetailAdapter(
                 notifyItemChanged(indexOfNotifyMe)
             }
         }
+    }
+
+    fun notifyItemRangeChangesExceptFirstPosition() {
+        notifyItemRangeChanged(1, itemCount)
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {

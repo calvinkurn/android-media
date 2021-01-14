@@ -64,6 +64,8 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_DETAIL = "$INTERNAL_MARKETPLACE/product-detail/{id}/"
     @JvmField
+    val PRODUCT_DETAIL_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{product_id}/?is_from_explore_affiliate={isAffiliate}"
+    @JvmField
     val PRODUCT_DETAIL_WITH_WAREHOUSE_ID = "$INTERNAL_MARKETPLACE/product-detail/{id}/?warehouse_id={whid}"
     @JvmField
     val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
@@ -99,6 +101,9 @@ object ApplinkConstInternalMarketplace {
 
     //ReviewDetailActivity
     val REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/review/detail/{feedback_id}/"
+
+    //SellerReviewDetailActivity
+    val SELLER_REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/seller-review-detail"
 
     // InboxReputationDetailActivity
     val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/reputation/{reputation_id}/"

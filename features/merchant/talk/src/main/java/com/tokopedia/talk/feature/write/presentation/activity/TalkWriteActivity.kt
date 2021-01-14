@@ -49,7 +49,6 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         }
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
-        setUpToolBar()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -135,10 +134,6 @@ class TalkWriteActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
             }
         }
         return super.dispatchTouchEvent(event)
-    }
-
-    private fun setUpToolBar() {
-        supportActionBar?.elevation = TalkConstants.NO_SHADOW_ELEVATION
     }
 
     private fun getDataFromApplink() {

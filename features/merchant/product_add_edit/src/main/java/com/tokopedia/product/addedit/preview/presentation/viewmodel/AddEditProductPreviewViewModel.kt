@@ -21,6 +21,7 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftT
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
+import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -29,6 +30,8 @@ import com.tokopedia.product.addedit.variant.presentation.model.ValidationResult
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_SUCCESS
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_ERROR
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -43,6 +46,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
         private val validateProductNameUseCase: ValidateProductNameUseCase,
+        private val getShopInfoLocationUseCase: GetShopInfoLocationUseCase,
+        private val saveShopShipmentLocationUseCase: ShopOpenRevampSaveShipmentLocationUseCase,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -88,6 +93,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mValidationResult = MutableLiveData<ValidationResultModel>()
     val validationResult: LiveData<ValidationResultModel> get() = mValidationResult
+
+    private val mLocationValidation = MutableLiveData<Result<Boolean>>()
+    val locationValidation: LiveData<Result<Boolean>> get() = mLocationValidation
+
+    private val mSaveShopShipmentLocationResponse = MutableLiveData<Result<SaveShipmentLocation>>()
+    val saveShopShipmentLocationResponse: LiveData<Result<SaveShipmentLocation>> get() = mSaveShopShipmentLocationResponse
 
     val isAdding: Boolean get() = getProductId().isBlank()
 
@@ -179,27 +190,37 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {
-        val pictureList = productInputModel.value?.detailInputModel?.pictureList?.filter {
-            originalImageUrl.contains(it.urlOriginal)
-        }?.filterIndexed { index, _ -> !editted[index] }.orEmpty()
+        productInputModel.value?.let {
+            val pictureList = it.detailInputModel.pictureList.filter { pictureInputModel ->
+                originalImageUrl.contains(pictureInputModel.urlOriginal)
+            }.filterIndexed { index, _ -> !editted[index] }
 
-        val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
-            if (editted[index]) urlOrPath else pictureList.find { it.urlOriginal == originalImageUrl[index] }?.urlThumbnail ?: urlOrPath
-        }.toMutableList()
+            val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
+                if (!editted[index]) {
+                    val picture = pictureList.find { pict -> pict.urlOriginal == originalImageUrl[index] }?.urlThumbnail.toString()
+                    if(picture != "null" && picture.isNotBlank()) {
+                        return@mapIndexed picture
+                    }
+                }
+                urlOrPath
+            }.toMutableList()
 
-        this.detailInputModel.value = productInputModel.value?.detailInputModel?.apply {
-            this.pictureList = pictureList
-            this.imageUrlOrPathList = imageUrlOrPathList
-        } ?: DetailInputModel(pictureList = pictureList, imageUrlOrPathList = imageUrlOrPathList)
+            this.detailInputModel.value = it.detailInputModel.apply {
+                this.pictureList = pictureList
+                this.imageUrlOrPathList = imageUrlOrPathList
+            }
 
-        this.mImageUrlOrPathList.value = imageUrlOrPathList
+            this.mImageUrlOrPathList.value = imageUrlOrPathList
+        }
     }
 
     fun updateProductStatus(isActive: Boolean) {
-        val newStatus = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
-        productInputModel.value?.detailInputModel?.status = newStatus
-        productInputModel.value?.variantInputModel?.products?.forEach {
-            it.status = if (isActive) ProductStatus.STATUS_ACTIVE_STRING else ProductStatus.STATUS_INACTIVE_STRING
+        productInputModel.value?.let {
+            val newStatus = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
+            it.detailInputModel.status = newStatus
+            it.variantInputModel.products.forEach { variant ->
+                variant.status = if (isActive) ProductStatus.STATUS_ACTIVE_STRING else ProductStatus.STATUS_INACTIVE_STRING
+            }
         }
     }
 
@@ -288,15 +309,22 @@ class AddEditProductPreviewViewModel @Inject constructor(
         productInputModel.value?.isDataChanged = isChanged
     }
 
-    fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
+    fun getIsDataChanged(): Boolean {
+        productInputModel.value?.let {
+            return it.isDataChanged
+        }
+        return false
+    }
 
     fun validateProductNameInput(productName: String) {
         mIsLoading.value = true
-        productInputModel.value?.detailInputModel?.apply {
-            if (productName == currentProductName) {
-                mValidationResult.value = ValidationResultModel(VALIDATION_SUCCESS)
-                mIsLoading.value = false
-                return
+        productInputModel.value?.let {
+            it.detailInputModel.apply {
+                if (productName == currentProductName) {
+                    mValidationResult.value = ValidationResultModel(VALIDATION_SUCCESS)
+                    mIsLoading.value = false
+                    return
+                }
             }
         }
         launchCatchError(block = {
@@ -317,6 +345,38 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     resourceProvider.getGqlErrorMessage().orEmpty())
             mIsLoading.value = false
         })
+    }
+
+    fun validateShopLocation(shopId: Int) {
+        mIsLoading.value = true
+        launchCatchError(block = {
+            getShopInfoLocationUseCase.params = GetShopInfoLocationUseCase.createRequestParams(shopId)
+            val shopLocation = withContext(Dispatchers.IO) {
+                getShopInfoLocationUseCase.executeOnBackground()
+            }
+            mLocationValidation.value = Success(shopLocation)
+            mIsLoading.value = false
+        }, onError = {
+            mLocationValidation.value = Fail(it)
+            mIsLoading.value = false
+        })
+    }
+
+    fun saveShippingLocation(dataParam: MutableMap<String, Any>) {
+        mIsLoading.value = true
+        launchCatchError(block = {
+            withContext(dispatcher.io) {
+                saveShopShipmentLocationUseCase.params = ShopOpenRevampSaveShipmentLocationUseCase.createRequestParams(dataParam)
+                val saveShipmentLocationData = saveShopShipmentLocationUseCase.executeOnBackground()
+                saveShipmentLocationData.let {
+                    mSaveShopShipmentLocationResponse.postValue(Success(it))
+                }
+            }
+            mIsLoading.value = false
+        }) {
+            mSaveShopShipmentLocationResponse.value = Fail(it)
+            mIsLoading.value = false
+        }
     }
 
     fun resetValidateResult() {

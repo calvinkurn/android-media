@@ -137,10 +137,6 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_TOLAK_PESANAN, "$statusOrderName - $reason")
     }
 
-    fun eventClickCekPeluangOnEmptyState(statusOrderName: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_CEK_PELUANG_ON_EMPTY_STATE, statusOrderName)
-    }
-
     fun eventClickAcceptOrderPopup(isSuccess: Boolean) {
         var success = "success"
         if (!isSuccess) success = "failed"
@@ -159,10 +155,6 @@ object SomAnalytics {
 
     fun eventClickButtonTolakPesananPopup(statusOrder: String, statusOrderName: String) {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_TOLAK_PESANAN_POPUP, "$statusOrder - $statusOrderName")
-    }
-
-    fun eventClickButtonChatPembeliPopup(statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_CHAT_PEMBELI_POPUP, statusOrder)
     }
 
     fun eventClickSearchBar() {
