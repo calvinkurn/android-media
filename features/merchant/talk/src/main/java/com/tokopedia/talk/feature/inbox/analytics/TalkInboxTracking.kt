@@ -141,6 +141,9 @@ class TalkInboxTracking @Inject constructor() {
 
     private fun getEventCategoryInbox(tab: String): String {
         return when (tab) {
+            TalkInboxTab.SHOP_OLD -> {
+                String.format(TalkInboxTrackingConstants.EVENT_CATEGORY_INBOX, TalkInboxTrackingConstants.TAB_SELLER)
+            }
             TalkInboxTab.SHOP_TAB -> {
                 String.format(TalkInboxTrackingConstants.EVENT_CATEGORY_INBOX, TalkInboxTrackingConstants.TAB_SELLER)
             }
@@ -155,6 +158,9 @@ class TalkInboxTracking @Inject constructor() {
 
     private fun getTab(tab: String): String {
         return when (tab) {
+            TalkInboxTab.SHOP_OLD -> {
+                String.format(TalkInboxTrackingConstants.EVENT_ACTION_CLICK_TAB, TalkInboxTrackingConstants.TAB_SELLER)
+            }
             TalkInboxTab.SHOP_TAB -> {
                 String.format(TalkInboxTrackingConstants.EVENT_ACTION_CLICK_TAB, TalkInboxTrackingConstants.TAB_SELLER)
             }
@@ -169,6 +175,9 @@ class TalkInboxTracking @Inject constructor() {
 
     private fun getInboxType(inboxType: String): String {
         return when (inboxType) {
+            TalkInboxTab.SHOP_OLD -> {
+                TalkInboxTrackingConstants.TAB_SELLER
+            }
             TalkInboxTab.SHOP_TAB -> {
                 TalkInboxTrackingConstants.TAB_SELLER
             }

@@ -99,6 +99,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private var inboxType = ""
     private var containerListener: InboxFragmentContainer? = null
     private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private var shouldHitRoleChangedTracker = false
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REPLY_REQUEST_CODE) {
@@ -197,7 +198,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         clearAllData()
         setInboxType()
         initSortFilter()
-        talkInboxTracking.eventClickTab(inboxType, viewModel.getUserId(), viewModel.getShopId(), getCounterForTracking())
+        shouldHitRoleChangedTracker = true
     }
 
     override fun onPageClickedAgain() {
@@ -275,6 +276,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                         hideFullPageLoading()
                         hideLoading()
                         if (it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
+                            hitOnRoleChangeTracker()
                             talkInboxListener?.updateUnreadCounter(it.data.sellerUnread, it.data.buyerUnread)
                             setFilterCounter()
                             hideLoading()
@@ -512,15 +514,13 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun setInboxType() {
         if(isNewView()) {
-            if (containerListener?.role == RoleType.BUYER) {
-                viewModel.setInboxType(TalkInboxTab.BUYER_TAB)
-                return
+            inboxType = if (containerListener?.role == RoleType.BUYER) {
+                TalkInboxTab.BUYER_TAB
+            } else {
+                TalkInboxTab.SHOP_TAB
             }
-            viewModel.setInboxType(TalkInboxTab.SHOP_TAB)
-            return
         }
         viewModel.setInboxType(inboxType)
-        return
     }
 
     private fun isNewView(): Boolean {
@@ -530,7 +530,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun isSellerView(): Boolean {
-        return viewModel.getType() == TalkInboxTab.SHOP_TAB
+        return viewModel.getType() == TalkInboxTab.SHOP_TAB || viewModel.getType() == TalkInboxTab.SHOP_OLD
     }
 
     private fun getProblemCount(): Int {
@@ -565,9 +565,16 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun getCounterForTracking(): Int {
-        if(isSellerView()) {
+        if(isSellerView() && isNewView()) {
             return viewModel.getUnrespondedCount()
         }
         return viewModel.getUnreadCount()
+    }
+
+    private fun hitOnRoleChangeTracker() {
+        if(shouldHitRoleChangedTracker)  {
+            talkInboxTracking.eventClickTab(inboxType, viewModel.getUserId(), viewModel.getShopId(), getCounterForTracking())
+            shouldHitRoleChangedTracker = false
+        }
     }
 }

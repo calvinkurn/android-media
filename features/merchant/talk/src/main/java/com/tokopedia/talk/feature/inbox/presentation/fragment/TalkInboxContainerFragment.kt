@@ -155,7 +155,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
 
     private fun trackTabChange(position: Int) {
         if(position == SELLER_TAB_INDEX) {
-            talkInboxTracking.eventClickTab(TalkInboxTab.SHOP_TAB, userSession.userId, userSession.shopId, sellerUnreadCount)
+            talkInboxTracking.eventClickTab(TalkInboxTab.SHOP_OLD, userSession.userId, userSession.shopId, sellerUnreadCount)
         } else {
             talkInboxTracking.eventClickTab(TalkInboxTab.BUYER_TAB, userSession.userId, userSession.shopId, buyerUnreadCount)
         }
