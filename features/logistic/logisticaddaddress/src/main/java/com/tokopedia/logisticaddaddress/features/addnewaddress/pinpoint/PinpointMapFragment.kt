@@ -96,6 +96,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var isGpsEnable: Boolean = true
     private var warehouseDataModel: Warehouse? = null
     private var isEditWarehouse: Boolean = false
+    private var isReqLocation: Boolean = false
 
     private var composite = CompositeSubscription()
 
@@ -365,6 +366,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun doUseCurrentLocation(isFullFlow: Boolean) {
+        isReqLocation = true
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             requestLocation()
         } else {
@@ -859,8 +861,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     override fun onPermissionGranted() {
                         fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                             if (data != null) {
-                                if (!isEditWarehouse) moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
-                                else moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL) }
+                                if (isEditWarehouse && !isReqLocation) moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
+                                else moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
+                            }
                         }
                         googleMap?.isMyLocationEnabled = true
                     }
