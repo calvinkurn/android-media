@@ -7,11 +7,12 @@ import com.android.tools.lint.detector.api.Severity
 import com.intellij.psi.PsiClassType
 import com.intellij.psi.PsiPrimitiveType
 import com.intellij.psi.PsiType
+import com.intellij.psi.PsiVariable
 import com.tokopedia.linter.detectors.sourcescanner.SourceCodeDetector
-import com.tokopedia.linter.detectors.sourcescanner.elements.ImportDetector
-import org.jetbrains.uast.*
-import org.jetbrains.uast.kotlin.KotlinUParameter
-import javax.xml.crypto.Data
+import org.jetbrains.uast.UAnnotation
+import org.jetbrains.uast.UElement
+import org.jetbrains.uast.ULiteralExpression
+import org.jetbrains.uast.UNamedExpression
 
 
 object ServerResponseDataTypeDetector {
@@ -37,7 +38,7 @@ object ServerResponseDataTypeDetector {
 
 
     private val classTypeIdentifierMap = mapOf("id" to TYPE_STRING)
-    private val primitiveTypeIdentifierMap = mapOf("price" to TYPE_LONG)
+    private val primitiveTypeIdentifierMap = mapOf("price" to TYPE_DOUBLE, "price" to TYPE_DOUBLE_WRAPPER)
 
 
     const val DATA_TYPE_IMPORT_ID = "Invalid Data Type"
@@ -46,65 +47,73 @@ object ServerResponseDataTypeDetector {
 
 
     val WRONG_DATA_TYPE: Issue = Issue.create(
-        DATA_TYPE_IMPORT_ID,
-        briefDescription = BRIEF_DESCRIPTION,
-        explanation = EXPLAINATION,
-        category = Category.CORRECTNESS,
-        priority = 3,
-        severity = Severity.ERROR,
-        implementation = SourceCodeDetector.IMPLEMENTATION
+            DATA_TYPE_IMPORT_ID,
+            briefDescription = BRIEF_DESCRIPTION,
+            explanation = EXPLAINATION,
+            category = Category.CORRECTNESS,
+            priority = 3,
+            severity = Severity.ERROR,
+            implementation = SourceCodeDetector.IMPLEMENTATION
     ).setAndroidSpecific(true)
 
 
     fun checkAndCreateError(context: JavaContext, annotation: UAnnotation) {
+
         val parent: UElement = annotation.uastParent ?: return
-        val elements = (parent as KotlinUParameter)
-        getAttributeName(annotation)?.let { attribute ->
-            if (!checkRequiredType(attribute, elements.type)) {
+        val elements = (parent as PsiVariable)
+        var attribute = getAttributeName(annotation)
+        if(attribute != null) {
+            val type = getRequiredTypes(attribute)
+            if (type.isNotEmpty() and !isRequiredType(type, elements.type)) {
                 context.report(
-                    WRONG_DATA_TYPE,
-                    annotation,
-                    context.getLocation(annotation),
-                    "Wrong Data Type"
+                        WRONG_DATA_TYPE,
+                        annotation,
+                        context.getLocation(annotation),
+                        "Please use data type as ${type[0]} for variable $attribute"
                 )
             }
         }
     }
 
-    private fun checkRequiredType(attribute: String, type: PsiType): Boolean {
-        (checkIsKeys(primitiveTypeIdentifierMap, attribute).values.toList() + checkIsKeys(
-            classTypeIdentifierMap,
-            attribute
+
+    fun getRequiredTypes(attribute: String): List<String> {
+        return (checkIsKeys(primitiveTypeIdentifierMap, attribute).values.toList() + checkIsKeys(
+                classTypeIdentifierMap,
+                attribute
         ).values.toList()).let {
             var list = it;
             if (list.isEmpty()) {
                 list = checkContainInKeys(
-                    primitiveTypeIdentifierMap,
-                    attribute
+                        primitiveTypeIdentifierMap,
+                        attribute
                 ).values.toList() + checkContainInKeys(
-                    classTypeIdentifierMap,
-                    attribute
+                        classTypeIdentifierMap,
+                        attribute
                 ).values.toList()
             }
-            if (list.isEmpty()) {
-                return true
-            }
-            if (type is PsiPrimitiveType && isAllowedType(type, list)) {
-                return true
+            return list
+        }
+    }
 
-            } else if (type is PsiClassType && isAllowedClassType(type, list)) {
-                return true
-            }
+    private fun isRequiredType(list: List<String>, type: PsiType): Boolean {
+        if (list.isEmpty()) {
+            return true
+        }
+        if (type is PsiPrimitiveType && isAllowedType(type, list)) {
+            return true
+
+        } else if (type is PsiClassType && isAllowedClassType(type, list)) {
+            return true
         }
         return false;
     }
 
 
     var checkContainInKeys =
-        { map: Map<String, String>, attribute: String -> (map.filter { attribute.contains(it.key) }) }
+            { map: Map<String, String>, attribute: String -> (map.filter { attribute.contains(it.key) }) }
 
     var checkIsKeys =
-        { map: Map<String, String>, attribute: String -> (map.filter { attribute == it.key }) }
+            { map: Map<String, String>, attribute: String -> (map.filter { attribute == it.key }) }
 
     fun getAttributeName(annotation: UAnnotation): String? {
         val attributes: List<UNamedExpression> = annotation.attributeValues
