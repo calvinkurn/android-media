@@ -30,12 +30,8 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_variant.R
-import com.tokopedia.atc_variant.data.request.*
 import com.tokopedia.atc_variant.di.DaggerNormalCheckoutComponent
-import com.tokopedia.atc_variant.model.Fail
-import com.tokopedia.atc_variant.model.InsuranceRecommendationContainer
 import com.tokopedia.atc_variant.model.ProductInfoAndVariant
-import com.tokopedia.atc_variant.model.ProductInfoAndVariantContainer
 import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapter
 import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapterTypeFactory
 import com.tokopedia.atc_variant.view.presenter.NormalCheckoutViewModel
@@ -46,7 +42,10 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -64,12 +63,11 @@ import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Co
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA_CACHE_ID
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_SELECTED_WAREHOUSE
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_TICKET_DATA
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceRecommendationGqlResponse
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
@@ -78,13 +76,7 @@ import javax.inject.Inject
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAdapterTypeFactory>(),
         NormalCheckoutContract.View, AddToCartVariantActionListener {
 
-    private var isInsuranceSelected: Boolean = false
-
-    private var selectedInsuranceProduct = InsuranceRecommendationViewModel()
-
-    private var insuranceEnabled: Boolean = false
     private var productPrice: Float? = 0f
-    private var insuranceRecommendationRequest = InsuranceRecommendationRequest()
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: NormalCheckoutViewModel
@@ -102,7 +94,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     }
     private lateinit var adapter: AddToCartVariantAdapter
 
-    private var insuranceViewModel = InsuranceRecommendationViewModel()
     var shopId: String = ""
     var categoryId: String? = null
     lateinit var productId: String
@@ -222,8 +213,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         super.onActivityCreated(savedInstanceState)
         viewModel.productInfoResp.observe(this, Observer {
             when (it) {
-                is ProductInfoAndVariantContainer -> onSuccessGetProductInfo(it.productInfoAndVariant)
-                is InsuranceRecommendationContainer -> onSuccessInsuranceRecommendation(it.insuranceRecommendation)
+                is Success -> onSuccessGetProductInfo(it.data)
                 is Fail -> onErrorGetProductInfo(it.throwable)
             }
         })
@@ -261,10 +251,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         }
         prescription_ticker.showWithCondition(productInfoAndVariant.productInfo.basic.needPrescription)
 
-        if (viewModel.isUserSessionActive() && insuranceEnabled) {
-            generateInsuranceRequest()
-            viewModel.getInsuranceProductRecommendation(insuranceRecommendationRequest)
-        }
     }
 
     private fun generateIntentLogin(): Intent {
@@ -573,9 +559,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             quantity = savedInstanceState.getInt(ApplinkConst.Transaction.EXTRA_QUANTITY)
         }
 
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        insuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false)
-
         super.onCreate(savedInstanceState)
         viewModel.parseDataFrom(arguments)
     }
@@ -664,46 +647,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     override fun onDestroy() {
         viewModel.unsubscribe()
         super.onDestroy()
-    }
-
-    private fun generateInsuranceRequest() {
-
-
-        insuranceRecommendationRequest = InsuranceRecommendationRequest()
-        insuranceRecommendationRequest.page = page
-        insuranceRecommendationRequest.clientVersion = clientVersion
-
-        val insuranceShopsDataArrayList = ArrayList<InsuranceShopsData>()
-
-        val insuranceShopsData = InsuranceShopsData()
-        insuranceShopsData.shopId = java.lang.Long.parseLong(shopId)
-
-        val insuranceShopsArrayList = java.util.ArrayList<InsuranceShops>()
-        val insuranceShops: InsuranceShops
-
-        val insurnaceShopCategory = InsuranceShopCategory()
-
-        insurnaceShopCategory.categoryId = categoryId.toLongOrZero()
-        insurnaceShopCategory.categoryName = categoryName
-
-        insuranceShops = InsuranceShops()
-        insuranceShops.productId = productId.toLong()
-        insuranceShops.productQuantity = quantity
-        insuranceShops.categoryId = categoryId.toLongOrZero()
-        insuranceShops.productTitle = productTitle
-        insuranceShops.productPrice = productPrice?.toLong()!!
-        insuranceShops.condition = condition!!.toLowerCase()
-
-        insuranceShops.shopCategory = insurnaceShopCategory
-        insuranceShopsArrayList.add(insuranceShops)
-
-
-        insuranceShopsData.shopItems = insuranceShopsArrayList
-        insuranceShopsDataArrayList.add(insuranceShopsData)
-
-        insuranceRecommendationRequest.shopsArrayList = insuranceShopsDataArrayList
-
-
     }
 
     private fun doCheckoutAction(action: Int) {
@@ -895,20 +838,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     }
 
     private fun addToCart() {
+        tempQuantity = quantity
+        isTradeIn = 0
 
-        if (isErrorInInsurance() ||
-                (isInsuranceSelected &&
-                        selectedInsuranceProduct.cartShopsList.isNullOrEmpty())) {
-
-            return
-        }
-
-        addToInsuranceCart(onFinish = { message: String?, cartId: String? ->
-
+        addToCart(false, onFinish = { message: String?, cartId: String? ->
             hideLoadingDialog()
-            if (isInsuranceSelected) {
-                normalCheckoutTracking.eventClickInsuranceBuy(getInsuranceTitle(), productId)
-            }
             normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
                     selectedProductInfo?.basic?.price.toString(),
                     quantity,
@@ -933,128 +867,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                 )
             }
             onFinishAddToCart(message)
-        }, onRetryWhenError = { message: String ->
-            hideLoadingDialog()
-            var toastMessage = if (message.isNullOrBlank()) {
-                getString(com.tokopedia.network.R.string.default_request_error_unknown_short)
-            } else {
-                message
-            }
-            activity?.findViewById<View>(android.R.id.content)?.let {
-                Toaster.make(it, toastMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-            }
-        }, onGqlError = { e: Throwable? ->
-            hideLoadingDialog()
-            showToastError(e) {
-                addToCart()
-            }
+        }, onRetryWhenError = {
+            addToCart()
         })
-
-    }
-
-    private fun getInsuranceTitle(): String {
-        return insuranceViewModel.cartShopsList.firstOrNull()?.shopItemsList?.firstOrNull()?.digitalProductList?.firstOrNull()?.productInfo?.title
-                ?: ""
-    }
-
-    private fun isErrorInInsurance(): Boolean {
-
-        for (insuranceCartShopsViewModel in selectedInsuranceProduct.cartShopsList) {
-            for (shopItem in insuranceCartShopsViewModel.shopItemsList) {
-                for (insuranceCartDigitalProduct in shopItem.digitalProductList) {
-                    for (applicationDetail in insuranceCartDigitalProduct.applicationDetails) {
-                        if (applicationDetail.isError) {
-                            return true
-                        }
-                    }
-                }
-            }
-        }
-
-        return false
-    }
-
-    private fun addToInsuranceCart(onFinish: ((message: String?, cartId: String?) -> Unit),
-                                   onRetryWhenError: ((message: String) -> Unit), onGqlError: ((e: Throwable?) -> Unit)) {
-        val selectedVariant = selectedVariantId
-        val selectedWarehouseId = viewModel.selectedwarehouse?.warehouseInfo?.id?.toLong() ?: 0
-        showLoadingDialog()
-        //initiate add to insurance cart
-
-        normalCheckoutTracking.eventAppsFlyerInitiateCheckout(productId,
-                selectedProductInfo?.basic?.price.toString(),
-                quantity,
-                selectedProductInfo?.basic?.name ?: "",
-                selectedProductInfo?.category?.name ?: "")
-
-        val addMarketPlaceToCartRequest = AddMarketPlaceToCartRequest()
-        addMarketPlaceToCartRequest.notes = notes ?: ""
-        addMarketPlaceToCartRequest.productId = if (selectedVariant != null && selectedVariant.toInt() > 0) {
-            selectedVariant.toLong()
-        } else {
-            productId.toLong()
-        }
-        addMarketPlaceToCartRequest.quantity = quantity
-        addMarketPlaceToCartRequest.shoppId = shopId?.toLong() ?: 0
-        addMarketPlaceToCartRequest.warehouseID = selectedWarehouseId
-
-        val addInsuranceProductToCartRequest = AddInsuranceProductToCartRequest()
-
-
-        if (isInsuranceSelected) {
-            addInsuranceProductToCartRequest.page = page
-            addInsuranceProductToCartRequest.clientVersion = clientVersion
-            addInsuranceProductToCartRequest.clientType = "android"
-            addInsuranceProductToCartRequest.clientLanguage = "bhasa"
-
-            val addInsuranceProductDataList = ArrayList<AddInsuranceProductData>()
-
-            for (insuranceCartShopsViewModel in selectedInsuranceProduct.cartShopsList) {
-                val model = AddInsuranceProductData()
-                model.shopId = insuranceCartShopsViewModel.shopId
-                val addInsuranceProductItemList = ArrayList<AddInsuranceProductItems>()
-
-                for (shopItem in insuranceCartShopsViewModel.shopItemsList) {
-                    val addShopItem = AddInsuranceProductItems()
-
-                    addShopItem.productId = shopItem.productId
-                    addShopItem.productQuantity = 1
-
-                    val digitalProductList = ArrayList<AddInsuranceProduct>()
-
-                    for (insuranceCartDigitalProduct in shopItem.digitalProductList) {
-
-                        val digitalProduct = AddInsuranceProduct()
-                        digitalProduct.typeId = insuranceCartDigitalProduct.typeId
-                        digitalProduct.digitalProductId = insuranceCartDigitalProduct.digitalProductId
-                        val applicationDetailList = ArrayList<AddInsuranceProductApplicationDetails>()
-
-                        for (applicationDetail in insuranceCartDigitalProduct.applicationDetails) {
-                            val addApplicationDetail = AddInsuranceProductApplicationDetails()
-                            addApplicationDetail.id = applicationDetail.id
-                            addApplicationDetail.value = applicationDetail.value
-                            applicationDetailList.add(addApplicationDetail)
-                        }
-
-                        digitalProduct.applicationDetails = applicationDetailList
-                        digitalProductList.add(digitalProduct)
-
-                    }
-
-                    addShopItem.digitalProductList = digitalProductList
-                    addInsuranceProductItemList.add(addShopItem)
-                }
-
-                model.shopItems = addInsuranceProductItemList
-                addInsuranceProductDataList.add(model)
-            }
-
-            addInsuranceProductToCartRequest.addInsuranceData = addInsuranceProductDataList
-        }
-
-
-        viewModel.addInsuranceProductToCart(addInsuranceProductToCartRequest,
-                addMarketPlaceToCartRequest, onFinish, onRetryWhenError, onGqlError)
 
     }
 
@@ -1259,20 +1074,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                     ?: 0
             adapter.clearAllElements()
             adapter.addDataViewModel(viewModels)
-            if (insuranceViewModel.cartShopsList.isNotEmpty()) {
-                adapter.addSingleDataViewModel(insuranceViewModel)
-            }
-            adapter.notifyDataSetChanged()
-            renderActionButton(it)
-            renderTotalPrice(it, viewModel.selectedwarehouse)
-        }
-    }
-
-    private fun onSuccessInsuranceRecommendation(insuranceRecommendation: InsuranceRecommendationGqlResponse) {
-        selectedProductInfo?.let {
-            insuranceViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation)
-            fragmentViewModel.viewModels.add(insuranceViewModel)
-            adapter.addSingleDataViewModel(insuranceViewModel)
             adapter.notifyDataSetChanged()
             renderActionButton(it)
             renderTotalPrice(it, viewModel.selectedwarehouse)
@@ -1330,19 +1131,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         outState.putString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
         outState.putInt(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
         outState.putString(ApplinkConst.Transaction.EXTRA_NOTES, notes)
-    }
-
-    override fun sendEventInsuranceSelectedStateChanged(isChecked: Boolean, title: String) {
-        normalCheckoutTracking.eventClickInsuranceState(productId, isChecked, title)
-    }
-
-    override fun sendEventInsuranceInfoClicked() {
-        normalCheckoutTracking.eventClickInsuranceInfo(productId)
-    }
-
-    override fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean) {
-        this.selectedInsuranceProduct = element ?: InsuranceRecommendationViewModel()
-        isInsuranceSelected = isSelected
     }
 
     override fun onItemClicked(t: Visitable<*>?) {

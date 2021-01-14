@@ -45,46 +45,6 @@ class NormalCheckoutTracking {
                 "not success - $errorMessage")
     }
 
-    fun eventClickInsuranceInfo(productId: String?) {
-        val mapEvent = TrackAppUtils.gtmData(
-                "",
-                CATEGORY_FIN_PDP_INSURANCE,
-                ACTION_FIN_PDP_CLICK_INFO,
-                LABEL_FIN_PDP_INSURANCE
-        )
-        mapEvent[KEY_PRODUCT_ID] = productId ?: ""
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-    }
-
-    fun eventClickInsuranceBuy(title: String, productId: String) {
-        val eventLabel = "pdp page - $title"
-        val mapEvent = TrackAppUtils.gtmData(
-                "",
-                CATEGORY_FIN_PDP_INSURANCE,
-                ACTION_FIN_PDP_INSURANCR_BUY,
-                eventLabel
-        )
-        mapEvent[KEY_PRODUCT_ID] = productId
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-    }
-
-    fun eventClickInsuranceState(productId: String?, isChecked: Boolean, title: String) {
-        val eventLabel = if (isChecked) {
-            "pdp page - tick $title"
-        } else {
-            "pdp page - untick $title"
-        }
-        val mapEvent = TrackAppUtils.gtmData(
-                "",
-                CATEGORY_FIN_PDP_INSURANCE,
-                ACTION_FIN_PDP_INSURANCR_STATE,
-                eventLabel
-        )
-        mapEvent[KEY_PRODUCT_ID] = productId ?: ""
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-    }
-
-
     fun eventClickBuyInVariantNotLogin(productInfo: ProductInfo?,
                                        layoutName: String) {
         val mapEvent = TrackAppUtils.gtmData(

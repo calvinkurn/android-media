@@ -32,10 +32,6 @@ open class AddToCartVariantAdapterTypeFactory(val listenerNormal: AddToCartVaria
         return TypeVariantViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: InsuranceRecommendationViewModel): Int {
-        return InsuranceRecommendationViewHolder.LAYOUT
-    }
-
     override fun type(viewModel: LoadingModel): Int {
         return HideViewHolder.LAYOUT
     }
@@ -46,7 +42,6 @@ open class AddToCartVariantAdapterTypeFactory(val listenerNormal: AddToCartVaria
             ProductViewHolder.LAYOUT -> ProductViewHolder(view, listenerNormal)
             QuantityViewHolder.LAYOUT -> QuantityViewHolder(view, listenerNormal)
             TypeVariantViewHolder.LAYOUT -> TypeVariantViewHolder(view, listenerNormal)
-            InsuranceRecommendationViewHolder.LAYOUT -> InsuranceRecommendationViewHolder(view, listenerNormal)
             HideViewHolder.LAYOUT -> HideViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }
