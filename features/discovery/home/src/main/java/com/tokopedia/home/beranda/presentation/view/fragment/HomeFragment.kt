@@ -577,7 +577,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun initInboxAbTest() {
         useNewInbox = getAbTestPlatform().getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ) == AbTestPlatform.VARIANT_NEW_INBOX
+        ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
     }
 
     private fun showNavigationOnboarding() {
