@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N50"
+    android:background="@color/grey_background"
     android:gravity="center_vertical"
     android:padding="@dimen/dp_8">
 
@@ -19,6 +19,6 @@
     <TextView style="@style/TextView.Small.BlackSecondary"
         android:id="@+id/content_text"
         android:layout_width="match_parent"
-        android:textColorLink="@color/Unify_G400"/>
+        android:textColorLink="@color/tkpd_main_green"/>
 
 </LinearLayout>
