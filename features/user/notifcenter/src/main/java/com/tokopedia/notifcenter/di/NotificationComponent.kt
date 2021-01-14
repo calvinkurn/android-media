@@ -9,6 +9,7 @@ import com.tokopedia.notifcenter.presentation.fragment.NotificationFragment
 import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFragment
 import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.notifcenter.presentation.fragment.ProductStockHandlerDialog
+import com.tokopedia.notifcenter.service.MarkAsSeenService
 import dagger.Component
 
 @NotificationScope
@@ -30,4 +31,5 @@ interface NotificationComponent {
     fun inject(fragment: NotificationFragment)
     fun inject(dialog: ProductStockHandlerDialog)
     fun inject(activity: NotificationActivity)
+    fun inject(service: MarkAsSeenService)
 }

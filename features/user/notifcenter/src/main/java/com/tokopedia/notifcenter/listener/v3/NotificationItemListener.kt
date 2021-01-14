@@ -26,5 +26,6 @@ interface NotificationItemListener {
     )
     fun trackBumpReminder()
     fun trackDeleteReminder()
+    fun markAsSeen(notifId: String)
 
 }
