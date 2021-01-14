@@ -35,8 +35,6 @@ import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
-import com.tokopedia.appaidl.ReceiverListener;
-import com.tokopedia.appaidl.data.UserKey;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -65,11 +63,10 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
 import timber.log.Timber;
 
-import static com.tokopedia.appaidl.ApiKt.connectService;
 import static com.tokopedia.developer_options.config.DevOptConfig.CHUCK_ENABLED;
 import static com.tokopedia.developer_options.config.DevOptConfig.IS_CHUCK_ENABLED;
 
-public class DeveloperOptionActivity extends BaseActivity implements ReceiverListener {
+public class DeveloperOptionActivity extends BaseActivity {
 
     public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
@@ -168,44 +165,9 @@ public class DeveloperOptionActivity extends BaseActivity implements ReceiverLis
                 initListener();
                 initTranslator();
             }
-
-            connectService(this, this);
         } else {
             finish();
         }
-    }
-
-    private String userSessionData(String tag, Bundle data) {
-        String message = "";
-        message += "TAG -> " + tag + "\n";
-        message += "isLogin -> " + data.getBoolean(UserKey.IS_LOGIN) + "\n";
-        if (data.getBoolean(UserKey.IS_LOGIN)) {
-            message += "Name -> " + data.getString(UserKey.NAME) + "\n";
-            message += "Email -> " + data.getString(UserKey.EMAIL) + "\n";
-        }
-
-        return message;
-    }
-
-    @Override
-    public void onAidlReceive(String tag, Bundle data) {
-        String message = "";
-        if (!tag.isEmpty() && !data.isEmpty() && data.containsKey(UserKey.IS_LOGIN)) {
-            if (GlobalConfig.isSellerApp()) {
-                message += "Seller \n";
-            } else {
-                message += "MainApp \n";
-            }
-
-            message += userSessionData(tag, data);
-        }
-
-        txtAidlUserStatus.setText(message);
-    }
-
-    @Override
-    public void onAidlError() {
-
     }
 
     private void handleUri(Uri uri) {
