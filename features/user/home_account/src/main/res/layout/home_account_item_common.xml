@@ -9,11 +9,6 @@
     android:paddingLeft="@dimen/home_account_dp_2"
     android:paddingRight="@dimen/home_account_dp_2"
     xmlns:tools="http://schemas.android.com/tools">
-
-<!--    <com.tokopedia.iconunify.IconUnify-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"/>-->
-
     <com.tokopedia.iconunify.IconUnify
         app:icon_color_night_enable="@color/home_account_icon_dark"
         android:id="@+id/account_user_item_common_icon"
