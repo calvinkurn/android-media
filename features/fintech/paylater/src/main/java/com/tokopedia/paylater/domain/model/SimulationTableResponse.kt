@@ -8,6 +8,7 @@ data class SimulationTableResponse(
         val amount: Double,
         val isPopular: Boolean,
         var isSelected: Boolean,
+        val isDisabled: Boolean,
         val installmentData: ArrayList<CreditCardBank>,
 )
 

@@ -97,11 +97,15 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun getPayLaterProductInfo() {
-        payLaterViewModel.getPayLaterProductData()
+        if (!(payLaterViewModel.payLaterActivityResultLiveData.value is Success ||
+                        payLaterViewModel.payLaterActivityResultLiveData.value is Fail))
+            payLaterViewModel.getPayLaterProductData()
     }
 
     override fun getApplicationStatusInfo() {
-        payLaterViewModel.getPayLaterApplicationStatus()
+        if (!(payLaterViewModel.payLaterApplicationStatusResultLiveData.value is Success ||
+                        payLaterViewModel.payLaterApplicationStatusResultLiveData.value is Fail))
+            payLaterViewModel.getPayLaterApplicationStatus()
     }
 
     private fun observeViewModel() {
@@ -242,7 +246,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     override fun onCheckedChanged(modeButton: CompoundButton, isChecked: Boolean) {
         if (isChecked) {
             paymentMode = CreditCard
-            if (creditCardViewModel.creditCardSimulationResultLiveData.value == null) {
+            if (!(creditCardViewModel.creditCardSimulationResultLiveData.value is Success ||
+                            creditCardViewModel.creditCardSimulationResultLiveData.value is Fail)) {
                 creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
             }
         } else {

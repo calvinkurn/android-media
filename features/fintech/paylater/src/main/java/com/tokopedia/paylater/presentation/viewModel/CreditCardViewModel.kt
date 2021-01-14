@@ -6,8 +6,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.paylater.data.mapper.CreditCardResponseMapper
 import com.tokopedia.paylater.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.paylater.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.paylater.domain.model.CreditCardGetSimulationResponse
-import com.tokopedia.paylater.domain.model.SimulationTableResponse
+import com.tokopedia.paylater.domain.model.*
+import com.tokopedia.paylater.domain.usecase.CreditCardBankDataUseCase
 import com.tokopedia.paylater.domain.usecase.CreditCardPdpMetaInfoUseCase
 import com.tokopedia.paylater.domain.usecase.CreditCardSimulationUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -22,10 +22,13 @@ import javax.inject.Inject
 class CreditCardViewModel @Inject constructor(
         private val creditCardSimulationUseCase: CreditCardSimulationUseCase,
         private val creditCardPdpMetaInfoUseCase: CreditCardPdpMetaInfoUseCase,
+        private val creditCardBankDataUseCase: CreditCardBankDataUseCase,
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
         @CoroutineBackgroundDispatcher val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
     val creditCardSimulationResultLiveData = MutableLiveData<Result<ArrayList<SimulationTableResponse>>>()
+    val creditCardPdpMetaInfoLiveData = MutableLiveData<Result<CreditCardPdpMetaData>>()
+    val creditCardBankResultLiveData = MutableLiveData<Result<ArrayList<BankCardListItem>>>()
 
     fun getCreditCardSimulationData(amount: Float) {
         creditCardSimulationUseCase.cancelJobs()
@@ -48,14 +51,52 @@ class CreditCardViewModel @Inject constructor(
         })
     }
 
+    fun getCreditCardTncData() {
+        creditCardPdpMetaInfoUseCase.cancelJobs()
+        creditCardPdpMetaInfoUseCase.getPdpMetaData(
+                ::onPdpInfoMetaDataSuccess,
+                ::onPdpInfoMetaDataError
+        )
+    }
+
+    fun getBankCardList() {
+        creditCardBankDataUseCase.cancelJobs()
+        creditCardBankDataUseCase.getBankCardList(
+                ::onBankCardListDataSuccess,
+                ::onBankCardListDataError
+        )
+    }
+
 
     private fun onCreditCardSimulationSuccess(creditCardGetSimulationResponse: CreditCardGetSimulationResponse) {
         Timber.d(creditCardGetSimulationResponse.toString())
+        getCreditCardData()
     }
 
     private fun onCreditCardSimulationError(throwable: Throwable) {
         getCreditCardData()
         //creditCardSimulationResultLiveData.value = Fail(throwable)
+    }
+
+    private fun onPdpInfoMetaDataSuccess(creditCardPdpMetaData: CreditCardPdpMetaData?) {
+        Timber.d(creditCardPdpMetaData.toString())
+    }
+
+    private fun onPdpInfoMetaDataError(throwable: Throwable) {
+        //getCreditCardData()
+        //creditCardPdpMetaInfoLiveData.value = Fail(throwable)
+    }
+
+
+    private fun onBankCardListDataSuccess(creditCardBankData: CreditCardBankData?) {
+        Timber.d(creditCardBankData.toString())
+        creditCardBankResultLiveData.value = Success(creditCardBankData?.bankCardList!!)
+        //getCreditCardData()
+    }
+
+    private fun onBankCardListDataError(throwable: Throwable) {
+        //getCreditCardData()
+        creditCardBankResultLiveData.value = Fail(throwable)
     }
 
     override fun onCleared() {

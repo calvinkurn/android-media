@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/greenView"
+        android:layout_width="@dimen/unify_space_4"
+        android:layout_height="@dimen/unify_space_0"
+        android:background="@color/Unify_G500"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTitlePdpInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvTitlePdpInfo" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitlePdpInfo"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:text="Cicilan bunga 0%"
+        android:textSize="@dimen/unify_font_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/greenView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDescription"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:text="Berikut ini daftar min. transaksi untuk penggunaan kartu kredit: "
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="@id/tvTitlePdpInfo"
+        app:layout_constraintStart_toStartOf="@id/tvTitlePdpInfo"
+        app:layout_constraintTop_toBottomOf="@id/tvTitlePdpInfo"
+        app:typographyType="body_2" />
+
+    <LinearLayout
+        android:id="@+id/llBulletContents"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="@+id/tvTitlePdpInfo"
+        app:layout_constraintStart_toStartOf="@+id/tvTitlePdpInfo"
+        app:layout_constraintTop_toBottomOf="@+id/tvDescription">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:text="Pembayaran dengan sistem cicilan 0%, berlaku untuk pemegang kartu kredit berlogo Visa, Mastercard, JCB, dan American Express"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:text="1 (satu) akun pengguna dan satu kartu kredit hanya bisa mengikuti promo cicilan 0% sebanyak 1 (satu) kali per hari."
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:text="Promo cicilan 0% tidak bisa digabung dengan promo lain yang sedang berlangsung di Tokopedia."
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_2" />
+
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPdpInfoContent"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintEnd_toEndOf="@id/tvTitlePdpInfo"
+        app:layout_constraintStart_toStartOf="@id/tvNotes"
+        app:layout_constraintTop_toBottomOf="@id/llBulletContents" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvNotes"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:text="*Khusus BRI, min. transaksi untuk cicilan selama 12 bulan adalah Rp3.000.000"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="@id/tvTitlePdpInfo"
+        app:layout_constraintStart_toStartOf="@+id/tvTitlePdpInfo"
+        app:layout_constraintTop_toBottomOf="@+id/rvPdpInfoContent"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerInstallment"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/pay_later_divider_height_dp_1"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvTitlePdpInfo"
+        app:layout_constraintTop_toBottomOf="@+id/tvNotes" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

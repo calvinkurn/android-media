@@ -108,3 +108,22 @@ const val GQL_CREDIT_CARD_PDP_META_INFO = """query {
     }
   }
 }"""
+
+const val GQL_CREDIT_CARD_BANK_LIST = """query {
+  cc_fetchbankcardlist() {
+    data {
+      bank_name
+      bank_slug
+      bank_logo_url
+      bank_pdp_info
+      card_list {
+        card_name
+        card_slug
+        card_image_url
+        special_label
+        main_benefit
+        is_special_offer
+      }
+    }
+  }
+}"""

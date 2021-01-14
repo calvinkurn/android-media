@@ -15,13 +15,9 @@ class PayLaterPaymentFaqViewHolder(val view: View) : RecyclerView.ViewHolder(vie
     fun bindData(faqData: PayLaterPartnerFaq) {
         view.tvFaqHeading.text = faqData.faqQuestion ?: ""
         setLayout(faqData)
-        view.setOnClickListener {
-            faqData.expandLayout = !faqData.expandLayout
-            setLayout(faqData)
-        }
     }
 
-    private fun setLayout(faqData: PayLaterPartnerFaq) {
+    fun setLayout(faqData: PayLaterPartnerFaq) {
         if (faqData.expandLayout) {
             view.ivArrowBottom.animate().rotation(180f).duration = 300
             view.tvFaqDescription.text = faqData.faqAnswer ?: ""

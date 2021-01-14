@@ -68,28 +68,30 @@
             app:layout_constraintTop_toBottomOf="@+id/dividerVertical"
             app:loader_type="rect" />
 
+        <View
+            android:id="@+id/offerLabel"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_0"
+            android:background="@drawable/bg_credit_card_installment_interest"
+            app:layout_constraintBottom_toBottomOf="@id/tvSubtitleSimulation"
+            app:layout_constraintEnd_toEndOf="@id/tvSubtitleSimulation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvSubtitleSimulation" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSubtitleSimulation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_12"
+            android:paddingTop="@dimen/unify_space_8"
+            android:paddingEnd="@dimen/unify_space_16"
+            android:paddingBottom="@dimen/unify_space_8"
             android:text="@string/pay_later_simulation_header_sub_title"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintStart_toStartOf="@+id/tvTitleSimulation"
             app:layout_constraintTop_toBottomOf="@+id/tvTitleSimulation"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/offerLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/pay_later_benefit_margin_dp_6"
-            android:text="@string/pay_later_bunga_text"
-            app:labelType="general_dark_green"
-            app:layout_constraintBottom_toBottomOf="@id/tvSubtitleSimulation"
-            app:layout_constraintStart_toEndOf="@id/tvSubtitleSimulation"
-            app:layout_constraintTop_toTopOf="@id/tvSubtitleSimulation" />
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/subTitleShimmer"
@@ -105,8 +107,8 @@
             android:id="@+id/simulationShimmerView"
             android:layout_width="0dp"
             android:layout_height="270dp"
-            android:layout_marginTop="@dimen/unify_space_16"
             android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/subTitleShimmer"

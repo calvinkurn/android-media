@@ -33,12 +33,14 @@ object CreditCardResponseMapper {
                 6300000.0,
                 false,
                 true,
+                false,
                 bankList
         ))
         for (i in 1..2)
             list.add(SimulationTableResponse(
                     "Cicilan 3x",
                     6300000.0,
+                    false,
                     false,
                     false,
                     bankList
@@ -48,6 +50,7 @@ object CreditCardResponseMapper {
                 3100000.0,
                 true,
                 false,
+                false,
                 bankList
         ))
         for (i in 0..2)
@@ -56,6 +59,7 @@ object CreditCardResponseMapper {
                     250000.0,
                     false,
                     false,
+                    true,
                     bankList
             ))
         return list

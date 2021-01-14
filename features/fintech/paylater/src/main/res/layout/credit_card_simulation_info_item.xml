@@ -13,15 +13,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_credit_card_popular"
-        app:unify_image_corner_radius="0"
-        />
+        app:unify_image_corner_radius="0" />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/ccSimulationCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_2"
-        app:card_type="shadow_active"
+        app:card_type="border"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -51,11 +50,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_2"
-                android:layout_marginBottom="@dimen/unify_space_12"
                 android:text="Rp1.575.000"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/tvMonthlyTenure"
                 app:layout_constraintStart_toStartOf="@id/tvInstallmentHeader"
-                app:layout_constraintTop_toBottomOf="@id/tvInstallmentHeader"
+                app:layout_constraintTop_toTopOf="@+id/tvMonthlyTenure"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
@@ -64,12 +62,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_2"
+                android:layout_marginTop="@dimen/unify_space_2"
                 android:layout_marginEnd="@dimen/credit_card_dp_10"
+                android:layout_marginBottom="@dimen/unify_space_12"
+
                 android:text="/bulan"
-                app:layout_constraintBottom_toBottomOf="@id/tvInstallmentPrice"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvInstallmentPrice"
-                app:layout_constraintTop_toTopOf="@id/tvInstallmentPrice"
+                app:layout_constraintTop_toBottomOf="@id/tvInstallmentHeader"
                 app:typographyType="body_3" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>

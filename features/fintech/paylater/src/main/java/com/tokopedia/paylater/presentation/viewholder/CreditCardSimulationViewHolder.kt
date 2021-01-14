@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.SimulationTableResponse
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.credit_card_simulation_info_item.view.*
 
@@ -25,10 +26,32 @@ class CreditCardSimulationViewHolder(val view: View) : RecyclerView.ViewHolder(v
 
     fun setBackGround(simulationData: SimulationTableResponse) {
         view.apply {
-            if (simulationData.isSelected)
-                clSimulationCard.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
-            else
-                clSimulationCard.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            when {
+                simulationData.isSelected -> {
+                    ccSimulationCard.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                    tvInstallmentHeader.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                    clSimulationCard.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
+                    tvInstallmentPrice.visible()
+                    tvMonthlyTenure.text = "/bulan"
+
+                }
+                simulationData.isDisabled -> {
+                    tvInstallmentHeader.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+                    ccSimulationCard.cardType = CardUnify.TYPE_BORDER_DISABLED
+                    tvInstallmentPrice.gone()
+                    tvMonthlyTenure.text = "Untuk harga min. Rp5 Juta"
+                    clSimulationCard.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                }
+                else -> {
+                    ccSimulationCard.cardType = CardUnify.TYPE_BORDER
+                    tvInstallmentHeader.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                    clSimulationCard.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    tvInstallmentPrice.visible()
+                    tvMonthlyTenure.text = "/bulan"
+
+
+                }
+            }
         }
 
     }

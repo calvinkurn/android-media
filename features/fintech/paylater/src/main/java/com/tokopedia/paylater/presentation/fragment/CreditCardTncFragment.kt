@@ -11,7 +11,7 @@ import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PayLaterComponent
 import com.tokopedia.paylater.domain.model.PayLaterProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
-import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
+import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
 import javax.inject.Inject
 
 class CreditCardTncFragment : BaseDaggerFragment() {
@@ -19,9 +19,9 @@ class CreditCardTncFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val creditCardViewModel: CreditCardViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
-        viewModelProvider.get(PayLaterViewModel::class.java)
+        viewModelProvider.get(CreditCardViewModel::class.java)
     }
 
     private var creditCardTnCCallback: CreditCardTnCCallback? = null
@@ -40,6 +40,7 @@ class CreditCardTncFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeViewModel()
+        creditCardViewModel.getCreditCardTncData()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,26 +73,26 @@ class CreditCardTncFragment : BaseDaggerFragment() {
     }
 
     private fun onPayLaterDataLoadingFail(throwable: Throwable) {
-      /*  payLaterOffersShimmerGroup.gone()
-        when (throwable) {
-            is UnknownHostException, is SocketTimeoutException -> {
-                creditCardTnCCallback?.noInternetCallback()
-                return
-            }
-            is IllegalStateException -> {
-                payLaterOffersGlobalError.setType(GlobalError.PAGE_FULL)
-            }
-            else -> {
-                payLaterOffersGlobalError.setType(GlobalError.SERVER_ERROR)
-            }
-        }
-        payLaterOffersGlobalError.show()
-        payLaterOffersGlobalError.setActionClickListener {
-            payLaterOffersGlobalError.hide()
-            // notify payLater fragment to invoke again
-            payLaterOffersShimmerGroup.visible()
-            creditCardTnCCallback?.getPayLaterProductInfo()
-        }*/
+        /*  payLaterOffersShimmerGroup.gone()
+          when (throwable) {
+              is UnknownHostException, is SocketTimeoutException -> {
+                  creditCardTnCCallback?.noInternetCallback()
+                  return
+              }
+              is IllegalStateException -> {
+                  payLaterOffersGlobalError.setType(GlobalError.PAGE_FULL)
+              }
+              else -> {
+                  payLaterOffersGlobalError.setType(GlobalError.SERVER_ERROR)
+              }
+          }
+          payLaterOffersGlobalError.show()
+          payLaterOffersGlobalError.setActionClickListener {
+              payLaterOffersGlobalError.hide()
+              // notify payLater fragment to invoke again
+              payLaterOffersShimmerGroup.visible()
+              creditCardTnCCallback?.getPayLaterProductInfo()
+          }*/
     }
 
     // set payLater + application status data in pager adapter

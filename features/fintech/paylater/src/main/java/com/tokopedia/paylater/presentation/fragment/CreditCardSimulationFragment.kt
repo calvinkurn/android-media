@@ -32,7 +32,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment(), CreditCardRegistratio
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
     private val creditCardViewModel: CreditCardViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
+        val viewModelProvider = ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
         viewModelProvider.get(CreditCardViewModel::class.java)
     }
 
@@ -82,7 +82,16 @@ class CreditCardSimulationFragment : BaseDaggerFragment(), CreditCardRegistratio
 
     private fun initListeners() {
         tvSeeAll.setOnClickListener { showAllBanksBottomSheet() }
-        creditCardRegisterWidget.setOnClickListener { showRegistrationBottomSheet() }
+        creditCardRegisterWidget.setOnClickListener {
+            fetchBankCardList()
+            creditCardViewModel.getBankCardList()
+            showRegistrationBottomSheet()
+        }
+    }
+
+    private fun fetchBankCardList() {
+        if (creditCardViewModel.creditCardBankResultLiveData.value !is Success<*>)
+            creditCardViewModel.getBankCardList()
     }
 
     private fun observeViewModel() {

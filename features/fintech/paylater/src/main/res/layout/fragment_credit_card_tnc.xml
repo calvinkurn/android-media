@@ -1,43 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clTncContainer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="@dimen/unify_space_16"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/unify_space_16"
     android:background="@color/Unify_N0"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/unify_space_24">
+
+    <com.tokopedia.unifycomponents.EmptyState
+        android:id="@+id/creditCardTermsEmptyView"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyEmptyStateDescription="@string/credit_card_simulation_empty_view_description"
+        app:unifyEmptyStateImageDrawable="@drawable/ic_paylater_terms_not_matched"
+        app:unifyEmptyStateOrientation="vertical"
+        app:unifyEmptyStatePrimaryCTAText=""
+        app:unifyEmptyStateSecondaryCTAText=""
+        app:unifyEmptyStateTitle="@string/credit_card_simulation_empty_view_title" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerVertical"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creditCardTermsEmptyView" />
 
     <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/payLaterOffersGlobalError"
+        android:id="@+id/simulationGlobalError"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_0"
-        android:visibility="gone"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvTitlePenawaran"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:text="@string/pay_later_title_detail"
-        android:textSize="@dimen/unify_font_16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold" />
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/titleShimmer"
-        android:layout_width="@dimen/pay_later_shimmer_width_dp_256"
-        android:layout_height="@dimen/unify_space_24"
-        android:layout_marginStart="@dimen/unify_space_16"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPdpInfo"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="rect"
-        />
+        app:layout_constraintTop_toBottomOf="@id/dividerVertical"
+        tools:listitem="@layout/credit_card_pdp_meta_info_item" />
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnMoreInfo"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:text="Info Selengkapnya"
+        android:textSize="@dimen/unify_font_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvPdpInfo"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
