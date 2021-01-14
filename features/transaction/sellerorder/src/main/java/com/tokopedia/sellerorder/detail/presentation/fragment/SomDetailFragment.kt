@@ -30,6 +30,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
@@ -727,21 +728,27 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun goToPrintAwb() {
-        val featureUrl = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-            remoteConfig.getString("android_som_print_url_staging", "https://186-staging-feature.tokopedia.com/shipping-label")
+        if (GlobalConfig.isSellerApp()) {
+            val featureUrl = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                remoteConfig.getString("android_som_print_url_staging", "https://186-staging-feature.tokopedia.com/shipping-label")
+            } else {
+                remoteConfig.getString("android_som_print_url_beta", "https://110-beta-feature.tokopedia.com/shipping-label")
+            }
+            val url = Uri.parse(featureUrl)
+                    .buildUpon()
+                    .appendQueryParameter(PRINT_AWB_ORDER_ID_QUERY_PARAM, detailResponse?.orderId.orZero().toString())
+                    .appendQueryParameter(PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, "1")
+                    .build()
+                    .toString()
+            Intent(activity, SomPrintAwbActivity::class.java).apply {
+                putExtra(KEY_URL, url)
+                putExtra(KEY_TITLE, SomConsts.PRINT_AWB_WEBVIEW_TITLE)
+                startActivity(this)
+            }
         } else {
-            remoteConfig.getString("android_som_print_url_beta", "https://110-beta-feature.tokopedia.com/shipping-label")
-        }
-        val url = Uri.parse(featureUrl)
-                .buildUpon()
-                .appendQueryParameter(PRINT_AWB_ORDER_ID_QUERY_PARAM, detailResponse?.orderId.orZero().toString())
-                .appendQueryParameter(PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, "1")
-                .build()
-                .toString()
-        Intent(activity, SomPrintAwbActivity::class.java).apply {
-            putExtra(KEY_URL, url)
-            putExtra(KEY_TITLE, SomConsts.PRINT_AWB_WEBVIEW_TITLE)
-            startActivity(this)
+            view?.let {
+                Toaster.build(it, getString(R.string.som_detail_som_print_not_available), LENGTH_SHORT, TYPE_NORMAL).show()
+            }
         }
     }
 
