@@ -262,7 +262,11 @@
     <!-- Dynamic feature Statistic -->
     <string name="title_statistic">Statistic</string>
 
+    <!-- Logistic -->
     <string name="title_layanan">Layanan</string>
+    <string name="label_manage_address">Daftar Alamat</string>
+    <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
+    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
 
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
