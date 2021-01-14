@@ -20,7 +20,7 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener): B
         with(itemView) {
             account_user_item_common_title?.text = common.title
             if(common.icon != 0) {
-                account_user_item_common_icon?.setImage(common.icon, newDarkEnable = R.color.home_account_icon_dark, newDarkDisable = R.color.home_account_icon_dark)
+                account_user_item_common_icon?.setImage(common.icon)
             }
             if(common.urlIcon.isNotEmpty()){
                 ImageHandler.loadImageFit2(account_user_item_common_icon.context, account_user_item_common_icon, common.urlIcon)

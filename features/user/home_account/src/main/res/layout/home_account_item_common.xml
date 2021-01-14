@@ -15,6 +15,7 @@
 <!--        android:layout_height="wrap_content"/>-->
 
     <com.tokopedia.iconunify.IconUnify
+        app:icon_color_night_enable="@color/home_account_icon_dark"
         android:id="@+id/account_user_item_common_icon"
         android:layout_width="@dimen/home_account_dp_28"
         android:layout_height="@dimen/home_account_dp_28"
