@@ -117,8 +117,10 @@ object DeeplinkMapper {
 
     private fun switchToWebviewIfNeeded(context: Context, mappedLink: String, originalLink: String) : String {
         try {
+            if (GlobalConfig.isSellerApp()) return mappedLink
+
             val remoteConfig = FirebaseRemoteConfigImpl(context)
-            val webviewSwitchConfig = remoteConfig.getString(RemoteConfigKey.SWITCH_TO_WEBVIEW)
+            val webviewSwitchConfig = remoteConfig.getString(RemoteConfigKey.MAINAPP_SWITCH_TO_WEBVIEW)
 
             if (TextUtils.isEmpty(webviewSwitchConfig)) return mappedLink
 
