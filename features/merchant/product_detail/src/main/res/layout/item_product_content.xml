@@ -228,7 +228,7 @@
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_4"
-            android:background="@drawable/bg_cashback"
+            android:background="@drawable/bg_product_detail_cashback"
             android:paddingLeft="@dimen/dp_4"
             android:paddingTop="@dimen/dp_3"
             android:paddingRight="@dimen/dp_4"

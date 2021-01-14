@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.description.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -212,17 +211,17 @@ class AddEditProductDescriptionFragment:
         // set bg color programatically, to reduce overdraw
         context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
-        textFieldDescription.setCounter(MAX_DESCRIPTION_CHAR)
-        textFieldDescription.textFieldInput.apply {
+        textFieldDescription?.setCounter(MAX_DESCRIPTION_CHAR)
+        textFieldDescription?.textFieldInput?.apply {
             isSingleLine = false
             imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
             afterTextChanged {
                 if (it.length >= MAX_DESCRIPTION_CHAR) {
-                    textFieldDescription.setMessage(getString(R.string.error_description_character_limit))
-                    textFieldDescription.setError(true)
+                    textFieldDescription?.setMessage(getString(R.string.error_description_character_limit))
+                    textFieldDescription?.setError(true)
                 } else {
-                    textFieldDescription.setMessage("")
-                    textFieldDescription.setError(false)
+                    textFieldDescription?.setMessage("")
+                    textFieldDescription?.setError(false)
                 }
                 validateDescriptionText(it)
             }
@@ -536,16 +535,16 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun updateDescriptionFieldErrorMessage(message: String) {
-        textFieldDescription.setMessage(message)
-        textFieldDescription.setError(message.isNotEmpty())
+        textFieldDescription?.setMessage(message)
+        textFieldDescription?.setError(message.isNotEmpty())
         btnSave.isEnabled = message.isEmpty()
     }
 
     private fun applyEditMode() {
-        val description = descriptionViewModel.descriptionInputModel.productDescription
-        val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
+        val description = descriptionViewModel.descriptionInputModel?.productDescription ?: ""
+        val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList ?: emptyList()
 
-        textFieldDescription.setText(description)
+        textFieldDescription?.setText(description)
         if (videoLinks.isNotEmpty()) {
             super.clearAllData()
             super.renderList(videoLinks)

@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
@@ -108,7 +109,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     private fun setPageInfo(discoPageData: DiscoveryPageData?) {
         discoPageData?.pageInfo?.let { pageInfoData ->
-            pageType = pageInfoData.type ?: ""
+            pageType = if(pageInfoData.type.isNullOrEmpty()) DISCOVERY_DEFAULT_PAGE_TYPE else pageInfoData.type
             pagePath = pageInfoData.path ?: ""
             pageInfoData.additionalInfo = discoPageData.additionalInfo
             campaignCode = pageInfoData.campaignCode ?: ""

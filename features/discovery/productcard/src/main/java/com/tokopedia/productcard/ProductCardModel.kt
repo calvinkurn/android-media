@@ -41,6 +41,7 @@ data class ProductCardModel (
         val hasRemoveFromWishlistButton: Boolean = false,
         val pdpViewCount: String = "",
         val stockBarLabel: String = "",
+        val stockBarLabelColor: String = "",
         val stockBarPercentage: Int = 0,
         val isOutOfStock: Boolean = false,
         val addToCardText: String = "",

@@ -41,6 +41,7 @@
     <string name="path_otp_push_notif_setting">/otp-push-notif-setting</string>
     <string name="path_otp_validator">/otp-validator</string>
     <string name="path_image_picker">/image-picker</string>
+    <string name="path_image_editor">/image-editor</string>
     <string name="path_webview" translatable="false">/webview</string>
     <string name="path_setting_profile_phone_verification" translatable="false">/setting-profile-phone-verification</string>
     <string name="path_setting_referral_phone_verification" translatable="false">/setting-referral-phone-verification</string>
