@@ -23,6 +23,7 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.devicefingerprint.submitdevice.model.Screen
 import com.tokopedia.devicefingerprint.submitdevice.payload.DeviceInfoPayload
 import com.tokopedia.encryption.security.sha256
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.io.File
@@ -48,6 +49,11 @@ class DeviceInfoPayloadCreator @Inject constructor(
 
     private val TIMESTAMP_FORMAT = "dd/MM/yyyy HH:mm:ss"
     private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+    private val remoteConfig = FirebaseRemoteConfigImpl(context)
+
+    companion object {
+        const val KEY_SEND_HIGH_RISK_APPS = "android_mainapp_send_high_risk_apps"
+    }
 
     suspend fun createDevicePayload(): DeviceInfoPayload {
         val location = getLocation()
@@ -95,7 +101,11 @@ class DeviceInfoPayloadCreator @Inject constructor(
                 mnc = getMnc(),
                 bootCount = getBootCount(),
                 permissions = getPermissions(context),
-                appList = getEncodedInstalledApps(context).joinToString(separator = ",")
+                appList = if (remoteConfig.getBoolean(KEY_SEND_HIGH_RISK_APPS, true)) {
+                    getEncodedInstalledApps(context).joinToString(separator = ",")
+                } else {
+                    ""
+                }
         )
     }
 
@@ -110,11 +120,11 @@ class DeviceInfoPayloadCreator @Inject constructor(
         ) == PackageManager.PERMISSION_GRANTED
         if (isGrantedFineLocation && isGrantedCoarseLocation) {
             return suspendCoroutine { cont ->
-                fusedLocationClient.lastLocation.addOnSuccessListener {
-                    location: Location? -> cont.resume(location)
+                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                    cont.resume(location)
                 }
-                fusedLocationClient.lastLocation.addOnFailureListener {
-                    exception -> cont.resumeWithException(exception)
+                fusedLocationClient.lastLocation.addOnFailureListener { exception ->
+                    cont.resumeWithException(exception)
                 }
             }
         } else {
