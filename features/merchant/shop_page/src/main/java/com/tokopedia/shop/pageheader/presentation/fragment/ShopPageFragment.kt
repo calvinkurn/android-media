@@ -414,16 +414,7 @@ class ShopPageFragment :
 
     private fun onSuccessGetShopIdFromDomain(shopId: String) {
         this.shopId = shopId
-        shopViewModel.getShopPageTabData(
-                shopId.toIntOrZero(),
-                shopDomain.orEmpty(),
-                START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
-                initialProductFilterParameter ?: ShopProductFilterParameter(),
-                "",
-                "",
-                isRefresh
-        )
+        getShopPageP1Data()
     }
 
     private fun onErrorGetShopPageHeaderContentData(error: Throwable) {
@@ -442,6 +433,7 @@ class ShopPageFragment :
     }
 
     private fun getShopPageHeaderContentData() {
+        if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
         startMonitoringPltCustomMetric(SHOP_TRACE_HEADER_CONTENT_DATA_MIDDLE)
         shopViewModel.getShopPageHeaderContentData(shopId, shopDomain ?: "", isRefresh)
     }
@@ -594,17 +586,22 @@ class ShopPageFragment :
         if (shopId.isEmpty()) {
             shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
         } else {
-            shopViewModel.getShopPageTabData(
-                    shopId.toIntOrZero(),
-                    shopDomain.orEmpty(),
-                    START_PAGE,
-                    ShopPageConstant.DEFAULT_PER_PAGE,
-                    initialProductFilterParameter ?: ShopProductFilterParameter(),
-                    "",
-                    "",
-                    isRefresh
-            )
+            getShopPageP1Data()
         }
+    }
+
+    private  fun getShopPageP1Data(){
+        if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
+        shopViewModel.getShopPageTabData(
+                shopId.toIntOrZero(),
+                shopDomain.orEmpty(),
+                START_PAGE,
+                ShopPageConstant.DEFAULT_PER_PAGE,
+                initialProductFilterParameter ?: ShopProductFilterParameter(),
+                "",
+                "",
+                isRefresh
+        )
     }
 
     private fun initToolbar() {
@@ -908,7 +905,6 @@ class ShopPageFragment :
         setViewState(VIEW_CONTENT)
         swipeToRefresh.isRefreshing = false
         shopPageHeaderDataModel?.let {
-            shopPageFragmentHeaderViewHolder.hideFollowButton()
             shopPageFragmentHeaderViewHolder.bind(it, isMyShop, remoteConfig)
         }
     }

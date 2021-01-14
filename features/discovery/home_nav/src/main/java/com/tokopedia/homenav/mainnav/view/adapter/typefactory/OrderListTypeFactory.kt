@@ -1,8 +1,8 @@
 package com.tokopedia.homenav.mainnav.view.adapter.typefactory
 
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OrderPaymentModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OrderProductModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OtherTransactionModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 
 interface OrderListTypeFactory {
     fun type(orderProductModel: OrderProductModel): Int

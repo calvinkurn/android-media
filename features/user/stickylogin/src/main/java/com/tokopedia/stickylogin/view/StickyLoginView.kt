@@ -49,7 +49,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.ticker
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -391,7 +390,7 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         val profilePicture = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_PROFILE_PICTURE, "")
 
         textContent.setContent("$TEXT_RE_LOGIN $name")
-        textContent.setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
+        textContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
 
         profilePicture?.let {
             imageViewLeft.loadImageCircle(it)

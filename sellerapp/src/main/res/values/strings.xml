@@ -109,4 +109,14 @@
     <string name="title_filter">Filter</string>
     <string name="title_report">Laporkan</string>
 
+    <!-- Product Detail -->
+    <string name="title_activity_product_detail">Rincian Produk</string>
+    <string name="product_detail_courier">Pengiriman</string>
+    <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
+    <string name="label_product_installment">Cicilan</string>
+    <string name="label_product_wholesale">Harga Grosir</string>
+    <string name="label_product_desc">Deskripsi Produk</string>
+    <string name="label_image_preview_pdp">Gambar produk</string>
+    <string name="gallery_top_bar_title">Foto dari Pembeli</string>
+
 </resources>
