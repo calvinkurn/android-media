@@ -232,6 +232,22 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return HomeInitialShimmerViewHolder.LAYOUT
     }
 
+    override fun type(errorStateIconModel: ErrorStateIconModel): Int {
+        return ErrorStateIconViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateChannelOneModel: ErrorStateChannelOneModel): Int {
+        return ErrorStateChannelOneViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateChannelTwoModel: ErrorStateChannelTwoModel): Int {
+        return ErrorStateChannelTwoViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateChannelThreeModel: ErrorStateChannelThreeModel): Int {
+        return ErrorStateChannelThreeViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -368,6 +384,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
             BannerComponentViewHolder.LAYOUT -> viewHolder =
                     BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
+            ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)
+            ErrorStateChannelOneViewHolder.LAYOUT -> viewHolder = ErrorStateChannelOneViewHolder(view, listener)
+            ErrorStateChannelTwoViewHolder.LAYOUT -> viewHolder = ErrorStateChannelTwoViewHolder(view, listener)
+            ErrorStateChannelThreeViewHolder.LAYOUT -> viewHolder = ErrorStateChannelThreeViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

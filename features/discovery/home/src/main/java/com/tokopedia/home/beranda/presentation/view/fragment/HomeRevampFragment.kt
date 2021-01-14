@@ -847,6 +847,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition (
                 ifNavOld = { oldToolbar?.stopHintAnimation() }
         )
+
+        activity?.deleteDatabase("HomeCache.db")
     }
 
     override fun onDestroyView() {
@@ -947,7 +949,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun observeHomeData() {
         getHomeViewModel().homeLiveData.observe(viewLifecycleOwner, Observer { data: HomeDataModel? ->
             if (data != null) {
-                if (data.list.size > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
+                if (data.list.size > 0) {
                     configureHomeFlag(data.homeFlag)
                     setData(data.list, data.isCache)
                 } else if (!data.isCache) {
@@ -1531,6 +1533,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun hideLoading() {
+
         refreshLayout.isRefreshing = false
         homeRecyclerView?.isEnabled = true
     }

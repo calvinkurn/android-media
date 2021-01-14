@@ -898,7 +898,15 @@ open class HomeRevampViewModel @Inject constructor(
                         _isRequestNetworkLiveData.postValue(Event(false))
                     }
                     homeDataModel?.let {
-                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
+                        //loading-homepage ATF
+                        if (homeDataModel.list.isEmpty()) {
+                            val homeInitialShimmer = homeDataModel.copy(
+                                    list = listOf(HomeInitialShimmerDataModel())
+                            )
+                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeInitialShimmer, this@HomeRevampViewModel))
+                        }  else {
+                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
+                        }
                     }
                     refreshHomeData()
                 }
