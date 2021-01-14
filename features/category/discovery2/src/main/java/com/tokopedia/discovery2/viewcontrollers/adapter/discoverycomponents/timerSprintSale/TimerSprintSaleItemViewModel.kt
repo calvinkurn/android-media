@@ -40,7 +40,7 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
     fun getRestartTimerAction(): LiveData<Boolean> = restartStoppedTimerEvent
     fun handleSaleEndSates() {
         when {
-            Utils.isFutureSale(getStartDate()) || (Utils.isFutureSaleOngoing(getStartDate(),getEndDate())) -> {
+            Utils.isFutureSale(getStartDate()) || (Utils.isFutureSaleOngoing(getStartDate(), getEndDate())) -> {
                 needPageRefresh.value = true
             }
             Utils.isSaleOver(getEndDate()) -> {
@@ -152,6 +152,23 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
         return ""
     }
 
+    fun getTimerVariant(): Int {
+        var variant = TimerUnifySingle.VARIANT_MAIN
+        components.properties?.timerStyle?.let { timerStyle ->
+            if (timerStyle.isNotEmpty()) {
+                when (timerStyle) {
+                    Informative -> {
+                        variant = TimerUnifySingle.VARIANT_INFORMATIVE
+                    }
+                    Inverted -> {
+                        variant = TimerUnifySingle.VARIANT_ALTERNATE
+                    }
+                }
+            }
+        }
+        return variant
+    }
+
     override fun onStop() {
         stopTimer()
         isTimerStopped = true
@@ -169,6 +186,11 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
             isTimerStopped = false
         }
         super.onResume()
+    }
+
+    companion object{
+        private const val Informative = "informative"
+        private const val Inverted = "inverted"
     }
 
 }

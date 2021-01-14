@@ -53,9 +53,9 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
     }
 
     private fun setTimerType() {
+        timerUnify.timerVariant = timerSprintSaleItemViewModel.getTimerVariant()
         when {
             Utils.isFutureSale(timerSprintSaleItemViewModel.getStartDate()) -> {
-                timerUnify.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
                 timerUnify.timerText = itemView.context.getString(R.string.discovery_sale_begins_in)
             }
             Utils.isSaleOver(timerSprintSaleItemViewModel.getEndDate()) -> {
@@ -63,7 +63,6 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
                 timerSprintSaleItemViewModel.checkUpcomingSaleTimer()
             }
             else -> {
-                timerUnify.timerVariant = TimerUnifySingle.VARIANT_MAIN
                 timerUnify.timerText = itemView.context.getString(R.string.discovery_sale_ends_in)
             }
         }
