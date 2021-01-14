@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -100,8 +101,21 @@ class ProductNotificationCardUnify(
             bindReminder(product)
             bindDeleteReminder(product)
             bindEmptyStock(product)
+            bindImpressionTrack(notification, product)
         } else {
             hide()
+        }
+    }
+
+    private fun bindImpressionTrack(
+            notification: NotificationUiModel?,
+            product: ProductData
+    ) {
+        if (notification == null) return
+        productContainer?.addOnImpressionListener(product.impressHolder) {
+            listener?.trackProductImpression(
+                    notification, product, adapterPosition ?: 0
+            )
         }
     }
 
@@ -153,6 +167,7 @@ class ProductNotificationCardUnify(
                     product.loadingReminderState = true
                     bindBumpReminderState(product)
                     listener?.bumpReminder(product, notification, adapterPosition)
+                    listener?.trackBumpReminder()
                 }
             }
         } else {
@@ -172,6 +187,7 @@ class ProductNotificationCardUnify(
                     product.loadingReminderState = true
                     bindDeleteReminderState(product)
                     listener?.deleteReminder(product, notification, adapterPosition)
+                    listener?.trackDeleteReminder()
                 }
             }
         } else {
@@ -231,6 +247,9 @@ class ProductNotificationCardUnify(
 
     private fun bindProductClick(product: ProductData) {
         setOnClickListener {
+            notification?.let{
+                listener?.trackProductClick(it, product, adapterPosition ?: 0)
+            }
             goToPdp(product)
         }
     }
@@ -241,7 +260,9 @@ class ProductNotificationCardUnify(
         } else {
             btnCheckout?.show()
             btnCheckout?.setOnClickListener {
-                listener?.buyProduct(product)
+                notification?.let {
+                    listener?.buyProduct(it, product)
+                }
             }
         }
     }
@@ -252,7 +273,9 @@ class ProductNotificationCardUnify(
         } else {
             btnAtc?.show()
             btnAtc?.setOnClickListener {
-                listener?.addProductToCart(product)
+                notification?.let {
+                    listener?.addProductToCart(it, product)
+                }
             }
         }
     }

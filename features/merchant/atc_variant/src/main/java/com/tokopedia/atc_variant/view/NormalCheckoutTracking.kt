@@ -19,6 +19,7 @@ class NormalCheckoutTracking {
         const val CLICK_PDP = "clickPDP"
         const val PRODUCT_DETAIL_PAGE = "product detail page"
         const val CHAT_DETAIL_PAGE = "chat detail"
+        const val NOTIFCENTER_PAGE = "notif center"
         const val HARGA_FINAL_TRADEIN = "harga final trade in"
         const val SELECT_COLOR_VARIANT = "select color on variants page"
         const val SELECT_SIZE_VARIANT = "select size on variants page"
@@ -214,23 +215,25 @@ class NormalCheckoutTracking {
             HARGA_FINAL_TRADEIN
         } else if (reference == ApplinkConst.TOPCHAT) {
             CHAT_DETAIL_PAGE
+        } else if (reference == ApplinkConst.INBOX) {
+            NOTIFCENTER_PAGE
         } else {
             PRODUCT_DETAIL_PAGE
         }
 
         val eventLabel = when {
-            reference == ApplinkConst.TOPCHAT && customEventLabel.isNotEmpty() -> customEventLabel
+            reference.isNotEmpty() && customEventLabel.isNotEmpty() -> customEventLabel
             isTrackTradeIn -> customEventLabel
             else -> productVariantString
         }
 
         val eventAction = when {
-            reference == ApplinkConst.TOPCHAT && customEventAction.isNotEmpty() -> customEventAction
+            reference.isNotEmpty() && customEventAction.isNotEmpty() -> customEventAction
             else -> actionLabel
         }
 
         val dimension40 = when {
-            reference == ApplinkConst.TOPCHAT && customDimension40.isNotEmpty() -> customDimension40
+            reference.isNotEmpty() && customDimension40.isNotEmpty() -> customDimension40
             else -> ""
         }
 

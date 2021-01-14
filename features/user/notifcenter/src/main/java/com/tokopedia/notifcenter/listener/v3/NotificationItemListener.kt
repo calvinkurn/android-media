@@ -9,14 +9,22 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 interface NotificationItemListener {
     fun showLongerContent(element: NotificationUiModel)
     fun showProductBottomSheet(element: NotificationUiModel)
-    fun buyProduct(product: ProductData)
-    fun addProductToCart(product: ProductData)
+    fun buyProduct(notification: NotificationUiModel, product: ProductData)
+    fun addProductToCart(notification: NotificationUiModel, product: ProductData)
     fun markNotificationAsRead(element: NotificationUiModel)
     fun bumpReminder(
             product: ProductData, notification: NotificationUiModel, adapterPosition: Int
     )
-
     fun deleteReminder(
             product: ProductData, notification: NotificationUiModel, adapterPosition: Int
     )
+    fun trackProductImpression(
+            notification: NotificationUiModel, product: ProductData, position: Int
+    )
+    fun trackProductClick(
+            notification: NotificationUiModel, product: ProductData, position: Int
+    )
+    fun trackBumpReminder()
+    fun trackDeleteReminder()
+
 }

@@ -18,7 +18,7 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.analytics.NotificationAnalytic
+import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.presentation.viewmodel.INotificationViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -29,7 +29,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 
 class RecommendationLifeCycleAware constructor(
-        private val analytic: NotificationAnalytic,
+        private val topAdsAnalytic: NotificationTopAdsAnalytic,
         private var trackingQueue: TrackingQueue?,
         private val rvAdapter: NotificationAdapter?,
         private var viewModel: INotificationViewModel?,
@@ -40,7 +40,7 @@ class RecommendationLifeCycleAware constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
         TopAdsGtmTracker.getInstance().eventInboxProductView(trackingQueue)
-        analytic.eventInboxProductView(trackingQueue)
+        topAdsAnalytic.eventInboxTopAdsProductView(trackingQueue)
         trackingQueue?.sendAll()
     }
 
@@ -81,7 +81,7 @@ class RecommendationLifeCycleAware constructor(
 
     private fun handleWishListActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
         val isAddWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
-        analytic.eventClickRecommendationWishlist(isAddWishlist)
+        topAdsAnalytic.eventClickRecommendationWishlist(isAddWishlist)
         rvAdapter?.notifyItemChanged(productCardOptionsModel.productPosition, isAddWishlist)
         if (isAddWishlist) {
             showSuccessAddWishlist()
@@ -154,11 +154,11 @@ class RecommendationLifeCycleAware constructor(
                 fragment?.activity?.javaClass?.name, item.trackerImageUrl,
                 item.productId.toString(), item.name, item.imageUrl, COMPONENT_NAME_TOP_ADS
         )
-        analytic.addInboxProductViewImpressions(item, item.position, item.isTopAds)
+        topAdsAnalytic.addInboxTopAdsProductViewImpressions(item, item.position, item.isTopAds)
     }
 
     private fun onImpressionOrganic(item: RecommendationItem) {
-        analytic.addInboxProductViewImpressions(item, item.position, item.isTopAds)
+        topAdsAnalytic.addInboxTopAdsProductViewImpressions(item, item.position, item.isTopAds)
     }
 
     override fun onWishlistClick(
@@ -177,13 +177,13 @@ class RecommendationLifeCycleAware constructor(
                 fragment?.activity?.javaClass?.name, item.clickUrl, item.productId.toString(),
                 item.name, item.imageUrl, COMPONENT_NAME_TOP_ADS
         )
-        analytic.eventInboxProductClick(
+        topAdsAnalytic.eventInboxTopAdsProductClick(
                 item, item.position, item.isTopAds
         )
     }
 
     private fun onClickOrganic(item: RecommendationItem) {
-        analytic.eventInboxProductClick(
+        topAdsAnalytic.eventInboxTopAdsProductClick(
                 item, item.position, item.isTopAds
         )
     }
