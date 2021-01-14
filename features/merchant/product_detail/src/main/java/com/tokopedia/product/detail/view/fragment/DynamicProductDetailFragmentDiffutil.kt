@@ -127,7 +127,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -3246,9 +3248,25 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         enableCheckImeiRemoteConfig = remoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false) ?: false
     }
 
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform
+        } catch (e: java.lang.IllegalStateException) {
+            null
+        }
+    }
+
     //Will be delete soon
     override fun isNavOld(): Boolean {
-        return GlobalConfig.isSellerApp()
+        return try {
+            getAbTestPlatform()?.let {
+                return it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD) == AbTestPlatform.NAVIGATION_VARIANT_OLD || GlobalConfig.isSellerApp()
+            }
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            true
+        }
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
