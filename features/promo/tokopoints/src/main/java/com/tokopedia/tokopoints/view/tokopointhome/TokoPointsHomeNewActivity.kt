@@ -11,8 +11,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -73,14 +71,6 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = resources.getDimension(com.tokopedia.design.R.dimen.dp_0)
         }
-    }
-
-    fun showToolbar(){
-        toolbar.show()
-    }
-
-    fun hideToolbar(){
-        toolbar.hide()
     }
 
     companion object {

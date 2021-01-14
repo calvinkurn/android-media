@@ -55,7 +55,6 @@ import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinde
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.NotificationUnify
-import kotlinx.android.synthetic.main.tp_home_layout_new.*
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import javax.inject.Inject
 
@@ -210,7 +209,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 is Loading -> showLoading()
                 is ErrorMessage -> {
                     hideLoading()
-                    onError(1, NetworkDetector.isConnectedToInternet(context))
+                    onError(SHOW_ERROR_TOOLBAR, NetworkDetector.isConnectedToInternet(context))
                 }
                 is Success -> {
                     hideLoading()
@@ -247,8 +246,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
         view?.findViewById<View>(R.id.img_egg)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_membership_value)?.setOnClickListener(this)
-        serverErrorView?.setErrorButtonClickListener { mPresenter.getTokoPointDetail() }
-        serverErrorView?.setErrorBackButtonClickListener { activity?.onBackPressed() }
+        serverErrorView?.setErrorButtonClickListener(View.OnClickListener {
+            mPresenter.getTokoPointDetail()
+        })
+        serverErrorView?.setErrorBackButtonClickListener(View.OnClickListener { activity?.onBackPressed() })
     }
 
     override fun openWebView(url: String) {
@@ -295,7 +296,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
         if (topSectionData?.tokopediaRewardTopSection?.dynamicActionList.isNullOrEmpty() &&
                 topSectionData?.tokopediaRewardTopSection?.tier != null && sections.isEmpty()) {
-            onError(1, true)
+            onError(SHOW_ERROR_TOOLBAR, true)
             return
         }
         mContainerMain?.displayedChild = CONTAINER_MAIN
@@ -490,6 +491,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_MAIN = 1
         private const val CONTAINER_ERROR = 2
+        private const val SHOW_ERROR_TOOLBAR = 1
 
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()
