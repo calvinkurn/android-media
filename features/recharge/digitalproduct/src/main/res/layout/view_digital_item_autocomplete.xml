@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/digital_bg_item_product_selected"
-    android:padding="@dimen/digital_padding_16">
+    android:padding="@dimen/layout_lvl2">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:id="@+id/text_name"
         tools:text="081322867354"
-        android:textStyle="bold"
-        android:layout_marginBottom="@dimen/digital_padding_8"
-        android:layout_marginRight="@dimen/digital_padding_16"
-        android:layout_marginEnd="@dimen/digital_padding_16"
-        android:layout_height="wrap_content" />
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         tools:text="Rizky Fadillah"
         android:id="@+id/text_number"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:typographyType="body_2" />
 
 </LinearLayout>

@@ -33,8 +33,7 @@ class OrderAppWidget : AppWidgetProvider() {
         initUserSession(context)
         userSession?.let {
             if (it.isLoggedIn) {
-                showLoadingState(context, appWidgetManager, appWidgetIds)
-                GetOrderExecutor.run(context, DEFAULT_ORDER_STATUS_ID)
+                GetOrderExecutor.run(context, DEFAULT_ORDER_STATUS_ID, true)
             } else {
                 OrderWidgetNoLoginState.setupNoLoginState(context, appWidgetManager, appWidgetIds)
             }
@@ -56,6 +55,12 @@ class OrderAppWidget : AppWidgetProvider() {
             Const.Action.SWITCH_ORDER -> switchOrder(context, intent)
             Const.Action.OPEN_APPLINK -> openAppLink(context, intent)
         }
+
+        if (intent.action != AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                || intent.action != AppWidgetManager.ACTION_APPWIDGET_DISABLED) {
+            AppWidgetHelper.setOrderAppWidgetEnabled(context, true)
+        }
+
         super.onReceive(context, intent)
     }
 
@@ -70,7 +75,7 @@ class OrderAppWidget : AppWidgetProvider() {
                 return
             }
         }
-        GetOrderExecutor.run(context, DEFAULT_ORDER_STATUS_ID)
+        GetOrderExecutor.run(context, DEFAULT_ORDER_STATUS_ID, true)
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
@@ -86,15 +91,6 @@ class OrderAppWidget : AppWidgetProvider() {
         cacheHandler.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
         cacheHandler.applyEditor()
         super.onDisabled(context)
-    }
-
-    private fun showLoadingState(context: Context, awm: AppWidgetManager, ids: IntArray) {
-        val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
-        ids.forEach {
-            OrderWidgetStateHelper.updateViewOnLoading(remoteViews)
-            OrderWidgetLoadingState.setupLoadingState(context, awm, remoteViews, it)
-            awm.updateAppWidget(it, remoteViews)
-        }
     }
 
     private fun initUserSession(context: Context) {
@@ -170,7 +166,7 @@ class OrderAppWidget : AppWidgetProvider() {
 
         val cacheHandler = AppWidgetHelper.getCacheHandler(context)
         val lastSelectedOrderStatusId = cacheHandler.getInt(Const.SharedPrefKey.LAST_SELECTED_ORDER_TYPE, DEFAULT_ORDER_STATUS_ID)
-        GetOrderExecutor.run(context, lastSelectedOrderStatusId)
+        GetOrderExecutor.run(context, lastSelectedOrderStatusId, true)
     }
 
     private fun onOrderItemClick(context: Context, intent: Intent) {

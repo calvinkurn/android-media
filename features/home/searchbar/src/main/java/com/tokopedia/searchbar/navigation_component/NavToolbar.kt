@@ -172,7 +172,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 setBackgroundAlpha(0f)
                 navToolbar?.updatePadding(bottom = 0)
             } else {
-                val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+                val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
                 navToolbar?.background = ColorDrawable(getLightIconColor())
                 navToolbar?.updatePadding(bottom = pB)
             }
@@ -191,7 +191,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 dividerUnify?.visibility = View.VISIBLE
                 navToolbar?.updatePadding(bottom = 0)
             } else {
-                val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+                val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
                 navToolbar?.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
                 navToolbar?.updatePadding(bottom = pB)
             }
@@ -221,7 +221,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         if (toolbarThemeType != TOOLBAR_LIGHT_TYPE) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
             toolbarThemeType = TOOLBAR_LIGHT_TYPE
-            toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96))
+            toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
             setBackButtonColorBasedOnTheme()
             setTitleTextColorBasedOnTheme()
         }
@@ -483,14 +483,14 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         showToolbarContent(showCustomContent = true)
     }
 
-    private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.icon_enable_default_color)
+    private fun getDarkIconColor() = ContextCompat.getColor(context, com.tokopedia.iconunify.R.color.icon_enable_default_color)
 
-    private fun getLightIconColor() = ContextCompat.getColor(context, R.color.Unify_N0)
+    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
 
     private fun setTitleTextColorBasedOnTheme() {
         toolbarThemeCondition(
-                lightCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96)) },
-                darkCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N0)) }
+                lightCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)) },
+                darkCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
         )
     }
 

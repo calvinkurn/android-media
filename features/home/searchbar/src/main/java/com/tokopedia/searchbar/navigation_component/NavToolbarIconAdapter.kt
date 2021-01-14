@@ -153,9 +153,9 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             unwrappedDrawable?.let {
                 val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
                 if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
-                    DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.Unify_N0))
+                    DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
-                    DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.Unify_N700))
+                    DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 }
                 iconImage.imageDrawable = wrappedDrawable
             }
@@ -164,14 +164,14 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
                 val drawable = getIconUnifyDrawable(
                         context = context,
                         iconId = iconToolbar.id,
-                        assetColor = ContextCompat.getColor(context, R.color.Unify_N0)
+                        assetColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 )
                 iconImage.imageDrawable = drawable
             } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
                 val drawable = getIconUnifyDrawable(
                         context = context,
                         iconId = iconToolbar.id,
-                        assetColor = ContextCompat.getColor(context, R.color.icon_enable_default_color)
+                        assetColor = ContextCompat.getColor(context, com.tokopedia.iconunify.R.color.icon_enable_default_color)
                 )
                 iconImage.imageDrawable = drawable
             }

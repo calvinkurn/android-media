@@ -237,6 +237,7 @@ dependencies {
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.features.logisticaddaddress)
@@ -248,7 +249,6 @@ dependencies {
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
-    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.productManageCommon)
     implementation project(rootProject.ext.features.kolCommon)
@@ -360,9 +360,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.libraries.tokopatch)
 
-    implementation(rootProject.ext.miscDependencies.imagecropper) {
-        exclude group: "com.android.support"
-    }
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'
     }
