@@ -112,39 +112,40 @@ object DeeplinkMapper {
             }
             else -> deeplink
         }
-        return switchToWebviewIfNeeded(context, mappedDeepLink)
+        return switchToWebviewIfNeeded(context, mappedDeepLink, deeplink)
     }
 
-    private fun switchToWebviewIfNeeded(context: Context, deeplink: String) : String {
+    private fun switchToWebviewIfNeeded(context: Context, mappedLink: String, originalLink: String) : String {
         try {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             val webviewSwitchConfig = remoteConfig.getString(RemoteConfigKey.SWITCH_TO_WEBVIEW)
 
-            if (TextUtils.isEmpty(webviewSwitchConfig)) return deeplink
+            if (TextUtils.isEmpty(webviewSwitchConfig)) return mappedLink
 
             val configJSON = JSONObject(webviewSwitchConfig)
 
-            val uri = Uri.parse(deeplink)
-            val trimmedDeeplink = trimDeeplink(uri, deeplink)
+            val link = if (!TextUtils.isEmpty(mappedLink)) mappedLink else originalLink
+            val uri = Uri.parse(link)
+            val trimmedDeeplink = trimDeeplink(uri, link)
 
             val switchData = configJSON.optJSONObject(trimmedDeeplink)
 
-            if (switchData == null) return deeplink
+            if (switchData == null) return mappedLink
 
             val environment = switchData.optString("environment")
             val versions = switchData.optString("versions")
             val weblink = switchData.optString("weblink")
 
-            if (GlobalConfig.isAllowDebuggingTools() && environment != "dev") return deeplink
-            if (!GlobalConfig.isAllowDebuggingTools() && environment != "prod") return deeplink
+            if (GlobalConfig.isAllowDebuggingTools() && environment != "dev") return mappedLink
+            if (!GlobalConfig.isAllowDebuggingTools() && environment != "prod") return mappedLink
 
             val versionList = versions.split(",")
-            if (GlobalConfig.VERSION_NAME !in versionList) return deeplink
+            if (GlobalConfig.VERSION_NAME !in versionList) return mappedLink
 
             val webviewApplink = UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, weblink)
 
             return createAppendDeeplinkWithQuery(webviewApplink, uri.query)
-        } catch (e: Exception) { return deeplink }
+        } catch (e: Exception) { return mappedLink }
     }
 
     private fun getRegisteredNavigationOrderHistory(uri: Uri?): String {
