@@ -417,11 +417,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
-        if (getBooleanRemoteConfig(SomConsts.ENABLE_NEW_SOM, true)) {
-            return SomListFragment.newInstance(bundle);
-        } else {
-            return com.tokopedia.sellerorder.oldlist.presentation.fragment.SomListFragment.newInstance(bundle);
-        }
+        return SomListFragment.newInstance(bundle);
     }
 
     @NotNull

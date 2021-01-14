@@ -4,14 +4,12 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application>
-
         <activity
-            android:name="com.tokopedia.sellerorder.oldlist.presentation.activity.SomListActivity"
+            android:name=".list.presentation.activities.SomListActivity"
             android:label="@string/title_som_list"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -92,29 +90,10 @@
         </activity>
 
         <activity
-            android:name=".list.presentation.activities.SomListActivity"
-            android:label="@string/title_som_list"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
-            android:name=".oldlist.presentation.activity.SomFilterActivity"
-            android:label="@string/title_som_filter"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden" />
-
-        <activity
             android:name=".filter.presentation.activity.SomSubFilterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
-        <activity
-            android:name=".oldlist.presentation.activity.SomSubFilterActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
 
         <activity
             android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity"
