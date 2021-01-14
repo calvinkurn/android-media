@@ -145,8 +145,8 @@ open class AddToCartDoneBottomSheet :
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-        dialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)?.let {
-            it?.setBackgroundColor(Color.TRANSPARENT)
+        dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)?.let {
+            it.setBackgroundColor(Color.TRANSPARENT)
             bottomSheetBehavior = BottomSheetBehavior.from(it)
             if(getRemoteConfig()?.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
                 dialog.setCanceledOnTouchOutside(false)
@@ -233,7 +233,7 @@ open class AddToCartDoneBottomSheet :
                 addToCartButton.hide()
             } else if (result is Fail) {
                 dialog?.run {
-                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(R.dimen.dp_80)
+                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_80)
                     Toaster.make(findViewById(android.R.id.content),
                             ProductDetailErrorHandler.getErrorMessage(context, result.throwable),
                             Snackbar.LENGTH_LONG,
@@ -300,7 +300,7 @@ open class AddToCartDoneBottomSheet :
                     findViewById(android.R.id.content),
                     ErrorHandler.getErrorMessage(this.context, throwable),
                     Snackbar.LENGTH_INDEFINITE,
-                    getString(R.string.title_try_again),
+                    getString(com.tokopedia.abstraction.R.string.title_try_again),
                     onClickListener
             )
         }
@@ -309,10 +309,10 @@ open class AddToCartDoneBottomSheet :
     private fun configBottomSheetHeight() {
         if(getRemoteConfig()?.getString(abNewPdpAfterAtcKey) == oldVariantPDP) {
             dialog?.run {
-                val parent = findViewById<FrameLayout>(R.id.design_bottom_sheet)
-                val displayMetrics = DisplayMetrics()
-                activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-                val screenHeight = displayMetrics.heightPixels
+                val parent = findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+                val displaymetrics = DisplayMetrics()
+                activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
+                val screenHeight = displaymetrics.heightPixels
                 val maxHeight = (screenHeight * 0.9f).toInt()
                 val params = parent.layoutParams
                 params.height = maxHeight
