@@ -47,9 +47,4 @@ public class ConstantKey {
         public static final String VALUE_NEW_REVIEW_FLOW = "New Review Flow";
         public static final String AUTO_TRANSITION_VARIANT = "auto_transition";
     }
-
-    public class Registration {
-        public static final String KEY_REGISTER_FROM_STICKY = "KEY_REGISTER_FROM_STICKY";
-        public static final String KEY_IS_REGISTER_FROM_STICKY_LOGIN = "KEY_IS_REGISTER_FROM_STICKY_LOGIN";
-    }
 }

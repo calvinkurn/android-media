@@ -28,7 +28,6 @@ import com.tokopedia.stickylogin.analytics.StickyLoginReminderTracker
 import com.tokopedia.stickylogin.analytics.StickyLoginTracking
 import com.tokopedia.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.stickylogin.common.StickyLoginConstant
-import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_IS_REGISTER_FROM_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_PDP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_SHOP

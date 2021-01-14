@@ -35,5 +35,5 @@ object StickyLoginConstant {
     const val KEY_STICKY_LOGIN_REMINDER_PDP = "android_customer_sticky_login_reminder_pdp"
     const val KEY_STICKY_LOGIN_REMINDER_SHOP = "android_customer_sticky_login_reminder_shop"
 
-    const val KEY_IS_REGISTER_FROM_HOME = "is_register_from_home"
+    const val KEY_IS_REGISTER_FROM_STICKY_LOGIN = "is_register_from_sticky_login"
 }

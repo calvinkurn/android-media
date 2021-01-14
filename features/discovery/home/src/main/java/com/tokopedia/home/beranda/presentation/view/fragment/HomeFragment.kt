@@ -95,8 +95,6 @@ import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
-import com.tokopedia.home.constant.ConstantKey.Registration.KEY_IS_REGISTER_FROM_STICKY_LOGIN
-import com.tokopedia.home.constant.ConstantKey.Registration.KEY_REGISTER_FROM_STICKY
 import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
@@ -141,6 +139,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.stickylogin.common.StickyLoginConstant
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_IS_REGISTER_FROM_STICKY_LOGIN
+import com.tokopedia.stickylogin.common.StickyLoginConstant.STICKY_PREF
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
@@ -668,6 +668,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 floatingTextButton.resetState()
             }
         })
+
+        if (isRegisteredFromStickyLogin()) gotoNewUserZone()
     }
 
     private fun initStickyLogin() {
@@ -675,8 +677,10 @@ open class HomeFragment : BaseDaggerFragment(),
         stickyLoginView?.lifecycleOwner = viewLifecycleOwner
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
-                    val intent = RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
+                context?.let {
+                    val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
                     startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
+                }
             }
 
             override fun onDismiss() {
@@ -727,7 +731,6 @@ open class HomeFragment : BaseDaggerFragment(),
             setAutoRefreshOnHome(autoRefreshFlag)
         }
         shouldPausePlay = true
-        if (isRegisteredFromStickyLogin()) gotoNewUserZone()
     }
 
     private fun conditionalViewModelRefresh(){
@@ -2268,13 +2271,13 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun gotoNewUserZone() {
-        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.DISCOVERY_NEW_USER)
-        startActivity(intent)
+        context?.let { startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER)) }
+        if (isRegisteredFromStickyLogin()) saveIsRegisteredFromStickyLogin(false)
     }
 
     private fun saveIsRegisteredFromStickyLogin(state: Boolean) {
         context?.let {
-            sharedPrefs = it.getSharedPreferences(KEY_REGISTER_FROM_STICKY, Context.MODE_PRIVATE)
+            sharedPrefs = it.getSharedPreferences(STICKY_PREF, Context.MODE_PRIVATE)
             sharedPrefs.run {
                 edit().putBoolean(KEY_IS_REGISTER_FROM_STICKY_LOGIN, state).apply()
             }
@@ -2282,9 +2285,12 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun isRegisteredFromStickyLogin(): Boolean {
+        if (!userSession.isLoggedIn) return false
+
         context?.let {
-            return it.getSharedPreferences(KEY_REGISTER_FROM_STICKY, Context.MODE_PRIVATE).getBoolean(KEY_IS_REGISTER_FROM_STICKY_LOGIN, false)
+            return it.getSharedPreferences(STICKY_PREF, Context.MODE_PRIVATE).getBoolean(KEY_IS_REGISTER_FROM_STICKY_LOGIN, false)
         }
+
         return false
     }
 }
