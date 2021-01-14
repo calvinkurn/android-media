@@ -216,7 +216,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun setupSwitcher() {
         switcher = AccountSwitcherBottomSheet.create()
         navHeaderContainer?.setOnClickListener {
-            switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
+            if (onBoardingCoachMark?.isShowing == true) {
+                onBoardingCoachMark?.stepNext?.performClick()
+            } else {
+                switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
+            }
             analytic.trackClickSwitchAccount()
         }
     }
@@ -276,7 +280,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                         Handler().postDelayed({
                             onBoardingCoachMark?.isDismissed = false
                             onBoardingCoachMark?.showCoachMark(anchors, index = 2)
-                        }, 500)
+                        }, 250)
                     }
                 } else if (currentIndex == 1) {
                     switcher?.dialog?.let {
@@ -287,7 +291,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                         Handler().postDelayed({
                             onBoardingCoachMark?.isDismissed = false
                             onBoardingCoachMark?.showCoachMark(anchors, index = 1)
-                        }, 500)
+                        }, 250)
                     }
                 }
             }
