@@ -239,7 +239,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.logisticCommon)
-    implementation project(rootProject.ext.features.manageaddress)
     implementation project(rootProject.ext.features.logisticorder)
     implementation project(rootProject.ext.features.editshipping)
     implementation project(rootProject.ext.features.topchat)
