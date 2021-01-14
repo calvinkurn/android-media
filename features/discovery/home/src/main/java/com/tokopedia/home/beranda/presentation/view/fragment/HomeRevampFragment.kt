@@ -847,7 +847,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition (
                 ifNavOld = { oldToolbar?.stopHintAnimation() }
         )
-        activity?.deleteDatabase("HomeCache.db")
     }
 
     override fun onDestroyView() {

@@ -129,9 +129,15 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     ticker?.let {
                                         atfData.content = gson.toJson(ticker.ticker)
                                         atfData.status = AtfKey.STATUS_SUCCESS
+                                        cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                            homeCachedDataSource.saveToDatabase(homeData)
+                                        })
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
+                                    cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                        homeCachedDataSource.saveToDatabase(homeData)
+                                    })
                                 }
                             }
                             jobList.add(job)
@@ -144,9 +150,15 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                         val channelFromResponse = it.dynamicHomeChannel
                                         atfData.content = gson.toJson(channelFromResponse)
                                         atfData.status = AtfKey.STATUS_SUCCESS
+                                        cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                            homeCachedDataSource.saveToDatabase(homeData)
+                                        })
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
+                                    cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                        homeCachedDataSource.saveToDatabase(homeData)
+                                    })
                                 }
                             }
                             jobList.add(job)
@@ -158,9 +170,15 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     dynamicIcon?.let {
                                         atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon)
                                         atfData.status = AtfKey.STATUS_SUCCESS
+                                        cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                            homeCachedDataSource.saveToDatabase(homeData)
+                                        })
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
+                                    cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                        homeCachedDataSource.saveToDatabase(homeData)
+                                    })
                                 }
                             }
                             jobList.add(job)
