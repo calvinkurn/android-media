@@ -13,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/layout_lvl4"
         android:gravity="center_vertical"
-        android:textColor="@color/charcoal_grey_96"
+        android:textColor="@color/Unify_N700_96"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/sw_setting"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +38,7 @@
         app:layout_constraintEnd_toEndOf="@+id/tv_sw_title"
         app:layout_constraintStart_toStartOf="@+id/tv_sw_title"
         app:layout_constraintTop_toBottomOf="@+id/tv_sw_title"
-        android:textColor="@color/grey_600"
+        android:textColor="@color/Unify_N700_68"
         tools:text="Reminder, Feeds, dan Aktivitas akun kamu. This is really long text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

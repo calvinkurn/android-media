@@ -193,12 +193,12 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             basicContentMap?.shouldShowTradein = tradeinResponse.isEligible
 
             data.first().subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
-                context?.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true))
+                context?.getString(com.tokopedia.common_tradein.R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true))
                         ?: ""
             } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
                 tradeinResponse.widgetString
             } else {
-                context?.getString(R.string.trade_in_exchange) ?: ""
+                context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange) ?: ""
             }
         }
     }

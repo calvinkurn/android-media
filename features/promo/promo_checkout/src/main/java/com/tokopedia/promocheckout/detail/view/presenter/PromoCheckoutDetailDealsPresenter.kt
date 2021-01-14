@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.detail.view.presenter
 
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -7,9 +8,11 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
 import com.tokopedia.promocheckout.common.domain.mapper.DealsCheckoutMapper
+import com.tokopedia.promocheckout.common.domain.model.deals.DealsErrorResponse
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
+import retrofit2.HttpException
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -66,7 +69,19 @@ class PromoCheckoutDetailDealsPresenter(private val getDetailCouponMarketplaceUs
                             }
 
                             override fun onError(e: Throwable) {
-                                if (isViewAttached) {
+                                val body = (e as HttpException).response()?.errorBody()?.string()
+                                if (!body.isNullOrEmpty()) {
+                                    val gson = Gson()
+                                    val testModel = gson.fromJson(body, DealsErrorResponse::class.java)
+                                    if (isViewAttached) {
+                                        view.hideProgressLoading()
+                                        if (testModel.data.message.isNotEmpty()) {
+                                            view.onErrorCheckPromo(MessageErrorException(testModel.data.message))
+                                        } else {
+                                            view.onErrorCheckPromo(e)
+                                        }
+                                    }
+                                } else {
                                     view.hideProgressLoading()
                                     view.onErrorCheckPromo(e)
                                 }

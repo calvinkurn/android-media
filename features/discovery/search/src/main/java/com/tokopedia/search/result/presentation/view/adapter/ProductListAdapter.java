@@ -38,8 +38,10 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     private List<Visitable> list = new ArrayList<>();
     private ProductListTypeFactory typeFactory;
     private LoadingMoreModel loadingMoreModel = new LoadingMoreModel();
+    private OnItemChangeView itemChangeView;
 
-    public ProductListAdapter(ProductListTypeFactory typeFactory) {
+    public ProductListAdapter(OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
+        this.itemChangeView = itemChangeView;
         this.typeFactory = typeFactory;
     }
 
@@ -58,6 +60,47 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     public void changeSearchNavigationSingleGridView(int position) {
         typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
         notifyItemChanged(position, SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
+    }
+
+    public void changeListView() {
+        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_LIST);
+        itemChangeView.onChangeList();
+    }
+
+    public void changeDoubleGridView() {
+        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID);
+        itemChangeView.onChangeDoubleGrid();
+    }
+
+    public void changeSingleGridView() {
+        typeFactory.setRecyclerViewItem(SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID);
+        itemChangeView.onChangeSingleGrid();
+    }
+
+    public int getTitleTypeRecyclerView() {
+        switch (typeFactory.getRecyclerViewItem()) {
+            case SearchConstant.RecyclerView.VIEW_LIST:
+                return R.string.list;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
+                return R.string.grid;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
+                return R.string.grid;
+            default:
+                return R.string.grid;
+        }
+    }
+
+    public int getIconTypeRecyclerView() {
+        switch (typeFactory.getRecyclerViewItem()) {
+            case SearchConstant.RecyclerView.VIEW_LIST:
+                return R.drawable.search_ic_list;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
+                return R.drawable.search_ic_grid;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
+                return R.drawable.search_ic_big_list;
+            default:
+                return R.drawable.search_ic_grid;
+        }
     }
 
     public SearchConstant.ViewType getCurrentLayoutType() {
@@ -247,5 +290,13 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
 
     public List<Visitable> getItemList() {
         return list;
+    }
+
+    public interface OnItemChangeView {
+        void onChangeList();
+
+        void onChangeDoubleGrid();
+
+        void onChangeSingleGrid();
     }
 }
