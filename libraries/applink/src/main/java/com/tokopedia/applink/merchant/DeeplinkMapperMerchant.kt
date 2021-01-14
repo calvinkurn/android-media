@@ -218,7 +218,7 @@ object DeeplinkMapperMerchant {
                 return if (GlobalConfig.isSellerApp()) {
                     ApplinkConst.SELLER_INFO
                 } else {
-                    ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
+                    ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO
                 }
             } else {
                 return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, url)
