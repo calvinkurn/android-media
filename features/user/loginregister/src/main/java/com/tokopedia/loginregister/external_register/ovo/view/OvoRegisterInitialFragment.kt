@@ -40,6 +40,8 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var enableSkip2Fa = false
+
     private val externalRegisterViewModel by lazy {
         viewModelProvider.get(ExternalRegisterViewModel::class.java)
     }
@@ -95,6 +97,7 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
         userSession.setToken(registerRequestDataResult.accessToken, "Bearer", registerRequestDataResult.refreshToken)
 
         if (registerRequestDataResult.enable2Fa) {
+            enableSkip2Fa = registerRequestDataResult.enableSkip2Fa
             goToAddPin2FA(registerRequestDataResult.enableSkip2Fa)
         } else {
             goToSuccessPage()
@@ -102,8 +105,12 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == RegisterInitialFragment.REQUEST_ADD_PIN && resultCode == Activity.RESULT_OK){
-            goToSuccessPage()
+        if (requestCode == RegisterInitialFragment.REQUEST_ADD_PIN){
+            if(resultCode == Activity.RESULT_OK || enableSkip2Fa) {
+                goToSuccessPage()
+            }else {
+                goToErrorPage()
+            }
         }
         else {
             super.onActivityResult(requestCode, resultCode, data)
