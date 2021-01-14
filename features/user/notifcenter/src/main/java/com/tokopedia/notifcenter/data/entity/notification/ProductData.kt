@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.data.entity.notification
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.notifcenter.data.entity.Campaign
 import com.tokopedia.notifcenter.data.entity.Variant
 
@@ -13,7 +14,7 @@ data class ProductData(
         @SerializedName("currency")
         val currency: String = "",
         @SerializedName("department_id")
-        val departmentId: Int = 0,
+        val departmentId: Long = 0,
         @SerializedName("image_url")
         val imageUrl: String = "",
         @SerializedName("is_buyable")
@@ -37,9 +38,9 @@ data class ProductData(
         @SerializedName("price_fmt")
         val priceFmt: String = "",
         @SerializedName("price_idr")
-        val priceIdr: Int = 0,
+        val priceIdr: Long = 0,
         @SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: Long = 0,
         @SerializedName("rating")
         val rating: Int = 0,
         @SerializedName("shop")
@@ -56,6 +57,8 @@ data class ProductData(
         var hasReminder: Boolean = false
 ) {
     var loadingReminderState: Boolean = false
+
+    val impressHolder = ImpressHolder()
 
     fun isBuyButton() = typeButton == BUTTON_TYPE_BUY
     fun isReminderButton() = typeButton == BUTTON_TYPE_REMINDER

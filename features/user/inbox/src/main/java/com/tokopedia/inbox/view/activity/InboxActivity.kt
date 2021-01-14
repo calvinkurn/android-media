@@ -3,6 +3,7 @@ package com.tokopedia.inbox.view.activity
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatDelegate
@@ -13,6 +14,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.analytic.InboxAnalytic
 import com.tokopedia.inbox.common.InboxFragmentType
@@ -63,6 +66,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private var container: CoordinatorLayout? = null
     private var fragmentContainer: FrameLayout? = null
     private var toolbar: NavToolbar? = null
+    private var onBoardingCoachMark: CoachMark2? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InboxViewModel::class.java)
@@ -87,6 +91,12 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         setupInitialToolbar()
         setupBottomNav()
         setupSwitcher()
+        setupOnBoarding()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        analytic.trackOpenInboxPage(InboxConfig.page, InboxConfig.role)
     }
 
     private fun setupInjector() {
@@ -98,11 +108,14 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     private fun setupLastPreviousState() {
         InboxConfig.setRole(cacheState.role)
-        InboxConfig.initialPage = cacheState.initialPage
+        InboxConfig.page = cacheState.initialPage
     }
 
     private fun trackOpenInbox() {
-        analytic.trackOpenInbox(InboxConfig.initialPage, InboxConfig.role)
+        if (!viewModel.hasBeenVisited()) {
+            analytic.trackOpenInbox(InboxConfig.page, InboxConfig.role)
+            viewModel.markAsVisited()
+        }
     }
 
     override fun clearNotificationCounter() {
@@ -176,9 +189,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     override fun onRoleChanged(@RoleType role: Int) {
+        analytic.trackRoleChanged(role)
         navigator?.notifyRoleChanged(role)
         navHeader.bindValue()
         cacheState.saveRoleCache(role)
+        onBoardingCoachMark?.dismissCoachMark()
         showNotificationRoleChanged(role)
         updateBadgeCounter()
     }
@@ -188,7 +203,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         val message = getString(R.string.title_change_role, name)
         container?.let {
             Toaster.toasterCustomBottomHeight = 50.toPx()
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
                     .show()
         }
     }
@@ -202,6 +217,94 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         switcher = AccountSwitcherBottomSheet.create()
         navHeaderContainer?.setOnClickListener {
             switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
+            analytic.trackClickSwitchAccount()
+        }
+    }
+
+    private fun setupOnBoarding() {
+        if (!viewModel.hasShowOnBoarding()) {
+            onBoardingCoachMark = CoachMark2(this)
+            if (userSession.hasShop()) {
+                showOnBoardingSeller()
+            } else {
+                showOnBoardingBuyer()
+            }
+        }
+    }
+
+    private fun showOnBoardingSeller() {
+        if (bottomNav == null || navHeaderContainer == null || switcher == null) return
+        val anchors = ArrayList<CoachMark2Item>()
+        anchors.add(
+                CoachMark2Item(
+                        bottomNav!!,
+                        getString(R.string.inbox_title_onboarding_1),
+                        getString(R.string.inbox_desc_onboarding_1)
+                )
+        )
+        anchors.add(
+                CoachMark2Item(
+                        navHeaderContainer!!,
+                        getString(R.string.inbox_title_onboarding_2),
+                        getString(R.string.inbox_desc_onboarding_2)
+                )
+        )
+        anchors.add(
+                CoachMark2Item(
+                        navHeaderContainer!!,
+                        getString(R.string.inbox_title_onboarding_3),
+                        getString(R.string.inbox_desc_onboarding_3),
+                        CoachMark2.POSITION_TOP
+                )
+        )
+        onBoardingCoachMark?.showCoachMark(anchors)
+        onBoardingCoachMark?.onFinishListener = {
+            viewModel.markFinishedSellerOnBoarding()
+        }
+        onBoardingCoachMark?.onDismissListener = {
+            viewModel.markFinishedSellerOnBoarding()
+        }
+        onBoardingCoachMark?.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if (currentIndex == 2) {
+                    onBoardingCoachMark?.isDismissed = true
+                    switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
+                    switcher?.setShowListener {
+                        anchors.last().anchorView = switcher!!.bottomSheetWrapper
+                        Handler().postDelayed({
+                            onBoardingCoachMark?.isDismissed = false
+                            onBoardingCoachMark?.showCoachMark(anchors, index = 2)
+                        }, 500)
+                    }
+                } else if (currentIndex == 1) {
+                    switcher?.dialog?.let {
+                        onBoardingCoachMark?.isDismissed = true
+                        if (it.isShowing) {
+                            switcher?.dismiss()
+                        }
+                        Handler().postDelayed({
+                            onBoardingCoachMark?.isDismissed = false
+                            onBoardingCoachMark?.showCoachMark(anchors, index = 1)
+                        }, 500)
+                    }
+                }
+            }
+        })
+    }
+
+    private fun showOnBoardingBuyer() {
+        if (bottomNav == null) return
+        val anchors = ArrayList<CoachMark2Item>()
+        anchors.add(
+                CoachMark2Item(
+                        bottomNav!!,
+                        getString(R.string.inbox_title_onboarding_1),
+                        getString(R.string.inbox_desc_onboarding_1)
+                )
+        )
+        onBoardingCoachMark?.showCoachMark(anchors)
+        onBoardingCoachMark?.setOnDismissListener {
+            viewModel.markFinishedBuyerOnBoarding()
         }
     }
 
@@ -265,31 +368,36 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                         cacheState.saveInitialPageCache(InboxFragmentType.NOTIFICATION)
                         onBottomNavSelected(InboxFragmentType.NOTIFICATION)
                         updateToolbarIcon()
+                        InboxConfig.page = InboxFragmentType.NOTIFICATION
                     }
                     R.id.menu_inbox_chat -> {
                         cacheState.saveInitialPageCache(InboxFragmentType.CHAT)
                         onBottomNavSelected(InboxFragmentType.CHAT)
                         updateToolbarIcon(true)
+                        InboxConfig.page = InboxFragmentType.CHAT
                     }
                     R.id.menu_inbox_discussion -> {
                         cacheState.saveInitialPageCache(InboxFragmentType.DISCUSSION)
                         onBottomNavSelected(InboxFragmentType.DISCUSSION)
                         updateToolbarIcon()
+                        InboxConfig.page = InboxFragmentType.DISCUSSION
                     }
                 }
+                analytic.trackOpenInboxPage(InboxConfig.page, InboxConfig.role)
+                analytic.trackClickBottomNaveMenu(InboxConfig.page, InboxConfig.role)
                 return@setOnNavigationItemSelectedListener true
             }
         }
     }
 
     private fun setupInitialPage() {
-        navigator?.start(InboxConfig.initialPage)
-        bottomNav?.setSelectedPage(InboxConfig.initialPage)
+        navigator?.start(InboxConfig.page)
+        bottomNav?.setSelectedPage(InboxConfig.page)
         viewModel.getNotifications()
     }
 
     private fun setupInitialToolbar() {
-        val isChatPage = InboxConfig.initialPage == InboxFragmentType.CHAT
+        val isChatPage = InboxConfig.page == InboxFragmentType.CHAT
         updateToolbarIcon(isChatPage)
     }
 

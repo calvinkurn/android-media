@@ -41,7 +41,7 @@ data class NotificationUiModel(
         @SerializedName("section_key")
         val sectionKey: String = "",
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: Long = 0,
         @SerializedName("short_description")
         val shortDescription: String = "",
         @SerializedName("short_description_html")
@@ -83,6 +83,10 @@ data class NotificationUiModel(
 
     override fun type(typeFactory: NotificationTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun getEventLabel(): String {
+        return "notif_list - $templateKey - $notifId"
     }
 
     fun isRead(): Boolean {

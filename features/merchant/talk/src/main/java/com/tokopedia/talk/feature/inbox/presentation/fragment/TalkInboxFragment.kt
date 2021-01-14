@@ -527,15 +527,13 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun setInboxType() {
         if(isNewView()) {
-            if (containerListener?.role == RoleType.BUYER) {
-                viewModel.setInboxType(TalkInboxTab.BUYER_TAB)
-                return
+            inboxType = if (containerListener?.role == RoleType.BUYER) {
+                TalkInboxTab.BUYER_TAB
+            } else {
+                TalkInboxTab.SHOP_TAB
             }
-            viewModel.setInboxType(TalkInboxTab.SHOP_TAB)
-            return
         }
         viewModel.setInboxType(inboxType)
-        return
     }
 
     private fun isNewView(): Boolean {
@@ -545,7 +543,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun isSellerView(): Boolean {
-        return viewModel.getType() == TalkInboxTab.SHOP_TAB
+        return viewModel.getType() == TalkInboxTab.SHOP_TAB || viewModel.getType() == TalkInboxTab.SHOP_OLD
     }
 
     private fun getProblemCount(): Int {
@@ -668,7 +666,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun getCounterForTracking(): Int {
-        if(isSellerView()) {
+        if(isSellerView() && isNewView()) {
             return viewModel.getUnrespondedCount()
         }
         return viewModel.getUnreadCount()

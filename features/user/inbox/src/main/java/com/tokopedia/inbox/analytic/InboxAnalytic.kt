@@ -26,6 +26,9 @@ class InboxAnalytic @Inject constructor(
     class EventAction private constructor() {
         companion object {
             const val OPEN_INBOX = "open inbox"
+            const val CLICK_BOTTOM_NAV_MENU = "click menu at inbox bottom navigation"
+            const val CLICK_SWITCH_ACCOUNT = "click switch inbox at header"
+            const val CHOOSE_SWITCH_ACCOUNT = "click switch inbox role at bottom sheet"
         }
     }
 
@@ -47,18 +50,84 @@ class InboxAnalytic @Inject constructor(
             @RoleType
             role: Int
     ) {
-        val eventLabel = getEventLabel(page, role)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 createGeneralEvent(
                         event = Event.CLICK_INBOX_CHAT,
-                        category = EventCategory.INBOX_PAGE,
-                        action = EventAction.OPEN_INBOX,
-                        label = eventLabel,
+                        eventCategory = EventCategory.INBOX_PAGE,
+                        eventAction = EventAction.OPEN_INBOX,
+                        eventLabel = getEventLabel(page, role),
                         businessUnit = BusinessUnit.COMMUNICATION,
                         currentSite = CurrentSite.MARKETPLACE,
                         userId = userSession.userId
                 )
         )
+    }
+
+    fun trackOpenInboxPage(
+            @InboxFragmentType
+            page: Int,
+            @RoleType
+            role: Int
+    ) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+                getScreenName(page),
+                createGeneralEvent(
+                        userRole = getRoleString(role),
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE
+                )
+        )
+    }
+
+    fun trackClickBottomNaveMenu(page: Int, role: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                createGeneralEvent(
+                        event = Event.CLICK_INBOX_CHAT,
+                        eventCategory = EventCategory.INBOX_PAGE,
+                        eventAction = EventAction.CLICK_BOTTOM_NAV_MENU,
+                        eventLabel = getEventLabel(page, role),
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId
+                )
+        )
+    }
+
+    fun trackClickSwitchAccount() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                createGeneralEvent(
+                        event = Event.CLICK_INBOX_CHAT,
+                        eventCategory = EventCategory.INBOX_PAGE,
+                        eventAction = EventAction.CLICK_SWITCH_ACCOUNT,
+                        eventLabel = "",
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId
+                )
+        )
+    }
+
+    fun trackRoleChanged(@RoleType role: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                createGeneralEvent(
+                        event = Event.CLICK_INBOX_CHAT,
+                        eventCategory = EventCategory.INBOX_PAGE,
+                        eventAction = EventAction.CHOOSE_SWITCH_ACCOUNT,
+                        eventLabel = "switch to ${getRoleString(role)}",
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId
+                )
+        )
+    }
+
+    private fun getScreenName(@InboxFragmentType page: Int): String {
+        return when (page) {
+            InboxFragmentType.NOTIFICATION -> "/new-inbox/notif"
+            InboxFragmentType.CHAT -> "/new-inbox/chat"
+            InboxFragmentType.DISCUSSION -> "/new-inbox/diskusi"
+            else -> ""
+        }
     }
 
     private fun getEventLabel(
