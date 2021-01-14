@@ -60,8 +60,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val editReviewResult: LiveData<ReviewViewState<Boolean>>
         get() = _editReviewResult
 
-    fun submitReview(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int,
-                     reviewText: String = "", isAnonymous: Boolean = false, utmSource: String) {
+    fun submitReview(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+                     reviewText: String, isAnonymous: Boolean, utmSource: String) {
         _submitReviewResult.postValue(LoadingView())
         if (imageData.isEmpty()) {
             sendReviewWithoutImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, utmSource)
@@ -70,8 +70,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun editReview(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int,
-                   reviewText: String = "", isAnonymous: Boolean = false) {
+    fun editReview(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+                   reviewText: String, isAnonymous: Boolean) {
         _submitReviewResult.postValue(LoadingView())
         if (imageData.isEmpty()) {
             editReviewWithoutImage(feedbackId, reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
@@ -316,11 +316,6 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 sourceId = CREATE_REVIEW_SOURCE_ID,
                 filePath = filePath
         )
-
-        // check picture availability
-        if (!filePath.exists()) {
-            return ""
-        }
 
         return when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> {
