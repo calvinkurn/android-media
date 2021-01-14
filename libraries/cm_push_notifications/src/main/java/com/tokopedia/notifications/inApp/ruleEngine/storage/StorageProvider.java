@@ -31,15 +31,15 @@ public class StorageProvider implements InterfaceDataStore {
         return Completable.fromAction(new Action0() {
             @Override
             public void call() {
+                //if inapp is from test campaign then no need to check for persistence
+                if (value.isTest()) {
+                    value.setPersistentToggle(true);
+                    inAppDataDao.insert(value);
+                    return;
+                }
                 List<CMInApp> dataFromParentID = inAppDataDao.getDataFromParentIdForPerstOff(value.parentId);
                 if (dataFromParentID == null || dataFromParentID.isEmpty()) {
-                    CMInApp oldData = inAppDataDao.getInAppData(value.id);
-                    if (oldData != null) {
-                        Timber.d(TAG + " in-app NotificationId - " + value.id + " insert fail - it is already present");
-                    } else {
-                        Timber.d(TAG + " in-app NotificationId - " + value.id + " insert success");
-                    }
-                    long rowId = inAppDataDao.insert(value);
+                    inAppDataDao.insert(value);
                 }
             }
         }).subscribeOn(Schedulers.io());

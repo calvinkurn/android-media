@@ -71,6 +71,6 @@ enum class ComponentNames(val componentName: String) {
     NavigationChipsItem("navigation_chips_item"),
 
     //Banned View
-    BannedView("banned_view")
+    BannedView("banned_view"),
 
 }

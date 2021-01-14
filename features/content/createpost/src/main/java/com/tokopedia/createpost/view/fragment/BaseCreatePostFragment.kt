@@ -50,7 +50,7 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.twitter_share.TwitterAuthenticator
@@ -229,7 +229,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_IMAGE_PICKER -> if (resultCode == Activity.RESULT_OK) {
-                val imageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS) ?: arrayListOf()
+                val imageList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
                 val images = imageList.map { MediaModel(it, MediaType.IMAGE) }
 
                 viewModel.fileImageList.removeAll { it.type == MediaType.IMAGE }
@@ -600,11 +600,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         val countVid = viewModel.fileImageList.size - imageOnly.size
         activity?.let {
             startActivityForResult(
-                    CreatePostImagePickerActivity.getInstance(
+                    CreatePostImagePickerNavigation.getIntent(
                             it,
                             ArrayList(imageOnly),
-                            viewModel.maxImage - countVid,
-                            viewModel.fileImageList.isEmpty()
+                            viewModel.maxImage - countVid
                     ),
                     REQUEST_IMAGE_PICKER)
         }

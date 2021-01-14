@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_N0"
     android:animateLayoutChanges="true"
     android:orientation="vertical">
 
@@ -12,13 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_see_detail_toggle"
-        style="@style/TextView.Small.Green"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_G500"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:text="@string/digital_cart_detail_see_detail_label"
         android:visibility="gone"
         tools:visibility="visible" />
