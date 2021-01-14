@@ -36,6 +36,7 @@ import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
@@ -70,6 +71,7 @@ import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -930,13 +932,18 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun showLoadingDiscover() {
-        socmedButtonsContainer?.run {
-            val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
-            val lastPos = childCount - 1
-            if (getChildAt(lastPos) !is ProgressBar) {
-                addView(pb, childCount)
+        LetUtil.ifLet(context, socmedButtonsContainer) { (context, socmedButtonsContainer) ->
+            if(context is Context && socmedButtonsContainer is LinearLayout) {
+                val pb = LoaderUnify(context)
+                pb.layoutParams.height = R.dimen.layout_lvl6
+                pb.layoutParams.width = R.dimen.layout_lvl6
+                pb.requestLayout()
+                val lastPos = socmedButtonsContainer.childCount - 1
+                if (socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
+                    socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
+                }
+                emailExtension?.hide()
             }
-            emailExtension?.hide()
         }
     }
 
@@ -980,7 +987,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun dismissLoadingDiscover() {
         socmedButtonsContainer?.run {
             val lastPos = childCount - 1
-            if (getChildAt(lastPos) is ProgressBar) {
+            if (getChildAt(lastPos) is LoaderUnify) {
                 removeViewAt(childCount - 1)
             }
         }
