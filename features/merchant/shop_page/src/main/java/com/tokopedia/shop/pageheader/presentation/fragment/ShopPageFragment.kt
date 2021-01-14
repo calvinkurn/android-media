@@ -910,7 +910,6 @@ class ShopPageFragment :
         setViewState(VIEW_CONTENT)
         swipeToRefresh.isRefreshing = false
         shopPageHeaderDataModel?.let {
-            shopPageFragmentHeaderViewHolder.hideFollowButton()
             shopPageFragmentHeaderViewHolder.bind(it, isMyShop, remoteConfig)
         }
     }
