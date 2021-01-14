@@ -91,7 +91,10 @@ object DeeplinkMapperHome {
         val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
         ) == AbTestPlatform.VARIANT_NEW_INBOX
-        return if (useNewInbox) {
+        val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
+        ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+        return if (useNewInbox && useNewNav) {
             ApplinkConstInternalMarketplace.INBOX
         } else {
             ApplinkConsInternalHome.HOME_INBOX
