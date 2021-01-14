@@ -128,8 +128,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
                     assert((visitable as InspirationCarouselViewModel).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID) {
                         "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID}"
                     }
-                    visitable.assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[3], true)
-                    visitable.options[0].shouldAddBannerCard() shouldBe true
+                    visitable.assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[3])
+                    visitable.assertCarouselGridHasBanner(true)
                 }
                 else -> {
                     visitable.shouldBeInstanceOf<ProductItemViewModel>(
@@ -140,7 +140,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         }
     }
 
-    private fun InspirationCarouselViewModel.assertInspirationCarouselViewModel(inspirationCarouselData: SearchProductModel.InspirationCarouselData, shouldAddBannerCard: Boolean = false) {
+    private fun InspirationCarouselViewModel.assertInspirationCarouselViewModel(inspirationCarouselData: SearchProductModel.InspirationCarouselData) {
         this.layout shouldBe inspirationCarouselData.layout
         this.type shouldBe inspirationCarouselData.type
         this.position shouldBe inspirationCarouselData.position
@@ -175,6 +175,10 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             actual.position shouldBe this.position
             actual.carouselTitle shouldBe this.title
         }
+    }
+
+    private fun InspirationCarouselViewModel.assertCarouselGridHasBanner(shouldAddBannerCard: Boolean) {
+        this.options[0].shouldAddBannerCard() shouldBe shouldAddBannerCard
     }
 
     private fun `When Load More`() {
@@ -218,7 +222,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
                     "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID}"
                 }
                 visitable.assertInspirationCarouselViewModel(searchProductModel.searchInspirationCarousel.data[4])
-                visitable.options[0].shouldAddBannerCard() shouldBe false
+                visitable.assertCarouselGridHasBanner(false)
             }
             else if (index == 7) {
                 visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
