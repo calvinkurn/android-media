@@ -2,9 +2,11 @@ package com.tokopedia.notifications
 
 import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
+import com.tokopedia.appaidl.AidlApi
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMRemoteConfigUtils
@@ -17,11 +19,10 @@ import kotlinx.coroutines.Job
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
-
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
-class CMPushNotificationManager : CoroutineScope {
+class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
 
     override val coroutineContext: CoroutineContext
         get() = Job()
@@ -59,6 +60,9 @@ class CMPushNotificationManager : CoroutineScope {
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED,
                 false)
 
+    var aidlApiApp: AidlApi? = null
+        private set
+
     /**
      * initialization of push notification library
      * Push Worker is initialisation & scheduled periodic
@@ -66,9 +70,20 @@ class CMPushNotificationManager : CoroutineScope {
      */
     fun init(application: Application) {
         this.applicationContext = application.applicationContext
+        aidlApiApp = AidlApi(application, this)
         CMInAppManager.getInstance().init(application)
         GraphqlClient.init(applicationContext)
         PushWorker.schedulePeriodicWorker()
+
+        aidlApiApp?.initAidlService()
+    }
+
+    override fun onAidlReceive(tag: String, bundle: Bundle?) {
+
+    }
+
+    override fun onAidlError() {
+
     }
 
     /**
@@ -171,7 +186,6 @@ class CMPushNotificationManager : CoroutineScope {
         }
 
     }
-
 
     companion object {
         @JvmStatic
