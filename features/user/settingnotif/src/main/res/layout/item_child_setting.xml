@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/spacing_lvl4"
     android:textStyle="bold"
-    android:textColor="@color/charcoal_grey_96"
+    android:textColor="@color/Unify_N700_96"
     android:thumb="@drawable/setting_notif_bg_switch_thumb_selector"
     android:track="@drawable/bg_switch_track_selector"
     tools:text="Transaksi Pembelian" />

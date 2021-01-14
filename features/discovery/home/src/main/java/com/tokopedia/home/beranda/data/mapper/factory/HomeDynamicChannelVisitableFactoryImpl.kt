@@ -178,7 +178,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
             }
         }
-
         if (addLoadingMore) {
             createDynamicChannelLoadingMore()
         }

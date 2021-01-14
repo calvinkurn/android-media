@@ -19,6 +19,7 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
@@ -171,6 +172,7 @@ final class ProductListPresenter
     private boolean hasFullThreeDotsOptions = false;
     @Nullable private CpmModel cpmModel = null;
     @Nullable private List<CpmData> cpmDataList = null;
+    private boolean isABTestNavigationRevamp = false;
 
     @Inject
     ProductListPresenter(
@@ -209,6 +211,19 @@ final class ProductListPresenter
         super.attachView(view);
 
         hasFullThreeDotsOptions = getHasFullThreeDotsOptions();
+        isABTestNavigationRevamp = isABTestNavigationRevamp();
+    }
+
+    private boolean isABTestNavigationRevamp() {
+        try {
+            return getView().getABTestRemoteConfig()
+                    .getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
+                    .equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private boolean getHasFullThreeDotsOptions() {
@@ -290,6 +305,7 @@ final class ProductListPresenter
     @Override
     public void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded) {
         if (isViewVisible) {
+            getView().setupSearchNavigation();
             getView().trackScreenAuthenticated();
 
             if (isViewAdded && !hasLoadData) {
@@ -761,6 +777,7 @@ final class ProductListPresenter
         doInBackground(productViewModel, this::sendTrackingNoSearchResult);
 
         getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
+        getView().setDefaultLayoutType(productViewModel.getDefaultView());
 
         if (productViewModel.getProductList().isEmpty()) {
             getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel, searchParameter);
@@ -1050,9 +1067,9 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        int changeViewPosition = list.size();
-        list.add(new SearchProductCountViewModel(changeViewPosition, searchProduct.getHeader().getTotalDataText()));
-        getView().setDefaultLayoutType(changeViewPosition, productViewModel.getDefaultView());
+        if (isABTestNavigationRevamp) {
+            list.add(new SearchProductCountViewModel(list.size(), searchProduct.getHeader().getTotalDataText()));
+        }
 
         addPageTitle(list);
 
@@ -1545,12 +1562,15 @@ final class ProductListPresenter
     }
 
     private void sendGeneralSearchTracking(ProductViewModel productViewModel) {
+        String query = getView().getQueryKey();
+
+        if (textIsEmpty(query)) return;
+
         JSONArray afProdIds = new JSONArray();
         HashMap<String, String> moengageTrackingCategory = new HashMap<>();
         Set<String> categoryIdMapping = new HashSet<>();
         Set<String> categoryNameMapping = new HashSet<>();
         ArrayList<String> prodIdArray = new ArrayList<>();
-        String query = getView().getQueryKey();
 
         if (productViewModel.getProductList().size() > 0) {
             for (int i = 0; i < productViewModel.getProductList().size(); i++) {
