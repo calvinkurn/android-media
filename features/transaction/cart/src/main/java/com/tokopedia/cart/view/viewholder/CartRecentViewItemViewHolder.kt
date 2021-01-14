@@ -66,7 +66,8 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
             setAddToCartOnClickListener {
                 actionListener?.onButtonAddToCartClicked(element)
             }
-        }
+
+    }
 
         isTopAds = element.isTopAds
     }
