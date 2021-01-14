@@ -26,7 +26,7 @@
         app:layout_constraintRight_toLeftOf="@+id/btn_buy_now"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_topchat_variant_green"
+        app:srcCompat="@drawable/ic_pdp_topchat"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton

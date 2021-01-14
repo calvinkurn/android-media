@@ -20,7 +20,7 @@ import org.junit.Test
 class OrderSummaryPageActivityCampaignTest {
 
     @get:Rule
-    var activityRule = IntentsTestRule(OrderSummaryPageActivity::class.java, false, false)
+    var activityRule = IntentsTestRule(TestOrderSummaryPageActivity::class.java, false, false)
 
     @get:Rule
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
@@ -131,7 +131,7 @@ class OrderSummaryPageActivityCampaignTest {
     }
 
     @Test
-    fun errorFlow_OvoWalletInsufficientButtonContinue() {
+    fun errorFlow_OvoWalletInsufficientTopUp() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_LOW_WALLET_RESPONSE_PATH
 
         activityRule.launchActivity(null)
@@ -142,8 +142,13 @@ class OrderSummaryPageActivityCampaignTest {
 
             clickAddProductQuantity()
 
-            assertPayment("Rp215.000", "Lanjutkan")
-            assertPaymentErrorTicker(OrderSummaryPageViewModel.OVO_INSUFFICIENT_CONTINUE_MESSAGE)
+            assertProfilePaymentOvoError("Rp200.000. OVO Cash kamu tidak cukup.", "Top-Up")
+            assertPaymentButtonEnable(false)
+
+            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_TOP_UP_WALLET_RESPONSE_PATH
+            clickOvoTopUpButton()
+
+            assertPayment("Rp215.000", "Bayar")
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
@@ -154,15 +159,35 @@ class OrderSummaryPageActivityCampaignTest {
     }
 
     @Test
-    fun errorFlow_ErrorTickerButtonContinue() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_ERROR_TICKER_RESPONSE_PATH
+    fun errorFlow_OvoNoPhoneFlow() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_NO_PHONE_RESPONSE_PATH
 
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-            assertPayment("Rp115.000", "Lanjutkan")
-            assertPaymentErrorTicker("OVO Error Ticker")
+            assertProfilePaymentOvoError(message = "Masukkan No. HP di halaman akun", buttonText = null)
+            assertPaymentButtonEnable(false)
+        }
+    }
+
+    @Test
+    fun errorFlow_OvoActivationFlow() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_ACTIVATION_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertProfilePaymentOvoError(message = null, buttonText = "Aktivasi")
+            assertPaymentButtonEnable(false)
+
+            clickOvoActivationButton {
+                cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_ACTIVATED_RESPONSE_PATH
+                performActivation(true)
+            }
+
+            assertPayment("Rp215.000", "Bayar")
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",

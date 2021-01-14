@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -15,9 +14,9 @@ import android.telephony.TelephonyManager
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
+import android.util.Patterns
 import android.view.*
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
@@ -35,9 +34,8 @@ import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -54,6 +52,7 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
+import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -61,9 +60,11 @@ import com.tokopedia.loginregister.registerinitial.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
+import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialRouter
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -74,10 +75,12 @@ import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -90,7 +93,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 10/24/18.
  */
-class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener {
+open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener, RegisterInitialRouter {
 
     private lateinit var optionTitle: TextView
     private lateinit var separator: View
@@ -102,7 +105,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private lateinit var progressBar: RelativeLayout
     private lateinit var tickerAnnouncement: Ticker
     private lateinit var bannerRegister: ImageView
-    private lateinit var socmedButton: ButtonCompat
+    private lateinit var socmedButton: UnifyButton
     private lateinit var bottomSheet: BottomSheetUnify
     private lateinit var socmedButtonsContainer: LinearLayout
     private lateinit var sharedPrefs: SharedPreferences
@@ -135,7 +138,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
-    private val registerInitialViewModel by lazy {
+    val registerInitialViewModel by lazy {
         viewModelProvider.get(RegisterInitialViewModel::class.java)
     }
 
@@ -149,7 +152,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             if (activity != null) {
                 drawable = TextDrawable(activity!!)
                 drawable.text = resources.getString(R.string.login)
-                drawable.setTextColor(resources.getColor(R.color.tkpd_main_green))
+                drawable.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
                 drawable.textSize = 14f
             }
             return drawable
@@ -330,8 +333,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             checkPermissionGetPhoneNumber()
             optionTitle.setText(R.string.register_option_title)
 
-            registerButton.setColor(Color.WHITE)
-            registerButton.setBorderColor(MethodChecker.getColor(activity, R.color.black_38))
+            context?.let {
+                registerButton.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            }
+            registerButton.setBorderColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             registerButton.setRoundCorner(10)
             registerButton.setImageResource(R.drawable.ic_email)
             registerButton.setOnClickListener {
@@ -350,7 +355,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
                 override fun updateDrawState(ds: TextPaint) {
                     ds.color = MethodChecker.getColor(
-                            activity, R.color.tkpd_main_green
+                            activity, com.tokopedia.unifyprinciples.R.color.Unify_G400
                     )
                     ds.typeface = Typeface.create("sans-serif-medium", Typeface
                             .NORMAL)
@@ -365,7 +370,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         loginButton.setOnClickListener {
             registerAnalytics.trackClickBottomSignInButton()
             activity?.run {
-                finish()
                 analytics.eventClickOnLoginFromRegister()
                 goToLoginPage()
             }
@@ -404,8 +408,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             }
         })
         registerInitialViewModel.loginTokenAfterSQResponse.observe(viewLifecycleOwner, Observer {
-            if (it is Success) {
-                onSuccessReloginAfterSQ()
+            when (it) {
+                is Success -> onSuccessReloginAfterSQ()
+                is Fail -> {
+                    if (it.throwable is AkamaiErrorException) {
+                        showPopupErrorAkamai()
+                    }
+                }
             }
         })
         combineLoginTokenAndValidateToken = registerInitialViewModel.loginTokenAfterSQResponse
@@ -443,6 +452,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 is Success -> onSuccessActivateUser(it.data)
                 is Fail -> onFailedActivateUser(it.throwable)
             }
+        })
+        registerInitialViewModel.showPopup.observe(viewLifecycleOwner, Observer {
+            if (it != null) showPopupError(it.header, it.body, it.action)
         })
         registerInitialViewModel.goToActivationPage.observe(viewLifecycleOwner, Observer {
             if (it != null) onGoToActivationPage(it)
@@ -484,7 +496,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         for (i in discoverItems.indices) {
             val item = discoverItems[i]
             if (item.id != PHONE_NUMBER) {
-                val loginTextView = LoginTextView(activity, MethodChecker.getColor(activity, R.color.white))
+                val loginTextView = LoginTextView(activity, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 loginTextView.setText(item.name)
                 loginTextView.setBorderColor(MethodChecker.getColor(activity, R.color
                         .black_38))
@@ -542,8 +554,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedRegisterFacebook(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        onErrorRegister(errorMessage)
+        if (throwable is AkamaiErrorException) {
+            showPopupErrorAkamai()
+        } else {
+            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+            onErrorRegister(errorMessage)
+        }
     }
 
     private fun onSuccessRegisterFacebookPhone(loginTokenPojo: LoginTokenPojo) {
@@ -555,8 +571,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedRegisterFacebookPhone(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        onErrorRegister(errorMessage)
+        if (throwable is AkamaiErrorException) {
+            showPopupErrorAkamai()
+        } else {
+            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+            onErrorRegister(errorMessage)
+        }
     }
 
     private fun onSuccessRegisterGoogle() {
@@ -565,8 +585,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onFailedRegisterGoogle(throwable: Throwable) {
         logoutGoogleAccountIfExist()
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        onErrorRegister(errorMessage)
+        if (throwable is AkamaiErrorException) {
+            showPopupErrorAkamai()
+        } else {
+            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+            onErrorRegister(errorMessage)
+        }
     }
 
     private fun onSuccessGetUserInfo(profileInfoData: ProfileInfoData) {
@@ -659,15 +683,23 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     if (!registerCheckData.isPending) {
                         showRegisteredEmailDialog(registerCheckData.view)
                     } else {
-                        val intent =  goToVerification(email = registerCheckData.view, otpType = OTP_TYPE_ACTIVATE)
-                        startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
+                        goToOTPActivateEmail(registerCheckData.view)
                     }
                 } else {
-                    val intent =  goToVerification(email = registerCheckData.view, otpType = OTP_TYPE_REGISTER)
-                    startActivityForResult(intent, REQUEST_OTP_VALIDATE)
+                    goToOTPRegisterEmail(registerCheckData.view)
                 }
             }
         }
+    }
+
+    override fun goToOTPActivateEmail(email: String) {
+        val intent =  goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE)
+        startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
+    }
+
+    override fun goToOTPRegisterEmail(email: String) {
+        val intent =  goToVerification(email = email, otpType = OTP_TYPE_REGISTER)
+        startActivityForResult(intent, REQUEST_OTP_VALIDATE)
     }
 
     private fun onFailedRegisterCheck(throwable: Throwable) {
@@ -715,7 +747,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(context, errorMessage))
     }
 
-    private fun goToLoginPage() {
+    override fun goToLoginPage() {
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
@@ -725,13 +757,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
-    private fun goToRegisterEmailPage() {
+    override fun goToRegisterEmailPage() {
         showProgressBar()
         val intent = RegisterEmailActivity.getCallingIntent(activity)
         startActivityForResult(intent, REQUEST_REGISTER_EMAIL)
     }
 
-    private fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String) {
+    override fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
 
         activity?.let {
@@ -908,7 +940,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     override fun onActionPartialClick(id: String) {
         registerAnalytics.trackClickSignUpButton()
-        registerInitialViewModel.registerCheck(id)
+        if(Patterns.PHONE.matcher(id).matches()) {
+            registerInitialViewModel.registerCheck(removeSymbolPhone(id))
+        } else {
+            registerInitialViewModel.registerCheck(id)
+        }
     }
 
     private fun showLoadingDiscover() {
@@ -934,9 +970,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             bottomSheet.dismiss()
             registerAnalytics.trackClickFacebookButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_FACEBOOK)
-            registerInitialViewModel.getFacebookCredential(this, callbackManager)
+            goToRegisterFacebook()
         }
 
+    }
+
+    override fun goToRegisterFacebook() {
+        registerInitialViewModel.getFacebookCredential(this, callbackManager)
     }
 
     private fun onRegisterGoogleClick() {
@@ -944,10 +984,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             bottomSheet.dismiss()
             registerAnalytics.trackClickGoogleButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_GMAIL)
-            val intent = mGoogleSignInClient.signInIntent
-            startActivityForResult(intent, REQUEST_LOGIN_GOOGLE)
+            goToRegisterGoogle()
         }
 
+    }
+
+    override fun goToRegisterGoogle() {
+        val intent = mGoogleSignInClient.signInIntent
+        startActivityForResult(intent, REQUEST_LOGIN_GOOGLE)
     }
 
     private fun dismissLoadingDiscover() {
@@ -982,24 +1026,26 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerAnalytics.trackFailedClickEmailSignUpButton(RegisterAnalytics.LABEL_EMAIL_EXIST)
         registerAnalytics.trackFailedClickEmailSignUpButtonAlreadyRegistered()
         activity?.let {
-            val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-            dialog.setTitle(getString(R.string.email_already_registered))
-            dialog.setDesc(
-                    String.format(resources.getString(
-                            R.string.email_already_registered_info), email))
-            dialog.setBtnOk(getString(R.string.already_registered_yes))
-            dialog.setOnOkClickListener { v ->
-                registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
-                dialog.dismiss()
-                startActivity(LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email))
-                it.finish()
+            activity?.runOnUiThread {
+                val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.setTitle(getString(R.string.email_already_registered))
+                dialog.setDescription(
+                        String.format(resources.getString(
+                                R.string.email_already_registered_info), email))
+                dialog.setPrimaryCTAText(getString(R.string.already_registered_yes))
+                dialog.setPrimaryCTAClickListener {
+                    registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
+                    dialog.dismiss()
+                    startActivity(LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email))
+                    it.finish()
+                }
+                dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
+                dialog.setSecondaryCTAClickListener {
+                    registerAnalytics.trackClickChangeButtonRegisteredEmailDialog()
+                    dialog.dismiss()
+                }
+                dialog.show()
             }
-            dialog.setBtnCancel(getString(R.string.already_registered_no))
-            dialog.setOnCancelClickListener {
-                registerAnalytics.trackClickChangeButtonRegisteredEmailDialog()
-                dialog.dismiss()
-            }
-            dialog.show()
         }
     }
 
@@ -1007,26 +1053,34 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerAnalytics.trackClickPhoneSignUpButton()
         registerAnalytics.trackFailedClickPhoneSignUpButton(RegisterAnalytics.LABEL_PHONE_EXIST)
         registerAnalytics.trackFailedClickPhoneSignUpButtonAlreadyRegistered()
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.phone_number_already_registered))
-        dialog.setDesc(
-                String.format(resources.getString(
-                        R.string.reigster_page_phone_number_already_registered_info), phone))
-        dialog.setBtnOk(getString(R.string.already_registered_yes))
-        dialog.setOnOkClickListener {
-            registerAnalytics.trackClickYesButtonRegisteredPhoneDialog()
-            dialog.dismiss()
-            phoneNumber = phone
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-            val intent =  goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
-            startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
+        context?.let {
+            activity?.runOnUiThread {
+                val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.setTitle(getString(R.string.phone_number_already_registered))
+                dialog.setDescription(
+                        String.format(resources.getString(
+                                R.string.reigster_page_phone_number_already_registered_info), phone))
+                dialog.setPrimaryCTAText(getString(R.string.already_registered_yes))
+                dialog.setPrimaryCTAClickListener {
+                    registerAnalytics.trackClickYesButtonRegisteredPhoneDialog()
+                    dialog.dismiss()
+                    goToLoginRegisteredPhoneNumber(phone)
+                }
+                dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
+                dialog.setSecondaryCTAClickListener {
+                    registerAnalytics.trackClickChangeButtonRegisteredPhoneDialog()
+                    dialog.dismiss()
+                }
+                dialog.show()
+            }
         }
-        dialog.setBtnCancel(getString(R.string.already_registered_no))
-        dialog.setOnCancelClickListener {
-            registerAnalytics.trackClickChangeButtonRegisteredPhoneDialog()
-            dialog.dismiss()
-        }
-        dialog.show()
+    }
+
+    override fun goToLoginRegisteredPhoneNumber(phone: String) {
+        phoneNumber = phone
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+        val intent =  goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
+        startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
     }
 
     private fun goToVerification(phone: String = "", email: String = "", otpType: Int): Intent {
@@ -1069,23 +1123,31 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun showProceedWithPhoneDialog(phone: String) {
         registerAnalytics.trackClickPhoneSignUpButton()
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(phone)
-        dialog.setDesc(resources.getString(R.string.phone_number_not_registered_info))
-        dialog.setBtnOk(getString(R.string.proceed_with_phone_number))
-        dialog.setOnOkClickListener {
-            registerAnalytics.trackClickYesButtonPhoneDialog()
-            dialog.dismiss()
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-            val intent =  goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER)
-            startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
+        context?.let {
+            activity?.runOnUiThread {
+                val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.setTitle(phone)
+                dialog.setDescription(resources.getString(R.string.phone_number_not_registered_info))
+                dialog.setPrimaryCTAText(getString(R.string.proceed_with_phone_number))
+                dialog.setPrimaryCTAClickListener {
+                    registerAnalytics.trackClickYesButtonPhoneDialog()
+                    dialog.dismiss()
+                    goToRegisterWithPhoneNumber(phone)
+                }
+                dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
+                dialog.setSecondaryCTAClickListener {
+                    registerAnalytics.trackClickChangeButtonPhoneDialog()
+                    dialog.dismiss()
+                }
+                dialog.show()
+            }
         }
-        dialog.setBtnCancel(getString(R.string.already_registered_no))
-        dialog.setOnCancelClickListener {
-            registerAnalytics.trackClickChangeButtonPhoneDialog()
-            dialog.dismiss()
-        }
-        dialog.show()
+    }
+
+    override fun goToRegisterWithPhoneNumber(phone: String) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+        val intent =  goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER)
+        startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
     }
 
     private fun setTempPhoneNumber(maskedPhoneNumber: String) {
@@ -1107,7 +1169,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         )
     }
 
-    private fun onSuccessRegister() {
+    override fun onSuccessRegister() {
         activityShouldEnd = true
 
         registerPushNotif()
@@ -1177,6 +1239,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         })
     }
 
+    private fun removeSymbolPhone(phone: String): String = phone.replace(Regex(REGEX_REMOVE_SYMBOL_PHONE), "")
+
     @SuppressLint("MissingPermission", "HardwareIds", "PrivateResource")
     fun getPhoneNumber() {
         activity?.let {
@@ -1189,16 +1253,18 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                         for (info in subscription.activeSubscriptionInfoList) {
                             if (!info.number.isNullOrEmpty() &&
                                     PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                                    PartialRegisterInputUtils.isValidPhone(info.number))
-                                phoneNumbers.add(info.number)
+                                    PartialRegisterInputUtils.isValidPhone(info.number)) {
+                                phoneNumbers.add(removeSymbolPhone(info.number))
+                            }
                         }
                     }
                 } else {
                     val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
                     if (!telephony.line1Number.isNullOrEmpty() &&
                             PartialRegisterInputUtils.getType(telephony.line1Number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                            PartialRegisterInputUtils.isValidPhone(telephony.line1Number))
-                        phoneNumbers.add(telephony.line1Number)
+                            PartialRegisterInputUtils.isValidPhone(telephony.line1Number)) {
+                        phoneNumbers.add(removeSymbolPhone(telephony.line1Number))
+                    }
                 }
 
                 if (phoneNumbers.isNotEmpty())
@@ -1318,6 +1384,32 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
+    private fun showPopupError(header: String, body: String, url: String) {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(header)
+            dialog.setDescription(body)
+            dialog.setPrimaryCTAText(getString(R.string.check_full_information))
+            dialog.setSecondaryCTAText(getString(R.string.close_popup))
+            dialog.setPrimaryCTAClickListener {
+                RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+            }
+            dialog.setSecondaryCTAClickListener {
+                dialog.hide()
+            }
+            dialog.show()
+        }
+    }
+
+
+    private fun showPopupErrorAkamai() {
+        showPopupError(
+                getString(R.string.popup_error_title),
+                getString(R.string.popup_error_desc),
+                TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+        )
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         registerInitialViewModel.getProviderResponse.removeObservers(this)
@@ -1383,6 +1475,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
+      
+        private const val TOKOPEDIA_CARE_PATH = "help"
+      
+        private const val REGEX_REMOVE_SYMBOL_PHONE = "[+| |-]"
 
         fun createInstance(bundle: Bundle): RegisterInitialFragment {
             val fragment = RegisterInitialFragment()

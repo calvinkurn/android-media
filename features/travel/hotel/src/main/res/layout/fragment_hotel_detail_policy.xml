@@ -4,7 +4,7 @@
     android:id="@+id/layout_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:clipToPadding="false"
     android:padding="@dimen/layout_lvl2">
 

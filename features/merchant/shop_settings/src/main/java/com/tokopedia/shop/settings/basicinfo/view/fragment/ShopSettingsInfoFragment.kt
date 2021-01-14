@@ -7,16 +7,11 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.*
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -25,17 +20,18 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
@@ -51,6 +47,15 @@ import javax.inject.Inject
 
 class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
+    companion object {
+        const val EXTRA_MESSAGE = "extra_message"
+        const val EXTRA_IS_CLOSED_NOW = "extra_is_closed_now"
+        const val EXTRA_SHOP_BASIC_DATA_MODEL = "extra_shop_basic_data_model"
+        const val EXTRA_SAVE_INSTANCE_CACHE_MANAGER_ID = "extra_save_instance_cache_manager_id"
+        const val REQUEST_EDIT_BASIC_INFO = "request_edit_basic_info"
+        const val REQUEST_EDIT_SCHEDULE = 782
+    }
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -62,6 +67,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private var needReload: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
+    private var snackbar: Snackbar? = null
     private var shopId: String = "0"     // 67726 for testing
 
     private var progressDialog: ProgressDialog? = null
@@ -71,14 +77,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        GraphqlClient.init(context!!)
+        GraphqlClient.init(requireContext())
         super.onCreate(savedInstanceState)
         shopId = userSession.shopId
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_shop_settings_info, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_shop_settings_info, container, false)
     }
 
     private fun showShopStatusManageMenu() {
@@ -88,7 +93,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 menus.setTitle(getString(R.string.shop_settings_manage_status))
 
                 val itemMenusList = ArrayList<Menus.ItemMenus>()
-                if (shopBasicDataModel.isOpen == true) {
+                if (shopBasicDataModel.isOpen) {
                     if (StringUtils.isEmptyNumber(shopBasicDataModel.closeSchedule)) {
                         itemMenusList.add(Menus.ItemMenus(getString(R.string.schedule_your_shop_close)))
                     } else {
@@ -110,24 +115,12 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
     }
 
-    fun onItemMenuClicked(itemMenuTitle: String) {
-        when {
-            itemMenuTitle.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
-                val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                        getString(R.string.schedule_shop_close), false)
-                startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
+    private fun onItemMenuClicked(itemMenuTitle: String) {
+        when(itemMenuTitle) {
+            getString(R.string.label_close_shop_now) -> {
+                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, true) }
             }
-            itemMenuTitle.equals(getString(R.string.label_close_shop_now), ignoreCase = true) -> {
-                val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                        getString(R.string.label_close_shop_now), true)
-                startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
-            }
-            itemMenuTitle.equals(getString(R.string.change_schedule), ignoreCase = true) -> {
-                val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                        getString(R.string.change_schedule), false)
-                startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
-            }
-            itemMenuTitle.equals(getString(R.string.remove_schedule), ignoreCase = true) -> {
+            getString(R.string.remove_schedule) -> {
                 activity?.let { it ->
                     Dialog(it, Dialog.Type.PROMINANCE).apply {
                         setTitle(getString(R.string.remove_schedule))
@@ -151,7 +144,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     }
                 }
             }
-            itemMenuTitle.equals(getString(R.string.label_open_shop_now), ignoreCase = true) -> {
+            getString(R.string.label_open_shop_now) -> {
                 // open now
                 showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                 shopSettingsInfoViewModel.updateShopSchedule(
@@ -162,15 +155,18 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         closeNote = ""
                 )
             }
+            else -> {
+                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, shopBasicDataModel?.isClosed ?: false) }
+            }
         }
     }
 
-    fun showLoading() {
+    private fun showLoading() {
         viewContent.visibility = View.GONE
         loadingView.visibility = View.VISIBLE
     }
 
-    fun hideLoading() {
+    private fun hideLoading() {
         viewContent.visibility = View.VISIBLE
         loadingView.visibility = View.GONE
     }
@@ -180,8 +176,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
         setupToolbar()
         btnChangeShopInfo.setOnClickListener {
-            val intent = ShopEditBasicInfoActivity.createIntent(context!!, shopBasicDataModel)
-            startActivityForResult(intent, REQUEST_EDIT_BASIC_INFO)
+            moveToShopEditBasicInfoFragment()
             ShopSettingsTracking.clickChange(shopId, getShopType())
         }
 
@@ -193,14 +188,60 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         loadShopBasicData()
         shopSettingsInfoViewModel.validateOsMerchantType(shopId.toInt())
 
+        onFragmentResult()
+
         observeShopBasicData()
         observeShopStatus()
         observeOsMerchantData()
         observeUpdateScheduleData()
     }
 
+    override fun onPause() {
+        super.onPause()
+        dismissToaster()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_EDIT_SCHEDULE -> if (resultCode == Activity.RESULT_OK) {
+                needReload = true
+                if (requestCode == REQUEST_EDIT_SCHEDULE && data != null) {
+                    val message: String? = data.getStringExtra(EXTRA_MESSAGE)
+                    if (!message.isNullOrBlank()) {
+                        view?.let {
+                            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun dismissToaster() {
+        snackbar?.dismiss()
+    }
+
+    private fun moveToShopEditBasicInfoFragment() {
+        val cacheManager = SaveInstanceCacheManager(requireContext(), true).apply {
+            put(EXTRA_SHOP_BASIC_DATA_MODEL, shopBasicDataModel)
+        }
+        val destination = ShopSettingsInfoFragmentDirections.actionShopSettingsInfoFragmentToShopEditBasicInfoFragment()
+        destination.cacheManagerId = cacheManager.id ?: "0"
+        NavigationController.navigate(this@ShopSettingsInfoFragment, destination)
+    }
+
+    private fun moveToShopEditScheduleFragment(shopBasicDataModel: ShopBasicDataModel, isClosedNow: Boolean) {
+        val cacheManager = SaveInstanceCacheManager(requireContext(), true).apply {
+            put(EXTRA_SHOP_BASIC_DATA_MODEL, shopBasicDataModel)
+            put(EXTRA_IS_CLOSED_NOW, isClosedNow)
+        }
+        val intent = ShopEditScheduleActivity.createIntent(requireContext(), cacheManager.id ?: "0")
+        startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
+    }
+
     private fun observeUpdateScheduleData() {
-        shopSettingsInfoViewModel.updateScheduleResult.observe(this, Observer {
+        shopSettingsInfoViewModel.updateScheduleResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessUpdateShopSchedule(it.data)
                 is Fail -> onErrorUpdateShopSchedule(it.throwable)
@@ -209,7 +250,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun observeShopStatus() {
-        shopSettingsInfoViewModel.shopStatusData.observe(this, Observer {
+        shopSettingsInfoViewModel.shopStatusData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     val shopStatusData = it.data.result.data
@@ -228,7 +269,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     view?.let { view ->
-                        Toaster.make(view, getString(R.string.error_get_shop_status), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        snackbar = Toaster.build(view, getString(R.string.error_get_shop_status), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        snackbar?.show()
                     }
                     ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
                     ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -238,7 +280,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun observeShopBasicData() {
-        shopSettingsInfoViewModel.shopBasicData.observe(this, Observer {
+        shopSettingsInfoViewModel.shopBasicData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     hideLoading()
@@ -266,7 +308,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun observeOsMerchantData() {
-        shopSettingsInfoViewModel.checkOsMerchantTypeData.observe(this, Observer {
+        shopSettingsInfoViewModel.checkOsMerchantTypeData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     it.data.getIsOfficial.let { osData ->
@@ -281,7 +323,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     view?.let { view ->
-                        Toaster.make(view, getString(R.string.error_get_os_merchant), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        snackbar = Toaster.build(view, getString(R.string.error_get_os_merchant), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        snackbar?.show()
                     }
                     ShopSettingsErrorHandler.logMessage(it.throwable.message ?: "")
                     ShopSettingsErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -291,40 +334,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar() {
-        (activity as? AppCompatActivity)?.run {
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setDisplayShowTitleEnabled(true)
-            supportActionBar?.setTitle(getString(R.string.shop_settings_basic_info_title))
-        }
-    }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_EDIT_SCHEDULE -> if (resultCode == Activity.RESULT_OK) {
-                needReload = true
-                if (requestCode == REQUEST_EDIT_SCHEDULE && data != null) {
-                    val message: String = data.getStringExtra(ShopEditScheduleActivity.EXTRA_MESSAGE)
-                    if (!message.isEmpty()) {
-                        view?.let {
-                            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-                        }
-                    }
-                }
-            }
-            REQUEST_EDIT_BASIC_INFO -> if (resultCode == Activity.RESULT_OK) {
-                needReload = true
-                if (requestCode == REQUEST_EDIT_BASIC_INFO && data != null) {
-                    val message: String = data.getStringExtra(ShopEditBasicInfoActivity.EXTRA_MESSAGE)
-                    if (!message.isEmpty()) {
-                        view?.let {
-                            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-                        }
-                    }
-                }
-            }
-        }
+        val tvSave: TextView? = activity?.findViewById(R.id.tvSave)
+        tvSave?.hide()
     }
 
     override fun onResume() {
@@ -343,9 +354,26 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         )
     }
 
+    private fun onFragmentResult() {
+        getNavigationResult(REQUEST_EDIT_BASIC_INFO)?.observe(viewLifecycleOwner, Observer { bundle ->
+            bundle?.let { data ->
+                needReload = true
+                data.getString(EXTRA_MESSAGE)?.apply {
+                    if (this.isNotBlank()) {
+                        view?.let {
+                            snackbar = Toaster.build(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                            snackbar?.show()
+                        }
+                    }
+                }
+            }
+            removeNavigationResult(REQUEST_EDIT_BASIC_INFO)
+        })
+    }
+
     override fun initInjector() {
         DaggerShopSettingsComponent.builder()
-                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+                .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
     }
@@ -418,33 +446,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         tv_official_store_expiration.text = "Berlaku hingga $expirationDate"
     }
 
-    private fun setTextViewClickSpan(textView: TextView, previousText: CharSequence, learnMoreString: String, onClickLearnMore: (() -> (Unit))) {
-        val spannable = SpannableString(learnMoreString)
-        val indexStart = 0
-        val indexEnd = indexStart + learnMoreString.length
-
-        val color = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green)
-        spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val clickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                onClickLearnMore.invoke()
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = color
-            }
-        }
-        spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        textView.movementMethod = LinkMovementMethod.getInstance()
-        textView.text = SpannableStringBuilder(previousText).append(" ").append(spannable)
-    }
-
-//    private fun navigateToPMSubscribe() {
-//        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-//    }
-
     private fun onErrorGetShopBasicData(throwable: Throwable) {
         hideLoading()
         val message = ErrorHandler.getErrorMessage(context, throwable)
@@ -457,7 +458,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         hideSubmitLoading()
         activity?.setResult(Activity.RESULT_OK)
         view?.let {
-            Toaster.make(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            snackbar = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            snackbar?.show()
         }
         loadShopBasicData()
     }
@@ -472,7 +474,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            snackbar = Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            snackbar?.show()
         }
     }
 
@@ -505,20 +508,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        shopSettingsInfoViewModel.detachView()
         shopSettingsInfoViewModel.shopBasicData.removeObservers(this)
         shopSettingsInfoViewModel.shopStatusData.removeObservers(this)
         shopSettingsInfoViewModel.checkOsMerchantTypeData.removeObservers(this)
-        shopSettingsInfoViewModel.flush()
-    }
-
-    companion object {
-        private val URL_GAINS_SCORE_POINT = "https://seller.tokopedia.com/edu/skor-toko"
-        private val REQUEST_EDIT_BASIC_INFO = 781
-        private val REQUEST_EDIT_SCHEDULE = 782
-
-        fun newInstance(): ShopSettingsInfoFragment {
-            return ShopSettingsInfoFragment()
-        }
     }
 }

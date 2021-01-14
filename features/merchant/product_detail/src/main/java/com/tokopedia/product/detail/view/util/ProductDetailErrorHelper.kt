@@ -64,7 +64,7 @@ object ProductDetailErrorHelper {
                 errorCode = GlobalError.NO_CONNECTION.toString()
             }
             is RuntimeException -> {
-                errorCode = when (t.localizedMessage.toIntOrNull()) {
+                errorCode = when (t.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> {
                         GlobalError.NO_CONNECTION.toString()
                     }

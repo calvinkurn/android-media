@@ -31,12 +31,13 @@ abstract class AddEditProductNotificationManager(
     private var currentProgress = 0
 
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_GENERAL).apply {
-        setContentTitle(context.getString(com.tokopedia.product.addedit.R.string.title_notif_product_upload))
+        setContentTitle(context.getString(R.string.title_notif_product_upload))
         setSmallIcon(com.tokopedia.design.R.drawable.ic_status_bar_notif_customerapp)
         setLargeIcon(BitmapFactory.decodeResource(context.resources, com.tokopedia.design.R.drawable.ic_big_notif_customerapp))
         setGroup(NOTIFICATION_GROUP)
         setOnlyAlertOnce(true)
         priority = NotificationCompat.PRIORITY_MAX
+        currentProgress = 0
     }
     
     fun onSuccessUpload() {
@@ -82,13 +83,13 @@ abstract class AddEditProductNotificationManager(
         val notification = notificationBuilder
                 .setContentTitle(text)
                 .setContentText(errorMessage)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(errorMessage)
-                        .setBigContentTitle(text))
+                .setStyle(NotificationCompat.BigTextStyle().bigText(errorMessage))
                 .setProgress(0, 0, false)
-                .setOngoing(false)
                 .setContentIntent(getFailedIntent(errorMessage))
+                .setOngoing(false)
                 .setShowWhen(true)
                 .build()
+
         notificationManager.notify(TAG, id, notification)
     }
 

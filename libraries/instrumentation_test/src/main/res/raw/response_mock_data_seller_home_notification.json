@@ -3,22 +3,16 @@
     "data": {
       "notifications": {
         "chat": {
-          "unreads": 4,
-          "unreadsSeller": 2,
-          "unreadsUser": 2
+          "unreadsSeller": 2
         },
         "sellerOrderStatus": {
           "newOrder": 0,
-          "readyToShip": 0,
-          "shipped": 0,
-          "arriveAtDestination": 0
+          "readyToShip": 0
         }
       },
       "notifcenter_unread": {
-        "notif_unread": "3",
         "notif_unread_int": 3
-      },
-      "status": "OK"
+      }
     }
   }
 ]

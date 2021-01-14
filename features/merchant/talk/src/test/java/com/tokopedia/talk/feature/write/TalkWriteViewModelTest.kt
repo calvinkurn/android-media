@@ -8,9 +8,9 @@ import com.tokopedia.talk.feature.write.data.model.DiscussionSubmitFormResponseW
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteButtonState
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
 import com.tokopedia.talk.util.unselectedCategories
-import com.tokopedia.talk.util.verifyErrorEquals
-import com.tokopedia.talk.util.verifySuccessEquals
-import com.tokopedia.talk.util.verifyValueEquals
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

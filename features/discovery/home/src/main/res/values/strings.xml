@@ -33,6 +33,7 @@
     <string name="home_header_tokopoint_no_coupons">Cari Kupon</string>
     <string name="home_header_tokopoint_no_tokopoints">TokoPoints</string>
     <string name="home_header_tokopoint_refresh_label">Coba Lagi</string>
+    <string name="home_header_tokopoint_bebasongkir">Bebas Ongkir</string>
     <string name="home_header_tokopoint_coupon_count_text">%1$d Kupon</string>
     <string name="home_header_tokocash_unable_to_load_label">Gagal Memuat</string>
     <string name="home_header_tokocash_refresh_label">Coba Lagi</string>
@@ -41,6 +42,7 @@
     <string name="hampir_habis">Hampir Habis</string>
     <string name="home_header_fintech_scan">Scan</string>
     <string name="home_header_fintech_points">Points %1$s</string>
+    <string name="home_header_fintech_points_new">%1$s Points</string>
     <string name="home_header_topup_ovo"><b>Top-up OVO</b></string>
     <string name="home_header_fintech_cek_sekarang">Cek Sekarang</string>
 
@@ -104,4 +106,11 @@
     <string name="content_desc_channel_subtitle">text dynamic channel subtitle</string>
 
     <string name="home_page_retry_dynamic_channel">Coba Lagi</string>
+
+    <string name="onboarding_navigation_title">Wow, ada yang baru di Toped!</string>
+    <string name="onboarding_navigation_description">Ayo kenalan dengan tampilan &#38; navigasi baru untuk menjelajahi aplikasi Tokopedia!</string>
+    <string name="onboarding_navigation_button">Yuk, Kenalan!</string>
+
+    <string name="onboarding_coachmark_title">Halo, ini Menu Utama yang baru!</string>
+    <string name="onboarding_coachmark_description">Lihat Semua Kategori, Daftar Transaksi, Wishlist, tulis Ulasan Produk, kini semuanya bisa dari sini!</string>
 </resources>

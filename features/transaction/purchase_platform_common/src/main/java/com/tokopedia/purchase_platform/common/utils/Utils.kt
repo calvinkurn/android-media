@@ -10,6 +10,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.widget.CompoundButton
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.unifycomponents.Toaster
 import rx.Emitter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -53,6 +54,11 @@ object Utils {
     fun removeDecimalSuffix(currencyString: String): String {
         return currencyString.removeDecimalSuffix()
     }
+
+    @JvmStatic
+    fun setToasterCustomBottomHeight(bottomHeight: Int) {
+        Toaster.toasterCustomBottomHeight = bottomHeight
+    }
 }
 
 fun convertToString(stringList: List<String>?): String {
@@ -74,6 +80,10 @@ fun <T : Any> List<T>.each(action: T.() -> Unit) {
 }
 
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
+
+fun joinToString(strings: List<String>, separator: String): String = strings.joinToString(separator)
+
+fun joinToStringFromListInt(ints: List<Int>, separator: String): String = ints.joinToString(separator)
 
 const val DEFAULT_DEBOUNCE_IN_MILIS = 250L
 fun rxViewClickDebounce(view: View, timeout: Long = DEFAULT_DEBOUNCE_IN_MILIS): Observable<Boolean> =

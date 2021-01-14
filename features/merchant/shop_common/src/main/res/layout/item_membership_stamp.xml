@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_14"
             android:padding="10dp"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N700"
             app:layout_constraintBottom_toTopOf="@+id/circle_stamp_1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -48,7 +48,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="1"
-                android:textColor="@color/blue_circle_stamp"
+                android:textColor="@color/Unify_N150"
                 app:typographyType="heading_6" />
 
             <ImageView
@@ -63,7 +63,7 @@
             android:id="@+id/line1"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="@color/blue_circle_stamp"
+            android:background="@color/Unify_N150"
             app:layout_constraintBottom_toBottomOf="@+id/circle_stamp_1"
             app:layout_constraintEnd_toStartOf="@+id/circle_stamp_2"
             app:layout_constraintStart_toEndOf="@+id/circle_stamp_1"
@@ -86,7 +86,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="2"
-                android:textColor="@color/blue_circle_stamp"
+                android:textColor="@color/Unify_N150"
                 app:typographyType="heading_6"
 
                 />
@@ -103,7 +103,7 @@
             android:id="@+id/line2"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="@color/blue_circle_stamp"
+            android:background="@color/Unify_N150"
             app:layout_constraintBottom_toBottomOf="@+id/circle_stamp_2"
             app:layout_constraintEnd_toStartOf="@+id/circle_stamp_3"
             app:layout_constraintStart_toEndOf="@+id/circle_stamp_2"
@@ -127,7 +127,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="3"
-                android:textColor="@color/blue_circle_stamp"
+                android:textColor="@color/Unify_N150"
                 app:typographyType="heading_6"
 
                 />
@@ -144,7 +144,7 @@
             android:id="@+id/line3"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="@color/blue_circle_stamp"
+            android:background="@color/Unify_N150"
             app:layout_constraintBottom_toBottomOf="@+id/circle_stamp_3"
             app:layout_constraintEnd_toStartOf="@+id/circle_stamp_4"
             app:layout_constraintStart_toEndOf="@+id/circle_stamp_3"
@@ -168,7 +168,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="4"
-                android:textColor="@color/blue_circle_stamp"
+                android:textColor="@color/Unify_N150"
                 app:typographyType="heading_6"
 
                 />
@@ -185,7 +185,7 @@
             android:id="@+id/line4"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="@color/blue_circle_stamp"
+            android:background="@color/Unify_N150"
             app:layout_constraintBottom_toBottomOf="@+id/circle_stamp_4"
             app:layout_constraintEnd_toStartOf="@+id/circle_stamp_5"
             app:layout_constraintStart_toEndOf="@+id/circle_stamp_4"
@@ -208,7 +208,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="5"
-                android:textColor="@color/blue_circle_stamp"
+                android:textColor="@color/Unify_N150"
                 app:typographyType="heading_6" />
 
             <ImageView

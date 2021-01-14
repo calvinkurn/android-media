@@ -2,6 +2,9 @@ package com.tokopedia.core.analytics.fingerprint.domain.model;
 
 import android.text.TextUtils;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -11,30 +14,80 @@ import java.security.NoSuchAlgorithmException;
 
 public class FingerPrint {
 
+    @SerializedName("device_model")
+    @Expose
     private String device_model;
+    @SerializedName("device_system")
+    @Expose
     private String device_system;
+    @SerializedName("current_os")
+    @Expose
     private String current_os;
+    @SerializedName("device_manufacturer")
+    @Expose
     private String device_manufacturer;
+    @SerializedName("device_name")
+    @Expose
     private String device_name;
+    @SerializedName("is_jailbroken_rooted")
+    @Expose
     private boolean is_jailbroken_rooted;
+    @SerializedName("timezone")
+    @Expose
     private String timezone;
+    @SerializedName("user_agent")
+    @Expose
     private String user_agent;
+    @SerializedName("is_emulator")
+    @Expose
     private boolean is_emulator;
+    @SerializedName("is_tablet")
+    @Expose
     private boolean is_tablet;
+    @SerializedName("language")
+    @Expose
     private String language;
+    @SerializedName("carrier")
+    @Expose
     private String carrier;
+    @SerializedName("ssid")
+    @Expose
     private String ssid;
+    @SerializedName("screen_resolution")
+    @Expose
     private String screen_resolution;
+    @SerializedName("location_latitude")
+    @Expose
     private String location_latitude;
+    @SerializedName("location_longitude")
+    @Expose
     private String location_longitude;
+    @SerializedName("is_nakama")
+    @Expose
     private String is_nakama;
+    @SerializedName("unique_id")
+    @Expose
     private String unique_id;
+    @SerializedName("deviceMemoryClassCapacity")
+    @Expose
     private String deviceMemoryClassCapacity;
+    @SerializedName("availableProcessor")
+    @Expose
     private String availableProcessor;
+    @SerializedName("deviceDpi")
+    @Expose
     private String deviceDpi;
+    @SerializedName("packageName")
+    @Expose
     private String packageName;
+    @SerializedName("androidId")
+    @Expose
     private String androidId;
+    @SerializedName("isx86")
+    @Expose
     private boolean isx86;
+    @SerializedName("pid")
+    @Expose
     private String pid;
 
     private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {

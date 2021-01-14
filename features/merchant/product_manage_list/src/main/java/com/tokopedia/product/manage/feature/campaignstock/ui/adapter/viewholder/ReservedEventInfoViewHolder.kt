@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.util.convertCheckMaximumStockLimit
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import kotlinx.android.synthetic.main.item_campaign_stock_reserved_event_info.view.*
 
 class ReservedEventInfoViewHolder(itemView: View?,

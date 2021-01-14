@@ -9,4 +9,5 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewholder.*
 interface WidgetListener : CardViewHolder.Listener, CarouselViewHolder.Listener, SectionViewHolder.Listener,
         LineGraphViewHolder.Listener, ProgressViewHolder.Listener, PostListViewHolder.Listener,
         DescriptionViewHolder.Listener, TableViewHolder.Listener, PieChartViewHolder.Listener,
-        BarChartViewHolder.Listener, TickerViewHolder.Listener
+        BarChartViewHolder.Listener, TickerViewHolder.Listener, MultiLineGraphViewHolder.Listener,
+        AnnouncementViewHolder.Listener

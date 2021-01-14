@@ -35,7 +35,7 @@
     <string name="additional_text">Detail Periode</string>
     <string name="tkpdtransaction_bebas_ongkir">Bebas Ongkir</string>
     <string name="bom_check_cart">Lihat</string>
-    <string name="contact_us_text">Untuk bantuan silakan klik disini</string>
+    <string name="contact_us_text">Butuh bantuan? Hubungi Tokopedia Care</string>
     <string name="label_shop_title">Toko: </string>
     <string name="contact_us_applink">https://www.tokopedia.com/help</string>
     <string name="help_text">disini</string>
@@ -516,4 +516,5 @@ Anda di sini.</string>
     <string name="banner_deals_main_title">Hai %s,</string>
     <string name="banner_deals_coachmark_sub_title">Setelah redeem, jangan lupa klik ini. Ada promo spesial menantimu!</string>
     <string name="banner_deals_coachmark_title">Wow, ada yang seru nih!</string>
+    <string name="contact_us_clickable_text">Hubungi Tokopedia Care</string>
 </resources>

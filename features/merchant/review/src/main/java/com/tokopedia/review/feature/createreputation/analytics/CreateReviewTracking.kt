@@ -163,15 +163,6 @@ object CreateReviewTracking {
         ))
     }
 
-    fun eventViewBackDialog(dialogTitle: String) {
-        tracker.sendGeneralEvent(createEventMap(
-                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
-                CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.VIEW_DIALOG, dialogTitle),
-                CreateReviewTrackingConstants.EMPTY_LABEL
-        ))
-    }
-
     fun eventClickContinueWrite(dialogTitle: String) {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,

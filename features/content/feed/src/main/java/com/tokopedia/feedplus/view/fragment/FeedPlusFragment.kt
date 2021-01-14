@@ -43,6 +43,7 @@ import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.domain.mapper.TopAdsHeadlineActivityCounter
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListener
@@ -58,6 +59,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
@@ -71,6 +73,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -116,6 +119,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
+import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -130,7 +134,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.util.*
@@ -161,7 +164,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         RetryViewHolder.RetryViewHolderListener,
         EmptyFeedViewHolder.EmptyFeedListener,
         FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
-        PlayWidgetListener {
+        PlayWidgetListener, TopAdsHeadlineViewHolder.TopAdsHeadlineListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -432,28 +435,28 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             })
 
-            voteResp.observe(lifecycleOwner, Observer {
-                when(it) {
-                    is Success -> onSuccessSendVote(it.data.rowNumber, it.data.optionId, it.data.voteModel)
-                    is Fail -> onErrorSendVote(it.throwable.localizedMessage)
-                }
-
-            })
-
             atcResp.observe(lifecycleOwner, Observer {
                 when(it) {
                     is Success -> {
                         val data = it.data
-                        if (data.isSuccess) {
-                            onAddToCartSuccess()
-                        } else {
-                            onAddToCartFailed(data.applink)
+                        when {
+                            data.isSuccess -> {
+                                onAddToCartSuccess()
+                            }
+                            data.errorMsg.isNotEmpty() -> {
+                                view?.run {
+                                    Toaster.build(this, data.errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                                }
+                            }
+                            else -> {
+                                onAddToCartFailed(data.applink)
+                            }
                         }
                     }
                     is Fail -> {
                         Timber.e(it.throwable)
                         view?.run {
-                            Toaster.make(this, getString(R.string.default_request_error_unknown), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            Toaster.build(this, getString(R.string.default_request_error_unknown), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -505,7 +508,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun initVar() {
         playWidgetCoordinator = PlayWidgetCoordinator().apply {
             setListener(this@FeedPlusFragment)
-            setAnalyticListener(feedPlayWidgetAnalytic)
+            setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(feedPlayWidgetAnalytic))
             setImpressionHelper(ImpressionHelper(validator = playWidgetImpressionValidator))
         }
         val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this, playWidgetCoordinator)
@@ -632,6 +635,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         newFeed.visibility = View.GONE
         feedViewModel.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
         afterRefresh = true
+        TopAdsHeadlineActivityCounter.page = 0
     }
 
     override fun onDestroyView() {
@@ -1634,9 +1638,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
-        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
-        if (newList.size > rowNumber) {
-            val (_, _, _, _, footer) = newList[rowNumber]
+        val newList = adapter.getlist()
+        if (newList.size > rowNumber && newList[rowNumber] is DynamicPostViewModel) {
+            val (_, _, _, _, footer) = newList[rowNumber] as DynamicPostViewModel
             val like = footer.like
             like.isChecked = !like.isChecked
             if (like.isChecked) {
@@ -1656,8 +1660,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
                 like.value = like.value - 1
             }
-
-            adapter.updateList(newList)
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE)
         }
     }
 
@@ -1698,35 +1701,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessSendVote(rowNumber: Int, optionId: String,
-                                   voteStatisticDomainModel: VoteStatisticDomainModel) {
-        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
-        val (_, _, _, _, _, _, contentList) = newList[rowNumber]
-        for (basePostViewModel in contentList) {
-            if (basePostViewModel is PollContentViewModel) {
-                basePostViewModel.voted = true
-                val totalVoter: Int = voteStatisticDomainModel.totalParticipants.toIntOrZero()
-                basePostViewModel.totalVoterNumber = totalVoter
-                for (i in 0 until basePostViewModel.optionList.size) {
-                    val optionViewModel = basePostViewModel.optionList[i]
-
-                    optionViewModel.selected = if (optionId == optionViewModel.optionId)
-                        PollContentOptionViewModel.SELECTED
-                    else
-                        PollContentOptionViewModel.UNSELECTED
-                    optionViewModel.percentage = voteStatisticDomainModel.listOptions[i].percentage.toIntOrZero()
-                }
-            }
-        }
-        adapter.updateList(newList)
-    }
-
-    private fun onErrorSendVote(message: String) {
-        view?.let {
-            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-        }
-    }
-
     private fun onAddToCartSuccess() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
@@ -1736,22 +1710,31 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int) {
-        if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            header.followCta.isFollow = !header.followCta.isFollow
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
-        }
+        if(rowNumber < adapter.getlist().size) {
+            if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
+                val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+                header.followCta.isFollow = !header.followCta.isFollow
+                adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
+            }
 
-        if (adapter.getlist()[rowNumber] is FeedRecommendationViewModel) {
-            val (_, cards) = adapter.getlist()[rowNumber] as FeedRecommendationViewModel
-            cards[adapterPosition].cta.isFollow = !cards[adapterPosition].cta.isFollow
-            adapter.notifyItemChanged(rowNumber, adapterPosition)
-        }
+            if (adapter.getlist()[rowNumber] is FeedRecommendationViewModel) {
+                val (_, cards) = adapter.getlist()[rowNumber] as FeedRecommendationViewModel
+                cards[adapterPosition].cta.isFollow = !cards[adapterPosition].cta.isFollow
+                adapter.notifyItemChanged(rowNumber, adapterPosition)
+            }
 
-        if (adapter.getlist()[rowNumber] is TopadsShopViewModel) {
-            val (_, dataList) = adapter.getlist()[rowNumber] as TopadsShopViewModel
-            dataList[adapterPosition].isFavorit = !dataList[adapterPosition].isFavorit
-            adapter.notifyItemChanged(rowNumber, adapterPosition)
+            if (adapter.getlist()[rowNumber] is TopadsShopViewModel) {
+                val (_, dataList) = adapter.getlist()[rowNumber] as TopadsShopViewModel
+                dataList[adapterPosition].isFavorit = !dataList[adapterPosition].isFavorit
+                adapter.notifyItemChanged(rowNumber, adapterPosition)
+            }
+            if (adapter.getlist()[rowNumber] is TopadsHeadlineUiModel) {
+                val topadsHeadlineUiModel = adapter.getlist()[rowNumber] as TopadsHeadlineUiModel
+                topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed?.let {
+                    topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed = !it
+                }
+                adapter.notifyItemChanged(rowNumber)
+            }
         }
     }
 
@@ -1778,7 +1761,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
-        feedViewModel.doVote(rowNumber, pollId, optionId)
+
     }
 
     private fun onGoToLink(link: String) {
@@ -2102,5 +2085,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun updatePlayWidgetTotalView(channelId: String?, totalView: String?) {
         feedViewModel.updatePlayWidgetTotalView(channelId, totalView)
+    }
+
+    override fun onFollowClick(positionInFeed: Int, shopId: String) {
+        feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
     }
 }

@@ -1,14 +1,13 @@
 package com.tokopedia.kategori.usecase
 
 import com.tokopedia.kategori.Constants
-import com.tokopedia.kategori.model.CategoriesItem
-import com.tokopedia.kategori.model.CategoryAllList
+import com.tokopedia.common_category.data.kategorymodel.CategoriesItem
+import com.tokopedia.common_category.data.kategorymodel.CategoryAllList
 import com.tokopedia.kategori.model.CategoryChildItem
-import com.tokopedia.kategori.model.ChildItem
+import com.tokopedia.common_category.data.kategorymodel.ChildItem
 import com.tokopedia.kategori.repository.KategoriRepository
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
-import javax.inject.Named
 
 
 private const val KEY_DEPTH = "depth"

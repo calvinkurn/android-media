@@ -3,13 +3,13 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 buildscript {
     repositories {
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -25,8 +25,6 @@ android {
     }
     defaultConfig {
         multiDexEnabled true
-    }
-    defaultConfig {
         if (project.hasProperty("benchmark")) {
             testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
         } else {
@@ -43,7 +41,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
 
     implementation project(rootProject.ext.libraries.analytics)
@@ -51,6 +48,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.coreNetwork)
@@ -66,8 +64,10 @@ dependencies {
     implementation project(rootProject.ext.features.flightOrderList)
 
     implementation rootProject.ext.unifyDependencies.icon
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.sortFilter
@@ -86,12 +86,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    implementation rootProject.ext.miscDependencies.cameraView
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.scannerZxing
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
-    }
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
@@ -105,12 +101,15 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.androidxTest
 
     // ui test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 }
 
 project.ext {

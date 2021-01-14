@@ -1,6 +1,9 @@
 package com.tokopedia.play.view.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -18,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
+import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.animation.PlayDelayFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
@@ -64,6 +68,7 @@ import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -73,7 +78,8 @@ import javax.inject.Inject
 class PlayUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val dispatchers: CoroutineDispatcherProvider,
-        private val trackingQueue: TrackingQueue
+        private val trackingQueue: TrackingQueue,
+        private val pipAnalytic: PlayPiPAnalytic
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -87,7 +93,8 @@ class PlayUserInteractionFragment @Inject constructor(
         VideoSettingsViewComponent.Listener,
         ImmersiveBoxViewComponent.Listener,
         PlayButtonViewComponent.Listener,
-        EndLiveInfoViewComponent.Listener
+        EndLiveInfoViewComponent.Listener,
+        PiPViewComponent.Listener
 {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + job)
@@ -106,6 +113,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info, this) }
+    private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -152,6 +160,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val chatListHeightMap = mutableMapOf<ChatHeightMapKey, Float>()
 
     private var mMaxTopChatMode: Int? = null
+    private var toasterBottomMargin = 0
 
     /**
      * Animation
@@ -258,6 +267,17 @@ class PlayUserInteractionFragment @Inject constructor(
         shouldOpenCartPage()
     }
 
+    override fun onCopyButtonClicked(view: ToolbarViewComponent, content: String) {
+        copyToClipboard(content)
+        showLinkCopiedToaster()
+
+        PlayAnalytics.clickCopyLink(
+                channelId = channelId,
+                channelType = playViewModel.channelType,
+                userId = playViewModel.userId
+        )
+    }
+
     /**
      * VideoControl View Component Listener
      */
@@ -302,6 +322,8 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onPinnedMessageActionClicked(view: PinnedViewComponent, applink: String, message: String) {
         PlayAnalytics.clickPinnedMessage(channelId, message, applink, playViewModel.channelType)
         openPageByApplink(applink)
+
+        playViewModel.openPiPBrowsingPage()
     }
 
     override fun onPinnedProductActionClicked(view: PinnedViewComponent) {
@@ -353,6 +375,18 @@ class PlayUserInteractionFragment @Inject constructor(
                 shouldFinish = true
         )
     }
+
+    /**
+     * PIP View Component Listener
+     */
+    override fun onPiPButtonClicked(view: PiPViewComponent) {
+        playViewModel.watchInPiP()
+        pipAnalytic.clickPiPIcon(
+                channelId = channelId,
+                shopId = playViewModel.partnerId,
+                channelType = playViewModel.channelType
+        )
+    }
     //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
@@ -386,6 +420,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (orientation.isLandscape) setupLandscapeView()
         else setupPortraitView()
+
+        if (playViewModel.isPiPAllowed) pipView?.show()
+        else pipView?.hide()
     }
 
     private fun setupInsets(view: View) {
@@ -488,6 +525,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 chatListViewOnStateChanged(channelType = it.channelType)
                 videoSettingsViewOnStateChanged(videoOrientation = it.orientation)
                 gradientBackgroundViewOnStateChanged(videoOrientation = it.orientation)
+                pipViewOnStateChanged(videoPlayer = meta.videoPlayer)
             }
 
             changeLayoutBasedOnVideoType(meta.videoPlayer, playViewModel.channelType)
@@ -511,6 +549,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeChannelInfo() {
         playViewModel.observableCompleteChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
             triggerStartMonitoring()
+            toolbarView.setShareInfo(it.channelInfo.shareInfo)
         })
     }
 
@@ -615,6 +654,7 @@ class PlayUserInteractionFragment @Inject constructor(
             pinnedViewOnStateChanged(bottomInsets = map)
             videoSettingsViewOnStateChanged(bottomInsets = map)
             immersiveBoxViewOnStateChanged(bottomInsets = map)
+            pipViewOnStateChanged(bottomInsets = map)
         })
     }
 
@@ -630,6 +670,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 pinnedView?.hide()
                 immersiveBoxView.hide()
                 playButtonView.hide()
+                toolbarView.setIsShareable(false)
 
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
 
@@ -639,6 +680,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 videoSettingsViewOnStateChanged(isFreezeOrBanned = true)
                 toolbarViewOnStateChanged(isFreezeOrBanned = true)
                 statsInfoViewOnStateChanged(isFreezeOrBanned = true)
+                pipViewOnStateChanged(isFreezeOrBanned = true)
 
                 /**
                  * Non view component
@@ -766,6 +808,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun openShopPage(partnerId: Long) {
         PlayAnalytics.clickShop(channelId, partnerId.toString(), playViewModel.channelType)
         openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
+
+        playViewModel.openPiPBrowsingPage()
     }
 
     private fun openProfilePage(partnerId: Long) {
@@ -928,6 +972,23 @@ class PlayUserInteractionFragment @Inject constructor(
         return chatListHeightManager!!
     }
 
+    private fun copyToClipboard(content: String) {
+        (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+                .setPrimaryClip(ClipData.newPlainText("play-room", content))
+    }
+
+    private fun showLinkCopiedToaster() {
+        if (toasterBottomMargin == 0) {
+            val likeAreaBottomMargin = (likeView.clickAreaView.layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin?:0
+            toasterBottomMargin = likeView.clickAreaView.height + likeAreaBottomMargin
+        }
+        Toaster.toasterCustomBottomHeight = toasterBottomMargin
+        Toaster.build(
+                container,
+                getString(R.string.play_link_copied),
+                type = Toaster.TYPE_NORMAL).show()
+    }
+
     //region OnStateChanged
     private fun playButtonViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
@@ -1079,6 +1140,20 @@ class PlayUserInteractionFragment @Inject constructor(
             )
             endLiveInfoView.show()
         } else endLiveInfoView.hide()
+    }
+
+    private fun pipViewOnStateChanged(
+            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral || isFreezeOrBanned) {
+            pipView?.hide()
+            return
+        }
+
+        if (!bottomInsets.isAnyShown) pipView?.show()
+        else pipView?.hide()
     }
     //endregion
 

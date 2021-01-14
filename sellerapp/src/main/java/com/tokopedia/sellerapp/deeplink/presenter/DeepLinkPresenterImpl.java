@@ -137,8 +137,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         campaign.setScreenName(screenName);
         UnifyTracking.eventCampaign(context, campaign);
         UnifyTracking.eventCampaign(context, campaignUri);
-
-        sendScreen(campaignUri, screenName, campaign);
     }
 
     private void sendScreen(String campaignUri, String screenName, Campaign campaign) {

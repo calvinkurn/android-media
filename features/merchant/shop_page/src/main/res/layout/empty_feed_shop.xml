@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <ImageView
@@ -19,7 +19,7 @@
         android:layout_marginTop="@dimen/dp_40"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         android:text="@string/empty_feed_title"
         android:textStyle="bold"/>
 
@@ -29,7 +29,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
-        android:textColor="@color/black_54"
+        android:textColor="@color/Unify_N700_44"
         android:textSize="@dimen/sp_12"
         android:text="@string/empty_feed_subtitle"
         android:layout_gravity="center"

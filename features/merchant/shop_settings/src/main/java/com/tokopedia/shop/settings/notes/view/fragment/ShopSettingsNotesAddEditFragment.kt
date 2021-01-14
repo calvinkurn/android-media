@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.listener.ShopSettingsNotesAddEditView
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingsNoteAddEditPresenter
 import com.tokopedia.unifycomponents.Toaster
@@ -24,7 +24,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
 
     private var isEdit = false
     private var isReturnablePolicy = false
-    private var shopNote = ShopNoteViewModel()
+    private var shopNote = ShopNoteUiModel()
 
     @Inject lateinit var presenter: ShopSettingsNoteAddEditPresenter
 
@@ -38,7 +38,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
 
         private const val PARAM_IS_SUCCESS = "IS_SUCCESS"
 
-        fun createInstance(isReturnablePolicy: Boolean, isEdit: Boolean, shopNoteModel: ShopNoteViewModel = ShopNoteViewModel()) =
+        fun createInstance(isReturnablePolicy: Boolean, isEdit: Boolean, shopNoteModel: ShopNoteUiModel = ShopNoteUiModel()) =
                 ShopSettingsNotesAddEditFragment().apply { arguments = Bundle().apply {
                     putParcelable(PARAM_SHOP_NOTE, shopNoteModel)
                     putBoolean(PARAM_IS_RETURNABLE_POLICY, isReturnablePolicy)
@@ -61,7 +61,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
         arguments?.let {
             isEdit = it.getBoolean(PARAM_IS_EDIT, false)
             isReturnablePolicy = it.getBoolean(PARAM_IS_RETURNABLE_POLICY, false)
-            shopNote = it.getParcelable(PARAM_SHOP_NOTE) ?: ShopNoteViewModel()
+            shopNote = it.getParcelable(PARAM_SHOP_NOTE) ?: ShopNoteUiModel()
         }
 
         if (isReturnablePolicy){

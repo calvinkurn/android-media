@@ -1,4 +1,4 @@
-package com.tokopedia.digital.home.model
+package com.tokopedia.digital.home.old.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchTypeFactory

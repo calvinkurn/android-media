@@ -1,7 +1,6 @@
 package com.tokopedia.topads.dashboard.view.activity
 
 import android.app.Activity
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,10 +13,8 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.AppUtil
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
@@ -30,8 +27,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.AUTO_ADS_DISABLED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EXPIRE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FIRST_LAUNCH
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_CREATE_FORM_PATH
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -40,6 +35,8 @@ import com.tokopedia.topads.dashboard.view.fragment.BerandaTabFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.topads.dashboard.view.sheet.NoProductBottomSheet
+import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import javax.inject.Inject
@@ -50,11 +47,14 @@ import javax.inject.Inject
 
 private const val CLICK_BUAT_IKLAN = "click - tambah iklan"
 
-class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight, TopAdsProductIklanFragment.AdInfo {
+class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>,
+        TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight,
+        TopAdsProductIklanFragment.AdInfo, TopAdsHeadlineBaseFragment.AppBarActionHeadline {
 
     private var tracker: TopAdsDashboardTracking? = null
     private val INSIGHT_PAGE = 2
     private var adType = "-1"
+    private var isNoProduct = false
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -71,10 +71,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         renderTabAndViewPager()
         header_toolbar?.actionTextView?.setOnClickListener {
             if (GlobalConfig.isSellerApp()) {
-                val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
-                startActivityForResult(intent, AUTO_ADS_DISABLED)
-            } else {
-                openCreateForm()
+                navigateToAdTypeSelection()
             }
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
         }
@@ -96,24 +93,18 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             finish()
         })
         createAd.setOnClickListener {
-            if (GlobalConfig.isSellerApp()) {
-                val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
-                startActivityForResult(intent, AUTO_ADS_DISABLED)
-            } else {
-                openCreateForm()
-            }
+            navigateToAdTypeSelection()
         }
         createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val height = createAd?.measuredHeight
         view_pager?.setPadding(0, 0, 0, height ?: 0)
-
-        tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(p0: TabLayout.Tab?) {}
 
             override fun onTabUnselected(p0: TabLayout.Tab?) {}
 
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                if (tab.position == 0) {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab?.position == 0) {
                     bottom.visibility = View.VISIBLE
                     createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
                     val height = createAd?.measuredHeight
@@ -158,7 +149,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 }
             }
         })
-        tab_layout.setupWithViewPager(view_pager)
+        tab_layout?.setupWithViewPager(view_pager)
     }
 
 
@@ -176,8 +167,15 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private fun getViewPagerAdapter(): PagerAdapter {
         val list: MutableList<FragmentTabItem> = mutableListOf()
+        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        tab_layout?.addNewTab(getString(R.string.topads_dash_beranda))
+        tab_layout?.addNewTab(getString(R.string.topads_dash_iklan_produck))
+        tab_layout?.addNewTab(getString(R.string.topads_dash_headline_title))
+        tab_layout?.addNewTab(getString(R.string.topads_dash_recommend))
+        tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_beranda), BerandaTabFragment.createInstance()))
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_iklan_produck), TopAdsProductIklanFragment.createInstance()))
+        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_headline_title), TopAdsHeadlineBaseFragment.createInstance()))
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_recommend), TopAdsRecommendationFragment.createInstance()))
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
         pagerAdapter.setList(list)
@@ -238,16 +236,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     fun getAdInfo(): String? = adType
 
-    private fun openCreateForm() {
-        if (AppUtil.isSellerInstalled(this)) {
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
-            intent.component = ComponentName(SELLER_PACKAGENAME, SELLER_CREATE_FORM_PATH)
-            startActivity(intent)
-        } else {
-            RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
-        }
-    }
-
     override fun setAppBarState(state: TopAdsProductIklanFragment.State?) {
         if (state == TopAdsProductIklanFragment.State.COLLAPSED) {
             app_bar_layout.setExpanded(false)
@@ -270,6 +258,27 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 }
             }
         }
+    }
 
+    override fun onNoProduct(isNoProduct: Boolean) {
+        this.isNoProduct = isNoProduct
+    }
+
+    override fun setAppBarStateHeadline(state: TopAdsProductIklanFragment.State?) {
+        if (state == TopAdsProductIklanFragment.State.COLLAPSED) {
+            app_bar_layout.setExpanded(false)
+        } else if (state == TopAdsProductIklanFragment.State.EXPANDED) {
+            app_bar_layout.setExpanded(true)
+        }
+    }
+
+    private fun navigateToAdTypeSelection() {
+        if (isNoProduct) {
+            val noProductBottomSheet = NoProductBottomSheet.newInstance()
+            noProductBottomSheet.show(supportFragmentManager, "")
+        } else {
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
+            startActivityForResult(intent, AUTO_ADS_DISABLED)
+        }
     }
 }

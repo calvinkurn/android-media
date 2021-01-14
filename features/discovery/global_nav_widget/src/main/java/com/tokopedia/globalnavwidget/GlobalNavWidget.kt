@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_PILL
+import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.global_nav_widget_layout.view.*
 
@@ -61,7 +61,7 @@ class GlobalNavWidget: BaseCustomView {
 
         val gd = GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(Color.WHITE, backgroundGradientColorList[backgroundIndex]))
+                intArrayOf(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0), backgroundGradientColorList[backgroundIndex]))
         gd.cornerRadius = 0f
 
         globalNavContainerLayout?.background = gd

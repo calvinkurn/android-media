@@ -16,7 +16,6 @@ import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -116,24 +115,6 @@ class CartShopViewHolder(itemView: View,
     private fun initCheckboxWatcherDebouncer(cartShopHolderData: CartShopHolderData, compositeSubscription: CompositeSubscription) {
         cbSelectShop.let {
             compositeSubscription.add(
-                    rxCompoundButtonCheckDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
-                        override fun onNext(isChecked: Boolean) {
-                            var checked = isChecked
-                            if (cartShopHolderData.isPartialSelected) {
-                                checked = true
-                            }
-                            actionListener.onCartShopNameChecked(checked)
-                        }
-
-                        override fun onCompleted() {
-                        }
-
-                        override fun onError(e: Throwable?) {
-                        }
-                    })
-            )
-
-            compositeSubscription.add(
                     rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
                         override fun onNext(isChecked: Boolean) {
                             cbSelectShopClickListener(cartShopHolderData)
@@ -146,7 +127,6 @@ class CartShopViewHolder(itemView: View,
                         }
                     })
             )
-
         }
     }
 
@@ -202,7 +182,7 @@ class CartShopViewHolder(itemView: View,
         } else {
             cbSelectShop.isEnabled = true
             flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, R.drawable.fg_enabled_item)
-            llShopContainer.setBackgroundColor(llShopContainer.context.resources.getColor(R.color.white))
+            llShopContainer.setBackgroundColor(llShopContainer.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             layoutError.gone()
         }
     }

@@ -2,12 +2,14 @@ package com.tokopedia.topads.view.model
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.ETALASE
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
 import com.tokopedia.topads.common.data.internal.ParamObject.ROWS
@@ -18,7 +20,9 @@ import com.tokopedia.topads.common.data.internal.ParamObject.START
 import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.data.response.ResponseKeywordSuggestion
 import com.tokopedia.topads.data.response.ResponseProductList
+import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,20 +36,18 @@ import javax.inject.Named
  */
 class ProductAdsListViewModel @Inject constructor(
         private val context: Context,
-        @Named("Main")
-        private val dispatcher: CoroutineDispatcher,
+        private val dispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
-        private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
+        private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher.main) {
     private var totalCount = 0
 
     fun etalaseList(onSuccess: ((List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) -> Unit), onError: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
-                    val data = withContext(Dispatchers.IO) {
-                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_etalase_list),
-                                ResponseEtalase.Data::class.java, mapOf(SHOP_Id to userSession.shopId))
-                        val cacheStrategy = GraphqlCacheStrategy
-                                .Builder(CacheType.CLOUD_THEN_CACHE).build()
+                    val data = withContext(dispatcher.io) {
+                        val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_etalase_list),
+                                ResponseEtalase.Data::class.java, hashMapOf(SHOP_Id to userSession.shopId))
+                        val cacheStrategy = RequestHelper.getCacheStrategy()
                         gqlRepository.getReseponse(listOf(request), cacheStrategy)
                     }
                     data.getSuccessData<ResponseEtalase.Data>().shopShowcasesByShopID.let {
@@ -62,23 +64,24 @@ class ProductAdsListViewModel @Inject constructor(
                     onEmpty: (() -> Unit), onError: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
-                    val queryMap = mutableMapOf<String, Any>(
+                    val queryMap = hashMapOf<String, Any>(
                             KEYWORD to keyword,
                             ETALASE to etalaseId,
                             SORT_BY to sortBy,
                             ROWS to rows,
                             START to start,
                             STATUS to isPromoted,
-                            SHOP_ID to Integer.parseInt(userSession.shopId)
+                                SHOP_ID to Integer.parseInt(userSession.shopId)
                     )
-                    val result = withContext(Dispatchers.IO) {
-                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_productlist), ResponseProductList.Result::class.java, queryMap)
-                        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
+                    val result = withContext(dispatcher.io) {
+                        val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_productlist),
+                                ResponseProductList.Result::class.java, queryMap)
+                        val cacheStrategy = RequestHelper.getCacheStrategy()
                         gqlRepository.getReseponse(listOf(request), cacheStrategy)
 
                     }
 
-                    result.getSuccessData<ResponseProductList.Result>()?.let {
+                    result.getSuccessData<ResponseProductList.Result>().let {
                         if (it.topadsGetListProduct.data.isEmpty()) {
                             onEmpty()
                         } else {

@@ -11,12 +11,18 @@ import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment
 class SmartBillsActivity : BaseSimpleActivity(), HasComponent<SmartBillsComponent> {
 
     override fun getNewFragment(): Fragment? {
-        return SmartBillsFragment()
+        val bundle = intent.extras
+        val sourceType = bundle?.getString(PARAM_SOURCE_TYPE) ?: ""
+        return SmartBillsFragment.newInstance(sourceType)
     }
 
     override fun getComponent(): SmartBillsComponent {
         return DaggerSmartBillsComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
+    }
+
+    companion object {
+        const val PARAM_SOURCE_TYPE = "source"
     }
 }

@@ -33,7 +33,6 @@ import com.tokopedia.purchase_platform.common.utils.QuantityWrapper
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
 import rx.Observable
@@ -55,7 +54,6 @@ class CartItemViewHolder constructor(itemView: View,
     private var context: Context? = null
     private var viewHolderListener: ViewHolderListener? = null
 
-    private val llWarningAndError: LinearLayout
     private val flCartItemContainer: FrameLayout
     private val cbSelectItem: CheckBox
     private val ivProductImage: ImageView
@@ -81,11 +79,6 @@ class CartItemViewHolder constructor(itemView: View,
     private val tvErrorFormRemarkValidation: TextView
     private val tvLabelRemarkTitle: Typography
 
-    private val layoutError: LinearLayout
-    private val tickerError: Ticker
-    private val layoutWarning: LinearLayout
-    private val tickerWarning: Ticker
-
     private val tvNoteCharCounter: TextView
     private val tvRemark: TextView
     private val divider: View
@@ -104,7 +97,6 @@ class CartItemViewHolder constructor(itemView: View,
     init {
         context = itemView.context
 
-        llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error)
         flCartItemContainer = itemView.findViewById(R.id.fl_cart_item_container)
         cbSelectItem = itemView.findViewById(R.id.cb_select_item)
         tvErrorFormValidation = itemView.findViewById(R.id.tv_error_form_validation)
@@ -125,10 +117,6 @@ class CartItemViewHolder constructor(itemView: View,
         etRemark = itemView.findViewById(R.id.et_remark)
         tvLabelRemarkTitle = itemView.findViewById(R.id.tv_label_remark_title)
         btnDelete = itemView.findViewById(R.id.btn_delete_cart)
-        layoutError = itemView.findViewById(R.id.layout_error)
-        tickerError = itemView.findViewById(R.id.ticker_error)
-        layoutWarning = itemView.findViewById(R.id.layout_warning)
-        tickerWarning = itemView.findViewById(R.id.ticker_warning)
         tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter)
         tvRemark = itemView.findViewById(R.id.tv_remark)
         divider = itemView.findViewById(R.id.holder_item_cart_divider)
@@ -188,7 +176,6 @@ class CartItemViewHolder constructor(itemView: View,
         this.dataSize = dataSize
 
         renderProductInfo(data, parentPosition)
-        renderWarningAndError(data)
         renderSelection(data, parentPosition)
         renderQuantity(data, parentPosition, viewHolderListener)
         renderDefaultActionState()
@@ -252,45 +239,6 @@ class CartItemViewHolder constructor(itemView: View,
                 }
             }
         }
-    }
-
-    private fun renderWarningAndError(data: CartItemHolderData) {
-        // Initial action state
-        rendercartItemActionOnNormalProduct()
-        if (data.cartItemData?.isParentHasErrorOrWarning == true) {
-            if (data.cartItemData?.isDisableAllProducts == false || data.cartItemData?.isError == true || data.cartItemData?.isWarning == true) {
-                renderErrorItemHeader(data)
-                renderWarningItemHeader(data)
-                setWarningAndErrorVisibility(data)
-            } else {
-                disableView(data)
-            }
-        } else {
-            if (data.cartItemData?.isSingleChild == false) {
-                renderErrorItemHeader(data)
-                renderWarningItemHeader(data)
-                setWarningAndErrorVisibility(data)
-            } else {
-                disableView(data)
-            }
-        }
-    }
-
-    private fun setWarningAndErrorVisibility(data: CartItemHolderData) {
-        if ((!TextUtils.isEmpty(data.cartItemData?.errorMessageTitle) || !TextUtils.isEmpty(data.cartItemData?.warningMessageTitle)) && (data.cartItemData?.isError == true || data.cartItemData?.isWarning == true)) {
-            llWarningAndError.visibility = View.VISIBLE
-        } else {
-            llWarningAndError.visibility = View.GONE
-        }
-    }
-
-    private fun disableView(data: CartItemHolderData) {
-        if (data.cartItemData?.isError == true) {
-            flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_disabled_item)
-        } else {
-            flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_enabled_item)
-        }
-        llWarningAndError.visibility = View.GONE
     }
 
     private fun renderProductInfo(data: CartItemHolderData, parentPosition: Int) {
@@ -357,8 +305,8 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun createProductInfoText(it: String): Typography {
         return Typography(itemView.context).apply {
-            setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
-            setType(Typography.SMALL)
+            setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
+            setType(Typography.BODY_3)
             text = if (layoutProductInfo.childCount > 0) ", $it" else it
         }
     }
@@ -388,15 +336,15 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderSlashPrice(data: CartItemHolderData) {
-        val hasPriceOriginal = data.cartItemData?.originData?.priceOriginal != 0
-        val hasWholesalePrice = data.cartItemData?.originData?.wholesalePrice != 0
+        val hasPriceOriginal = data.cartItemData?.originData?.priceOriginal != 0L
+        val hasWholesalePrice = data.cartItemData?.originData?.wholesalePrice != 0L
         val hasPriceDrop = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
-                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData?.originData?.pricePlan?.toInt() ?: 0
+                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData?.originData?.pricePlan?.toLong() ?: 0
         if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
             if (data.cartItemData?.originData?.slashPriceLabel?.isNotBlank() == true) {
                 // Slash price
                 renderSlashPriceFromCampaign(data)
-            } else if (data.cartItemData?.originData?.initialPriceBeforeDrop != 0) {
+            } else if (data.cartItemData?.originData?.initialPriceBeforeDrop != 0L) {
                 val wholesalePrice = data.cartItemData?.originData?.wholesalePrice ?: 0
                 if (wholesalePrice > 0 && wholesalePrice.toDouble() < data.cartItemData?.originData?.pricePlan ?: 0.0) {
                     // Wholesale
@@ -405,7 +353,7 @@ class CartItemViewHolder constructor(itemView: View,
                     // Price drop
                     renderSlashPriceFromPriceDrop(data)
                 }
-            } else if (data.cartItemData?.originData?.wholesalePrice != 0) {
+            } else if (data.cartItemData?.originData?.wholesalePrice != 0L) {
                 // Wholesale
                 renderSlashPriceFromWholesale(data)
             }
@@ -523,7 +471,7 @@ class CartItemViewHolder constructor(itemView: View,
 
                 setNotesWidth()
             }
-            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.light_G500))
+            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
         } else {
             // No notes at all
             this.etRemark.visibility = View.GONE
@@ -533,7 +481,7 @@ class CartItemViewHolder constructor(itemView: View,
             this.tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_add_note)
             this.tvLabelRemarkOption.visibility = View.VISIBLE
             this.etRemark.setText("")
-            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
             tvLabelRemarkOption.setPadding(0, 0, 0, 0)
         }
 
@@ -651,10 +599,10 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderActionWishlist(action: ActionData, data: CartItemHolderData) {
         if (data.cartItemData?.originData?.isWishlisted == true && action.id == ACTION_WISHLISTED) {
             textMoveToWishlist.text = action.message
-            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
+            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_44))
             textMoveToWishlist.setOnClickListener { }
         } else if (data.cartItemData?.originData?.isWishlisted == false && action.id == ACTION_WISHLIST) {
-            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
             textMoveToWishlist.setOnClickListener {
                 actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, data.cartItemData?.originData?.cartId
                         ?: 0, ivProductImage)
@@ -670,64 +618,6 @@ class CartItemViewHolder constructor(itemView: View,
             if (position != RecyclerView.NO_POSITION) {
                 actionListener?.onCartItemProductClicked(data.cartItemData)
             }
-        }
-    }
-
-    private fun renderErrorItemHeader(data: CartItemHolderData) {
-        if (data.cartItemData?.isError == true) {
-            flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_disabled_item)
-
-            if (!TextUtils.isEmpty(data.cartItemData?.errorMessageTitle)) {
-                val errorDescription = data.cartItemData?.errorMessageDescription
-                if (!TextUtils.isEmpty(errorDescription)) {
-                    tickerError.tickerTitle = data.cartItemData?.errorMessageTitle
-                    tickerError.setTextDescription(errorDescription ?: "")
-                } else {
-                    tickerError.tickerTitle = null
-                    tickerError.setTextDescription(data.cartItemData?.errorMessageTitle ?: "")
-                }
-            }
-
-            tickerError.tickerType = Ticker.TYPE_ERROR
-            tickerError.tickerShape = Ticker.SHAPE_LOOSE
-            tickerError.closeButtonVisibility = View.GONE
-            tickerError.visibility = View.VISIBLE
-            tickerError.post {
-                tickerError.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                tickerError.requestLayout()
-            }
-            layoutError.visibility = View.VISIBLE
-        } else {
-            rendercartItemActionOnNormalProduct()
-            flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_enabled_item)
-            layoutError.visibility = View.GONE
-        }
-    }
-
-    private fun renderWarningItemHeader(data: CartItemHolderData) {
-        if (data.cartItemData?.isWarning == true) {
-            val warningDescription = data.cartItemData?.warningMessageDescription
-            if (!TextUtils.isEmpty(warningDescription)) {
-                tickerWarning.tickerTitle = data.cartItemData?.warningMessageTitle
-                tickerWarning.setTextDescription(warningDescription ?: "")
-            } else {
-                tickerWarning.tickerTitle = null
-                tickerWarning.setTextDescription(data.cartItemData?.warningMessageTitle ?: "")
-            }
-            tickerWarning.tickerType = Ticker.TYPE_WARNING
-            tickerWarning.tickerShape = Ticker.SHAPE_LOOSE
-            tickerWarning.closeButtonVisibility = View.GONE
-            tickerWarning.visibility = View.VISIBLE
-            tickerWarning.post {
-                tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                tickerWarning.requestLayout()
-            }
-            layoutWarning.visibility = View.VISIBLE
-        } else {
-            tickerWarning.visibility = View.GONE
-            layoutWarning.visibility = View.GONE
         }
     }
 
@@ -824,11 +714,6 @@ class CartItemViewHolder constructor(itemView: View,
                 handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)
             }
         }
-    }
-
-    private fun rendercartItemActionOnNormalProduct() {
-        rlProductAction.visibility = View.VISIBLE
-        llShopNoteSection.visibility = View.VISIBLE
     }
 
     interface ViewHolderListener {

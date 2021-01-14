@@ -20,19 +20,19 @@ class RechargeHomepageToolbar @JvmOverloads constructor(context: Context, attrs:
 
     fun toInitialMode() {
         hideShadow()
-        setTitleTextColor(resources.getColor(com.tokopedia.design.R.color.white))
-        setBackgroundColor(resources.getColor(com.tokopedia.design.R.color.transparent))
+        setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+        setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navigationIcon?.setTint(resources.getColor(com.tokopedia.design.R.color.white))
-        } else navigationIcon = resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_back_white_24)
+            navigationIcon?.setTint(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+        } else navigationIcon = ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_back_white_24)
     }
 
     fun toOnScrolledMode() {
         showShadow()
-        setTitleTextColor(resources.getColor(com.tokopedia.design.R.color.grey_800))
+        setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N600))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navigationIcon?.setTint(resources.getColor(com.tokopedia.design.R.color.grey_800))
-        } else navigationIcon =  resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
+            navigationIcon?.setTint(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N600))
+        } else navigationIcon =  ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
 
     }
 
@@ -45,8 +45,8 @@ class RechargeHomepageToolbar @JvmOverloads constructor(context: Context, attrs:
                 pT = ViewHelper.getStatusBarHeight(context)
             }
             val pR = this.paddingRight
-            val pB = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_32)
-            this.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.design.R.color.white))
+            val pB = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl4)
+            this.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             this.setPadding(pL, pT, pR, pB)
         }
     }
@@ -62,13 +62,13 @@ class RechargeHomepageToolbar @JvmOverloads constructor(context: Context, attrs:
             val pR = this.paddingRight
             val pB = resources.getDimensionPixelSize(TOOLBAR_PADDING)
 
-            this.background = ContextCompat.getDrawable(context, R.drawable.travel_homepage_toolbar_bg_shadow_bottom)
+            this.background = ContextCompat.getDrawable(context, R.drawable.bg_toolbar_shadow_bottom)
             this.setPadding(pL, pT, pR, pB)
         }
     }
 
     companion object {
-        val TOOLBAR_PADDING = com.tokopedia.design.R.dimen.dp_8
+        val TOOLBAR_PADDING = com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
     }
 
 }

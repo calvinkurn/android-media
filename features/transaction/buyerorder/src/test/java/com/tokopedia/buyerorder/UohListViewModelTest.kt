@@ -1,9 +1,12 @@
 package com.tokopedia.buyerorder
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.JsonArray
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.domain.*
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
@@ -13,12 +16,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import rx.Subscriber
 
 /**
  * Created by fwidjaja on 2020-05-07.
@@ -30,15 +35,11 @@ class UohListViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = UohTestDispatcherProvider()
+    private val dispatcher = BuyerTestDispatcherProvider()
     private lateinit var uohListViewModel: UohListViewModel
     private var listOrderHistory = listOf<UohListOrder.Data.UohOrders.Order>()
     private var listRecommendation = listOf<RecommendationWidget>()
     private var finishOrderResult = UohFinishOrder.Data.FinishOrderBuyer()
-    private var atcResult = listOf<AtcMultiData>()
-    private var flightResendEmailResult = listOf<FlightResendEmail.Data>()
-    private var trainResendEmailResult = listOf<TrainResendEmail.Data>()
-    private var rechargeSetFailResult = listOf<RechargeSetFailData.Data>()
     private var listMsg = arrayListOf<String>()
 
     @RelaxedMockK
@@ -65,12 +66,16 @@ class UohListViewModelTest {
     @RelaxedMockK
     lateinit var rechargeSetFailUseCase: RechargeSetFailUseCase
 
+    @RelaxedMockK
+    lateinit var atcUseCase: AddToCartUseCase
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         uohListViewModel = UohListViewModel(dispatcher, uohListUseCase,
                 getRecommendationUseCase, uohFinishOrderUseCase, atcMultiProductsUseCase,
-                lsPrintFinishOrderUseCase, flightResendEmailUseCase, trainResendEmailUseCase, rechargeSetFailUseCase)
+                lsPrintFinishOrderUseCase, flightResendEmailUseCase, trainResendEmailUseCase,
+                rechargeSetFailUseCase, atcUseCase)
 
         val order1 = UohListOrder.Data.UohOrders.Order(orderUUID = "abc", verticalID = "",
                 verticalCategory = "", userID = "", status = "", verticalStatus = "", searchableText = "",
@@ -234,49 +239,49 @@ class UohListViewModelTest {
         assert((uohListViewModel.finishOrderResult.value as Success<UohFinishOrder.Data.FinishOrderBuyer>).data.message.isNotEmpty())
     }
 
-    // atc
+    // atc multi
     @Test
-    fun atc_shouldReturnSuccess() {
+    fun atcMulti_shouldReturnSuccess() {
         //given
         coEvery {
             atcMultiProductsUseCase.execute(any(), any(), any())
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(success = 1))))
 
         //when
-        uohListViewModel.doAtc("", "", JsonArray())
+        uohListViewModel.doAtcMulti("", "", arrayListOf())
 
         //then
-        assert(uohListViewModel.atcResult.value is Success)
-        assert((uohListViewModel.atcResult.value as Success<AtcMultiData>).data.atcMulti.buyAgainData.success == 1)
+        assert(uohListViewModel.atcMultiResult.value is Success)
+        assert((uohListViewModel.atcMultiResult.value as Success<AtcMultiData>).data.atcMulti.buyAgainData.success == 1)
     }
 
     @Test
-    fun atc_shouldReturnFail() {
+    fun atcMulti_shouldReturnFail() {
         //given
         coEvery {
             atcMultiProductsUseCase.execute(any(), any(), any())
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.doAtc("", "", JsonArray())
+        uohListViewModel.doAtcMulti("", "", arrayListOf())
 
         //then
-        assert(uohListViewModel.atcResult.value is Fail)
+        assert(uohListViewModel.atcMultiResult.value is Fail)
     }
 
     @Test
-    fun atc_shouldNotReturnEmptyMessage() {
+    fun atcMulti_shouldNotReturnEmptyMessage() {
         //given
         coEvery {
             atcMultiProductsUseCase.execute(any(), any(), any())
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(1, listMsg))))
 
         //when
-        uohListViewModel.doAtc("", "", JsonArray())
+        uohListViewModel.doAtcMulti("", "", arrayListOf())
 
         //then
-        assert(uohListViewModel.atcResult.value is Success)
-        assert((uohListViewModel.atcResult.value as Success<AtcMultiData>).data.atcMulti.buyAgainData.message.isNotEmpty())
+        assert(uohListViewModel.atcMultiResult.value is Success)
+        assert((uohListViewModel.atcMultiResult.value as Success<AtcMultiData>).data.atcMulti.buyAgainData.message.isNotEmpty())
     }
 
     // lsprint
@@ -427,5 +432,64 @@ class UohListViewModelTest {
 
         //then
         assert(uohListViewModel.rechargeSetFailResult.value is Fail)
+    }
+
+    // atc
+    @Test
+    fun atc_shouldReturnSuccess() {
+        //given
+
+        coEvery {
+            atcUseCase.execute(any(), any()) }.answers {
+            (secondArg() as Subscriber<AddToCartDataModel>).onNext(
+                    AddToCartDataModel(
+                            status = AddToCartDataModel.STATUS_OK,
+                            data = DataModel(success = 1)
+                    )
+            )
+        }
+
+        //when
+        uohListViewModel.doAtc(AddToCartRequestParams())
+
+        //then
+        assert(uohListViewModel.atcResult.value is Success)
+        assert((uohListViewModel.atcResult.value as Success<AddToCartDataModel>).data.data.success == 1)
+    }
+
+    @Test
+    fun atc_shouldReturnFail() {
+        //given
+        coEvery {
+            atcUseCase.execute(any(), any()) }.answers {
+            (secondArg() as Subscriber<AddToCartDataModel>).onError(Throwable())
+        }
+
+        //when
+        uohListViewModel.doAtc(AddToCartRequestParams())
+
+        //then
+        assert(uohListViewModel.atcResult.value is Fail)
+    }
+
+    @Test
+    fun atc_shouldNotReturnEmptyMessage() {
+        //given
+        coEvery {
+            atcUseCase.execute(any(), any()) }.answers {
+            (secondArg() as Subscriber<AddToCartDataModel>).onNext(
+                    AddToCartDataModel(
+                            status = AddToCartDataModel.STATUS_OK,
+                            data = DataModel(success = 1, message = listMsg)
+                    )
+            )
+        }
+
+        //when
+        uohListViewModel.doAtc(AddToCartRequestParams())
+
+        //then
+        assert(uohListViewModel.atcResult.value is Success)
+        assert((uohListViewModel.atcResult.value as Success<AddToCartDataModel>).data.data.message.isNotEmpty())
     }
 }

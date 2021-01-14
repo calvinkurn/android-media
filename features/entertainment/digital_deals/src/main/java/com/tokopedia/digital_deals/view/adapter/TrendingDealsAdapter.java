@@ -42,6 +42,7 @@ import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.library.baseadapter.BaseAdapter;
 import com.tokopedia.network.data.model.response.DataResponse;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -158,12 +159,12 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> implements De
 
     @Override
     public void showLoginSnackbar(String message, int position) {
-        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
+        View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+        Toaster.build(rootView, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
                 getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.title_activity_login), v -> {
                     Intent intent = RouteManager.getIntent(context, ApplinkConst.LOGIN);
                     toActivityRequest.onNavigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN, position);
-                }
-        ).show();
+                }).show();
     }
 
 
@@ -213,9 +214,9 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> implements De
         void bindData(final ProductItem productItem, int itemPosition) {
             this.index = itemPosition;
             dealsDetails.setText(productItem.getDisplayName());
-            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
             if (!brandPageCard) {
-                ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+                ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                 brandName.setText(productItem.getBrand().getTitle());
                 if (productItem.getBrand().getUrl() != null) {
                     cvBrand.setOnClickListener(this);

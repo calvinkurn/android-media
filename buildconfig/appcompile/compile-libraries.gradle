@@ -26,7 +26,9 @@ include 'libraries:dev_monitoring_tools'
 include 'libraries:dynamic_features'
 include 'libraries:encryption'
 include "libraries:fingerprint"
+include "libraries:floating_window"
 include "libraries:image_picker"
+include "libraries:image_picker_common"
 include "libraries:image_preview"
 include 'libraries:imageuploader'
 
@@ -71,3 +73,5 @@ include "libraries:tokopatch"
 include ':libraries:annotation_proc_central'
 include "libraries:screen_recorder"
 include "libraries:screenshot_observer"
+include "libraries:work_manager_util"
+include "libraries:unit_test"

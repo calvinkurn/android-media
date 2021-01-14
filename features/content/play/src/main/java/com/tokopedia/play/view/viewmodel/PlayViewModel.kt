@@ -33,6 +33,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -55,7 +56,8 @@ class PlayViewModel @Inject constructor(
         private val playSocket: PlaySocket,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider,
-        private val pageMonitoring: PlayPltPerformanceCallback
+        private val pageMonitoring: PlayPltPerformanceCallback,
+        private val remoteConfig: RemoteConfig
 ) : PlayBaseViewModel(dispatchers.main) {
 
     /**
@@ -98,6 +100,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
+    val observableEventPiP: LiveData<Event<PiPMode>>
+        get() = _observableEventPiP
 
     val videoOrientation: VideoOrientation
         get() {
@@ -139,6 +143,21 @@ class PlayViewModel @Inject constructor(
     val totalView: String?
         get() = _observableTotalViews.value?.totalView
 
+
+    val pipMode: PiPMode
+        get() = _observableEventPiP.value?.peekContent() ?: PiPMode.StopPip
+
+    val isInPiPMode: Boolean
+        get() {
+            val pipValue = _observableEventPiP.value
+            return pipValue != null && pipValue.peekContent() != PiPMode.StopPip
+        }
+    val isPiPAllowed: Boolean
+        get() {
+            return remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_PIP, true)
+                    && !videoPlayer.isYouTube
+        }
+
     val userId: String
         get() = userSession.userId
 
@@ -169,22 +188,8 @@ class PlayViewModel @Inject constructor(
     }
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
+    private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
-        addSource(observablePartnerInfo) {
-            val currentMessageValue = _observablePinnedMessage.value
-            if (currentMessageValue != null) {
-                _observablePinnedMessage.value = currentMessageValue.copy(
-                        partnerName = it.name
-                )
-            }
-
-            val currentProductValue = _observablePinnedProduct.value
-            if (currentProductValue != null) {
-                _observablePinnedProduct.value = currentProductValue.copy(
-                        partnerName = it.name
-                )
-            }
-        }
         addSource(observableProductSheetContent) {
             _observablePinned.value = getPinnedModel(
                     pinnedMessage = _observablePinnedMessage.value,
@@ -276,7 +281,7 @@ class PlayViewModel @Inject constructor(
         super.onCleared()
         stateHandler.removeObserver(stateHandlerObserver)
         destroy()
-        stopPlayer()
+        if (!isInPiPMode) stopPlayer()
         playVideoManager.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
         channelStateProcessor.removeStateListener(channelStateListener)
@@ -398,6 +403,18 @@ class PlayViewModel @Inject constructor(
         return playVideoManager.getVideoDuration()
     }
 
+    fun watchInPiP() {
+        _observableEventPiP.value = Event(PiPMode.WatchInPip)
+    }
+
+    fun openPiPBrowsingPage() {
+        _observableEventPiP.value = Event(PiPMode.BrowsingOtherPage)
+    }
+
+    fun stopPiP() {
+        _observableEventPiP.value = Event(PiPMode.StopPip)
+    }
+
     private fun initiateVideo(video: Video) {
         startVideoWithUrlString(
                 video.streamSource,
@@ -437,13 +454,13 @@ class PlayViewModel @Inject constructor(
 
                 val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
                         channel = channel,
-                        partnerName = _observablePartnerInfo.value?.name.orEmpty(),
                         isBanned = _observableEvent.value?.isBanned ?: false,
                         exoPlayer = playVideoManager.videoPlayer
                 )
                 _observableCompleteInfo.value = completeInfoUiModel
 
                 _observableGetChannelInfo.value = NetworkResult.Success(completeInfoUiModel.channelInfo)
+                _observablePartnerInfo.value = completeInfoUiModel.channelInfo.partnerInfo
                 _observableTotalViews.value = completeInfoUiModel.totalView
                 _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
                 _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
@@ -453,17 +470,19 @@ class PlayViewModel @Inject constructor(
 
                 if (!isActive) return@launchCatchError
 
-                launch { getTotalLikes(completeInfoUiModel.channelInfo.feedInfo) }
+                launch { getTotalLikes(completeInfoUiModel.channelInfo.id) }
                 launch { getIsLike(completeInfoUiModel.channelInfo.feedInfo) }
                 launch { getBadgeCart(channel.configuration.showCart) }
-                launch { if (channel.configuration.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
+                launch { if (completeInfoUiModel.channelInfo.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
 
                 startWebSocket(channelId)
 
                 if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
                 else playVideoManager.release()
 
-                _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
+                if (completeInfoUiModel.channelInfo.partnerInfo.type == PartnerType.Shop) {
+                    getFollowStatus(completeInfoUiModel.channelInfo)
+                }
 
             }) {
                 if (retryCount == 0) _observableChannelErrorEvent.value = Event(false)
@@ -640,13 +659,10 @@ class PlayViewModel @Inject constructor(
         _observableChatList.value = currentChatList
     }
 
-    private suspend fun getTotalLikes(feedInfoUiModel: FeedInfoUiModel) {
+    private suspend fun getTotalLikes(channelId: String) {
         try {
             val totalLike = withContext(dispatchers.io) {
-                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(
-                        contentId = feedInfoUiModel.contentId,
-                        contentType = feedInfoUiModel.contentType,
-                        likeType = feedInfoUiModel.likeType)
+                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(channelId)
                 getTotalLikeUseCase.executeOnBackground()
             }
             _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(totalLike)
@@ -669,17 +685,15 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
-        return if (channel.partnerInfo.type == PartnerType.Tokopedia) channel.partnerInfo
-        else {
-            val shopInfo = getPartnerInfo(channel.partnerInfo.id, channel.partnerInfo.type)
-            PlayUiMapper.mapPartnerInfoFromShop(userSession.shopId, shopInfo)
+    private suspend fun getFollowStatus(channel: ChannelInfoUiModel) {
+        val shopInfo = withContext(dispatchers.io) {
+            getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(channel.partnerInfo.id.toInt(), channel.partnerInfo.type)
+            getPartnerInfoUseCase.executeOnBackground()
         }
-    }
-
-    private suspend fun getPartnerInfo(partnerId: Long, partnerType: PartnerType) = withContext(dispatchers.io) {
-        getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(partnerId.toInt(), partnerType)
-        getPartnerInfoUseCase.executeOnBackground()
+        _observablePartnerInfo.value = channel.partnerInfo.copy(
+                isFollowed = shopInfo.favoriteData.alreadyFavorited == 1,
+                isFollowable = userSession.shopId != shopInfo.shopCore.shopId
+        )
     }
 
     private suspend fun getBadgeCart(showCart: Boolean) {
@@ -745,5 +759,7 @@ class PlayViewModel @Inject constructor(
         private const val MAX_RETRY_CHANNEL_INFO = 3
 
         private const val MS_PER_SECOND = 1000
+
+        private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
     }
 }

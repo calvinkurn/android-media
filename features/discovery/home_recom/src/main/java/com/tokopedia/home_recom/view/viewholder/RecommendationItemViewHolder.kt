@@ -20,6 +20,10 @@ class RecommendationItemViewHolder(
        private val view: View, val listener: RecommendationListener
 ) : AbstractViewHolder<RecommendationItemDataModel>(view){
 
+    companion object{
+        private const val RECOM_ITEM = "recom_item"
+    }
+
     private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
 
     override fun bind(element: RecommendationItemDataModel) {
@@ -44,7 +48,8 @@ class RecommendationItemViewHolder(
                                 element.productItem.trackerImageUrl,
                                 element.productItem.productId.toString(),
                                 element.productItem.name,
-                                element.productItem.imageUrl
+                                element.productItem.imageUrl,
+                                RECOM_ITEM
                         )
                     }
                     listener.onProductImpression(element.productItem)
@@ -53,12 +58,13 @@ class RecommendationItemViewHolder(
 
             setOnClickListener {
                 listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
-                if (element.productItem.isTopAds) TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                if (element.productItem.isTopAds) TopAdsUrlHitter(itemView.context).hitClickUrl(
                         this.javaClass.simpleName,
                         element.productItem.clickUrl,
                         element.productItem.productId.toString(),
                         element.productItem.name,
-                        element.productItem.imageUrl
+                        element.productItem.imageUrl,
+                        RECOM_ITEM
                 )
             }
 
@@ -81,6 +87,7 @@ class RecommendationItemViewHolder(
             reviewCount = recommendationItem.countReview,
             ratingCount = recommendationItem.rating,
             shopLocation = recommendationItem.location,
+            countSoldRating = recommendationItem.ratingAverage,
             shopBadgeList = recommendationItem.badgesUrl.map {
                 ProductCardModel.ShopBadge(imageUrl = it
                         ?: "")

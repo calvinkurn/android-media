@@ -80,7 +80,7 @@
             android:paddingRight="@dimen/dp_10"
             android:paddingTop="@dimen/dp_2"
             android:text="BARU"
-            android:textColor="@color/white" />
+            android:textColor="@color/Unify_N0" />
 
     </RelativeLayout>
 

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_account_user_fragment_swipe_refresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:background="@color/Unify_N0"
+        android:animateLayoutChanges="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.home_account.view.custom.SwipeRecyclerView
+            android:id="@+id/home_account_user_fragment_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:descendantFocusability="beforeDescendants"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <com.tokopedia.searchbar.navigation_component.NavToolbar
+            android:id="@+id/home_account_user_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?actionBarSize"
+            android:gravity="top"
+            app:contentInsetLeft="@dimen/unify_space_0"
+            app:contentInsetStart="@dimen/unify_space_0"
+            app:toolbarAlwaysShowShadow="false"
+            app:toolbarBackButton="back"
+            app:toolbarContentType="typeTitle"
+            app:toolbarTitle="@string/home_account_title" />
+
+        <View
+            android:id="@+id/status_bar_bg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_25"
+            android:layout_gravity="top"
+            android:background="@color/Unify_G600_96"
+            android:visibility="invisible" />
+
+        <include
+            android:visibility="gone"
+            android:id="@+id/home_account_shimmer_layout"
+            layout="@layout/home_account_shimmer_layout"/>
+
+    </FrameLayout>
+
+</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

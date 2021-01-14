@@ -40,7 +40,7 @@ class ShopHomeAdapter(
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     var isOwner: Boolean = false
     private var recyclerView: RecyclerView? = null
-    var productListViewModel: MutableList<ShopHomeProductViewModel> = mutableListOf()
+    var productListViewModel: MutableList<ShopHomeProductUiModel> = mutableListOf()
     val shopHomeEtalaseTitlePosition: Int
         get() = visitables.indexOfFirst {
             it.javaClass == ShopHomeProductEtalaseTitleUiModel::class.java
@@ -80,7 +80,7 @@ class ShopHomeAdapter(
         refreshSticky()
     }
 
-    fun setProductListData(productList: List<ShopHomeProductViewModel>, initialData: Boolean) {
+    fun setProductListData(productList: List<ShopHomeProductUiModel>, initialData: Boolean) {
         val lastIndex = visitables.size
         productListViewModel.addAll(productList)
         visitables.addAll(productList)
@@ -91,12 +91,16 @@ class ShopHomeAdapter(
     }
 
     fun setEtalaseTitleData() {
-        val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
-        visitables.add(etalaseTitleUiModel)
+        if(visitables.filterIsInstance(ShopHomeProductEtalaseTitleUiModel::class.java).isEmpty()) {
+            val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
+            visitables.add(etalaseTitleUiModel)
+        }
     }
 
     fun setSortFilterData(shopProductSortFilterUiModel: ShopProductSortFilterUiModel) {
-        visitables.add(shopProductSortFilterUiModel)
+        if(visitables.filterIsInstance(ShopProductSortFilterUiModel::class.java).isEmpty()) {
+            visitables.add(shopProductSortFilterUiModel)
+        }
     }
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
@@ -157,7 +161,7 @@ class ShopHomeAdapter(
     fun getAllProductWidgetPosition(): Int {
         return visitables.filter {
             (it !is LoadingModel) && (it !is LoadingMoreModel) && (it !is ShopHomeProductEtalaseTitleUiModel)
-        }.indexOfFirst { it is ShopHomeProductViewModel }
+        }.indexOfFirst { it is ShopHomeProductUiModel }
     }
 
     fun updateProductWidgetData(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
@@ -166,7 +170,7 @@ class ShopHomeAdapter(
     }
 
     fun updateWishlistProduct(productId: String, isWishlist: Boolean) {
-        visitables.filterIsInstance<ShopHomeProductViewModel>().onEach {
+        visitables.filterIsInstance<ShopHomeProductUiModel>().onEach {
             if (it.id == productId) {
                 it.isWishList = isWishlist
                 notifyChangedItem(visitables.indexOf(it))
@@ -222,7 +226,7 @@ class ShopHomeAdapter(
     }
 
     override fun isShowLoadingMore(): Boolean {
-        return visitables.filterIsInstance<ShopHomeProductViewModel>().isNotEmpty()
+        return visitables.filterIsInstance<ShopHomeProductUiModel>().isNotEmpty()
     }
 
     fun pauseSliderBannerAutoScroll() {
@@ -271,11 +275,11 @@ class ShopHomeAdapter(
 
     fun removeProductList() {
         val firstProductViewModelIndex = visitables.indexOfFirst {
-            it::class.java == ShopHomeProductViewModel::class.java
+            it::class.java == ShopHomeProductUiModel::class.java
         }
-        val totalProductViewModelData = visitables.filterIsInstance<ShopHomeProductViewModel>().size
+        val totalProductViewModelData = visitables.filterIsInstance<ShopHomeProductUiModel>().size
         if (firstProductViewModelIndex >= 0 && totalProductViewModelData <= visitables.size) {
-            visitables.removeAll(visitables.filterIsInstance<ShopHomeProductViewModel>())
+            visitables.removeAll(visitables.filterIsInstance<ShopHomeProductUiModel>())
             productListViewModel.clear()
             notifyRemovedItemRange(firstProductViewModelIndex, totalProductViewModelData)
         }
@@ -406,11 +410,11 @@ class ShopHomeAdapter(
         recyclerView?.requestLayout()
     }
 
-    fun updateShopPageProductChangeGridSection(totalProductData: Int) {
+    fun updateShopPageProductChangeGridSectionIcon(totalProductData: Int, gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID) {
         val gridSectionModel = visitables.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()
         if (gridSectionModel == null) {
             if(totalProductData != 0) {
-                visitables.add(ShopHomeProductChangeGridSectionUiModel(totalProductData))
+                visitables.add(ShopHomeProductChangeGridSectionUiModel(totalProductData, gridType))
                 notifyChangedDataSet()
             }
         } else {
@@ -427,7 +431,7 @@ class ShopHomeAdapter(
         }
     }
 
-    fun updateShopPageProductChangeGridSection(gridType: ShopProductViewGridType) {
+    fun updateShopPageProductChangeGridSectionIcon(gridType: ShopProductViewGridType) {
         visitables.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()?.apply {
             this.gridType = gridType
             notifyChangedItem(visitables.indexOf(this))
@@ -440,7 +444,7 @@ class ShopHomeAdapter(
     fun updatePlayWidget(widgetUiModel: PlayWidgetUiModel?) {
         visitables.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
             if (position == -1) return@let
-            if (widgetUiModel == null || widgetUiModel is PlayWidgetUiModel.Placeholder) {
+            if (widgetUiModel == null || widgetUiModel is PlayWidgetUiModel.Placeholder || isPlayWidgetEmpty(widgetUiModel)) {
                 visitables.removeAt(position)
                 notifyItemRemoved(position)
             } else {
@@ -448,6 +452,11 @@ class ShopHomeAdapter(
                 notifyChangedItem(position)
             }
         }
+    }
+
+    private fun isPlayWidgetEmpty(widget: PlayWidgetUiModel): Boolean {
+        return (widget as? PlayWidgetUiModel.Small)?.items?.isEmpty() == true
+                || (widget as? PlayWidgetUiModel.Medium)?.items?.isEmpty() == true
     }
 
     fun updatePlayWidgetReminder(reminderUiModel: PlayWidgetReminderUiModel) {

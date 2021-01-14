@@ -12,7 +12,7 @@ repositories{
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -63,7 +63,6 @@ dependencies {
     implementation project(rootProject.ext.features.layanan)
 
     //Content
-//    implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.playBroadcaster)
 
     //Discovery
@@ -75,6 +74,8 @@ dependencies {
     //Merchant
 //    implementation project(rootProject.ext.features.report)
 //    implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.reviewProduct)
 
     //User
@@ -89,8 +90,11 @@ dependencies {
 //    implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.attachvoucher)
+    implementation project(rootProject.ext.features.attachproduct)
 //    implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.liveness)
+    implementation project(rootProject.ext.features.updateinactivephone)
+
     implementation project(rootProject.ext.features.sellerOnboarding)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.voucherCreation)

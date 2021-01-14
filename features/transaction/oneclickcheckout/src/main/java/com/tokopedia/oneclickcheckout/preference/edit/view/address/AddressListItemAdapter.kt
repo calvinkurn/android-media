@@ -3,7 +3,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.address
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 
 class AddressListItemAdapter(private val listener: OnSelectedListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

@@ -8,7 +8,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_featured_shop"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -22,7 +22,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/link_featured_shop"
-        android:textColor="#7A08C9"
+        android:textColor="@color/Unify_P600"
         android:textSize="13sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

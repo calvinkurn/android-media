@@ -11,7 +11,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ChatAttachmentUseCase @Inject constructor(
+open class ChatAttachmentUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatAttachmentResponse>,
         private val mapper: ChatAttachmentMapper,
         private var dispatchers: TopchatCoroutineContextProvider
@@ -30,7 +30,7 @@ class ChatAttachmentUseCase @Inject constructor(
     }
 
     fun getAttachments(
-            msgId: Int,
+            msgId: Long,
             attachmentId: String,
             onSuccess: (ArrayMap<String, Attachment>) -> Unit,
             onError: (Throwable, ArrayMap<String, Attachment>) -> Unit
@@ -58,7 +58,7 @@ class ChatAttachmentUseCase @Inject constructor(
     }
 
     private fun generateParams(
-            msgId: Int,
+            msgId: Long,
             attachmentId: String
     ): Map<String, Any> {
         return mapOf(

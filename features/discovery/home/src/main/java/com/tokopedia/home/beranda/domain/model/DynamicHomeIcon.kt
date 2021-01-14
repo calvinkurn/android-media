@@ -66,6 +66,9 @@ data class DynamicHomeIcon (
         val brandId: String = "",
 
         @SerializedName("category_persona")
-        val categoryPersona: String = ""
+        val categoryPersona: String = "",
+
+        @SerializedName("campaignCode")
+        val campaignCode: String = ""
     ) : ImpressHolder()
 }

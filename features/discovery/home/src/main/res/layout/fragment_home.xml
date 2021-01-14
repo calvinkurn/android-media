@@ -52,16 +52,31 @@
         app:sticky_left_icon="@drawable/ic_toped_widget_login"/>
     
     </LinearLayout>
-    
+
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/navToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:minHeight="?actionBarSize"
+        android:visibility="gone"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:toolbarContentType="typeSearchbar"
+        app:toolbarBackButton="none"
+        app:toolbarAlwaysShowShadow="true"
+        app:toolbarPageName="/"
+        />
+
     <com.tokopedia.searchbar.HomeMainToolbar
-      android:id="@+id/toolbar"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="top"
-      android:minHeight="?actionBarSize"
-      app:contentInsetLeft="0dp"
-      app:contentInsetStart="0dp"
-      app:screenName="/" />
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:gravity="top"
+        android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"/>
     
     <View
       android:id="@+id/status_bar_bg"

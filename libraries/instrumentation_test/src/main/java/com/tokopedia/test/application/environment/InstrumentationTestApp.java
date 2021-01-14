@@ -13,7 +13,10 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.gson.Gson;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
+import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -38,6 +41,7 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
+import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor;
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;
@@ -77,6 +81,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     @Override
     public void onCreate() {
+        SplashScreenPerformanceTracker.isColdStart = true;
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.66";
         SplitCompat.install(this);
@@ -90,9 +95,9 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         initAkamaiBotManager();
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
-        NetworkClient.init(this);
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.90";
+        NetworkClient.init(this);
         GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         RemoteConfigInstance.initAbTestPlatform(this);
@@ -146,6 +151,14 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     public void setInterceptor(Interceptor interceptor) {
         GraphqlClient.reInitRetrofitWithInterceptors(Collections.singletonList(interceptor), this);
+    }
+
+    /**
+     * this method is just for mock response API with custom interceptor
+     * common_network with use case RestRequestSupportInterceptorUseCase
+     */
+    public void addRestSupportInterceptor(Interceptor interceptor) {
+        NetworkClient.reInitRetrofitWithInterceptors(Collections.singletonList(interceptor), this);
     }
 
     @Override
@@ -221,7 +234,17 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
         @Override
         public void sendEvent(String eventName, Map<String, Object> eventValue) {
+            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
+        }
 
+        @Override
+        public void sendTrackEvent(Map<String, Object> data, String eventName) {
+            sendTrackEvent(eventName, data);
+        }
+
+        @Override
+        public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
+            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
         }
     }
 

@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.*
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.utils.getMaxHeightForListView
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 import kotlinx.coroutines.*
 

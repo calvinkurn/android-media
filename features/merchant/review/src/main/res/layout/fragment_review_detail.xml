@@ -24,6 +24,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/reviewDetailTicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:closeButtonVisibility="gone"
+                app:layout_constraintTop_toTopOf="parent"/>
+
             <com.tokopedia.unifycomponents.CardUnify
                 android:id="@+id/reviewDetailProductCard"
                 android:layout_width="match_parent"
@@ -31,7 +38,7 @@
                 android:layout_marginStart="@dimen/layout_lvl1"
                 android:layout_marginEnd="@dimen/layout_lvl1"
                 app:card_type="border"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/reviewDetailTicker">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -66,7 +73,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="2"
-                            android:textColor="@color/Neutral_N700_96"
+                            android:textColor="@color/Unify_N700_96"
                             app:layout_constraintTop_toTopOf="parent"
                             app:typographyType="body_2"
                             app:typographyWeight="bold"
@@ -76,7 +83,7 @@
                             android:id="@+id/reviewDetailProductVariant"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/Neutral_N700_68"
+                            android:textColor="@color/Unify_N700_68"
                             android:layout_marginTop="@dimen/spacing_lvl1"
                             android:visibility="gone"
                             app:layout_constraintStart_toStartOf="@id/reviewDetailProductName"
@@ -100,14 +107,14 @@
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailProductCard"
-                tools:src="@drawable/ic_rating_star_four" />
+                tools:src="@drawable/review_ic_rating_star_four" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/reviewDetailName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3"
                 app:layout_constraintStart_toStartOf="@id/reviewDetailStars"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailStars"
@@ -117,7 +124,7 @@
                 android:id="@+id/reviewDetailDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 android:layout_marginStart="@dimen/spacing_lvl2"
                 android:layout_marginLeft="@dimen/spacing_lvl2"
                 app:typographyType="body_3"
@@ -132,7 +139,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginEnd="@dimen/layout_lvl2"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailName"
                 tools:text="Mantap-mantap"/>

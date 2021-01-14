@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 object DefaultDispatchers: ExecutorDispatchers {
 
     override val main: CoroutineDispatcher
-        get() = Dispatchers.Main
+        get() = Dispatchers.Main.immediate
 
     override val io: CoroutineDispatcher
         get() = Dispatchers.IO

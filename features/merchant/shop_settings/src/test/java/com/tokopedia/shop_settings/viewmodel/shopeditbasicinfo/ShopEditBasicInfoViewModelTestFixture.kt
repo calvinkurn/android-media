@@ -14,7 +14,7 @@ import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
 import com.tokopedia.shop.settings.basicinfo.domain.UploadShopImageUseCase
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
-import com.tokopedia.shop_settings.common.coroutine.TestCoroutineDispatcher
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,6 +27,9 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var getShopBasicDataUseCase: GetShopBasicDataUseCase
@@ -60,7 +63,7 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
                 getAllowShopNameDomainChangesUseCase,
                 getShopDomainNameSuggestionUseCase,
                 validateDomainShopNameUseCase,
-                TestCoroutineDispatcher
+                coroutineTestRule.dispatchers
         )
 
         privateCurrentShopNameField = shopEditBasicInfoViewModel::class.java.getDeclaredField("currentShopName").apply {
@@ -70,11 +73,6 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         privateCurrentShopField = shopEditBasicInfoViewModel::class.java.getDeclaredField("currentShop").apply {
             isAccessible = true
         }
-    }
-
-    protected fun verifyUnsubscribeUseCase() {
-        coVerify { getShopBasicDataUseCase.unsubscribe() }
-        coVerify { uploadShopImageUseCase.unsubscribe() }
     }
 
     protected fun onCheckAllowShopNameDomainChanges_thenReturn() {

@@ -14,11 +14,7 @@
         android:animateLayoutChanges="true"
         android:measureAllChildren="false">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/tp_margin_large" />
+        <include layout="@layout/tp_shimmer_tab"/>
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -67,8 +63,6 @@
                         app:tabTextAppearance="@style/TokoPointsTabs"
                         app:tabTextColor="@color/black_38" />
                 </com.google.android.material.appbar.AppBarLayout>
-
-                <include layout="@layout/tp_layout_catalog_flash_timer" />
 
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/view_pager_sort_type"

@@ -59,7 +59,7 @@ class TravelDestinationSectionViewHolder(itemView: View, private val onViewHolde
                                 super.onScrolled(recyclerView, dx, dy)
 
                                 val firstVisibleIndex = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                                val lastVisibleIndex = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                                val lastVisibleIndex = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1
 
                                 when (element.type) {
                                     CITY_EVENT_ORDER -> actionListener.onTrackEventsImpression(element.list.subList(firstVisibleIndex, lastVisibleIndex), firstVisibleIndex)

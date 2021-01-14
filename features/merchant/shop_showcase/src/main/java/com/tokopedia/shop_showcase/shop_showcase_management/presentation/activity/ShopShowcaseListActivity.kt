@@ -51,7 +51,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
     private var preSelectedShowcaseListPicker: ArrayList<ShowcaseItemPicker>? = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val bundle = intent.getBundleExtra("bundle")
+        val bundle = intent.getBundleExtra(ShopShowcaseParamConstant.EXTRA_BUNDLE)
         if (bundle != null) {
             shopId = bundle.getString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, "0").toString()
             selectedEtalaseId = bundle.getString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "0").toString()

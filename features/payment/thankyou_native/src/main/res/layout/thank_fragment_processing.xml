@@ -255,6 +255,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnCheckPaymentStatus" />
 
+            <com.tokopedia.thankyou_native.presentation.views.GyroView
+                android:id="@+id/featureListingContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/view_divider_5" />
+
             <LinearLayout
                 android:id="@+id/recommendationContainer"
                 android:layout_width="match_parent"
@@ -262,7 +268,7 @@
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/spacing_lvl3"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view_divider_5" />
+                app:layout_constraintTop_toBottomOf="@id/featureListingContainer" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

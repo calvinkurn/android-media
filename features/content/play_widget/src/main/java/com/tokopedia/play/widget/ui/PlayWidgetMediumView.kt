@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.SnapHelper
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -23,13 +24,16 @@ import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumTranscodeViewHolder
+import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardMediumItemDecoration
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
-import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
+import com.tokopedia.play_common.util.blur.ImageBlurUtil
+import com.tokopedia.play_common.view.loadImage
+import com.tokopedia.play_common.view.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
 
@@ -81,7 +85,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                     channelPositionInList = position
             )
         }
-
     }
 
     private val channelCardListener = object : PlayWidgetCardMediumChannelViewHolder.Listener {
@@ -104,7 +107,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             )
             if (mWidgetListener != null
                     && (item.channelType == PlayWidgetChannelType.Live
-                            || item.channelType ==  PlayWidgetChannelType.Vod)) {
+                            || item.channelType == PlayWidgetChannelType.Vod
+                            || GlobalConfig.isSellerApp())) {
                 mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
             } else {
                 RouteManager.route(context, item.appLink)
@@ -115,6 +119,11 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onClickToggleReminderChannel(this@PlayWidgetMediumView, item, position, remind)
             mWidgetListener?.onToggleReminderClicked(this@PlayWidgetMediumView, item.channelId, remind, position)
         }
+
+        override fun onMenuActionButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
+            mAnalyticListener?.onClickMenuActionChannel(this@PlayWidgetMediumView, item, position)
+            mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item, position)
+        }
     }
 
     private val bannerCardListener = object : PlayWidgetCardMediumBannerViewHolder.Listener {
@@ -124,10 +133,20 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         }
     }
 
+    private val transcodeCardListener = object : PlayWidgetCardMediumTranscodeViewHolder.Listener {
+
+        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
+            mAnalyticListener?.onClickDeleteChannel(this@PlayWidgetMediumView, item, position)
+            mWidgetListener?.onDeleteFailedTranscodingChannel(this@PlayWidgetMediumView, item.channelId)
+        }
+    }
+
     private val adapter = PlayWidgetCardMediumAdapter(
+            imageBlurUtil = ImageBlurUtil(context),
             overlayCardListener = overlayCardListener,
             channelCardListener = channelCardListener,
-            bannerCardListener = bannerCardListener
+            bannerCardListener = bannerCardListener,
+            transcodeCardListener = transcodeCardListener
     )
 
     private var mIsAutoPlay: Boolean = false
@@ -165,6 +184,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
      * Setup view
      */
     private fun setupView(view: View) {
+        recyclerViewItem.addItemDecoration(PlayWidgetCardMediumItemDecoration(context))
         recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
 
@@ -206,6 +226,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     fun setData(data: PlayWidgetUiModel.Medium) {
         title.text = data.title
+        actionTitle.visibility = if (data.isActionVisible) View.VISIBLE else View.GONE
         actionTitle.text = data.actionTitle
         actionTitle.setOnClickListener {
             mAnalyticListener?.onClickViewAll(this)

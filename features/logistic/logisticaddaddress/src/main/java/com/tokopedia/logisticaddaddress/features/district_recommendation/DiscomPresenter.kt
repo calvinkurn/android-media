@@ -5,7 +5,7 @@ import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
-import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject

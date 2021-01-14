@@ -229,13 +229,13 @@ class PlayBottomSheetFragment @Inject constructor(
     ) {
         when (bottomSheetType) {
             BottomInsetsType.ProductSheet ->
-                Toaster.make(
+                Toaster.build(
                         view = requireView(),
                         text = message,
                         type = toasterType,
                         actionText = actionText,
                         clickListener = actionClickListener
-                )
+                ).show()
             BottomInsetsType.VariantSheet ->
                 variantSheetView.showToaster(
                         toasterType = toasterType,
@@ -273,6 +273,8 @@ class PlayBottomSheetFragment @Inject constructor(
         if (product.applink != null && product.applink.isNotEmpty()) {
             PlayAnalytics.clickProduct(trackingQueue, channelId, product, position, playViewModel.channelType)
             openPageByApplink(product.applink)
+
+            playViewModel.openPiPBrowsingPage()
         }
     }
 

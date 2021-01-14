@@ -9,7 +9,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
@@ -31,8 +31,8 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
@@ -511,7 +511,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun getShopFollowingStatus(
-            shopId: Int,
+            shopId: Long,
             onError: (Throwable) -> Unit,
             onSuccessGetShopFollowingStatus: (Boolean) -> Unit
     ) {
@@ -660,8 +660,8 @@ class TopChatRoomPresenter @Inject constructor(
         )
     }
 
-    override fun loadAttachmentData(msgId: Int, chatRoom: ChatroomViewModel) {
-        if (chatRoom.hasAttachment() && msgId != 0) {
+    override fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel) {
+        if (chatRoom.hasAttachment() && msgId != 0L) {
             chatAttachmentUseCase.getAttachments(
                     msgId, chatRoom.attachmentIds, ::onSuccessGetAttachments, ::onErrorGetAttachments
             )

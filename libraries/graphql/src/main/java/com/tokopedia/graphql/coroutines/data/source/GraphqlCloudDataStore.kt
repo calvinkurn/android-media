@@ -115,10 +115,12 @@ class GraphqlCloudDataStore @Inject constructor(
 
                     launch(Dispatchers.IO) {
                         if (result.code() == Const.GQL_QUERY_HASHING_ERROR) {
+                            val queryHashValues = StringBuilder()
                             //Reset request bodies
                             if (requests.size > 0) {
                                 for (graphqlRequest in requests) {
                                     graphqlRequest.query = graphqlRequest.queryCopy
+                                    queryHashValues.append(cacheManager.getQueryHashValue(graphqlRequest.md5)).append(",")
                                     cacheManager.deleteQueryHashValue(graphqlRequest.md5)
                                 }
                             }
@@ -130,13 +132,13 @@ class GraphqlCloudDataStore @Inject constructor(
                             else{
                                 header[QUERY_HASHING_HEADER] = ""
                             }
-                            Timber.d("Android Query Hash - Query Hash error " + CacheHelper.getQueryName(requests.get(0).query) + " KEY: " + requests.get(0).md5)
+                            Timber.w("P1#GQL_HASHING#error;name='%s';key='%s';hash='%s'", CacheHelper.getQueryName(requests[0].query), requests[0].md5, queryHashValues.toString());
                             api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
                         }
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {
                             LoggingUtils.logGqlResponseCode(result.code(), requests.toString(), gResponse.originalResponse.toString())
                         }
-                        LoggingUtils.logGqlSize("kt", requests.toString(), gResponse.originalResponse.toString())
+                        LoggingUtils.logGqlSize("kt", requests, gResponse.originalResponse.toString())
                         //Handling backend cache
                         val caches = CacheHelper.parseCacheHeaders(gResponse.beCache)
                         //handling query hash
@@ -155,7 +157,7 @@ class GraphqlCloudDataStore @Inject constructor(
                         requests.forEachIndexed { index, request ->
                             if (executeQueryHashFlow) {
                                 cacheManager.saveQueryHash(request.md5, qhValues.get(index))
-                                Timber.d("Android Query Hash - Query Hash saved " + CacheHelper.getQueryName(request.query) + " KEY: " + request.md5 + " QueryHash:" + qhValues.get(index))
+                                Timber.w("P1#GQL_HASHING#success;name='%s';key='%s';hash='%s'", CacheHelper.getQueryName(request.query), request.md5, qhValues[index]);
                             }
                             if (request.isNoCache || (executeCacheFlow && caches[request.md5] == null)) {
                                 return@forEachIndexed  //Do nothing

@@ -19,11 +19,10 @@
       "eventLabel": "{{.+ - \\d+}}",
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{\\d+}}",
-          "creative_url": "{{.*}}",
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{\\d*.\\d*}}",
           "item_id": "{{.*}}",
-          "item_name": "{{/ - p\\d+ - play sgc banner - .+}}"
+          "item_name": "{{.+}}"
         }
       ],
       "userId": "{{.*}}",
@@ -37,11 +36,10 @@
       "eventLabel": "{{click on banner play - .+ - \\d+}}",
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{\\d+}}",
-          "creative_url": "{{.*}}",
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{\\d*.\\d*}}",
           "item_id": "{{.*}}",
-          "item_name": "{{/ - p\\d+ - play sgc banner - .+}}"
+          "item_name": "{{.+}}"
         }
       ],
       "userId": "{{.*}}",
@@ -52,14 +50,13 @@
       "event": "view_item",
       "eventCategory": "homepage-cmp",
       "eventAction": "impression on play sgc channel",
-      "eventLabel": "{{\\d+ - \\d+ - \\d+ - \\d+ - (true|false)}}",
+      "eventLabel":"{{(.+) - (.+) - (.+) - (.+) - (.+)}}",
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{\\d+}}",
-          "creative_url": "{{.*}}",
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{\\d*.\\d*}}",
           "item_id": "{{.*}}",
-          "item_name": "{{/ - p\\d+ - play sgc channel - .+}}"
+          "item_name": "{{.+}}"
         }
       ],
       "userId": "{{.*}}",
@@ -70,14 +67,13 @@
       "event": "select_content",
       "eventCategory": "homepage-cmp",
       "eventAction": "click",
-      "eventLabel": "{{click channel - \\d+ - \\d+ - \\d+ - \\d+ - (true|false)}}",
+      "eventLabel":"{{(.+) - (.+) - (.+) - (.+) - (.+)}}",
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{\\d+}}",
-          "creative_url": "{{.*}}",
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{\\d*.\\d*}}",
           "item_id": "{{.*}}",
-          "item_name": "{{/ - p\\d+ - play sgc channel - .+}}"
+          "item_name": "{{.+}}"
         }
       ],
       "userId": "{{.*}}",

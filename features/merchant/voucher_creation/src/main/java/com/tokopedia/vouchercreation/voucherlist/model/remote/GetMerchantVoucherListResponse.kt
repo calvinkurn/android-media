@@ -23,8 +23,5 @@ data class MerchantVoucherDataModel(
 data class MerchantVoucherListDataModel(
         @Expose
         @SerializedName("vouchers")
-        val vouchers: List<MerchantVoucherModel> = emptyList(),
-        @Expose
-        @SerializedName("paging")
-        val paging: PagingModel = PagingModel()
+        val vouchers: List<MerchantVoucherModel> = emptyList()
 )

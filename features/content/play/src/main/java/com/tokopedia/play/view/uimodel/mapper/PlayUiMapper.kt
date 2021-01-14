@@ -16,7 +16,6 @@ object PlayUiMapper {
 
     fun createCompleteInfoModel(
             channel: Channel,
-            partnerName: String,
             isBanned: Boolean,
             exoPlayer: ExoPlayer
     ) = PlayCompleteInfoUiModel(
@@ -30,11 +29,11 @@ object PlayUiMapper {
                     exoPlayer
             ),
             pinnedMessage = mapPinnedMessage(
-                    partnerName,
+                    channel.partner.name,
                     channel.pinnedMessage
             ),
             pinnedProduct = mapPinnedProduct(
-                    partnerName,
+                    channel.partner.name,
                     channel.configuration),
             quickReply = mapQuickReply(channel.quickReplies),
             totalView = mapTotalViews(channel.stats.view.formatted),
@@ -59,7 +58,8 @@ object PlayUiMapper {
             feedInfo = mapFeedInfo(channel.configuration.feedsLikeParams),
             showCart = channel.configuration.showCart,
             showPinnedProduct = channel.configuration.showPinnedProduct,
-            titleBottomSheet = channel.configuration.pinnedProduct.titleBottomSheet
+            titleBottomSheet = channel.configuration.pinnedProduct.titleBottomSheet,
+            shareInfo = mapShareInfo(channel.share, channel)
     )
 
     private fun mapPartnerInfo(partner: Channel.Partner) = PartnerInfoUiModel(
@@ -75,6 +75,22 @@ object PlayUiMapper {
             contentType = feedInfo.contentType,
             likeType = feedInfo.likeType
     )
+
+    private fun mapShareInfo(shareInfo: Channel.Share, channel: Channel): ShareInfoUiModel {
+        val fullShareContent = try {
+            shareInfo.text.replace("${'$'}{url}", shareInfo.redirectUrl)
+        } catch (e: Throwable) {
+            "${shareInfo.text}/n${shareInfo.redirectUrl}"
+        }
+
+        return ShareInfoUiModel(
+                content = fullShareContent,
+                isShowButton = shareInfo.isShowButton
+                        && shareInfo.redirectUrl.isNotBlank()
+                        && channel.configuration.active
+                        && !channel.configuration.freezed
+        )
+    }
 
     fun mapPinnedMessage(partnerName: String, pinnedMessage: PinnedMessage) = if (pinnedMessage.pinnedMessageId > 0 && pinnedMessage.title.isNotEmpty()) {
         PinnedMessageUiModel(
@@ -133,14 +149,6 @@ object PlayUiMapper {
             name = playChat.user.name,
             message = playChat.message,
             isSelfMessage = playChat.user.id == userId
-    )
-
-    fun mapPartnerInfoFromShop(shopId: String, shopInfo: ShopInfo) = PartnerInfoUiModel(
-            id = shopInfo.shopCore.shopId.toLong(),
-            name = shopInfo.shopCore.name,
-            type = PartnerType.Shop,
-            isFollowed = shopInfo.favoriteData.alreadyFavorited == 1,
-            isFollowable = shopId != shopInfo.shopCore.shopId
     )
 
     fun mapProductSheet(title: String, partnerId: Long, productTagging: ProductTagging): ProductSheetUiModel {

@@ -8,6 +8,7 @@ public interface SearchConstant {
 
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
+    String SEARCH_RESULT_PAGE = "search result page";
     String SEARCH_RESULT_TRACE = "search_result_trace";
     String SEARCH_RESULT_PLT_PREPARE_METRICS = "search_result_plt_prepare_metrics";
     String SEARCH_RESULT_PLT_NETWORK_METRICS = "search_result_plt_network_metrics";
@@ -31,6 +32,9 @@ public interface SearchConstant {
     interface DefaultViewType {
         int SMALL_GRID = 1;
         int LIST = 2;
+        String VIEW_TYPE_NAME_SMALL_GRID = "grid 2";
+        String VIEW_TYPE_NAME_BIG_GRID = "grid 1";
+        String VIEW_TYPE_NAME_LIST = "list";
     }
 
     interface Wishlist {
@@ -81,6 +85,12 @@ public interface SearchConstant {
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
         String HEADLINE_ITEM_VALUE = "1";
+        String SEARCH_PRODUCT_PARAMS = "params";
+        String SEARCH_PRODUCT_SKIP_PRODUCT_ADS = "skip_product_ads";
+        String SEARCH_PRODUCT_SKIP_HEADLINE_ADS = "skip_headline_ads";
+        String SEARCH_PRODUCT_SKIP_GLOBAL_NAV = "skip_global_nav";
+        String SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL = "skip_inspiration_carousel";
+        String SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET = "skip_inspiration_widget";
     }
 
     interface SearchShop {
@@ -128,13 +138,6 @@ public interface SearchConstant {
         String QUERY = "SIMILAR_SEARCH_QUERY";
     }
 
-    interface Advertising {
-        String ADVERTISING_ID = "ADVERTISINGID";
-        String KEY_ADVERTISING_ID = "KEY_ADVERTISINGID";
-        String ADVERTISING_LOCAL_CACHE = "ADVERTISING_LOCAL_CACHE";
-        String APP_CLIENT_ID = "appClientId";
-    }
-
     interface ABTestRemoteConfigKey {
         String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
         String AB_TEST_VARIANT_FULL_STAR = "Full Star";
@@ -150,6 +153,9 @@ public interface SearchConstant {
     interface ProductCardLabel {
         String LABEL_INTEGRITY = "integrity";
         String LABEL_INTEGRITY_TYPE = "textDarkGrey";
+        String TEXT_DARK_ORANGE = "textDarkOrange";
+        String TEXT_DARK_RED = "textDarkRed";
+        String TEXT_LIGHT_GREY = "textLightGrey";
     }
 
     interface OnBoarding {
@@ -161,6 +167,8 @@ public interface SearchConstant {
     interface InspirationCarousel {
         String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
         String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
+        String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
+        String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
     }
 
     interface TopAdsComponent {

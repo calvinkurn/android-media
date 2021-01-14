@@ -35,7 +35,7 @@ class VoucherViewHolder(
             val description = "${element.typeFormatted} ${element.discountAmtFormatted}"
             tvMvcVoucherDescription.text = description
 
-            val usedVoucher = "<b>${element.bookedQuota}</b>/${element.quota}"
+            val usedVoucher = "<b>${element.confirmedQuota}</b>/${element.quota}"
             tvMvcVoucherUsed.text = usedVoucher.parseAsHtml()
 
             setImageVoucher(element.isPublic, element.type)

@@ -7,13 +7,16 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
 import com.tokopedia.buyerorder.detail.data.ContactUs;
 import com.tokopedia.buyerorder.detail.data.Detail;
+import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.Invoice;
@@ -28,6 +31,7 @@ import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
 
 import java.util.List;
 
@@ -38,6 +42,8 @@ import java.util.List;
 public interface OrderListDetailContract {
 
     interface View extends CustomerView {
+        void setDetailsData(OrderDetails details);
+
         void setStatus(Status status);
 
         void setConditionalInfo(ConditionalInfo conditionalInfo);
@@ -60,6 +66,10 @@ public interface OrderListDetailContract {
 
         void setPricing(Pricing pricing);
 
+        void setDiscount(Discount discount);
+
+        void setDiscountVisibility(int visibility);
+
         void setPaymentData(PaymentData paymentData);
 
         void setContactUs(ContactUs contactUs, String helpLink);
@@ -75,8 +85,6 @@ public interface OrderListDetailContract {
         void setActionButtonsVisibility(int topBtnVisibility, int bottomBtnVisibility);
 
         void setItems(List<Items> items, boolean isTradeIn, OrderDetails orderDetails);
-
-        Context getAppContext();
 
         Context getActivity();
 
@@ -102,7 +110,7 @@ public interface OrderListDetailContract {
 
         void finishOrderDetail();
 
-        void showSucessMessage(String message);
+        void showSuccessMessage(String message);
 
         void showSuccessMessageWithAction(String message);
 
@@ -110,27 +118,25 @@ public interface OrderListDetailContract {
 
         void clearDynamicViews();
 
-        void askPermission();
-
         void setRecommendation(Object object);
 
+        JsonArray generateInputQueryBuyAgain(List<Items> items);
+
+        void hitAnalyticsBuyAgain(List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct> listAtcProducts, Boolean isAtcMultiSuccess);
+
+        void setActionButtonLayoutClickable(Boolean isClickable);
+
+        void setActionButtonText(String txt);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString);
 
-        void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
+        void getActionButtonGql(String query, List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
 
-        void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText,RelativeLayout actionButtonLayout);
+        void hitEventEmail(ActionButton actionButton, String metadata);
 
-        List<ActionButton> getActionList();
-
-        void onBuyAgainAllItems(String eventActionLabel, String statusCode);
-
-        void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode);
-
-        void assignInvoiceDataTo(Intent intent);
-
+        void onBuyAgainItems(String query, List<Items> items, String eventActionLabel, String statusCode);
     }
 
     interface ActionInterface {

@@ -3,15 +3,15 @@ package com.tokopedia.product.manage.feature.list.view.mapper
 import androidx.lifecycle.LiveData
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.common.list.data.model.filter.Tab
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.UpdateFilterTab
-import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
-import com.tokopedia.product.manage.feature.list.view.model.TopAdsInfo
+import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -19,14 +19,14 @@ import com.tokopedia.usecase.coroutines.Result
 
 object ProductMapper {
 
-    fun mapToViewModels(productList: List<Product>?, multiSelectActive: Boolean): List<ProductViewModel> {
+    fun mapToUiModels(productList: List<Product>?, multiSelectActive: Boolean): List<ProductUiModel> {
         return productList?.map {
             val minPrice = it.price?.min
             val maxPrice = it.price?.max
             val picture = it.pictures?.firstOrNull()
             val topAdsInfo = TopAdsInfo(it.isTopAds(), it.isAutoAds())
 
-            ProductViewModel(
+            ProductUiModel(
                 id = it.id,
                 title = it.name,
                 imageUrl = picture?.urlThumbnail,
@@ -61,7 +61,7 @@ object ProductMapper {
 
     fun LiveData<Result<GetFilterTabResult>>?.mapToFilterTabResult(filterTabs: List<Tab>): GetFilterTabResult {
         var totalProductCount = 0
-        val productFilters = mutableListOf<FilterTabViewModel>()
+        val productFilters = mutableListOf<FilterTabUiModel>()
 
         val activeProductFilter = filterTabs.firstOrNull { it.id == FilterId.ACTIVE.name }
         val inActiveProductFilter = filterTabs.firstOrNull { it.id == FilterId.INACTIVE.name }
