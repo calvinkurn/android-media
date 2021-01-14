@@ -39,7 +39,7 @@ class InspirationCarouselViewModel(
         }
 
         fun shouldAddBannerCard(): Boolean {
-            return bannerImageUrl.isNotEmpty() && title.isNotEmpty()
+            return bannerImageUrl.isNotEmpty() || title.isNotEmpty()
         }
 
         fun getBannerDataLayer(keyword: String): Any {
