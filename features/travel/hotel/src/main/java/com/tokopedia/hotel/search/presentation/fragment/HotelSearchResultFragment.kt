@@ -127,7 +127,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        hotelSearchResultTicker.setHtmlDescription(travelTickerModel.message)
+        if (travelTickerModel.title.isNotEmpty()) hotelSearchResultTicker.tickerTitle = travelTickerModel.title
+        var message = travelTickerModel.message
+        if (travelTickerModel.url.isNotEmpty()) message += getString(R.string.hotel_ticker_desc, travelTickerModel.url)
+        hotelSearchResultTicker.setHtmlDescription(message)
         hotelSearchResultTicker.tickerType = Ticker.TYPE_WARNING
         hotelSearchResultTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {

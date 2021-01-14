@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerSawOrderListLoading"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/saw_shape_rectangle_white_radius_16dp">
+
+    <RelativeLayout
+        android:id="@+id/shimmerSawLoadingHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:paddingStart="@dimen/saw_dimen_12dp"
+        android:paddingEnd="@dimen/saw_dimen_12dp">
+
+        <RelativeLayout
+            android:id="@+id/shimmerSawLoading1"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            android:background="@drawable/saw_shape_oval_shimmer" />
+
+        <RelativeLayout
+            android:layout_width="@dimen/saw_dimen_148dp"
+            android:layout_height="@dimen/saw_dimen_10dp"
+            android:layout_marginStart="@dimen/saw_dimen_10dp"
+            android:layout_toEndOf="@+id/shimmerSawLoading1"
+            android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+        <RelativeLayout
+            android:layout_width="@dimen/saw_dimen_98dp"
+            android:layout_height="@dimen/saw_dimen_10dp"
+            android:layout_alignBottom="@+id/shimmerSawLoading1"
+            android:layout_marginStart="@dimen/saw_dimen_10dp"
+            android:layout_toEndOf="@+id/shimmerSawLoading1"
+            android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+        <RelativeLayout
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/saw_shape_oval_shimmer" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/orderLoadingStateSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/shimmerSawLoadingHeader"
+        android:paddingTop="@dimen/saw_dimen_10dp"
+        android:paddingBottom="@dimen/saw_dimen_10dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/verLineSawOrderLoading"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/saw_dimen_12dp"
+            android:paddingEnd="@dimen/layout_lvl0">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/saw_dimen_10dp"
+                android:layout_marginEnd="@dimen/layout_lvl4"
+                android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/saw_dimen_10dp"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/verLineSawOrderLoading"
+            android:layout_width="@dimen/saw_dimen_1dp"
+            android:layout_height="@dimen/saw_dimen_44dp"
+            android:layout_centerHorizontal="true"
+            android:background="@color/Unify_N50" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/verLineSawOrderLoading"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/saw_dimen_12dp"
+            android:paddingEnd="@dimen/layout_lvl0">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/saw_dimen_10dp"
+                android:layout_marginEnd="@dimen/layout_lvl4"
+                android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/saw_dimen_10dp"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/orderLoadingStateNormal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/shimmerSawLoadingHeader">
+
+        <include
+            android:id="@+id/shimmerSawLoadingItem1"
+            layout="@layout/saw_app_widget_order_item_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
+            android:id="@+id/shimmerSawLoadingItem2"
+            layout="@layout/saw_app_widget_order_item_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/shimmerSawLoadingItem1" />
+
+        <include
+            android:id="@+id/shimmerSawLoadingItem3"
+            layout="@layout/saw_app_widget_order_item_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/shimmerSawLoadingItem2" />
+
+        <include
+            android:id="@+id/shimmerSawLoadingItem4"
+            layout="@layout/saw_app_widget_order_item_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/shimmerSawLoadingItem3"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/saw_dimen_1dp"
+            android:layout_above="@+id/shimmerSawLoadingBottomView"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:background="@color/Unify_N75" />
+
+        <RelativeLayout
+            android:id="@+id/shimmerSawLoadingBottomView"
+            android:layout_width="@dimen/saw_dimen_148dp"
+            android:layout_height="@dimen/saw_dimen_10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="@dimen/saw_dimen_10dp"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+    </RelativeLayout>
+</RelativeLayout>

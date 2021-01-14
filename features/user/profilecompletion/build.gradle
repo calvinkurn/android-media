@@ -24,7 +24,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.libraries.remoteConfig)
@@ -50,13 +50,9 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.cameraView
     implementation rootProject.ext.miscDependencies.lottie
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
-    }
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
     }
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

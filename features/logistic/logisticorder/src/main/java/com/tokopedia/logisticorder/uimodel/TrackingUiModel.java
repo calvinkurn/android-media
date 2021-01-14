@@ -42,6 +42,8 @@ public class TrackingUiModel {
 
     private List<AdditionalInfoUiModel> additionalInfoList;
 
+    private String trackingUrl;
+
     public int getChange() {
         return change;
     }
@@ -152,5 +154,11 @@ public class TrackingUiModel {
 
     public void setAdditionalInfoList(List<AdditionalInfoUiModel> additionalInfoList) {
         this.additionalInfoList = additionalInfoList;
+    }
+
+    public String getTrackingUrl() { return trackingUrl; }
+
+    public void setTrackingUrl(String trackingUrl) {
+        this.trackingUrl = trackingUrl;
     }
 }

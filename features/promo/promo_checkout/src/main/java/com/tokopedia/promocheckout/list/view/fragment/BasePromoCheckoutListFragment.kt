@@ -129,11 +129,11 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
         progressDialog = ProgressDialog(activity)
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
-        textInputCoupon.setText(promoCode)
+        textInputCoupon.textFieldInput.setText(promoCode)
 
         populateLastSeen()
         buttonUse.setOnClickListener {
-            onPromoCodeUse(textInputCoupon.text.toString())
+            onPromoCodeUse(textInputCoupon.textFieldInput.text.toString())
         }
         if (isCouponActive) {
             getRecyclerView(view).visibility = View.VISIBLE
@@ -161,14 +161,16 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
 
         if (e is CheckPromoCodeException || e is MessageErrorException) {
-            textInputLayoutCoupon.error = e.message
+            textInputCoupon.setError(true)
+            e.message?.let { textInputCoupon.setMessage(it) }
         } else {
             NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
         }
     }
 
     override fun onErrorEmptyPromo() {
-        textInputLayoutCoupon.error = getString(R.string.promostacking_checkout_label_error_empty_voucher_code)
+        textInputCoupon.setError(true)
+        textInputCoupon.setMessage(getString(R.string.promostacking_checkout_label_error_empty_voucher_code))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

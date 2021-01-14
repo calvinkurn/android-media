@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -72,6 +73,7 @@ public class PushNotification {
                         .getInstance(context)
                         .trackDeliveredNotification(applinkNotificationModel, STATUS_DROPPED);
             }
+            fetchSellerAppWidgetData(context, notificationId);
         } else {
             UserSessionInterface userSession = new UserSession(context);
             String loginId = userSession.getUserId();
@@ -85,6 +87,27 @@ public class PushNotification {
             NotificationTracker
                     .getInstance(context)
                     .trackDeliveredNotification(applinkNotificationModel, STATUS_DROPPED);
+        }
+    }
+
+    private static void fetchSellerAppWidgetData(Context context, int notificationId) {
+        if (!GlobalConfig.isSellerApp()) return;
+
+        if (notificationId == Constant.NotificationId.CHAT) {
+            sendBroadcast(context, Constant.IntentFilter.GET_CHAT_SELLER_APP_WIDGET_DATA);
+        } else if (notificationId == Constant.NotificationId.SELLER) {
+            sendBroadcast(context, Constant.IntentFilter.GET_ORDER_SELLER_APP_WIDGET_DATA);
+        }
+    }
+
+    private static void sendBroadcast(Context context, String actionName) {
+        try {
+            Intent intent = new Intent();
+            intent.setAction(actionName);
+            intent.setPackage(context.getPackageName());
+            context.sendBroadcast(intent);
+        } catch (Exception e) {
+            Timber.i(e);
         }
     }
 

@@ -402,10 +402,6 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         coVerify { editReviewUseCase.executeOnBackground() }
     }
 
-    private fun verifyImageUploaderUseCaseCalledBasedOnSizeOfList(size: Int) {
-        coVerify(exactly = size) { uploaderUseCase(any()) }
-    }
-
     private fun onGetReviewDetails_thenReturn(response: ProductrevGetReviewDetailResponseWrapper) {
         coEvery { getReviewDetailUseCase.executeOnBackground() } returns response
     }

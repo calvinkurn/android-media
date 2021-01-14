@@ -28,6 +28,7 @@
         android:id="@+id/txtStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
         android:text="@string/notif_status_waiting"
         android:layout_marginTop="@dimen/dp_10"
         app:layout_constraintEnd_toEndOf="parent"
