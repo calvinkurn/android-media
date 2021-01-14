@@ -14,12 +14,18 @@ import kotlinx.android.synthetic.main.item_digital_checkout_detail_subtitle.view
  * @author by jessica on 11/01/21
  */
 
-class DigitalCartDetailInfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DigitalCartDetailInfoAdapter(private val actionListener: ActionListener)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var infoItems: MutableList<Any> = mutableListOf()
     private var mainInfoItemCount: Int = 0
 
     var isExpanded = false
+    set(value) {
+        field = value
+        if (isExpanded) actionListener.expandAdditionalList() else actionListener.collapseAdditionalList()
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == DigitalCartDetailTitleViewHolder.LAYOUT) {
@@ -68,7 +74,6 @@ class DigitalCartDetailInfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolde
 
     fun toggleIsExpanded() {
         this.isExpanded = !this.isExpanded
-        notifyDataSetChanged()
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -101,5 +106,10 @@ class DigitalCartDetailInfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolde
         fun bind(item: CartItemDigitalWithTitle) {
             itemView.tvCheckoutDetailSubtitle.text = item.title
         }
+    }
+
+    interface ActionListener {
+        fun expandAdditionalList()
+        fun collapseAdditionalList()
     }
 }

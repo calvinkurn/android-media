@@ -8,13 +8,16 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
+import com.tokopedia.digital_checkout.data.response.CancelVoucherData
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.digital_checkout.usecase.DigitalAddToCartUseCase
+import com.tokopedia.digital_checkout.usecase.DigitalCancelVoucherUseCase
 import com.tokopedia.digital_checkout.usecase.DigitalGetCartUseCase
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
 import com.tokopedia.network.constant.ErrorNetMessage
@@ -23,6 +26,7 @@ import com.tokopedia.network.exception.ResponseDataNullException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,6 +48,7 @@ import javax.inject.Inject
 class DigitalCartViewModel @Inject constructor(
         private val digitalGetCartUseCase: DigitalGetCartUseCase,
         private val digitalAddToCartUseCase: DigitalAddToCartUseCase,
+        private val cancelVoucherUseCase: DigitalCancelVoucherUseCase,
         private val userSession: UserSessionInterface,
         dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
@@ -71,6 +76,7 @@ class DigitalCartViewModel @Inject constructor(
     private val _totalPrice = MutableLiveData<String>()
     val totalPrice: LiveData<String>
         get() = _totalPrice
+
 
     fun getCart(digitalCheckoutPassData: DigitalCheckoutPassData,
                 errorNotLoginMessage: String = "") {
@@ -154,14 +160,32 @@ class DigitalCartViewModel @Inject constructor(
 
     fun cancelVoucherCart() {
         //hit api
-        _isSuccessCancelVoucherCart.postValue(Success(true))
-//        detailToggleAppCompatTextView.setText(R.string.digital_cart_detail_close_label)
+        cancelVoucherUseCase.execute(
+                onSuccessCancelVoucher(),
+                onErrorCancelVoucher()
+        )
         resetVoucherCart()
+    }
+
+    private fun onSuccessCancelVoucher(): (CancelVoucherData.Response) -> Unit {
+        return {
+            if (it.response.success) {
+                _isSuccessCancelVoucherCart.postValue(Success(true))
+            } else {
+                _isSuccessCancelVoucherCart.postValue(Fail(Throwable("")))
+            }
+        }
+    }
+
+    private fun onErrorCancelVoucher(): (Throwable) -> Unit {
+        return {
+            _isSuccessCancelVoucherCart.postValue(Fail(it))
+        }
     }
 
     fun onReceivedPromoCode(promoData: PromoData) {
         resetVoucherCart()
-        if (promoData.amount == 0) {
+        if (promoData.amount > 0) {
             val additionals: MutableList<CartItemDigitalWithTitle> = ArrayList(_cartAdditionalInfoList.value
                     ?: listOf())
             val items: MutableList<CartItemDigital> = ArrayList()
@@ -174,11 +198,10 @@ class DigitalCartViewModel @Inject constructor(
             additionals.add(cartAdditionalInfo)
             _cartAdditionalInfoList.value = additionals
             _totalPrice.value = getStringIdrFormat(totalPayment.toDouble())
-//            getView().expandAdditionalInfo()
         }
     }
 
-    private fun resetVoucherCart() {
+    fun resetVoucherCart() {
         val additionalInfos = cartAdditionalInfoList.value?.toMutableList() ?: mutableListOf()
         for ((i, additionalInfo) in additionalInfos.withIndex()) {
             if (additionalInfo.title.contains("Pembayaran")) {
@@ -187,6 +210,8 @@ class DigitalCartViewModel @Inject constructor(
             }
         }
         _cartAdditionalInfoList.value = additionalInfos
+        _totalPrice.value = getStringIdrFormat(cartDigitalInfoData.value?.attributes?.pricePlain?.toDouble()
+                ?: 0.0)
     }
 
     private fun getStringIdrFormat(value: Double): String {

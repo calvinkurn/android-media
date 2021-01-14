@@ -49,6 +49,13 @@
                 app:typographyType="body_2"
                 android:visibility="gone"/>
 
+            <LinearLayout
+                android:id="@+id/layoutMyBills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/spacing_lvl4"/>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

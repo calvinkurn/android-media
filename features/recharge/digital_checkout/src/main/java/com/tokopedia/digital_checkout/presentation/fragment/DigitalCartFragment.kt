@@ -16,7 +16,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.digital_checkout.R
+import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
@@ -27,6 +29,7 @@ import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckou
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
@@ -37,6 +40,8 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView.ActionListener
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.build
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_digital_checkout_page.*
 import javax.inject.Inject
 
@@ -118,7 +123,14 @@ class DigitalCartFragment : BaseDaggerFragment() {
         })
 
         viewModel.isSuccessCancelVoucherCart.observe(viewLifecycleOwner, Observer {
-            resetPromoTickerView()
+            when (it) {
+                is Success -> {
+                    resetPromoTickerView()
+                }
+                is Fail -> {
+                    onFailedCancelVoucher(it.throwable)
+                }
+            }
         })
 
         viewModel.totalPrice.observe(viewLifecycleOwner, Observer {
@@ -129,23 +141,35 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun renderCartDigitalInfoData(cartInfo: CartDigitalInfoData) {
         productTitle.text = cartInfo.attributes?.categoryName
         cartDetailInfoAdapter.setInfoItems(cartInfo.mainInfo ?: listOf())
+
+        if (cartInfo.attributes?.isEnableVoucher == true) {
+            digitalPromoTickerView.visibility = View.VISIBLE
+        } else digitalPromoTickerView.visibility = View.GONE
+
+        cartInfo.attributes?.postPaidPopupAttribute?.let { postPaidPopupAttribute ->
+            if (digitalSubscriptionParams.isSubscribed) renderPostPaidPopup(postPaidPopupAttribute)
+        }
     }
 
     private fun getDigitalIdentifierParam(): RequestBodyIdentifier = DeviceUtil.getDigitalIdentifierParam(requireActivity())
 
     private fun initViews() {
-        cartDetailInfoAdapter = DigitalCartDetailInfoAdapter()
+        cartDetailInfoAdapter = DigitalCartDetailInfoAdapter(object : DigitalCartDetailInfoAdapter.ActionListener {
+            override fun expandAdditionalList() {
+                tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_close_label)
+            }
+
+            override fun collapseAdditionalList() {
+                tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_see_detail_label)
+            }
+        })
+
         rvDetails.layoutManager = LinearLayoutManager(context)
         rvDetails.isNestedScrollingEnabled = false
         rvDetails.adapter = cartDetailInfoAdapter
 
         tvSeeDetailToggle.setOnClickListener {
             cartDetailInfoAdapter.toggleIsExpanded()
-            if (cartDetailInfoAdapter.isExpanded) {
-                tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_close_label)
-            } else {
-                tvSeeDetailToggle.text = getString(R.string.digital_cart_detail_see_detail_label)
-            }
         }
 
         showPromoTicker()
@@ -227,7 +251,14 @@ class DigitalCartFragment : BaseDaggerFragment() {
                 cartPassData?.clientNumber ?: "",
                 price
         )
-        return null
+    }
+
+    private fun onFailedCancelVoucher(throwable: Throwable) {
+        var message: String = ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+        if (!throwable.message.isNullOrEmpty()) {
+            message = ErrorHandler.getErrorMessage(activity, throwable)
+        }
+        showToastMessage(message)
     }
 
     fun showToastMessage(message: String) {
@@ -252,14 +283,17 @@ class DigitalCartFragment : BaseDaggerFragment() {
             data?.let { data ->
                 if (data.hasExtra(EXTRA_PROMO_DATA)) {
                     promoData = data.getParcelableExtra(EXTRA_PROMO_DATA)
+                    viewModel.resetVoucherCart()
                     when (promoData.state) {
                         TickerCheckoutView.State.FAILED -> {
                             promoData.promoCode = ""
                             renderPromoTickerView()
+                            cartDetailInfoAdapter.isExpanded = true
                         }
                         TickerCheckoutView.State.ACTIVE -> {
                             renderPromoTickerView()
                             viewModel.onReceivedPromoCode(promoData)
+                            cartDetailInfoAdapter.isExpanded = true
                         }
                         TickerCheckoutView.State.EMPTY -> {
                             promoData.promoCode = ""
@@ -283,6 +317,18 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun resetPromoTickerView() {
         promoData = PromoData()
         renderPromoTickerView()
+    }
+
+    private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
+        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
+        dialog.setTitle(postPaidPopupAttribute.title)
+        dialog.setDescription(postPaidPopupAttribute.content ?: "")
+        dialog.setPrimaryCTAText(postPaidPopupAttribute.confirmButtonTitle ?: "")
+        dialog.setImageUrl(postPaidPopupAttribute.imageUrl ?: "")
+        dialog.show()
+        dialog.setPrimaryCTAClickListener {
+            dialog.dismiss()
+        }
     }
 
     private fun getCartDigitalInfoData(): CartDigitalInfoData = viewModel.cartDigitalInfoData.value
