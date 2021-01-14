@@ -1,6 +1,7 @@
 package com.tokopedia.home_account.view.viewholder
 
 import android.content.res.Configuration
+import android.graphics.PorterDuff
 import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
@@ -18,6 +19,7 @@ import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.home_account_financial.view.*
 import kotlinx.android.synthetic.main.home_account_item_profile.view.*
 import kotlinx.android.synthetic.main.home_account_member.view.*
@@ -86,6 +88,11 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, v
         itemView.home_account_member_layout_rv?.setHasFixedSize(true)
         val layoutManager = SpanningLinearLayoutManager(itemView.home_account_member_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
         val verticalDivider = ContextCompat.getDrawable(itemView.context, R.drawable.vertical_divider)
+        if(itemView.context?.isDarkMode() == true) {
+            verticalDivider?.mutate()?.setColorFilter(itemView.resources.getColor(R.color.vertical_divider_dark), PorterDuff.Mode.SRC_IN)
+        } else {
+            verticalDivider?.mutate()?.setColorFilter(itemView.resources.getColor(R.color.vertical_divider_light), PorterDuff.Mode.SRC_IN)
+        }
         val dividerItemDecoration = DividerItemDecoration(itemView.home_account_member_layout_rv.context,
                 layoutManager.orientation)
 
