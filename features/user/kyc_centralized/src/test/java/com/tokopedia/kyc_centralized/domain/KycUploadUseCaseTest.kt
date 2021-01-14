@@ -1,32 +1,35 @@
-package com.tokopedia.liveness.domain
+package com.tokopedia.kyc_centralized.domain
 
-import com.tokopedia.liveness.data.model.response.LivenessData
-import com.tokopedia.liveness.data.repository.LivenessUploadImagesRepository
-import io.mockk.*
+import com.tokopedia.kyc_centralized.data.model.response.KycData
+import com.tokopedia.kyc_centralized.data.repository.KycUploadImagesRepository
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.*
+import io.mockk.mockk
+import junit.framework.Assert
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertFailsWith
 
-class UploadLivenessResultUseCaseTest {
+class KycUploadUseCaseTest {
     @RelaxedMockK
-    private lateinit var repository: LivenessUploadImagesRepository
+    private lateinit var repository: KycUploadImagesRepository
 
-    private lateinit var useCase: UploadLivenessResultUseCase
+    private lateinit var useCase: KycUploadUseCase
 
     private val projectId = "1"
 
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        useCase = UploadLivenessResultUseCase(repository)
+        useCase = KycUploadUseCase(repository)
     }
 
     @Test
     fun `Successfully upload image`() {
-        val expectedResult = LivenessData()
+        val expectedResult = KycData()
 
         val ktpImageString = "good ktp image"
         val faceImageString = "good face image"
@@ -43,12 +46,12 @@ class UploadLivenessResultUseCaseTest {
         }
 
         assertEquals(result, expectedResult)
-        assertTrue(result.isSuccessRegister)
+        Assert.assertTrue(result.isSuccessRegister)
     }
 
     @Test
     fun `Failed to upload image (bad image)`() {
-        val expectedResult = mockk<LivenessData>(relaxed = true)
+        val expectedResult = mockk<KycData>(relaxed = true)
         val ktpImageString = "bad ktp image"
         val faceImageString = "bad face image"
 
@@ -64,7 +67,7 @@ class UploadLivenessResultUseCaseTest {
         }
 
         assertEquals(result, expectedResult)
-        assertFalse(result.isSuccessRegister)
+        Assert.assertFalse(result.isSuccessRegister)
     }
 
     @Test

@@ -1,31 +1,30 @@
-package com.tokopedia.liveness.presentation.viewmodel
+package com.tokopedia.kyc_centralized.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.liveness.data.model.response.LivenessData
-import com.tokopedia.liveness.domain.UploadLivenessResultUseCase
-import com.tokopedia.liveness.util.CoroutineTestDispatchersProvider
-import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
+import com.tokopedia.kyc_centralized.data.model.response.KycData
+import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
-import junit.framework.Assert.*
+import junit.framework.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import util.TestAppDispatchProvider
 import kotlin.test.assertFailsWith
 
-class LivenessDetectionViewModelTest {
-
+class KycUploadViewModelTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    private lateinit var useCase: UploadLivenessResultUseCase
+    private lateinit var useCase: KycUploadUseCase
 
-    private lateinit var viewModel : LivenessDetectionViewModel
+    private lateinit var viewModel : KycUploadViewModel
 
     private val ktpPath = "test ktp path"
     private val facePath = "test face path"
@@ -34,12 +33,12 @@ class LivenessDetectionViewModelTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        viewModel = LivenessDetectionViewModel(useCase, CoroutineTestDispatchersProvider)
+        viewModel = KycUploadViewModel(useCase, TestAppDispatchProvider)
     }
 
     @Test
     fun `Register - Success upload image and accepted`() {
-        val livenessData = LivenessData()
+        val livenessData = KycData()
 
         coEvery {
             useCase.uploadImages(any(), any(), any())
@@ -50,14 +49,14 @@ class LivenessDetectionViewModelTest {
 
         viewModel.uploadImages(ktpPath, facePath, projectId)
 
-        val result = viewModel.livenessResponseLiveData.value
-        assertEquals(result, Success(livenessData))
-        assertTrue((result as Success).data.isSuccessRegister)
+        val result = viewModel.kycResponseLiveData.value
+        Assert.assertEquals(result, Success(livenessData))
+        Assert.assertTrue((result as Success).data.isSuccessRegister)
     }
 
     @Test
     fun `Register - Success upload image but rejected`() {
-        val livenessData = LivenessData()
+        val livenessData = KycData()
 
         coEvery {
             useCase.uploadImages(any(), any(), any())
@@ -68,13 +67,13 @@ class LivenessDetectionViewModelTest {
 
         viewModel.uploadImages(ktpPath, facePath, projectId)
 
-        val result = viewModel.livenessResponseLiveData.value
-        assertFalse((result as Success).data.isSuccessRegister)
+        val result = viewModel.kycResponseLiveData.value
+        Assert.assertFalse((result as Success).data.isSuccessRegister)
     }
 
     @Test
     fun `API - get error response`() {
-        val viewModelMock = mockk<LivenessDetectionViewModel>(relaxed = true)
+        val viewModelMock = mockk<KycUploadViewModel>(relaxed = true)
         val exceptionMock = Exception("Oops!")
 
         coEvery {
@@ -88,7 +87,7 @@ class LivenessDetectionViewModelTest {
 
     @Test
     fun `API - get error response with empty params`() {
-        val viewModelMock = mockk<LivenessDetectionViewModel>(relaxed = true)
+        val viewModelMock = mockk<KycUploadViewModel>(relaxed = true)
         val exceptionMock = Exception("Oops!")
 
         coEvery {
@@ -110,7 +109,7 @@ class LivenessDetectionViewModelTest {
 
         viewModel.uploadImages(ktpPath, facePath, projectId)
 
-        val result = viewModel.livenessResponseLiveData.value
-        assertTrue(result is Fail)
+        val result = viewModel.kycResponseLiveData.value
+        Assert.assertTrue(result is Fail)
     }
 }
