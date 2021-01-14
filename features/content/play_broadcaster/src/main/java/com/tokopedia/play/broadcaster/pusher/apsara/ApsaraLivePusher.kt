@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat
 import com.alivc.live.pusher.*
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
+import java.io.File
 import java.util.regex.Pattern
 
 
@@ -47,6 +48,8 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         qualityMode = AlivcQualityModeEnum.QM_RESOLUTION_FIRST
         isEnableBitrateControl = true
         isEnableAutoResolution = true
+        pausePushImage = mContext.filesDir.path.toString() + File.separator + "sample_pause_push_image.png"
+        networkPoorPushImage = mContext.filesDir.path.toString() + File.separator + "sample_pause_push_image.png"
     }
 
     var mApsaraLivePusherInfoListener: ApsaraLivePusherInfoListener? = null
