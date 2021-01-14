@@ -694,13 +694,7 @@ open class HomeFragment : BaseDaggerFragment(),
             floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
         })
 
-        if (isSuccessReset()) {
-            view?.let {
-                Toaster.build(it, "Kata sandimu berhasil diubah, masuk ke Tokopedia lagi untuk lanjut bertransaksi.", 60000, Toaster.TYPE_NORMAL, "Oke", View.OnClickListener {
-                    saveStateReset(false)
-                })
-            }
-        }
+        if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
 
     private fun scrollToRecommendList() {
@@ -2236,7 +2230,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterReviewSuccess() {
-        view?.let { Toaster.build(it, getString(R.string.review_create_success_toaster, getHomeViewModel().getUserName()), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
+        view?.let { Toaster.build(it, getString(R.string.review_create_success_toaster, getHomeViewModel().getUserName()), Snackbar.LENGTH_LONG, TYPE_NORMAL, getString(R.string.review_oke)).show() }
     }
 
     private fun shouldShowToaster(): Boolean {
@@ -2341,5 +2335,17 @@ open class HomeFragment : BaseDaggerFragment(),
                 edit().putBoolean(IS_SUCCESS_RESET, state).apply()
             }
         }
+    }
+
+    private fun showSuccessResetPasswordDialog() {
+        Toaster.toasterCustomBottomHeight = 32
+        Toaster.build(root,
+                getString(R.string.text_dialog_success_reset_password),
+                60000,
+                TYPE_NORMAL,
+                getString(R.string.cta_dialog_success_reset_password),
+                View.OnClickListener {
+                    saveStateReset(false)
+        }).show()
     }
 }

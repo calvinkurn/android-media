@@ -113,4 +113,7 @@
 
     <string name="onboarding_coachmark_title">Halo, ini Menu Utama yang baru!</string>
     <string name="onboarding_coachmark_description">Lihat Semua Kategori, Daftar Transaksi, Wishlist, tulis Ulasan Produk, kini semuanya bisa dari sini!</string>
+  
+    <string name="text_dialog_success_reset_password">Kata sandimu berhasil diubah, masuk ke Tokopedia lagi buat lanjut transaksi.</string>
+    <string name="cta_dialog_success_reset_password">Oke</string>
 </resources>
