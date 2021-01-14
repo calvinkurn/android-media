@@ -1,0 +1,19 @@
+{
+  "readme": "Flight Order Detail E-Ticket and Invoice Tracking",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickFlight",
+      "eventAction": "click download eticket",
+      "eventCategory": "digital - flight",
+      "eventLabel": "{{flight - .* - .*}}",
+      "sessionIris": "{{.*}}",
+      "screenName" : "/flight/orderdetail",
+      "currentSite" : "tokopediadigitalflight",
+      "clientId" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit" : "travel & entertainment",
+      "category" : "flight"
+    }
+  ]
+}
