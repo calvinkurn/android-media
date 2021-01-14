@@ -211,5 +211,10 @@
             android:text="@string/upload_loading_subtitle"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include layout="@layout/layout_kyc_upload_error"
+        android:id="@+id/layout_kyc_upload_error"
+        android:visibility="gone"/>
+
     </FrameLayout>
 </androidx.core.widget.NestedScrollView>

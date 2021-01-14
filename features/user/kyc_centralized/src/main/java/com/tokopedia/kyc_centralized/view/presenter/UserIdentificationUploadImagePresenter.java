@@ -91,22 +91,22 @@ public class UserIdentificationUploadImagePresenter extends
 
                     @Override
                     public void onError(Throwable throwable) {
-                        getView().onErrorUpload(ErrorHandler.getErrorMessage(getView().getGetContext(), throwable));
+//                        getView().onErrorUpload(ErrorHandler.getErrorMessage(getView().getGetContext(), throwable));
                     }
 
                     @Override
                     public void onNext(List<ImageUploadModel> imageUploadModels) {
                         for (ImageUploadModel imageUpload: imageUploadModels) {
                             if(imageUpload != null) {
-                                getView().onSuccessUpload(
-                                        imageUpload.getKycType(),
-                                        imageUpload.getPicObjKyc(),
-                                        projectId);
+//                                getView().onSuccessUpload(
+//                                        imageUpload.getKycType(),
+//                                        imageUpload.getPicObjKyc(),
+//                                        projectId);
                             } else {
-                                getView().onErrorUpload(
-                                        String.format(getView().getGetContext().getString(R.string.error_upload_image_kyc),
-                                                KYCConstant.ERROR_UPLOAD_IMAGE)
-                                );
+//                                getView().onErrorUpload(
+//                                        String.format(getView().getGetContext().getString(R.string.error_upload_image_kyc),
+//                                                KYCConstant.ERROR_UPLOAD_IMAGE)
+//                                );
                             }
                         }
                     }

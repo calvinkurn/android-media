@@ -15,8 +15,6 @@ import rx.Observable
 interface UserIdentificationUploadImage {
     interface View : CustomerView {
         val getContext: Context?
-        fun onSuccessUpload(kycType: Int, picObjKyc: String, projectId: Int)
-        fun onErrorUpload(error: String?)
         fun showLoading()
         fun hideLoading()
     }
