@@ -240,4 +240,5 @@ public class RemoteConfigKey {
     public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
 
     public static final String MAINAPP_SWITCH_TO_WEBVIEW = "android_mainapp_switch_to_webview";
+    public static final String SELLERAPP_SWITCH_TO_WEBVIEW = "android_sellerapp_switch_to_webview";
 }
