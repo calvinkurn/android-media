@@ -33,7 +33,6 @@ import com.tokopedia.liveness.view.BackgroundOverlay
 import com.tokopedia.liveness.view.OnBackListener
 import com.tokopedia.liveness.view.activity.LivenessActivity
 import com.tokopedia.liveness.view.activity.LivenessFailedActivity
-import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
