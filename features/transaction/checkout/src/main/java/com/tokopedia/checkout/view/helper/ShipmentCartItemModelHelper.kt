@@ -46,9 +46,6 @@ object ShipmentCartItemModelHelper {
             @TargetApi(Build.VERSION_CODES.M)
             override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
                 super.onReceivedError(view, request, error)
-                val webUrl = view.url
-                Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s';web_url='%s'",
-                        request.url, error.errorCode, error.description, webUrl)
                 failedLoading = true
             }
 
