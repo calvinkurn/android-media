@@ -252,7 +252,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_3"
-                    app:typographyWeight="bold"
                     tools:text="Proteksi Produk" />
 
                 <androidx.appcompat.widget.AppCompatImageView
