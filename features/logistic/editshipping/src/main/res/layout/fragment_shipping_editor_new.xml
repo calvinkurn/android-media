@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/swipe_refresh"
@@ -143,6 +144,13 @@
                     app:typographyType="body_3"
                     android:text="Kenali detail kurir pengiriman...." />
 
+                <com.tokopedia.globalerror.GlobalError
+                    android:id="@+id/global_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:visibility="gone" />
+
             </LinearLayout>
 
         </ScrollView>
@@ -170,13 +178,6 @@
 
         </FrameLayout>
 
-
-        <com.tokopedia.globalerror.GlobalError
-            android:id="@+id/global_error"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

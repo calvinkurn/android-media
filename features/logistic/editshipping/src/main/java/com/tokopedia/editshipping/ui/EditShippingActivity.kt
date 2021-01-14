@@ -6,7 +6,7 @@ import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.editshipping.R
-import com.tokopedia.editshipping.util.SCREEN_CONFIG_S_SHIPPING
+import com.tokopedia.editshipping.util.EditShippingConstant.SCREEN_CONFIG_S_SHIPPING
 
 class EditShippingActivity : BaseSimpleActivity() {
 
