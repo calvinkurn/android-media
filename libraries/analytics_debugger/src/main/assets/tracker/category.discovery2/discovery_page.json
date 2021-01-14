@@ -1,0 +1,26 @@
+{
+  "readme": "Discovery Screen Page level Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "discoveryName" : "{{.*}}",
+      "currentSite": "tokopediamarketplace",
+      "event": "openScreen",
+      "eventName": "openScreen",
+      "userId": "{{.*}}",
+      "categoryId" : "{{.*}}",
+      "screenName": "{{.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "shopId": "{{.*}}",
+      "subcategory" : "{{.*}}",
+      "networkSpeed": "{{.*}}",
+      "businessUnit": "discovery",
+      "clientId": "{{.*}}",
+      "discoverySlug" : "{{.*}}",
+      "subcategoryId" : "{{.*}}",
+      "category" : "{{.*}}",
+      "appsflyerId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}
