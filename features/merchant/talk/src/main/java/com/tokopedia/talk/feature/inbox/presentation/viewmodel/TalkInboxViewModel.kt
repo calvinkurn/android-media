@@ -94,7 +94,7 @@ class TalkInboxViewModel @Inject constructor(
         resetPage()
     }
 
-    private fun getInboxList(page: Int = 0) {
+    private fun getInboxList(page: Int) {
         launchCatchError(block = {
             _inboxList.postValue(TalkInboxViewState.Loading(page))
             talkInboxListUseCase.setRequestParam(type, filter.filterParam, page)
