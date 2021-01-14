@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.mainnav.view.viewmodel
+package com.tokopedia.homenav.mainnav.view.datamodel
 
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder

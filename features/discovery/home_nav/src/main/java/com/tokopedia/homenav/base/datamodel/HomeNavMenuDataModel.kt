@@ -1,10 +1,10 @@
-package com.tokopedia.homenav.base.viewmodel
+package com.tokopedia.homenav.base.datamodel
 
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.diffutil.HomeNavTypeFactory
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
-data class HomeNavMenuViewModel(
+data class HomeNavMenuDataModel(
         val trackerName: String = "",
         val sectionId: Int = 0,
         val id: Int = 0,
@@ -13,7 +13,7 @@ data class HomeNavMenuViewModel(
         val itemTitle: String = "",
         val applink: String = "",
         var notifCount: String = "",
-        val submenu: List<HomeNavMenuViewModel> = listOf()
+        val submenus: List<HomeNavMenuDataModel> = listOf()
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 

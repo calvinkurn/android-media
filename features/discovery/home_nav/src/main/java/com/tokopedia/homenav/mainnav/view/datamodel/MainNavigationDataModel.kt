@@ -1,7 +1,6 @@
-package com.tokopedia.homenav.mainnav.view.viewmodel
+package com.tokopedia.homenav.mainnav.view.datamodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 
 data class MainNavigationDataModel(
         val dataList: List<Visitable<*>> = mutableListOf()
