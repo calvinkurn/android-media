@@ -24,7 +24,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 
