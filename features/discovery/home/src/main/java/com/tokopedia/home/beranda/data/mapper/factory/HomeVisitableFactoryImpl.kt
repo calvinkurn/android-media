@@ -9,14 +9,13 @@ import com.tokopedia.home.beranda.data.model.AtfData
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeFlag
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.domain.model.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.EmptyBannerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
@@ -165,27 +164,19 @@ class HomeVisitableFactoryImpl(
         }
     }
 
-    private fun addAtfData(atfData: AtfData) {
-        when(atfData.component) {
-            TYPE_ICON -> {
-                addDynamicIconData(
-                        atfData.getAtfContent<DynamicHomeIcon>()?.dynamicIcon?: listOf()
-                )
+    private fun AtfData.atfStatusCondition(
+            onLoading: ()-> Unit = {},
+            onError: ()-> Unit = {},
+            onSuccess: ()-> Unit = {}
+    ) {
+        when(status) {
+            AtfKey.STATUS_LOADING -> if (!isOptional) {
+                onLoading.invoke()
             }
-
-            TYPE_BANNER -> {
-
+            AtfKey.STATUS_ERROR -> if (!isOptional) {
+                onError.invoke()
             }
-
-            TYPE_TICKER -> {
-                addTickerData(atfData.getAtfContent<Ticker>())
-            }
-
-            TYPE_CHANNEL -> {
-                addDynamicChannelData(
-                        false,
-                        atfData.getAtfContent<DynamicHomeChannel>())
-            }
+            AtfKey.STATUS_SUCCESS -> onSuccess.invoke()
         }
     }
 
@@ -225,10 +216,67 @@ class HomeVisitableFactoryImpl(
     }
 
     override fun addAtfComponentVisitable(): HomeVisitableFactory {
-        homeData?.atfData?.let {
-            it.dataList.forEach { data ->
-                addAtfData(data)
+        if (homeData?.atfData?.dataList?.isNotEmpty() == true) {
+            homeData?.atfData?.let {
+                var channelPosition = 0
+                var tickerPosition = 0
+                var iconPosition = 0
+
+                it.dataList.forEach { data ->
+                    when(data.component) {
+                        TYPE_ICON -> {
+                            data.atfStatusCondition (
+                                    onLoading = {
+                                        visitableList.add(ShimmeringIconDataModel(data.id.toString()))
+                                    },
+                                    onError = {
+                                        visitableList.add(ErrorStateIconModel())
+                                    },
+                                    onSuccess = {
+                                        addDynamicIconData(data.getAtfContent<DynamicHomeIcon>()?.dynamicIcon?: listOf())
+                                    }
+                            )
+                            iconPosition++
+                        }
+
+                        TYPE_BANNER -> {
+
+                        }
+
+                        TYPE_TICKER -> {
+                            data.atfStatusCondition (
+                                    onSuccess = {
+                                        addTickerData(data.getAtfContent<Ticker>())
+                                    }
+                            )
+                            tickerPosition++
+                        }
+
+                        TYPE_CHANNEL -> {
+                            data.atfStatusCondition (
+                                    onLoading = {
+                                        visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
+                                    },
+                                    onError = {
+                                        when(channelPosition) {
+                                            0 -> visitableList.add(ErrorStateChannelOneModel())
+                                            1 -> visitableList.add(ErrorStateChannelTwoModel())
+                                            2 -> visitableList.add(ErrorStateChannelThreeModel())
+                                        }
+                                    },
+                                    onSuccess = {
+                                        addDynamicChannelData(
+                                                false,
+                                                data.getAtfContent<DynamicHomeChannel>())
+                                    }
+                            )
+                            channelPosition++
+                        }
+                    }
+                }
             }
+        } else {
+            visitableList.add(ErrorStateAtfModel())
         }
         return this
     }

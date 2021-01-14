@@ -10,6 +10,7 @@
         <include layout="@layout/home_error_state_icon_list"/>
 
         <com.tokopedia.unifycomponents.LocalLoad
+            android:id="@+id/localload_error_state_atf"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"

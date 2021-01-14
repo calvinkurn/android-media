@@ -5,6 +5,7 @@
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/localload_error_state_channel"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"

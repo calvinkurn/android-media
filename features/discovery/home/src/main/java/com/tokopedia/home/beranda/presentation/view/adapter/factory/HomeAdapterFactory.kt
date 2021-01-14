@@ -248,6 +248,18 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return ErrorStateChannelThreeViewHolder.LAYOUT
     }
 
+    override fun type(shimmeringChannelDataModel: ShimmeringChannelDataModel): Int {
+        return ShimmeringChannelViewHolder.LAYOUT
+    }
+
+    override fun type(shimmeringIconDataModel: ShimmeringIconDataModel): Int {
+        return ShimmeringIconViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateAtfModel: ErrorStateAtfModel): Int {
+        return HomeAtfErrorViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -388,6 +400,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ErrorStateChannelOneViewHolder.LAYOUT -> viewHolder = ErrorStateChannelOneViewHolder(view, listener)
             ErrorStateChannelTwoViewHolder.LAYOUT -> viewHolder = ErrorStateChannelTwoViewHolder(view, listener)
             ErrorStateChannelThreeViewHolder.LAYOUT -> viewHolder = ErrorStateChannelThreeViewHolder(view, listener)
+            HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
+            ShimmeringChannelViewHolder.LAYOUT -> viewHolder = ShimmeringChannelViewHolder(view, listener)
+            ShimmeringIconViewHolder.LAYOUT -> viewHolder = ShimmeringIconViewHolder(view, listener)
+            HomeAtfErrorViewHolder.LAYOUT -> viewHolder = HomeAtfErrorViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

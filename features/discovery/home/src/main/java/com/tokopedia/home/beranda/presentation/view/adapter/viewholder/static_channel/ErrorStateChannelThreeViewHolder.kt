@@ -6,15 +6,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.EmptyBannerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateChannelOneModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateChannelThreeModel
 
 class ErrorStateChannelThreeViewHolder(itemView: View, private val listener: HomeCategoryListener?)
-: AbstractViewHolder<EmptyBannerDataModel>(itemView) {
+: AbstractViewHolder<ErrorStateChannelThreeModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_error_state_channel_3
     }
 
-    override fun bind(element: EmptyBannerDataModel?) {
+    override fun bind(element: ErrorStateChannelThreeModel) {
     }
 }

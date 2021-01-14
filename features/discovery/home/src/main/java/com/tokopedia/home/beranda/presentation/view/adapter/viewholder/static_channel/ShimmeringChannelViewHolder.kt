@@ -6,16 +6,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.EmptyBannerDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateIconModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ShimmeringChannelDataModel
 
-class ErrorStateIconViewHolder(itemView: View, private val listener: HomeCategoryListener?)
-: AbstractViewHolder<ErrorStateIconModel>(itemView) {
+class ShimmeringChannelViewHolder(itemView: View, private val listener: HomeCategoryListener?)
+: AbstractViewHolder<ShimmeringChannelDataModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.home_error_state_icon_list
+        val LAYOUT = R.layout.home_inital_shimmer_channel
     }
 
-    override fun bind(element: ErrorStateIconModel) {
+    override fun bind(element: ShimmeringChannelDataModel) {
     }
 }
