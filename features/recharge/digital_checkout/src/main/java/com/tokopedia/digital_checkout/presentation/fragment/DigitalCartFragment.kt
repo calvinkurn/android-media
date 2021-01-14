@@ -21,10 +21,13 @@ import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
+import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfoAdapter
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
+import com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
+import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
@@ -38,8 +41,10 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView.ActionListener
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.build
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_digital_checkout_page.*
@@ -107,6 +112,13 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         viewModel.cartDigitalInfoData.observe(viewLifecycleOwner, Observer {
             renderCartDigitalInfoData(it)
+
+            it.crossSellingConfig?.let { crossSellingConfig ->
+                renderCrossSellingMyBillsWidget(crossSellingConfig)
+            }
+            it.attributes?.fintechProduct?.getOrNull(0)?.let { fintechProduct ->
+                renderFintechProductWidget(fintechProduct)
+            }
         })
 
         viewModel.cartAdditionalInfoList.observe(viewLifecycleOwner, Observer {
@@ -134,7 +146,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
         })
 
         viewModel.totalPrice.observe(viewLifecycleOwner, Observer {
-            tvTotalPayment.text = it
+            tvTotalPayment.text = getStringIdrFormat((it - promoData.amount).toDouble())
         })
     }
 
@@ -317,6 +329,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun resetPromoTickerView() {
         promoData = PromoData()
         renderPromoTickerView()
+        viewModel.resetVoucherCart()
     }
 
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
@@ -328,6 +341,76 @@ class DigitalCartFragment : BaseDaggerFragment() {
         dialog.show()
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
+        }
+    }
+
+    private fun renderCrossSellingMyBillsWidget(crossSellingConfig: CartDigitalInfoData.CrossSellingConfig) {
+        btnCheckout.text = crossSellingConfig.checkoutButtonText
+
+        //if user has subscribe, hide subscriptionWidget
+        if (digitalSubscriptionParams.isSubscribed) {
+            subscriptionWidget.visibility = View.GONE
+        } else {
+            subscriptionWidget.setTitle(crossSellingConfig.bodyTitle ?: "")
+
+            if (crossSellingConfig.isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter
+                    ?: "")
+            else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore ?: "")
+
+            subscriptionWidget.setChecked(crossSellingConfig.isChecked)
+            subscriptionWidget.hasMoreInfo(false)
+
+            subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
+                override fun onMoreInfoClicked() {}
+
+                override fun onCheckChanged(isChecked: Boolean) {
+                    if (isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter
+                            ?: "")
+                    else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore
+                            ?: "")
+                }
+            }
+        }
+    }
+
+    private fun renderFintechProductWidget(fintechProduct: FintechProduct) {
+        fintechProductWidget.setTitle(fintechProduct.info.title)
+        fintechProductWidget.setDescription(fintechProduct.info.subtitle)
+        fintechProductWidget.hasMoreInfo(true)
+
+        if (fintechProduct.checkBoxDisabled) fintechProductWidget.disableCheckBox() else {
+            fintechProductWidget.setChecked(fintechProduct.optIn)
+        }
+
+        fintechProductWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
+            override fun onMoreInfoClicked() {
+                renderFintechProductMoreInfo(fintechProduct.info)
+            }
+
+            override fun onCheckChanged(isChecked: Boolean) {
+                viewModel.updateTotalPriceWithFintechProduct(isChecked)
+            }
+        }
+
+        fintechProductWidget.visibility = View.VISIBLE
+    }
+
+    private fun renderFintechProductMoreInfo(fintechProductInfo: FintechProduct.FintechProductInfo) {
+        if (fintechProductInfo.urlLink.isNotEmpty()) RouteManager.route(context, fintechProductInfo.urlLink)
+        else if (fintechProductInfo.tooltipText.isNotEmpty()) {
+            val moreInfoView = View.inflate(context, R.layout.layout_digital_fintech_product_info_bottom_sheet, null)
+            val moreInfoText: Typography = moreInfoView.findViewById(R.id.egold_tooltip)
+            moreInfoText.text = fintechProductInfo.tooltipText
+
+            val moreInfoBottomSheet = BottomSheetUnify()
+            moreInfoBottomSheet.setTitle(fintechProductInfo.title)
+            moreInfoBottomSheet.isFullpage = false
+            moreInfoBottomSheet.setChild(moreInfoView)
+            moreInfoBottomSheet.clearAction()
+            moreInfoBottomSheet.setCloseClickListener {
+                moreInfoBottomSheet.dismiss()
+            }
+            fragmentManager?.run { moreInfoBottomSheet.show(this, "E-gold more info bottom sheet") }
         }
     }
 

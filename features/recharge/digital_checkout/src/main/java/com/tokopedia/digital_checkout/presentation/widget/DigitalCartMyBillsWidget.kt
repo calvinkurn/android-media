@@ -21,10 +21,15 @@ class DigitalCartMyBillsWidget @JvmOverloads constructor(@NotNull context: Conte
         LayoutInflater.from(context).inflate(R.layout.item_digital_checkout_my_bills_section, this, true)
     }
 
-    private var actionListener: ActionListener? = null
+    var actionListener: ActionListener? = null
         set(value) {
             field = value
-            field?.let { listener -> icCheckoutMyBillsInfo.setOnClickListener { listener.onMoreInfoClicked() } }
+            field?.let { listener ->
+                icCheckoutMyBillsInfo.setOnClickListener { listener.onMoreInfoClicked() }
+                checkBoxCheckoutMyBills.setOnCheckedChangeListener() { _, isChecked ->
+                    listener.onCheckChanged(isChecked)
+                }
+            }
         }
 
     fun setTitle(title: String) {
@@ -41,12 +46,17 @@ class DigitalCartMyBillsWidget @JvmOverloads constructor(@NotNull context: Conte
 
     fun isChecked(): Boolean = checkBoxCheckoutMyBills.isChecked
 
+    fun disableCheckBox() {
+        checkBoxCheckoutMyBills.visibility = View.GONE
+    }
+
     fun hasMoreInfo(state: Boolean) {
         icCheckoutMyBillsInfo.visibility = if (state) View.VISIBLE else View.GONE
     }
 
     interface ActionListener {
         fun onMoreInfoClicked()
+        fun onCheckChanged(isChecked: Boolean)
     }
 
 }

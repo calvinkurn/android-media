@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
-import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
@@ -20,6 +19,7 @@ import com.tokopedia.digital_checkout.usecase.DigitalAddToCartUseCase
 import com.tokopedia.digital_checkout.usecase.DigitalCancelVoucherUseCase
 import com.tokopedia.digital_checkout.usecase.DigitalGetCartUseCase
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
+import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.ResponseDataNullException
@@ -36,8 +36,6 @@ import java.lang.reflect.Type
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.util.*
 import javax.inject.Inject
 
@@ -57,8 +55,8 @@ class DigitalCartViewModel @Inject constructor(
     val cartDigitalInfoData: LiveData<CartDigitalInfoData>
         get() = _cartDigitalInfoData
 
-    private val _cartAdditionalInfoList = MutableLiveData<List<CartDigitalInfoData.CartItemDigitalWithTitle>>()
-    val cartAdditionalInfoList: LiveData<List<CartDigitalInfoData.CartItemDigitalWithTitle>>
+    private val _cartAdditionalInfoList = MutableLiveData<List<CartItemDigitalWithTitle>>()
+    val cartAdditionalInfoList: LiveData<List<CartItemDigitalWithTitle>>
         get() = _cartAdditionalInfoList
 
     private val _errorMessage = MutableLiveData<String>()
@@ -73,10 +71,9 @@ class DigitalCartViewModel @Inject constructor(
     val isSuccessCancelVoucherCart: LiveData<Result<Boolean>>
         get() = _isSuccessCancelVoucherCart
 
-    private val _totalPrice = MutableLiveData<String>()
-    val totalPrice: LiveData<String>
+    private val _totalPrice = MutableLiveData<Long>()
+    val totalPrice: LiveData<Long>
         get() = _totalPrice
-
 
     fun getCart(digitalCheckoutPassData: DigitalCheckoutPassData,
                 errorNotLoginMessage: String = "") {
@@ -151,20 +148,14 @@ class DigitalCartViewModel @Inject constructor(
                 } else {
                     _cartDigitalInfoData.postValue(mappedCartData)
                     _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
-                    _totalPrice.postValue(getStringIdrFormat(mappedCartData.attributes?.pricePlain?.toDouble()
-                            ?: 0.0))
+                    _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0)
                 }
             }
         }
     }
 
     fun cancelVoucherCart() {
-        //hit api
-        cancelVoucherUseCase.execute(
-                onSuccessCancelVoucher(),
-                onErrorCancelVoucher()
-        )
-        resetVoucherCart()
+        cancelVoucherUseCase.execute(onSuccessCancelVoucher(), onErrorCancelVoucher())
     }
 
     private fun onSuccessCancelVoucher(): (CancelVoucherData.Response) -> Unit {
@@ -197,7 +188,7 @@ class DigitalCartViewModel @Inject constructor(
             val cartAdditionalInfo = CartItemDigitalWithTitle("Pembayaran", items)
             additionals.add(cartAdditionalInfo)
             _cartAdditionalInfoList.value = additionals
-            _totalPrice.value = getStringIdrFormat(totalPayment.toDouble())
+            _totalPrice.value = cartDigitalInfoData.value?.attributes?.pricePlain ?: 0L
         }
     }
 
@@ -210,19 +201,18 @@ class DigitalCartViewModel @Inject constructor(
             }
         }
         _cartAdditionalInfoList.value = additionalInfos
-        _totalPrice.value = getStringIdrFormat(cartDigitalInfoData.value?.attributes?.pricePlain?.toDouble()
-                ?: 0.0)
+        _totalPrice.value = cartDigitalInfoData.value?.attributes?.pricePlain ?: 0L
     }
 
-    private fun getStringIdrFormat(value: Double): String {
-        val kursIndonesia = DecimalFormat.getCurrencyInstance() as DecimalFormat
-        kursIndonesia.maximumFractionDigits = 0
-        val formatRp = DecimalFormatSymbols()
-        formatRp.currencySymbol = "Rp "
-        formatRp.groupingSeparator = '.'
-        formatRp.monetaryDecimalSeparator = '.'
-        formatRp.decimalSeparator = '.'
-        kursIndonesia.decimalFormatSymbols = formatRp
-        return kursIndonesia.format(value).replace(",", ".")
+    fun updateTotalPriceWithFintechProduct(isChecked: Boolean) {
+        cartDigitalInfoData.value?.attributes?.let { attributes ->
+            var totalPrice = attributes.pricePlain
+            if (isChecked) {
+                val fintechProductPrice = attributes.fintechProduct?.getOrNull(0)?.fintechAmount
+                        ?: 0
+                totalPrice += fintechProductPrice
+            }
+            _totalPrice.value = totalPrice
+        }
     }
 }
