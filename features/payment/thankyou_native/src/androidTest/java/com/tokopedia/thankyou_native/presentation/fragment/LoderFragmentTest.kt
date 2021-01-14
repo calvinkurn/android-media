@@ -4,7 +4,6 @@ package com.tokopedia.thankyou_native.presentation.fragment
 import android.content.Intent
 import android.net.Uri
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
