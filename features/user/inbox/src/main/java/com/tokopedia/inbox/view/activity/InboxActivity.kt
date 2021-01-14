@@ -260,9 +260,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         onBoardingCoachMark?.showCoachMark(anchors)
         onBoardingCoachMark?.onFinishListener = {
             viewModel.markFinishedSellerOnBoarding()
+            switcher?.setShowListener { }
         }
         onBoardingCoachMark?.onDismissListener = {
             viewModel.markFinishedSellerOnBoarding()
+            switcher?.setShowListener { }
         }
         onBoardingCoachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
