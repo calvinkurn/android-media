@@ -22,6 +22,7 @@ object DeviceInfo {
 
     const val ADVERTISINGID = "ADVERTISINGID"
     const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
+    const val X_86 = "x86"
 
     @JvmStatic
     fun isRooted(): Boolean {
@@ -188,9 +189,9 @@ object DeviceInfo {
     fun isx86() =
             try {
                 if (Build.VERSION.SDK_INT < 21) {
-                    Build.CPU_ABI.contains("x86") || Build.CPU_ABI2.contains("x86")
+                    Build.CPU_ABI.contains(X_86) || Build.CPU_ABI2.contains(X_86)
                 } else {
-                    Build.SUPPORTED_ABIS.any { it.contains("x86") }
+                    Build.SUPPORTED_ABIS.any { it.contains(X_86) }
                 }
             } catch (e: Exception) {
                 false
@@ -210,7 +211,7 @@ object DeviceInfo {
                             context,
                             Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                 try {
-                    if (Build.VERSION.SDK_INT < 26) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                         val deviceId = tm.deviceId
                         val hash = deviceInfoCache.setImei(deviceId)
                         return hash

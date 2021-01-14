@@ -39,6 +39,7 @@ object FingerprintModelGenerator {
     private const val FINGERPRINT_USE_CASE = "FINGERPRINT_USE_CASE"
     private const val FINGERPRINT_TS = "timestamp"
     private const val FINGERPRINT_EXPIRED_TIME = 3_600
+    private const val AT_TOKOPEDIA = "@tokopedia"
 
     private var userSession:UserSessionInterface? = null
 
@@ -153,6 +154,6 @@ object FingerprintModelGenerator {
     }
 
     private fun isNakama(userSession: UserSessionInterface): Boolean {
-        return (GlobalConfig.DEBUG || userSession.email?.contains("@tokopedia") ?: false)
+        return (GlobalConfig.DEBUG || userSession.email?.contains(AT_TOKOPEDIA) ?: false)
     }
 }

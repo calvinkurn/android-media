@@ -30,7 +30,7 @@ class SubmitDeviceWorker(val appContext: Context, params: WorkerParameters) : Co
     }
 
     override suspend fun doWork(): Result {
-        if (runAttemptCount > 3) {
+        if (runAttemptCount > MAX_RUN_ATTEMPT) {
             return Result.failure()
         }
         return withContext(Dispatchers.IO) {
@@ -54,6 +54,7 @@ class SubmitDeviceWorker(val appContext: Context, params: WorkerParameters) : Co
 
     companion object {
         const val WORKER_NAME = "SUBMIT_DEVICE_WORKER"
+        const val MAX_RUN_ATTEMPT = 3
 
         fun scheduleWorker(context: Context) {
             try {
