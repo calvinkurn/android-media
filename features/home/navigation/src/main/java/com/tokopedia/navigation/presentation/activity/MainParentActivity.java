@@ -245,7 +245,7 @@ public class MainParentActivity extends BaseActivity implements
     private void initInboxAbTest() {
         useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ).equals(AbTestPlatform.VARIANT_NEW_INBOX);
+        ).equals(AbTestPlatform.VARIANT_NEW_INBOX) && isRollanceTestingUsingNavigationRevamp();
     }
 
     private void installDFonBackground() {
