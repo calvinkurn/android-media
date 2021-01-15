@@ -12,18 +12,21 @@ import javax.inject.Inject
 class GetHomeIconRepository @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ){
-    suspend fun getIconData(): HomeIconData {
-        val gqlResponse = graphqlRepository.getReseponse(
-                listOf(buildRequest()), GraphqlCacheStrategy
+    suspend fun getIconData(param: String = ""): HomeIconData {
+        val gqlResponse  = graphqlRepository.getReseponse(
+                listOf(buildRequest(param)), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(HomeIconData::class.java)
         if (errors.isNullOrEmpty()) {
-            val result: HomeIconData = gqlResponse.getData(HomeIconData::class.java)
-            return result
+            return gqlResponse.getData(HomeIconData::class.java)
         } else throw MessageErrorException(errors.joinToString { it.message })
     }
 
-    private fun buildRequest(): GraphqlRequest {
-        return GraphqlRequest(QueryHome.homeIconQuery, HomeIconData::class.java)
+    private fun buildRequest(param: String): GraphqlRequest {
+        return GraphqlRequest(QueryHome.homeIconQuery, HomeIconData::class.java, mapOf(PARAM to param))
+    }
+
+    companion object{
+        private const val PARAM = "param"
     }
 }

@@ -16,4 +16,5 @@ interface HomeComponentTypeFactory {
     fun type(featuredShopDataModel: FeaturedShopDataModel): Int
     fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int
     fun type(bannerDataModel: BannerDataModel): Int
+    fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int
 }

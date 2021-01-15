@@ -30,8 +30,8 @@ class HomeRemoteDataSource(
         getHomePageBannerUseCase.executeOnBackground()
     }
 
-    suspend fun getHomeIconUseCase(): HomeIconData? = withContext(dispatchers.io()) {
-        getHomeIconRepository.getIconData()
+    suspend fun getHomeIconUseCase(param: String): HomeIconData = withContext(dispatchers.io()) {
+        getHomeIconRepository.getIconData(param)
     }
 
     suspend fun getHomeTickerUseCase(): HomeTickerData? = withContext(dispatchers.io()) {

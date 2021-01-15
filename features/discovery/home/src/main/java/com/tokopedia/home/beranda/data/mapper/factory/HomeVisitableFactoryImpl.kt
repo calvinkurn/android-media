@@ -6,10 +6,8 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.model.AtfData
-import com.tokopedia.home.beranda.domain.model.HomeChannelData
-import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.*
+import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
@@ -20,6 +18,8 @@ import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
+import com.tokopedia.home_component.model.DynamicIconComponent
+import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -151,6 +151,33 @@ class HomeVisitableFactoryImpl(
         visitableList.add(viewModelDynamicIcon)
     }
 
+    private fun addDynamicIconData(id: String = "", defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf()) {
+        val viewModelDynamicIcon = DynamicIconComponentDataModel(
+                id = id,
+                dynamicIconComponent = DynamicIconComponent(
+                        defaultIconList.map {
+                            DynamicIconComponent.DynamicIcon(
+                                    id = it.id,
+                                    applink = it.applinks,
+                                    imageUrl = it.imageUrl,
+                                    name = it.name,
+                                    url = it.url,
+                                    businessUnitIdentifier = it.bu_identifier,
+                                    galaxyAttribution = it.galaxyAttribution,
+                                    persona = it.persona,
+                                    brandId = it.brandId,
+                                    categoryPersona = it.categoryPersona,
+                                    campaignCode = it.campaignCode,
+                                    withBackground = it.withBackground
+                            )
+                        }
+                ),
+                isCache = isCache
+        )
+
+        visitableList.add(viewModelDynamicIcon)
+    }
+
     private fun addDynamicChannelData(addLoadingMore: Boolean, defaultDynamicHomeChannel: DynamicHomeChannel? = null, useDefaultWhenEmpty: Boolean = true) {
         if (defaultDynamicHomeChannel != null) {
             defaultDynamicHomeChannel?.let {
@@ -236,7 +263,7 @@ class HomeVisitableFactoryImpl(
                                         visitableList.add(ErrorStateIconModel())
                                     },
                                     onSuccess = {
-                                        addDynamicIconData(data.getAtfContent<DynamicHomeIcon>()?.dynamicIcon?: listOf())
+                                        addDynamicIconData(data.id.toString(),data.getAtfContent<DynamicHomeIcon>()?.dynamicIcon?: listOf())
                                     }
                             )
                             iconPosition++

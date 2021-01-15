@@ -62,7 +62,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val bestSellerListener: RecommendationWidgetListener,
                          private val categoryNavigationListener: CategoryNavigationListener,
                          private val rechargeBUWidgetListener: RechargeBUWidgetListener,
-                         private val bannerComponentListener: BannerComponentListener
+                         private val bannerComponentListener: BannerComponentListener,
+                         private val dynamicIconComponentListener: DynamicIconComponentListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -236,6 +237,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return HomeInitialShimmerViewHolder.LAYOUT
     }
 
+    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int {
+        return DynamicIconViewHolder.LAYOUT
+    }
+
     override fun type(errorStateIconModel: ErrorStateIconModel): Int {
         return ErrorStateIconViewHolder.LAYOUT
     }
@@ -401,6 +406,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
             BannerComponentViewHolder.LAYOUT -> viewHolder =
                     BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
+            DynamicIconViewHolder.LAYOUT -> viewHolder = DynamicIconViewHolder(view, dynamicIconComponentListener)
             ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)
             ErrorStateChannelOneViewHolder.LAYOUT -> viewHolder = ErrorStateChannelOneViewHolder(view, listener)
             ErrorStateChannelTwoViewHolder.LAYOUT -> viewHolder = ErrorStateChannelTwoViewHolder(view, listener)
