@@ -1,7 +1,5 @@
 package com.tokopedia.home_component.model
 
-import com.tokopedia.kotlin.model.ImpressHolder
-
 
 /**
  * Created by Lukas on 1/8/21.
@@ -22,5 +20,5 @@ data class DynamicIconComponent (
             val categoryPersona: String = "",
             val campaignCode: String = "",
             val withBackground: Boolean = false
-    ) : ImpressHolder()
+    )
 }

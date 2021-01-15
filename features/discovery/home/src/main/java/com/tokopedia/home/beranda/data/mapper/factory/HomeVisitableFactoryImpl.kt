@@ -2,18 +2,14 @@ package com.tokopedia.home.beranda.data.mapper.factory
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.model.AtfData
-import com.tokopedia.home.beranda.domain.model.HomeChannelData
-import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.HomeFlag
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.EmptyBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
-import com.tokopedia.home.beranda.domain.model.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.EmptyBannerDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
@@ -127,17 +123,6 @@ class HomeVisitableFactoryImpl(
     }
 
     private fun addDynamicIconData(id: String = "", defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf()) {
-        var isDynamicIconWrapType = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)?: false
-        var iconList = defaultIconList
-        if (iconList.isEmpty()) {
-            iconList = homeData?.dynamicHomeIcon?.dynamicIcon?: listOf()
-        }
-
-        if (iconList.isEmpty()) {
-            iconList = homeDefaultDataSource.createDefaultHomeDynamicIcon().dynamicIcon
-            isDynamicIconWrapType = true
-        }
-
         val viewModelDynamicIcon = DynamicIconComponentDataModel(
                 id = id,
                 dynamicIconComponent = DynamicIconComponent(
@@ -157,14 +142,10 @@ class HomeVisitableFactoryImpl(
                                     withBackground = it.withBackground
                             )
                         }
-                )
+                ),
+                isCache = isCache
         )
 
-        if (!isCache) {
-//            viewModelDynamicIcon.setTrackingData(
-//                    HomePageTracking.getEnhanceImpressionDynamicIconHomePage(viewModelDynamicIcon.itemList))
-//            viewModelDynamicIcon.isTrackingCombined = false
-        }
         visitableList.add(viewModelDynamicIcon)
     }
 

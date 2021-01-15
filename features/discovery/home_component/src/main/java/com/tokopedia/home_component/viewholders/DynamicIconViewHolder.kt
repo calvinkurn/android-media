@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.home_component_dynamic_icon_item.view.*
 /**
  * Created by Lukas on 1/8/21.
  */
-class DynamicIconViewHolder (itemView: View, listener: DynamicIconComponentListener): AbstractViewHolder<DynamicIconComponentDataModel>(itemView){
+class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconComponentListener): AbstractViewHolder<DynamicIconComponentDataModel>(itemView){
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon
@@ -30,15 +30,23 @@ class DynamicIconViewHolder (itemView: View, listener: DynamicIconComponentListe
 
     override fun bind(element: DynamicIconComponentDataModel) {
         setupDynamicIcon(element.dynamicIconComponent.dynamicIcon)
+        setupImpression(element)
     }
 
     private fun setupDynamicIcon(dynamicIcons: List<DynamicIconComponent.DynamicIcon>){
         adapter.submitList(dynamicIcons)
+        adapter.updatePosition(adapterPosition)
         itemView.dynamic_icon_recycler_view.adapter = adapter
         setupLayoutManager(
             isScrollItem = dynamicIcons.size > 5,
             spanCount = dynamicIcons.size
         )
+    }
+
+    private fun setupImpression(element: DynamicIconComponentDataModel){
+        itemView.addOnImpressionListener(element){
+            if(!element.isCache) listener.onImpressIcon(element.dynamicIconComponent.dynamicIcon, adapterPosition)
+        }
     }
 
     private fun setupLayoutManager(isScrollItem: Boolean, spanCount: Int){
@@ -51,16 +59,21 @@ class DynamicIconViewHolder (itemView: View, listener: DynamicIconComponentListe
 
     internal inner class DynamicIconAdapter (private val listener: DynamicIconComponentListener) : RecyclerView.Adapter<DynamicIconItemViewHolder>() {
         private val categoryList = mutableListOf<DynamicIconComponent.DynamicIcon>()
+        private var position: Int = 0
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconItemViewHolder {
             return DynamicIconItemViewHolder(LayoutInflater.from(parent.context).inflate(DynamicIconItemViewHolder.LAYOUT, parent, false), listener)
         }
 
         override fun onBindViewHolder(holder: DynamicIconItemViewHolder, position: Int) {
-            categoryList.getOrNull(position)?.let { holder.bind(it, categoryList.size > 5) }
+            categoryList.getOrNull(position)?.let { holder.bind(it, categoryList.size > 5, this.position) }
         }
 
         override fun getItemCount(): Int {
             return categoryList.size
+        }
+
+        fun updatePosition(position: Int){
+            this.position = position
         }
 
         fun submitList(list: List<DynamicIconComponent.DynamicIcon>){
@@ -75,7 +88,7 @@ class DynamicIconViewHolder (itemView: View, listener: DynamicIconComponentListe
             val LAYOUT = R.layout.home_component_dynamic_icon_item
         }
 
-        fun bind(item: DynamicIconComponent.DynamicIcon, isScrollable: Boolean){
+        fun bind(item: DynamicIconComponent.DynamicIcon, isScrollable: Boolean, parentPosition: Int){
             itemView.dynamic_icon_typography.text = item.name
             itemView.dynamic_icon_image_view.loadImage(item.imageUrl)
             itemView.dynamic_icon_container.layoutParams = ViewGroup.LayoutParams(
@@ -85,10 +98,7 @@ class DynamicIconViewHolder (itemView: View, listener: DynamicIconComponentListe
             itemView.dynamic_icon_typography.maxLines = if(item.withBackground) 2 else 1
             itemView.dynamic_icon_background.visibility = if(item.withBackground) View.VISIBLE else View.GONE
             itemView.setOnClickListener {
-                listener.onClickIcon(item)
-            }
-            itemView.addOnImpressionListener(item){
-                listener.onImpressIcon(item)
+                listener.onClickIcon(item, parentPosition,adapterPosition)
             }
         }
     }

@@ -6,6 +6,6 @@ import com.tokopedia.home_component.model.DynamicIconComponent
  * Created by Lukas on 1/8/21.
  */
 interface DynamicIconComponentListener {
-    fun onClickIcon(dynamicIcon: DynamicIconComponent.DynamicIcon)
-    fun onImpressIcon(dynamicIcon: DynamicIconComponent.DynamicIcon)
+    fun onClickIcon(dynamicIcon: DynamicIconComponent.DynamicIcon, position: Int, iconPosition: Int)
+    fun onImpressIcon(dynamicIcons: List<DynamicIconComponent.DynamicIcon>, position: Int)
 }

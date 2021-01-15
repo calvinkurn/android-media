@@ -1,23 +1,27 @@
 package com.tokopedia.home_component.visitable
 
 import android.os.Bundle
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.DynamicIconComponent
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Created by Lukas on 1/8/21.
  */
-class DynamicIconComponentDataModel(
+data class DynamicIconComponentDataModel(
         val id: String,
+        val isCache: Boolean,
         val dynamicIconComponent: DynamicIconComponent
-) : HomeComponentVisitable{
+) : HomeComponentVisitable, ImpressHolder(){
     override fun visitableId(): String {
         return id
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is DynamicIconComponentDataModel && b.dynamicIconComponent.dynamicIcon == dynamicIconComponent.dynamicIcon
+        return b is DynamicIconComponentDataModel &&
+                b.dynamicIconComponent.dynamicIcon.zip(dynamicIconComponent.dynamicIcon).all { (newIcon, oldIcon) ->
+                    newIcon.id == oldIcon.id && newIcon.name == oldIcon.name && newIcon.imageUrl == oldIcon.imageUrl
+                }
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
