@@ -35,7 +35,7 @@ class TopAdsSheetViewModel @Inject constructor(
 
     fun getProductStats(resources: Resources, adIds: List<String>, onSuccess: ((List<WithoutGroupDataItem>) -> Unit)) {
         topAdsGetProductStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_product_statistics))
+                com.tokopedia.topads.common.R.raw.gql_query_product_statistics))
         topAdsGetProductStatisticsUseCase.setParams("", "", adIds)
         topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
                 {
@@ -71,7 +71,7 @@ class TopAdsSheetViewModel @Inject constructor(
 
     fun setProductAction(onSuccess: ((action: String) -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
         topAdsProductActionUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_product_action))
+                com.tokopedia.topads.common.R.raw.gql_query_product_action))
         topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
         topAdsProductActionUseCase.executeQuerySafeMode(
                 {
@@ -84,7 +84,7 @@ class TopAdsSheetViewModel @Inject constructor(
 
     fun getAutoAdsStatus(shopId: String, resources: Resources) {
         val params = mapOf(ParamObject.SHOP_Id to shopId.toInt())
-        topAdsGetAutoAdsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, R.raw.query_auto_ads_status))
+        topAdsGetAutoAdsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.query_auto_ads_status))
         topAdsGetAutoAdsStatusUseCase.setTypeClass(TopAdsAutoAds.Response::class.java)
         topAdsGetAutoAdsStatusUseCase.setRequestParams(params)
         topAdsGetAutoAdsStatusUseCase.execute(

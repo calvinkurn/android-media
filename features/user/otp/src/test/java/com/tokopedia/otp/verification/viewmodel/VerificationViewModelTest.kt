@@ -8,9 +8,11 @@ import com.tokopedia.otp.verification.domain.data.*
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
 import com.tokopedia.otp.verification.domain.usecase.*
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -45,6 +47,10 @@ class VerificationViewModelTest {
     lateinit var sendOtpResultObserver: Observer<Result<OtpRequestData>>
     @RelaxedMockK
     lateinit var otpValidateResultObserver: Observer<Result<OtpValidateData>>
+    @RelaxedMockK
+    lateinit var userSessionInterface: UserSessionInterface
+    @RelaxedMockK
+    lateinit var remoteConfig: RemoteConfig
 
     private val dispatcherProviderTest = DispatcherProviderTest()
 
@@ -60,6 +66,8 @@ class VerificationViewModelTest {
                 otpValidateUseCase2FA,
                 sendOtpUseCase,
                 sendOtpUseCase2FA,
+                userSessionInterface,
+                remoteConfig,
                 dispatcherProviderTest
         )
     }

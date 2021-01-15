@@ -39,7 +39,7 @@ class ProductMiniShopInfoViewHolder(private val view: View, private val listener
         if (isGoldMerchant && !isOfficialStore) {
             txt_mini_shop_desc.hide()
             shop_badge.show()
-            shop_badge.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_power_merchant))
+            shop_badge.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant))
         } else if (isOfficialStore) {
             txt_mini_shop_desc.show()
             shop_badge.show()

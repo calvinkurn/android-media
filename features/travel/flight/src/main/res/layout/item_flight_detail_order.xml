@@ -44,7 +44,7 @@
             app:typographyType="heading_4" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image_expendable_passenger"
+            android:id="@+id/image_expendable_journey"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/flight_dp_20"
             android:layout_gravity="center_vertical"

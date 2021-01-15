@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -44,12 +45,8 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
         initInjector()
 
         if (!GlobalConfig.isSellerApp()) {
-            window.decorView.setBackgroundColor(Color.WHITE)
+            window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             setupLayout(savedInstanceState)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.WHITE)
         }
     }
 

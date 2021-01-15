@@ -14,6 +14,7 @@ data class RecentViewDetailProductDataModel (
     var isWishlist: Boolean  = false,
     val rating: Int = 0,
     val productId: String = "",
+    val productLink: String = "",
     val isGold: Boolean  = false,
     val isOfficial: Boolean  = false,
     val shopName: String = "",
