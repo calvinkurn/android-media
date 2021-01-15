@@ -2,15 +2,18 @@ package com.tokopedia.additional_check.view.activity
 
 import android.os.Bundle
 import android.os.Handler
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.TextAppearanceSpan
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.additional_check.R
 import com.tokopedia.additional_check.data.TwoFactorResult
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_DOUBLE_TAP
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import kotlin.system.exitProcess
+
 
 /**
  * Created by Yoris Prayogo on 10/07/20.
@@ -26,7 +29,9 @@ class TwoFactorActivity: BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(this)
         enableBackBtn = intent?.extras?.getParcelable<TwoFactorResult>(TwoFactorFragment.RESULT_POJO_KEY)?.showSkipButton
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        val title = SpannableString(getString(R.string.two_factor_title))
+        title.setSpan(TextAppearanceSpan(this, R.style.TitleAppearance), 0, title.length-1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        toolbar.title = title
     }
 
     override fun getNewFragment(): Fragment? {
