@@ -7,39 +7,46 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivPartnerLogo"
-        android:layout_width="@dimen/unify_space_48"
-        android:layout_height="@dimen/unify_space_48"
-        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/unify_space_0"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/unify_space_12"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintEnd_toEndOf="@+id/ivPartnerGuideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="0"
         tools:src="@tools:sample/avatars" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/ivPartnerGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitlePaymentPartner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/pay_later_register_title_padding"
+        android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:text="@string/kredivo"
-        android:textSize="@dimen/unify_font_14"
+        tools:text="@string/kredivo"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@+id/tvDescription"
-        app:layout_constraintEnd_toStartOf="@+id/paymenyOfferLabel"
+        app:layout_constraintEnd_toStartOf="@+id/paymentOfferLabel"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@+id/ivPartnerLogo"
+        app:layout_constraintStart_toEndOf="@+id/ivPartnerGuideline"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/paymenyOfferLabel"
+        android:id="@+id/paymentOfferLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -47,14 +54,14 @@
         android:paddingTop="@dimen/unify_space_2"
         android:paddingEnd="@dimen/unify_space_4"
         android:paddingBottom="@dimen/unify_space_2"
-        android:text="Aktif"
+        tools:text="Aktif"
         android:visibility="visible"
         app:labelType="general_dark_blue"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitlePaymentPartner"
-        app:layout_constraintStart_toEndOf="@+id/tvTitlePaymentPartner"
-        app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"
         app:layout_constraintEnd_toStartOf="@+id/ivActionArrow"
         app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/tvTitlePaymentPartner"
+        app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"
         app:typographyType="small" />
 
     <com.tokopedia.unifyprinciples.Typography

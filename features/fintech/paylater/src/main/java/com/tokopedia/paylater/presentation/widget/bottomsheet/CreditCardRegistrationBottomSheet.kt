@@ -12,10 +12,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.paylater.INTERNAL_URL
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.BankCardListItem
-import com.tokopedia.paylater.domain.model.CreditCardBank
+import com.tokopedia.paylater.domain.model.CreditCardItem
 import com.tokopedia.paylater.presentation.adapter.CreditCardRegistrationAdapter
 import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -36,6 +37,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         val viewModelProvider = ViewModelProviders.of(parentFragment!!, viewModelFactory.get())
         viewModelProvider.get(CreditCardViewModel::class.java)
     }
+
     init {
         setShowListener {
             bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -53,12 +55,10 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
 
     private var listener: Listener? = null
     private val childLayoutRes = R.layout.base_list_bottomsheet_widget
-    private var bankList: ArrayList<CreditCardBank> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-        getArgumentData()
         setDefaultParams()
         initBottomSheet()
     }
@@ -71,7 +71,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         credCardViewModel.creditCardBankResultLiveData.observe(viewLifecycleOwner, {
-            when(it) {
+            when (it) {
                 is Success -> onBankListLoaded(it.data)
                 is Fail -> onBankListLoadingFail(it.throwable)
             }
@@ -81,7 +81,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
             addItem(arrayListOf(FloatingButtonItem(
                     context.getString(R.string.credit_card_view_all_cards)
             ) {
-                openUrlWebView("ccpage")
+                openUrlWebView(INTERNAL_URL)
             }))
         }
     }
@@ -92,12 +92,6 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
 
     private fun onBankListLoadingFail(throwable: Throwable) {
 
-    }
-
-    private fun getArgumentData() {
-        arguments?.let {
-            bankList = it.getParcelableArrayList(CREDIT_CARD_BANK_DATA) ?: arrayListOf()
-        }
     }
 
     private fun initBottomSheet() {
@@ -112,15 +106,15 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
             v.onTouchEvent(event)
             true
         }
-        baseList.adapter = CreditCardRegistrationAdapter(bankList) {
-            listener?.showCreditCardList()
+        baseList.adapter = CreditCardRegistrationAdapter(data) { creditCardList, bankName, bankSlug ->
+            listener?.showCreditCardList(creditCardList, bankName, bankSlug)
             dismiss()
         }
         baseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     private fun setDefaultParams() {
-        setTitle("Tersedia cicilan 6 bulan")
+        setTitle("Ajukan kartu kredit apa?")
         isDragable = true
         isHideable = true
         showCloseIcon = true
@@ -138,17 +132,11 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        const val CREDIT_CARD_BANK_DATA = "BANK_DATA"
         const val TAG = "FT_TAG"
-
-        fun getInstance(bundle: Bundle): CreditCardRegistrationBottomSheet {
-            return CreditCardRegistrationBottomSheet().apply {
-                arguments = bundle
-            }
-        }
+        fun getInstance() = CreditCardRegistrationBottomSheet()
     }
 
     interface Listener {
-        fun showCreditCardList()
+        fun showCreditCardList(arrayList: ArrayList<CreditCardItem>, bankName: String?, bankSlug: String?)
     }
 }

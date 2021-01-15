@@ -5,17 +5,35 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
-import com.tokopedia.paylater.domain.model.CreditCardBank
-import kotlinx.android.synthetic.main.base_payment_register_item.view.*
-import kotlinx.android.synthetic.main.credit_card_available_bank_item.view.*
+import com.tokopedia.paylater.domain.model.CreditCardItem
 import kotlinx.android.synthetic.main.credit_card_item.view.*
 
 class CreditCardItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bindData() {
+    fun bindData(creditCardItem: CreditCardItem, creditCardBankName: String?) {
+        val labelBenefit = creditCardItem.specialLabel?.split(",")?.toList()
+        val size = (labelBenefit?.size ?: 0) - 2
         view.apply {
-            ivRecommendationBadge.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_credit_card_bg_recommendation))
+            tvCreditCardName.text = creditCardItem.cardName
+            tvBankName.text = creditCardBankName ?: ""
+            ImageHandler.loadImage(context,
+                    ivCreditCard,
+                    creditCardItem.cardImageUrl,
+                    R.drawable.ic_loading_image)
+            benefitLabel1.text = labelBenefit?.getOrNull(0)
+            benefitLabel2.text = labelBenefit?.getOrNull(1)
+            if (size > 0)
+                tvBenefitsMore.text = "+${size} Lainnya"
+            else tvBenefitsMore.gone()
+            if (creditCardItem.isSpecialOffer == true) {
+                ivRecommendationBadge.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_credit_card_header_recommendation))
+                recommendationGroup.visible()
+            } else recommendationGroup.gone()
+
         }
     }
 

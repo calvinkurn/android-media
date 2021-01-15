@@ -5,7 +5,7 @@
     android:id="@+id/creditCardLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:card_type="border">
+    app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clCreditCard"
@@ -114,7 +114,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:labelTitle="100% Cashback"
-            app:labelType="general_light_green"
+            app:labelType="general_dark_green"
             android:layout_marginStart="@dimen/unify_space_4"
             app:layout_constraintStart_toEndOf="@+id/benefitLabel1"
             app:layout_constraintTop_toTopOf="@id/benefitLabel1"/>
@@ -140,7 +140,13 @@
             app:layout_constraintStart_toStartOf="@id/ivCreditCard"
             app:layout_constraintEnd_toEndOf="@id/tvCreditCardName"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:listitem="@layout/paylater_cards_content_info_item"/>
+            tools:listitem="@layout/base_payment_offer_description_item"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/recommendationGroup"
+            app:constraint_referenced_ids="ivRecommendationBadge, icRecommendationLike, tvBestOffer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
 

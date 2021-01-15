@@ -9,7 +9,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.PayLaterPartnerBenefit
-import kotlinx.android.synthetic.main.paylater_cards_content_info_item.view.*
+import kotlinx.android.synthetic.main.base_payment_offer_description_item.view.*
 
 
 class PayLaterOfferDescriptionViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -32,7 +32,7 @@ class PayLaterOfferDescriptionViewHolder(val view: View) : RecyclerView.ViewHold
 
 
     companion object {
-        private val LAYOUT_ID = R.layout.paylater_cards_content_info_item
+        private val LAYOUT_ID = R.layout.base_payment_offer_description_item
 
         fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) = PayLaterOfferDescriptionViewHolder(
                 inflater.inflate(LAYOUT_ID, parent, false)

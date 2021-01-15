@@ -1,6 +1,8 @@
 package com.tokopedia.paylater.domain.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 
 data class CreditCardBankCardResponse(
@@ -28,6 +30,7 @@ data class BankCardListItem(
         val cardList: ArrayList<CreditCardItem>?,
 )
 
+@Parcelize
 data class CreditCardItem(
         @SerializedName("card_name")
         val cardName: String?,
@@ -41,4 +44,4 @@ data class CreditCardItem(
         val mainBenefit: String?,
         @SerializedName("is_special_offer")
         val isSpecialOffer: Boolean?,
-)
+): Parcelable

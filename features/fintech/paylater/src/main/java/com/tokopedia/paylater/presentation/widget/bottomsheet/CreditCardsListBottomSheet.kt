@@ -10,8 +10,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.paylater.INTERNAL_URL
 import com.tokopedia.paylater.R
-import com.tokopedia.paylater.domain.model.CreditCardBank
+import com.tokopedia.paylater.domain.model.CreditCardItem
 import com.tokopedia.paylater.presentation.adapter.CreditCardListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
@@ -36,7 +37,9 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
     }
 
     private val childLayoutRes = R.layout.base_list_bottomsheet_widget
-    private var bankList: ArrayList<CreditCardBank> = arrayListOf()
+    private var creditCardList: ArrayList<CreditCardItem> = arrayListOf()
+    private var bankName: String? = ""
+    private var bankSlug: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,14 +55,16 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
             addItem(arrayListOf(FloatingButtonItem(
                     context.getString(R.string.credit_card_view_more)
             ) {
-                openUrlWebView("bankUrl")
+                openUrlWebView("${INTERNAL_URL}bank/$bankSlug")
             }))
         }
     }
 
     private fun getArgumentData() {
         arguments?.let {
-            //bankList = it.getParcelableArrayList(CREDIT_CARD_BANK_DATA) ?: arrayListOf()
+            creditCardList = it.getParcelableArrayList(CREDIT_CARD_DATA) ?: arrayListOf()
+            bankName = it.getString(BANK_NAME)
+            bankSlug = it.getString(BANK_SLUG)
         }
     }
 
@@ -76,8 +81,8 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
             true
         }
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        baseList.adapter = CreditCardListAdapter(bankList) { pdpPageUrl ->
-            openUrlWebView(pdpPageUrl)
+        baseList.adapter = CreditCardListAdapter(creditCardList, bankName) { cardSlug ->
+            openUrlWebView("${INTERNAL_URL}bank/${bankSlug}/${cardSlug}")
         }
         baseList.layoutManager = linearLayoutManager
     }
@@ -93,12 +98,14 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
     }
 
     private fun openUrlWebView(urlString: String) {
-        val webViewApplink = ApplinkConst.WEBVIEW + "?url=" + urlString
-        RouteManager.route(context, webViewApplink)
+        val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
+        RouteManager.route(context, webViewAppLink)
     }
 
     companion object {
         const val CREDIT_CARD_DATA = "CREDIT_DATA"
+        const val BANK_NAME = "BANK_NAME"
+        const val BANK_SLUG = "SLUG"
         private const val TAG = "FT_TAG"
 
         fun show(bundle: Bundle, childFragmentManager: FragmentManager) {

@@ -30,11 +30,11 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
             payLaterApplicationDataForPartner?.let {
                 it.payLaterApplicationStatusLabelStringId.also { resId ->
                     if (resId != 0) {
-                        paymenyOfferLabel.visible()
-                        paymenyOfferLabel.text = context.getString(resId)
-                        paymenyOfferLabel.setLabelType(it.payLaterApplicationStatusLabelType)
+                        paymentOfferLabel.visible()
+                        paymentOfferLabel.text = context.getString(resId)
+                        paymentOfferLabel.setLabelType(it.payLaterApplicationStatusLabelType)
                     } else {
-                        paymenyOfferLabel.gone()
+                        paymentOfferLabel.gone()
                     }
                 }
             }

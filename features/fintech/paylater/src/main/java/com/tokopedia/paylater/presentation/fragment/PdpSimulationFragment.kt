@@ -22,6 +22,7 @@ import com.tokopedia.paylater.data.mapper.CreditCard
 import com.tokopedia.paylater.data.mapper.PayLater
 import com.tokopedia.paylater.data.mapper.PaymentMode
 import com.tokopedia.paylater.di.component.PdpSimulationComponent
+import com.tokopedia.paylater.domain.model.CreditCardItem
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
@@ -29,6 +30,8 @@ import com.tokopedia.paylater.helper.PayLaterHelper
 import com.tokopedia.paylater.presentation.adapter.PayLaterPagerAdapter
 import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
+import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardRegistrationBottomSheet
+import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardsListBottomSheet
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterSignupBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -38,6 +41,8 @@ import javax.inject.Inject
 class PdpSimulationFragment : BaseDaggerFragment(),
         PayLaterSimulationFragment.PayLaterSimulationCallback,
         PayLaterOffersFragment.PayLaterOfferCallback,
+        CreditCardSimulationFragment.CreditCardSimulationCallback,
+        CreditCardRegistrationBottomSheet.Listener,
         TabLayout.OnTabSelectedListener,
         ViewPager.OnPageChangeListener,
         CompoundButton.OnCheckedChangeListener, View.OnTouchListener {
@@ -172,7 +177,9 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         val fragmentList = mutableListOf<Fragment>()
         when (paymentMode) {
             is CreditCard -> {
-                val simulationFragment = CreditCardSimulationFragment.newInstance()
+                val simulationFragment = CreditCardSimulationFragment.newInstance().also {
+                    it.setCreditCardSimulationCallback(this)
+                }
                 val tncFragment = CreditCardTncFragment.newInstance()
                 fragmentList.add(simulationFragment)
                 fragmentList.add(tncFragment)
@@ -202,6 +209,22 @@ class PdpSimulationFragment : BaseDaggerFragment(),
                 it.show(childFragmentManager, PayLaterSignupBottomSheet.TAG)
             }
         }
+    }
+
+    override fun onRegisterCreditCardClicked() {
+        CreditCardRegistrationBottomSheet.getInstance().also {
+            it.setActionListener(this)
+            it.show(childFragmentManager, CreditCardRegistrationBottomSheet.TAG)
+        }
+    }
+
+    override fun showCreditCardList(arrayList: ArrayList<CreditCardItem>, bankName: String?, bankSlug: String?) {
+        val bundle = Bundle().apply {
+            putParcelableArrayList(CreditCardsListBottomSheet.CREDIT_CARD_DATA, arrayList)
+            putString(CreditCardsListBottomSheet.BANK_NAME, bankName)
+            putString(CreditCardsListBottomSheet.BANK_SLUG, bankSlug)
+        }
+        CreditCardsListBottomSheet.show(bundle, childFragmentManager)
     }
 
     override fun noInternetCallback() {

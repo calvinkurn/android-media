@@ -18,15 +18,13 @@ import com.tokopedia.paylater.presentation.adapter.CreditCardAvailableBanksAdapt
 import com.tokopedia.paylater.presentation.adapter.CreditCardSimulationAdapter
 import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
 import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardAvailableBanksBottomSheet
-import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardRegistrationBottomSheet
-import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardsListBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_credit_card_simulation.*
 import kotlinx.android.synthetic.main.paylater_daftar_widget.view.*
 import javax.inject.Inject
 
-class CreditCardSimulationFragment : BaseDaggerFragment(), CreditCardRegistrationBottomSheet.Listener {
+class CreditCardSimulationFragment : BaseDaggerFragment(){
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -84,8 +82,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment(), CreditCardRegistratio
         tvSeeAll.setOnClickListener { showAllBanksBottomSheet() }
         creditCardRegisterWidget.setOnClickListener {
             fetchBankCardList()
-            creditCardViewModel.getBankCardList()
-            showRegistrationBottomSheet()
+            creditCardSimulationCallback?.onRegisterCreditCardClicked()
         }
     }
 
@@ -160,23 +157,6 @@ class CreditCardSimulationFragment : BaseDaggerFragment(), CreditCardRegistratio
         }
     }
 
-    private fun showRegistrationBottomSheet() {
-        if (bankList.isNotEmpty()) {
-            val bundle = Bundle().apply {
-                val list = ArrayList(bankList.slice(0..3))
-                putParcelableArrayList(CreditCardRegistrationBottomSheet.CREDIT_CARD_BANK_DATA, list)
-            }
-            CreditCardRegistrationBottomSheet.getInstance(bundle).also {
-                it.setActionListener(this)
-                it.show(childFragmentManager, CreditCardRegistrationBottomSheet.TAG)
-            }
-        }
-    }
-
-    override fun showCreditCardList() {
-        CreditCardsListBottomSheet.show(Bundle.EMPTY, childFragmentManager)
-    }
-
     fun setCreditCardSimulationCallback(creditCardSimulationCallback: CreditCardSimulationCallback) {
         this.creditCardSimulationCallback = creditCardSimulationCallback
     }
@@ -187,7 +167,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment(), CreditCardRegistratio
     }
 
     interface CreditCardSimulationCallback {
-        fun onRegisterPayLaterClicked()
+        fun onRegisterCreditCardClicked()
         fun noInternetCallback()
         fun getSimulationProductInfo()
     }

@@ -99,7 +99,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private fun openUrlWebView(urlString: String) {
         if (urlString.isNotEmpty()) {
             // @Todo remove hardcoded string url
-            val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + "https://staging.tokopedia.com/kredivo/"
+            val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
             RouteManager.route(context, webViewAppLink)
         }
     }

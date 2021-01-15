@@ -96,7 +96,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/borderGrey"
-            tools:listitem="@layout/paylater_cards_content_info_item" />
+            tools:listitem="@layout/base_payment_offer_description_item" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnHowToUse"

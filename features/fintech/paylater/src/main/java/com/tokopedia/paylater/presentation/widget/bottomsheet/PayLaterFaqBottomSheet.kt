@@ -99,8 +99,8 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
     }
 
     private fun openUrlWebView(urlString: String) {
-        val webViewApplink = ApplinkConst.WEBVIEW + "?url=" + urlString
-        RouteManager.route(context, webViewApplink)
+        val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
+        RouteManager.route(context, webViewAppLink)
     }
 
 

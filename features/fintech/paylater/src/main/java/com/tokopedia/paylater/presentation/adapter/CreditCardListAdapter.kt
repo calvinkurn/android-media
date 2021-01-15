@@ -4,37 +4,46 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.paylater.domain.model.CreditCardBank
+import com.tokopedia.paylater.domain.model.CreditCardItem
 import com.tokopedia.paylater.presentation.viewholder.CreditCardItemViewHolder
 import kotlinx.android.synthetic.main.credit_card_item.view.*
 
 class CreditCardListAdapter(
-        private val bankList: ArrayList<CreditCardBank>,
-        private val clickListener : (String) -> Unit
+        private val creditCardList: ArrayList<CreditCardItem>,
+        private val creditCardBankName: String?,
+        private val clickListener: (String?) -> Unit,
 ) : RecyclerView.Adapter<CreditCardItemViewHolder>() {
     private val viewPool = RecyclerView.RecycledViewPool()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CreditCardItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val viewHolder = CreditCardItemViewHolder.getViewHolder(inflater, parent)
-        viewHolder.itemView.rvBenefitsDesc.apply {
-            setHasFixedSize(true)
-            adapter = CreditCardBenefitsAdapter()
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            setRecycledViewPool(viewPool)
-            (layoutManager as LinearLayoutManager).recycleChildrenOnDetach = true
-        }
         viewHolder.view.setOnClickListener {
-            clickListener("url here")
+            val position = viewHolder.adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                clickListener(creditCardList[position].cardSlug)
+            }
         }
         return viewHolder
     }
 
     override fun onBindViewHolder(holder: CreditCardItemViewHolder, position: Int) {
-        holder.bindData()
+        holder.bindData(creditCardList[position], creditCardBankName)
+        if (position != RecyclerView.NO_POSITION) {
+            holder.itemView.rvBenefitsDesc.apply {
+                setHasFixedSize(true)
+                val mainBenefitList = creditCardList[position].mainBenefit?.split(";")?.toList()
+                if (mainBenefitList?.isNotEmpty() == true) {
+                    adapter = CreditCardBenefitsAdapter(mainBenefitList)
+                    layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    setRecycledViewPool(viewPool)
+                    (layoutManager as LinearLayoutManager).recycleChildrenOnDetach = true
+                }
+            }
+        }
     }
 
     override fun getItemCount(): Int {
-        return 4
+        return creditCardList.size
     }
 }
