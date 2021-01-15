@@ -64,9 +64,9 @@ class GetHowToPayInstructions @Inject constructor(val resources: Resources,
                 writer.write(buffer, 0, n)
             }
             var jsonString: String = writer.toString()
-            jsonString = jsonString.replace("{store_name}", gatewayName)
-            jsonString = jsonString.replace("{payment_code}", paymentCode)
-            jsonString = jsonString.replace("{trn_amount}", amount)
+            jsonString = jsonString.replace(STORE_NAME_REGEX, gatewayName)
+            jsonString = jsonString.replace(PAYMENT_CODE_REGEX, paymentCode)
+            jsonString = jsonString.replace(TRANSACTION_AMOUNT_REGEX, amount)
             return Gson().fromJson(jsonString, HowToPay::class.java)
         } catch (e: Exception) {
             throw FileReadException()
@@ -92,6 +92,10 @@ class GetHowToPayInstructions @Inject constructor(val resources: Resources,
         const val KEY_TRANSFER = "TRANSFER"
         const val KEY_STORE = "STORE"
         const val KEY_KLIKBCA = "KLIKBCA"
+
+        const val STORE_NAME_REGEX = "{store_name}"
+        const val PAYMENT_CODE_REGEX = "{payment_code}"
+        const val TRANSACTION_AMOUNT_REGEX = "{trn_amount}"
     }
 }
 

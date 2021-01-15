@@ -146,7 +146,7 @@ class HowToPayFragment : BaseDaggerFragment() {
                 getString(R.string.pms_hwp_copy),
                 IconUnify.COPY) {
             copyTOClipBoard(context, appLinkPaymentInfo.payment_code)
-            showToast("Nomor virtual account berhasil disalin.")
+            showToast(getString(R.string.pms_hwp_va_copy_success))
         }
     }
 
@@ -157,7 +157,7 @@ class HowToPayFragment : BaseDaggerFragment() {
                 getString(R.string.pms_hwp_copy),
                 IconUnify.COPY) {
             copyTOClipBoard(context, appLinkPaymentInfo.payment_code)
-            showToast("Kode Pembayaran berhasil disalin.")
+            showToast(getString(R.string.pms_hwp_code_copy_success))
         }
     }
 
@@ -169,7 +169,7 @@ class HowToPayFragment : BaseDaggerFragment() {
                 getString(R.string.pms_hwp_copy),
                 IconUnify.COPY) {
             copyTOClipBoard(context, appLinkPaymentInfo.payment_code)
-            showToast("Nomor rekening berhasil disalin.")
+            showToast(getString(R.string.pms_hwp_bank_account_number_copy))
         }
         tvAccountName.visible()
         tvAccountName.text = getString(R.string.pms_hwp_bank_info,
@@ -272,7 +272,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 activity?.let {
-                    StoreListBottomSheet().show(it.supportFragmentManager, "StoreListBottomSheet")
+                    StoreListBottomSheet.showStoreList(it.supportFragmentManager)
                 }
             }
 

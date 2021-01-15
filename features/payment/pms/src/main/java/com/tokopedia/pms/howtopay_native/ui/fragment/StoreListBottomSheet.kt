@@ -3,6 +3,7 @@ package com.tokopedia.pms.howtopay_native.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pms.R
@@ -17,7 +18,7 @@ class StoreListBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         showCloseIcon = true
-        isDragable= true
+        isDragable = true
         setTitle(getString(R.string.pms_hwp_store_list))
         childView = LayoutInflater.from(context).inflate(R.layout.pms_hwp_store_list,
                 null, false)
@@ -30,5 +31,12 @@ class StoreListBottomSheet : BottomSheetUnify() {
         recyclerView?.layoutManager = LinearLayoutManager(context)
         recyclerView?.adapter = StoreListAdapter(StoreList.getStoreList())
         recyclerView?.adapter?.notifyDataSetChanged()
+    }
+
+    companion object {
+        private const val TAG = "StoreListBottomSheet"
+        fun showStoreList(supportFragmentManager: FragmentManager) {
+            StoreListBottomSheet().show(supportFragmentManager, TAG)
+        }
     }
 }
