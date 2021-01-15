@@ -824,7 +824,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
-                    key.equals(KEY_PRINT_AWB, true) -> SomNavigatorgoToPrintAwb(activity, view, listOf(detailResponse?.orderId.orZero().toString()), true)
+                    key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orZero().toString()), true)
                 }
             }
         }
