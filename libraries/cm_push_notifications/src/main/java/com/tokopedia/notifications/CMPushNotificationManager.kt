@@ -78,7 +78,7 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
         GraphqlClient.init(applicationContext)
         PushWorker.schedulePeriodicWorker()
 
-        aidlApiApp?.bindAidlService()
+        aidlApiApp?.bindService()
     }
 
     override fun onAidlReceive(tag: String, bundle: Bundle?) {
