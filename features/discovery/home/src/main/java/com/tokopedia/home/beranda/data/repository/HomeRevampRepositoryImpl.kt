@@ -112,8 +112,8 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         }
                     }
                     TYPE_ICON -> {
-                        val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase()
-                        dynamicIcon?.let { atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon) }
+                        val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase(atfData.param)
+                        dynamicIcon.let { atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon) }
                     }
                     else -> {
 

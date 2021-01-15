@@ -1241,7 +1241,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 this,
                 CategoryNavigationCallback(context, this),
                 RechargeBUWidgetCallback(context, this),
-                BannerComponentCallback(context, this)
+                BannerComponentCallback(context, this),
+                DynamicIconComponentCallback()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

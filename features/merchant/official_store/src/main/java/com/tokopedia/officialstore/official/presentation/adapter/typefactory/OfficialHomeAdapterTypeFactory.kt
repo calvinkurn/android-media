@@ -109,6 +109,10 @@ class OfficialHomeAdapterTypeFactory(
         return BannerComponentViewHolder.LAYOUT
     }
 
+    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int {
+        return -1
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)

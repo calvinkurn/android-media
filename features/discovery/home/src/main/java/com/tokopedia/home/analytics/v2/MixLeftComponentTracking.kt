@@ -1,4 +1,4 @@
-package com.tokopedia.home.analytics.v2
+ package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid

@@ -225,9 +225,9 @@ object QueryHome {
             "        }"
 
     val homeIconQuery: String = "" +
-            "query homeIcon\n" +
+            "query homeIcon(\$param: String!)\n" +
             "        {\n" +
-            "          dynamicHomeIcon {\n" +
+            "          dynamicHomeIcon(param: \$param) {\n" +
             "            dynamicIcon {\n" +
             "              id\n" +
             "              galaxy_attribution\n" +

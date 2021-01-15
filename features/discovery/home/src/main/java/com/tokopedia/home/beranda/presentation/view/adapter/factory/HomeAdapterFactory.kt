@@ -29,15 +29,15 @@ import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
-import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
-import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
-import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
-import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixTopViewHolder
+import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import java.util.*
 
 /**
@@ -62,7 +62,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val bestSellerListener: RecommendationWidgetListener,
                          private val categoryNavigationListener: CategoryNavigationListener,
                          private val rechargeBUWidgetListener: RechargeBUWidgetListener,
-                         private val bannerComponentListener: BannerComponentListener
+                         private val bannerComponentListener: BannerComponentListener,
+                         private val dynamicIconComponentListener: DynamicIconComponentListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -232,6 +233,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return HomeInitialShimmerViewHolder.LAYOUT
     }
 
+    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int {
+        return DynamicIconViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -368,6 +373,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
             BannerComponentViewHolder.LAYOUT -> viewHolder =
                     BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
+            DynamicIconViewHolder.LAYOUT -> viewHolder = DynamicIconViewHolder(view, dynamicIconComponentListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

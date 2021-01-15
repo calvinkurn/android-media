@@ -21,6 +21,8 @@ import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
+import com.tokopedia.home_component.model.DynamicIconComponent
+import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -124,7 +126,7 @@ class HomeVisitableFactoryImpl(
         }
     }
 
-    private fun addDynamicIconData(defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf()) {
+    private fun addDynamicIconData(id: String = "", defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf()) {
         var isDynamicIconWrapType = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)?: false
         var iconList = defaultIconList
         if (iconList.isEmpty()) {
@@ -136,15 +138,32 @@ class HomeVisitableFactoryImpl(
             isDynamicIconWrapType = true
         }
 
-        val viewModelDynamicIcon = DynamicIconSectionDataModel(
-                dynamicIconWrap = isDynamicIconWrapType,
-                itemList = iconList
+        val viewModelDynamicIcon = DynamicIconComponentDataModel(
+                id = id,
+                dynamicIconComponent = DynamicIconComponent(
+                        defaultIconList.map {
+                            DynamicIconComponent.DynamicIcon(
+                                    id = it.id,
+                                    applink = it.applinks,
+                                    imageUrl = it.imageUrl,
+                                    name = it.name,
+                                    url = it.url,
+                                    businessUnitIdentifier = it.bu_identifier,
+                                    galaxyAttribution = it.galaxyAttribution,
+                                    persona = it.persona,
+                                    brandId = it.brandId,
+                                    categoryPersona = it.categoryPersona,
+                                    campaignCode = it.campaignCode,
+                                    withBackground = it.withBackground
+                            )
+                        }
+                )
         )
 
         if (!isCache) {
-            viewModelDynamicIcon.setTrackingData(
-                    HomePageTracking.getEnhanceImpressionDynamicIconHomePage(viewModelDynamicIcon.itemList))
-            viewModelDynamicIcon.isTrackingCombined = false
+//            viewModelDynamicIcon.setTrackingData(
+//                    HomePageTracking.getEnhanceImpressionDynamicIconHomePage(viewModelDynamicIcon.itemList))
+//            viewModelDynamicIcon.isTrackingCombined = false
         }
         visitableList.add(viewModelDynamicIcon)
     }
@@ -169,7 +188,7 @@ class HomeVisitableFactoryImpl(
         when(atfData.component) {
             TYPE_ICON -> {
                 addDynamicIconData(
-                        atfData.getAtfContent<DynamicHomeIcon>()?.dynamicIcon?: listOf()
+                        atfData.id.toString(),  atfData.getAtfContent<DynamicHomeIcon>()?.dynamicIcon?: listOf()
                 )
             }
 
