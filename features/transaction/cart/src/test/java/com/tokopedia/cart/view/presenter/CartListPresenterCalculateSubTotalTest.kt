@@ -211,7 +211,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have no subtotal and no cashback") {
@@ -243,7 +243,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 1004 subtotal and 100 cashback") {
@@ -275,7 +275,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 1000 subtotal, 100 cashback and selected all item") {
@@ -309,7 +309,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 1684 subtotal and 100 cashback") {
@@ -352,7 +352,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 1684 subtotal from 19 items and 100 cashback") {
@@ -394,7 +394,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 1684 subtotal and 100 cashback") {
@@ -435,7 +435,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 1684 subtotal and 160 cashback") {
@@ -477,7 +477,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             }
 
             When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops, arrayListOf())
+                cartListPresenter.reCalculateSubTotal(cartShops)
             }
 
             Then("should have 4084 subtotal and 400 cashback") {
