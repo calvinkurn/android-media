@@ -34,7 +34,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -73,16 +72,16 @@ import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkAcceptOrde
 import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkPrintDialog
 import com.tokopedia.sellerorder.list.presentation.filtertabs.SomListSortFilterTab
 import com.tokopedia.sellerorder.list.presentation.models.*
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CHANGE_COURIER
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CONFIRM_REQUEST_PICKUP
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CONFIRM_SHIPPING
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_DETAIL
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToChangeCourierPage
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToConfirmShippingPage
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToPrintAwb
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToRequestPickupPage
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToSomOrderDetail
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToTrackingPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CHANGE_COURIER
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_DETAIL
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToPrintAwb
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
@@ -683,7 +682,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onPrintButtonClicked(markAsPrinted: Boolean) {
-        goToPrintAwb(this, getSelectedOrderIds(), markAsPrinted)
+        goToPrintAwb(activity, view, getSelectedOrderIds(), markAsPrinted)
         SomAnalytics.eventClickYesOnBulkPrintAwb(userSession.userId)
     }
 

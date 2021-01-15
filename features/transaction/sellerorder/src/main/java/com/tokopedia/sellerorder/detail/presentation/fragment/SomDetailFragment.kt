@@ -30,7 +30,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
@@ -51,7 +50,6 @@ import com.tokopedia.sellerorder.common.domain.model.SomEditRefNumResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
-import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.model.Roles
@@ -87,9 +85,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_USER_ROLES
-import com.tokopedia.sellerorder.common.util.SomConsts.PATH_PRINT_AWB
-import com.tokopedia.sellerorder.common.util.SomConsts.PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM
-import com.tokopedia.sellerorder.common.util.SomConsts.PRINT_AWB_ORDER_ID_QUERY_PARAM
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
@@ -117,6 +112,7 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetS
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -128,7 +124,6 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -572,18 +567,18 @@ class SomDetailFragment : BaseDaggerFragment(),
                     receiverStreet = receiver.street,
                     receiverDistrict = receiver.district + ", " + receiver.city + " " + receiver.postal,
                     receiverProvince = receiver.province,
-                    flagOrderMeta.flagFreeShipping,
-                    bookingInfo.driver.photo,
-                    bookingInfo.driver.name,
-                    bookingInfo.driver.phone,
-                    dropshipper.name,
-                    dropshipper.phone,
-                    bookingInfo.driver.licenseNumber,
-                    bookingInfo.onlineBooking.bookingCode,
-                    bookingInfo.onlineBooking.state,
-                    bookingInfo.onlineBooking.message,
-                    bookingInfo.onlineBooking.messageArray,
-                    bookingInfo.onlineBooking.barcodeType,
+                    isFreeShipping = flagOrderMeta.flagFreeShipping,
+                    driverPhoto = bookingInfo.driver.photo,
+                    driverName = bookingInfo.driver.name,
+                    driverPhone = bookingInfo.driver.phone,
+                    dropshipperName = dropshipper.name,
+                    dropshipperPhone = dropshipper.phone,
+                    driverLicense = bookingInfo.driver.licenseNumber,
+                    onlineBookingCode = bookingInfo.onlineBooking.bookingCode,
+                    onlineBookingState = bookingInfo.onlineBooking.state,
+                    onlineBookingMsg = bookingInfo.onlineBooking.message,
+                    onlineBookingMsgArray = bookingInfo.onlineBooking.messageArray,
+                    onlineBookingType = bookingInfo.onlineBooking.barcodeType,
                     isRemoveAwb = onlineBooking.isRemoveInputAwb,
                     awb = shipment.awb,
                     awbTextColor = shipment.awbTextColor,
@@ -638,7 +633,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                             buttonResp.key.equals(KEY_RESPOND_TO_CANCELLATION, true) -> onShowBuyerRequestCancelReasonBottomSheet(buttonResp)
                             buttonResp.key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
                             buttonResp.key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-                            buttonResp.key.equals(KEY_PRINT_AWB, true) -> goToPrintAwb()
+                            buttonResp.key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orZero().toString()), true)
                         }
                     }
                 }
@@ -714,26 +709,6 @@ class SomDetailFragment : BaseDaggerFragment(),
                 setUnlockVersion()
                 setChild(dialogView)
                 show()
-            }
-        }
-    }
-
-    private fun goToPrintAwb() {
-        if (GlobalConfig.isSellerApp()) {
-            val url = Uri.parse("${TokopediaUrl.getInstance().MOBILEWEB}/$PATH_PRINT_AWB")
-                    .buildUpon()
-                    .appendQueryParameter(PRINT_AWB_ORDER_ID_QUERY_PARAM, detailResponse?.orderId.orZero().toString())
-                    .appendQueryParameter(PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, "1")
-                    .build()
-                    .toString()
-            Intent(activity, SomPrintAwbActivity::class.java).apply {
-                putExtra(KEY_URL, url)
-                putExtra(KEY_TITLE, SomConsts.PRINT_AWB_WEBVIEW_TITLE)
-                startActivity(this)
-            }
-        } else {
-            view?.let {
-                Toaster.build(it, getString(R.string.som_detail_som_print_not_available), LENGTH_SHORT, TYPE_NORMAL).show()
             }
         }
     }
@@ -849,7 +824,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
-                    key.equals(KEY_PRINT_AWB, true) -> goToPrintAwb()
+                    key.equals(KEY_PRINT_AWB, true) -> SomNavigatorgoToPrintAwb(activity, view, listOf(detailResponse?.orderId.orZero().toString()), true)
                 }
             }
         }
