@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvNumberItemInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_N700"
+        tools:text="1."/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvContentItemInfo"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N700"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toEndOf="@id/tvNumberItemInfo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Cara pesan kurir Grab: masuk ke halaman Konfirmasi Pengiriman dan klik tombol Pickup"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

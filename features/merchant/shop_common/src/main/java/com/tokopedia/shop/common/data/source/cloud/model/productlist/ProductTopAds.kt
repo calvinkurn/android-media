@@ -1,8 +1,8 @@
 package com.tokopedia.shop.common.data.source.cloud.model.productlist
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductTopAds.AdsStatus.IN_REVIEW
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductTopAds.AdsStatus.INACTIVE
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductTopAds.AdsStatus.IN_REVIEW
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductTopAds.AdsStatus.PUBLISHED
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductTopAds.AdsStatus.REJECTED
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductTopAds.AdsStatus.UNPUBLISHED

@@ -9,38 +9,57 @@
     android:layout_width="match_parent"
     app:currentState="@+id/start"
     app:layoutDescription="@xml/fragment_official_home_scene">
-
     <View
         android:visibility="invisible"
-        app:layout_collapseMode="pin"
         android:id="@+id/statusbar"
         android:background="@color/Unify_N0"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl5"/>
-
-    <com.tokopedia.searchbar.MainToolbar
-        android:id="@+id/maintoolbar"
-        android:background="@color/Unify_N0"
+        android:layout_height="@dimen/spacing_lvl5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+    <FrameLayout
+        android:id="@+id/toolbar_container"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/statusbar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+        <com.tokopedia.searchbar.navigation_component.NavToolbar
+            android:id="@+id/maintoolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:visibility="gone"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:toolbarPageName="OS Homepage"
+            app:toolbarContentType="typeSearchbar"
+            app:toolbarBackButton="none"
+            app:toolbarInitialTheme="light"
+            app:toolbarAlwaysShowShadow="false" />
+        <com.tokopedia.searchbar.MainToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:minHeight="?actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"/>
+    </FrameLayout>
+
 
     <com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
         android:id="@+id/tablayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl7"
-        android:background="@color/Unify_N0"
+        android:background="@color/white"
         android:minHeight="@dimen/dp_32"
         android:maxHeight="@dimen/dp_64"
         app:tabMode="scrollable"
         app:tabIndicatorColor="@color/Unify_P600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/maintoolbar"/>
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_container"/>
 
 
     <include
@@ -50,8 +69,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/maintoolbar"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_container"
         tools:visibility="visible" />
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="0dp"

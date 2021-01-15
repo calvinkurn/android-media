@@ -114,9 +114,9 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
             val upperText = StringBuilder()
 
             if (item.catalogType == CATALOG_TYPE_FLASH_SALE) {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, R.color.red_150))
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
             } else {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, R.color.black_38))
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             }
 
             for (i in 0 until item.upperTextDesc.size) {
@@ -147,16 +147,16 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
         //disabling the coupons if not eligible for current membership
         if (item.isDisabled!!) {
             ImageUtil.dimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, R.color.black_54))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         } else {
             ImageUtil.unDimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, R.color.orange_red))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
         }
 
         if (item.isDisabledButton) {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, R.color.black_12))
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
         } else {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, R.color.white))
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
 
         if (item.pointsSlash!! <= 0) {

@@ -12,6 +12,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_PROC
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_SHIPPED
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OMS_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel.TRAIN_ORDER_LIST
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -33,6 +35,26 @@ object DeeplinkMapperUohOrder {
         if (deeplink.equals(ORDER_LIST, true) || deeplink.equals(ORDER_LIST_WEBVIEW, true)
                 || deeplink.equals(PURCHASE_ORDER, true) || deeplink.equals(PURCHASE_HISTORY, true) ) {
             returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER
+            else getInternalDeeplink(context, deeplink)
+
+        } else if (deeplink.equals(PURCHASE_CONFIRMED, true)
+                || deeplink.equals(MARKETPLACE_WAITING_CONFIRMATION, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_WAITING_CONFIRMATION
+            else getInternalDeeplink(context, deeplink)
+
+        } else if (deeplink.equals(PURCHASE_PROCESSED, true)
+                || deeplink.equals(MARKETPLACE_ORDER_PROCESSED, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_PROCESSED
+            else getInternalDeeplink(context, deeplink)
+
+        } else if (deeplink.equals(PURCHASE_SHIPPED, true)
+                || deeplink.equals(MARKETPLACE_SENT, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_SENT
+            else getInternalDeeplink(context, deeplink)
+
+        } else if (deeplink.equals(PURCHASE_DELIVERED, true)
+                || deeplink.equals(MARKETPLACE_DELIVERED, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_DELIVERED
             else getInternalDeeplink(context, deeplink)
 
         } else if (deeplink.startsWith(MARKETPLACE_ORDER_SUB) || deeplink.equals(PURCHASE_CONFIRMED, true)
@@ -62,6 +84,10 @@ object DeeplinkMapperUohOrder {
             returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_PESAWAT
             else getInternalDeeplink(context, deeplink)
 
+        } else if (deeplink.equals(TRAIN_ORDER, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_TRAIN
+            else TRAIN_ORDER_LIST
+
         } else if (deeplink.equals(GIFT_CARDS_ORDER, true)) {
             returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_GIFTCARDS
             else getInternalDeeplink(context, deeplink)
@@ -79,16 +105,21 @@ object DeeplinkMapperUohOrder {
             else getInternalDeeplink(context, deeplink)
 
         } else if (deeplink.startsWith(MARKETPLACE_ORDER) || deeplink.startsWith(DIGITAL_ORDER)
-                || deeplink.startsWith(FLIGHT_ORDER) || deeplink.startsWith(HOTEL_ORDER)
-                || deeplink.startsWith(OMS_ORDER_DETAIL)) {
+                || deeplink.startsWith(FLIGHT_ORDER)
+                || deeplink.startsWith(HOTEL_ORDER) || deeplink.startsWith(OMS_ORDER_DETAIL)) {
             returnedDeeplink = getInternalDeeplink(context, deeplink)
+
+        } else if (deeplink.equals(TRAVEL_AND_ENTERTAINMENT_ORDER, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_TRAVEL_ENTERTAINMENT
+            else getInternalDeeplink(context, deeplink)
         }
+
         return returnedDeeplink
     }
 
     fun useUoh(context: Context): Boolean {
         return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, UOH_AB_TEST_VALUE)
             val rollence = remoteConfigRollenceValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
 
             val remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -139,6 +170,9 @@ object DeeplinkMapperUohOrder {
             }
             deeplink.startsWith(OMS_ORDER_DETAIL) -> {
                 return getOmsOrderDetailInternalAppLink(deeplink)
+            }
+            deeplink.equals(TRAVEL_AND_ENTERTAINMENT_ORDER, true) -> {
+                return PESAWAT_INTERNAL_ORDER
             }
             else -> {
                 return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)

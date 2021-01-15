@@ -4,7 +4,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
+import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
@@ -13,7 +14,7 @@ import javax.inject.Inject
  */
 class GetChannelUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : BaseUseCase<GetChannelResponse.Channel>() {
+) : UseCase<GetChannelResponse.Channel>() {
 
     private val query = """
         query GetChannel(${'$'}channelId: String!){
@@ -30,6 +31,9 @@ class GetChannelUseCase @Inject constructor(
                 endTime
                 coverURL
                 enableChat
+                timestamp {
+                  publishedAt
+                }
                 status {
                   ID
                   text
@@ -117,11 +121,15 @@ class GetChannelUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): GetChannelResponse.Channel {
-        val gqlResponse = configureGqlResponse(graphqlRepository, query, GetChannelResponse::class.java, params, GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
+        val gqlResponse = DefaultUseCaseHandler(
+                gqlRepository = graphqlRepository,
+                query = query,
+                typeOfT = GetChannelResponse::class.java,
+                params = params,
+                gqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        ).executeWithRetry()
         val response = gqlResponse.getData<GetChannelResponse>(GetChannelResponse::class.java)
-        response?.broadcasterGetChannels?.channels?.let { return it.first() }
-        throw DefaultErrorThrowable()
+        return response.broadcasterGetChannels.channels.first()
     }
 
     companion object {

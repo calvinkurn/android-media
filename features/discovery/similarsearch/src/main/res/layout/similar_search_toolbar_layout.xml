@@ -34,7 +34,7 @@
             android:text="@string/title_similar_search"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
-            android:textColor="@color/similar_search_app_title_color"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@id/imageViewBack"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -36,8 +36,7 @@ public class GetFacebookCredentialUseCase {
 
     private static final String PARAM_CALLBACK_MANAGER = "PARAM_CALLBACK_MANAGER";
     private static final String PARAM_FRAGMENT = "PARAM_FRAGMENT";
-    private static final List<String> READ_PERMISSIONS = Arrays.asList("public_profile", "email",
-            "user_birthday");
+    private static final List<String> READ_PERMISSIONS = Arrays.asList("public_profile", "email");
     private static final String DEFAULT_FB_PERMISSION = "email";
     private static final String REMOTE_CONFIG_KEY_FB_PERMISSION = "android_user_fb_permission";
 

@@ -36,7 +36,7 @@ public class ReplyReviewSubscriber extends Subscriber<SendReplyReviewDomain> {
             viewListener.onSuccessReplyReview();
         else
             viewListener.onErrorReplyReview(
-                    viewListener.getContext().getApplicationContext().getString(R.string
+                    viewListener.getContext().getApplicationContext().getString(com.tokopedia.abstraction.R.string
                             .default_request_error_unknown));
 
     }

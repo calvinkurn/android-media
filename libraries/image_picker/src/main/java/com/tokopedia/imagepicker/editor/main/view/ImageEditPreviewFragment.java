@@ -22,8 +22,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
@@ -92,7 +92,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         boolean canRedo(int imageIndex);
 
-        ImageRatioTypeDef getCurrentRatio();
+        ImageRatioType getCurrentRatio();
     }
 
     public static ImageEditPreviewFragment newInstance(int imageIndex,
@@ -407,7 +407,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         overlayView.setCircleDimmedLayer(isCirclePreview);
 
         overlayView.setShowCropFrame(OverlayView.DEFAULT_SHOW_CROP_FRAME);
-        overlayView.setCropFrameColor(getResources().getColor(R.color.Unify_N0));
+        overlayView.setCropFrameColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
         overlayView.setCropFrameStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
 
         overlayView.setShowCropGrid(OverlayView.DEFAULT_SHOW_CROP_GRID);
@@ -425,7 +425,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     private void setToInitialRatio(){
-        ImageRatioTypeDef imageRatioTypeDef = onImageEditPreviewFragmentListener.getCurrentRatio();
+        ImageRatioType imageRatioTypeDef = onImageEditPreviewFragmentListener.getCurrentRatio();
         setPreviewCropTo(imageRatioTypeDef);
     }
 
@@ -451,7 +451,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         gestureCropImageView.postRotate(delta / ROTATE_WIDGET_SENSITIVITY);
     }
 
-    public void setPreviewCropTo(ImageRatioTypeDef imageRatioTypeDef){
+    public void setPreviewCropTo(ImageRatioType imageRatioTypeDef){
         int ratioX = imageRatioTypeDef.getRatioX();
         int ratioY = imageRatioTypeDef.getRatioY();
         if (ratioX <= 0 || ratioY <= 0) { // original ratio

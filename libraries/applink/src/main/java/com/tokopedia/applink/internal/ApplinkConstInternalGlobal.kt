@@ -65,6 +65,12 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_FROM_2FA = "isFromTwoFactor"
 
     @JvmField
+    val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
+
+    @JvmField
+    val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
+
+    @JvmField
     val PARAM_USER_ID_ENC = "userIdEncrypted"
     @JvmField
     val PARAM_USER_ACCESS_TOKEN = "accessToken"
@@ -104,10 +110,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
-    // ChangeInactiveFormRequestActivity
-    // tokopedia-android-internal://global/change-inactive-phone-form
+    // InactivePhoneOnboardingActivity
+    // tokopedia-android-internal://global/change-inactive-phone
     @JvmField
-    val CHANGE_INACTIVE_PHONE_FORM = "$INTERNAL_GLOBAL/change-inactive-phone-form"
+    val CHANGE_INACTIVE_PHONE = "$INTERNAL_GLOBAL/change-inactive-phone"
+
+    // TkpdPaySettingActivity
+    // tokopedia-android-internal://global/payment-setting
+    @JvmField
+    val PAYMENT_SETTING = "$INTERNAL_GLOBAL/payment-setting"
 
     //ChooseTokocashAccountActivity
     // tokopedia-android-internal://global/choose-account
@@ -259,10 +270,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_EMAIL = "$INTERNAL_GLOBAL/add-email"
 
-    // AddEmailActivity
+    // AddPhoneActivity
     // tokopedia-android-internal://global/add-phone
     @JvmField
     val ADD_PHONE = "$INTERNAL_GLOBAL/add-phone"
+
+    // AddPhoneActivity
+    // tokopedia-android-internal://global/add-phone
+    @JvmField
+    val ADD_PHONE_WITH = "$INTERNAL_GLOBAL/add-phone?phone={phone-number}"
 
     // AddBodActivity
     // tokopedia-android-internal://global/add-bod
@@ -330,6 +346,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
 
+    @JvmField
+    val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
+
+    @JvmField
+    val IMAGE_EDITOR = "$INTERNAL_GLOBAL/image-editor"
 
     @JvmField
     val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?title={title}&url={url}"
@@ -343,7 +364,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/setting-bank
     @JvmField
     val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
-
 
     @JvmField
     val GLOBAL_INTERNAL_DIGITAL_DEAL = "$INTERNAL_GLOBAL/deals"
@@ -494,10 +514,11 @@ object ApplinkConstInternalGlobal {
     val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
 
 
-    // Phone Number Verification Activity
+    //ReferralPhoneNumberVerificationActivity
     // tokopedia-android-internal://global/setting-referral-phone-verification
     @JvmField
     val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
+
     @JvmField
     val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
 
@@ -527,6 +548,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val TWO_FACTOR_REGISTER = "$INTERNAL_GLOBAL/two-factor-register"
 
+    // AccountHomeActivity
+    // tokopedia-android-internal://global/account-home-old
+    @JvmField
+    val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/old-home-account"
+
+    // HomeAccountUserActivity
+    // tokopedia-android-internal://global/new-home-account
+    @JvmField
+    val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
 
     //SeamlessActivity
     @JvmField

@@ -113,10 +113,12 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         return null;
                     }
                     if(httpResponse.code() == Const.GQL_QUERY_HASHING_ERROR){
+                        StringBuilder queryHashValues = new StringBuilder();
                         //Reset request bodies
                         if(requests.size() > 0) {
                             for (GraphqlRequest graphqlRequest : requests) {
                                 graphqlRequest.setQuery(graphqlRequest.getQueryCopy());
+                                queryHashValues.append(mCacheManager.getQueryHashValue(graphqlRequest.getMd5())).append(",");
                                 mCacheManager.deleteQueryHashValue(graphqlRequest.getMd5());
                             }
                         }
@@ -128,7 +130,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         else {
                             header.put(QUERY_HASHING_HEADER, "");
                         }
-                        Timber.d("Android Query Hash - Query Hash error " + CacheHelper.getQueryName(requests.get(0).getQuery()) + " KEY: " + requests.get(0).getMd5());
+                        Timber.w("P1#GQL_HASHING#error;name='%s';key='%s';hash='%s'", CacheHelper.getQueryName(requests.get(0).getQuery()), requests.get(0).getMd5(), queryHashValues.toString());
                         mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
                     }
                     if (httpResponse.code() != Const.GQL_RESPONSE_HTTP_OK && httpResponse.body() != null) {
@@ -136,7 +138,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         return null;
                     }
                     if (httpResponse.body() != null) {
-                        LoggingUtils.logGqlSize("java", requests.toString(), httpResponse.body().toString());
+                        LoggingUtils.logGqlSize("java", requests, httpResponse.body().toString());
                     }
 
                     JsonArray gJsonArray = CommonUtils.getOriginalResponse(httpResponse);
@@ -161,7 +163,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             GraphqlRequest request = requests.get(i);
                             if(executeQueryHashFlow){
                                 mCacheManager.saveQueryHash(request.getMd5(), qhValues[i]);
-                                Timber.d("Android Query Hash - Query Hash saved " + CacheHelper.getQueryName(request.getQuery()) + " KEY: " + request.getMd5() + " QueryHash:" + qhValues[0]);
+                                Timber.w("P1#GQL_HASHING#success;name='%s';key='%s';hash='%s'", CacheHelper.getQueryName(request.getQuery()), request.getMd5(), qhValues[i]);
                             }
                             if (request == null || request.isNoCache() || (executeCacheFlow && caches.get(request.getMd5()) == null)) {
                                 continue;

@@ -46,13 +46,10 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
-import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.sessioncommon.data.LoginToken
-import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -237,7 +234,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         selectedPhoneNo = phone
         showLoadingProgress()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.AFTER_LOGIN_PHONE)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_AFTER_LOGIN_PHONE)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, account.email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, account.userIdEnc)
@@ -245,8 +242,9 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID, account.userId)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OtpConstant.OtpMode.PIN);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OTP_MODE_PIN);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
         startActivityForResult(intent, REQUEST_CODE_PIN_CHALLENGE)
     }
 
@@ -316,6 +314,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                 userData.userId = userSessionInterface.userId
                 userData.email = userSessionInterface.email
                 userData.phoneNumber = userSessionInterface.phoneNumber
+                userData.medium = userSessionInterface.loginMethod
 
                 //Identity Event
                 LinkerManager.getInstance().sendEvent(
@@ -495,6 +494,9 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         const val REQUEST_CODE_PIN_CHALLENGE = 112
         const val PARAM_IS_2FA_KEY = "KEY_FROM_2FA_CHALLENGE"
         const val PARAM_IS_2FA = 113
+
+        private const val OTP_TYPE_AFTER_LOGIN_PHONE = 148
+        private const val OTP_MODE_PIN = "PIN"
 
         private const val TOKOPEDIA_CARE_PATH = "help"
 

@@ -65,7 +65,6 @@ class AddToCartDoneRecommendationCarouselViewHolder(
 
     companion object {
         val LAYOUT_RES = R.layout.add_to_cart_done_recommendation_carousel_layout
-        const val ATC_LOADING = "atc_loading"
     }
 
     init {

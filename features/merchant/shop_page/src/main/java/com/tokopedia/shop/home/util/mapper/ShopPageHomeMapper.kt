@@ -17,7 +17,7 @@ import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
-import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
+import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -70,8 +70,8 @@ object ShopPageHomeMapper {
                 }
             }
 
-    private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupViewModel {
-        return LabelGroupViewModel(
+    private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupUiModel {
+        return LabelGroupUiModel(
                 position = labelGroup.position,
                 title = labelGroup.title,
                 type = labelGroup.type
@@ -144,11 +144,11 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapToProductCardLabelGroup(labelGroupViewModel: LabelGroupViewModel): ProductCardModel.LabelGroup {
+    private fun mapToProductCardLabelGroup(labelGroupUiModel: LabelGroupUiModel): ProductCardModel.LabelGroup {
         return ProductCardModel.LabelGroup(
-                position = labelGroupViewModel.position,
-                title = labelGroupViewModel.title,
-                type = labelGroupViewModel.type
+                position = labelGroupUiModel.position,
+                title = labelGroupUiModel.title,
+                type = labelGroupUiModel.type
         )
     }
 
@@ -185,7 +185,7 @@ object ShopPageHomeMapper {
             CAMPAIGN.toLowerCase() -> {
                 mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
             }
-            DYNAMIC.toLowerCase(Locale.getDefault()) -> if (isMyOwnProduct) null else mapCarouselPlayWidget(widgetResponse)
+            DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
             else -> {
                 null
             }
@@ -226,11 +226,21 @@ object ShopPageHomeMapper {
                     it.timeCounter,
                     it.totalNotify,
                     it.totalNotifyWording,
+                    mapToDynamicRule(it.dynamicRule),
                     mapCampaignListBanner(it.listBanner),
                     mapCampaignListProduct(it.statusCampaign, it.listProduct),
                     isRemindMe
             )
         }
+    }
+
+    private fun mapToDynamicRule(dynamicRule: ShopLayoutWidget.Widget.Data.DynamicRule): ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule {
+        return ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule(
+                dynamicRule.descriptionHeader,
+                ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule.DynamicRoleData(
+                        dynamicRule.dynamicRoleData.firstOrNull()?.ruleID.orEmpty()
+                )
+        )
     }
 
     private fun mapCampaignListProduct(

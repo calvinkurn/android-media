@@ -1,6 +1,8 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -18,7 +20,8 @@ object BannerAdsTracking: BaseTrackerConst() {
             userId: String,
             isToIris: Boolean = false,
             channel: DynamicHomeChannel.Channels,
-            position: Int
+            position: Int,
+            topAdsId: String
     ): Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicPromotionView(
@@ -28,7 +31,7 @@ object BannerAdsTracking: BaseTrackerConst() {
                 eventLabel = Label.NONE,
                 promotions = listOf(
                         Promotion(
-                                id = channel.id,
+                                id = buildTopAdsTdnBannerId(channelId = channel.id, topAdsId = topAdsId),
                                 name = channel.promoName,
                                 creative = "",
                                 position = (position+1).toString()
@@ -47,7 +50,8 @@ object BannerAdsTracking: BaseTrackerConst() {
             channelId: String,
             userId: String,
             position: Int,
-            channel: DynamicHomeChannel.Channels
+            channel: DynamicHomeChannel.Channels,
+            topAdsId: String
     ): Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicPromotionClick(
@@ -57,7 +61,7 @@ object BannerAdsTracking: BaseTrackerConst() {
                 eventLabel = Label.NONE,
                 promotions = listOf(
                         Promotion(
-                                id = channel.id,
+                                id = buildTopAdsTdnBannerId(channelId = channelId, topAdsId = topAdsId),
                                 name = channel.promoName,
                                 creative = "",
                                 position = (position+1).toString()
@@ -78,29 +82,48 @@ object BannerAdsTracking: BaseTrackerConst() {
 
     fun sendBannerAdsClickTracking(channelModel: DynamicHomeChannel.Channels,
                                    userId: String,
-                                   position: Int) {
+                                   position: Int,
+                                   topAdsId: String
+    ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 getBannerAdsClick(
                         channelModel.header.name,
                         channelModel.id,
                         userId,
                         position,
-                        channelModel
+                        channelModel,
+                        topAdsId
                 )
         )
     }
 
     fun sendBannerAdsImpressionTracking(trackingQueue: TrackingQueue?,
-                                   channelModel: DynamicHomeChannel.Channels,
-                                   userId: String,
-                                   position: Int, isToIris: Boolean = false) {
+                                        channelModel: DynamicHomeChannel.Channels,
+                                        userId: String,
+                                        position: Int, isToIris: Boolean = false,
+                                        topAdsId: String
+    ) {
         trackingQueue?.putEETracking(
                 getBannerAdsImpression(
                         userId,
                         isToIris,
                         channelModel,
-                        position
+                        position,
+                        topAdsId
                 ) as HashMap<String, Any>
+        )
+    }
+
+    private fun buildTopAdsTdnBannerId(channelId: String, topAdsId: String): String {
+        val bannerAdsIdFormat = "%s_%s_%s_%s"
+        val emptyTargetingType = "()"
+        val emptyTargetingValue = "{}"
+        return String.format(
+                bannerAdsIdFormat,
+                channelId,
+                topAdsId,
+                emptyTargetingType,
+                emptyTargetingValue
         )
     }
 }

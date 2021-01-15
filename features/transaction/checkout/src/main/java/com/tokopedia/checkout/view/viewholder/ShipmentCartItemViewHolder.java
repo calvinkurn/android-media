@@ -21,6 +21,7 @@ import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -47,8 +48,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvPPPLinkText;
     private TextView mTvPPPPrice;
     private TextView mTvPPPMore;
-    private CheckBox mCbPPP;
-    private CheckBox mCbPPPDisabled;
+    private CheckboxUnify mCbPPP;
     private LinearLayout mLlShippingWarningContainer;
     private View mSeparatorMultipleProductSameStore;
     private TextView tvErrorShipmentItemTitle;
@@ -71,7 +71,6 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
         mTvPPPMore = itemView.findViewById(R.id.text_ppp_more);
         mCbPPP = itemView.findViewById(R.id.checkbox_ppp);
-        mCbPPPDisabled = itemView.findViewById(R.id.checkbox_ppp_disabled);
         mLlShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         mSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
@@ -113,7 +112,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         if (productInformationList != null && !productInformationList.isEmpty()) {
             for (int i = 0; i < productInformationList.size(); i++) {
                 Typography productInfo = new Typography(itemView.getContext());
-                productInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68));
+                productInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                 productInfo.setType(Typography.SMALL);
                 if (mLayoutProductInfo.getChildCount() > 0) {
                     productInfo.setText(", " + productInformationList.get(i));
@@ -157,24 +156,17 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mRlPurchaseProtection.setVisibility(cartItem.isProtectionAvailable() ? View.VISIBLE : View.GONE);
         if (cartItem.isProtectionAvailable()) {
             mTvPPPMore.setText(cartItem.getProtectionLinkText());
-            mTvPPPMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    shipmentItemListener.navigateToWebView(cartItem.getProtectionLinkUrl());
-                }
-            });
+            mTvPPPMore.setOnClickListener(view -> shipmentItemListener.navigateToWebView(cartItem.getProtectionLinkUrl()));
             mTvPPPLinkText.setText(cartItem.getProtectionTitle());
             mTvPPPPrice.setText(cartItem.getProtectionSubTitle());
 
 
             if (cartItem.isProtectionCheckboxDisabled()) {
-                mCbPPP.setVisibility(View.GONE);
-                mCbPPPDisabled.setVisibility(View.VISIBLE);
-                mCbPPPDisabled.setChecked(true);
-                mCbPPPDisabled.setClickable(false);
+                mCbPPP.setEnabled(false);
+                mCbPPP.setChecked(true);
+                mCbPPP.setClickable(false);
             } else {
-                mCbPPPDisabled.setVisibility(View.GONE);
-                mCbPPP.setVisibility(View.VISIBLE);
+                mCbPPP.setEnabled(true);
                 mCbPPP.setChecked(cartItem.isProtectionOptIn());
                 mCbPPP.setClickable(true);
                 mCbPPP.setOnCheckedChangeListener((compoundButton, checked) -> shipmentItemListener.notifyOnPurchaseProtectionChecked(checked, getAdapterPosition() + 1));
@@ -212,7 +204,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void disableItemView() {
-        int colorGreyNonActiveText = ContextCompat.getColor(mTvProductName.getContext(), R.color.grey_nonactive_text);
+        int colorGreyNonActiveText = ContextCompat.getColor(mTvProductName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_20);
         mTvProductName.setTextColor(colorGreyNonActiveText);
         mTvProductPrice.setTextColor(colorGreyNonActiveText);
         mTvProductOriginalPrice.setTextColor(colorGreyNonActiveText);
@@ -231,12 +223,12 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void enableItemView() {
-        mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96));
-        mTextVariant.setTextColor(ContextCompat.getColor(mTextVariant.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68));
-        mTvProductPrice.setTextColor(ContextCompat.getColor(mTvProductPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96));
-        mTvProductOriginalPrice.setTextColor(ContextCompat.getColor(mTvProductOriginalPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68));
-        mTvProductCountAndWeight.setTextColor(ContextCompat.getColor(mTvProductCountAndWeight.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68));
-        mTvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(mTvOptionalNoteToSeller.getContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96));
+        mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
+        mTextVariant.setTextColor(ContextCompat.getColor(mTextVariant.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        mTvProductPrice.setTextColor(ContextCompat.getColor(mTvProductPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
+        mTvProductOriginalPrice.setTextColor(ContextCompat.getColor(mTvProductOriginalPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        mTvProductCountAndWeight.setTextColor(ContextCompat.getColor(mTvProductCountAndWeight.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        mTvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(mTvOptionalNoteToSeller.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         setImageFilterNormal();
     }
 

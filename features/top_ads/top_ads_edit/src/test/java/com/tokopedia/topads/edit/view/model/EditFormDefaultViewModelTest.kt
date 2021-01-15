@@ -4,8 +4,10 @@ import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.response.SingleAdInFo
-import com.tokopedia.topads.edit.data.param.DataSuggestions
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.edit.data.response.*
 import com.tokopedia.topads.edit.usecase.*
 import com.tokopedia.user.session.UserSession
@@ -18,8 +20,6 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.Matchers.any
 
 
 @ExperimentalCoroutinesApi

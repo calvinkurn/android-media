@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.TextFieldUnify
+    android:id="@+id/tg_event_date_picker"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:text_field_input_type="text"
+    app:text_field_append_drawable_icon_1="@drawable/ic_date_event_form"
+    android:maxLines="1"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+</com.tokopedia.unifycomponents.TextFieldUnify>

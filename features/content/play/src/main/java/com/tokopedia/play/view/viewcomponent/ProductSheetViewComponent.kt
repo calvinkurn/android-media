@@ -193,10 +193,11 @@ class ProductSheetViewComponent(
     }
 
     private fun showToasterProductUpdated() {
-        Toaster.make(
+        Toaster.build(
                 rootView,
                 getString(R.string.play_product_updated),
-                type = Toaster.TYPE_NORMAL)
+                type = Toaster.TYPE_NORMAL
+        ).show()
     }
 
     companion object {

@@ -3,7 +3,10 @@ package com.tokopedia.productcard.utils
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ShapeDrawable
 import android.view.TouchDelegate
 import android.view.View
 import android.widget.ImageView
@@ -104,8 +107,8 @@ internal fun ImageView.loadImage(url: String?) {
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.placeholder_grey)
-                .error(R.drawable.placeholder_grey)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
                 .into(this)
     }
 }
@@ -114,8 +117,8 @@ internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.placeholder_grey)
-                .error(R.drawable.placeholder_grey)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
                 .listener(object : RequestListener<Drawable>{
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         state.invoke(false)
@@ -135,7 +138,7 @@ internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolea
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .error(R.drawable.placeholder_grey)
+                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
                 .listener(object : RequestListener<Drawable>{
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         state.invoke(false)
@@ -157,8 +160,8 @@ internal fun ImageView.loadImageRounded(url: String?) {
                 .load(url)
                 .transform(CenterCrop(), RoundedCorners(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6)))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.placeholder_grey)
-                .error(R.drawable.placeholder_grey)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
                 .into(this)
     }
 }
@@ -178,8 +181,8 @@ internal fun ImageView.loadImageTopRightCrop(url: String?) {
                 .load(url)
                 .transform(TopRightCrop())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.placeholder_grey)
-                .error(R.drawable.placeholder_grey)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
                 .into(this)
     }
 }
@@ -203,7 +206,7 @@ private fun Label.determineLabelType(labelGroupType: String) {
     else setCustomLabelType(labelGroupType)
 }
 
-private fun String?.toUnifyLabelType(): Int {
+internal fun String?.toUnifyLabelType(): Int {
     return when (this) {
         LIGHT_GREY -> Label.GENERAL_LIGHT_GREY
         LIGHT_BLUE -> Label.GENERAL_LIGHT_BLUE
@@ -259,19 +262,19 @@ private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
 private fun String?.toUnifyTextColor(context: Context): Int {
     return try{
         when(this) {
-            TEXT_DARK_ORANGE -> ContextCompat.getColor(context, R.color.Unify_Y400)
-            TEXT_DARK_RED -> ContextCompat.getColor(context, R.color.Unify_R500)
-            TEXT_DARK_GREY -> ContextCompat.getColor(context, R.color.Unify_N700_68)
-            TEXT_LIGHT_GREY -> ContextCompat.getColor(context, R.color.Unify_N700_44)
+            TEXT_DARK_ORANGE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+            TEXT_DARK_RED -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
+            TEXT_DARK_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            TEXT_LIGHT_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
             else -> Color.parseColor(this)
         }
     } catch (throwable: Throwable){
         throwable.printStackTrace()
-        ContextCompat.getColor(context, R.color.Unify_N700)
+        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
     }
 }
 
-private fun safeParseColor(color: String): Int {
+internal fun safeParseColor(color: String): Int {
     return try {
         Color.parseColor(color)
     }
@@ -302,9 +305,9 @@ internal fun renderLabelCampaign(
         textViewLabelCampaign: Typography?,
         productCardModel: ProductCardModel
 ) {
-    val labelCampaign = productCardModel.getLabelCampaign()
+    if (productCardModel.isShowLabelCampaign()) {
+        val labelCampaign = productCardModel.getLabelCampaign() ?: return
 
-    if (labelCampaign?.isShowLabelCampaign() == true) {
         labelCampaignBackground?.show()
         labelCampaignBackground?.loadImageTopRightCrop(labelCampaign.imageUrl)
 
@@ -314,5 +317,39 @@ internal fun renderLabelCampaign(
     else {
         labelCampaignBackground?.hide()
         textViewLabelCampaign?.hide()
+    }
+}
+
+internal fun renderLabelBestSeller(
+        labelBestSeller: Typography?,
+        productCardModel: ProductCardModel
+) {
+    labelBestSeller ?: return
+
+    if (productCardModel.isShowLabelBestSeller()) {
+        labelBestSeller.initLabelBestSeller(productCardModel.getLabelBestSeller())
+    }
+    else {
+        labelBestSeller.initLabelBestSeller(null)
+    }
+}
+
+private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup?) {
+    if (labelBestSellerModel == null) hide()
+    else showLabelBestSeller(labelBestSellerModel)
+}
+
+private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
+    show()
+
+    background.overrideColor(labelBestSellerModel.type)
+    text = labelBestSellerModel.title
+}
+
+internal fun Drawable.overrideColor(hexColor: String) {
+    when (this) {
+        is GradientDrawable -> setColor(safeParseColor(hexColor))
+        is ShapeDrawable -> paint.color = safeParseColor(hexColor)
+        is ColorDrawable -> color = safeParseColor(hexColor)
     }
 }

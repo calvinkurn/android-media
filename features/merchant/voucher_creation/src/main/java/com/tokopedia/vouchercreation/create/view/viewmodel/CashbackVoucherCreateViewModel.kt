@@ -3,9 +3,8 @@ package com.tokopedia.vouchercreation.create.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.coroutines.Fail
@@ -16,8 +15,6 @@ import com.tokopedia.vouchercreation.common.consts.VoucherRecommendationStatus.C
 import com.tokopedia.vouchercreation.common.consts.VoucherRecommendationStatus.Companion.NO_RECOMMENDATION
 import com.tokopedia.vouchercreation.common.consts.VoucherRecommendationStatus.Companion.WITH_RECOMMENDATION
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
-import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
-import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource.InitialValue
 import com.tokopedia.vouchercreation.create.domain.model.VoucherRecommendationData
 import com.tokopedia.vouchercreation.create.domain.usecase.GetVoucherRecommendationUseCase

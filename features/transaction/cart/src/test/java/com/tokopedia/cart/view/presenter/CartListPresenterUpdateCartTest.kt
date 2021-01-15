@@ -51,7 +51,7 @@ object CartListPresenterUpdateCartTest : Spek({
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
     val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    val getRecentViewUseCase: GetRecentViewUseCase = mockk()
+    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
@@ -62,6 +62,7 @@ object CartListPresenterUpdateCartTest : Spek({
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
+    val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("update cart list") {
@@ -76,7 +77,7 @@ object CartListPresenterUpdateCartTest : Spek({
                     addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
                     updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,
                     updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
-                    TestSchedulers
+                    followShopUseCase, TestSchedulers
             )
         }
 
@@ -106,6 +107,10 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Given("shop data list") {
+                every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
+            }
+
+            Given("shop data list for COD eligibility checking") {
                 every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
             }
 
@@ -142,7 +147,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+                every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
             }
 
             Given("attach view") {
@@ -415,7 +420,7 @@ object CartListPresenterUpdateCartTest : Spek({
         Scenario("failed update cart because data is empty") {
 
             Given("shop data list") {
-                every { view.getAllSelectedCartDataList() } answers { emptyList() }
+                every { view.getAllAvailableCartDataList() } answers { emptyList() }
             }
 
             When("process to update cart data") {

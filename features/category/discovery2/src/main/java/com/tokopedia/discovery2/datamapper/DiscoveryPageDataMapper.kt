@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.datamapper
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
+import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
 import com.tokopedia.discovery2.Utils.Companion.isSaleOver
 import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -10,16 +11,19 @@ import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 const val DYNAMIC_COMPONENT_IDENTIFIER = "dynamic_"
+var discoComponentQuery: MutableMap<String, String?>? = null
 
-fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryParameterMap: Map<String, String?>): DiscoveryPageData {
+fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryParameterMap: MutableMap<String, String?>): DiscoveryPageData {
     val pageInfo = discoveryResponse.pageInfo
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
+    discoComponentQuery = queryParameterMap
     val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap)
     if (!discoveryResponse.components.isNullOrEmpty()) {
         discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(discoveryResponse.components.filter {
@@ -33,6 +37,7 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryPa
             it.renderByDefault
         })
     }
+    discoveryResponse.component?.setComponentsItem(discoveryResponse.components)
     return discoveryPageData
 }
 
@@ -93,13 +98,25 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                     listComponents.add(component)
                 }
             }
+            ComponentNames.QuickFilter.componentName -> {
+                listComponents.add(component.copy())
+            }
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
-            ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName -> listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
+            ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName ->
+                listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
+            ComponentNames.BannerTimer.componentName -> {
+                if (addBannerTimerComp(component)) {
+                    listComponents.add(component)
+                }
+            }
             else -> listComponents.add(component)
         }
         return listComponents
     }
 
+    private fun addBannerTimerComp(component: ComponentsItem): Boolean {
+        return getElapsedTime(component.data?.firstOrNull()?.endDate ?: "") > 0
+    }
 
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
@@ -118,7 +135,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
             }
         }
         if (component.getComponentsItem().isNullOrEmpty()) {
-            component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName))
+            component.setComponentsItem(DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName), component.tabName)
         }
         component.getComponentsItem()?.forEachIndexed { index, it ->
             it.apply {
@@ -133,12 +150,12 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                                 val tabsChildComponentsItemList: ArrayList<ComponentsItem> = ArrayList()
                                 targetComponentIdList.forEach { componentId ->
                                     if (isDynamicTabs) {
-                                        handleDynamicTabsComponents(componentId, index, component)?.let {
+                                        handleDynamicTabsComponents(componentId, index, component, tabData.name)?.let {
                                             tabsChildComponentsItemList.add(it)
                                             listComponents.addAll(parseComponent(it, position))
                                         }
                                     } else {
-                                        handleAvailableComponents(componentId, component)?.let {
+                                        handleAvailableComponents(componentId, component, tabData.name)?.let {
                                             tabsChildComponentsItemList.add(it)
                                             listComponents.addAll(parseComponent(it, position))
                                         }
@@ -149,7 +166,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                                     tabsChildComponentsItemList.addAll(componentList)
                                     listComponents.addAll(componentList)
                                 }
-                                this.setComponentsItem(tabsChildComponentsItemList)
+                                this.setComponentsItem(tabsChildComponentsItemList, tabData.name)
                             }
                         }
                     }
@@ -159,7 +176,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         return listComponents
     }
 
-    private fun handleDynamicTabsComponents(targetedComponentId: String, tabItemIndex: Int, tabComponent: ComponentsItem): ComponentsItem? {
+    private fun handleDynamicTabsComponents(targetedComponentId: String, tabItemIndex: Int, tabComponent: ComponentsItem, tabName: String?): ComponentsItem? {
         var tabChildComponentsItem: ComponentsItem? = null
         val pageIdentity = pageInfo.identifier ?: ""
         val originalComponentId = targetedComponentId.removePrefix("$DYNAMIC_COMPONENT_IDENTIFIER$tabItemIndex")
@@ -168,23 +185,26 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                 component1.copy().apply {
                     parentComponentId = tabComponent.id
                     id = targetedComponentId
+                    this.tabName = tabName
                     dynamicOriginalId = originalComponentId
-                    this.properties = tabComponent.properties
+                    properties = component1.properties
+                    properties?.dynamic = tabComponent.properties?.dynamic ?: false
                     setComponent(targetedComponentId, pageIdentity, this)
                     tabChildComponentsItem = this
                 }
             }
         } else {
-            tabChildComponentsItem = handleAvailableComponents(targetedComponentId, tabComponent)
+            tabChildComponentsItem = handleAvailableComponents(targetedComponentId, tabComponent, tabName)
         }
         return tabChildComponentsItem
     }
 
-    private fun handleAvailableComponents(targetedComponentId: String, tabComponent: ComponentsItem): ComponentsItem? {
+    private fun handleAvailableComponents(targetedComponentId: String, tabComponent: ComponentsItem,  tabName: String?): ComponentsItem? {
         val pageIdentity = pageInfo.identifier ?: ""
         var tabChildComponentsItem: ComponentsItem? = null
         getComponent(targetedComponentId, pageIdentity)?.let { component1 ->
             component1.parentComponentId = tabComponent.id
+            component1.tabName = tabName
             tabChildComponentsItem = component1
         }
         return tabChildComponentsItem
@@ -218,17 +238,18 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0) {
             listComponents.add(component.copy().apply {
-                setComponentsItem(component.getComponentsItem())
+                setComponentsItem(component.getComponentsItem(), component.tabName)
             })
             component.needPagination = true
-            listComponents.addAll(List(10) { ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName) })
+            listComponents.addAll(List(10) { ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
+                properties = component.properties
+            } })
         } else {
             listComponents.add(component)
             component.getComponentsItem()?.let {
                 listComponents.addAll(getDiscoveryComponentList(it))
             }
             if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0 && component.showVerticalLoader) {
-                component.showVerticalLoader = false
                 listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
             } else if (component.getComponentsItem()?.size == 0) {
                 listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
@@ -261,4 +282,17 @@ fun setComponent(componentId: String, pageName: String, componentsItem: Componen
     discoveryPageData[pageName]?.let {
         it.componentMap[componentId] = componentsItem
     }
+}
+
+fun updateComponentsQueryParams(categoryId : String){
+    discoComponentQuery?.let {
+        it[CATEGORY_ID] = categoryId
+    }
+}
+
+fun getPageInfo(pageName: String) : PageInfo {
+    discoveryPageData[pageName]?.let {
+        return it.pageInfo
+    }
+    return PageInfo()
 }

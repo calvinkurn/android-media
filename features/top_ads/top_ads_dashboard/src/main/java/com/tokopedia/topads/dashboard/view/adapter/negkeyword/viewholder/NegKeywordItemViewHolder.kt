@@ -21,7 +21,7 @@ class NegKeywordItemViewHolder(val view: View,
         var LAYOUT = R.layout.topads_dash_item_neg_keyword_card
     }
 
-    override fun bind(item: NegKeywordItemViewModel, selectMode: Boolean, fromSearch: Boolean) {
+    override fun bind(item: NegKeywordItemViewModel, selectMode: Boolean, fromSearch: Boolean, fromHeadline:Boolean) {
         item.let {
             if (selectMode) {
                 view.check_box.visibility = View.VISIBLE

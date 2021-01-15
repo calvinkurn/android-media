@@ -8,11 +8,9 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
-import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel;
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +33,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_SHORT_BY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_MEMBERSHIP_EVENT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_OK_SUCCESS_FOLLOW_TOASTER_NPL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_LIST_TOGGLE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_SEARCH_SUGGESTION;
@@ -48,6 +47,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_ME
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PROFILE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_SETTING;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOWCASE_FOLLOW_NPL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOWCASE_LIST;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_UNFOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENCY_CODE;
@@ -75,6 +75,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NAME;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_LOGIN;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.POSITION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRICE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCTS;
@@ -101,6 +102,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SEL
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PROFILE_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_REF;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRY_ANOTHER_WORD;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.URL_SLUG;
@@ -117,7 +119,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     }
 
     private List<Object> createProductListMap(
-            List<ShopProductViewModel> shopProductViewModelList,
+            List<ShopProductUiModel> shopProductUiModelList,
             String selectedEtalaseName,
             String etalaseName,
             int productPosition,
@@ -127,8 +129,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String shopRef
     ) {
         List<Object> list = new ArrayList<>();
-        for (int i = 0; i < shopProductViewModelList.size(); i++) {
-            ShopProductViewModel viewModel = shopProductViewModelList.get(i);
+        for (int i = 0; i < shopProductUiModelList.size(); i++) {
+            ShopProductUiModel viewModel = shopProductUiModelList.get(i);
             HashMap<String, Object> event = new HashMap<>(DataLayer.mapOf(
                     NAME, viewModel.getName(),
                     ID, viewModel.getId(),
@@ -148,7 +150,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     }
 
     private List<Object> createProductListSearchResultMap(
-            List<ShopProductViewModel> shopProductViewModelList,
+            List<ShopProductUiModel> shopProductUiModelList,
             String selectedEtalaseName,
             String etalaseName,
             int productPosition,
@@ -158,8 +160,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String shopRef
     ) {
         List<Object> list = new ArrayList<>();
-        for (int i = 0; i < shopProductViewModelList.size(); i++) {
-            ShopProductViewModel viewModel = shopProductViewModelList.get(i);
+        for (int i = 0; i < shopProductUiModelList.size(); i++) {
+            ShopProductUiModel viewModel = shopProductUiModelList.get(i);
             HashMap<String, Object> event = new HashMap<>(DataLayer.mapOf(
                     NAME, viewModel.getName(),
                     ID, viewModel.getId(),
@@ -181,19 +183,19 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     private HashMap<String, Object> createProductImpressionMap(
             String event, boolean isOwner, String category, String loginNonLoginString, String action, String label,
             CustomDimensionShopPageAttribution customDimensionShopPage,
-            ShopProductViewModel shopProductViewModel,
+            ShopProductUiModel shopProductUiModel,
             String selectedEtalaseChipName, String etalaseName,
             int productPositionStart,
             String shopId
     ) {
-        ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
-        shopProductViewModelArrayList.add(shopProductViewModel);
+        ArrayList<ShopProductUiModel> shopProductUiModelArrayList = new ArrayList<>();
+        shopProductUiModelArrayList.add(shopProductUiModel);
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
         eventMap.put(ECOMMERCE, DataLayer.mapOf(
                 CURRENCY_CODE, IDR,
                 IMPRESSIONS,
                 createProductListMap(
-                        shopProductViewModelArrayList,
+                        shopProductUiModelArrayList,
                         selectedEtalaseChipName,
                         etalaseName,
                         productPositionStart,
@@ -208,19 +210,19 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     private HashMap<String, Object> createProductImpressionSearchResultMap(
             String event, boolean isOwner, String category, String loginNonLoginString, String action, String label,
             CustomDimensionShopPageAttribution customDimensionShopPage,
-            ShopProductViewModel shopProductViewModel,
+            ShopProductUiModel shopProductUiModel,
             String selectedEtalaseChipName, String etalaseName,
             int productPositionStart,
             String shopId
     ) {
-        ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
-        shopProductViewModelArrayList.add(shopProductViewModel);
+        ArrayList<ShopProductUiModel> shopProductUiModelArrayList = new ArrayList<>();
+        shopProductUiModelArrayList.add(shopProductUiModel);
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
         eventMap.put(ECOMMERCE, DataLayer.mapOf(
                 CURRENCY_CODE, IDR,
                 IMPRESSIONS,
                 createProductListSearchResultMap(
-                        shopProductViewModelArrayList,
+                        shopProductUiModelArrayList,
                         selectedEtalaseChipName,
                         etalaseName,
                         productPositionStart,
@@ -234,19 +236,19 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
 
     private HashMap<String, Object> createProductClickMap(String event, boolean isOwner, String category, String loginNonLoginString, String action, String label,
                                                           CustomDimensionShopPageAttribution customDimensionShopPage,
-                                                          ShopProductViewModel shopProductViewModel,
+                                                          ShopProductUiModel shopProductUiModel,
                                                           String selectedEtalaseChipName, String etalaseName,
                                                           int productPositionStart,
                                                           String shopId) {
-        ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
-        shopProductViewModelArrayList.add(shopProductViewModel);
+        ArrayList<ShopProductUiModel> shopProductUiModelArrayList = new ArrayList<>();
+        shopProductUiModelArrayList.add(shopProductUiModel);
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
         eventMap.put(ECOMMERCE, DataLayer.mapOf(
                 CLICK,
                 DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseChipName, etalaseName), loginNonLoginString)),
                         PRODUCTS, createProductListMap(
-                                shopProductViewModelArrayList,
+                                shopProductUiModelArrayList,
                                 selectedEtalaseChipName,
                                 etalaseName,
                                 productPositionStart,
@@ -261,19 +263,19 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
 
     private HashMap<String, Object> createProductClickSearchResultMap(String event, boolean isOwner, String category, String loginNonLoginString, String action, String label,
                                                                       CustomDimensionShopPageAttribution customDimensionShopPage,
-                                                                      ShopProductViewModel shopProductViewModel,
+                                                                      ShopProductUiModel shopProductUiModel,
                                                                       String selectedEtalaseChipName, String etalaseName,
                                                                       int productPositionStart,
                                                                       String shopId) {
-        ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
-        shopProductViewModelArrayList.add(shopProductViewModel);
+        ArrayList<ShopProductUiModel> shopProductUiModelArrayList = new ArrayList<>();
+        shopProductUiModelArrayList.add(shopProductUiModel);
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
         eventMap.put(ECOMMERCE, DataLayer.mapOf(
                 CLICK,
                 DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseChipName, etalaseName), loginNonLoginString, SEARCH_RESULT)),
                         PRODUCTS, createProductListSearchResultMap(
-                                shopProductViewModelArrayList,
+                                shopProductUiModelArrayList,
                                 selectedEtalaseChipName,
                                 etalaseName,
                                 productPositionStart,
@@ -304,6 +306,40 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 customDimensionShopPage);
     }
 
+    public void clickFollowShowcaseNplButton(
+            String shopId,
+            String userId,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        sendGeneralEventNplFollower(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                String.format(CLICK_SHOWCASE_FOLLOW_NPL, FOLLOW),
+                shopId,
+                PHYSICAL_GOODS,
+                TOKOPEDIA_MARKETPLACE,
+                userId,
+                customDimensionShopPage
+        );
+    }
+
+    public void clickCTASuccessFollowNplToaster(
+            String shopId,
+            String userId,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        sendGeneralEventNplFollower(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                CLICK_OK_SUCCESS_FOLLOW_TOASTER_NPL,
+                shopId,
+                PHYSICAL_GOODS,
+                TOKOPEDIA_MARKETPLACE,
+                userId,
+                customDimensionShopPage
+        );
+    }
+
     public void clickMessageSeller(CustomDimensionShopPage customDimensionShopPage) {
         sendGeneralEvent(CLICK_SHOP_PAGE,
                 SHOP_PAGE_BUYER,
@@ -318,7 +354,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String selectedEtalaseChipName,
             String etalaseSection,
             CustomDimensionShopPageAttribution customDimensionShopPage,
-            ShopProductViewModel shopProductViewModel,
+            ShopProductUiModel shopProductUiModel,
             int productPosStart,
             String shopId,
             boolean isSelectedEtalaseCampaign,
@@ -334,9 +370,9 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 getShopPageCategory(isOwner),
                 loginNonLoginString,
                 joinDash(CLICK_PRODUCT, getProductEtalaseEvent(etalaseNameTrackerString, etalaseSectionTrackerString), loginNonLoginString),
-                shopProductViewModel.getId(),
+                shopProductUiModel.getId(),
                 customDimensionShopPage,
-                shopProductViewModel,
+                shopProductUiModel,
                 etalaseNameTrackerString, etalaseSectionTrackerString,
                 productPosStart,
                 shopId
@@ -350,7 +386,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String selectedEtalaseChipName,
             String etalaseSection,
             CustomDimensionShopPageAttribution customDimensionShopPage,
-            ShopProductViewModel shopProductViewModel,
+            ShopProductUiModel shopProductUiModel,
             int productPosStart,
             String shopId,
             boolean isEtalaseCampaign,
@@ -367,7 +403,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 joinDash(CLICK_PRODUCT, getProductEtalaseEvent(etalaseNameTrackerString, etalaseSection), loginNonLoginString, SEARCH_RESULT),
                 keyword,
                 customDimensionShopPage,
-                shopProductViewModel,
+                shopProductUiModel,
                 etalaseNameTrackerString, etalaseSection,
                 productPosStart,
                 shopId
@@ -377,7 +413,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
 
     public void clickProductListEmptyState(boolean isLogin,
                                            CustomDimensionShopPageAttribution customDimensionShopPage,
-                                           ShopProductViewModel shopProductViewModel,
+                                           ShopProductUiModel shopProductUiModel,
                                            int productPosStart,
                                            String shopId) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
@@ -388,7 +424,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 "",
                 loginNonLoginString,
                 customDimensionShopPage,
-                shopProductViewModel,
+                shopProductUiModel,
                 productPosStart,
                 shopId
         );
@@ -399,18 +435,18 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     private HashMap<String, Object> createProductClickEmptyStateMap(String event, String category, String action, String label,
                                                                     String loginNonLoginString,
                                                                     CustomDimensionShopPageAttribution customDimensionShopPage,
-                                                                    ShopProductViewModel shopProductViewModel,
+                                                                    ShopProductUiModel shopProductUiModel,
                                                                     int productPositionStart,
                                                                     String shopId) {
-        ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
-        shopProductViewModelArrayList.add(shopProductViewModel);
+        ArrayList<ShopProductUiModel> shopProductUiModelArrayList = new ArrayList<>();
+        shopProductUiModelArrayList.add(shopProductUiModel);
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
         eventMap.put(ECOMMERCE, DataLayer.mapOf(
                 CLICK,
                 DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(LIST, joinDash(SHOPPAGE, shopId, SEARCH_NO_RESULT_SUGGESTION, loginNonLoginString)),
                         PRODUCTS, createProductListMapEmptyState(
-                                shopProductViewModelArrayList,
+                                shopProductUiModelArrayList,
                                 productPositionStart,
                                 customDimensionShopPage.shopType,
                                 loginNonLoginString,
@@ -427,7 +463,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String selectedEtalaseChipName,
             String etalaseSection,
             CustomDimensionShopPageAttribution customDimensionShopPage,
-            ShopProductViewModel shopProductViewModel,
+            ShopProductUiModel shopProductUiModel,
             int productPosStart,
             String shopId,
             boolean isSelectedEtalaseCampaign,
@@ -445,7 +481,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 joinDash(PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(etalaseNameTrackerString, etalaseSectionTrackerString), loginNonLoginString),
                 "",
                 customDimensionShopPage,
-                shopProductViewModel,
+                shopProductUiModel,
                 etalaseNameTrackerString, etalaseSectionTrackerString,
                 productPosStart,
                 shopId
@@ -459,7 +495,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String selectedEtalaseChipName,
             String etalaseSection,
             CustomDimensionShopPageAttribution customDimensionShopPage,
-            ShopProductViewModel shopProductViewModel,
+            ShopProductUiModel shopProductUiModel,
             int productPosStart,
             String shopId,
             boolean isEtalaseCampaign,
@@ -476,7 +512,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 joinDash(PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(etalaseNameTrackerString, etalaseSection), loginNonLoginString, SEARCH_RESULT),
                 keyword,
                 customDimensionShopPage,
-                shopProductViewModel,
+                shopProductUiModel,
                 etalaseNameTrackerString, etalaseSection,
                 productPosStart,
                 shopId
@@ -695,7 +731,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     }
 
     private List<Object> createProductListMapEmptyState(
-            List<ShopProductViewModel> shopProductViewModelList,
+            List<ShopProductUiModel> shopProductUiModelList,
             int productPosition,
             String shopTypeDef,
             String loginNonLoginString,
@@ -703,8 +739,8 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String shopRef
     ) {
         List<Object> list = new ArrayList<>();
-        for (int i = 0; i < shopProductViewModelList.size(); i++) {
-            ShopProductViewModel viewModel = shopProductViewModelList.get(i);
+        for (int i = 0; i < shopProductUiModelList.size(); i++) {
+            ShopProductUiModel viewModel = shopProductUiModelList.get(i);
             HashMap<String, Object> event = new HashMap<>(DataLayer.mapOf(
                     NAME, viewModel.getName(),
                     ID, viewModel.getId(),
@@ -727,18 +763,18 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
             String event, String category, String action, String label,
             String loginNonLoginString,
             CustomDimensionShopPageAttribution customDimensionShopPage,
-            ShopProductViewModel shopProductViewModel,
+            ShopProductUiModel shopProductUiModel,
             int productPositionStart,
             String shopId
     ) {
-        ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
-        shopProductViewModelArrayList.add(shopProductViewModel);
+        ArrayList<ShopProductUiModel> shopProductUiModelArrayList = new ArrayList<>();
+        shopProductUiModelArrayList.add(shopProductUiModel);
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
         eventMap.put(ECOMMERCE, DataLayer.mapOf(
                 CURRENCY_CODE, IDR,
                 IMPRESSIONS,
                 createProductListMapEmptyState(
-                        shopProductViewModelArrayList,
+                        shopProductUiModelArrayList,
                         productPositionStart,
                         customDimensionShopPage.shopType,
                         loginNonLoginString,
@@ -750,7 +786,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
 
     public void impressionProductListEmptyState(boolean isLogin,
                                                 CustomDimensionShopPageAttribution customDimensionShopPage,
-                                                ShopProductViewModel shopProductViewModel,
+                                                ShopProductUiModel shopProductUiModel,
                                                 int productPosStart,
                                                 String shopId) {
         String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
@@ -761,7 +797,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 "",
                 loginNonLoginString,
                 customDimensionShopPage,
-                shopProductViewModel,
+                shopProductUiModel,
                 productPosStart,
                 shopId
         );

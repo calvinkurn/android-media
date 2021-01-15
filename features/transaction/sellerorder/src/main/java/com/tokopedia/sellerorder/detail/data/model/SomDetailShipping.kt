@@ -5,7 +5,6 @@ package com.tokopedia.sellerorder.detail.data.model
  */
 data class SomDetailShipping (
         val shippingName: String = "",
-        val shippingPrice: String = "",
         val receiverName: String = "",
         val receiverPhone: String = "",
         val receiverStreet: String = "",
@@ -23,4 +22,9 @@ data class SomDetailShipping (
         val onlineBookingMsg: String = "",
         val onlineBookingMsgArray: List<String> = listOf(),
         val onlineBookingType: String = "",
-        val isRemoveAwb: Boolean = false)
+        val isRemoveAwb: Boolean = false,
+        val awb: String = "",
+        val awbTextColor: String = "",
+        val isShippingPrinted: Boolean = false,
+        val logisticInfo: SomDetailOrder.Data.GetSomDetail.LogisticInfo = SomDetailOrder.Data.GetSomDetail.LogisticInfo()
+)

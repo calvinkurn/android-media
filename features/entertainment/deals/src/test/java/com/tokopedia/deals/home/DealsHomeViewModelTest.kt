@@ -16,8 +16,10 @@ import com.tokopedia.deals.home.ui.dataview.BannersDataView
 import com.tokopedia.deals.home.ui.dataview.VoucherPlacePopularDataView
 import com.tokopedia.deals.home.ui.viewmodel.DealsHomeViewModel
 import com.tokopedia.deals.home.util.DealsHomeMapper
+import com.tokopedia.deals.location_picker.DealsLocationConstants
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.model.response.LocationData
+import com.tokopedia.deals.location_picker.model.response.LocationType
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -152,6 +154,28 @@ class DealsHomeViewModelTest {
 
         // when
         viewModel.getLayout(Location())
+
+        // then
+        assertEquals((viewModel.observableEventHomeLayout.value as Success).data, mockMapping)
+    }
+
+    @Test
+    fun getLayout_allFetchSuccess_homeLocationNotLandmark() {
+        val homeLayouts = mockHomeResponse.response.layout
+        val brandPopular = mockSearchData.eventSearch.brands
+        val locations = listOf<Location>()
+        val mockMapping = mapper.mapLayoutToBaseItemViewModel(homeLayouts, brandPopular, locations)
+
+        // given
+        coEvery { getHomeLayoutUseCase.useParams(any()) } returns mockk()
+        coEvery { getHomeLayoutUseCase.executeOnBackground() } returns mockHomeResponse
+        coEvery { getBrandPopularUseCase.useParams(any()) } returns mockk()
+        coEvery { getBrandPopularUseCase.executeOnBackground() } returns mockSearchData
+        coEvery { getNearestLocationUseCase.useParams(any()) } returns mockk()
+        coEvery { getNearestLocationUseCase.executeOnBackground() } returns mockLocationData
+
+        // when
+        viewModel.getLayout(Location(locType = LocationType(name = DealsLocationConstants.LANDMARK)))
 
         // then
         assertEquals((viewModel.observableEventHomeLayout.value as Success).data, mockMapping)

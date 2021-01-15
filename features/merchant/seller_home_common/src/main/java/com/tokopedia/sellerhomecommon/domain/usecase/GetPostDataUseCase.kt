@@ -41,14 +41,14 @@ class GetPostDataUseCase(
         private const val DEFAULT_POST_LIMIT = 3
 
         fun getRequestParams(
-                dataKey: List<String>,
+                dataKey: List<Pair<String, String>>,
                 dynamicParameter: DynamicParameterModel,
                 limit: Int = DEFAULT_POST_LIMIT
         ): RequestParams = RequestParams.create().apply {
             val dataKeys = dataKey.map {
                 DataKeyModel(
-                        key = it,
-                        jsonParams = dynamicParameter.copy(limit = limit).toJsonString()
+                        key = it.first,
+                        jsonParams = dynamicParameter.copy(limit = limit, postFilter = it.second).toJsonString()
                 )
             }
             putObject(DATA_KEYS, dataKeys)

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -18,8 +19,10 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
@@ -37,11 +40,11 @@ import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel
-import com.tokopedia.talk_old.R
-import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
+import com.tokopedia.talk.R
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_inbox_empty.*
@@ -73,6 +76,9 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var talkInboxListener: TalkInboxListener? = null
@@ -186,6 +192,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
         initSortFilter()
         initEmptyState()
         initErrorPage()
@@ -199,7 +206,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     private fun goToReply(questionId: String) {
         val intent = RouteManager.getIntent(context, Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionId))
                 .buildUpon()
-                .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkDetailsActivity.SOURCE_INBOX)
+                .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkConstants.INBOX_SOURCE)
                 .appendQueryParameter(TalkConstants.PARAM_TYPE, inboxType)
                 .build().toString()
         )
@@ -214,6 +221,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                         talkInboxTracking.eventLazyLoad(viewModel.getType(), it.page, inbox.count { inbox -> inbox.isUnread }, inbox.count { inbox -> !inbox.isUnread }, shopID, viewModel.getUserId())
                         hideFullPageError()
                         hideFullPageLoading()
+                        hideLoading()
                         if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                             talkInboxListener?.updateUnreadCounter(it.data.sellerUnread, it.data.buyerUnread)
                             hideLoading()
@@ -238,6 +246,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                 }
                 is TalkInboxViewState.Fail -> {
                     hideFullPageLoading()
+                    hideLoading()
                     if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                         showFullPageError()
                     } else {
@@ -245,6 +254,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                     }
                 }
                 is TalkInboxViewState.Loading -> {
+                    hideLoading()
                     if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                         showFullPageLoading()
                     }
@@ -260,8 +270,11 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     private fun initErrorPage() {
-        inboxPageError.talkConnectionErrorRetryButton.setOnClickListener {
-            loadInitialData()
+        inboxPageError.apply {
+            talkConnectionErrorRetryButton.setOnClickListener {
+                loadInitialData()
+            }
+            reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
     }
 
@@ -362,4 +375,23 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         }
     }
 
+    private fun initToolbar() {
+        if(!userSession.hasShop() && !GlobalConfig.isSellerApp()) {
+            setupToolbar()
+        } else if(userSession.hasShop() && GlobalConfig.isSellerApp()) {
+            setupToolbar()
+        } else {
+            headerTalkInbox?.hide()
+        }
+    }
+
+    private fun setupToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(headerTalkInbox)
+                headerTalkInbox?.title = getString(R.string.title_talk_discuss)
+            }
+        }
+    }
 }

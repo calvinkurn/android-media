@@ -10,6 +10,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.raw.GROUP_REQUEST
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -40,38 +41,9 @@ class TopAdsSheetViewModel @Inject constructor(
 
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
 
-    companion object {
-        const val GROUP_REQUEST = """query topAdsGetPromo(${'$'}shopID: String!, ${'$'}adID: String!) { 
-            topAdsGetPromo(shopID: ${'$'}shopID, adID: ${'$'}adID) {
-              data { 
-                adID 
-                adType 
-                groupID 
-                shopID 
-                itemID 
-                status 
-                priceBid 
-                priceDaily 
-                adStartDate 
-                adStartTime 
-                adEndDate 
-                adEndTime 
-                adImage 
-                adTitle 
-              } 
-              errors { 
-                code 
-                detail 
-                title 
-              } 
-             } 
-            }""""
-    }
-
-
     fun getProductStats(resources: Resources, adIds: List<String>, onSuccess: ((List<WithoutGroupDataItem>) -> Unit)) {
         topAdsGetProductStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_product_statistics))
+                com.tokopedia.topads.common.R.raw.gql_query_product_statistics))
         topAdsGetProductStatisticsUseCase.setParams("", "", adIds)
         topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
                 {
@@ -80,17 +52,15 @@ class TopAdsSheetViewModel @Inject constructor(
                 {
                     it.printStackTrace()
                 })
-
     }
 
     fun getGroupProductData(resources: Resources, groupId: Int,
                             onSuccess: ((List<WithoutGroupDataItem>) -> Unit)) {
         topAdsGetGroupProductDataUseCase.setQueryString(GraphqlHelper.loadRawString(resources,
-                R.raw.query_get_group_products_dashboard))
+                com.tokopedia.topads.common.R.raw.query_get_group_products_dashboard))
         val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, 0, "", "", null, "", "")
         topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
+            override fun onCompleted() {}
 
             override fun onError(e: Throwable?) {
                 e?.printStackTrace()
@@ -102,7 +72,6 @@ class TopAdsSheetViewModel @Inject constructor(
                 val response = restResponse?.getData() as DataResponse<NonGroupResponse>
                 val nonGroupResponse = response.data.topadsDashboardGroupProducts
                 onSuccess(nonGroupResponse.data)
-
             }
         })
     }
@@ -114,16 +83,16 @@ class TopAdsSheetViewModel @Inject constructor(
         topAdsGetGroupIdUseCase.setTypeClass(AdInfo::class.java)
         topAdsGetGroupIdUseCase.setRequestParams(params)
         topAdsGetGroupIdUseCase.setGraphqlQuery(CategoryList.GQL_QUERY)
-        topAdsGetGroupIdUseCase.execute(
-                onSuccessGroup(onSuccess),
-                onError()
-        )
+        topAdsGetGroupIdUseCase.execute({
+            onSuccess(it.topAdsGetPromo.data)
+        }, {
+            it.printStackTrace()
+        })
     }
-
 
     fun setProductAction(onSuccess: ((action: String) -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
         topAdsProductActionUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_product_action))
+                com.tokopedia.topads.common.R.raw.gql_query_product_action))
         topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
         topAdsProductActionUseCase.executeQuerySafeMode(
                 {
@@ -136,7 +105,7 @@ class TopAdsSheetViewModel @Inject constructor(
 
     fun getAutoAdsStatus(shopId: String, resources: Resources) {
         val params = mapOf(ParamObject.SHOP_Id to shopId.toInt())
-        topAdsGetAutoAdsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, R.raw.query_auto_ads_status))
+        topAdsGetAutoAdsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.query_auto_ads_status))
         topAdsGetAutoAdsStatusUseCase.setTypeClass(TopAdsAutoAds.Response::class.java)
         topAdsGetAutoAdsStatusUseCase.setRequestParams(params)
         topAdsGetAutoAdsStatusUseCase.execute(
@@ -148,16 +117,12 @@ class TopAdsSheetViewModel @Inject constructor(
         )
     }
 
-
-    private fun onSuccessGroup(onSuccess: (List<AdData>) -> Unit): (AdInfo) -> Unit {
-        return {
-            onSuccess(it.topAdsGetPromo.data)
-        }
-    }
-
-    private fun onError(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-        }
+    public override fun onCleared() {
+        super.onCleared()
+        topAdsGetGroupProductDataUseCase.unsubscribe()
+        topAdsGetProductStatisticsUseCase.cancelJobs()
+        topAdsGetGroupIdUseCase.cancelJobs()
+        topAdsProductActionUseCase.cancelJobs()
+        topAdsGetAutoAdsStatusUseCase.cancelJobs()
     }
 }

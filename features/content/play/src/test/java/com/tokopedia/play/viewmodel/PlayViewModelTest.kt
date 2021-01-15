@@ -1,6 +1,7 @@
 package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -14,6 +15,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
+import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
@@ -22,6 +24,7 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import org.assertj.core.api.Assertions
@@ -50,6 +53,7 @@ class PlayViewModelTest {
     private val mockGetIsLikeUseCase: GetIsLikeUseCase = mockk(relaxed = true)
     private val mockGetCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true)
     private val mockGetProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true)
+    private val mockTrackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val mockPlaySocket: PlaySocket = mockk(relaxed = true)
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
@@ -61,8 +65,8 @@ class PlayViewModelTest {
     private val mockSocketCredential = modelBuilder.buildSocketCredential()
 //    private val mockNewChat = modelBuilder.buildNewChat()
 
-    private val mockTotalLikeContentData = modelBuilder.buildTotalLike()
-    private val mockTotalLike = TotalLike(mockTotalLikeContentData.like.value, mockTotalLikeContentData.like.fmt)
+    private val mockTotalLikeContentData = modelBuilder.buildTotalLike().totalLikeContent.data.firstOrNull()
+    private val mockTotalLike = TotalLike(mockTotalLikeContentData?.channel?.metrics?.value.toIntOrZero(), mockTotalLikeContentData?.channel?.metrics?.fmt.orEmpty())
 
     private val mockIsLikeContentData = modelBuilder.buildIsLike()
     private val mockIsLike = mockIsLikeContentData.isLike
@@ -86,9 +90,11 @@ class PlayViewModelTest {
                 mockGetIsLikeUseCase,
                 mockGetCartCountUseCase,
                 mockGetProductTagItemsUseCase,
+                mockTrackProductTagBroadcasterUseCase,
                 mockPlaySocket,
                 userSession,
                 dispatchers,
+                mockk(relaxed = true),
                 mockk(relaxed = true)
         )
 
@@ -124,7 +130,8 @@ class PlayViewModelTest {
                 ),
                 showCart = mockChannel.configuration.showCart,
                 showPinnedProduct = mockChannel.configuration.showPinnedProduct,
-                titleBottomSheet = mockChannel.configuration.pinnedProduct.titleBottomSheet
+                titleBottomSheet = mockChannel.configuration.pinnedProduct.titleBottomSheet,
+                shareInfo = modelBuilder.buildShareInfoUiModel(mockChannel)
         )
         val expectedResult = NetworkResult.Success(expectedModel)
 

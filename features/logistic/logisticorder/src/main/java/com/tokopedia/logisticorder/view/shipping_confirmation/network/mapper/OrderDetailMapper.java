@@ -1,7 +1,7 @@
 package com.tokopedia.logisticorder.view.shipping_confirmation.network.mapper;
 
-import com.tokopedia.logisticdata.data.entity.courierlist.CourierResponse;
-import com.tokopedia.logisticdata.data.entity.courierlist.Shipment;
+import com.tokopedia.logisticCommon.data.entity.courierlist.CourierResponse;
+import com.tokopedia.logisticCommon.data.entity.courierlist.Shipment;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierServiceModel;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierUiModel;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;

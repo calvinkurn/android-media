@@ -17,6 +17,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
@@ -24,6 +25,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewM
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -32,8 +34,8 @@ import com.tokopedia.shop.feed.view.adapter.holder.EmptyFeedShopViewHolder
 import com.tokopedia.shop.feed.view.adapter.holder.WhitelistViewHolder
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
-import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
-import com.tokopedia.shop.feed.view.model.WhitelistViewModel
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
+import com.tokopedia.shop.feed.view.model.WhitelistUiModel
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -72,11 +74,15 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
         return TopadsShopViewHolder.LAYOUT
     }
 
-    override fun type(whitelistViewModel: WhitelistViewModel): Int {
+    override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
+        return TopAdsHeadlineViewHolder.LAYOUT
+    }
+
+    override fun type(whitelistUiModel: WhitelistUiModel): Int {
         return WhitelistViewHolder.LAYOUT
     }
 
-    override fun type(emptyFeedShopViewModel: EmptyFeedShopViewModel): Int {
+    override fun type(emptyFeedShopUiModel: EmptyFeedShopUiModel): Int {
         return EmptyFeedShopViewHolder.LAYOUT
     }
 
@@ -116,6 +122,8 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                 BannerViewHolder(parent, bannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             TopadsShopViewHolder.LAYOUT ->
                 TopadsShopViewHolder(parent, topadsShopListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+            TopAdsHeadlineViewHolder.LAYOUT ->
+                TopAdsHeadlineViewHolder(parent, userSession) as AbstractViewHolder<Visitable<*>>
             WhitelistViewHolder.LAYOUT ->
                 WhitelistViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
             EmptyFeedShopViewHolder.LAYOUT ->

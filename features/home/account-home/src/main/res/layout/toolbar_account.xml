@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/toolbar"
+    android:id="@+id/toolbar_account"
     android:layout_width="match_parent"
-    android:layout_height="?actionBarSize"
+    android:layout_height="wrap_content"
     android:theme="@style/Toolbar.White"
     app:layout_scrollFlags="scroll|enterAlways">
 
@@ -11,13 +11,27 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize">
 
-        <TextView
-            android:id="@+id/toolbar_title"
-            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+        <ImageButton
+            android:layout_marginLeft="-10dp"
+            android:layout_alignParentStart="true"
+            android:id="@+id/action_back"
             android:layout_centerVertical="true"
+            android:layout_width="@dimen/account_icon_toolbar"
+            android:layout_height="@dimen/account_icon_toolbar"
+            android:background="@null"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_baseline_arrow_back"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginLeft="@dimen/unify_space_8"
+            android:layout_toRightOf="@id/action_back"
+            android:id="@+id/toolbar_title"
+            app:typographyType="heading_2"
+            android:layout_centerVertical="true"
+            android:textColor="@color/Unify_N700_96"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""/>
+            android:text="Test"/>
 
         <ImageButton
             android:id="@+id/action_settings"

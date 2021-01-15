@@ -6,7 +6,7 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
 import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
 import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue
-import com.tokopedia.shop_settings.common.util.LiveDataUtil.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import junit.framework.TestCase.assertTrue
@@ -16,13 +16,6 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
-
-    @Test
-    fun `when detach view should unsubscribe use case`() {
-        shopSettingsInfoViewModel.detachView()
-
-        verifyUnsubscribeUseCase()
-    }
 
     @Test
     fun `when validate os merchant type with provided shopId should return success`() {

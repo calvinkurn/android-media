@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -178,6 +177,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         setupToolbar()
         btnChangeShopInfo.setOnClickListener {
             moveToShopEditBasicInfoFragment()
+            ShopSettingsTracking.clickChange(shopId, getShopType())
         }
 
         vgShopStatusContainer.setOnClickListener {
@@ -228,7 +228,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
         val destination = ShopSettingsInfoFragmentDirections.actionShopSettingsInfoFragmentToShopEditBasicInfoFragment()
         destination.cacheManagerId = cacheManager.id ?: "0"
-        findNavController().navigate(destination)
+        NavigationController.navigate(this@ShopSettingsInfoFragment, destination)
     }
 
     private fun moveToShopEditScheduleFragment(shopBasicDataModel: ShopBasicDataModel, isClosedNow: Boolean) {
@@ -508,10 +508,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        shopSettingsInfoViewModel.detachView()
         shopSettingsInfoViewModel.shopBasicData.removeObservers(this)
         shopSettingsInfoViewModel.shopStatusData.removeObservers(this)
         shopSettingsInfoViewModel.checkOsMerchantTypeData.removeObservers(this)
-        shopSettingsInfoViewModel.flush()
     }
 }

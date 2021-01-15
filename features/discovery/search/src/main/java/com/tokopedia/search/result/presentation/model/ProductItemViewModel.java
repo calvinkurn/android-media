@@ -27,16 +27,13 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String imageUrl;
     private String imageUrl300;
     private String imageUrl700;
-    private int rating;
     private String ratingString;
-    private int countReview;
     private String price;
     private int priceInt;
     private String priceRange;
     private String shopID;
     private String shopName;
     private String shopCity;
-    private String shopRating = "";
     private String shopUrl;
     private boolean isWishlisted;
     private boolean isWishlistButtonEnabled = true;
@@ -55,10 +52,10 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String topadsClickShopUrl;
     private boolean isNew;
     private List<LabelGroupViewModel> labelGroupList = new ArrayList<>();
+    private List<LabelGroupVariantViewModel> labelGroupVariantList = new ArrayList<>();
     private FreeOngkirViewModel freeOngkirViewModel = new FreeOngkirViewModel();
     private String boosterList = "";
     private String sourceEngine = "";
-    private boolean isShopRatingYellow = false;
     private int minOrder = 1;
     private boolean isShopOfficialStore = false;
     private boolean isShopPowerMerchant = false;
@@ -233,22 +230,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return isWishlisted;
     }
 
-    public void setShopRating(String shopRating) {
-        this.shopRating = shopRating;
-    }
-
-    public String getShopRating() {
-        return shopRating;
-    }
-
-    public void setShopRatingYellow(boolean isShopRatingYellow) {
-        this.isShopRatingYellow = isShopRatingYellow;
-    }
-
-    public boolean isShopRatingYellow() {
-        return isShopRatingYellow;
-    }
-
     public void setWishlisted(boolean wishlisted) {
         isWishlisted = wishlisted;
     }
@@ -281,28 +262,12 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.position = position;
     }
 
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
     public String getRatingString() {
         return ratingString;
     }
 
     public void setRatingString(String ratingString) {
         this.ratingString = ratingString;
-    }
-
-    public int getCountReview() {
-        return countReview;
-    }
-
-    public void setCountReview(int countReview) {
-        this.countReview = countReview;
     }
 
     public String getOriginalPrice() {
@@ -351,6 +316,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
 
     public List<LabelGroupViewModel> getLabelGroupList() {
         return this.labelGroupList;
+    }
+
+    public void setLabelGroupVariantList(List<LabelGroupVariantViewModel> productLabelGroupVariantList) {
+        this.labelGroupVariantList = productLabelGroupVariantList;
+    }
+
+    public List<LabelGroupVariantViewModel> getLabelGroupVariantList() {
+        return this.labelGroupVariantList;
     }
 
     public void setFreeOngkirViewModel(FreeOngkirViewModel freeOngkirViewModel) {
@@ -462,11 +435,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return String.format(ACTION_FIELD, organicStatus);
     }
 
-    public boolean willShowRatingAndReview() {
-        return (getRating() > 0 || StringUtils.INSTANCE.isNotBlank(getRatingString()))
-                && getCountReview() > 0;
-    }
-
     public Object getProductAsATCObjectDataLayer(String cartId) {
         return DataLayer.mapOf(
                 "name", productName,
@@ -516,8 +484,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeString(this.imageUrl);
         dest.writeString(this.imageUrl700);
         dest.writeString(this.ratingString);
-        dest.writeInt(this.rating);
-        dest.writeInt(this.countReview);
         dest.writeString(this.price);
         dest.writeString(this.priceRange);
         dest.writeString(this.shopID);
@@ -548,8 +514,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.imageUrl = in.readString();
         this.imageUrl700 = in.readString();
         this.ratingString = in.readString();
-        this.rating = in.readInt();
-        this.countReview = in.readInt();
         this.price = in.readString();
         this.priceRange = in.readString();
         this.shopID = in.readString();

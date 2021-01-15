@@ -891,4 +891,42 @@ class ShopPageHomeTracking(
                 customDimensionShopPage
         )
     }
+
+    fun clickNotifyMeNplFollowerButton(isOwner: Boolean, action: String, userId: String, customDimensionShopPage: CustomDimensionShopPage) {
+        val eventAction = if(action.toLowerCase() == NotifyMeAction.REGISTER.action.toLowerCase()){
+            "$CLICK_ACTIVATE_REMINDER - $CAMPAIGN_SEGMENTATION"
+        }else{
+            "$CLICK_DEACTIVATE_REMINDER - $CAMPAIGN_SEGMENTATION"
+        }
+        sendGeneralEventNplFollower(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                eventAction,
+                "",
+                PHYSICAL_GOODS,
+                TOKOPEDIA_MARKETPLACE,
+                userId,
+                customDimensionShopPage
+        )
+    }
+
+    fun clickTncBottomSheetFollowButtonNplFollower(
+            isOwner: Boolean,
+            isFollowShop: Boolean,
+            shopId: String,
+            userId: String,
+            customDimensionShopPage: CustomDimensionShopPage
+    ) {
+        val eventAction = String.format(CLICK_FOLLOW_UNFOLLOW_TNC_PAGE, FOLLOW.takeIf { isFollowShop } ?: UNFOLLOW )
+        sendGeneralEventNplFollower(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                eventAction,
+                shopId,
+                PHYSICAL_GOODS,
+                TOKOPEDIA_MARKETPLACE,
+                userId,
+                customDimensionShopPage
+        )
+    }
 }

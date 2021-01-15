@@ -85,7 +85,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
             val result = addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
-            if (!result.isDataError()) {
+            if (!result.isStatusError()) {
                 AddToCartBaseAnalytics.sendAppsFlyerTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
                         addToCartRequest.quantity.toString(), addToCartRequest.category)
                 AddToCartBaseAnalytics.sendBranchIoTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,

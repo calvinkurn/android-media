@@ -64,6 +64,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_X_TAB = "click %1s tab";
     public static final String CLICK_SHOWCASE_X = "click etalase %1s";
     public static final String CLICK_SHOWCASE_LIST = "click etalase list";
+    public static final String CLICK_SHOWCASE_FOLLOW_NPL = "click %1s on etalase page";
+    public static final String CLICK_OK_SUCCESS_FOLLOW_TOASTER_NPL = "click ok on toaster follow shop";
     public static final String SORT_PRODUCT = "sort product";
     public static final String CLICK_SETTING = "click setting";
     public static final String CLICK_SHOP_DASHBOARD = "click shop dashboard";
@@ -87,6 +89,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_CLOSE_TNC = "click close t&c - %1s";
     public static final String CLICK_ACTIVATE_REMINDER = "click activate reminder";
     public static final String CLICK_DEACTIVATE_REMINDER = "click deactivate reminder";
+    public static final String CAMPAIGN_SEGMENTATION = "campaign segmentation";
     public static final String IMPRESSION_TOASTER_NOTIFY_ME = "impression toaster notify me";
     public static final String CLICK_OK_TOASTER_NOTIFY_ME = "click ok on toaster notify me";
     public static final String CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET = "click see all - %1s";
@@ -96,6 +99,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_FILTER_SHORT_BY = "click filter sort by - ";
     public static final String CLICK_FILTER_PRICE = "click filter price - min : %s - max : %s";
     public static final String CLICK_FILTER_RATING = "click filter rating - ";
+    public static final String CLICK_FOLLOW_UNFOLLOW_TNC_PAGE = "click %1s on t&c page";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -124,7 +128,9 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_UNFOLLOW = "click unfollow";
     public static final String CLICK_ADD_NOTE = "click add note";
     public static final String BUSINESS_UNIT = "businessUnit";
+    public static final String PHYSICAL_GOODS = "physical goods";
     public static final String CURRENT_SITE = "currentSite";
+    public static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
     public static final String SEE_ALL = "see all";
     public static final String MVC_DETAIL = "mvc detail";
     public static final String USE_VOUCHER = "use voucher";
@@ -162,8 +168,6 @@ public class ShopPageTrackingConstant {
 
     public static final String LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN = "%1s campaign %2s";
     public static final String LABEL_ETALASE_CAMPAIGN = "campaign %1s";
-
-
 
     //key
     public static final String EVENT = "event";

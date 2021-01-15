@@ -3,8 +3,8 @@ package com.tokopedia.tradein.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.tradein.mapper.TradeInMapper
 import com.tokopedia.tradein.model.AddressResult
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse
