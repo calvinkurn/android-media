@@ -169,8 +169,8 @@
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
 /features/user/chat_common/                     		@tokopedia/android-minionkevin-dev
 /features/user/topchat/                         		@tokopedia/android-minionkevin-dev
-/features/user/inbox/                         		@tokopedia/android-minionkevin-dev
-/features/user/inbox_common/                         		@tokopedia/android-minionkevin-dev
+/features/user/inbox/                         		    @tokopedia/android-minionkevin-dev
+/features/user/inbox_common/                         	@tokopedia/android-minionkevin-dev
 /features/user/orderhistory/                         	@tokopedia/android-minionkevin-dev
 /features/user/topchat_no_op/                   		@tokopedia/android-minionkevin-dev
 /features/user/profilecompletion/                       @tokopedia/android-minionkevin-dev
