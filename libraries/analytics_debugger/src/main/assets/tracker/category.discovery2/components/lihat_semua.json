@@ -1,0 +1,12 @@
+{
+  "readme": "Discovery Lihat Semua click Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "eventCategory": "{{.*}}",
+      "eventAction": "click view all",
+      "event": "clickDiscovery",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}
