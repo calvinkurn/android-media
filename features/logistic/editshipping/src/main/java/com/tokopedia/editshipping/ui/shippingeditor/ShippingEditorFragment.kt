@@ -77,6 +77,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         initViews()
         initAdapter()
         initViewModel()
+        fetchData()
     }
 
     private fun initViews() {
@@ -114,6 +115,10 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                 else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
+    }
+
+    private fun fetchData() {
+        viewModel.getShipperList(userSession?.shopId.toInt())
     }
 
     private fun updateData(data: List<OnDemandModel>) {
