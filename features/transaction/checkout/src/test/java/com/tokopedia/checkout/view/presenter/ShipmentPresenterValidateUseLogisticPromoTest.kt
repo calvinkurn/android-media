@@ -6,17 +6,15 @@ import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
@@ -56,9 +54,6 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
 
     @MockK
-    private lateinit var codCheckoutUseCase: CodCheckoutUseCase
-
-    @MockK
     private lateinit var getRatesUseCase: GetRatesUseCase
 
     @MockK
@@ -82,14 +77,8 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     @MockK(relaxed = true)
     private lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
 
-    @MockK
-    private lateinit var codAnalytics: CodAnalytics
-
     @MockK(relaxed = true)
     private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
-
-    @MockK
-    private lateinit var getInsuranceCartUseCase: GetInsuranceCartUseCase
 
     @MockK(relaxed = true)
     private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
@@ -112,15 +101,13 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        presenter = ShipmentPresenter(compositeSubscription,
-                checkoutUseCase, getShipmentAddressFormGqlUseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase,
-                saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase,
-                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
-                ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
-                getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
+        presenter = ShipmentPresenter(
+                compositeSubscription, checkoutUseCase, getShipmentAddressFormGqlUseCase,
+                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+                submitHelpTicketUseCase, ratesStatesConverter, shippingCourierConverter,
+                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers)
         presenter.attachView(view)
     }
