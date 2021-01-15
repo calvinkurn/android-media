@@ -9,4 +9,8 @@ data class TickerDataUiModel(
         override var error: String = "",
         var tickers: List<TickerItemUiModel> = emptyList(),
         override var isFromCache: Boolean = false
-) : BaseDataUiModel
+) : BaseDataUiModel {
+    override fun shouldRemove(): Boolean {
+        return !isFromCache && tickers.isEmpty()
+    }
+}

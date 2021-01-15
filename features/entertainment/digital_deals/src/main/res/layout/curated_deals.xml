@@ -14,7 +14,7 @@
         android:textStyle="bold"
         android:textSize="@dimen/sp_16"
         android:fontFamily="sans-serif"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:lineSpacingExtra="@dimen/sp_6"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,7 +27,7 @@
         android:paddingLeft="@dimen/dp_12"
         android:paddingRight="@dimen/dp_12"
         android:textSize="@dimen/sp_12"
-        android:textColor="@color/seel_all_green_color"
+        android:textColor="@color/Unify_G500"
         android:layout_marginTop="@dimen/dp_4"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tv_popular"

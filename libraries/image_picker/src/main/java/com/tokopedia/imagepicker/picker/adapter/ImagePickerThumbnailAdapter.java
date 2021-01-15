@@ -39,8 +39,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     private List<String> imagePathList;
     private List<Integer> placeholderDrawableResList;
     private int maxSize;
-    private @StringRes
-    int primaryImageStringRes;
+    private boolean usePrimaryString;
     private int grayColor;
     private int whiteColor;
     private boolean canReorder;
@@ -134,8 +133,8 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
                             imageView.setImageDrawable(circularBitmapDrawable);
                         }
                     });
-            if (position == 0 && primaryImageStringRes != -1 && primaryImageStringRes != 0) {
-                tvCounterPrimary.setText(primaryImageStringRes);
+            if (position == 0 && usePrimaryString) {
+                tvCounterPrimary.setText(R.string.label_primary);
                 tvCounterPrimary.setVisibility(View.VISIBLE);
                 tvCounter.setVisibility(View.GONE);
             } else {
@@ -163,10 +162,10 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public void setData(List<String> imagePathList, @StringRes int primaryImageStringRes,
+    public void setData(List<String> imagePathList, boolean usePrimaryString,
                         List<Integer> placeholderDrawableList) {
         this.imagePathList = imagePathList;
-        this.primaryImageStringRes = primaryImageStringRes;
+        this.usePrimaryString = usePrimaryString;
         this.placeholderDrawableResList = placeholderDrawableList;
         notifyDataSetChanged();
     }

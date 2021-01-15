@@ -18,7 +18,7 @@ import com.tokopedia.design.R
  */
 class ProductAccessRequestDialogFragment : DialogFragment() {
 
-    private var layoutResId = R.layout.permission_fragment
+    private var layoutResId = com.tokopedia.design.R.layout.permission_fragment
     private var buttonAccept: String? = null
     private var buttonDeny: String? = null
     private var title: String? = null
@@ -45,8 +45,8 @@ class ProductAccessRequestDialogFragment : DialogFragment() {
         dialog.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(layoutResId)
-        val buttonAccept = dialog.findViewById<TextView>(R.id.button_accept)
-        val buttonDeny = dialog.findViewById<TextView>(R.id.button_deny)
+        val buttonAccept = dialog.findViewById<TextView>(com.tokopedia.design.R.id.button_accept)
+        val buttonDeny = dialog.findViewById<TextView>(com.tokopedia.design.R.id.button_deny)
         buttonAccept.setOnClickListener {
             accessListener?.onAccept()
             fromClickButtons = true
@@ -77,17 +77,17 @@ class ProductAccessRequestDialogFragment : DialogFragment() {
     }
 
     private fun setCustomText(dialog: Dialog?) {
-        val buttonAccept = dialog!!.findViewById<TextView>(R.id.button_accept)
+        val buttonAccept = dialog!!.findViewById<TextView>(com.tokopedia.design.R.id.button_accept)
         if (!TextUtils.isEmpty(this.buttonAccept)) buttonAccept.text = this.buttonAccept
-        val buttonDeny = dialog.findViewById<TextView>(R.id.button_deny)
+        val buttonDeny = dialog.findViewById<TextView>(com.tokopedia.design.R.id.button_deny)
         if (!TextUtils.isEmpty(this.buttonDeny)) {
             buttonDeny.text = this.buttonDeny
         } else if (this.buttonDeny == null) {
             buttonDeny.visibility = View.GONE
         }
-        val tvTitle = dialog.findViewById<TextView>(R.id.tv_title_access)
+        val tvTitle = dialog.findViewById<TextView>(com.tokopedia.design.R.id.tv_title_access)
         if (!TextUtils.isEmpty(title)) tvTitle.text = title
-        val tvBody = dialog.findViewById<TextView>(R.id.tv_description_permission)
+        val tvBody = dialog.findViewById<TextView>(com.tokopedia.design.R.id.tv_description_permission)
         if (!TextUtils.isEmpty(body)) tvBody.text = body
     }
 

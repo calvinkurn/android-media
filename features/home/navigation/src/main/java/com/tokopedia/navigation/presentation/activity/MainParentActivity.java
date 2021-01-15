@@ -1,7 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -217,6 +216,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
 
@@ -588,7 +588,6 @@ public class MainParentActivity extends BaseActivity implements
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
         presenter.get().onResume();
-        clearNotification();
 
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
             reloadPage();
@@ -600,13 +599,6 @@ public class MainParentActivity extends BaseActivity implements
         if (currentFragment != null) {
             configureStatusBarBasedOnFragment(currentFragment);
             FragmentLifecycleObserver.INSTANCE.onFragmentSelected(currentFragment);
-        }
-    }
-
-    private void clearNotification() {
-        if (remoteConfig.get().getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
-            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
-            NotificationManagerCompat.from(this).cancelAll();
         }
     }
 
@@ -940,10 +932,10 @@ public class MainParentActivity extends BaseActivity implements
 
                     Intent intentHome = MainParentActivity.start(MainParentActivity.this);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intentHome.setAction(Intent.ACTION_VIEW);
+                    intentHome.setAction(RouteManager.INTERNAL_VIEW);
 
                     Intent productIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
-                    productIntent.setAction(Intent.ACTION_VIEW);
+                    productIntent.setAction(RouteManager.INTERNAL_VIEW  );
                     productIntent.putExtras(args);
 
                     ShortcutInfo productShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_BELI_ID)
@@ -1056,7 +1048,6 @@ public class MainParentActivity extends BaseActivity implements
             }
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
             getPageLoadTimePerformanceInterface().stopMonitoring();
-            pageLoadTimePerformanceCallback = null;
         }
     }
 
