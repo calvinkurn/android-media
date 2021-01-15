@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.AppUtil;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -34,6 +35,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
+import timber.log.Timber;
+
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
 /**
@@ -54,6 +57,10 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
  */
 @Deprecated
 public class DeepLinkHandlerActivity extends AppCompatActivity {
+
+    private static final String APPLINK_LOG_FORMAT = "P1#WEBVIEW_OPENED#applink;domain='%s';url='%s'";
+    private static final String TOKOPEDIA_DOMAIN = "tokopedia";
+    private static final String URL_QUERY_PARAM = "url";
 
 
     public static DeepLinkDelegate getDelegateInstance() {
@@ -98,6 +105,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         }
 
         String applinkString = applink.toString();
+        logWebViewApplink(applink);
 
         //map applink to internal if any
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
@@ -141,6 +149,40 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
+    }
+
+    private void logWebViewApplink(Uri uri) {
+        if(uri.toString().contains(ApplinkConst.WEBVIEW)) {
+            Uri urlToLoad = getUrlToLoad(uri);
+            if(urlToLoad != null) {
+                String domain = urlToLoad.getHost();
+                if(domain != null) {
+                    if (!getBaseDomain(domain).equalsIgnoreCase(TOKOPEDIA_DOMAIN)) {
+                        Timber.w(APPLINK_LOG_FORMAT, domain, uri);
+                    }
+                }
+            }
+        }
+    }
+
+    private String getBaseDomain(String host) {
+        if(host == null) {
+            return "";
+        }
+        String[] split = host.split("\\.");
+        if (split.length > 2) {
+            return split[1];
+        } else {
+            return split[0];
+        }
+    }
+
+    private Uri getUrlToLoad(Uri url) {
+        try {
+            return Uri.parse(url.getQueryParameter(URL_QUERY_PARAM));
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
