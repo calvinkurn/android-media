@@ -1091,6 +1091,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
         return intent
     }
 

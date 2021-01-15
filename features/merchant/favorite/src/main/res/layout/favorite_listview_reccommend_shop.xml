@@ -23,7 +23,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/trans_black_40"
+                android:background="@color/Unify_N700_44"
                 android:orientation="horizontal"
                 android:layout_alignParentBottom="true">
 
@@ -38,22 +38,21 @@
                     android:id="@+id/shop_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@id/shop_icon"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/margin_vs"
+                    android:layout_marginStart="@dimen/margin_vs"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/shop_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/Unify_N0" />
 
                     <TextView
                         android:id="@+id/shop_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white"
+                        android:textColor="@color/Unify_N0"
                         android:textSize="@dimen/fontvs"/>
                 </LinearLayout>
 
@@ -68,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         app:srcCompat="@drawable/ic_fav_white"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:padding="@dimen/padding_small"
                         />
