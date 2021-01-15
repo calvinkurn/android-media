@@ -77,7 +77,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.hansel.hanselsdk.Hansel;
-import okhttp3.Interceptor;
 import okhttp3.Response;
 import timber.log.Timber;
 
@@ -97,9 +96,11 @@ public abstract class SellerRouterApplication extends MainApplication
         SellerHomeRouter,
         LoginRouter {
 
-    protected RemoteConfig remoteConfig;
+    private CMPushNotificationManager cmPushNotificationManager;
     private TopAdsComponent topAdsComponent;
     private TetraDebugger tetraDebugger;
+
+    protected RemoteConfig remoteConfig;
     protected CacheManager cacheManager;
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
@@ -112,6 +113,15 @@ public abstract class SellerRouterApplication extends MainApplication
         initResourceDownloadManager();
         initIris();
         performLibraryInitialisation();
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        if (cmPushNotificationManager != null) {
+            cmPushNotificationManager.getAidlApiApp().unbindService();
+            cmPushNotificationManager = null;
+        }
     }
 
     private void performLibraryInitialisation(){
@@ -146,7 +156,9 @@ public abstract class SellerRouterApplication extends MainApplication
 
 
     private void initCMPushNotification() {
-        CMPushNotificationManager.getInstance().init(this);
+        cmPushNotificationManager = CMPushNotificationManager.getInstance();
+        cmPushNotificationManager.init(this);
+
         List<String> excludeScreenList = new ArrayList<>();
         excludeScreenList.add(Constants.SPLASH);
         excludeScreenList.add(Constants.DEEPLINK_ACTIVITY);
