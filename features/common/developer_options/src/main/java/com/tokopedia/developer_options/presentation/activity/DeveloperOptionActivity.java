@@ -35,6 +35,8 @@ import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
+import com.tokopedia.appaidl.AidlApi;
+import com.tokopedia.appaidl.data.UserKey;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -55,6 +57,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -66,7 +69,7 @@ import timber.log.Timber;
 import static com.tokopedia.developer_options.config.DevOptConfig.CHUCK_ENABLED;
 import static com.tokopedia.developer_options.config.DevOptConfig.IS_CHUCK_ENABLED;
 
-public class DeveloperOptionActivity extends BaseActivity {
+public class DeveloperOptionActivity extends BaseActivity implements AidlApi.ReceiverListener {
 
     public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
@@ -84,6 +87,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView testOnBoarding;
     private TextView vForceCrash;
     private TextView reviewNotifBtn;
+    private TextView btnAidlStatus;
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
     private ToggleButton toggleTimberDevOption;
@@ -105,7 +109,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
 
-    private TextView txtAidlUserStatus;
     private TextView vGoToTopAdsDebugger;
     private TextView vGoToApplinkDebugger;
     private TextView vGoToFpm;
@@ -135,6 +138,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private Button requestFcmToken;
 
     private PermissionCheckerHelper permissionCheckerHelper;
+    private AidlApi aidlApi;
 
     @Override
     public String getScreenName() {
@@ -146,6 +150,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         if (GlobalConfig.isAllowDebuggingTools()) {
             userSession = new UserSession(this);
+            aidlApi = new AidlApi(this, this);
 
             Intent intent = getIntent();
             Uri uri = null;
@@ -168,6 +173,44 @@ public class DeveloperOptionActivity extends BaseActivity {
         } else {
             finish();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        aidlApi.unbindService();
+    }
+
+    private String userSessionData(Bundle data) {
+        String message = "";
+        message += "isLogin -> " + data.getBoolean(UserKey.IS_LOGIN) + "\n";
+        if (data.getBoolean(UserKey.IS_LOGIN)) {
+            message += "Name -> " + data.getString(UserKey.NAME) + "\n";
+            message += "Email -> " + data.getString(UserKey.EMAIL) + "\n";
+        }
+
+        return message;
+    }
+
+    @Override
+    public void onAidlReceive(String tag, Bundle data) {
+        String message = "";
+        if (!tag.isEmpty() && !data.isEmpty() && data.containsKey(UserKey.IS_LOGIN)) {
+            if (GlobalConfig.isSellerApp()) {
+                message += "SellerApp \n";
+            } else {
+                message += "MainApp \n";
+            }
+
+            message += userSessionData(data);
+        }
+
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onAidlError() {
+        Toast.makeText(this, "dev-opt: onAidlError", Toast.LENGTH_LONG).show();
     }
 
     private void handleUri(Uri uri) {
@@ -208,8 +251,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoTochuck = findViewById(R.id.goto_chuck);
         toggleChuck = findViewById(R.id.toggle_chuck);
 
-        txtAidlUserStatus = findViewById(R.id.aidl_user_status);
-
         vGoToTopAdsDebugger = findViewById(R.id.goto_topads_debugger);
         vGoToApplinkDebugger = findViewById(R.id.goto_applink_debugger);
         vGoToFpm = findViewById(R.id.goto_fpm);
@@ -230,6 +271,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
 
         reviewNotifBtn = findViewById(R.id.review_notification);
+        btnAidlStatus = findViewById(R.id.aidl_status);
 
         TextView deviceId = findViewById(R.id.device_id);
         deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
@@ -443,6 +485,10 @@ public class DeveloperOptionActivity extends BaseActivity {
             Notification notifReview = ReviewNotificationExample.createReviewNotification(getApplicationContext());
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
             notificationManagerCompat.notify(777, notifReview);
+        });
+
+        btnAidlStatus.setOnClickListener(v -> {
+            aidlApi.bindService();
         });
 
         toggleDarkMode.setChecked((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
