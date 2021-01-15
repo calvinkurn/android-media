@@ -15,13 +15,14 @@ open class AidlApi(
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == CUSTOMER_APP || intent?.action == SELLER_APP) {
                 intent.action?.let {
+                    application.unregisterReceiver(this)
                     listener.onAidlReceive(it, intent.extras)
                 }
             }
         }
     }
 
-    fun initAidlService() {
+    fun bindAidlService() {
         // the serviceView is serviceConnection to register the receiver in activity and send the data
         val serviceView = ServiceView(aidlTag()) { tag, service ->
             if (service != null) {
@@ -35,10 +36,6 @@ open class AidlApi(
         }, serviceView, Context.BIND_AUTO_CREATE)
 
         if (!success) listener.onAidlError()
-    }
-
-    fun unregisterBroadcaster() {
-        application.unregisterReceiver(broadcastReceiver)
     }
 
     interface ReceiverListener {
