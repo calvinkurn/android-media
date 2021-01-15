@@ -103,6 +103,7 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
     fun goToSuccessPage(){
         onSuccessRegister()
         val intent = OvoFinalPageActivity.createIntentSuccess(activity)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
         activity?.finish()
     }
