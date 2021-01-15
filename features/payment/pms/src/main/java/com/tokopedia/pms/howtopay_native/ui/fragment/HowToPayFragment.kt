@@ -242,7 +242,7 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     private fun addSingleChannelInstruction(instructions: ArrayList<String>) {
         recyclerView.layoutManager = NonScrollLinerLayoutManager(activity as Context)
-        recyclerView.adapter = InstructionAdapter(instructions)
+        recyclerView.adapter = InstructionAdapter(instructions, null)
         recyclerView.post {
             recyclerView.adapter?.notifyDataSetChanged()
         }

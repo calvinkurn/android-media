@@ -201,7 +201,7 @@
             ]
           },
           {
-            "payment_channel": "ATM OCBC NISP",
+            "payment_channel": "Internet Banking",
             "channel_steps": [
               "Login ke internet banking",
               "Pilih menu Pembayaran -> Pembayaran Lainnya",
@@ -331,7 +331,7 @@
             "payment_channel": "SMS Banking",
             "channel_steps": [
               "Ketik: BAYAR(spasi)TOKOPEDIA(spasi) Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
-              "Kirim ke 3338 | Contoh: BAYAR TOKOPEDIA {.payment_code}",
+              "Kirim ke 3338 | Contoh: BAYAR TOKOPEDIA {payment_code}",
               "Ikuti instruksi selanjutnya untuk menyelesaikan transaksi"
             ]
           }
@@ -657,9 +657,9 @@
               "Pilih Transfer ke bank lain dengan tujuan rekening Bank Danamon (Online Transfer)",
               "Masukkan Kode Bank Danamon (011) dan 4 angka kode perusahaan untuk Tokopedia (8777) dan nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: 011{payment_code})",
               "Masukkan jumlah pembayaran sesuai tagihan",
-              "Akan muncul rincian pembayaran Anda. Jika sudah benar, klik \"Ya\" untuk melanjutkan",
-              "ketersediaan channel sesuai kebijakan bank penerbit kartu masing-masing"
-            ]
+              "Akan muncul rincian pembayaran Anda. Jika sudah benar, klik \"Ya\" untuk melanjutkan"
+            ],
+            "notes": "<small>*ketersediaan channel sesuai kebijakan bank penerbit kartu masing-masing</small>"
           },
           {
             "payment_channel": "D-mobile (Mobile Banking)",
@@ -753,10 +753,10 @@
           {
             "payment_channel": "OCTO Clicks",
             "channel_steps": [
-              "Login ke OCTO Clicks (<https://www.octoclicks.co.id)",
+              "Login ke OCTO Clicks https://www.octoclicks.co.id",
               "Pilih menu Bayar Tagihan / Pay Bills",
               "Pilih Rekening Sumber / Source Account dan Jenis Pembayaran / Payment Type > Virtual Account",
-              "Masukkan nomor virtual account,{payment_code}",
+              "Masukkan nomor virtual account {payment_code}",
               "Nomor, nama virtual account dan jumlah billing ditampilkan pada layar",
               "Masukkan 6 digit mPIN dan tekan tombol Submit",
               "Konfirmasi pembayaran ditampilkan pada layar"
@@ -863,7 +863,6 @@
       {
         "gateway_code": "MANDIRISYARIAHVA",
         "gateway_name": "Bank Syariah Mandiri",
-        "bank_code": "451",
         "channel": [
           {
             "payment_channel": "Mobile Banking",

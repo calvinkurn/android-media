@@ -17,14 +17,18 @@ class MultiChannelViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private val tvChannelName: TextView = itemView.tvChannelName
     private val iconExpand: IconUnify = itemView.iconExpand
     private val recyclerView: RecyclerView = itemView.rvInstructions
+    private val divider: View = itemView.divider
 
-    fun bindView(paymentChannel: PaymentChannel, onExpand: (PaymentChannel) -> Unit) {
+    fun bindView(paymentChannel: PaymentChannel, isLastItem: Boolean,
+                 onExpand: (PaymentChannel) -> Unit) {
+
         tvChannelName.text = paymentChannel.channelTitle
         if (paymentChannel.isExpanded) {
             iconExpand.setImage(IconUnify.CHEVRON_UP)
             recyclerView.visible()
             recyclerView.layoutManager = NonScrollLinerLayoutManager(itemView.context)
-            recyclerView.adapter = InstructionAdapter(paymentChannel.channelSteps)
+            recyclerView.adapter = InstructionAdapter(paymentChannel.channelSteps,
+                    paymentChannel.channelNotes)
             recyclerView.post {
                 recyclerView.adapter?.notifyDataSetChanged()
             }
@@ -37,10 +41,14 @@ class MultiChannelViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             paymentChannel.isExpanded = !paymentChannel.isExpanded
             onExpand(paymentChannel)
         }
+        if (isLastItem)
+            divider.gone()
+        else
+            divider.visible()
     }
 }
 
-class NonScrollLinerLayoutManager(context: Context) : LinearLayoutManager(context){
+class NonScrollLinerLayoutManager(context: Context) : LinearLayoutManager(context) {
     override fun canScrollVertically(): Boolean {
         return false
     }

@@ -23,7 +23,7 @@ class MultiChannelAdapter (private val paymentChannels: ArrayList<PaymentChannel
     }
 
     override fun onBindViewHolder(holder: MultiChannelViewHolder, position: Int) {
-       holder.bindView(paymentChannels[position], ::onExpand)
+       holder.bindView(paymentChannels[position],(position == itemCount-1) ,::onExpand)
     }
 
     private fun onExpand(paymentChannel: PaymentChannel){
