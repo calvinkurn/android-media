@@ -904,7 +904,8 @@ open class HomeRevampViewModel @Inject constructor(
                         //loading-homepage ATF
                         if (homeDataModel.list.isEmpty()) {
                             val homeInitialShimmer = homeDataModel.copy(
-                                    list = listOf(HomeInitialShimmerDataModel())
+                                    list = listOf(HomeInitialShimmerDataModel()),
+                                    isProcessingAtf = true
                             )
                             homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeInitialShimmer, this@HomeRevampViewModel))
                         }  else {

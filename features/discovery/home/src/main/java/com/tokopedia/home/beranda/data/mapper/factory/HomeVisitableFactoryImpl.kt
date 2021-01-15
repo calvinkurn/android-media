@@ -152,7 +152,7 @@ class HomeVisitableFactoryImpl(
         if (defaultDynamicHomeChannel != null) {
             defaultDynamicHomeChannel?.let {
                 val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
-                        HomeChannelData(it), isCache, addLoadingMore)
+                        HomeChannelData(it), isCache, addLoadingMore, false)
                 data?.let { it1 -> visitableList.addAll(it1) }
             }
         } else {

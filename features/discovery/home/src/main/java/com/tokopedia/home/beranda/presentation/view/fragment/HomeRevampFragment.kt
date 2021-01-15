@@ -949,7 +949,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (data != null) {
                 if (data.list.size > 0) {
                     configureHomeFlag(data.homeFlag)
-                    setData(data.list, data.isCache)
+                    setData(data.list, data.isCache, data.isProcessingAtf)
                 } else if (!data.isCache) {
                     showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
                     pageLoadTimeCallback?.invalidate()
@@ -1107,9 +1107,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
+    private fun setData(data: List<Visitable<*>>, isCache: Boolean, isProcessingAtf: Boolean) {
         if(!data.isEmpty()) {
-            if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
+            if (needToPerformanceMonitoring(data, isProcessingAtf) && getPageLoadTimeCallback() != null) {
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
@@ -2360,12 +2360,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM, options.toBundle())
     }
 
-    private fun needToPerformanceMonitoring(data: List<Visitable<*>>): Boolean {
-        val dynamicChannelComponent = data.firstOrNull { it is HomeComponentVisitable }
-        val dynamicChannel = data.firstOrNull { it is DynamicChannelDataModel }
-        val dynamicChannelIsExist = dynamicChannelComponent != null || dynamicChannel != null
-
-        return homePerformanceMonitoringListener != null && !isOnRecylerViewLayoutAdded && dynamicChannelIsExist
+    private fun needToPerformanceMonitoring(data: List<Visitable<*>>, isProcessingAtf: Boolean): Boolean {
+        return homePerformanceMonitoringListener != null && !isOnRecylerViewLayoutAdded && !isProcessingAtf
     }
 
     private fun showToaster(message: String, typeToaster: Int) {
