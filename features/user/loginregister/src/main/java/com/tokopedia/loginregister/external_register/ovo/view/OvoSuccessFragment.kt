@@ -33,7 +33,7 @@ class OvoSuccessFragment: ExternalAccountFinalFragment(), BaseFinalListener {
     }
 
     override fun onMainSuccessButtonClicked() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+        val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
         activity?.finish()
