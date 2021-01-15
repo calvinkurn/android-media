@@ -16,7 +16,7 @@ class SomListBulkProcessOrderMenuItemViewHolder(
     }
 
     override fun bind(element: SomListBulkProcessOrderMenuItemUiModel?) {
-        (itemView as Typography).run {
+        (itemView as? Typography)?.run {
             text = element?.text.orEmpty()
             isEnabled = element?.enable ?: false
             setOnClickListener { listener?.onMenuItemClicked(element?.keyAction.orEmpty()) }

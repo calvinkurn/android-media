@@ -14,6 +14,6 @@ class SomListBulkProcessOrderDescriptionViewHolder(
     }
 
     override fun bind(element: SomListBulkProcessOrderDescriptionUiModel?) {
-        (itemView as Typography).text = element?.text.orEmpty()
+        (itemView as? Typography)?.text = element?.text.orEmpty()
     }
 }

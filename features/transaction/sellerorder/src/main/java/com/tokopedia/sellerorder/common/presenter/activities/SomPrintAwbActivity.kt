@@ -45,7 +45,7 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
     }
 
     private fun configureWebView() {
-        (fragment as BaseWebViewFragment).webView?.let {
+        (fragment as? BaseWebViewFragment)?.webView?.let {
             it.addJavascriptInterface(JavaScriptInterface(this), JAVASCRIPT_INTERFACE_NAME)
             it.settings.builtInZoomControls = true
             it.settings.loadWithOverviewMode = true
