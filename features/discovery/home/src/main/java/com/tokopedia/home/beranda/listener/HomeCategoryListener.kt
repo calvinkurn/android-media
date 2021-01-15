@@ -96,7 +96,7 @@ interface HomeCategoryListener {
 
     fun getWindowWidth(): Int
 
-    fun refreshHomeData()
+    fun refreshHomeData(forceRefresh: Boolean = false)
 
     fun isShowSeeAllCard(): Boolean
 

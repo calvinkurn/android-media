@@ -266,9 +266,9 @@ open class HomeRevampViewModel @Inject constructor(
         initFlow()
     }
 
-    fun refresh(isFirstInstall: Boolean){
+    fun refresh(isFirstInstall: Boolean, forceRefresh: Boolean = false){
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
-        if (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY)) {
+        if (forceRefresh || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
         }
@@ -878,9 +878,7 @@ open class HomeRevampViewModel @Inject constructor(
     private fun initFlow() {
         _isRequestNetworkLiveData.value = Event(true)
         launchCatchError(coroutineContext, block = {
-            addInitialShimmering()
             homeFlowData.collect { homeDataModel ->
-                removeInitialShimmering()
                 if (homeDataModel?.isCache == false) {
                     onRefreshState = false
                     _isRequestNetworkLiveData.postValue(Event(false))
@@ -893,27 +891,39 @@ open class HomeRevampViewModel @Inject constructor(
                         //initialize master list data here
                         homeVisitableListData = it.list.toMutableList()
                     }
-                    getPlayWidget()
-                    getHeaderData()
-                    getReviewData()
-                    getPlayBanner()
-                    getPopularKeyword()
-                    getDisplayTopAdsHeader()
-                    getRecommendationWidget()
-                    getTopAdsBannerData()
+                    /**
+                     * Get external response when ATF is completed (first page = false)
+                     */
+                    if (homeData?.isProcessingAtf == false) {
+                        getPlayWidget()
+                        getHeaderData()
+                        getReviewData()
+                        getPlayBanner()
+                        getPopularKeyword()
+                        getDisplayTopAdsHeader()
+                        getRecommendationWidget()
+                        getTopAdsBannerData()
+                    }
                     _trackingLiveData.postValue(Event(homeVisitableListData.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else if (onRefreshState) {
                     if (homeDataModel?.list?.size?:0 > 1) {
                         _isRequestNetworkLiveData.postValue(Event(false))
                     }
                     homeDataModel?.let {
-                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
+                        //loading-homepage ATF
+                        if (homeDataModel.list.isEmpty()) {
+                            val homeInitialShimmer = homeDataModel.copy(
+                                    list = listOf(HomeInitialShimmerDataModel())
+                            )
+                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeInitialShimmer, this@HomeRevampViewModel))
+                        }  else {
+                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
+                        }
                     }
                     refreshHomeData()
                 }
             }
         }) {
-            removeInitialShimmering()
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
         }
     }
@@ -1395,7 +1405,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun removeInitialShimmering() {
-        homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(initialShimmerData,0,this@HomeRevampViewModel))
+//        homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(initialShimmerData,0,this@HomeRevampViewModel))
     }
 
     fun injectCouponTimeBased() {

@@ -96,7 +96,8 @@ abstract class BaseWidgetUiTest{
             getRecommendationFilterChips = getRecommendationFilterChips,
             getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
-            bestSellerMapper = bestSellerMapper
+            bestSellerMapper = bestSellerMapper,
+            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
     )
 
     fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {

@@ -2332,7 +2332,7 @@ open class HomeFragment : BaseDaggerFragment(),
         impressionScrollListeners.clear()
     }
 
-    override fun refreshHomeData() {
+    override fun refreshHomeData(forceRefresh: Boolean) {
         refreshLayout.isRefreshing = true
         onNetworkRetry()
     }

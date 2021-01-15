@@ -67,4 +67,18 @@ interface HomeTypeFactory {
     fun type(homeHeaderOvoDataModel: HomeHeaderOvoDataModel): Int
 
     fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int
+
+    fun type(errorStateIconModel: ErrorStateIconModel): Int
+
+    fun type(errorStateChannelOneModel: ErrorStateChannelOneModel): Int
+
+    fun type(errorStateChannelTwoModel: ErrorStateChannelTwoModel): Int
+
+    fun type(errorStateChannelThreeModel: ErrorStateChannelThreeModel): Int
+
+    fun type(shimmeringChannelDataModel: ShimmeringChannelDataModel): Int
+
+    fun type(shimmeringIconDataModel: ShimmeringIconDataModel): Int
+
+    fun type(errorStateAtfModel: ErrorStateAtfModel): Int
 }

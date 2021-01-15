@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.datasource.remote
 
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.interactor.*
@@ -9,13 +10,13 @@ import kotlinx.coroutines.withContext
 
 class HomeRemoteDataSource(
         private val dispatchers: HomeDispatcherProvider,
-        private val getDynamicChannelsUseCase: GetDynamicChannelsUseCase,
+        private val getHomeDynamicChannelsRepository: GetHomeDynamicChannelsRepository,
         private val getHomeDataUseCase: GetHomeDataUseCase,
         private val getAtfDataUseCase: GetHomeAtfUseCase,
         private val getHomeFlagUseCase: GetHomeFlagUseCase,
         private val getHomePageBannerUseCase: GetHomePageBannerUseCase,
-        private val getHomeIconUseCase: GetHomeIconUseCase,
-        private val getHomeTickerUseCase: GetHomeTickerUseCase
+        private val getHomeIconRepository: GetHomeIconRepository,
+        private val getHomeTickerRepository: GetHomeTickerRepository
 ) {
     suspend fun getHomeData(): HomeData? = withContext(dispatchers.io()) {
         getHomeDataUseCase.executeOnBackground()
@@ -30,11 +31,11 @@ class HomeRemoteDataSource(
     }
 
     suspend fun getHomeIconUseCase(): HomeIconData? = withContext(dispatchers.io()) {
-        getHomeIconUseCase.executeOnBackground()
+        getHomeIconRepository.getIconData()
     }
 
     suspend fun getHomeTickerUseCase(): HomeTickerData? = withContext(dispatchers.io()) {
-        getHomeTickerUseCase.executeOnBackground()
+        getHomeTickerRepository.getTickerData()
     }
 
     suspend fun getAtfDataUseCase(): HomeAtfData? = withContext(dispatchers.io()) {
@@ -46,9 +47,14 @@ class HomeRemoteDataSource(
                                       params: String = "",
                                       doQueryHash: Boolean = false
     ): HomeChannelData = withContext(dispatchers.io()) {
-        getDynamicChannelsUseCase.setParams(
-                groupIds, token, numOfChannel, params, doQueryHash
+        getHomeDynamicChannelsRepository.getDynamicChannelData(
+                GetHomeDynamicChannelsRepository.buildParams(
+                        groupIds = groupIds,
+                        token = token,
+                        numOfChannel = numOfChannel,
+                        queryParams = params,
+                        doQueryHash = doQueryHash
+                )
         )
-        getDynamicChannelsUseCase.executeOnBackground()
     }
 }

@@ -490,7 +490,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_home_revamp, container, false)
         BenchmarkHelper.endSystraceSection()
         fragmentFramePerformanceIndexMonitoring.init(
                 "home", this, object : OnFrameListener {
@@ -947,7 +947,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun observeHomeData() {
         getHomeViewModel().homeLiveData.observe(viewLifecycleOwner, Observer { data: HomeDataModel? ->
             if (data != null) {
-                if (data.list.size > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
+                if (data.list.size > 0) {
                     configureHomeFlag(data.homeFlag)
                     setData(data.list, data.isCache)
                 } else if (!data.isCache) {
@@ -1481,14 +1481,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
 
-    private fun onNetworkRetry() { //on refresh most likely we already lay out many view, then we can reduce
+    private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
 //        homeRecyclerView?.itemAnimator = null
         resetFeedState()
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
         if(::viewModel.isInitialized) {
-            getHomeViewModel().refresh(isFirstInstall())
+            getHomeViewModel().refresh(isFirstInstall(), forceRefresh)
             stickyContent
         }
         if (activity is RefreshNotificationListener) {
@@ -1531,6 +1531,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun hideLoading() {
+
         refreshLayout.isRefreshing = false
         homeRecyclerView?.isEnabled = true
     }
@@ -2333,9 +2334,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         impressionScrollListeners.clear()
     }
 
-    override fun refreshHomeData() {
+    override fun refreshHomeData(forceRefresh: Boolean) {
         refreshLayout.isRefreshing = true
-        onNetworkRetry()
+        onNetworkRetry(forceRefresh)
     }
 
     override fun onTokopointCheckNowClicked(applink: String) {

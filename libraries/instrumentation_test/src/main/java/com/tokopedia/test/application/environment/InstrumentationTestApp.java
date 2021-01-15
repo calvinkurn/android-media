@@ -467,4 +467,8 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     }
 
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
+
+    }
 }
