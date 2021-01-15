@@ -36,6 +36,7 @@ import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
@@ -70,11 +71,13 @@ import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -90,12 +93,12 @@ import javax.inject.Named
  */
 open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener, RegisterInitialRouter {
 
-    private lateinit var optionTitle: TextView
+    private lateinit var optionTitle: Typography
     private lateinit var separator: View
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var emailPhoneEditText: AutoCompleteTextView
     private lateinit var registerButton: LoginTextView
-    private lateinit var loginButton: TextView
+    private lateinit var loginButton: Typography
     private lateinit var container: ScrollView
     private lateinit var progressBar: RelativeLayout
     private lateinit var tickerAnnouncement: Ticker
@@ -929,13 +932,15 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun showLoadingDiscover() {
-        socmedButtonsContainer?.run {
-            val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
-            val lastPos = childCount - 1
-            if (getChildAt(lastPos) !is ProgressBar) {
-                addView(pb, childCount)
+        LetUtil.ifLet(context, socmedButtonsContainer) { (context, socmedButtonsContainer) ->
+            if(context is Context && socmedButtonsContainer is LinearLayout) {
+                val pb = LoaderUnify(context)
+                val lastPos = socmedButtonsContainer.childCount - 1
+                if (socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
+                    socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
+                }
+                emailExtension?.hide()
             }
-            emailExtension?.hide()
         }
     }
 
@@ -979,7 +984,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun dismissLoadingDiscover() {
         socmedButtonsContainer?.run {
             val lastPos = childCount - 1
-            if (getChildAt(lastPos) is ProgressBar) {
+            if (getChildAt(lastPos) is LoaderUnify) {
                 removeViewAt(childCount - 1)
             }
         }

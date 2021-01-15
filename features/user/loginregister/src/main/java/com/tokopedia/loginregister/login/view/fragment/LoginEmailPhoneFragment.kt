@@ -57,6 +57,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.LinkerConstants
@@ -109,6 +110,7 @@ import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -373,13 +375,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-
     override fun showLoadingDiscover() {
-        socmedButtonsContainer?.let {
-            val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
-            val lastPos = it.childCount - 1
-            if (it.childCount >= 1 && it.getChildAt(lastPos) !is ProgressBar) {
-                it.addView(pb, lastPos)
+        LetUtil.ifLet(context, socmedButtonsContainer) { (context, socmedButtonsContainer) ->
+            if(context is Context && socmedButtonsContainer is LinearLayout) {
+                val pb = LoaderUnify(context)
+                val lastPos = socmedButtonsContainer.childCount - 1
+                if (socmedButtonsContainer.childCount >= 1 && socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
+                   socmedButtonsContainer.addView(pb, lastPos)
+                }
             }
         }
     }
@@ -387,7 +390,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun dismissLoadingDiscover() {
         socmedButtonsContainer?.let {
             val lastPos = it.childCount - 2
-            if (it.childCount >= 2 && it.getChildAt(lastPos) is ProgressBar) {
+            if (it.childCount >= 2 && it.getChildAt(lastPos) is LoaderUnify) {
                 it.removeViewAt(lastPos)
             }
         }
