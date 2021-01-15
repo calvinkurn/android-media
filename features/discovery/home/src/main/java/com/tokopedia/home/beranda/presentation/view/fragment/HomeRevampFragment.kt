@@ -490,7 +490,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_home_revamp, container, false)
         BenchmarkHelper.endSystraceSection()
         fragmentFramePerformanceIndexMonitoring.init(
                 "home", this, object : OnFrameListener {
@@ -947,9 +947,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun observeHomeData() {
         getHomeViewModel().homeLiveData.observe(viewLifecycleOwner, Observer { data: HomeDataModel? ->
             if (data != null) {
-                if (data.list.size > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
+                if (data.list.size > 0) {
                     configureHomeFlag(data.homeFlag)
-                    setData(data.list, data.isCache)
+                    setData(data.list, data.isCache, data.isProcessingAtf)
                 } else if (!data.isCache) {
                     showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
                     pageLoadTimeCallback?.invalidate()
@@ -1107,9 +1107,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
+    private fun setData(data: List<Visitable<*>>, isCache: Boolean, isProcessingAtf: Boolean) {
         if(!data.isEmpty()) {
-            if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
+            if (needToPerformanceMonitoring(data, isProcessingAtf) && getPageLoadTimeCallback() != null) {
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
@@ -1482,14 +1482,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
 
-    private fun onNetworkRetry() { //on refresh most likely we already lay out many view, then we can reduce
+    private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
 //        homeRecyclerView?.itemAnimator = null
         resetFeedState()
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
         if(::viewModel.isInitialized) {
-            getHomeViewModel().refresh(isFirstInstall())
+            getHomeViewModel().refresh(isFirstInstall(), forceRefresh)
             stickyContent
         }
         if (activity is RefreshNotificationListener) {
@@ -1532,6 +1532,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun hideLoading() {
+
         refreshLayout.isRefreshing = false
         homeRecyclerView?.isEnabled = true
     }
@@ -2334,9 +2335,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         impressionScrollListeners.clear()
     }
 
-    override fun refreshHomeData() {
+    override fun refreshHomeData(forceRefresh: Boolean) {
         refreshLayout.isRefreshing = true
-        onNetworkRetry()
+        onNetworkRetry(forceRefresh)
     }
 
     override fun onTokopointCheckNowClicked(applink: String) {
@@ -2360,12 +2361,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM, options.toBundle())
     }
 
-    private fun needToPerformanceMonitoring(data: List<Visitable<*>>): Boolean {
-        val dynamicChannelComponent = data.firstOrNull { it is HomeComponentVisitable }
-        val dynamicChannel = data.firstOrNull { it is DynamicChannelDataModel }
-        val dynamicChannelIsExist = dynamicChannelComponent != null || dynamicChannel != null
-
-        return homePerformanceMonitoringListener != null && !isOnRecylerViewLayoutAdded && dynamicChannelIsExist
+    private fun needToPerformanceMonitoring(data: List<Visitable<*>>, isProcessingAtf: Boolean): Boolean {
+        return homePerformanceMonitoringListener != null && !isOnRecylerViewLayoutAdded && !isProcessingAtf
     }
 
     private fun showToaster(message: String, typeToaster: Int) {

@@ -29,15 +29,15 @@ import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixTopViewHolder
-import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
-import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
-import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
-import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import java.util.*
 
 /**
@@ -229,12 +229,44 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return EmptyBannerViewHolder.LAYOUT
     }
 
+    override fun type(homeHeaderOvoDataModel: HomeHeaderOvoDataModel): Int {
+        return HomeHeaderOvoViewHolder.LAYOUT
+    }
+
     override fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int {
         return HomeInitialShimmerViewHolder.LAYOUT
     }
 
     override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int {
         return DynamicIconViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateIconModel: ErrorStateIconModel): Int {
+        return ErrorStateIconViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateChannelOneModel: ErrorStateChannelOneModel): Int {
+        return ErrorStateChannelOneViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateChannelTwoModel: ErrorStateChannelTwoModel): Int {
+        return ErrorStateChannelTwoViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateChannelThreeModel: ErrorStateChannelThreeModel): Int {
+        return ErrorStateChannelThreeViewHolder.LAYOUT
+    }
+
+    override fun type(shimmeringChannelDataModel: ShimmeringChannelDataModel): Int {
+        return ShimmeringChannelViewHolder.LAYOUT
+    }
+
+    override fun type(shimmeringIconDataModel: ShimmeringIconDataModel): Int {
+        return ShimmeringIconViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateAtfModel: ErrorStateAtfModel): Int {
+        return HomeAtfErrorViewHolder.LAYOUT
     }
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -293,6 +325,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         val viewHolder: AbstractViewHolder<*>
         when (type) {
             EmptyBannerViewHolder.LAYOUT -> viewHolder = EmptyBannerViewHolder(view, listener)
+            HomeHeaderOvoViewHolder.LAYOUT -> viewHolder = HomeHeaderOvoViewHolder(view, listener)
             HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
             DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, parentRecycledViewPool)
             ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, parentRecycledViewPool)
@@ -374,6 +407,14 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             BannerComponentViewHolder.LAYOUT -> viewHolder =
                     BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
             DynamicIconViewHolder.LAYOUT -> viewHolder = DynamicIconViewHolder(view, dynamicIconComponentListener)
+            ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)
+            ErrorStateChannelOneViewHolder.LAYOUT -> viewHolder = ErrorStateChannelOneViewHolder(view, listener)
+            ErrorStateChannelTwoViewHolder.LAYOUT -> viewHolder = ErrorStateChannelTwoViewHolder(view, listener)
+            ErrorStateChannelThreeViewHolder.LAYOUT -> viewHolder = ErrorStateChannelThreeViewHolder(view, listener)
+            HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
+            ShimmeringChannelViewHolder.LAYOUT -> viewHolder = ShimmeringChannelViewHolder(view, listener)
+            ShimmeringIconViewHolder.LAYOUT -> viewHolder = ShimmeringIconViewHolder(view, listener)
+            HomeAtfErrorViewHolder.LAYOUT -> viewHolder = HomeAtfErrorViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

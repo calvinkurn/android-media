@@ -19,23 +19,23 @@ class HomeDataSourceModule {
     fun provideHomeRemoteDataSource(
             graphqlRepository: GraphqlRepository,
             dispatcher: HomeDispatcherProvider,
-            getDynamicChannelsUseCase: GetDynamicChannelsUseCase,
+            getHomeDynamicChannelsRepository: GetHomeDynamicChannelsRepository,
             getHomeDataUseCase: GetHomeDataUseCase,
             getHomeAtfUseCase: GetHomeAtfUseCase,
             getHomeFlagUseCase: GetHomeFlagUseCase,
-            getHomeTickerUseCase: GetHomeTickerUseCase,
-            getHomeIconUseCase: GetHomeIconUseCase,
+            getHomeTickerRepository: GetHomeTickerRepository,
+            getHomeIconRepository: GetHomeIconRepository,
             getHomePageBannerUseCase: GetHomePageBannerUseCase
     )
             = HomeRemoteDataSource(
             dispatcher,
-            getDynamicChannelsUseCase,
+            getHomeDynamicChannelsRepository,
             getHomeDataUseCase,
             getHomeAtfUseCase,
             getHomeFlagUseCase,
             getHomePageBannerUseCase,
-            getHomeIconUseCase,
-            getHomeTickerUseCase
+            getHomeIconRepository,
+            getHomeTickerRepository
     )
 
     @Provides
