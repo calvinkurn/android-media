@@ -11,10 +11,6 @@ class GetHomeIconUseCase @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<HomeIconData>
 ) : UseCase<HomeIconData>(){
 
-    companion object{
-        private const val PARAM_KEY = "param"
-    }
-
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(HomeIconData::class.java)
@@ -22,11 +18,5 @@ class GetHomeIconUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): HomeIconData {
         return graphqlUseCase.executeOnBackground()
-    }
-
-    suspend fun executeOnBackground(param: String): HomeIconData{
-        graphqlUseCase.clearCache()
-        graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to param))
-        return executeOnBackground()
     }
 }
