@@ -75,30 +75,43 @@ class AddEditProductSpecificationViewModelTest: AddEditProductSpecificationViewM
 
     @Test
     fun `getItemSelected should return filled list data when product having specification`() = runBlocking {
+        // test without setting product input
         val specificationInputModelEmpty = viewModel.getItemSelected(annotationCategoryData)
+
+        // test with setting product input
         setProductInputModel(listOf(
                 SpecificationInputModel("1", "Indomie")
         ))
         val specificationInputModelFilled = viewModel.getItemSelected(annotationCategoryData)
 
+        // test with null setting product input
+        setProductInputModel(null)
+        val specificationInputModelNull = viewModel.getItemSelected(annotationCategoryData)
+
         assertEquals("1", specificationInputModelFilled[0].id)
         assertEquals("", specificationInputModelEmpty[0].id)
+        assertEquals("", specificationInputModelNull[0].id)
     }
 
     @Test
     fun `updateProductInputModelSpecifications should return filtered list`() = runBlocking {
-        setProductInputModel(emptyList())
         val specificationInputModel = listOf(
                 SpecificationInputModel("1", "Indomie"),
                 SpecificationInputModel("", "")
         )
 
+        // test without setting productInputValue
         viewModel.updateProductInputModelSpecifications(specificationInputModel)
+
+        // test with setting productInputValue before
+        setProductInputModel(emptyList())
+        viewModel.updateProductInputModelSpecifications(specificationInputModel)
+
         val spec = viewModel.productInputModel.getOrAwaitValue().detailInputModel.specifications.orEmpty()
         assertEquals(1, spec.size)
     }
 
-    private fun setProductInputModel(specificationInputModel: List<SpecificationInputModel>) {
+    private fun setProductInputModel(specificationInputModel: List<SpecificationInputModel>?) {
         val expectedId = 12222L
         viewModel.setProductInputModel(ProductInputModel(
                 productId = expectedId,

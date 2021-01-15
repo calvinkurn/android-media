@@ -1045,6 +1045,21 @@ class AddEditProductDetailViewModelTest {
         }
     }
 
+    @Test
+    fun `updateSpecificationByAnnotationCategory should return empty when annotation category is not selected`() = runBlocking {
+        val annotationCategoryData = listOf(
+                AnnotationCategoryData(
+                        variant = "Merek",
+                        data = listOf(
+                                Values(1, "Indomie", false, ""),
+                                Values(1, "Seedap", false, ""))
+                )
+        )
+        viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
+        val specificationText = viewModel.specificationText.getOrAwaitValue()
+        Assert.assertTrue(specificationText.isEmpty())
+    }
+
     private fun getSampleProductPhotos(): List<PictureInputModel> {
         return listOf(
                 PictureInputModel(picID = "1", urlOriginal = "url 1", urlThumbnail = "thumb 1", url300 = "300 1"),

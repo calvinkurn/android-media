@@ -414,7 +414,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
         }
 
-        productInputModel.value?.detailInputModel?.specifications = result
+        productInputModel.value?.apply {
+            detailInputModel.specifications = result
+        }
     }
 
 }
