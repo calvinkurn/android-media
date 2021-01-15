@@ -2,7 +2,6 @@ package com.tokopedia.stickylogin.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
@@ -39,8 +38,8 @@ import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WID
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_SHOP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_USER_NAME
-import com.tokopedia.stickylogin.common.StickyLoginConstant.STICKY_LOGIN_REMINDER_PREF
-import com.tokopedia.stickylogin.common.StickyLoginConstant.STICKY_PREF
+import com.tokopedia.stickylogin.common.helper.getPrefLoginReminder
+import com.tokopedia.stickylogin.common.helper.getPrefStickyLogin
 import com.tokopedia.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.stickylogin.view.viewModel.StickyLoginViewModel
@@ -288,12 +287,8 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         return null
     }
 
-    private fun getSharedPreference(file: String): SharedPreferences {
-        return context.getSharedPreferences(file, Context.MODE_PRIVATE)
-    }
-
     private fun getLastSeen(page: StickyLoginConstant.Page): Long {
-        val sharedPref = getSharedPreference(STICKY_PREF)
+        val sharedPref = getPrefStickyLogin(context)
         val lastSeen = when (page) {
             StickyLoginConstant.Page.HOME -> {
                 sharedPref.getLong(KEY_LAST_SEEN_AT_HOME, 0)
@@ -311,7 +306,7 @@ class StickyLoginView : FrameLayout, CoroutineScope {
 
     private fun setLastSeen(page: StickyLoginConstant.Page, epoch: Long) {
         val inMinute = TimeUnit.MILLISECONDS.toMinutes(epoch)
-        val sharedPref = getSharedPreference(STICKY_PREF)
+        val sharedPref = getPrefStickyLogin(context)
         when (page) {
             StickyLoginConstant.Page.HOME -> {
                 sharedPref.edit().putLong(KEY_LAST_SEEN_AT_HOME, inMinute).apply()
@@ -378,7 +373,7 @@ class StickyLoginView : FrameLayout, CoroutineScope {
      * Login Reminder content
      */
     private fun isLoginReminder(): Boolean {
-        val pref = getSharedPreference(STICKY_LOGIN_REMINDER_PREF)
+        val pref = getPrefLoginReminder(context)
         val name = pref.getString(KEY_USER_NAME, "") ?: ""
         val picture = pref.getString(KEY_PROFILE_PICTURE, "") ?: ""
         return name.isNotEmpty() && picture.isNotEmpty()
@@ -386,8 +381,8 @@ class StickyLoginView : FrameLayout, CoroutineScope {
 
     @SuppressLint("SetTextI18n")
     private fun showLoginReminder(page: StickyLoginConstant.Page) {
-        val name = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_USER_NAME, "")
-        val profilePicture = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_PROFILE_PICTURE, "")
+        val name = getPrefLoginReminder(context).getString(KEY_USER_NAME, "")
+        val profilePicture = getPrefLoginReminder(context).getString(KEY_PROFILE_PICTURE, "")
 
         textContent.setContent("$TEXT_RE_LOGIN $name")
         textContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))

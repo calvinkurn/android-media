@@ -144,6 +144,8 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_IS_REGISTER_FROM_STICKY_LOGIN
 import com.tokopedia.stickylogin.common.StickyLoginConstant.STICKY_PREF
+import com.tokopedia.stickylogin.common.helper.isRegisteredFromStickyLogin
+import com.tokopedia.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
@@ -736,7 +738,9 @@ open class HomeFragment : BaseDaggerFragment(),
             }
         })
 
-        if (isRegisteredFromStickyLogin()) gotoNewUserZone()
+        context?.let {
+            if (isRegisteredFromStickyLogin(it)) gotoNewUserZone()
+        }
     }
 
     private fun initStickyLogin() {
@@ -1455,11 +1459,13 @@ open class HomeFragment : BaseDaggerFragment(),
             }
             REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
                 if (data != null && data.extras != null) {
-                    val isSuccessRegister = data.extras?.getBoolean(PARAM_IS_SUCCESS_REGISTER, false) ?: false
-                    if (isSuccessRegister) {
-                        saveIsRegisteredFromStickyLogin(true)
-                    } else {
-                        saveIsRegisteredFromStickyLogin(false)
+                    context?.let {
+                        val isSuccessRegister = data.extras?.getBoolean(PARAM_IS_SUCCESS_REGISTER, false) ?: false
+                        if (isSuccessRegister) {
+                            saveIsRegisteredFromStickyLogin(it, true)
+                        } else {
+                            saveIsRegisteredFromStickyLogin(it,false)
+                        }
                     }
                 }
             }
@@ -2462,26 +2468,9 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun gotoNewUserZone() {
-        context?.let { startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER)) }
-        if (isRegisteredFromStickyLogin()) saveIsRegisteredFromStickyLogin(false)
-    }
-
-    private fun saveIsRegisteredFromStickyLogin(state: Boolean) {
         context?.let {
-            sharedPrefs = it.getSharedPreferences(STICKY_PREF, Context.MODE_PRIVATE)
-            sharedPrefs.run {
-                edit().putBoolean(KEY_IS_REGISTER_FROM_STICKY_LOGIN, state).apply()
-            }
+            if (isRegisteredFromStickyLogin(it)) saveIsRegisteredFromStickyLogin(it, false)
+            startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER))
         }
-    }
-
-    private fun isRegisteredFromStickyLogin(): Boolean {
-        if (!userSession.isLoggedIn) return false
-
-        context?.let {
-            return it.getSharedPreferences(STICKY_PREF, Context.MODE_PRIVATE).getBoolean(KEY_IS_REGISTER_FROM_STICKY_LOGIN, false)
-        }
-
-        return false
     }
 }
