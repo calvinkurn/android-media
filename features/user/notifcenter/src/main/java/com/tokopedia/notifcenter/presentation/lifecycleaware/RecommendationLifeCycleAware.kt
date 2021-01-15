@@ -93,9 +93,6 @@ class RecommendationLifeCycleAware constructor(
     private fun showSuccessAddWishlist() {
         val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
         val message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist)
-        /**
-         * TODO: use [Toaster.build] later
-         */
         Toaster.showNormalWithAction(view, message, Snackbar.LENGTH_LONG,
                 getString(R.string.recom_go_to_wishlist),
                 View.OnClickListener { v: View? ->
