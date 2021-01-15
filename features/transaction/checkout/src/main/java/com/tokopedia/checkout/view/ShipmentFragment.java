@@ -55,7 +55,6 @@ import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.component.Tooltip;
@@ -459,18 +458,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (tickerAnnouncementHolderData != null) {
             shipmentAdapter.addTickerAnnouncementdata(tickerAnnouncementHolderData);
-        }
-
-        CodModel tempCod = shipmentPresenter.getCodData();
-        if (tempCod != null && tempCod.isCod()) {
-            shipmentAdapter.addNotifierData(new ShipmentNotifierModel(
-                    tempCod.getMessageInfo(),
-                    tempCod.getMessageLink()
-            ));
-            mTrackerCod.eventViewBayarDiTempat();
-            mTrackerCod.eventImpressionEligibleCod();
-            shipmentPresenter.getShipmentButtonPaymentModel().setCod(true);
-            onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
         }
 
         if (recipientAddressModel != null) {

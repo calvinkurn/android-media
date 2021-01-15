@@ -22,7 +22,6 @@ import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel;
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
@@ -31,7 +30,6 @@ import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder;
-import com.tokopedia.checkout.view.viewholder.ShipmentNotifierViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -123,9 +121,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemViewType(int position) {
         Object item = shipmentDataList.get(position);
 
-        if (item instanceof ShipmentNotifierModel) {
-            return ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD;
-        } else if (item instanceof RecipientAddressModel) {
+        if (item instanceof RecipientAddressModel) {
             return ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS;
         } else if (item instanceof ShipmentCartItemModel) {
             return ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM;
@@ -156,9 +152,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
 
-        if (viewType == ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD) {
-            return new ShipmentNotifierViewHolder(view, shipmentAdapterActionListener);
-        } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
+        if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             return new ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
             return new ShipmentItemViewHolder(view, shipmentAdapterActionListener);
@@ -192,9 +186,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         int viewType = getItemViewType(position);
         Object data = shipmentDataList.get(position);
 
-        if (viewType == ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD) {
-            ((ShipmentNotifierViewHolder) holder).bind((ShipmentNotifierModel) data);
-        } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
+        if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             ((ShipmentRecipientAddressViewHolder) holder).bindViewHolder((RecipientAddressModel) data,
                     showCaseObjectList);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
@@ -296,16 +288,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (tickerAnnouncementHolderData != null) {
             shipmentDataList.add(HEADER_POSITION, tickerAnnouncementHolderData);
             this.tickerAnnouncementHolderData = tickerAnnouncementHolderData;
-        }
-    }
-
-    public void addNotifierData(ShipmentNotifierModel shipmentNotifierModel) {
-        if (shipmentNotifierModel != null) {
-            int position = HEADER_POSITION;
-            if (tickerAnnouncementHolderData != null) {
-                position += 1;
-            }
-            shipmentDataList.add(position, shipmentNotifierModel);
         }
     }
 
