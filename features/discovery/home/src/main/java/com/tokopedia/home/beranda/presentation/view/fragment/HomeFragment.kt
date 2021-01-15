@@ -229,6 +229,9 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
         private const val HOME_SOURCE = "home"
 
+        private const val MARGIN_BOTTOM_TOASTER_RESET_PASSWORD = 32
+        private const val DELAY_TOASTER_RESET_PASSWORD = 60000
+
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeFragment {
             val fragment = HomeFragment()
@@ -2338,10 +2341,10 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun showSuccessResetPasswordDialog() {
-        Toaster.toasterCustomBottomHeight = 32
+        Toaster.toasterCustomBottomHeight = MARGIN_BOTTOM_TOASTER_RESET_PASSWORD
         Toaster.build(root,
                 getString(R.string.text_dialog_success_reset_password),
-                60000,
+                DELAY_TOASTER_RESET_PASSWORD,
                 TYPE_NORMAL,
                 getString(R.string.cta_dialog_success_reset_password),
                 View.OnClickListener {
