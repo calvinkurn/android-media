@@ -217,6 +217,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
+    public static final String CM_CAMPAIGN_ID_EXCLUDE_LIST = "android_cm_push_exclude_list_removal";
 
     public static final String CUSTOMER_APP_UPDATE = "android_customer_app_update";
 
@@ -236,4 +237,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_USING_OLD_ACCOUNT = "android_mainapp_old_account_page";
 
     public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
+
+    public static final String PRE_OTP_LOGIN_CLEAR = "android_pre_otp_login_clear";
 }

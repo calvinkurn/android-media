@@ -180,8 +180,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun getTitleMarginTop(): Int {
-        return if (textViewShopName.isNotNullAndVisible) R.dimen.dp_2
-        else R.dimen.dp_8
+        return if (textViewShopName.isNotNullAndVisible) com.tokopedia.design.R.dimen.dp_2
+        else com.tokopedia.design.R.dimen.dp_8
     }
 
     protected open fun setPriceMarginTop() {
@@ -192,8 +192,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun getPriceMarginTop(): Int {
-        return if (labelDiscount.isNotNullAndVisible) R.dimen.dp_2
-        else R.dimen.dp_4
+        return if (labelDiscount.isNotNullAndVisible) com.tokopedia.design.R.dimen.dp_2
+        else com.tokopedia.design.R.dimen.dp_4
     }
 
     protected open fun setLocationMarginLeft() {
@@ -204,8 +204,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun getLocationMarginLeft(): Int {
-        return if (linearLayoutShopBadges.isNotNullAndVisible) R.dimen.dp_4
-        else R.dimen.dp_8
+        return if (linearLayoutShopBadges.isNotNullAndVisible) com.tokopedia.design.R.dimen.dp_4
+        else com.tokopedia.design.R.dimen.dp_8
     }
 
     protected open fun setLocationConstraintEnd() {
@@ -218,11 +218,11 @@ abstract class ProductCardView: BaseCustomView {
 
     protected open fun configureTextViewLocationConstraintBasedOnPosition(imageTopAds: View, textViewShopLocation: View) {
         if(isTextLocationIsAtBottomOfCard()) {
-            setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, R.dimen.dp_4)
+            setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, com.tokopedia.design.R.dimen.dp_4)
         }
         else {
             imageProduct?.doIfVisible { imageProduct ->
-                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageProduct.id, ConstraintSet.END, R.dimen.dp_8)
+                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageProduct.id, ConstraintSet.END, com.tokopedia.design.R.dimen.dp_8)
             }
         }
     }
@@ -242,8 +242,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun getReviewCountMarginLeft(): Int {
-        return if(linearLayoutImageRating.isNotNullAndVisible) R.dimen.dp_4
-        else R.dimen.dp_8
+        return if(linearLayoutImageRating.isNotNullAndVisible) com.tokopedia.design.R.dimen.dp_4
+        else com.tokopedia.design.R.dimen.dp_8
     }
 
     protected open fun setImageFreeOngkirPromoConstraint() {
@@ -252,7 +252,7 @@ abstract class ProductCardView: BaseCustomView {
 
             imageFreeOngkirPromoTopConstraintView?.let {
                 setViewConstraint(
-                        imageFreeOngkirPromo.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_8
+                        imageFreeOngkirPromo.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, com.tokopedia.design.R.dimen.dp_8
                 )
             }
         }
@@ -274,7 +274,7 @@ abstract class ProductCardView: BaseCustomView {
 
             labelOffersTopConstraintView?.let {
                 setViewConstraint(
-                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_8
+                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, com.tokopedia.design.R.dimen.dp_8
                 )
             }
         }
@@ -293,7 +293,7 @@ abstract class ProductCardView: BaseCustomView {
 
             imageTopAdsTopConstraintView?.let {
                 setViewConstraint(
-                        imageTopAds.id, ConstraintSet.TOP, it.id, ConstraintSet.TOP, R.dimen.dp_0
+                        imageTopAds.id, ConstraintSet.TOP, it.id, ConstraintSet.TOP, com.tokopedia.design.R.dimen.dp_0
                 )
             }
         }
