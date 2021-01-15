@@ -24,6 +24,9 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon
+        
+        
+        private const val SCROLLABLE_ITEM = 5
     }
 
     private val adapter = DynamicIconAdapter(listener)
@@ -38,7 +41,7 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
         adapter.updatePosition(adapterPosition)
         itemView.dynamic_icon_recycler_view.adapter = adapter
         setupLayoutManager(
-            isScrollItem = dynamicIcons.size > 5,
+            isScrollItem = dynamicIcons.size > SCROLLABLE_ITEM,
             spanCount = dynamicIcons.size
         )
     }
@@ -65,7 +68,7 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
         }
 
         override fun onBindViewHolder(holder: DynamicIconItemViewHolder, position: Int) {
-            categoryList.getOrNull(position)?.let { holder.bind(it, categoryList.size > 5, this.position) }
+            categoryList.getOrNull(position)?.let { holder.bind(it, categoryList.size > SCROLLABLE_ITEM, this.position) }
         }
 
         override fun getItemCount(): Int {
