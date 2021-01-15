@@ -9,6 +9,7 @@ import android.os.Bundle;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
@@ -40,7 +41,6 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
-
     private boolean isApkTempered;
 
     @DeepLink(ApplinkConst.CONSUMER_SPLASH_SCREEN)
@@ -55,6 +55,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        SplashScreenPerformanceTracker.startMonitoring();
         super.onCreate(savedInstanceState);
         executeInBackground();
     }
@@ -134,6 +135,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         } else {
             finish();
         }
+        SplashScreenPerformanceTracker.stopMonitoring();
     }
 
     private void startWarmStart() {
