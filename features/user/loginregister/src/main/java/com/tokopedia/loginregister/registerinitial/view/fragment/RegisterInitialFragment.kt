@@ -529,7 +529,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     fun showRegisterOvoDialog() {
         activity?.let {
             phoneNumber?.run {
-                OvoAccountDialog.showRegisterDialogUnify(this, it, object: BaseDialogConnectAccListener {
+                OvoAccountDialog.showRegisterDialogUnify(it, this, object: BaseDialogConnectAccListener {
                     override fun onDialogPositiveBtnClicked() {
                         goToOvoAddName(this@run)
                     }
@@ -541,16 +541,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     }
                 })
             }
-
-//            OvoAccountDialog.showRegisterOvoDialog(this, object: BaseDialogConnectAccListener {
-//                override fun onDialogPositiveBtnClicked() {
-//                    goToOvoAddName()
-//                }
-//
-//                override fun onDialogNegativeBtnClicked() {
-//                    doRegisterCheck()
-//                }
-//            })
         }
     }
 
