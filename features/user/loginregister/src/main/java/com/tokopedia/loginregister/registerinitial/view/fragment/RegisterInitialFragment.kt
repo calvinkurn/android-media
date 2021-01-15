@@ -935,9 +935,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         LetUtil.ifLet(context, socmedButtonsContainer) { (context, socmedButtonsContainer) ->
             if(context is Context && socmedButtonsContainer is LinearLayout) {
                 val pb = LoaderUnify(context)
-                pb.layoutParams.height = R.dimen.layout_lvl6
-                pb.layoutParams.width = R.dimen.layout_lvl6
-                pb.requestLayout()
                 val lastPos = socmedButtonsContainer.childCount - 1
                 if (socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
                     socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
