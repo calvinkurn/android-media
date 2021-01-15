@@ -8,7 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OtherTransactionModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 import kotlinx.android.synthetic.main.holder_other_transaction_product.view.*
 
 class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OtherTransactionModel>(itemView) {

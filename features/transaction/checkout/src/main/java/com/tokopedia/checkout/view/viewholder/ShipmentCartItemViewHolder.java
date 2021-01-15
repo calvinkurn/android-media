@@ -22,6 +22,7 @@ import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -47,8 +48,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private RelativeLayout mRlPurchaseProtection;
     private TextView mTvPPPLinkText;
     private TextView mTvPPPPrice;
-    private CheckBox mCbPPP;
-    private CheckBox mCbPPPDisabled;
+    private CheckboxUnify mCbPPP;
     private LinearLayout mLlShippingWarningContainer;
     private View mSeparatorMultipleProductSameStore;
     private TextView tvErrorShipmentItemTitle;
@@ -72,7 +72,6 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvPPPLinkText = itemView.findViewById(R.id.text_link_text);
         mTvPPPPrice = itemView.findViewById(R.id.text_protection_desc);
         mCbPPP = itemView.findViewById(R.id.checkbox_ppp);
-        mCbPPPDisabled = itemView.findViewById(R.id.checkbox_ppp_disabled);
         mLlShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         mSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
@@ -170,13 +169,11 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
             mPricePerProduct.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getProtectionPricePerProduct(), false)));
 
             if (cartItem.isProtectionCheckboxDisabled()) {
-                mCbPPP.setVisibility(View.GONE);
-                mCbPPPDisabled.setVisibility(View.VISIBLE);
-                mCbPPPDisabled.setChecked(true);
-                mCbPPPDisabled.setClickable(false);
+                mCbPPP.setEnabled(false);
+                mCbPPP.setChecked(true);
+                mCbPPP.setClickable(false);
             } else {
-                mCbPPPDisabled.setVisibility(View.GONE);
-                mCbPPP.setVisibility(View.VISIBLE);
+                mCbPPP.setEnabled(true);
                 mCbPPP.setChecked(cartItem.isProtectionOptIn());
                 mCbPPP.setClickable(true);
                 mCbPPP.setOnCheckedChangeListener((compoundButton, checked) -> shipmentItemListener.notifyOnPurchaseProtectionChecked(checked, getAdapterPosition() + 1));

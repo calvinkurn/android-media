@@ -15,7 +15,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlin.collections.set
 
-open class DiscoveryAnalytics(pageType: String = EMPTY_STRING,
+open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                               pagePath: String = EMPTY_STRING,
                               pageIdentifier: String = EMPTY_STRING,
                               campaignCode: String = EMPTY_STRING,

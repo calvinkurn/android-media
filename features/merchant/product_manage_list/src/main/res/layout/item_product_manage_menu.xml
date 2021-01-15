@@ -20,7 +20,7 @@
         android:gravity="center_vertical"
         android:paddingTop="@dimen/product_manage_vertical_spacing"
         android:paddingBottom="@dimen/product_manage_vertical_spacing"
-        android:textColor="@color/product_manage_title_color"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 </LinearLayout>

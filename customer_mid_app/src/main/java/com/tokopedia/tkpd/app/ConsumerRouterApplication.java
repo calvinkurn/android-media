@@ -6,12 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
@@ -628,5 +630,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInboxTalkCallingIntent(Context mContext) {
         return null;
+    }
+
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
+        if(TextUtils.isEmpty(errorMessage)){
+            SessionAnalytics.trackRefreshTokenSuccess();
+        }else {
+            SessionAnalytics.trackRefreshTokenFailed(errorMessage);
+        }
     }
 }

@@ -98,6 +98,9 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                     listComponents.add(component)
                 }
             }
+            ComponentNames.QuickFilter.componentName -> {
+                listComponents.add(component.copy())
+            }
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
             ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName ->
                 listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
@@ -285,4 +288,11 @@ fun updateComponentsQueryParams(categoryId : String){
     discoComponentQuery?.let {
         it[CATEGORY_ID] = categoryId
     }
+}
+
+fun getPageInfo(pageName: String) : PageInfo {
+    discoveryPageData[pageName]?.let {
+        return it.pageInfo
+    }
+    return PageInfo()
 }

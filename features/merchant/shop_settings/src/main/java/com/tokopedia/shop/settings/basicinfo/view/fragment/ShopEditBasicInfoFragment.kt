@@ -48,14 +48,19 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_edit_basic_info.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
-class ShopEditBasicInfoFragment : Fragment() {
+@FlowPreview
+@ExperimentalCoroutinesApi
+class ShopEditBasicInfoFragment: Fragment() {
 
     companion object {
         private const val SAVED_IMAGE_PATH = "saved_img_path"
         private const val MAX_FILE_SIZE_IN_KB = 10240
         private const val REQUEST_CODE_IMAGE = 846
+        const val INPUT_DELAY = 500L
     }
 
     @Inject
@@ -355,12 +360,14 @@ class ShopEditBasicInfoFragment : Fragment() {
     }
 
     private fun getAllowShopNameDomainChanges() {
+        showLoading()
         viewModel.getAllowShopNameDomainChanges()
     }
 
     private fun observeGetShopBasicData() {
         observe(viewModel.shopBasicData) {
-            when (it) {
+            hideLoading()
+            when(it) {
                 is Success -> showShopInformation(it.data)
                 is Fail -> onErrorGetShopBasicData(it.throwable)
             }
@@ -369,19 +376,20 @@ class ShopEditBasicInfoFragment : Fragment() {
 
     private fun observeUploadShopImage() {
         observe(viewModel.uploadShopImage) {
-            when (it) {
+            when(it) {
                 is Fail -> {
-                    it.throwable.cause?.apply {
-                        onErrorUploadShopImage(this)
-                    }
+                    hideLoading()
+                    onErrorUpdateShopBasicData(it.throwable)
                 }
+                else -> {/* no op */}
             }
         }
     }
 
     private fun observeUpdateShopData() {
         observe(viewModel.updateShopBasicData) {
-            when (it) {
+            hideLoading()
+            when(it) {
                 is Success -> {
                     it.data.graphQLSuccessMessage?.let { graphQlSuccesMessage ->
                         graphQlSuccesMessage.message?.let { message ->
@@ -400,7 +408,8 @@ class ShopEditBasicInfoFragment : Fragment() {
 
     private fun observeAllowShopNameDomainChanges() {
         observe(viewModel.allowShopNameDomainChanges) {
-            when (it) {
+            hideLoading()
+            when(it) {
                 is Success -> {
                     val data = it.data
                     showShopEditShopInfoTicker(data)
@@ -411,19 +420,17 @@ class ShopEditBasicInfoFragment : Fragment() {
                     showAllowShopNameDomainChangesError(throwable)
                 }
             }
-            progressBar.hide()
-            container.show()
         }
     }
 
     private fun observeValidateShopNameDomain() {
         observe(viewModel.validateShopName) {
-            when (it) {
+            when(it) {
                 is Success -> {
                     val validateDomainShopName = it.data.validateDomainShopName
                     val notValid = !validateDomainShopName.isValid
 
-                    if (notValid) {
+                    if(notValid) {
                         val message = validateDomainShopName.error.message
                         showShopNameInputError(message)
                     }
@@ -439,12 +446,12 @@ class ShopEditBasicInfoFragment : Fragment() {
         }
 
         observe(viewModel.validateShopDomain) {
-            when (it) {
+            when(it) {
                 is Success -> {
                     val validateDomainShopName = it.data.validateDomainShopName
                     val notValid = !validateDomainShopName.isValid
 
-                    if (notValid) {
+                    if(notValid) {
                         val message = validateDomainShopName.error.message
                         showShopDomainInputError(message)
                     }
@@ -462,12 +469,13 @@ class ShopEditBasicInfoFragment : Fragment() {
 
     private fun observeShopDomainSuggestions() {
         observe(viewModel.shopDomainSuggestion) {
-            when (it) {
+            when(it) {
                 is Success -> {
                     val result = it.data.shopDomainSuggestion.result
                     val shopDomains = result.shopDomains
                     shopDomainSuggestions.show(shopDomains)
                 }
+                else -> {/* no op */}
             }
         }
     }
@@ -516,7 +524,6 @@ class ShopEditBasicInfoFragment : Fragment() {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 clickReadMore(linkUrl)
             }
-
             override fun onDismiss() {}
         })
         shopEditTicker.show()
@@ -532,7 +539,7 @@ class ShopEditBasicInfoFragment : Fragment() {
     }
 
     private fun onSaveButtonClicked() {
-        showSubmitLoading()
+        showLoading()
 
         val name = shopNameTextField.textFieldInput.text.toString()
         val domain = shopDomainTextField.textFieldInput.text.toString()
@@ -548,17 +555,18 @@ class ShopEditBasicInfoFragment : Fragment() {
         tvSave?.isEnabled = false
     }
 
-    private fun showSubmitLoading() {
-        progressBar.show()
+    private fun showLoading() {
+        loader.show()
         container.hide()
     }
 
-    private fun hideSubmitLoading() {
-        progressBar.hide()
+    private fun hideLoading() {
+        loader.hide()
         container.show()
     }
 
     private fun loadShopBasicData() {
+        showLoading()
         viewModel.getShopBasicData()
     }
 
@@ -575,8 +583,6 @@ class ShopEditBasicInfoFragment : Fragment() {
 
 
     private fun onSuccessUpdateShopBasicData(successMessage: String) {
-        hideSubmitLoading()
-
         val bundle = Bundle().apply {
             putString(EXTRA_MESSAGE, successMessage)
         }
@@ -585,7 +591,6 @@ class ShopEditBasicInfoFragment : Fragment() {
     }
 
     private fun onErrorUpdateShopBasicData(throwable: Throwable) {
-        hideSubmitLoading()
         showSnackBarErrorSubmitEdit(throwable)
         tvSave?.isEnabled = true
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
@@ -593,7 +598,6 @@ class ShopEditBasicInfoFragment : Fragment() {
     }
 
     private fun onErrorUpdateShopBasicData(message: String) {
-        hideSubmitLoading()
         showSnackBarErrorSubmitEdit(message)
         tvSave?.isEnabled = true
         ShopSettingsErrorHandler.logMessage(message)
@@ -644,7 +648,7 @@ class ShopEditBasicInfoFragment : Fragment() {
                 val logoUrl = it.logo
                 if (TextUtils.isEmpty(logoUrl)) {
                     imageAvatar.setImageDrawable(
-                            MethodChecker.getDrawable(imageAvatar.context, R.drawable.ic_shop_edit_avatar))
+                        MethodChecker.getDrawable(imageAvatar.context, R.drawable.ic_shop_edit_avatar))
                 } else {
                     ImageHandler.LoadImage(imageAvatar, logoUrl)
                 }
@@ -663,16 +667,10 @@ class ShopEditBasicInfoFragment : Fragment() {
     private fun showSnackBarErrorShopInfo(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         snackbar = Toaster.build(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             loadShopBasicData()
         })
         snackbar?.show()
-    }
-
-    private fun onErrorUploadShopImage(throwable: Throwable) {
-        showSnackBarErrorSubmitEdit(throwable)
-        ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
-        ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
     private fun showSnackBarErrorSubmitEdit(throwable: Throwable) {
@@ -697,7 +695,8 @@ class ShopEditBasicInfoFragment : Fragment() {
     private fun showAllowShopNameDomainChangesError(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
         snackbar = Toaster.build(container, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            showLoading()
             viewModel.getAllowShopNameDomainChanges()
         })
         snackbar?.show()
