@@ -81,6 +81,8 @@ class HomeRevampRepositoryImpl @Inject constructor(
      *      if there is token and cache is not exist
      *      if cache is exist
      * 7. Submit current data to database, to trigger HomeViewModel flow
+     *    7.1 Emit error pagination only when atf is empty
+     *      Because there is no content that we can show, we showing error page
      */
     override fun updateHomeData(): Flow<Result<Any>> = flow{
         coroutineScope {
@@ -156,6 +158,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
+                                    atfData.content = null
                                     cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
                                         homeCachedDataSource.saveToDatabase(homeData)
                                     })
@@ -263,7 +266,13 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         homeCachedDataSource.saveToDatabase(it)
                     }
                 } catch (e: Exception) {
-                    emit(Result.errorPagination(e,null))
+                    /**
+                     * 7.1 Emit error pagination only when atf is empty
+                     * Because there is no content that we can show, we showing error page
+                     */
+                    if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
+                        emit(Result.errorPagination(e,null))
+                    }
                     return@coroutineScope
                 }
             }

@@ -151,17 +151,17 @@ class HomeVisitableFactoryImpl(
         visitableList.add(viewModelDynamicIcon)
     }
 
-    private fun addDynamicChannelData(addLoadingMore: Boolean, defaultDynamicHomeChannel: DynamicHomeChannel? = null) {
+    private fun addDynamicChannelData(addLoadingMore: Boolean, defaultDynamicHomeChannel: DynamicHomeChannel? = null, useDefaultWhenEmpty: Boolean = true) {
         if (defaultDynamicHomeChannel != null) {
             defaultDynamicHomeChannel?.let {
                 val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
-                        HomeChannelData(it), isCache, addLoadingMore)
+                        HomeChannelData(it), isCache, addLoadingMore, useDefaultWhenEmpty)
                 data?.let { it1 -> visitableList.addAll(it1) }
             }
         } else {
             homeData?.let {
                 val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
-                        HomeChannelData(it.dynamicHomeChannel), isCache, addLoadingMore)
+                        HomeChannelData(it.dynamicHomeChannel), isCache, addLoadingMore, useDefaultWhenEmpty)
                 data?.let { it1 -> visitableList.addAll(it1) }
             }
         }
@@ -270,7 +270,9 @@ class HomeVisitableFactoryImpl(
                                     onSuccess = {
                                         addDynamicChannelData(
                                                 false,
-                                                data.getAtfContent<DynamicHomeChannel>())
+                                                data.getAtfContent<DynamicHomeChannel>(),
+                                                false
+                                        )
                                     }
                             )
                             channelPosition++
@@ -285,7 +287,7 @@ class HomeVisitableFactoryImpl(
     }
 
     override fun addDynamicChannelVisitable(addLoadingMore: Boolean): HomeVisitableFactory {
-        addDynamicChannelData(addLoadingMore)
+        addDynamicChannelData(addLoadingMore = addLoadingMore, useDefaultWhenEmpty = true)
         return this
     }
 
