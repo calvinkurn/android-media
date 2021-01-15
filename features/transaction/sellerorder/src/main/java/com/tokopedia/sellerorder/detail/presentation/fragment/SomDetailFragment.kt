@@ -42,7 +42,6 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -129,7 +128,6 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -137,10 +135,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_canceled
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_confirmed
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.tf_cancel_notes
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order_penalty.view.*
+import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
@@ -149,7 +144,6 @@ import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.net.SocketTimeoutException
-import java.net.URLEncoder
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
@@ -172,9 +166,6 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     private var somToaster: Snackbar? = null
 
@@ -729,12 +720,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun goToPrintAwb() {
         if (GlobalConfig.isSellerApp()) {
-            val featureUrl = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-                remoteConfig.getString("android_som_print_url_staging", "https://186-staging-feature.tokopedia.com/shipping-label")
-            } else {
-                remoteConfig.getString("android_som_print_url_beta", "https://110-beta-feature.tokopedia.com/shipping-label")
-            }
-            val url = Uri.parse(featureUrl)
+            val url = Uri.parse("${TokopediaUrl.getInstance().MOBILEWEB}/$PATH_PRINT_AWB")
                     .buildUpon()
                     .appendQueryParameter(PRINT_AWB_ORDER_ID_QUERY_PARAM, detailResponse?.orderId.orZero().toString())
                     .appendQueryParameter(PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, "1")

@@ -237,9 +237,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
-
     private var bulkAcceptButtonEnterAnimation: ValueAnimator? = null
     private var bulkAcceptButtonLeaveAnimation: ValueAnimator? = null
     private var isWaitingPaymentOrderPageOpened: Boolean = false
@@ -686,12 +683,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onPrintButtonClicked(markAsPrinted: Boolean) {
-        goToPrintAwb(
-                this,
-                getSelectedOrderIds(),
-                markAsPrinted,
-                remoteConfig.getString("android_som_print_url_staging", "https://186-staging-feature.tokopedia.com/shipping-label"),
-                remoteConfig.getString("android_som_print_url_beta", "https://110-beta-feature.tokopedia.com/shipping-label"))
+        goToPrintAwb(this, getSelectedOrderIds(), markAsPrinted)
         SomAnalytics.eventClickYesOnBulkPrintAwb(userSession.userId)
     }
 

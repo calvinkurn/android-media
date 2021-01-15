@@ -517,12 +517,4 @@
         <key>app_enable_video_pdp</key>
         <value>true</value>
     </entry>
-    <entry>
-        <key>android_som_print_url_staging</key>
-        <value>https://186-staging-feature.tokopedia.com/shipping-label</value>
-    </entry>
-    <entry>
-        <key>android_som_print_url_beta</key>
-        <value>https://110-beta-feature.tokopedia.com/shipping-label</value>
-    </entry>
 </defaultsMap>

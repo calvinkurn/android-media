@@ -27,6 +27,4 @@ interface SomComponent {
     fun userSessionInterface(): UserSessionInterface
 
     fun dispatcherProvider(): SomDispatcherProvider
-
-    fun remoteConfigProvider(): FirebaseRemoteConfigImpl
 }

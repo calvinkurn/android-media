@@ -81,14 +81,9 @@ object SomListNavigator {
         }
     }
 
-    fun goToPrintAwb(fragment: SomListFragment?, orderIds: List<String>, markAsPrinted: Boolean, stagingUrl: String, betaUrl: String) {
+    fun goToPrintAwb(fragment: SomListFragment?, orderIds: List<String>, markAsPrinted: Boolean) {
         fragment?.run {
-            val featureUrl = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-                stagingUrl
-            } else {
-                betaUrl
-            }
-            val url = Uri.parse(featureUrl)
+            val url = Uri.parse("${TokopediaUrl.getInstance().MOBILEWEB}/${SomConsts.PATH_PRINT_AWB}")
                     .buildUpon()
                     .appendQueryParameter(SomConsts.PRINT_AWB_ORDER_ID_QUERY_PARAM, orderIds.joinToString(","))
                     .appendQueryParameter(SomConsts.PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, if (markAsPrinted) "1" else "0")

@@ -39,8 +39,4 @@ class SomModule {
     @SomScope
     @Provides
     fun provideSomDispatcherProvider(): SomDispatcherProvider = SomProductionDispatcherProvider()
-
-    @SomScope
-    @Provides
-    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl = FirebaseRemoteConfigImpl(context)
 }
