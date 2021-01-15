@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.ProductManageCommonInstance
 import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK_LENGTH
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
@@ -34,7 +34,7 @@ import java.util.*
 import javax.inject.Inject
 
 class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFinishedListener? = null,
-                                          private var product: ProductViewModel? = null) : BottomSheetUnify(),
+                                          private var product: ProductUiModel? = null) : BottomSheetUnify(),
         HasComponent<ProductManageQuickEditStockComponent> {
 
     companion object {
@@ -49,7 +49,7 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
         private const val KEY_PRODUCT_STATUS = "product_status"
         private const val KEY_STOCK = "stock"
 
-        fun createInstance(product: ProductViewModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditStockFragment {
+        fun createInstance(product: ProductUiModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditStockFragment {
             return ProductManageQuickEditStockFragment(onFinishedListener, product)
         }
 
@@ -103,7 +103,7 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
         savedInstanceState?.let {
             val cacheManagerId = it.getString(KEY_CACHE_MANAGER_ID).orEmpty()
             val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
-            product = cacheManager?.get<ProductViewModel>(KEY_PRODUCT, ProductViewModel::class.java, null)
+            product = cacheManager?.get<ProductUiModel>(KEY_PRODUCT, ProductUiModel::class.java, null)
 
             productId = it.getString(KEY_PRODUCT_ID)
             productName = it.getString(KEY_PRODUCT_NAME)
@@ -370,7 +370,7 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
     }
 
     interface OnFinishedListener {
-        fun onFinishEditStock(modifiedProduct: ProductViewModel)
+        fun onFinishEditStock(modifiedProduct: ProductUiModel)
         fun onFinishEditStock(productId: String,
                               productName: String,
                               productStatus: ProductStatus,

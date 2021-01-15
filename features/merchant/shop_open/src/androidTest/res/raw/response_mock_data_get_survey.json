@@ -1,0 +1,42 @@
+[
+  {
+    "data": {
+      "getSurveyData": {
+        "result": {
+          "questions": [
+            {
+              "ID": 5,
+              "type": 1,
+              "question": "Oh, apakah kamu punya pengalaman berjualan sebelumnya?",
+              "choices": [
+                {
+                  "ID": 1,
+                  "choice": "Pernah berjualan di e-commerce lain"
+                },
+                {
+                  "ID": 2,
+                  "choice": "Pernah berjualan di Instagram"
+                },
+                {
+                  "ID": 3,
+                  "choice": "Punya toko offline"
+                },
+                {
+                  "ID": 4,
+                  "choice": "Hanya berjualan ke teman dan saudara"
+                },
+                {
+                  "ID": 5,
+                  "choice": "Belum pernah berjualan online/offline"
+                }
+              ]
+            }
+          ]
+        },
+        "error": {
+          "message": ""
+        }
+      }
+    }
+  }
+]
