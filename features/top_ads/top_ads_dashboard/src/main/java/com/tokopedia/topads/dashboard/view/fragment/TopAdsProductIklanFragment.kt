@@ -629,12 +629,10 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     fun setGroupCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
-//        groupPagerAdapter?.setTitleGroup(String.format(getString(R.string.topads_dash_group), size))
     }
 
     fun setNonGroupCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(1)?.setCounter(size)
-//        groupPagerAdapter?.setTitleProduct(String.format(getString(R.string.topads_dash_non_group), size))
     }
 
     override fun onCustomDateSelected(dateStart: Date, dateEnd: Date) {

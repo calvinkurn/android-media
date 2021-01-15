@@ -27,15 +27,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.tokopedia.unifycomponents.ImageUnify
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/backArrow"
+                    app:icon_name="ARROW_BACK"
+                    app:icon_enable_state="true"
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
                     android:layout_marginEnd="@dimen/dp_8"
                     app:layout_constraintBottom_toBottomOf="@id/toolbar_title"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="@id/toolbar_title"
-                    android:tint="@color/font_black_primary_70" />
+                    app:icon_color_light_enable="@color/font_black_primary_70" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/toolbar_title"

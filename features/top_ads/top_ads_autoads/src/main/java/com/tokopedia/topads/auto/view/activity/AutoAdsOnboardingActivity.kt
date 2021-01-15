@@ -42,7 +42,6 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
         setContentView(R.layout.topads_auto_onboarding_activity_layout)
         renderTabAndViewPager()
         setupToolBar()
-        backArrow.setImageDrawable(this.getResDrawable(R.drawable.ic_back_white))
         backArrow.setOnClickListener {
             onBackPressed()
         }
