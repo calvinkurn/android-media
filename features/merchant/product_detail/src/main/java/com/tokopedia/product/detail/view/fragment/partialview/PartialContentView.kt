@@ -172,7 +172,7 @@ class PartialContentView(private val view: View,
 
     private fun renderStockBarFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
         showStockBarFlashSale()
-        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.Unify_N50))
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
         setProgressStockBar(campaign, stockWording)
     }
 
@@ -205,7 +205,7 @@ class PartialContentView(private val view: View,
 
     fun renderTradein(showTradein: Boolean) = with(view) {
         tradein_header_container.showWithCondition(showTradein)
-        tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.tradein_white), null, null, null)
+        tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.common_tradein.R.drawable.tradein_white), null, null, null)
     }
 
     private fun showCountDownTimerUpcomingNpl(startDateData: String, campaign: CampaignModular) = with(view) {
@@ -273,6 +273,6 @@ class PartialContentView(private val view: View,
 
     private fun hideStockBarAndBackgroundColor() = with(view) {
         hideStockBarFlashSale()
-        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.Unify_N0))
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 }

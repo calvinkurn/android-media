@@ -14,7 +14,7 @@
     <string name="label_dialog_message_remove_cart_multiple_item">Barang yang kamu pilih akan dihapus dari keranjang.</string>
     <string name="label_dialog_title_delete_disabled_multiple_item">Hapus %1d barang yang nggak bisa dibeli?</string>
     <string name="label_dialog_message_remove_cart_multiple_disabled_item">Semua barang ini akan dihapus dari keranjangmu.</string>
-    <string name="label_select_all_product">Pilih Semua Barang</string>
+    <string name="label_select_all_product">Pilih Semua</string>
     <string name="label_price_total">Total Harga</string>
     <string name="cart">Keranjang</string>
     <string name="title_activity_cart">Keranjang</string>

@@ -35,6 +35,7 @@ import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_review_detail.*
 import kotlinx.android.synthetic.main.partial_review_connection_error.view.*
 import javax.inject.Inject
@@ -199,6 +200,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                             setReview(review, product.productName)
                             setResponse(response)
                             setReputation(reputation, response.shopName)
+                            setTicker(review.editable)
                         }
                     } else {
                         with(it.data) {
@@ -342,6 +344,22 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     }
                 }
             }
+        }
+    }
+
+    private fun setTicker(isEditable: Boolean) {
+        if(isEditable) {
+            reviewDetailTicker.apply {
+                tickerType = Ticker.TYPE_ANNOUNCEMENT
+                tickerTitle = getString(R.string.review_history_details_ticker_editable_title)
+                setTextDescription(getString(R.string.review_history_details_ticker_editable_subtitle))
+            }
+            return
+        }
+        reviewDetailTicker.apply {
+            tickerType = Ticker.TYPE_INFORMATION
+            tickerTitle = ""
+            setTextDescription(getString(R.string.review_history_details_ticker_uneditable_subtitle))
         }
     }
 
