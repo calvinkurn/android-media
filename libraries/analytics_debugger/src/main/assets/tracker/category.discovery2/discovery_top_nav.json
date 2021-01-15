@@ -1,6 +1,6 @@
 {
   "readme": "Discovery Top Nav Tracking",
-  "mode": "subset",
+  "mode": "exact",
   "query": [
     {
       "event": "clickNavigationDrawer",
@@ -11,25 +11,29 @@
       "userId": "{{.*}}",
       "businessUnit": "home & browse",
       "pageType": "{{.*}}",
-      "pagePath": "{{.*}}"
+      "pagePath": "{{.*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickTopNav",
       "eventCategory": "{{.*}}",
       "eventAction": "click search box",
-      "eventLabel": ""
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickDiscovery",
       "eventCategory": "{{.*}}",
       "eventAction": "click back button",
-      "eventLabel": ""
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "clickDiscovery",
       "eventCategory": "{{.*}}",
       "eventAction": "click social share",
-      "eventLabel": ""
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
     }
   ]
 }

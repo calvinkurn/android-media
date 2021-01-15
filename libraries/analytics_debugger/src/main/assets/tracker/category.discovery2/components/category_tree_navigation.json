@@ -1,6 +1,6 @@
 {
   "readme": "Discovery Category Tree impression and click Tracker",
-  "mode": "subset",
+  "mode": "exact",
   "query": [
     {
       "eventAction": "click arrow to category directory",
@@ -9,7 +9,8 @@
       "event": "clickDiscovery",
       "userId": "{{.*}}",
       "eventLabel": "{{.*}}",
-      "businessUnit": "home & browse"
+      "businessUnit": "home & browse",
+      "sessionIris": "{{.*}}"
     },
     {
       "eventAction": "click category inside category tree",
@@ -18,7 +19,8 @@
       "event": "clickDiscovery",
       "userId": "{{.*}}",
       "eventLabel": "{{.*}}",
-      "businessUnit": "home & browse"
+      "businessUnit": "home & browse",
+      "sessionIris": "{{.*}}"
     },
     {
       "eventAction": "click close category tree",
@@ -27,7 +29,8 @@
       "event": "clickDiscovery",
       "userId": "{{.*}}",
       "eventLabel": "{{.*}}",
-      "businessUnit": "home & browse"
+      "businessUnit": "home & browse",
+      "sessionIris": "{{.*}}"
     }
   ]
 }

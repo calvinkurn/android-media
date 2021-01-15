@@ -1,12 +1,13 @@
 {
   "readme": "Discovery Multi banner impression and click Tracker",
-  "mode": "subset",
+  "mode": "exact",
   "query": [
     {
       "eventCategory": "{{.*}}",
       "eventAction": "dynamic banner impression",
       "event": "view_item",
       "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}",
       "promotions": [
         {
           "item_id": "{{.*}}",
@@ -23,6 +24,7 @@
       "event": "select_content",
       "categoryId": "{{.*}}",
       "campaignCode": "{{.*}}",
+      "sessionIris": "{{.*}}",
       "promotions": [
         {
           "item_id": "{{.*}}",

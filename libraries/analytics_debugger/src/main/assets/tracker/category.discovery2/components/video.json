@@ -1,8 +1,9 @@
 {
   "readme": "Discovery Video Click Tracker",
-  "mode": "subset",
+  "mode": "exact",
   "query": [
     {
+      "sessionIris": "{{.*}}",
       "eventCategory": "{{.*}}",
       "eventAction": "{{.*}}",
       "event": "clickDiscovery",

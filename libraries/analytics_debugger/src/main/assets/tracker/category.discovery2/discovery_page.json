@@ -1,6 +1,6 @@
 {
   "readme": "Discovery Screen Page level Tracker",
-  "mode": "subset",
+  "mode": "exact",
   "query": [
     {
       "discoveryName" : "{{.*}}",
