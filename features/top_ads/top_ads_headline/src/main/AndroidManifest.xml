@@ -10,7 +10,7 @@
         <activity
             android:name=".view.activity.HeadlineStepperActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -48,7 +48,7 @@
             android:name=".view.activity.TopAdsProductListActivity"
             android:label="@string/topads_headline_product_list_label"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
 
         <activity

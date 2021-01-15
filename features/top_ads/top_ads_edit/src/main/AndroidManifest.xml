@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name="com.tokopedia.topads.edit.view.activity.EditFormAdActivity"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -23,13 +23,13 @@
         <activity
             android:name=".view.activity.SelectKeywordActivity"
             android:label="@string/topads_edit_add_keword"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".view.activity.SelectNegKeywordActivity"
             android:label="@string/topads_edit_add_negative_keyword"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -46,18 +46,18 @@
         <activity
             android:name=".view.activity.SelectProductActivity"
             android:label="@string/topads_edit_product_select_label"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".view.activity.KeywordSearchActivity"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
 
 
         <activity android:name=".view.activity.EditFormWithoutGroupActivity"
             android:label="@string/topads_common_title_product_ad_edit"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

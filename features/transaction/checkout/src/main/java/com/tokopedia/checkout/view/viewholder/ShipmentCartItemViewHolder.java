@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
@@ -47,7 +49,6 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private RelativeLayout mRlPurchaseProtection;
     private TextView mTvPPPLinkText;
     private TextView mTvPPPPrice;
-    private TextView mTvPPPMore;
     private CheckboxUnify mCbPPP;
     private LinearLayout mLlShippingWarningContainer;
     private View mSeparatorMultipleProductSameStore;
@@ -56,6 +57,8 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private Ticker productTicker;
     private Typography mTextVariant;
     private FlexboxLayout mLayoutProductInfo;
+    private IconUnify mIconTooltip;
+    private Typography mPricePerProduct;
 
     public ShipmentCartItemViewHolder(View itemView) {
         super(itemView);
@@ -68,8 +71,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
         mRlPurchaseProtection = itemView.findViewById(R.id.rlayout_purchase_protection);
         mTvPPPLinkText = itemView.findViewById(R.id.text_link_text);
-        mTvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
-        mTvPPPMore = itemView.findViewById(R.id.text_ppp_more);
+        mTvPPPPrice = itemView.findViewById(R.id.text_protection_desc);
         mCbPPP = itemView.findViewById(R.id.checkbox_ppp);
         mLlShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         mSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
@@ -78,6 +80,8 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         productTicker = itemView.findViewById(R.id.product_ticker);
         mTextVariant = itemView.findViewById(R.id.text_variant);
         mLayoutProductInfo = itemView.findViewById(R.id.layout_product_info);
+        mIconTooltip = itemView.findViewById(R.id.icon_tooltip);
+        mPricePerProduct = itemView.findViewById(R.id.text_item_per_product);
     }
 
     public void bindViewHolder(CartItemModel cartItem, ShipmentItemListener listener) {
@@ -155,11 +159,15 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private void renderPurchaseProtection(CartItemModel cartItem) {
         mRlPurchaseProtection.setVisibility(cartItem.isProtectionAvailable() ? View.VISIBLE : View.GONE);
         if (cartItem.isProtectionAvailable()) {
-            mTvPPPMore.setText(cartItem.getProtectionLinkText());
-            mTvPPPMore.setOnClickListener(view -> shipmentItemListener.navigateToWebView(cartItem.getProtectionLinkUrl()));
+            mIconTooltip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    shipmentItemListener.navigateToWebView(cartItem.getProtectionLinkUrl());
+                }
+            });
             mTvPPPLinkText.setText(cartItem.getProtectionTitle());
             mTvPPPPrice.setText(cartItem.getProtectionSubTitle());
-
+            mPricePerProduct.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getProtectionPricePerProduct(), false)));
 
             if (cartItem.isProtectionCheckboxDisabled()) {
                 mCbPPP.setEnabled(false);

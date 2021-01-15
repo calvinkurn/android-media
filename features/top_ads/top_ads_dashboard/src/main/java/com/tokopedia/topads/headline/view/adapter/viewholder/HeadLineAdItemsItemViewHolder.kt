@@ -45,6 +45,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
         item.let {
 
             view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
+            view.img_menu.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_topads_menu))
             if (selectedMode) {
                 view.img_menu.visibility = View.INVISIBLE
                 view.check_box.visibility = View.VISIBLE
