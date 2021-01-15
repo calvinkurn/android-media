@@ -54,6 +54,7 @@ class ExternalRegisterViewModel @Inject constructor(
             externalRegisterUseCase.executeOnBackground().run {
                 if (register.accessToken.isNotEmpty() &&
                         register.refreshToken.isNotEmpty()){
+                    userSession.clearToken()
                     mutableRegisterRequestResponse.value = Success(this)
                 } else if (register.errors.isNotEmpty() && register.errors[0].message.isNotEmpty()) {
                     mutableRegisterRequestResponse.value =

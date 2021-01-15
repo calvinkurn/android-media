@@ -76,6 +76,21 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
                 is Fail -> onFailedOvoRegister()
             }
         })
+        externalRegisterViewModel.getUserInfoResponse.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessGetUserInfo()
+                is Fail -> onFailedGetUserInfo(it.throwable)
+            }
+        })
+    }
+
+    private fun onFailedGetUserInfo(throwable: Throwable) {
+        goToErrorPage()
+    }
+
+    private fun onSuccessGetUserInfo() {
+        onSuccessRegister()
+        goToSuccessPage()
     }
 
     fun goToErrorPage(){
@@ -100,14 +115,14 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
             enableSkip2Fa = registerRequestDataResult.enableSkip2Fa
             goToAddPin2FA(registerRequestDataResult.enableSkip2Fa)
         } else {
-            goToSuccessPage()
+            externalRegisterViewModel.getUserInfo()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == RegisterInitialFragment.REQUEST_ADD_PIN){
             if(resultCode == Activity.RESULT_OK || enableSkip2Fa) {
-                goToSuccessPage()
+                externalRegisterViewModel.getUserInfo()
             }else {
                 goToErrorPage()
             }

@@ -1548,7 +1548,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         val REQUEST_ADD_NAME_REGISTER_PHONE = 107
         private val REQUEST_VERIFY_PHONE_TOKOCASH = 108
         private val REQUEST_CHOOSE_ACCOUNT = 109
-        private val REQUEST_CHANGE_NAME = 111
+        val REQUEST_CHANGE_NAME = 111
         private val REQUEST_LOGIN_GOOGLE = 112
         private val REQUEST_OTP_VALIDATE = 113
         private val REQUEST_PENDING_OTP_VALIDATE = 114
