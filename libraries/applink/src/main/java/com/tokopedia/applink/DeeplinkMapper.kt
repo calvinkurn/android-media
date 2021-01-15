@@ -68,7 +68,6 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShi
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import org.json.JSONObject
 
 /**
@@ -80,9 +79,11 @@ import org.json.JSONObject
  */
 object DeeplinkMapper {
 
+    const val MAINAPP_SWITCH_TO_WEBVIEW = "android_mainapp_switch_to_webview"
+    const val SELLERAPP_SWITCH_TO_WEBVIEW = "android_sellerapp_switch_to_webview"
+
     val TOKOPOINTS = "tokopoints"
     val LOCK = Any()
-
     /**
      * Get registered deeplink navigation in manifest
      * In conventional term, convert deeplink (http or tokopedia) to applink (tokopedia:// or tokopedia-android-internal://)
@@ -121,9 +122,9 @@ object DeeplinkMapper {
             var webviewSwitchConfig = ""
 
             if (GlobalConfig.isSellerApp()) {
-                webviewSwitchConfig = remoteConfig.getString(RemoteConfigKey.SELLERAPP_SWITCH_TO_WEBVIEW)
+                webviewSwitchConfig = remoteConfig.getString(SELLERAPP_SWITCH_TO_WEBVIEW)
             } else {
-                webviewSwitchConfig = remoteConfig.getString(RemoteConfigKey.MAINAPP_SWITCH_TO_WEBVIEW)
+                webviewSwitchConfig = remoteConfig.getString(MAINAPP_SWITCH_TO_WEBVIEW)
             }
 
             if (TextUtils.isEmpty(webviewSwitchConfig)) return mappedLink
