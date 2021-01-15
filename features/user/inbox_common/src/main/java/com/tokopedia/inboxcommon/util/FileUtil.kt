@@ -1,5 +1,6 @@
 package com.tokopedia.inboxcommon.util
 
+import com.tokopedia.common.network.util.CommonUtil
 import java.io.File
 import java.lang.reflect.Type
 
