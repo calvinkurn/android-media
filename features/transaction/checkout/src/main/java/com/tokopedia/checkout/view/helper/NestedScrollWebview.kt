@@ -103,7 +103,6 @@ class NestedScrollWebview : TkpdWebView, NestedScrollingChild {
                 if (dispatchNestedScroll(0, mScrollOffset[1], 0, deltaY, mScrollOffset)) {
                     event.offsetLocation(0f, mScrollOffset[1].toFloat())
                     mNestedOffsetY += mScrollOffset[1]
-                    //                    mLastY -= mScrollOffset[1];
                 }
             }
             MotionEvent.ACTION_DOWN -> {
