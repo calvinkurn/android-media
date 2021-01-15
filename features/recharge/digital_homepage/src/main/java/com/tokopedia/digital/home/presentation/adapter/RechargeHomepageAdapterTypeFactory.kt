@@ -110,6 +110,10 @@ class RechargeHomepageAdapterTypeFactory(
         return RechargeHomepageLoadingViewholder.LAYOUT
     }
 
+    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int {
+        return -1
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RechargeHomepageLoadingViewholder.LAYOUT -> RechargeHomepageLoadingViewholder(parent)
