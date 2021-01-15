@@ -5,8 +5,11 @@ import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.appaidl.AidlApi
+import com.tokopedia.appaidl.data.UserKey
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMRemoteConfigUtils
@@ -75,15 +78,34 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
         GraphqlClient.init(applicationContext)
         PushWorker.schedulePeriodicWorker()
 
-        aidlApiApp?.initAidlService()
+        aidlApiApp?.bindAidlService()
     }
 
     override fun onAidlReceive(tag: String, bundle: Bundle?) {
-
+        val receiverAppName = if (!GlobalConfig.isSellerApp()) "Seller" else "Customer"
+        bundle?.let {
+            if (it.containsKey(UserKey.IS_LOGIN) && it.getBoolean(UserKey.IS_LOGIN)) {
+                Toast.makeText(
+                        this.applicationContext,
+                        "Nama dari $receiverAppName adalah ${it.getString(UserKey.NAME)}",
+                        Toast.LENGTH_LONG
+                ).show()
+            } else {
+                Toast.makeText(
+                        this.applicationContext,
+                        "ngga ada yang login di $receiverAppName",
+                        Toast.LENGTH_LONG
+                ).show()
+            }
+        }
     }
 
     override fun onAidlError() {
-
+        Toast.makeText(
+                this.applicationContext,
+                "onAidlError",
+                Toast.LENGTH_LONG
+        ).show()
     }
 
     /**
