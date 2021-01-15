@@ -77,8 +77,8 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupInjector()
         setContentView(R.layout.activity_inbox)
+        setupInjector()
         setupLastPreviousState()
         trackOpenInbox()
         setupView()
