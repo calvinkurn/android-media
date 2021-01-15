@@ -12,6 +12,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +32,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.pms_hwp_info.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -38,6 +40,9 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     private lateinit var appLinkPaymentInfo: AppLinkPaymentInfo
     private val HIGHLIGHT_DIGIT_COUNT = 3
+
+    private val TIMBER_TAG = "P2#HOW_TO_PAY#"
+    private val TIMBER_CHAR_MAX_LIMIT = 1000;
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -73,6 +78,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
             observeLiveData()
+            loaderViewHowToPay.visible()
             howToPayViewModel.getAppLinkPaymentInfoData(it)
         }
     }
@@ -81,16 +87,22 @@ class HowToPayFragment : BaseDaggerFragment() {
         howToPayViewModel.appLinkPaymentLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onAppLinkPaymentInfoLoaded(it.data)
-                is Fail -> activity?.finish()
+                is Fail -> onAppLinkParsingError()
             }
         })
 
         howToPayViewModel.howToPayLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onInstructionLoaded(it.data)
-                is Fail -> onInstructionLoadingFailed(it.throwable)
+                is Fail -> onInstructionLoadingFailed()
             }
         })
+    }
+
+    private fun onAppLinkParsingError(){
+        loaderViewHowToPay.gone()
+        activity?.finish()
+        Timber.w("${TIMBER_TAG}validation;reason='bundle_app_link_parsing_error';data='${arguments.toString().take(TIMBER_CHAR_MAX_LIMIT)}'")
     }
 
     private fun onAppLinkPaymentInfoLoaded(appLinkPaymentInfo: AppLinkPaymentInfo) {
@@ -98,11 +110,16 @@ class HowToPayFragment : BaseDaggerFragment() {
         howToPayViewModel.getHowToPayInstruction(appLinkPaymentInfo)
     }
 
-    private fun onInstructionLoadingFailed(throwable: Throwable) {
-
+    private fun onInstructionLoadingFailed() {
+        loaderViewHowToPay.gone()
+        globalErrorHowToPay.visible()
+        globalErrorHowToPay.errorAction.setOnClickListener { activity?.finish() }
+        Timber.w("${TIMBER_TAG}validation;reason='page_not_found';data='${appLinkPaymentInfo.toString().take(TIMBER_CHAR_MAX_LIMIT)}'")
     }
 
     private fun onInstructionLoaded(data: HowToPayInstruction) {
+        loaderViewHowToPay.gone()
+        scrollViewHowToPay.visible()
         when (data) {
             is MultiChannelGatewayResult -> {
                 when (data.type) {
@@ -196,6 +213,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         tvTotalPaymentAmount.text = amountStr
 
         appLinkPaymentInfo.gateway_logo?.let {
+            ivGateWayImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
             ivGateWayImage.setImageUrl(it, ivGateWayImage.heightRatio)
         }
 
