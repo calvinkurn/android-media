@@ -42,7 +42,7 @@ class HomeDataMapper(
         val addLoadingMore = homeData.token.isNotEmpty()
         val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
                 homeData, isCache, trackingQueue, context, homeDynamicChannelDataMapper)
-                .addUserWalletVisitable()
+                .addHomeHeaderOvo()
                 .addAtfComponentVisitable()
 
         if (showGeolocation) factory.addGeolocationVisitable()

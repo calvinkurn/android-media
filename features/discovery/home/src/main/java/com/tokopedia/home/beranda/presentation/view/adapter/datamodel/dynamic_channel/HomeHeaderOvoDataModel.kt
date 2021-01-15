@@ -13,8 +13,7 @@ class HomeHeaderOvoDataModel : ImpressHolder(), HomeVisitable {
     private var trackingData: Map<String, Any>? = null
     private var trackingDataForCombination: List<Any>? = null
     private var isCombined: Boolean = false
-    var isLogin: Boolean = false
-    var headerDataModel: HeaderDataModel = HeaderDataModel()
+    var headerDataModel: HeaderDataModel? = HeaderDataModel()
 
     override fun equalsWith(b: Any?): Boolean {
         return if (b is HomepageBannerDataModel) {

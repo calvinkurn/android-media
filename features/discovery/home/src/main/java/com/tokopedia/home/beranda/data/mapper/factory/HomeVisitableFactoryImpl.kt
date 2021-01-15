@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.EmptyBannerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
@@ -87,9 +88,12 @@ class HomeVisitableFactoryImpl(
         return this
     }
 
-    override fun addEmptyBanner(): HomeVisitableFactory {
-        val emptyBanner = EmptyBannerDataModel()
-        visitableList.add(emptyBanner)
+    override fun addHomeHeaderOvo(): HomeVisitableFactory {
+        val homeHeader = HomeHeaderOvoDataModel()
+        val headerViewModel = HeaderDataModel()
+        headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
+        homeHeader.headerDataModel = headerViewModel
+        visitableList.add(homeHeader)
         return this
     }
 

@@ -33,7 +33,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.OvoWidgetTracking
 import com.tokopedia.home.beranda.data.model.SectionContentItem
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
-import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_OVO_VIEWHOLDER
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_OVO_CUSTOMVIEW
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.util.ViewUtils
@@ -81,7 +81,7 @@ class OvoWidgetView: FrameLayout {
 
     fun bind(element: HeaderDataModel, listener: HomeCategoryListener?) {
         this.listener = listener
-        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_OVO_VIEWHOLDER)
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_OVO_CUSTOMVIEW)
         if (element.isUserLogin) renderLogin(element)
         else {
             this.itemView = LayoutInflater.from(context).inflate(R.layout.layout_item_widget_ovo_tokopoint_nonlogin, this)

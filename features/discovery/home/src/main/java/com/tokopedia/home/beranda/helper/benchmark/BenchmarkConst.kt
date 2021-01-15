@@ -6,7 +6,9 @@ package com.tokopedia.home.beranda.helper.benchmark
 const val TRACE_ON_BIND_BANNER_VIEWHOLDER = "onBind.BannerViewHolder"
 const val TRACE_ON_BIND_DYNAMIC_ICON_VIEWHOLDER = "onBind.DynamicIconSectionViewHolder"
 const val TRACE_ON_BIND_OVO_VIEWHOLDER = "onBind.OvoViewHolder"
+const val TRACE_ON_BIND_OVO_CUSTOMVIEW = "onBind.OvoCustomView"
 const val TRACE_ON_BIND_DYNAMIC_CHANNEL = "onBind.dynamicChannel_"
+const val TRACE_ON_BIND_HEADER_OVO = "onBind.HomeHeaderOvoViewHolder"
 
 //HomeCachedDataSource class
 const val TRACE_GET_CACHED_DATA_SOURCE = "HomeCachedDataSource.getCachedHomeData"

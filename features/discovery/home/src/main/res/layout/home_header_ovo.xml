@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <FrameLayout
+        android:id="@+id/view_background"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/tkpd_main_green"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
-    <View
+    <FrameLayout
         android:id="@+id/view_empty"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:clickable="true"
-        android:focusable="true"/>
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 
     <com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoWidgetView
         android:id="@+id/view_ovo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/view_empty"/>
+        android:layout_below="@+id/view_empty"
+        app:layout_constraintTop_toBottomOf="@+id/view_empty"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

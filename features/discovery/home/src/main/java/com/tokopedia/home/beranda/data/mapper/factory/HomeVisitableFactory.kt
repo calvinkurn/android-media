@@ -9,7 +9,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 interface HomeVisitableFactory {
     fun buildVisitableList(homeData: HomeData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context, dynamicChannelDataMapper: HomeDynamicChannelDataMapper): HomeVisitableFactory
     fun addBannerVisitable(): HomeVisitableFactory
-    fun addEmptyBanner(): HomeVisitableFactory
+    fun addHomeHeaderOvo(): HomeVisitableFactory
     fun addTickerVisitable(): HomeVisitableFactory
     fun addUserWalletVisitable(): HomeVisitableFactory
     fun addGeolocationVisitable(): HomeVisitableFactory
