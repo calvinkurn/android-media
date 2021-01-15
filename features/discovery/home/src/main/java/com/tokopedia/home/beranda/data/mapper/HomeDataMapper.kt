@@ -47,10 +47,8 @@ class HomeDataMapper(
 
         if (showGeolocation) factory.addGeolocationVisitable()
 
-        if (homeData.dynamicHomeChannel.channels.isNotEmpty()) {
-            factory.addDynamicChannelVisitable(firstPage)
-                    .build()
-        }
+        factory.addDynamicChannelVisitable(firstPage)
+                .build()
 
         var processingAtf = true
         if (homeData.dynamicHomeChannel.channels.isNotEmpty()) {
