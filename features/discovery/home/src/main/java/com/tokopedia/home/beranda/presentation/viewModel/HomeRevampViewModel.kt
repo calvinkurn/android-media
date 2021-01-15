@@ -432,11 +432,19 @@ open class HomeRevampViewModel @Inject constructor(
                                       isPendingTokocashChecked: Boolean? = null,
                                       isWalletDataError: Boolean? = null,
                                       isTokoPointDataError: Boolean? = null) {
-        if(headerDataModel == null){
-            headerDataModel = (homeVisitableListData.find { visitable-> visitable is HeaderDataModel } as HeaderDataModel?)
-        }
+        var homeHeaderOvoDataModel: HomeHeaderOvoDataModel? = HomeHeaderOvoDataModel()
 
-        val currentPosition = homeVisitableListData.withIndex()?.find { (_, model) ->  model is HeaderDataModel }?.index ?: -1
+        val currentPosition = -1
+        if(headerDataModel == null){
+            homeHeaderOvoDataModel = (homeVisitableListData.find { visitable-> visitable is HomeHeaderOvoDataModel } as HomeHeaderOvoDataModel?)
+            if (homeHeaderOvoDataModel !=null) {
+                homeVisitableListData.withIndex().find { (_, model) ->  model is HomeHeaderOvoDataModel }?.index ?: -1
+                headerDataModel = homeHeaderOvoDataModel.headerDataModel
+            } else {
+
+                headerDataModel = HeaderDataModel()
+            }
+        }
 
         headerDataModel?.let {
             tokopointsDrawer?.let {
@@ -461,7 +469,8 @@ open class HomeRevampViewModel @Inject constructor(
                 headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
             }
             headerDataModel = headerDataModel?.copy(isUserLogin = userSession.get().isLoggedIn)
-            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(headerDataModel!!, currentPosition, this))
+            homeHeaderOvoDataModel?.headerDataModel = headerDataModel
+            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
         }
 
     }
