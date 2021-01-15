@@ -175,6 +175,11 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     }
 
     @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
+
+    }
+
+    @Override
     public Intent getApplinkIntent(Context context, String applink) {
         return null;
     }
