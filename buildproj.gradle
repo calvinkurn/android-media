@@ -77,8 +77,6 @@ subprojects {
                 substitute module('androidx.lifecycle:lifecycle-runtime') with module("androidx.lifecycle:lifecycle-runtime:${lifeCycleVersion}")
                 substitute module('androidx.lifecycle:lifecycle-viewmodel') with module("androidx.lifecycle:lifecycle-viewmodel:${lifeCycleVersion}")
                 substitute module('androidx.lifecycle:lifecycle-livedata-core') with module("androidx.lifecycle:lifecycle-livedata-core:${lifeCycleVersion}")
-                substitute module('androidx.lifecycle:lifecycle-livedata') with module("androidx.lifecycle:lifecycle-livedata:2.1.0")
-                substitute module('androidx.lifecycle:lifecycle-service') with module("androidx.lifecycle:lifecycle-service:2.1.0")
                 substitute module('com.google.android.material:material') with module("com.google.android.material:material:${materialVersion}")
                 substitute module('androidx.constraintlayout:constraintlayout') with module("androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}")
                 substitute module('org.apache.commons:commons-lang3') with module('org.apache.commons:commons-lang3:3.5')
@@ -89,9 +87,6 @@ subprojects {
                 substitute module('com.facebook.soloader:soloader') with module("com.facebook.soloader:soloader:0.8.0")
                 substitute module('org.jetbrains.kotlin:kotlin-reflect') with module("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
                 substitute module('androidx.sqlite:sqlite-framework') with module("androidx.sqlite:sqlite-framework:${sqliteFrameworkVersion}")
-                substitute module('androidx.sqlite:sqlite') with module("androidx.sqlite:sqlite:${sqliteFrameworkVersion}")
-                substitute module('androidx.lifecycle:lifecycle-service') with module("androidx.lifecycle:lifecycle-service:${sqliteFrameworkVersion}")
-                substitute module('androidx.activity:activity') with module("androidx.activity:activity:1.0.0")
                 substitute module('com.google.android.gms:play-services-ads-identifier') with module("com.google.android.gms:play-services-ads-identifier:${playServiceAds}")
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.tkpdInternalLibDependencies.chuckNoOp)
