@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.create.view.viewholder.vouchertype.item
 
 import android.content.Context
+import android.os.Build
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -63,8 +64,8 @@ class RecommendationTickerViewHolder(itemView: View,
         titleView?.setText(R.string.mvc_voucher_recommendation_cta_title)
         iconView?.setImageResource(R.drawable.ic_tkpd_thumbs_up)
         val text = getString(R.string.mvc_voucher_recommendation_cta)
-        val ss =  SpannableString(text)
-        val clickableSpan = object: ClickableSpan() {
+        val ss = SpannableString(text)
+        val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 listener?.run {
                     this.onClickableSpanClicked()
@@ -74,11 +75,11 @@ class RecommendationTickerViewHolder(itemView: View,
             override fun updateDrawState(ds: TextPaint) {
                 context?.run {
                     ds.color = ContextCompat.getColor(this, R.color.unify_G500)
-                    ds.underlineColor = 0
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ds.underlineColor = 0
                 }
             }
         }
-        ss.setSpan(clickableSpan, (text.length - CTA_LENGTH), text.length , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        ss.setSpan(clickableSpan, (text.length - CTA_LENGTH), text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         descView?.text = ss
         descView?.movementMethod = LinkMovementMethod.getInstance()
     }
