@@ -30,15 +30,4 @@
         android:layout_below="@id/bannerFrame"
         android:clipToPadding="false" />
 
-    <!-- will set height to 0dp as the recycler view is temporarily disabled -->
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/recycler_view"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        android:paddingBottom="?android:attr/actionBarSize"-->
-    <!--        android:layout_below="@id/bannerFrame"-->
-    <!--        android:clipToPadding="false"-->
-    <!--        tools:itemCount="1"-->
-    <!--        tools:listitem="@layout/mvc_type_budget_promotion_widget"/>-->
-
 </RelativeLayout>

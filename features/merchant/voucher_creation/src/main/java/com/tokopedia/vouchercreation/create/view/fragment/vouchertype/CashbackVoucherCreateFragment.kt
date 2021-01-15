@@ -471,12 +471,9 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
             observe(viewModel.idrVoucherRecommendationResult) { result ->
                 when (result) {
                     is Success -> {
-
                         val recommendationData = result.data
                         viewModel.updateVoucherRecommendation(CashbackType.Rupiah, recommendationData)
-
                         val isActiveCashBackType = activeCashbackType is CashbackType.Rupiah
-
                         // only applied the recommendation data for :
                         // 1. new voucher creation process
                         // 2. inactive cash back type
@@ -500,12 +497,9 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
             observe(viewModel.percentageVoucherRecommendationResult) { result ->
                 when (result) {
                     is Success -> {
-
                         val recommendationData = result.data
                         viewModel.updateVoucherRecommendation(CashbackType.Percentage, recommendationData)
-
                         val isActiveCashBackType = activeCashbackType is CashbackType.Percentage
-
                         // only applied the recommendation data for :
                         // 1. new voucher creation process
                         // 2. inactive cash back type
