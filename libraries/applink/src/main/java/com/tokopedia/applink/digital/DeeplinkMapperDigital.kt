@@ -47,6 +47,10 @@ object DeeplinkMapperDigital {
                 if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
                 else ApplinkConsInternalDigital.SUBHOMEPAGE
             }
+            deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME)
+                    && !uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty() -> {
+                ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
+            }
             else -> deeplink
         }
     }
