@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
+import com.tokopedia.shop.open.common.EspressoIdlingResource
 import com.tokopedia.shop.open.common.ImageAssets.IMG_SHOP_OPEN_SPLASH_SCREEN
 import com.tokopedia.shop.open.common.PageNameConstant
 import com.tokopedia.shop.open.common.ScreenNameTracker
@@ -66,6 +67,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
                 fragmentNavigationInterface
                     ?.navigateToNextPage(PageNameConstant.QUISIONER_PAGE, SECOND_FRAGMENT_TAG)
             }
+            EspressoIdlingResource.decrement()
         }, 3000)
     }
 
