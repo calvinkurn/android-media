@@ -73,7 +73,7 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
      */
     fun init(application: Application) {
         this.applicationContext = application.applicationContext
-        aidlApiApp = AidlApi(application, this)
+        aidlApiApp = AidlApi(this.applicationContext, this)
         CMInAppManager.getInstance().init(application)
         GraphqlClient.init(applicationContext)
         PushWorker.schedulePeriodicWorker()
