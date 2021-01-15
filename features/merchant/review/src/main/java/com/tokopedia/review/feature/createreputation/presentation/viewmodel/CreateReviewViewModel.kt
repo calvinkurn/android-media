@@ -14,6 +14,7 @@ import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductIn
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevEditReviewUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
+import com.tokopedia.review.feature.createreputation.presentation.mapper.CreateReviewImageMapper
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -95,14 +96,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     }
 
     fun getAfterEditImageList(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, edited: ArrayList<Boolean>): MutableList<BaseImageReviewUiModel> {
-        val pictureList = originalImages.filter {
-            originalImageUrl.contains(it)
-        }.filterIndexed { index, _ -> !edited[index] }
-
-        val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
-            if (edited[index]) urlOrPath else pictureList.find { it == originalImageUrl[index] }
-                    ?: urlOrPath
-        }.toMutableList()
+        val pictureList = CreateReviewImageMapper.getEditedImages(originalImageUrl, originalImages, edited)
+        val imageUrlOrPathList = CreateReviewImageMapper.getImageUrlList(imagePickerResult, edited, pictureList, originalImageUrl)
 
         originalImages = originalImageUrl
 
@@ -142,16 +137,9 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     fun removeImage(image: BaseImageReviewUiModel, isEditMode: Boolean = false): MutableList<BaseImageReviewUiModel> {
         imageData.remove(image)
         if (isEditMode) {
-            val imageToRemove = image as? ImageReviewUiModel
-            imageToRemove?.let {
-                if (originalImages.contains(it.fullImageUrl)) {
-                    originalImages.remove(it.fullImageUrl)
-                }
-            }
+            originalImages = CreateReviewImageMapper.removeImageFromList(image, originalImages)
         }
-        if (imageData.size < 5 && !imageData.contains(DefaultImageReviewUiModel())) {
-            imageData.add(DefaultImageReviewUiModel())
-        }
+        imageData = CreateReviewImageMapper.addDefaultModelIfLessThanFive(imageData)
         return imageData
     }
 
@@ -166,12 +154,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     fun getSelectedImagesUrl(): ArrayList<String> {
         val result = arrayListOf<String>()
         imageData.forEach {
-            val imageUrl = if ((it as? ImageReviewUiModel)?.fullImageUrl?.isNotBlank() == true) {
-                (it as? ImageReviewUiModel)?.fullImageUrl
-            } else {
-                (it as? ImageReviewUiModel)?.imageUrl
-            }
-            if (imageUrl?.isNotEmpty() == true) {
+            val imageUrl = CreateReviewImageMapper.getImageUrl(it)
+            if (imageUrl.isNotEmpty()) {
                 result.add(imageUrl)
             }
         }
