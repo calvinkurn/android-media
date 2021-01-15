@@ -38,7 +38,7 @@ class HomeDataMapper(
     fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, showGeolocation: Boolean = true): HomeDataModel{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL)
         if (homeData == null) return HomeDataModel(isCache = isCache)
-        val addLoadingMore = homeData.token.isNotEmpty()
+        val firstPage = homeData.token.isNotEmpty()
         val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
                 homeData, isCache, trackingQueue, context, homeDynamicChannelDataMapper)
                 .addUserWalletVisitable()
@@ -47,11 +47,16 @@ class HomeDataMapper(
         if (showGeolocation) factory.addGeolocationVisitable()
 
         if (homeData.dynamicHomeChannel.channels.isNotEmpty()) {
-            factory.addDynamicChannelVisitable(addLoadingMore)
+            factory.addDynamicChannelVisitable(firstPage)
                     .build()
         }
 
+        var processingAtf = true
+        if (homeData.dynamicHomeChannel.channels.isNotEmpty()) {
+            processingAtf = false
+        }
+
         BenchmarkHelper.endSystraceSection()
-        return HomeDataModel(homeData.homeFlag, factory.build(), isCache, addLoadingMore)
+        return HomeDataModel(homeData.homeFlag, factory.build(), isCache, firstPage, processingAtf)
     }
 }

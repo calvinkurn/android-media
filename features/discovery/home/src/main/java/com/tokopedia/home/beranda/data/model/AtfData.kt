@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.data.model
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home.constant.AtfKey
 
 data class AtfData(
         @SerializedName("id")
@@ -22,7 +23,10 @@ data class AtfData(
         val isOptional: Boolean = false,
         @SerializedName("content")
         @Expose
-        var content: String? = ""
+        var content: String? = "",
+        @SerializedName("status")
+        @Expose
+        var status: Int = AtfKey.STATUS_LOADING
 ) {
         inline fun <reified T> getAtfContent(): T? {
                 val gson = Gson()

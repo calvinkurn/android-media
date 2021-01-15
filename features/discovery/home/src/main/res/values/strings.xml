@@ -113,4 +113,7 @@
 
     <string name="onboarding_coachmark_title">Halo, ini Menu Utama yang baru!</string>
     <string name="onboarding_coachmark_description">Lihat Semua Kategori, Daftar Transaksi, Wishlist, tulis Ulasan Produk, kini semuanya bisa dari sini!</string>
+
+    <string name="error_state_atf_localload_title">Bagian ini gagal ditampilkan</string>
+    <string name="error_state_atf_localload_description">Klik ikon sebelah untuk coba lagi</string>
 </resources>

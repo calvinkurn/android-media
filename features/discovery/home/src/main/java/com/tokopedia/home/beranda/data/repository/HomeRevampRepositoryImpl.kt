@@ -1,16 +1,19 @@
 package com.tokopedia.home.beranda.data.repository
 
 import android.content.Context
+import com.google.android.exoplayer2.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.*
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
+import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
@@ -18,11 +21,14 @@ import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import dagger.Lazy
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.selects.select
 import retrofit2.Response
 import rx.Observable
 import java.net.SocketTimeoutException
@@ -52,6 +58,8 @@ class HomeRevampRepositoryImpl @Inject constructor(
     var isCacheExist = false
     val gson = Gson()
 
+    val jobList = mutableListOf<Deferred<Unit?>>()
+
     override fun getHomeData(): Flow<HomeData?> = homeCachedDataSource.getCachedHomeData().map {
         isCacheExist = it != null
         it
@@ -60,14 +68,19 @@ class HomeRevampRepositoryImpl @Inject constructor(
     /**
      * Home repository flow:
      *
-     * 1.   Provide initial HomeData
-     * 2.   Get above the fold skeleton
-     * 3.   Get above the fold content
-     * 4.   Submit current data to database, to trigger HomeViewModel flow
-     * 5.   Get dynamic channel data
-     * 5.1. If channel cache is empty, proceed to channel pagination
-     * 5.2. If channel cache is not empty, proceed to full channel request
-     * 6.   Submit current data to database, to trigger HomeViewModel flow
+     * 1. Provide initial HomeData
+     * 2. Get above the fold skeleton
+     * 3. Save immediately to produce shimmering for ATF data
+     * 4. Get above the fold content
+     * 5. Submit current data to database, to trigger HomeViewModel flow
+     *      if there is no cache, then submit immediately
+     *      if cache exist, don't submit to database because it will trigger jumpy experience
+     * 6. Get dynamic channel data
+     *    6.1. If channel cache is empty, proceed to channel pagination
+     *    6.2. If channel cache is not empty, proceed to full channel request
+     *      if there is token and cache is not exist
+     *      if cache is exist
+     * 7. Submit current data to database, to trigger HomeViewModel flow
      */
     override fun updateHomeData(): Flow<Result<Any>> = flow{
         coroutineScope {
@@ -89,49 +102,112 @@ class HomeRevampRepositoryImpl @Inject constructor(
             /**
              * 2. Get above the fold skeleton
              */
-            val homeAtfResponse = async { homeRemoteDataSource.getAtfDataUseCase() }.await()
-            homeData.atfData = homeAtfResponse
+            try {
+                val homeAtfResponse = async { homeRemoteDataSource.getAtfDataUseCase() }.await()
+                homeData.atfData = homeAtfResponse
+            } catch (e: Exception) {
+                homeData.atfData = HomeAtfData(listOf())
+            }
 
             /**
-             * 3. Get above the fold content
+             * 3. Save immediately to produce shimmering for ATF data
              */
-            homeData.atfData?.dataList?.map { atfData ->
-                when(atfData.component) {
-                    TYPE_TICKER -> {
-                        val ticker = homeRemoteDataSource.getHomeTickerUseCase()
-                        ticker?.let { atfData.content = gson.toJson(ticker.ticker) }
-                    }
-                    TYPE_CHANNEL -> {
-                        val dynamicChannel = homeRemoteDataSource.getDynamicChannelData(params = atfData.param)
-                        dynamicChannel.let {
-                            val channelFromResponse = it.dynamicHomeChannel
-                            /**
-                             * 3.1 Combine the channel
-                             */
-                            atfData.content = gson.toJson(channelFromResponse)
+            cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                homeCachedDataSource.saveToDatabase(homeData)
+            })
+
+            /**
+             * 4. Get above the fold content
+             */
+            if (homeData?.atfData?.dataList?.isNotEmpty() == true) {
+                homeData.atfData?.dataList?.map { atfData ->
+                    when(atfData.component) {
+                        TYPE_TICKER -> {
+                            val job = async {
+                                try {
+                                    val ticker = homeRemoteDataSource.getHomeTickerUseCase()
+                                    ticker?.let {
+                                        atfData.content = gson.toJson(ticker.ticker)
+                                        atfData.status = AtfKey.STATUS_SUCCESS
+                                        cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                            homeCachedDataSource.saveToDatabase(homeData)
+                                        })
+                                    }
+                                } catch (e: Exception) {
+                                    atfData.status = AtfKey.STATUS_ERROR
+                                    cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                        homeCachedDataSource.saveToDatabase(homeData)
+                                    })
+                                }
+                            }
+                            jobList.add(job)
+                        }
+                        TYPE_CHANNEL -> {
+                            val job = async {
+                                try {
+                                    val dynamicChannel = homeRemoteDataSource.getDynamicChannelData(params = atfData.param)
+                                    dynamicChannel.let {
+                                        val channelFromResponse = it.dynamicHomeChannel
+                                        atfData.content = gson.toJson(channelFromResponse)
+                                        atfData.status = AtfKey.STATUS_SUCCESS
+                                        cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                            homeCachedDataSource.saveToDatabase(homeData)
+                                        })
+                                    }
+                                } catch (e: Exception) {
+                                    atfData.status = AtfKey.STATUS_ERROR
+                                    cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                        homeCachedDataSource.saveToDatabase(homeData)
+                                    })
+                                }
+                            }
+                            jobList.add(job)
+                        }
+                        TYPE_ICON -> {
+                            val job = async {
+                                try {
+                                    val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase()
+                                    dynamicIcon?.let {
+                                        atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon)
+                                        atfData.status = AtfKey.STATUS_SUCCESS
+                                        cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                            homeCachedDataSource.saveToDatabase(homeData)
+                                        })
+                                    }
+                                } catch (e: Exception) {
+                                    atfData.status = AtfKey.STATUS_ERROR
+                                    cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                        homeCachedDataSource.saveToDatabase(homeData)
+                                    })
+                                }
+                            }
+                            jobList.add(job)
+                        }
+                        else -> {
+
                         }
                     }
-                    TYPE_ICON -> {
-                        val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase()
-                        dynamicIcon?.let { atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon) }
-                    }
-                    else -> {
-
+                }
+                /**
+                 * this is to filter the first deffered finished
+                 *
+                 * 5. Submit current data to database, to trigger HomeViewModel flow
+                 * if there is no cache, then submit immediately
+                 * if cache exist, don't submit to database because it will trigger jumpy experience
+                 */
+                select<Unit?> {
+                    jobList.forEach {
+                        it.onAwait {
+                            cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                homeCachedDataSource.saveToDatabase(homeData)
+                            })
+                        }
                     }
                 }
             }
 
             /**
-             * 4. Submit current data to database, to trigger HomeViewModel flow
-             * if there is no cache, then submit immediately
-             * if cache exist, don't submit to database because it will trigger jumpy experience
-             */
-            if (!isCacheExist) {
-                homeCachedDataSource.saveToDatabase(homeData)
-            }
-
-            /**
-             * 5.   Get dynamic channel data
+             * 6. Get dynamic channel data
              */
             val dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION) }
             val dynamicChannelResponseValue = try {
@@ -145,7 +221,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
             }
 
             /**
-             * 5.1. If channel cache is empty, proceed to channel pagination
+             * 6.1. If channel cache is empty, proceed to channel pagination
              */
             if (!isCacheExistForProcess && dynamicChannelResponseValue != null) {
                 val extractPair = extractToken(dynamicChannelResponseValue)
@@ -167,8 +243,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
             }
 
             /**
-             * 5.2. If channel cache is not empty, proceed to full channel request
-             * Proceed to full request dynamic channel
+             * 6.2. If channel cache is not empty, proceed to full channel request
              * - if there is token and cache is not exist
              * - if cache is exist
              *
@@ -183,7 +258,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                     homeData.let {
                         emit(Result.success(null))
                         /**
-                         * 6. Submit current data to database, to trigger HomeViewModel flow
+                         * 7. Submit current data to database, to trigger HomeViewModel flow
                          */
                         homeCachedDataSource.saveToDatabase(it)
                     }
@@ -237,5 +312,15 @@ class HomeRevampRepositoryImpl @Inject constructor(
         val combinationChannel = currentChannel.channels.toMutableList()
         combinationChannel.addAll(newChannel.channels)
         return DynamicHomeChannel(combinationChannel)
+    }
+
+    private suspend fun cacheCondition(
+            isCache: Boolean,
+            isCacheExistAction: suspend () -> Unit = {}, isCacheEmptyAction: suspend () -> Unit = {}) {
+        if (isCache) {
+            isCacheExistAction.invoke()
+        } else {
+            isCacheEmptyAction.invoke()
+        }
     }
 }

@@ -252,10 +252,20 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetHomeTickerUseCase(graphqlRepository: GraphqlRepository): GetHomeTickerUseCase {
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeTickerData>(graphqlRepository)
-        useCase.setGraphqlQuery(homeTickerQuery)
-        return GetHomeTickerUseCase(useCase)
+    fun provideHomeTickerRepository(graphqlRepository: GraphqlRepository): GetHomeTickerRepository {
+        return GetHomeTickerRepository(graphqlRepository)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideHomeIconRepository(graphqlRepository: GraphqlRepository): GetHomeIconRepository {
+        return GetHomeIconRepository(graphqlRepository)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideHomeDynamicChannelRepository(graphqlRepository: GraphqlRepository): GetHomeDynamicChannelsRepository {
+        return GetHomeDynamicChannelsRepository(graphqlRepository)
     }
 
     @HomeScope
