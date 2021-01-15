@@ -152,7 +152,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
     }
 
     private void logWebViewApplink(Uri uri) {
-        if(uri.toString().contains(ApplinkConst.WEBVIEW)) {
+        if(uri.toString().contains(ApplinkConst.SellerApp.WEBVIEW)) {
             Uri urlToLoad = getUrlToLoad(uri);
             if(urlToLoad != null) {
                 String domain = urlToLoad.getHost();
