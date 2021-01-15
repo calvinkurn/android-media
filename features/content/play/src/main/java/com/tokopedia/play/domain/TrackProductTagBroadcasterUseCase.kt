@@ -17,7 +17,8 @@ class TrackProductTagBroadcasterUseCase @Inject constructor(private val graphqlR
 
     var params: Map<String, Any> = emptyMap()
 
-    private val query = """mutation trackProductTagBroadcaster(${'$'}channelId: String!, ${'$'}productIds: [String]){
+    private val query = """
+        mutation trackProductTagBroadcaster(${'$'}channelId: String!, ${'$'}productIds: [String]){
           broadcasterReportTrackViewer(
             channelID: ${'$'}channelId,
             productIDs: ${'$'}productIds) {
