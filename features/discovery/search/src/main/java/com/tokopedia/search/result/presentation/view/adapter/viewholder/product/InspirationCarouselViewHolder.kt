@@ -72,9 +72,23 @@ class InspirationCarouselViewHolder(
             }
         }
     }
+
+    private fun RecyclerView.initRecyclerViewForGrid(option: InspirationCarouselViewModel.Option, productList: List<ProductCardModel>) {
+        launch {
+            try {
+                layoutManager = createLayoutManager()
+                adapter = createAdapter(createGridProductList(option))
+                setHeightBasedOnProductCardMaxHeight(productList)
+            }
+            catch (throwable: Throwable) {
+                throwable.printStackTrace()
+            }
+        }
+    }
+
     private fun createGridProductList(option: InspirationCarouselViewModel.Option): List<Visitable<*>> {
         val list = mutableListOf<Visitable<*>>()
-        list.add(createBannerOption(option))
+        if(option.shouldAddBannerCard()) list.add(createBannerOption(option))
         list.addAll(option.product)
         return list
     }
@@ -90,19 +104,6 @@ class InspirationCarouselViewHolder(
                 position = option.position,
                 carouselTitle = option.carouselTitle
         )
-    }
-
-    private fun RecyclerView.initRecyclerViewForGrid(option: InspirationCarouselViewModel.Option, productList: List<ProductCardModel>) {
-        launch {
-            try {
-                layoutManager = createLayoutManager()
-                adapter = createAdapter(createGridProductList(option))
-                setHeightBasedOnProductCardMaxHeight(productList)
-            }
-            catch (throwable: Throwable) {
-                throwable.printStackTrace()
-            }
-        }
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
@@ -165,17 +166,13 @@ class InspirationCarouselViewHolder(
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
         return InspirationCarouselItemDecoration(
                 itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
-                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12) ?: 0,
                 itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
-                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0
         )
     }
 
     private class InspirationCarouselItemDecoration(
             private val left: Int,
-            private val top: Int,
             private val right: Int,
-            private val bottom: Int
     ): RecyclerView.ItemDecoration() {
 
         private var cardViewHorizontalOffset = 0

@@ -10,13 +10,13 @@
     android:paddingEnd="@dimen/layout_lvl2"
     android:paddingRight="@dimen/layout_lvl2"
     android:paddingBottom="@dimen/product_manage_campaign_stock_item_padding"
-    android:background="@color/transparent">
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_campaign_stock_variant_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N400"
+        android:textColor="@color/Unify_N400"
         app:typographyType="body_3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +26,7 @@
         android:id="@+id/tv_campaign_stock_variant_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N400"
+        android:textColor="@color/Unify_N400"
         app:typographyType="body_3"
         app:layout_constraintTop_toTopOf="@id/tv_campaign_stock_variant_name"
         app:layout_constraintBottom_toBottomOf="@id/tv_campaign_stock_variant_name"
@@ -37,7 +37,7 @@
         android:id="@+id/tv_campaign_stock_variant_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N400"
+        android:textColor="@color/Unify_N400"
         android:visibility="gone"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:typographyType="small"

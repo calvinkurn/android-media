@@ -39,6 +39,7 @@ import com.tokopedia.checkout.view.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.logisticCommon.data.constant.CourierConstant;
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant;
@@ -53,6 +54,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -111,13 +113,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvPPPLinkText;
     private TextView tvPPPPrice;
     private TextView tvPPPMore;
-    private CheckBox cbPPP;
-    private CheckBox cbPPPDisabled;
+    private CheckboxUnify cbPPP;
     private RecyclerView rvCartItem;
     private Typography tvExpandOtherProduct;
-    private ImageView ivExpandOtherProduct;
+    private IconUnify ivExpandOtherProduct;
     private RelativeLayout rlExpandOtherProduct;
-    private ImageView ivDetailOptionChevron;
+    private IconUnify ivDetailOptionChevron;
     private Typography tvSubTotalPrice;
     private RelativeLayout rlCartSubTotal;
     private Typography tvTotalItem;
@@ -130,11 +131,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography tvProtectionFee;
     private RelativeLayout rlShipmentCost;
     private LinearLayout llInsurance;
-    private CheckBox cbInsurance;
-    private CheckBox cbInsuranceDisabled;
+    private CheckboxUnify cbInsurance;
     private ImageView imgInsuranceInfo;
     private LinearLayout llDropshipper;
-    private CheckBox cbDropshipper;
+    private CheckboxUnify cbDropshipper;
     private Typography tvDropshipper;
     private ImageView imgDropshipperInfo;
     private LinearLayout llDropshipperInfo;
@@ -174,7 +174,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Label labelIncidentShopLevel;
 
     // order prioritas
-    private CheckBox checkBoxPriority;
+    private CheckboxUnify checkBoxPriority;
     private TextView tvPrioritasTicker;
     private LinearLayout llPrioritasTicker;
     private RelativeLayout llPrioritas;
@@ -234,7 +234,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
         tvPPPMore = itemView.findViewById(R.id.text_ppp_more);
         cbPPP = itemView.findViewById(R.id.checkbox_ppp);
-        cbPPPDisabled = itemView.findViewById(R.id.checkbox_ppp_disabled);
         tvItemCountAndWeight = itemView.findViewById(R.id.tv_item_count_and_weight);
         tvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
         tvProtectionLabel = itemView.findViewById(R.id.tv_purchase_protection_label);
@@ -255,7 +254,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         rlShipmentCost = itemView.findViewById(R.id.rl_shipment_cost);
         llInsurance = itemView.findViewById(R.id.ll_insurance);
         cbInsurance = itemView.findViewById(R.id.cb_insurance);
-        cbInsuranceDisabled = itemView.findViewById(R.id.cb_insurance_disabled);
         imgInsuranceInfo = itemView.findViewById(R.id.img_insurance_info);
         llDropshipper = itemView.findViewById(R.id.ll_dropshipper);
         cbDropshipper = itemView.findViewById(R.id.cb_dropshipper);
@@ -585,15 +583,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvPPPPrice.setText(cartItemModel.getProtectionSubTitle());
 
             if (cartItemModel.isProtectionCheckboxDisabled()) {
-                cbPPP.setVisibility(View.GONE);
-                cbPPPDisabled.setVisibility(View.VISIBLE);
-                cbPPPDisabled.setChecked(true);
-                cbPPPDisabled.setClickable(false);
+                cbPPP.setEnabled(false);
+                cbPPP.setChecked(true);
             } else {
-                cbPPPDisabled.setVisibility(View.GONE);
-                cbPPP.setVisibility(View.VISIBLE);
+                cbPPP.setEnabled(true);
                 cbPPP.setChecked(cartItemModel.isProtectionOptIn());
-                cbPPP.setClickable(true);
                 cbPPP.setOnCheckedChangeListener((compoundButton, checked) -> notifyOnPurchaseProtectionChecked(checked, 0));
             }
 
@@ -614,14 +608,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             rvCartItem.setVisibility(View.VISIBLE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             tvExpandOtherProduct.setText(R.string.label_hide_other_item_new);
-            ivExpandOtherProduct.setImageResource(R.drawable.checkout_module_ic_up);
+            ivExpandOtherProduct.setImage(IconUnify.CHEVRON_UP, null, null, null, null);
         } else {
             rvCartItem.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             tvExpandOtherProduct.setText(String.format(tvExpandOtherProduct.getContext().getString(R.string.label_other_item_count_format),
                     String.valueOf(cartItemModels.size())));
             tvExpandOtherProduct.setTextColor(ContextCompat.getColor(tvExpandOtherProduct.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
-            ivExpandOtherProduct.setImageResource(R.drawable.checkout_module_ic_down);
+            ivExpandOtherProduct.setImage(IconUnify.CHEVRON_DOWN, null, null, null, null);
         }
     }
 
@@ -965,12 +959,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded()) {
             rlShipmentCost.setVisibility(View.VISIBLE);
-            // ivDetailOptionChevron.setImageResource(R.drawable.ic_keyboard_arrow_up_24dp);
-            ivDetailOptionChevron.setImageResource(R.drawable.checkout_module_ic_up);
+            ivDetailOptionChevron.setImage(IconUnify.CHEVRON_UP, null, null, null, null);
         } else {
             rlShipmentCost.setVisibility(View.GONE);
-            // ivDetailOptionChevron.setImageResource(R.drawable.ic_keyboard_arrow_down_24dp);
-            ivDetailOptionChevron.setImageResource(R.drawable.checkout_module_ic_down);
+            ivDetailOptionChevron.setImage(IconUnify.CHEVRON_DOWN, null, null, null, null);
         }
 
         String shippingFeeLabel = tvShippingFee.getContext().getString(R.string.label_delivery_price);
@@ -1073,42 +1065,39 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     llDropshipper.setVisibility(View.VISIBLE);
                 }
 
-                cbDropshipper.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                        mActionListener.hideSoftKeyboard();
+                cbDropshipper.setOnCheckedChangeListener((compoundButton, checked) -> {
+                    mActionListener.hideSoftKeyboard();
 
-                        if (checked && isHavingPurchaseProtectionChecked()) {
-                            compoundButton.setChecked(false);
-                            mActionListener.onPurchaseProtectionLogicError();
-                            return;
-                        }
+                    if (checked && isHavingPurchaseProtectionChecked()) {
+                        compoundButton.setChecked(false);
+                        mActionListener.onPurchaseProtectionLogicError();
+                        return;
+                    }
 
-                        if (getAdapterPosition() != RecyclerView.NO_POSITION &&
-                                shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel) {
-                            ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
-                            data.getSelectedShipmentDetailData().setUseDropshipper(checked);
-                            if (checked) {
-                                etShipperName.setText(data.getDropshiperName());
-                                etShipperPhone.setText(data.getDropshiperPhone());
-                                data.getSelectedShipmentDetailData().setDropshipperName(data.getDropshiperName());
-                                data.getSelectedShipmentDetailData().setDropshipperPhone(data.getDropshiperPhone());
-                                llDropshipperInfo.setVisibility(View.VISIBLE);
-                                mActionListener.onDropshipCheckedForTrackingAnalytics();
-                            } else {
-                                etShipperName.setText("");
-                                etShipperPhone.setText("");
-                                data.getSelectedShipmentDetailData().setDropshipperName("");
-                                data.getSelectedShipmentDetailData().setDropshipperPhone("");
-                                data.setDropshiperName("");
-                                data.setDropshiperPhone("");
-                                llDropshipperInfo.setVisibility(View.GONE);
-                                data.setStateDropshipperHasError(false);
-                            }
-                            mActionListener.onNeedUpdateViewItem(getAdapterPosition());
-                            mActionListener.onNeedUpdateRequestData();
-                            saveStateDebounceListener.onNeedToSaveState(data);
+                    if (getAdapterPosition() != RecyclerView.NO_POSITION &&
+                            shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel) {
+                        ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
+                        data.getSelectedShipmentDetailData().setUseDropshipper(checked);
+                        if (checked) {
+                            etShipperName.setText(data.getDropshiperName());
+                            etShipperPhone.setText(data.getDropshiperPhone());
+                            data.getSelectedShipmentDetailData().setDropshipperName(data.getDropshiperName());
+                            data.getSelectedShipmentDetailData().setDropshipperPhone(data.getDropshiperPhone());
+                            llDropshipperInfo.setVisibility(View.VISIBLE);
+                            mActionListener.onDropshipCheckedForTrackingAnalytics();
+                        } else {
+                            etShipperName.setText("");
+                            etShipperPhone.setText("");
+                            data.getSelectedShipmentDetailData().setDropshipperName("");
+                            data.getSelectedShipmentDetailData().setDropshipperPhone("");
+                            data.setDropshiperName("");
+                            data.setDropshiperPhone("");
+                            llDropshipperInfo.setVisibility(View.GONE);
+                            data.setStateDropshipperHasError(false);
                         }
+                        mActionListener.onNeedUpdateViewItem(getAdapterPosition());
+                        mActionListener.onNeedUpdateRequestData();
+                        saveStateDebounceListener.onNeedToSaveState(data);
                     }
                 });
 
@@ -1124,8 +1113,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
 
                 if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                    cbDropshipper.setChecked(false);
                     cbDropshipper.setEnabled(false);
+                    cbDropshipper.setChecked(false);
                     llDropshipper.setOnClickListener(null);
                     tvDropshipper.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_20));
                     imgDropshipperInfo.setOnClickListener(v -> showBottomSheet(imgDropshipperInfo.getContext(),
@@ -1133,6 +1122,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                             imgDropshipperInfo.getContext().getString(R.string.desc_dropshipper_army),
                             R.drawable.checkout_module_ic_dropshipper));
                 } else {
+                    cbDropshipper.setEnabled(true);
                     tvDropshipper.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                     llDropshipper.setOnClickListener(getDropshipperClickListener());
                     imgDropshipperInfo.setOnClickListener(view -> showBottomSheet(imgDropshipperInfo.getContext(),
@@ -1292,15 +1282,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         if (getAdapterPosition() != RecyclerView.NO_POSITION && renderOrderPriority) {
             if (!cartItemModelList.remove(FIRST_ELEMENT).isPreOrder()) {
-                checkBoxPriority.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                            isPriorityChecked = isChecked;
-                            shipmentCartItemModel.getSelectedShipmentDetailData().setOrderPriority(isChecked);
-                            mActionListener.onPriorityChecked(getAdapterPosition());
-                            mActionListener.onNeedUpdateRequestData();
-                        }
+                checkBoxPriority.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        isPriorityChecked = isChecked;
+                        shipmentCartItemModel.getSelectedShipmentDetailData().setOrderPriority(isChecked);
+                        mActionListener.onPriorityChecked(getAdapterPosition());
+                        mActionListener.onNeedUpdateRequestData();
                     }
                 });
             }
@@ -1361,19 +1348,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         if (getAdapterPosition() != RecyclerView.NO_POSITION && renderInsurance) {
-            cbInsurance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                        shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(checked);
-                        if (checked) {
-                            mActionListener.onInsuranceCheckedForTrackingAnalytics();
-                        }
-                        mActionListener.onInsuranceChecked(getAdapterPosition());
-                        mActionListener.onNeedUpdateRequestData();
-                        if (saveStateDebounceListener != null) {
-                            saveStateDebounceListener.onNeedToSaveState(shipmentCartItemModel);
-                        }
+            cbInsurance.setOnCheckedChangeListener((compoundButton, checked) -> {
+                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(checked);
+                    if (checked) {
+                        mActionListener.onInsuranceCheckedForTrackingAnalytics();
+                    }
+                    mActionListener.onInsuranceChecked(getAdapterPosition());
+                    mActionListener.onNeedUpdateRequestData();
+                    if (saveStateDebounceListener != null) {
+                        saveStateDebounceListener.onNeedToSaveState(shipmentCartItemModel);
                     }
                 }
             });
@@ -1394,16 +1378,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 llInsurance.setBackground(null);
                 llInsurance.setOnClickListener(null);
                 tvLabelInsurance.setText(com.tokopedia.purchase_platform.common.R.string.label_must_insurance);
-                cbInsurance.setVisibility(View.GONE);
-                cbInsuranceDisabled.setVisibility(View.VISIBLE);
-                cbInsuranceDisabled.setChecked(true);
-                cbInsuranceDisabled.setClickable(false);
+                cbInsurance.setEnabled(false);
+                cbInsurance.setChecked(true);
                 if (useInsurance == null) {
-                    cbInsurance.setChecked(true);
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(true);
                     mActionListener.onInsuranceChecked(getAdapterPosition());
                 }
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NO) {
+                cbInsurance.setEnabled(true);
                 cbInsurance.setChecked(false);
                 llInsurance.setVisibility(View.GONE);
                 llInsurance.setBackground(null);
@@ -1412,8 +1394,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
                 tvLabelInsurance.setText(com.tokopedia.purchase_platform.common.R.string.label_shipment_insurance);
                 llInsurance.setVisibility(View.VISIBLE);
-                cbInsuranceDisabled.setVisibility(View.GONE);
-                cbInsurance.setVisibility(View.VISIBLE);
+                cbInsurance.setEnabled(true);
                 TypedValue outValue = new TypedValue();
                 llInsurance.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
                 llInsurance.setBackgroundResource(outValue.resourceId);
@@ -1478,10 +1459,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tickerError.setVisibility(View.GONE);
 
             flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item));
-            cbPPP.setEnabled(true);
-            cbInsurance.setEnabled(true);
             llInsurance.setClickable(true);
-            cbDropshipper.setEnabled(true);
             llDropshipper.setClickable(true);
             tvPPPMore.setClickable(true);
             etShipperName.setClickable(true);
