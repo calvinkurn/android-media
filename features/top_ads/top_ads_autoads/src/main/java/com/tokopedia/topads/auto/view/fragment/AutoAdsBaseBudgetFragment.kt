@@ -9,8 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.lifecycle.Observer
@@ -96,7 +94,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         showLoading()
         budgetViewModel.getTopAdsDeposit()
-        budgetViewModel.topAdsDeposit.observe(viewLifecycleOwner, Observer {
+        budgetViewModel.getTopAdsDepositLiveData().observe(viewLifecycleOwner, Observer {
             topAdsDeposit = it
             budgetViewModel.getBudgetInfo(requestType, source, this::onSuccessBudgetInfo)
         })
@@ -137,21 +135,22 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
 
 
     private fun onSuccessBudgetInfo(response: ResponseBidInfo.Result) {
-        val data = response.topadsBidInfo.data[0]
-        var budget = data.minDailyBudget
-        val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
-        if (status == AutoAdsStatus.STATUS_ACTIVE || status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
-            budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
+        response.topadsBidInfo.data.firstOrNull()?.let { data ->
+            var budget = data.minDailyBudget
+            val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
+            if (status == AutoAdsStatus.STATUS_ACTIVE || status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
+                budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
+            }
+            rangeStart.text = data.minDailyBudgetFmt
+            rangeEnd.text = data.maxDailyBudgetFmt
+            minDailyBudget = data.minDailyBudget
+            maxDailyBudget = data.maxDailyBudget
+            priceEditText.textFieldInput.setText(data.minDailyBudgetFmt.replace("Rp", ""))
+            shopStatus = data.shopStatus
+            seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
+            seekBar.value = budget
+            budgetViewModel.topadsStatisticsEstimationPotentialReach(this::onSuccessPotentialEstimation, userSession.shopId, source)
         }
-        rangeStart.text = data.minDailyBudgetFmt
-        rangeEnd.text = data.maxDailyBudgetFmt
-        minDailyBudget = data.minDailyBudget
-        maxDailyBudget = data.maxDailyBudget
-        priceEditText.textFieldInput.setText(data.minDailyBudgetFmt.replace("Rp", ""))
-        shopStatus = data.shopStatus
-        seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
-        seekBar.value = budget
-        budgetViewModel.topadsStatisticsEstimationPotentialReach(this::onSuccessPotentialEstimation, userSession.shopId, source)
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 estimateImpression(progress)

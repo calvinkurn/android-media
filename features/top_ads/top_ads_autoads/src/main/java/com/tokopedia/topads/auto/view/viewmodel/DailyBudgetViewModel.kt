@@ -39,7 +39,7 @@ class DailyBudgetViewModel @Inject constructor(
         private val bidInfoUseCase: BidInfoUseCase) : BaseViewModel(dispatcher.main) {
 
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
-    val topAdsDeposit : MutableLiveData<Int> = MutableLiveData()
+    private val topAdsDeposit : MutableLiveData<Int> = MutableLiveData()
 
     fun getTopAdsDepositLiveData() : LiveData<Int> = topAdsDeposit
 
