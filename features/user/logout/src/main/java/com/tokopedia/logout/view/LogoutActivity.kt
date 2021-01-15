@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
+import com.tokopedia.appaidl.AidlApi
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -60,7 +61,7 @@ import javax.inject.Inject
  * default is 'false', set 'true' if you just wan to clear data only
  */
 
-class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
+class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent>, AidlApi.ReceiverListener {
 
     lateinit var userSession: UserSessionInterface
 
@@ -73,8 +74,8 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private var isClearDataOnly = false
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-
     private var tetraDebugger: TetraDebugger? = null
+    private var aidlApiApp: AidlApi? = null
 
     override fun getNewFragment(): Fragment? = null
 
@@ -90,6 +91,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         setContentView(R.layout.activity_logout)
 
         component.inject(this)
+        aidlApiApp = AidlApi(this.applicationContext, this)
         userSession = UserSession(this)
 
         getParams()
@@ -107,6 +109,10 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
             logoutViewModel.doLogout()
         }
     }
+
+    override fun onAidlReceive(tag: String, bundle: Bundle?) {}
+
+    override fun onAidlError() {}
 
     private fun getParams() {
         if (intent.extras != null) {
@@ -175,6 +181,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
+        aidlApiApp?.bindAidlService()
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
