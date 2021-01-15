@@ -86,9 +86,12 @@ class HomeVisitableFactoryImpl(
         return this
     }
 
-    override fun addEmptyBanner(): HomeVisitableFactory {
-        val emptyBanner = EmptyBannerDataModel()
-        visitableList.add(emptyBanner)
+    override fun addHomeHeaderOvo(): HomeVisitableFactory {
+        val homeHeader = HomeHeaderOvoDataModel()
+        val headerViewModel = HeaderDataModel()
+        headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
+        homeHeader.headerDataModel = headerViewModel
+        visitableList.add(homeHeader)
         return this
     }
 
