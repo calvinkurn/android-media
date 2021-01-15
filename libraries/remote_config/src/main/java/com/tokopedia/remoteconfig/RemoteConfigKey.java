@@ -238,7 +238,5 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_USING_OLD_ACCOUNT = "android_mainapp_old_account_page";
 
-    public static final String REVERT_PUSH_NOTIFICATION = "android_revert_push_notif";
-
     public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
 }
