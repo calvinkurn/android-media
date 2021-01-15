@@ -203,7 +203,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography labelFreeShippingOriginalEtaPrice;
     private Typography labelFreeShippingDiscountedEtaPrice;
     private ImageView imageMerchantVoucher;
-    private AppCompatImageView mIconTooltip;
+    private IconUnify mIconTooltip;
     private Typography mPricePerProduct;
 
     public ShipmentItemViewHolder(View itemView) {

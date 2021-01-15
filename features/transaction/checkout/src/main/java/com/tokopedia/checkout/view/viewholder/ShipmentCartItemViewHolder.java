@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
@@ -56,7 +57,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private Ticker productTicker;
     private Typography mTextVariant;
     private FlexboxLayout mLayoutProductInfo;
-    private AppCompatImageView mIconTooltip;
+    private IconUnify mIconTooltip;
     private Typography mPricePerProduct;
 
     public ShipmentCartItemViewHolder(View itemView) {
