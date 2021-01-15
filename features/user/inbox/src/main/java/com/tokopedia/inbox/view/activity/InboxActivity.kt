@@ -40,6 +40,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
@@ -411,7 +412,4 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         navigator?.onPageSelected(page)
     }
 
-    private fun isDarkMode(): Boolean {
-        return AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-    }
 }
