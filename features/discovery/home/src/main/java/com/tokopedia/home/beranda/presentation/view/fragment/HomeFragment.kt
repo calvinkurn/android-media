@@ -142,8 +142,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.stickylogin.common.StickyLoginConstant
-import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_IS_REGISTER_FROM_STICKY_LOGIN
-import com.tokopedia.stickylogin.common.StickyLoginConstant.STICKY_PREF
 import com.tokopedia.stickylogin.common.helper.isRegisteredFromStickyLogin
 import com.tokopedia.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
 import com.tokopedia.stickylogin.view.StickyLoginAction
