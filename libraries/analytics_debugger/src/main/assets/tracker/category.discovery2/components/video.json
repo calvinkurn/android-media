@@ -1,0 +1,12 @@
+{
+  "readme": "Discovery Video Click Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "eventCategory": "{{.*}}",
+      "eventAction": "{{.*}}",
+      "event": "clickDiscovery",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}
