@@ -195,8 +195,10 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     private fun logWebViewApplink() {
         val domain = getDomainName(url)
-        if(!getBaseDomain(domain).equals(TOKOPEDIA_DOMAIN, ignoreCase = true)) {
-            Timber.w("P1#WEBVIEW_OPENED#webview;domain='$domain';url='$url'")
+        if(domain.isNotEmpty()) {
+            if(!getBaseDomain(domain).equals(TOKOPEDIA_DOMAIN, ignoreCase = true)) {
+                Timber.w("P1#WEBVIEW_OPENED#webview;domain='$domain';url='$url'")
+            }
         }
     }
 
