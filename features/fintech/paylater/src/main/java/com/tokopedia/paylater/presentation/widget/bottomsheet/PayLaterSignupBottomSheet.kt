@@ -10,7 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.paylater.R
-import com.tokopedia.paylater.di.component.PayLaterComponent
+import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
@@ -27,7 +27,7 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private var component: PayLaterComponent? = null
+    private var component: PdpSimulationComponent? = null
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(parentFragment!!, viewModelFactory.get())
@@ -63,7 +63,7 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
     }
 
     private fun initInjector() {
-        component = PayLaterComponent::class.java.cast((activity as (HasComponent<PayLaterComponent>)).component)
+        component = PdpSimulationComponent::class.java.cast((activity as (HasComponent<PdpSimulationComponent>)).component)
         component?.inject(this) ?: dismiss()
     }
 

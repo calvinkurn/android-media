@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.paylater.R
-import com.tokopedia.paylater.di.component.PayLaterComponent
+import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.PayLaterProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
@@ -27,7 +27,7 @@ class CreditCardTncFragment : BaseDaggerFragment() {
     private var creditCardTnCCallback: CreditCardTnCCallback? = null
 
     override fun initInjector() {
-        getComponent(PayLaterComponent::class.java).inject(this)
+        getComponent(PdpSimulationComponent::class.java).inject(this)
     }
 
     override fun onCreateView(

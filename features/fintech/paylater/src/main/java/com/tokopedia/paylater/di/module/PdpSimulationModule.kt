@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class PayLaterModule {
+class PdpSimulationModule {
 
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()

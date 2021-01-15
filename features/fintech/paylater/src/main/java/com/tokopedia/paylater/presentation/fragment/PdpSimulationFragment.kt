@@ -21,7 +21,7 @@ import com.tokopedia.paylater.R
 import com.tokopedia.paylater.data.mapper.CreditCard
 import com.tokopedia.paylater.data.mapper.PayLater
 import com.tokopedia.paylater.data.mapper.PaymentMode
-import com.tokopedia.paylater.di.component.PayLaterComponent
+import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
@@ -69,7 +69,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun initInjector() {
-        getComponent(PayLaterComponent::class.java).inject(this)
+        getComponent(PdpSimulationComponent::class.java).inject(this)
     }
 
     override fun onCreateView(

@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.paylater.R
-import com.tokopedia.paylater.di.component.DaggerPayLaterComponent
-import com.tokopedia.paylater.di.component.PayLaterComponent
+import com.tokopedia.paylater.di.component.DaggerPdpSimulationComponent
+import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.presentation.fragment.PdpSimulationFragment
 
-class PayLaterActivity : BaseSimpleActivity(), HasComponent<PayLaterComponent> {
+class PayLaterActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent> {
 
-    private lateinit var payLaterComponent: PayLaterComponent
+    private lateinit var pdpSimulationComponent: PdpSimulationComponent
 
     override fun getScreenName(): String {
         return SCREEN_NAME
@@ -40,11 +40,11 @@ class PayLaterActivity : BaseSimpleActivity(), HasComponent<PayLaterComponent> {
         const val SCREEN_NAME = "PayLater & Cicilan"
     }
 
-    override fun getComponent(): PayLaterComponent {
-        if (!::payLaterComponent.isInitialized)
-            payLaterComponent = DaggerPayLaterComponent.builder()
+    override fun getComponent(): PdpSimulationComponent {
+        if (!::pdpSimulationComponent.isInitialized)
+            pdpSimulationComponent = DaggerPdpSimulationComponent.builder()
                     .baseAppComponent((applicationContext as BaseMainApplication)
                             .baseAppComponent).build()
-        return payLaterComponent
+        return pdpSimulationComponent
     }
 }

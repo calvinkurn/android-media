@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
-import com.tokopedia.paylater.di.component.PayLaterComponent
+import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.CreditCardBank
 import com.tokopedia.paylater.domain.model.SimulationTableResponse
 import com.tokopedia.paylater.presentation.adapter.CreditCardAvailableBanksAdapter
@@ -40,7 +40,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment(), CreditCardRegistratio
     private var creditCardSimulationCallback: CreditCardSimulationCallback? = null
 
     override fun initInjector() {
-        getComponent(PayLaterComponent::class.java).inject(this)
+        getComponent(PdpSimulationComponent::class.java).inject(this)
     }
 
     override fun onCreateView(

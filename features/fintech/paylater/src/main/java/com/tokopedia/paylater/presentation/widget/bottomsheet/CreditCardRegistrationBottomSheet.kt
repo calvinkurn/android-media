@@ -3,22 +3,39 @@ package com.tokopedia.paylater.presentation.widget.bottomsheet
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
+import com.tokopedia.paylater.di.component.PdpSimulationComponent
+import com.tokopedia.paylater.domain.model.BankCardListItem
 import com.tokopedia.paylater.domain.model.CreditCardBank
 import com.tokopedia.paylater.presentation.adapter.CreditCardRegistrationAdapter
+import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.base_list_bottomsheet_widget.*
+import javax.inject.Inject
 
 
 class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
 
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+    private var component: PdpSimulationComponent? = null
+
+    private val credCardViewModel: CreditCardViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(parentFragment!!, viewModelFactory.get())
+        viewModelProvider.get(CreditCardViewModel::class.java)
+    }
     init {
         setShowListener {
             bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -40,13 +57,25 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
         getArgumentData()
         setDefaultParams()
         initBottomSheet()
     }
 
+    private fun initInjector() {
+        component = PdpSimulationComponent::class.java.cast((activity as (HasComponent<PdpSimulationComponent>)).component)
+        component?.inject(this) ?: dismiss()
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initAdapter()
+        credCardViewModel.creditCardBankResultLiveData.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> onBankListLoaded(it.data)
+                is Fail -> onBankListLoadingFail(it.throwable)
+            }
+        })
         fbViewAllCards.apply {
             visible()
             addItem(arrayListOf(FloatingButtonItem(
@@ -57,6 +86,13 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun onBankListLoaded(data: ArrayList<BankCardListItem>) {
+        initAdapter(data)
+    }
+
+    private fun onBankListLoadingFail(throwable: Throwable) {
+
+    }
 
     private fun getArgumentData() {
         arguments?.let {
@@ -70,7 +106,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         setChild(childView)
     }
 
-    private fun initAdapter() {
+    private fun initAdapter(data: ArrayList<BankCardListItem>) {
         baseList.setOnTouchListener { v, event ->
             v.parent.requestDisallowInterceptTouchEvent(true)
             v.onTouchEvent(event)
@@ -97,8 +133,8 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
     }
 
     private fun openUrlWebView(urlString: String) {
-        val webViewApplink = ApplinkConst.WEBVIEW + "?url=" + urlString
-        RouteManager.route(context, webViewApplink)
+        val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
+        RouteManager.route(context, webViewAppLink)
     }
 
     companion object {

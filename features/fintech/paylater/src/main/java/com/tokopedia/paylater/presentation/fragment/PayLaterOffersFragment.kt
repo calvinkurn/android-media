@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.paylater.R
-import com.tokopedia.paylater.di.component.PayLaterComponent
+import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.domain.model.PayLaterProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
@@ -39,7 +39,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     private var payLaterOfferCallback: PayLaterOfferCallback? = null
 
     override fun initInjector() {
-        getComponent(PayLaterComponent::class.java).inject(this)
+        getComponent(PdpSimulationComponent::class.java).inject(this)
     }
 
     override fun onCreateView(

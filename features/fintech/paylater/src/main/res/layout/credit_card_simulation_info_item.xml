@@ -29,18 +29,19 @@
             android:id="@+id/clSimulationCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="@dimen/unify_space_128"
             android:background="@color/Unify_N0">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvInstallmentHeader"
-                android:layout_width="@dimen/unify_space_0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/credit_card_dp_10"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginEnd="@dimen/credit_card_dp_10"
+                android:paddingEnd="@dimen/unify_space_12"
                 android:lineSpacingExtra="4sp"
                 android:text="@string/credit_card_simulation_card_header"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3" />
@@ -65,10 +66,9 @@
                 android:layout_marginTop="@dimen/unify_space_2"
                 android:layout_marginEnd="@dimen/credit_card_dp_10"
                 android:layout_marginBottom="@dimen/unify_space_12"
-
-                android:text="/bulan"
+                android:paddingEnd="@dimen/unify_space_12"
+                android:text="/bulang"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvInstallmentPrice"
                 app:layout_constraintTop_toBottomOf="@id/tvInstallmentHeader"
                 app:typographyType="body_3" />
