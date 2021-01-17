@@ -187,21 +187,6 @@ class ShopPageViewModelTest {
     }
 
     @Test
-    fun `check whether shopPageP1Data value is null when shopId and shopDomain value is empty`() {
-        shopPageViewModel.getShopPageTabData(
-                0,
-                "",
-                1,
-                10,
-                ShopProductFilterParameter(),
-                "",
-                "",
-                true
-        )
-        assertTrue(shopPageViewModel.shopPageP1Data.value == null)
-    }
-
-    @Test
     fun `check whether shopPageP1Data value is not null when shopId is 0 but shopDomain isn't empty`() {
         coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1()
         shopPageViewModel.getShopPageTabData(
@@ -338,16 +323,6 @@ class ShopPageViewModelTest {
                 false
         )
         assert(shopPageViewModel.shopPageHeaderContentData.value is Success)
-    }
-
-    @Test
-    fun `check whether getShopPageHeaderContentData value is null when shopId and shopDomain is empty`() {
-        shopPageViewModel.getShopPageHeaderContentData(
-                "",
-                "",
-                true
-        )
-        assert(shopPageViewModel.shopPageHeaderContentData.value == null)
     }
 
     @Test

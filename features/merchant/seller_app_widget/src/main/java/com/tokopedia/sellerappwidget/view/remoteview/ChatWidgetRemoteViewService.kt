@@ -37,7 +37,11 @@ class ChatWidgetRemoteViewService : RemoteViewsService() {
         }
 
         override fun getLoadingView(): RemoteViews {
-            return RemoteViews(context.packageName, R.layout.saw_app_widget_chat_item_shimmer)
+            return RemoteViews(context.packageName, R.layout.saw_app_widget_chat_item_shimmer).apply {
+                setInt(R.id.sawChatShimmerName, Const.Method.SET_VISIBILITY, View.INVISIBLE)
+                setInt(R.id.sawChatShimmerLastMsg, Const.Method.SET_VISIBILITY, View.INVISIBLE)
+                setInt(R.id.horLineSawChatItem, Const.Method.SET_VISIBILITY, View.INVISIBLE)
+            }
         }
 
         override fun getItemId(position: Int): Long = position.toLong()

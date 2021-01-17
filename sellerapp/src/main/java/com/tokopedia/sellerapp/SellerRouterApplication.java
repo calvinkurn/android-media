@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
@@ -77,7 +79,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.hansel.hanselsdk.Hansel;
-import okhttp3.Interceptor;
 import okhttp3.Response;
 import timber.log.Timber;
 
@@ -412,6 +413,15 @@ public abstract class SellerRouterApplication extends MainApplication
     public void sendForceLogoutAnalytics(String url, boolean isInvalidToken,
                                          boolean isRequestDenied) {
         ServerErrorHandler.sendForceLogoutAnalytics(url, isInvalidToken, isRequestDenied);
+    }
+
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
+        if(TextUtils.isEmpty(errorMessage)){
+            SessionAnalytics.trackRefreshTokenSuccess();
+        }else {
+            SessionAnalytics.trackRefreshTokenFailed(errorMessage);
+        }
     }
 
     @Override

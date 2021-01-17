@@ -1,21 +1,10 @@
 package com.tokopedia.digital.utils;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Build;
-import androidx.core.content.ContextCompat;
-import android.telecom.PhoneAccountHandle;
-import android.telecom.TelecomManager;
-import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
-import com.tokopedia.common_digital.product.presentation.model.Operator;
-import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.newcart.data.entity.requestbody.RequestBodyAppsFlyer;
 import com.tokopedia.user.session.UserSession;
@@ -25,8 +14,6 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * @author anggaprasetiyo on 3/6/17.
@@ -122,133 +109,5 @@ public class DeviceUtil {
         phoneNumber = phoneNumber.replace(".", "");
 
         return phoneNumber.replaceAll("[^0-9]+", "");
-    }
-
-    public static String formatPrefixClientNumber(String phoneNumber) {
-        if(phoneNumber==null || "".equalsIgnoreCase(phoneNumber.trim())){
-            return phoneNumber;
-        }
-        phoneNumber=validatePrefixClientNumber(phoneNumber);
-        if (!phoneNumber.startsWith("0")) {
-            phoneNumber = "0" + phoneNumber;
-        }
-        return phoneNumber;
-    }
-
-    public static String getMobileNumber(Activity context, int simIndex) {
-        String phoneNumber = null;
-        if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                List<SubscriptionInfo> subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
-                if (subscriptionInfos != null && subscriptionInfos.size() > simIndex) {
-                    SubscriptionInfo lsuSubscriptionInfo = subscriptionInfos.get(simIndex);
-                    if (lsuSubscriptionInfo != null && lsuSubscriptionInfo.getSimSlotIndex() == simIndex) {
-                        phoneNumber = lsuSubscriptionInfo.getNumber();
-                        phoneNumber= formatPrefixClientNumber(phoneNumber);
-                        return phoneNumber;
-                    }
-                }
-
-            }
-        }
-
-        return phoneNumber;
-    }
-
-    public static String getOperatorName(Activity context, int simIndex) {
-        String operatorName = null;
-        if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                List<SubscriptionInfo> subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
-                if (subscriptionInfos != null) {
-                    for (SubscriptionInfo lsuSubscriptionInfo : subscriptionInfos) {
-                        if (lsuSubscriptionInfo != null && lsuSubscriptionInfo.getSimSlotIndex() == simIndex) {
-                            if (lsuSubscriptionInfo.getCarrierName() != null) {
-                                operatorName = lsuSubscriptionInfo.getCarrierName().toString();
-                                return operatorName;
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-        return operatorName;
-    }
-
-    public static PhoneAccountHandle getPhoneHandle(Activity context, int simIndex) {
-        PhoneAccountHandle sim1 = null;
-        if (RequestPermissionUtil.checkHasPermission(context, Manifest.permission.READ_PHONE_STATE)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                    TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
-                    final List<PhoneAccountHandle> enabledAccounts = telecomManager.getCallCapablePhoneAccounts();
-                    if (enabledAccounts != null && enabledAccounts.size() > simIndex) {
-                        return enabledAccounts.get(simIndex);
-                    }
-                }
-            }
-        }
-        return sim1;
-    }
-
-    public static boolean verifyUssdOperator(String simOperatorName, String selectedOperatorName) {
-        simOperatorName = getOperatorFirstName(simOperatorName);
-        selectedOperatorName = getOperatorFirstName(selectedOperatorName);
-        if (simOperatorName == null || selectedOperatorName == null) {
-            return false;
-        }
-        if ("Tri".equalsIgnoreCase(selectedOperatorName.trim()) && "3".equalsIgnoreCase(simOperatorName.trim())) {
-            return true;
-        }
-        return simOperatorName.trim().equalsIgnoreCase(selectedOperatorName.trim());
-
-
-    }
-
-    public static String validateNumber(List<Validation> validationList, String number) {
-        String errorString = null;
-        if (number == null || validationList == null) {
-            errorString = "not valid";
-            return errorString;
-        }
-        for (Validation validation : validationList) {
-            if (!Pattern.matches(validation.getRegex(), number)) {
-                errorString = validation.getError();
-                break;
-            }
-        }
-        return errorString;
-
-    }
-
-    public static boolean matchOperatorAndNumber(Operator operator, String number) {
-        if (number == null || operator == null) {
-            return false;
-        }
-        for (String prefix : operator.getPrefixList()) {
-            if (number.startsWith(prefix)) {
-                return true;
-            }
-
-        }
-        return false;
-    }
-
-    public static boolean validateNumberAndMatchOperator(List<Validation> validationList, Operator operator, String number) {
-        if (number == null || operator == null || validationList == null) {
-            return false;
-        }
-        if (validateNumber(validationList, number) == null) {
-            return matchOperatorAndNumber(operator, number);
-        }
-        return false;
-    }
-
-    public static String getOperatorFirstName(String operatorName) {
-        if (operatorName != null && !"".equalsIgnoreCase(operatorName.trim())) {
-            return operatorName.split(" ")[0];
-        }
-        return null;
     }
 }

@@ -50,9 +50,6 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.rxJavaComputation
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation (rootProject.ext.miscDependencies.imagecropper){
-        exclude group: "com.android.support"
-    }
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.scannerZxing
