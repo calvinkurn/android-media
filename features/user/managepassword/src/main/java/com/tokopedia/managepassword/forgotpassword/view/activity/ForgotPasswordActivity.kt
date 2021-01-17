@@ -2,6 +2,7 @@ package com.tokopedia.managepassword.forgotpassword.view.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -11,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.managepassword.ManagePasswordWebViewActivity
 import com.tokopedia.managepassword.common.ManagePasswordConstant.KEY_IS_CONTAINS_LOGIN_APPLINK
+import com.tokopedia.managepassword.common.ManagePasswordConstant.PARAM_AUTO_FILL
 import com.tokopedia.managepassword.di.DaggerManagePasswordComponent
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.managepassword.di.module.ManagePasswordModule
@@ -18,6 +20,7 @@ import com.tokopedia.managepassword.forgotpassword.view.fragment.ForgotPasswordF
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.KEY_URL
 import javax.inject.Inject
 
 /**
@@ -81,8 +84,10 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
             when(requestCode) {
                 REQUEST_CODE_WEB_VIEW -> {
                     val isContainsLoginApplink = data.extras?.getBoolean(KEY_IS_CONTAINS_LOGIN_APPLINK) ?: false
+                    val url = data.extras?.getString(KEY_URL) ?: ""
+
                     if (isContainsLoginApplink) {
-                        gotoLogin()
+                        gotoLogin(url)
                     }
                 }
                 REQUEST_CODE_LOGIN -> {
@@ -104,8 +109,20 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         }
     }
 
-    private fun gotoLogin() {
+    private fun gotoLogin(url: String) {
+        val uri = Uri.parse(url).buildUpon().build()
+        val email = uri.getQueryParameter(QUERY_PARAM_EMAIL)
+        val phone = uri.getQueryParameter(QUERY_PARAM_PHONE)
+
         val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+        if (email.isNullOrEmpty()) {
+            intent.putExtra(PARAM_AUTO_FILL, email)
+            userSession.autofillUserData = email
+        } else if (phone.isNullOrEmpty()) {
+            intent.putExtra(PARAM_AUTO_FILL, phone)
+            userSession.autofillUserData = phone
+        }
+
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
@@ -134,6 +151,9 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     companion object {
         private const val REQUEST_CODE_WEB_VIEW = 100
         private const val REQUEST_CODE_LOGIN = 101
+
+        const val QUERY_PARAM_EMAIL = "email"
+        const val QUERY_PARAM_PHONE = "phone"
 
         private const val SCREEN_FORGOT_PASSWORD = "Forgot password page"
         private const val URL_FORGOT_PASSWORD = "https://m.tokopedia.com/reset-password"
