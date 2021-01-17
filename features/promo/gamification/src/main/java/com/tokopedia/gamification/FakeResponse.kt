@@ -145,7 +145,12 @@ const val FAKE_GAMI_CRACK="""
             "type": "redirect",
             "backgroundColor": "orange"
           }
-        ]
+        ],
+        "recommendation": {
+            "isShow": true,
+            "shopID": "12345",
+            "pageName": "gamepage"
+        }
       }
     }
 """

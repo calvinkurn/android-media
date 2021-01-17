@@ -12,9 +12,14 @@ data class GamiCrack(
         @SerializedName("imageUrl") val imageUrl: String,
         @SerializedName("benefitText") val benefitText: List<String>,
         @SerializedName("benefits") val benefits: List<Benefits>?,
-        @SerializedName("actionButton") val actionButton: List<ActionButton>
+        @SerializedName("actionButton") val actionButton: List<ActionButton>,
+        @SerializedName("recommendation") val recommendation: Recommendation
 )
-
+data class Recommendation(
+        @SerializedName("isShow") val isShow: Boolean?,
+        @SerializedName("shopID") val shopId: String?,
+        @SerializedName("pageName") val pageName: String?,
+)
 data class Benefits(
 
         @SerializedName("text") val text: String,

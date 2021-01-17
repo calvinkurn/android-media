@@ -44,7 +44,6 @@ class PdpGamificationView : FrameLayout {
     private val CONTAINER_LOADING = 1
     private val CONTAINER_ERROR = 2
 
-    private lateinit var PAGE_NAME: String
     private var DEFAULT_SPAN_COUNT = 2
 
     private lateinit var tvTitle: Typography
@@ -57,6 +56,8 @@ class PdpGamificationView : FrameLayout {
     private lateinit var adapter: PdpGamificationAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private lateinit var dataList: ArrayList<Visitable<*>>
+    var pageName = ""
+    var shopId = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -89,7 +90,6 @@ class PdpGamificationView : FrameLayout {
     private fun initViews(root: View) {
 
         dataList = ArrayList()
-        PAGE_NAME = "gamepage"
 
         injectComponents()
 
@@ -104,7 +104,6 @@ class PdpGamificationView : FrameLayout {
         prepareShimmer()
         setupRv()
         setListeners()
-        getRecommendationParams()
 
     }
 
@@ -188,12 +187,14 @@ class PdpGamificationView : FrameLayout {
 
         globalError.setOnClickListener {
             viewFlipper.displayedChild = CONTAINER_LOADING
-            getRecommendationParams()
+            getRecommendationParams(pageName, shopId)
         }
     }
 
-    protected fun getRecommendationParams() {
-        viewModel.getRecommendationParams(PAGE_NAME)
+    fun getRecommendationParams(pageName:String,shopId:String) {
+        this.pageName = pageName
+        this.shopId = shopId
+        viewModel.getRecommendationParams(pageName,shopId)
     }
 
 

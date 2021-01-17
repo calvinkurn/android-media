@@ -36,10 +36,10 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
     val productLiveData: MutableLiveData<LiveDataResult<List<Recommendation>>> = MutableLiveData()
     val titleLiveData: MutableLiveData<LiveDataResult<String>> = MutableLiveData()
 
-    fun getRecommendationParams(pageName: String) {
+    fun getRecommendationParams(pageName: String, shopId:String) {
         launchCatchError(block = {
             withContext(workerDispatcher) {
-                val response = paramUseCase.getResponse(paramUseCase.getRequestParams(pageName))
+                val response = paramUseCase.getResponse(paramUseCase.getRequestParams(pageName, shopId))
                 withContext(uiDispatcher){
                     recommendationLiveData.value = (LiveDataResult.success(response))
                     getProducts(0)

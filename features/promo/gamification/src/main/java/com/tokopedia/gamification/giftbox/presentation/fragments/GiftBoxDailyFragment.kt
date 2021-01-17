@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
@@ -61,9 +60,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     lateinit var llRewardMessage: LinearLayout
     lateinit var tvRewardFirstLine: AppCompatTextView
     lateinit var tvRewardSecondLine: AppCompatTextView
-//    lateinit var btnAction: AppCompatTextView
+
+    //    lateinit var btnAction: AppCompatTextView
     lateinit var tokoButtonContainer: CekTokoButtonContainer
-//    lateinit var tvReminderBtn: AppCompatTextView
+
+    //    lateinit var tvReminderBtn: AppCompatTextView
 //    lateinit var tvReminderMessage: AppCompatTextView
 //    lateinit var loaderReminder: LoaderUnify
 //    lateinit var reminderLayout: RelativeLayout
@@ -180,14 +181,23 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         setTextSize()
         setShadows()
         setListeners()
-        setupBottomSheet()
+        setupBottomSheet(false)
     }
 
-    private fun setupBottomSheet() {
-        val peekHeight = bottomSheetContainer.dpToPx(0).toInt()
-        val bottomSheetBehavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<ViewGroup>(bottomSheetContainer)
-        bottomSheetBehavior.peekHeight = peekHeight
-        pdpGamificationView.fragment = this
+    private fun setupBottomSheet(show:Boolean) {
+        if(show){
+            val bottomSheetBehavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<ViewGroup>(bottomSheetContainer)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            bottomSheetBehavior.isHideable = false
+
+        }else{
+            val peekHeight = resources.getDimension(R.dimen.gami_peek_height) .toInt()
+            val bottomSheetBehavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<ViewGroup>(bottomSheetContainer)
+            bottomSheetBehavior.peekHeight = peekHeight
+            bottomSheetBehavior.isHideable = true
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            pdpGamificationView.fragment = this
+        }
     }
 
     fun setShadows() {
@@ -224,7 +234,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                         when (rewardState) {
                             RewardContainer.RewardState.COUPON_WITH_POINTS -> {
-                                performRewardAnimation(startDelay,stageLightAnim)
+                                performRewardAnimation(startDelay, stageLightAnim)
 //                                val rewardAnim = rewardContainer.showCouponAndRewardAnimation(giftBoxDailyView.fmGiftBox.top)
 //
 //                                val animatorSet = AnimatorSet()
@@ -237,7 +247,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //                                ovoPointsTextAnim.start()
                             }
                             RewardContainer.RewardState.POINTS_ONLY -> {
-                                performRewardAnimation(startDelay,stageLightAnim)
+                                performRewardAnimation(startDelay, stageLightAnim)
 
 //                                val rewardAnim = rewardContainer.showSingleLargeRewardAnimation(giftBoxDailyView.fmGiftBox.top)
 //
@@ -252,7 +262,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             }
 
                             RewardContainer.RewardState.COUPON_ONLY -> {
-                                performRewardAnimation(startDelay,stageLightAnim)
+                                performRewardAnimation(startDelay, stageLightAnim)
 //                                val rewardAnim = rewardContainer.showCouponAndRewardAnimation(giftBoxDailyView.fmGiftBox.top)
 //
 //                                val animatorSet = AnimatorSet()
@@ -431,6 +441,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 }
                             }
 
+                            handleRecomPage(it.data?.gamiCrack?.recommendation)
+
                         } else {
                             disableGiftBoxTap = false
                             val messageList = it.data?.gamiCrack?.resultStatus?.message
@@ -505,7 +517,18 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         })
     }
 
-    fun performRewardAnimation(startDelay:Long,stageLightAnim:Animator){
+    fun handleRecomPage(recommendation: Recommendation?) {
+        recommendation?.isShow?.let { show ->
+            if ( show && !recommendation.pageName.isNullOrEmpty() && !recommendation.shopId.isNullOrEmpty()) {
+                pdpGamificationView.postDelayed({
+                    setupBottomSheet(true)
+                }, 1000L)
+                pdpGamificationView.getRecommendationParams(recommendation.pageName, recommendation.shopId)
+            }
+        }
+    }
+
+    fun performRewardAnimation(startDelay: Long, stageLightAnim: Animator) {
         val rewardAnim = rewardContainer.showCouponAndRewardAnimation(giftBoxDailyView.fmGiftBox.top)
 
         val animatorSet = AnimatorSet()
@@ -917,8 +940,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode){
-            Wishlist.REQUEST_FROM_PDP->{
+        when (requestCode) {
+            Wishlist.REQUEST_FROM_PDP -> {
                 if (data != null) {
                     val wishlistStatusFromPdp = data.getBooleanExtra(Wishlist.PDP_WIHSLIST_STATUS_IS_WISHLIST, false)
                     val position = data.getIntExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, -1)
