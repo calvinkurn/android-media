@@ -160,6 +160,8 @@ class ShopPageFragment :
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
+        private const val MARGIN_BOTTOM_STICKY_LOGIN = 16
+
         @JvmStatic
         fun createInstance() = ShopPageFragment()
     }
@@ -1398,14 +1400,14 @@ class ShopPageFragment :
                     buttonChatLayoutParams.leftMargin,
                     buttonChatLayoutParams.topMargin,
                     buttonChatLayoutParams.rightMargin,
-                    stickyLoginViewHeight + 16
+                    stickyLoginViewHeight + MARGIN_BOTTOM_STICKY_LOGIN
             )
         } else {
             buttonChatLayoutParams.setMargins(
                     buttonChatLayoutParams.leftMargin,
                     buttonChatLayoutParams.topMargin,
                     buttonChatLayoutParams.rightMargin,
-                    initialFloatingChatButtonMarginBottom + 16
+                    initialFloatingChatButtonMarginBottom + MARGIN_BOTTOM_STICKY_LOGIN
             )
         }
         chatButton.layoutParams = buttonChatLayoutParams
