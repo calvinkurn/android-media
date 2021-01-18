@@ -511,7 +511,7 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
     }
 
     private fun errorStateBroadcastChat(message: String, action: String, isRetry: Boolean = false, product: ProductUiModel? = null) {
-        Toaster.build(coordinatorLayout, type = Toaster.TYPE_ERROR, text = message, actionText = action, duration = Toaster.LENGTH_SHORT, clickListener = View.OnClickListener {
+        Toaster.build(coordinatorLayout, type = Toaster.TYPE_ERROR, text = message, actionText = action, duration = Toaster.LENGTH_LONG, clickListener = View.OnClickListener {
             if (isRetry) {
                 goToCreateBroadCastChat(product)
             } else {
@@ -832,10 +832,11 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
                     val productName: String = cacheManager?.getString(EXTRA_PRODUCT_NAME).orEmpty()
                     val threshold = cacheManager?.get(EXTRA_THRESHOLD, Int::class.java) ?: 0
                     onSetStockReminderResult(threshold, productName)
-                } else if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT) {
-                    goToCreateBroadcastFromSellerMigration(productStock, isProductActive, isProductVariant, productId)
                 }
             }
+        }
+        if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT) {
+            goToCreateBroadcastFromSellerMigration(productStock, isProductActive, isProductVariant, productId)
         }
     }
 
