@@ -20,7 +20,7 @@ data class TokopointsCatalogMVCList(
 data class ResultStatus(
         @SerializedName("code") val code: String?,
         @SerializedName("message") val message: List<String?>?,
-        @SerializedName("reason") val reason: String?
+        @SerializedName("status") val status: String?
 )
 
 data class CatalogList(
@@ -52,17 +52,22 @@ data class MembershipHowTo(
         @SerializedName("description") val description: String?
 )
 
-data class tokopointsCatalogMVCSummaryResponse(
+data class TokopointsCatalogMVCSummaryResponse(
         @SerializedName("tokopointsCatalogMVCSummary") val data: TokopointsCatalogMVCSummary? = null
 )
 
 data class TokopointsCatalogMVCSummary(
         @SerializedName("resultStatus") val resultStatus: ResultStatus?,
-        @SerializedName("titles") val titles: List<String?>?,
+        @SerializedName("titles") val titles: List<Titles?>?,
         @SerializedName("isShown") val isShown: Boolean?,
         @SerializedName("subTitle") val subTitle: String?,
         @SerializedName("imageURL") val imageURL: String?,
         @SerializedName("counterTotal") val counterTotal: Int?,
+)
+
+data class Titles(
+        @SerializedName("text") val text: String?,
+        @SerializedName("icon") val icon: String?
 )
 
 data class MembershipRegisterResponse(

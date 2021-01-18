@@ -12,7 +12,7 @@ data class ShopHomeVoucherUiModel(
         override val name: String = "",
         override val type: String = "",
         override val header: BaseShopHomeWidgetUiModel.Header = BaseShopHomeWidgetUiModel.Header(),
-        val data: List<MerchantVoucherViewModel>? = null,
+        val data: MerchantVoucherCouponUiModel? = null,
         val isError: Boolean = false
 ) : BaseShopHomeWidgetUiModel {
 

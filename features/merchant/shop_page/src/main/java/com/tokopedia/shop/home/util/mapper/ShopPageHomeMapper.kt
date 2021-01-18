@@ -1,10 +1,7 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherAmountTypeDef
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.PRODUCT
@@ -158,7 +155,7 @@ object ShopPageHomeMapper {
             isLoggedIn: Boolean
     ): List<BaseShopHomeWidgetUiModel> {
         return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
-            shopLayoutWidgetResponse.filter { it.data.isNotEmpty() || it.type.toLowerCase() == DYNAMIC.toLowerCase() }.onEach {
+            shopLayoutWidgetResponse.filter { it.data.isNotEmpty() || it.type.toLowerCase() == DYNAMIC.toLowerCase() || it.type.toLowerCase() == VOUCHER.toLowerCase()}.onEach {
                 val widgetUiModel = mapToWidgetUiModel(it, isMyOwnProduct, isLoggedIn)
                 widgetUiModel?.let { model ->
                     add(model)
@@ -288,31 +285,25 @@ object ShopPageHomeMapper {
         )
     }
 
-    fun mapToListVoucher(
-            data: List<MerchantVoucherModel>
-    ): List<MerchantVoucherViewModel>? {
-        return mutableListOf<MerchantVoucherViewModel>().apply {
-            data.onEach {
-                add(mapToVoucherItem(it))
-            }
+    fun mapToVoucherCouponUiModel(data: TokopointsCatalogMVCSummary?, shopId: String?): MerchantVoucherCouponUiModel? {
+        data?.let {
+            return MerchantVoucherCouponUiModel(
+                    resultStatus = ResultStatus(
+                            code = data.resultStatus?.code,
+                            message = data.resultStatus?.message,
+                            status = data.resultStatus?.status
+                    ),
+                    titles = listOf(Titles(
+                            text = data.titles?.firstOrNull()?.text,
+                            icon = data.titles?.firstOrNull()?.icon
+                    )),
+                    isShown = data.isShown,
+                    subTitle = data.subTitle,
+                    imageURL = data.imageURL,
+                    shopId = shopId
+            )
         }
-    }
-
-    private fun mapToVoucherItem(data: MerchantVoucherModel): MerchantVoucherViewModel {
-        return MerchantVoucherViewModel().apply {
-            voucherId = data.voucherId
-            voucherName = data.voucherName
-            voucherCode = data.voucherCode ?: ""
-            merchantVoucherType = data.merchantVoucherType?.type.takeIf { it != -1 }
-                    ?: MerchantVoucherTypeDef.TYPE_FREE_ONGKIR
-            merchantVoucherAmountType = data.merchantVoucherAmount?.type.takeIf { it != -1 }
-                    ?: MerchantVoucherAmountTypeDef.TYPE_FIXED
-            merchantVoucherAmount = data.merchantVoucherAmount?.amount
-            minimumSpend = data.minimumSpend
-            ownerId = data.merchantVoucherOwner.ownerId
-            validThru = data.validThru.toLong()
-            tnc = data.tnc
-        }
+        return null
     }
 
     private fun mapToDisplayWidget(widgetResponse: ShopLayoutWidget.Widget): ShopHomeDisplayWidgetUiModel {

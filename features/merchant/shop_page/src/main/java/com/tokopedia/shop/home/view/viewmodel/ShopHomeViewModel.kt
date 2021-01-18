@@ -12,7 +12,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
@@ -33,6 +32,7 @@ import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -65,7 +65,7 @@ class ShopHomeViewModel @Inject constructor(
     private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
     private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
     private val shopProductSortMapper: ShopProductSortMapper,
-    private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
+    private val mvcSummeryUseCase: MVCSummaryUseCase,
     private val playWidgetTools: PlayWidgetTools
 ) : BaseViewModel(dispatcherProvider.main) {
 
@@ -199,29 +199,19 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getMerchantVoucherList(
-            shopId: String,
-            numVoucher: Int,
-            shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel
-    ): ShopHomeVoucherUiModel? {
-        val voucherUiModel = shopPageHomeLayoutUiModel.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
-        return voucherUiModel?.let{
-            val merchantVoucherResponse = withContext(dispatcherProvider.io) {
-                getMerchantVoucherListUseCase.createObservable(GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)).toBlocking().first()
-            }
-            it.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse), isError = false)
-        }
-    }
-
-    fun getMerchantVoucherList(shopId: String, numVoucher: Int) {
+    fun getMerchantVoucherCoupon(shopId: String) {
         val result = shopHomeLayoutData.value
         if (result is Success) {
-            launchCatchError(block = {
-                getMerchantVoucherList(shopId, numVoucher, result.data)?.let{
-                    _shopHomeMerchantVoucherLayoutData.value = Success(it)
-                }
+            launchCatchError(dispatcherProvider.io, block = {
+                var uiModel = result.data.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
+                val response =  mvcSummeryUseCase.getResponse(mvcSummeryUseCase.getQueryParams("480136"))
+                uiModel = uiModel?.copy(
+                        data = ShopPageHomeMapper.mapToVoucherCouponUiModel(response.data, shopId),
+                        isError = false
+                )
+                _shopHomeMerchantVoucherLayoutData.postValue(Success(uiModel as ShopHomeVoucherUiModel))
             }) {
-                _shopHomeMerchantVoucherLayoutData.value = Fail(it)
+                _shopHomeMerchantVoucherLayoutData.postValue(Fail(it))
             }
         }
     }

@@ -13,6 +13,10 @@ query mvcCatalogSummaryQuery(${'$'}shopID: String!,${'$'}limit: Int!){
           message
         }
         isShown
+        titles {
+          text
+          icon
+        }
         subTitle
         imageURL
     }

@@ -436,7 +436,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
-                    viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
+                    viewModel?.getMerchantVoucherCoupon(shopId)
+
                 }
                 is Fail -> {
                     onErrorGetShopHomeLayoutData(it.throwable)
@@ -977,7 +978,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onVoucherReloaded() {
-        viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
+        viewModel?.getMerchantVoucherCoupon(shopId)
     }
 
     override fun onVoucherSeeAllClicked() {
