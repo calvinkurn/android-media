@@ -244,6 +244,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OTP_MODE_PIN);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
         startActivityForResult(intent, REQUEST_CODE_PIN_CHALLENGE)
     }
 

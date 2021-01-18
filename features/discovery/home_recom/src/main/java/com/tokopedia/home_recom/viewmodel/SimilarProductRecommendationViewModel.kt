@@ -70,10 +70,10 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
 
                 val recommendationItems = singleRecommendationUseCase.createObservable(params).toBlocking().first()
-                if(recommendationItems.isEmpty()){
+                if(recommendationItems.isEmpty() && page == 1){
                     _filterSortChip.postValue(Response.error(Exception()))
                     _recommendationItem.postValue(Response.error(Exception()))
-                }else {
+                } else {
                     _recommendationItem.postValue(Response.success(recommendationItems.map {
                         it.copy(position = it.position + (page - 1) * COUNT_PRODUCT)
                     }))

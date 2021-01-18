@@ -51,7 +51,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (promoCodeApplied != null) {
-            textInputCoupon.setText(promoCodeApplied)
+            textInputCoupon.textFieldInput.setText(promoCodeApplied)
         }
         progressDialog = ProgressDialog(activity)
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
@@ -71,7 +71,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     }
 
     override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
-        textInputCoupon.setText(promoCheckoutLastSeenModel.promoCode)
+        textInputCoupon.textFieldInput.setText(promoCheckoutLastSeenModel.promoCode)
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {

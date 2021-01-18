@@ -27,12 +27,6 @@ class AutoAdsQueryModule(val context: Context) {
 
     @Provides
     @IntoMap
-    @StringKey(RawQueryKeyObject.QUERY_ADS_BID_INFO)
-    fun queryBidInfo(@ActivityContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_autoads_bid_info)
-
-    @Provides
-    @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_GET_AUTO_ADS)
     fun queryGetAutoAds(@ActivityContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_auto_ads_status)
@@ -52,12 +46,6 @@ class AutoAdsQueryModule(val context: Context) {
     @Provides
     @ActivityContext
     fun providesContext() = context
-
-    @Provides
-    @IntoMap
-    @StringKey(RawQueryKeyObject.QUERY_TOPADS_DEPOSIT)
-    fun queryTopAdsDeposit(@ActivityContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.auto_ads_query_topads_deposit)
 
     @Provides
     @IntoMap

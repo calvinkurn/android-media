@@ -65,6 +65,9 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_FROM_2FA = "isFromTwoFactor"
 
     @JvmField
+    val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
+
+    @JvmField
     val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
 
     @JvmField
@@ -343,6 +346,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
 
+    @JvmField
+    val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
+
+    @JvmField
+    val IMAGE_EDITOR = "$INTERNAL_GLOBAL/image-editor"
 
     @JvmField
     val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?title={title}&url={url}"
