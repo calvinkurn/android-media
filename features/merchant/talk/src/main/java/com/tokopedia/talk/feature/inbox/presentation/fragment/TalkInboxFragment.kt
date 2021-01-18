@@ -657,6 +657,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                     }
                 }
                 show()
+                talkInboxSettingsIcon.hide()
             }
         }
     }

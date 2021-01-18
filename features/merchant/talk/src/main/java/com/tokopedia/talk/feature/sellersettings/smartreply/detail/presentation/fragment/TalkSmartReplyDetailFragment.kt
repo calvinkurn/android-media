@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.sellersettings.smartreply.common.util.TalkSmartReplyConstants
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.di.DaggerTalkSmartReplyDetailComponent
@@ -70,6 +71,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.initMessages()
         setCardText()
         initSwitchState()
         initTextArea()
@@ -78,6 +80,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         setupOnBackPressed()
         initButton()
         observeSetSmartReplyResult()
+        observeButtonState()
     }
 
     override fun getScreenName(): String {
@@ -102,16 +105,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         talkSmartReplySwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.isSmartReplyOn = isChecked
             viewModel.setSmartReply()
-            if(isChecked) {
-                talkSmartReplyDetailSubmitButton.apply {
-                    show()
-                    isEnabled = isChecked
-                }
-            } else {
-                setCardData()
-            }
         }
-        setCardData()
     }
 
     private fun setCardData() {
@@ -128,7 +122,10 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
             setText(viewModel.messageReady)
             addTextChangedListener(object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    viewModel.messageReady = s?.let { it.toString() } ?: ""
+                    viewModel.messageReady = s?.let {
+                        it.toString()
+                    } ?: ""
+                    viewModel.updateMessageChanged(s.toString(), true)
                     setCardText()
                 }
 
@@ -146,6 +143,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
             addTextChangedListener(object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     viewModel.messageNotReady = s?.let { it.toString() } ?: ""
+                    viewModel.updateMessageChanged(s.toString(), false)
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -183,6 +181,33 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         })
     }
 
+    private fun observeButtonState() {
+        viewModel.buttonState.observe(viewLifecycleOwner, Observer {
+            when {
+                it.isReadyTextChanged || it.isReadyTextChanged -> {
+                    talkSmartReplyDetailSubmitButton.apply {
+                        isEnabled = true
+                        show()
+                    }
+                }
+                it.isSwitchActive -> {
+                    talkSmartReplyDetailSubmitButton.show()
+                    setCardData()
+                    enableTextAreas()
+                }
+                !it.isReadyTextChanged && !it.isNotReadyTextChanged -> {
+                    talkSmartReplyDetailSubmitButton.apply {
+                        isEnabled = false
+                    }
+                }
+                !it.isSwitchActive -> {
+                    talkSmartReplyDetailSubmitButton.hide()
+                    disableTextAreas()
+                }
+            }
+        })
+    }
+
     private fun showToaster(successMessage: String, isError: Boolean) {
         val toasterType = if (isError) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
         view?.let {
@@ -200,9 +225,6 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         talkSmartReplyDetailSubmitButton.apply {
             setOnClickListener {
                 saveSmartReplySettings()
-            }
-            if(viewModel.isSmartReplyOn) {
-                show()
             }
         }
     }
@@ -229,5 +251,15 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
                 setFragmentResultWithBundle(TalkSellerSettingsConstants.VALUE_ADD_EDIT)
             }
         })
+    }
+
+    private fun disableTextAreas() {
+        talkSmartReplyDetailUnavailableStockTextArea.textAreaInput.isEnabled = false
+        talkSmartReplyDetailAvailableStockTextArea.textAreaInput.isEnabled = false
+    }
+
+    private fun enableTextAreas() {
+        talkSmartReplyDetailUnavailableStockTextArea.textAreaInput.isEnabled = true
+        talkSmartReplyDetailAvailableStockTextArea.textAreaInput.isEnabled = true
     }
 }

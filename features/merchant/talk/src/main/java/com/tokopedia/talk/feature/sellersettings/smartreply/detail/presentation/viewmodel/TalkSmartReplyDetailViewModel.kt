@@ -1,12 +1,15 @@
 package com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.talk.feature.sellersettings.smartreply.detail.data.TalkSmartReplyDetailButtonState
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecase.DiscussionSetSmartReplySettingsUseCase
 import com.tokopedia.talk.feature.sellersettings.smartreply.detail.domain.usecase.DiscussionSetSmartReplyTemplateUseCase
+import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteButtonState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,13 +27,36 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
     val setSmartReplyResult: LiveData<Result<String>>
         get() = _setSmartReplyResult
 
+    private val _buttonState = MediatorLiveData<TalkSmartReplyDetailButtonState>()
+    val buttonState: LiveData<TalkSmartReplyDetailButtonState>
+        get() = _buttonState
+
+    private val isReadyTextChanged = MutableLiveData<Boolean>()
+    private val isNotReadyTextChanged = MutableLiveData<Boolean>()
+    private val isSwitchActive = MutableLiveData<Boolean>()
+
     var isSmartReplyOn: Boolean = false
     var messageReady: String = ""
     var messageNotReady: String = ""
+    private var originalMessageReady = ""
+    private var originalMessageNotReady = ""
     val shopName: String
         get() = userSession.shopName
     val shopAvatar: String
         get() = userSession.shopAvatar
+
+    init {
+        _buttonState.value = TalkSmartReplyDetailButtonState()
+        _buttonState.addSource(isReadyTextChanged) {
+            updateIsReadyTextChanged(it)
+        }
+        _buttonState.addSource(isNotReadyTextChanged) {
+            updateIsNotReadyTextChanged(it)
+        }
+        _buttonState.addSource(isSwitchActive) {
+            updateIsSwitchActive(it)
+        }
+    }
 
     fun setSmartReply() {
         launchCatchError(block = {
@@ -58,6 +84,30 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
         }) {
             _setSmartReplyResult.postValue(Fail(it))
         }
+    }
+
+    fun initMessages() {
+        originalMessageReady = messageReady
+        originalMessageNotReady = messageNotReady
+    }
+
+    fun updateMessageChanged(message: String, isReady: Boolean) {
+        if (isReady) {
+            updateIsReadyTextChanged(message != originalMessageReady)
+        }
+        updateIsNotReadyTextChanged(message != originalMessageNotReady)
+    }
+
+    private fun updateIsReadyTextChanged(isReadyTextChanged: Boolean) {
+        _buttonState.value = _buttonState.value?.copy(isReadyTextChanged = isReadyTextChanged)
+    }
+
+    private fun updateIsNotReadyTextChanged(isNotReadyTextChanged: Boolean) {
+        _buttonState.value = _buttonState.value?.copy(isNotReadyTextChanged = isNotReadyTextChanged)
+    }
+
+    private fun updateIsSwitchActive(isSwitchActive: Boolean) {
+        _buttonState.value = _buttonState.value?.copy(isSwitchActive = isSwitchActive)
     }
 
 

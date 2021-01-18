@@ -12,6 +12,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -22,6 +24,7 @@ import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.DaggerTa
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.di.TalkSmartReplySettingsComponent
 import com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.viewmodel.TalkSmartReplySettingsViewModel
 import com.tokopedia.talk.R
+import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.getNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.navigation.NavigationController.removeNavigationResult
 import com.tokopedia.talk.feature.sellersettings.common.util.TalkSellerSettingsConstants
@@ -72,6 +75,7 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
         setToolbarTitle()
         setupOnBackPressed()
         onFragmentResult()
+        setSmartReplyInfoClickListener()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -181,6 +185,12 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
 
     private fun hideLoading() {
         talkSmartReplySettingsLoading.hide()
+    }
+
+    private fun setSmartReplyInfoClickListener() {
+        talkSmartReplySubtitle.setOnClickListener {
+            RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${TalkConstants.SMART_REPLY_INFORMATION_PAGE}")
+        }
     }
 
 }
