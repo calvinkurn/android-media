@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -31,20 +30,18 @@
             android:paddingRight="@dimen/dp_9"
             android:paddingBottom="@dimen/dp_10">
 
-            <CheckBox
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/cb_select_shop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:button="@drawable/ic_cart_check_box"
-                android:paddingRight="@dimen/dp_10" />
+                android:layout_marginStart="@dimen/dp_6"
+                android:paddingEnd="@dimen/dp_10" />
 
             <LinearLayout
                 android:id="@+id/ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/cb_select_shop"
-                android:layout_toRightOf="@id/cb_select_shop"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -53,7 +50,6 @@
                     android:layout_width="@dimen/dp_18"
                     android:layout_height="@dimen/dp_18"
                     android:layout_marginEnd="@dimen/dp_4"
-                    android:layout_marginRight="@dimen/dp_4"
                     tools:src="@drawable/ic_badge_shop_official"
                     tools:visibility="visible" />
 
@@ -70,7 +66,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_8"
                     android:text="@string/label_fulfilment_wording"
                     app:labelType="general_light_grey" />
             </LinearLayout>
@@ -82,7 +77,6 @@
                 android:layout_below="@+id/ll"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_toEndOf="@+id/cb_select_shop"
-                android:layout_toRightOf="@+id/cb_select_shop"
                 android:foregroundGravity="center_vertical"
                 app:flexWrap="wrap">
 
@@ -172,8 +166,8 @@
                     android:layout_height="@dimen/dp_20"
                     android:gravity="center_vertical"
                     android:scaleType="fitStart"
-                    tools:src="@color/Unify_G500"
-                    app:unify_image_type="rect" />
+                    app:unify_image_type="rect"
+                    tools:src="@color/Unify_G500" />
 
             </com.google.android.flexbox.FlexboxLayout>
 

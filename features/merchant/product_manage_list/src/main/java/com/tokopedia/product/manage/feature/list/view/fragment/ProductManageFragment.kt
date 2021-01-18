@@ -57,7 +57,7 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATED_STOCK
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.REQUEST_CODE_CAMPAIGN_STOCK
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
@@ -103,13 +103,13 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.Product
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductMoreMenuModel
 import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage.*
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
@@ -142,7 +142,6 @@ import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.Companion.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -152,7 +151,7 @@ import java.util.*
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
-open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductManageAdapterFactoryImpl>(),
+open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManageAdapterFactoryImpl>(),
         ProductViewHolder.ProductViewHolderView,
         ProductMenuViewHolder.ProductMenuListener,
         ProductMultiEditBottomSheet.MultiEditListener,
@@ -182,7 +181,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
     private var defaultFilterOptions: List<FilterOption> = emptyList()
-    private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
+    private var itemsChecked: MutableList<ProductUiModel> = mutableListOf()
     private var performanceMonitoring: PerformanceMonitoring? = null
     private var filterTab: ProductManageFilterTab? = null
 
@@ -195,12 +194,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             when (item) {
                 is SellerFeatureUiModel.MultiEditFeatureWithDataUiModel -> goToSellerAppProductManageMultiEdit()
                 is SellerFeatureUiModel.TopAdsFeatureWithDataUiModel -> goToSellerAppTopAds()
-                is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback(item.data as ProductViewModel)
-                is SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel -> goToSellerAppProductManageThenAddAsFeatured(item.data as ProductViewModel)
-                is SellerFeatureUiModel.StockReminderFeatureWithDataUiModel -> goToSellerAppSetStockReminder(item.data as ProductViewModel)
+                is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback(item.data as ProductUiModel)
+                is SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel -> goToSellerAppProductManageThenAddAsFeatured(item.data as ProductUiModel)
+                is SellerFeatureUiModel.StockReminderFeatureWithDataUiModel -> goToSellerAppSetStockReminder(item.data as ProductUiModel)
                 is SellerFeatureUiModel.ProductManageSetVariantFeatureWithDataUiModel -> goToSellerAppAddProduct()
                 is SellerFeatureUiModel.BroadcastChatProductManageUiModel -> {
-                    val product = item.data as ProductViewModel
+                    val product = item.data as ProductUiModel
                     goToCreateBroadCastChat(product)
                     ProductManageTracking.eventClickBroadcastChat(userId = userSession.userId, productId = product.id, isCarousel = true)
                 }
@@ -378,7 +377,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         ProductManageTracking.eventInventory(tabName)
     }
 
-    private fun onClickFilterTab(filter: FilterTabViewModel) {
+    private fun onClickFilterTab(filter: FilterTabUiModel) {
         showLoadingProgress()
 
         clearAllData()
@@ -412,11 +411,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         viewModel.setFilterOptionWrapper(selectedData)
     }
 
-    override fun onFinishEditPrice(product: ProductViewModel) {
+    override fun onFinishEditPrice(product: ProductUiModel) {
         product.title?.let { product.minPrice?.price?.let { price -> viewModel.editPrice(product.id, price, it) } }
     }
 
-    override fun onFinishEditStock(modifiedProduct: ProductViewModel) {
+    override fun onFinishEditStock(modifiedProduct: ProductUiModel) {
         with(modifiedProduct) {
             viewModel.editStock(id, stock ?: return, title ?: return, status ?: return)
         }
@@ -469,7 +468,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
-    private fun goToCreateBroadCastChat(product: ProductViewModel?) {
+    private fun goToCreateBroadCastChat(product: ProductUiModel?) {
         if (isSellerMigrationEnabled(context)) {
             goToSellerAppProductManageBroadcastChat(product)
         } else {
@@ -511,7 +510,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         RouteManager.route(requireContext(), ApplinkConstInternalGlobal.WEBVIEW, url)
     }
 
-    private fun errorStateBroadcastChat(message: String, action: String, isRetry: Boolean = false, product: ProductViewModel? = null) {
+    private fun errorStateBroadcastChat(message: String, action: String, isRetry: Boolean = false, product: ProductUiModel? = null) {
         Toaster.build(coordinatorLayout, type = Toaster.TYPE_ERROR, text = message, actionText = action, duration = Toaster.LENGTH_SHORT, clickListener = View.OnClickListener {
             if (isRetry) {
                 goToCreateBroadCastChat(product)
@@ -521,7 +520,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }).show()
     }
 
-    private fun goToSellerAppProductManageBroadcastChat(product: ProductViewModel?) {
+    private fun goToSellerAppProductManageBroadcastChat(product: ProductUiModel?) {
         val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
                 .buildUpon()
                 .appendQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_PRODUCT_ID, product?.id)
@@ -550,7 +549,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_TOPADS, arrayListOf(firstAppLink, secondAppLink))
     }
 
-    private fun goToSellerAppProductManageThenSetCashback(product: ProductViewModel) {
+    private fun goToSellerAppProductManageThenSetCashback(product: ProductUiModel) {
         val cacheManagerId = UUID.randomUUID().toString()
         val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
                 .buildUpon()
@@ -569,7 +568,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_CASHBACK, arrayListOf(firstAppLink, secondAppLink))
     }
 
-    private fun goToSellerAppProductManageThenAddAsFeatured(product: ProductViewModel) {
+    private fun goToSellerAppProductManageThenAddAsFeatured(product: ProductUiModel) {
         val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
                 .buildUpon()
                 .appendQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ADD_AS_FEATURED, "true")
@@ -581,7 +580,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FEATURED_PRODUCT, arrayListOf(firstAppLink))
     }
 
-    private fun goToSellerAppSetStockReminder(product: ProductViewModel) {
+    private fun goToSellerAppSetStockReminder(product: ProductUiModel) {
         val cacheManagerId = UUID.randomUUID().toString()
         val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
                 .buildUpon()
@@ -800,7 +799,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<ProductViewModel, ProductManageAdapterFactoryImpl> {
+    override fun createAdapterInstance(): BaseListAdapter<ProductUiModel, ProductManageAdapterFactoryImpl> {
         return ProductManageListAdapter(adapterTypeFactory)
     }
 
@@ -818,7 +817,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         getProductList(page)
     }
 
-    private fun renderProductList(list: List<ProductViewModel>, hasNextPage: Boolean) {
+    private fun renderProductList(list: List<ProductUiModel>, hasNextPage: Boolean) {
         renderList(list, hasNextPage)
         renderCheckedView()
         showAddAsFeaturedProduct()
@@ -880,7 +879,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         if (!keyword.isNullOrEmpty()) add(FilterByKeyword(keyword))
     }
 
-    private fun showProductList(productList: List<ProductViewModel>) {
+    private fun showProductList(productList: List<ProductUiModel>) {
         val hasNextPage = productList.isNotEmpty()
         renderProductList(productList, hasNextPage)
         renderSelectAllCheckBox()
@@ -889,7 +888,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun renderMultiSelectProduct() {
         val shouldShow = adapter.data
-                .filterIsInstance<ProductViewModel>()
+                .filterIsInstance<ProductUiModel>()
                 .isNotEmpty()
 
         multiSelectContainer.showWithCondition(shouldShow)
@@ -1105,7 +1104,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     goToPDP(productId)
                     dialog.dismiss()
                 }
-                val backgroundColor = MethodChecker.getColor(context, com.tokopedia.design.R.color.tkpd_main_green)
+                val backgroundColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 spanText.setSpan(StyleSpan(Typeface.BOLD),
@@ -1231,7 +1230,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun clearFilterAndKeywordIfEmpty() {
         val productList = adapter.data
-                .filterIsInstance<ProductViewModel>()
+                .filterIsInstance<ProductUiModel>()
 
         if (productList.isEmpty()) {
             resetSelectedFilter()
@@ -1305,7 +1304,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         stockInfoBottomSheet.show()
     }
 
-    override fun onClickEditStockButton(product: ProductViewModel) {
+    override fun onClickEditStockButton(product: ProductUiModel) {
         if (product.hasStockReserved) {
             context?.run {
                 startActivityForResult(
@@ -1319,7 +1318,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         ProductManageTracking.eventEditStock(product.id)
     }
 
-    override fun onClickEditVariantPriceButton(product: ProductViewModel) {
+    override fun onClickEditVariantPriceButton(product: ProductUiModel) {
         val editVariantBottomSheet = QuickEditVariantPriceBottomSheet.createInstance(product.id) { result ->
             viewModel.editVariantsPrice(result)
         }
@@ -1327,7 +1326,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         ProductManageTracking.eventClickEditPriceVariant()
     }
 
-    override fun onClickEditVariantStockButton(product: ProductViewModel) {
+    override fun onClickEditVariantStockButton(product: ProductUiModel) {
         if (product.hasStockReserved) {
             context?.run {
                 startActivityForResult(
@@ -1343,12 +1342,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         ProductManageTracking.eventClickEditStockVariant()
     }
 
-    override fun onClickContactCsButton(product: ProductViewModel) {
+    override fun onClickContactCsButton(product: ProductUiModel) {
         goToProductViolationHelpPage()
         ProductManageTracking.eventContactCs(product.id)
     }
 
-    override fun onClickMoreOptionsButton(product: ProductViewModel) {
+    override fun onClickMoreOptionsButton(product: ProductUiModel) {
         hideSoftKeyboard()
 
         if (product.status == MODERATED) {
@@ -1360,13 +1359,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
-    override fun onClickEditPriceButton(product: ProductViewModel) {
+    override fun onClickEditPriceButton(product: ProductUiModel) {
         val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(product, this) }
         editPriceBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
         ProductManageTracking.eventEditPrice(product.id)
     }
 
-    override fun onClickOptionMenu(menu: ProductMenuViewModel) {
+    override fun onClickOptionMenu(menu: ProductMenuUiModel) {
         val product = menu.product
         val productId = product.id
         val productName = product.title ?: ""
@@ -1492,14 +1491,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
-    private fun onRemoveFeaturedProductClicked(productManageViewModel: ProductViewModel) {
+    private fun onRemoveFeaturedProductClicked(productManageUiModel: ProductUiModel) {
         productListFeaturedOnlySize -= 1
         showLoadingProgress()
-        setFeaturedProduct(productManageViewModel.id, ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)
+        setFeaturedProduct(productManageUiModel.id, ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)
     }
 
-    private fun onSetStockReminderClicked(productManageViewModel: ProductViewModel) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.STOCK_REMINDER, productManageViewModel.id, productManageViewModel.title, productManageViewModel.stock.toString())
+    private fun onSetStockReminderClicked(productManageUiModel: ProductUiModel) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.STOCK_REMINDER, productManageUiModel.id, productManageUiModel.title, productManageUiModel.stock.toString())
         startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
     }
 
@@ -1511,8 +1510,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         goToPDP(productId = productId, showTopAdsSheet = true)
     }
 
-    private fun onSetCashbackClicked(productManageViewModel: ProductViewModel) {
-        with(productManageViewModel) {
+    private fun onSetCashbackClicked(productManageUiModel: ProductUiModel) {
+        with(productManageUiModel) {
             context?.let {
                 val intent = ProductManageSetCashbackActivity.createIntent(it, id, title, cashBack, minPrice?.price)
                 startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
@@ -1569,7 +1568,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
-    override fun onClickProductItem(product: ProductViewModel) {
+    override fun onClickProductItem(product: ProductUiModel) {
         goToEditProduct(product.id)
         ProductManageTracking.eventOnProduct(product.id)
     }
@@ -1606,7 +1605,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         startActivityForResult(intent, REQUEST_CODE_PICK_ETALASE)
     }
 
-    override fun onItemClicked(t: ProductViewModel?) {
+    override fun onItemClicked(t: ProductUiModel?) {
         // NO OP
     }
 
@@ -2133,7 +2132,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         pageLoading.hide()
     }
 
-    private fun initHeaderView(productList: List<ProductViewModel>) {
+    private fun initHeaderView(productList: List<ProductUiModel>) {
         if (isLoadingInitialData && showProductEmptyState()) {
             searchBar.showWithCondition(productList.isNotEmpty())
             tabSortFilter.showWithCondition(productList.isNotEmpty())

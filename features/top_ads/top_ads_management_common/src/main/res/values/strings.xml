@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="topads_claim_label">Klaim</string>
     <string name="top_ads_credit_label">Kredit TopAds</string>
     <string name="top_ads_free_claim_label">Kredit TopAds Gratis %1$s</string>
@@ -13,6 +13,7 @@
     <string name="pantau_terus_performa_iklan_produkmu_di_dashboard_topads">Pantau terus performa iklan produkmu di\nDashboard TopAds</string>
     <string name="tambah_kredit_topads_agar_iklanmu_nselalu_tampil_dan_lebih_bersaing">Tambah kredit TopAds agar iklanmu\nselalu tampil dan lebih bersaing</string>
     <string name="tip_memilih_produk">Tip memilih produk</string>
+    <string name="topads_produk_tooltip_text">Tips memilih produk.</string>
     <string name="lanjutkan">Lanjutkan</string>
     <string name="_0_produk">0 produk dipilih</string>
     <string name="add_product">Tambah Produk</string>
@@ -24,7 +25,7 @@
     <string name="error_keyword">Gunakan hanya huruf dan angka</string>
     <string name="error_max_selected_keyword">Batas maksimum 50 kata kunci</string>
     <string name="error_max_length">Maksimum 70 karakter</string>
-    <string name="format_selected_keyword">%d kata kunci dipilih</string>
+    <string name="format_selected_keyword" tools:ignore="PluralsCandidate">%d kata kunci dipilih</string>
     <string name="format_selected_produk">%d produk dipilih</string>
     <string name="no_promoted_product">Produkmu belum\ndiiklankan</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %d</string>
@@ -78,6 +79,7 @@
     <string name="topads_common_keyword_competition">Kompetisi</string>
     <string name="topads_common_kata_kunci_dipilih">%d kata kunci dipilih</string>
     <string name="topads_common_tip_memilih_kata_kunci">Tip memilih kata kunci</string>
+    <string name="topads_empty_tip_memilih_kata_kunci_title">Tips memilih kata kunci</string>
     <string name="topads_common_keyword_empty_title">Belum ada kata kunci dicari</string>
     <string name="topads_common_keyword_empty_desc">Cari kata kunci yang sesuai dengan produkmu</string>
     <string name="topads_common_keyword_edit_bid_sheet_title">Celana Panjang</string>
