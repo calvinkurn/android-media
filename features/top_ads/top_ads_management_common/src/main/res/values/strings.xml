@@ -37,6 +37,7 @@
     <string name="topads_common_title_product_ad_edit">Ubah Iklan Produk</string>
     <string name="topads_common_save_butt">Simpan</string>
     <string name="topads_common_batal">Batal</string>
+    <string name="topads_common_ya">Ya</string>
     <string name="topads_common_mulai_beriklan">Mulai Beriklan</string>
     <string name="topads_group_detail">Detail Grup</string>
     <string name="topads_hari_ini">Hari ini</string>
@@ -123,6 +124,7 @@
     <string name="topads_common_recom_bid">Rekomendasi Rp%s</string>
     <string name="topads_common_headline_klik">/1000 kali tampil</string>
     <string name="topads_common_maximum_daily_budget">Batas maksimum Rp %s</string>
+    <string name="topads_common_keyword_avg_cost">Biaya rata-rata kompetitor %s</string>
 
 
 

@@ -29,6 +29,7 @@ import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
 class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean) -> Unit),
                                     var actionDelete: ((pos: Int) -> Unit),
                                     var actionStatusChange: ((pos: Int, status: Int) -> Unit),
+                                    private var editDone: ((groupId: Int) -> Unit),
                                     private var onClickItem: ((id: Int, priceSpent: String) -> Unit)) : HeadLineAdItemsViewHolder<HeadLineAdItemsItemViewModel>(view) {
 
     companion object {
@@ -118,7 +119,9 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
         }
 
         view.img_menu.setOnClickListener {
-            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName, true)
+            sheet?.onEditAction = {
+                editDone.invoke(item.data.groupId)
+            }
             sheet?.onDeleteClick = {
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionDelete(adapterPosition)
@@ -127,6 +130,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)
             }
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName)
         }
     }
 
