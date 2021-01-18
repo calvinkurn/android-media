@@ -245,6 +245,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupSettingsIcon()
         initSortFilter()
         initErrorPage()
         setupTicker()
@@ -473,7 +474,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             SortFilterItem(getString(R.string.inbox_problem))
         }
         val autoRepliedFilter = SortFilterItem(getString(R.string.inbox_auto_replied))
-        val settingsChip = SortFilterItem("", context?.let { com.tokopedia.iconunify.getIconUnifyDrawable(it, IconUnify.SETTING, ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700)) })
         unrespondedFilter.listener = {
             unrespondedFilter.toggle()
             selectFilter(TalkInboxFilter.TalkInboxUnrespondedFilter())
@@ -498,13 +498,16 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                 problemFilter.type = ChipsUnify.TYPE_NORMAL
             }
         }
-        settingsChip.listener = {
-            goToSellerSettings()
-        }
         if (GlobalConfig.isSellerApp()) {
             return arrayListOf(unrespondedFilter, problemFilter, autoRepliedFilter)
         }
-        return arrayListOf(unrespondedFilter, problemFilter, autoRepliedFilter, settingsChip)
+        return arrayListOf(unrespondedFilter, problemFilter, autoRepliedFilter)
+    }
+
+    private fun setupSettingsIcon() {
+        talkInboxSettingsIcon.setOnClickListener {
+            goToSellerSettings()
+        }
     }
 
     private fun goToSellerSettings() {
