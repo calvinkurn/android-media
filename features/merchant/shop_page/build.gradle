@@ -113,8 +113,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation project(rootProject.ext.libraries.track)
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.icons
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation rootProject.ext.networkDependencies.glide
