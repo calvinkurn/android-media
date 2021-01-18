@@ -45,9 +45,6 @@ class GetAllShopInfoUseCaseTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
-
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -61,8 +58,7 @@ class GetAllShopInfoUseCaseTest {
                 getShopTotalFollowersUseCase,
                 shopStatusTypeUseCase,
                 topAdsAutoTypeUseCase,
-                topAdsDashboardDepositUseCase,
-                coroutineTestRule.dispatchers
+                topAdsDashboardDepositUseCase
         )
     }
 
