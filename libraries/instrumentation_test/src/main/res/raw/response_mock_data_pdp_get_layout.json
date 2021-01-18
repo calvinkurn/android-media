@@ -775,26 +775,6 @@
             "data": []
           },
           {
-            "name": "pdp_1",
-            "type": "product_list",
-            "data": []
-          },
-          {
-            "name": "pdp_2",
-            "type": "product_list",
-            "data": []
-          },
-          {
-            "name": "pdp_3",
-            "type": "product_list",
-            "data": []
-          },
-          {
-            "name": "pdp_4",
-            "type": "product_list",
-            "data": []
-          },
-          {
             "name": "pdp_5",
             "type": "product_list",
             "data": []

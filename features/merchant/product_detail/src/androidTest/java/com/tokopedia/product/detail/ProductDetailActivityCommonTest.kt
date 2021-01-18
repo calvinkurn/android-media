@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.util
+package com.tokopedia.product.detail
 
 import android.content.Context
 import android.content.Intent
@@ -7,15 +7,15 @@ import android.os.Handler
 import android.os.Looper
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.utils.view.ViewUtils.screenShotAndSave
 
 
 /**
  * Created by Yehezkiel on 10/01/21
+ * Activity mock for testing, use this if you want to adding new function on activity
  */
-class ProductDetailActivityTest : BaseSimpleActivity() {
+class ProductDetailActivityCommonTest : BaseSimpleActivity() {
 
     var productId: String = ""
 
@@ -24,7 +24,7 @@ class ProductDetailActivityTest : BaseSimpleActivity() {
         private const val PRODUCT_DETAIL_TAG = "productDetailTag"
 
         @JvmStatic
-        fun createIntent(context: Context, productId: String) = Intent(context, ProductDetailActivityTest::class.java).apply {
+        fun createIntent(context: Context, productId: String) = Intent(context, ProductDetailActivityCommonTest::class.java).apply {
             putExtra(PARAM_PRODUCT_ID, productId)
         }
     }
@@ -51,7 +51,7 @@ class ProductDetailActivityTest : BaseSimpleActivity() {
 
     fun takeScreenShot(screenshotName: String) {
         Handler(Looper.getMainLooper()).post {
-            screenShotAndSave(window.decorView, "dark_mode", screenshotName)
+            screenShotAndSave(window.decorView, "", screenshotName)
         }
     }
 

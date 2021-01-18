@@ -15,9 +15,9 @@ fun isDarkMode(): Boolean {
     return isDarkMode.toBoolean()
 }
 
-fun setupDarkModeTest() {
+fun setupDarkModeTest(forceDarkMode: Boolean = false) {
     val context = InstrumentationRegistry.getInstrumentation().targetContext
     val application = context.applicationContext as InstrumentationTestApp
 
-    application.setDarkMode(isDarkMode())
+    application.setDarkMode(forceDarkMode)
 }

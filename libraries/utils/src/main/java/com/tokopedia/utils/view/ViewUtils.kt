@@ -31,10 +31,11 @@ object ViewUtils {
         val imageDir = File(path, dir)
 
         try {
-            if (!imageDir.exists()) {
+            if (!imageDir.exists() && dir.isNotEmpty()) {
                 imageDir.mkdirs()
             }
-            val imagePath = File(imageDir, "${fileName}.png")
+
+            val imagePath = if (dir.isNotEmpty()) File(imageDir, "${fileName}.png") else File(path, "${fileName}.png")
 
             val fos = FileOutputStream(imagePath)
             bitmap?.compress(Bitmap.CompressFormat.PNG, 100, fos)

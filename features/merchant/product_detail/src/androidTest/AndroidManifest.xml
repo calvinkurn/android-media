@@ -13,7 +13,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
-            android:name=".util.ProductDetailActivityTest"
+            android:name=".ProductDetailActivityCommonTest"
             android:theme="@style/Theme.White"/>
     </application>
 </manifest>
