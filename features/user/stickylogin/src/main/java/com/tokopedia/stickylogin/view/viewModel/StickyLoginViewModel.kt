@@ -46,6 +46,11 @@ class StickyLoginViewModel @Inject constructor(
         }
     }
 
+    public override fun onCleared() {
+        super.onCleared()
+        stickyLoginUseCase.cancelJobs()
+    }
+
     companion object {
         const val ERROR_DATA_NOT_FOUND = "data not found"
     }

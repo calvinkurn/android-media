@@ -15,6 +15,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,33 +35,49 @@ class StickyLoginViewModelTest {
             StickyLoginTickerDataModel.TickerDetailDataModel(layout = StickyLoginConstant.LAYOUT_FLOATING)
     )))
 
+    private val mockThrowable = Throwable("Opss!")
+
     @Before
     fun setup() {
         viewModel = StickyLoginViewModel(stickyLoginUseCase, dispatcher)
         viewModel.stickyContent.observeForever(observer)
     }
 
+    @After
+    fun tearDown() {
+        viewModel.onCleared()
+        viewModel.stickyContent.removeObserver(observer)
+    }
+
     @Test
     fun `get content for - success`() {
         val page = StickyLoginConstant.Page.HOME
+        stickyLoginUseCase.setParam(viewModel.generateParams(page))
 
-        every {
-            stickyLoginUseCase.execute(any(), any())
-        } answers {
-            firstArg<(StickyLoginTickerDataModel) -> Unit>().invoke(mockSuccessResponse.response)
+        every { stickyLoginUseCase.execute(any(), any()) } answers {
+            firstArg<(StickyLoginTickerDataModel.TickerResponse) -> Unit>().invoke(mockSuccessResponse)
         }
 
         viewModel.getStickyContent(page)
 
-        verify {
-            observer.onChanged(Success(mockSuccessResponse.response))
-        }
+        verify { observer.onChanged(Success(mockSuccessResponse.response)) }
 
-//        assertEquals(viewModel.stickyContent.value as Success, mockSuccessResponse.response)
+        assertEquals((viewModel.stickyContent.value as Success).data.tickerDataModels[0].layout, StickyLoginConstant.LAYOUT_FLOATING)
     }
 
     @Test
     fun `get content - fail`() {
+        val page = StickyLoginConstant.Page.HOME
+        stickyLoginUseCase.setParam(viewModel.generateParams(page))
 
+        every { stickyLoginUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        viewModel.getStickyContent(page)
+
+        verify { observer.onChanged(Fail(mockThrowable)) }
+
+        assertEquals((viewModel.stickyContent.value as Fail).throwable, mockThrowable)
     }
 }
