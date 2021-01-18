@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.analytics.performance.StatisticIdlingResourceListener
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoring
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringInterface
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
@@ -21,9 +22,10 @@ import com.tokopedia.statistic.view.fragment.StatisticFragment
 class StatisticActivity : BaseActivity(), StatisticPerformanceMonitoringListener {
 
     private val statisticFragment by lazy { StatisticFragment.newInstance() }
-    private val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
+    val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
         StatisticPerformanceMonitoring()
     }
+    var pltListener: StatisticIdlingResourceListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
@@ -44,6 +46,7 @@ class StatisticActivity : BaseActivity(), StatisticPerformanceMonitoringListener
 
     override fun stopPerformanceMonitoring() {
         performanceMonitoring.stopPerformanceMonitoring()
+        pltListener?.stopMonitoring()
     }
 
     private fun showFragment() {

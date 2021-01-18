@@ -22,7 +22,7 @@ import com.tokopedia.homenav.common.util.animateProfileName
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
+import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
@@ -37,7 +37,7 @@ import java.util.*
 class AccountHeaderViewHolder(itemView: View,
                               private val mainNavListener: MainNavListener,
                               private val userSession: UserSessionInterface
-): AbstractViewHolder<AccountHeaderViewModel>(itemView), CoroutineScope {
+): AbstractViewHolder<AccountHeaderDataModel>(itemView), CoroutineScope {
 
 
     private val masterJob = SupervisorJob()
@@ -63,15 +63,15 @@ class AccountHeaderViewHolder(itemView: View,
         private const val ANIMATION_DURATION_MS: Long = 300
     }
 
-    override fun bind(element: AccountHeaderViewModel, payloads: MutableList<Any>) {
+    override fun bind(element: AccountHeaderDataModel, payloads: MutableList<Any>) {
         bind(element)
     }
 
-    override fun bind(element: AccountHeaderViewModel) {
+    override fun bind(element: AccountHeaderDataModel) {
         initViewHolder()
         when(element.loginState) {
-            AccountHeaderViewModel.LOGIN_STATE_LOGIN -> renderLoginState(element)
-            AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS -> renderLoginAs()
+            AccountHeaderDataModel.LOGIN_STATE_LOGIN -> renderLoginState(element)
+            AccountHeaderDataModel.LOGIN_STATE_LOGIN_AS -> renderLoginAs()
             else -> renderNonLoginState()
         }
     }
@@ -86,7 +86,7 @@ class AccountHeaderViewHolder(itemView: View,
         layoutLogin.visibility = View.GONE
     }
 
-    private fun renderLoginState(element: AccountHeaderViewModel) {
+    private fun renderLoginState(element: AccountHeaderDataModel) {
         layoutLogin.visibility = View.VISIBLE
         val userImage: ImageUnify = layoutLogin.findViewById(R.id.img_user_login)
         val usrBadge: ImageUnify = layoutLogin.findViewById(R.id.usr_badge)
@@ -128,7 +128,7 @@ class AccountHeaderViewHolder(itemView: View,
         userImage.isClickable = false
         tvName.isClickable = false
         if (element.isGetUserNameError) {
-            tvName.text = MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT_PROFILE)
+            tvName.text = MethodChecker.fromHtml(AccountHeaderDataModel.ERROR_TEXT_PROFILE)
         } else {
             configureNameAndBadgeSwitcher(tvName, getCurrentGreetings(), element.userName, usrBadge, getCurrentGreetingsIconStringUrl(), element.badge)
         }
@@ -149,7 +149,7 @@ class AccountHeaderViewHolder(itemView: View,
             tvOvo.visible()
             usrOvoBadge.visible()
             if (element.isGetOvoError && element.isGetSaldoError) {
-                tvOvo.text = AccountHeaderViewModel.ERROR_TEXT_OVO
+                tvOvo.text = AccountHeaderDataModel.ERROR_TEXT_OVO
                 usrOvoBadge.setImageResource(R.drawable.ic_nav_ovo)
             } else if (element.isGetOvoError && !element.isGetSaldoError) {
                 tvOvo.text = element.saldo
@@ -171,8 +171,8 @@ class AccountHeaderViewHolder(itemView: View,
             var subtext = ""
             var fulltext = ""
             if (element.isGetShopError) {
-                subtext = MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT_SHOP_TRY).toString()
-                fulltext = String.format(AccountHeaderViewModel.ERROR_TEXT_SHOP, subtext)
+                subtext = MethodChecker.fromHtml(AccountHeaderDataModel.ERROR_TEXT_SHOP_TRY).toString()
+                fulltext = String.format(AccountHeaderDataModel.ERROR_TEXT_SHOP, subtext)
             } else {
                 subtext = MethodChecker.fromHtml(element.shopName).toString()
                 fulltext = String.format(TEXT_TOKO_SAYA, subtext)
@@ -237,8 +237,8 @@ class AccountHeaderViewHolder(itemView: View,
         layoutLoginAs.visibility = View.VISIBLE
         val imgUserLoginAs: ImageView = layoutLoginAs.findViewById(R.id.img_user_login_as)
         val btnLoginAs: UnifyButton = layoutLoginAs.findViewById(R.id.btn_login_as)
-        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
-        val profilePic = getSharedPreference().getString(AccountHeaderViewModel.KEY_PROFILE_PICTURE, "") ?: ""
+        val name = getSharedPreference().getString(AccountHeaderDataModel.KEY_USER_NAME, "") ?: ""
+        val profilePic = getSharedPreference().getString(AccountHeaderDataModel.KEY_PROFILE_PICTURE, "") ?: ""
         imgUserLoginAs.loadImageCircle(profilePic)
         val nameTrimmed = name.split(" ")
         btnLoginAs.text = String.format(TEXT_LOGIN_AS, nameTrimmed[0])
@@ -250,7 +250,7 @@ class AccountHeaderViewHolder(itemView: View,
     }
 
     private fun getSharedPreference(): SharedPreferences {
-        return itemView.context.getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
+        return itemView.context.getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 
     private fun getCurrentGreetings() : String {
