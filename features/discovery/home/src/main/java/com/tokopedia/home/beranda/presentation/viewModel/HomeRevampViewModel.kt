@@ -498,8 +498,7 @@ open class HomeRevampViewModel @Inject constructor(
     private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let {
             var newHomeRevampViewModel = homeDataModel
-            newHomeRevampViewModel = evaluateGeolocationComponent(newHomeRevampViewModel)
-            if(isNeedShowGeoLocation) newHomeRevampViewModel = onRemoveSuggestedReview(it)
+            if(isNeedShowGeoLocation) newHomeRevampViewModel = onRemoveSuggestedReview(newHomeRevampViewModel)
             newHomeRevampViewModel = evaluatePlayWidget(newHomeRevampViewModel)
             newHomeRevampViewModel = evaluateBuWidgetData(newHomeRevampViewModel)
             newHomeRevampViewModel = evaluateRecommendationSection(newHomeRevampViewModel)
