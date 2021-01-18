@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.mainnav.view.viewmodel.ErrorStateOngoingTransactionModel
+import com.tokopedia.homenav.mainnav.view.datamodel.ErrorStateOngoingTransactionModel
 import kotlinx.android.synthetic.main.holder_transaction_error_state.view.*
 
 class ErrorStateOngoingTransactionViewHolder(itemView: View,

@@ -104,6 +104,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                     ?: urlOrPath
         }.toMutableList()
 
+        originalImages = originalImageUrl
+
         when (imagePickerResult.size) {
             5 -> {
                 imageData = (imageUrlOrPathList.map {

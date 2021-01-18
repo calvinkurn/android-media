@@ -4,7 +4,6 @@ import android.text.Html
 import android.view.View
 import android.widget.CheckBox
 import android.widget.CompoundButton
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
@@ -12,6 +11,7 @@ import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 
@@ -19,7 +19,7 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
     private val buyEmas: CheckBox = itemView.findViewById(R.id.cb_emas)
     private val tvEmasTitle: Typography = itemView.findViewById(R.id.tv_emas_title)
     private val tvEmasDesc: Typography = itemView.findViewById(R.id.tv_emas_sub_title)
-    private val imgEmasInfo: ImageView = itemView.findViewById(R.id.img_emas_info)
+    private val imgEmasInfo: IconUnify = itemView.findViewById(R.id.img_emas_info)
     private val llContainer: LinearLayout = itemView.findViewById(R.id.ll_container)
 
     fun bindViewHolder(egoldAttributeModel: EgoldAttributeModel) {

@@ -80,12 +80,16 @@ class OrderAppWidget : AppWidgetProvider() {
     }
 
     override fun onEnabled(context: Context) {
-        AppWidgetHelper.setOrderAppWidgetEnabled(context, true)
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+        cacheHandler.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, true)
+        cacheHandler.applyEditor()
         super.onEnabled(context)
     }
 
     override fun onDisabled(context: Context) {
-        AppWidgetHelper.setOrderAppWidgetEnabled(context, false)
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+        cacheHandler.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
+        cacheHandler.applyEditor()
         super.onDisabled(context)
     }
 
