@@ -9,6 +9,7 @@ import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
+
 /**
  * Created by Rafli Syam on 2020-02-04.
  */

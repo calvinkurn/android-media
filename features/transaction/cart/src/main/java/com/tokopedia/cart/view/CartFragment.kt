@@ -1191,12 +1191,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartItemQuantityPlusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
         cartPageAnalytics.eventClickAtcCartClickButtonPlus()
-        cartAdapter.increaseQuantity(position, parentPosition)
     }
 
     override fun onCartItemQuantityMinusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
         cartPageAnalytics.eventClickAtcCartClickButtonMinus()
-        cartAdapter.decreaseQuantity(position, parentPosition)
     }
 
     override fun onCartItemQuantityReseted(position: Int, parentPosition: Int, needRefreshItemView: Boolean) {
@@ -3470,6 +3468,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse() {
+        cartAdapter.checkForShipmentForm()
         val params = generateParamValidateUsePromoRevamp(false, -1, -1, true)
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
