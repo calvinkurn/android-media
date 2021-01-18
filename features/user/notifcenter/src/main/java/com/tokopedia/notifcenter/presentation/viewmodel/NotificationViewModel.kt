@@ -117,7 +117,6 @@ class NotificationViewModel @Inject constructor(
                         if (role == RoleType.BUYER) {
                             loadTopAdsBannerData()
                         }
-                        clearNotifCounter(role)
                     }
                 },
                 {
@@ -298,7 +297,7 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
-    private fun clearNotifCounter(
+    fun clearNotifCounter(
             @RoleType
             role: Int?
     ) {

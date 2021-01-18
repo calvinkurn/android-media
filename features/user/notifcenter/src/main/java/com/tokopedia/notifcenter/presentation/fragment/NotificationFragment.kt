@@ -209,7 +209,12 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     private fun setupObserver() {
         viewModel.notificationItems.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> renderNotifications(it.data)
+                is Success -> {
+                    renderNotifications(it.data)
+                    if (!viewModel.hasFilter() && isVisible) {
+                        viewModel.clearNotifCounter(containerListener?.role)
+                    }
+                }
                 is Fail -> showGetListError(it.throwable)
                 else -> {
                 }
