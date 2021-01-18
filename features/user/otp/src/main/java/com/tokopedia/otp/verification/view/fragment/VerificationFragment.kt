@@ -53,6 +53,8 @@ import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.pin.PinUnify
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -150,9 +152,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         super.onResume()
         context?.let {
             if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
-                    phoneCallBroadcastReceiver.registerReceiver(it, this)
-                }
+                registerIncomingPhoneCall(it)
             } else {
                 smsBroadcastReceiver.register(it, getOtpReceiverListener())
             }
@@ -160,10 +160,23 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         showKeyboard()
     }
 
+    private fun registerIncomingPhoneCall(it: Context) {
+        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
+        val disableAutoReadMissCall = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_DISABLE_AUTOREAD_MISSCALL, false)
+        if (disableAutoReadMissCall) {
+            return
+        }
+        if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
+            phoneCallBroadcastReceiver.registerReceiver(it, this)
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
-            if (::phoneCallBroadcastReceiver.isInitialized) activity?.let { phoneCallBroadcastReceiver.unregisterReceiver(it) }
+            if (::phoneCallBroadcastReceiver.isInitialized){
+                activity?.let { phoneCallBroadcastReceiver.unregisterReceiver(it) }
+            }
         } else {
             if (::smsBroadcastReceiver.isInitialized) activity?.unregisterReceiver(smsBroadcastReceiver)
         }
@@ -695,6 +708,8 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
 
         private const val REGEX_PHONE_NUMBER = """[+()\-\s]"""
         private const val REGEX_PHONE_NUMBER_REGION = "^(\\+\\d{1,2})"
+
+        private const val REMOTE_CONFIG_KEY_DISABLE_AUTOREAD_MISSCALL = "android_disable_autoread_misscall"
 
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = VerificationFragment()

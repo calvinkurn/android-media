@@ -48,6 +48,13 @@ class ShopSettingsInfoViewModel @Inject constructor (
     val updateScheduleResult: LiveData<Result<String>>
         get() = _updateScheduleResult
 
+    fun resetAllLiveData() {
+        _checkOsMerchantTypeData.value = null
+        _shopBasicData.value = null
+        _shopStatusData.value = null
+        _updateScheduleResult.value = null
+    }
+
     fun getShopData(shopId: String, includeOS: Boolean) {
         launchCatchError(dispatchers.io, block = {
             _shopBasicData.postValue(Success(getShopBasicDataAsync().await()))

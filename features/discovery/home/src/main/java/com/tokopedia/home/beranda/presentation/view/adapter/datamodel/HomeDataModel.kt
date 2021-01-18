@@ -7,7 +7,8 @@ data class HomeDataModel(
         val homeFlag: HomeFlag = HomeFlag(),
         val list: List<Visitable<*>> = listOf(),
         val isCache: Boolean = false,
-        val isFirstPage: Boolean = false
+        val isFirstPage: Boolean = false,
+        val isProcessingAtf: Boolean = false
 ) : Visitable<HomeViewType> {
 
     override fun type(typeFactory: HomeViewType): Int {
