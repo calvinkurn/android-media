@@ -186,14 +186,11 @@ class NotificationViewModelTest {
     @Test fun `loadFirstPageNotification as buyer should return data properly`() {
         // given
         val topAdsImageView = arrayListOf(TopAdsImageViewModel())
-        val notifFilter = Resource.success(ClearNotifCounterResponse())
         val expectedValue = NotifcenterDetailMapper().mapFirstPage(
                 notifCenterDetailResponse,
                 needSectionTitle = false,
                 needLoadMoreButton = false
         )
-
-        val notifFilterFlow = flow { emit(notifFilter) }
 
         val role = RoleType.BUYER
         viewModel.reset() // filter id
@@ -212,10 +209,6 @@ class NotificationViewModelTest {
             onSuccess.invoke(expectedValue)
         }
 
-        every {
-            clearNotifUseCase.clearNotifCounter(role)
-        } returns notifFilterFlow
-
         // when
         viewModel.loadFirstPageNotification(role)
 
@@ -223,7 +216,6 @@ class NotificationViewModelTest {
         verifyOrder {
             notificationItemsObserver.onChanged(Success(expectedValue))
             topAdsBannerObserver.onChanged(NotificationTopAdsBannerUiModel(topAdsImageView.first()))
-            clearNotifObserver.onChanged(notifFilter)
         }
     }
 
