@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.CreditCardBank
+import com.tokopedia.paylater.domain.model.SimulationBank
 import com.tokopedia.paylater.presentation.adapter.CreditCardAvailableBanksAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.base_list_bottomsheet_widget.*
@@ -30,7 +31,7 @@ class CreditCardAvailableBanksBottomSheet : BottomSheetUnify() {
     }
 
     private val childLayoutRes = R.layout.base_list_bottomsheet_widget
-    private var bankList: ArrayList<CreditCardBank> = arrayListOf()
+    private var bankList: ArrayList<SimulationBank> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

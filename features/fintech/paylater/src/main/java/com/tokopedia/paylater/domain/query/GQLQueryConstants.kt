@@ -75,6 +75,7 @@ const val GQL_CREDIT_CARD_SIMULATION = """query cc_fetchpdpcreditcardsimulation(
       cicilan {
         tenure_id
         tenure_desc
+        min_amount
         installment_amount
         total_bank
         is_popular

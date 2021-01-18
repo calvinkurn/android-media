@@ -27,7 +27,7 @@ class CreditCardViewModel @Inject constructor(
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
         @CoroutineBackgroundDispatcher val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
-    val creditCardSimulationResultLiveData = MutableLiveData<Result<ArrayList<SimulationTableResponse>>>()
+    val creditCardSimulationResultLiveData = MutableLiveData<Result<CreditCardSimulationResult>>()
     val creditCardPdpMetaInfoLiveData = MutableLiveData<Result<CreditCardPdpMetaData>>()
     val creditCardBankResultLiveData = MutableLiveData<Result<ArrayList<BankCardListItem>>>()
 
@@ -46,7 +46,7 @@ class CreditCardViewModel @Inject constructor(
                 delay(250)
                 return@withContext CreditCardResponseMapper.populateDummyCreditCardData()
             }
-            creditCardSimulationResultLiveData.value = Success(creditCardData)
+            //creditCardSimulationResultLiveData.value = Success(creditCardData)
         }, onError = {
             creditCardSimulationResultLiveData.value = Fail(it)
         })
@@ -69,14 +69,17 @@ class CreditCardViewModel @Inject constructor(
     }
 
 
-    private fun onCreditCardSimulationSuccess(creditCardGetSimulationResponse: CreditCardGetSimulationResponse) {
-        Timber.d(creditCardGetSimulationResponse.toString())
-        getCreditCardData()
+    private fun onCreditCardSimulationSuccess(pdpCreditCardSimulationData: PdpCreditCardSimulation?) {
+        if (pdpCreditCardSimulationData?.creditCardGetSimulationResult != null) {
+            pdpCreditCardSimulationData.creditCardGetSimulationResult.creditCardInstallmentList?.getOrNull(0)?.isSelected = true
+            creditCardSimulationResultLiveData.value = Success(pdpCreditCardSimulationData.creditCardGetSimulationResult)
+        } else onCreditCardSimulationError(PdpSimulationException.CreditCardNullDataException(SIMULATION_DATA_FAILURE))
+        //getCreditCardData()
     }
 
     private fun onCreditCardSimulationError(throwable: Throwable) {
-        getCreditCardData()
-        //creditCardSimulationResultLiveData.value = Fail(throwable)
+        //getCreditCardData()
+        creditCardSimulationResultLiveData.value = Fail(throwable)
     }
 
     private fun onPdpInfoMetaDataSuccess(creditCardPdpMetaData: CreditCardPdpMetaData?) {

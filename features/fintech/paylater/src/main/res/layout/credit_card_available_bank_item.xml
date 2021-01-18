@@ -14,26 +14,38 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivBank"
-            android:layout_width="@dimen/unify_space_40"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_0"
             android:layout_marginStart="@dimen/credit_card_dp_10"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
             android:scaleType="centerInside"
-            app:unify_image_corner_radius="0"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="H,1:1"
-            app:layout_constraintBottom_toBottomOf="@+id/tvInstallments"
+            app:layout_constraintEnd_toEndOf="@+id/imageGuideLine"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/llBenefits" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="0" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/imageGuideLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.15" />
 
         <LinearLayout
             android:id="@+id/llBenefits"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/credit_card_dp_10"
-            android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginEnd="@dimen/credit_card_dp_10"
+            app:layout_constraintBottom_toTopOf="@+id/tvInstallments"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ivBank"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imageGuideLine"
+            app:layout_constraintTop_toTopOf="@+id/ivBank"
+            app:layout_constraintVertical_chainStyle="packed">
 
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/benefitLabel1"
@@ -41,8 +53,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/credit_card_offer_label_sp_10"
                 app:labelTitle="Diskon 10%"
-                app:labelType="general_light_green"
-                 />
+                app:labelType="general_light_green" />
 
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/benefitLabel2"
@@ -62,14 +73,15 @@
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_2"
+            android:layout_marginTop="@dimen/unify_space_2"
             android:layout_marginEnd="@dimen/credit_card_dp_10"
-            android:layout_marginBottom="@dimen/unify_space_12"
             android:text="Cicilan 3, 6, 12, 18, 24 bulan"
             android:textColor="@color/Unify_N700_68"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/ivBank"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/llBenefits"
-            app:layout_constraintTop_toBottomOf="@id/llBenefits"
+            app:layout_constraintTop_toBottomOf="@+id/llBenefits"
             app:typographyType="body_3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

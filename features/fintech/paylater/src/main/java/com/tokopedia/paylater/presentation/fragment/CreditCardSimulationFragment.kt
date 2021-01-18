@@ -9,11 +9,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PdpSimulationComponent
-import com.tokopedia.paylater.domain.model.CreditCardBank
-import com.tokopedia.paylater.domain.model.SimulationTableResponse
+import com.tokopedia.paylater.domain.model.CreditCardSimulationResult
+import com.tokopedia.paylater.domain.model.SimulationBank
 import com.tokopedia.paylater.presentation.adapter.CreditCardAvailableBanksAdapter
 import com.tokopedia.paylater.presentation.adapter.CreditCardSimulationAdapter
 import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
@@ -24,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_credit_card_simulation.*
 import kotlinx.android.synthetic.main.paylater_daftar_widget.view.*
 import javax.inject.Inject
 
-class CreditCardSimulationFragment : BaseDaggerFragment(){
+class CreditCardSimulationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -34,7 +35,8 @@ class CreditCardSimulationFragment : BaseDaggerFragment(){
         viewModelProvider.get(CreditCardViewModel::class.java)
     }
 
-    private var bankList = ArrayList<CreditCardBank>()
+    private var bankList = ArrayList<SimulationBank>()
+    private var smallBankList = ArrayList<SimulationBank>()
     private var creditCardSimulationCallback: CreditCardSimulationCallback? = null
 
     override fun initInjector() {
@@ -63,7 +65,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment(){
     private fun initAdapter() {
         rvAvailableBanks.adapter = CreditCardAvailableBanksAdapter()
         rvAvailableBanks.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        (rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).setBankList(bankList)
+        //(rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).setBankList(bankList)
     }
 
     private fun initRegisterWidget() {
@@ -100,23 +102,46 @@ class CreditCardSimulationFragment : BaseDaggerFragment(){
         })
     }
 
-    private fun onSimulationDataLoaded(data: ArrayList<SimulationTableResponse>) {
+    private fun onSimulationDataLoaded(data: CreditCardSimulationResult) {
         /*shimmerGroup.gone()
         simulationDataGroup.visible()*/
-        rvCreditCardSimulation.adapter = CreditCardSimulationAdapter(data) { bankList ->
-            setBankData(bankList)
+        populateFields(data)
+        data.creditCardInstallmentList?.let {
+            if (it.isNotEmpty()) {
+                rvCreditCardSimulation.adapter = CreditCardSimulationAdapter(it) { bankList ->
+                    setBankData(bankList)
+                }
+                rvCreditCardSimulation.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                if (!it.getOrNull(0)?.simulationBankList.isNullOrEmpty()) {
+                    rvCreditCardSimulation.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    setBankData(it[0].simulationBankList!!)
+                }
+            }
         }
-        rvCreditCardSimulation.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        setBankData(data[0].installmentData)
     }
 
-    private fun setBankData(bankList: ArrayList<CreditCardBank>) {
-        this.bankList = bankList
-        val smallList = ArrayList(bankList.slice(0..3))
-        tvValidCreditCardBanks.text = "Berlaku kartu kredit dari: ${bankList.size} bank"
-        tvSeeAll.text = "Lihat Semua (${bankList.size - smallList.size})"
-        if (bankList.size > 4) tvSeeAll.visible()
-        (rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).setBankList(smallList)
+    private fun populateFields(data: CreditCardSimulationResult) {
+        if (!data.tickerInformation.isNullOrEmpty())
+            tickerSimulation.setHtmlDescription(data.tickerInformation)
+        else tickerSimulation.gone()
+        if (!data.ctaDescriptionText.isNullOrEmpty() && !data.ctaMainLabelText.isNullOrEmpty()) {
+            creditCardRegisterWidget.tvTitle.text = data.ctaMainLabelText
+            creditCardRegisterWidget.tvDescription.text = data.ctaDescriptionText
+        }
+    }
+
+    private fun setBankData(bankList: ArrayList<SimulationBank>?) {
+        bankList?.let {
+            this.bankList = it
+            val smallBankListSize = it.size.coerceAtMost(4)
+            smallBankList.clear()
+            smallBankList.addAll(it.slice(0 until smallBankListSize))
+            tvValidCreditCardBanks.text = "Berlaku kartu kredit dari: ${it.size} bank"
+            tvSeeAll.text = "Lihat Semua (${it.size - smallBankListSize})"
+            if (it.size > MAX_BANK_LIST_VIEW_SIZE) tvSeeAll.visible()
+            (rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).setBankList(smallBankList)
+        }
+
     }
 
     private fun onSimulationLoadingFail(throwable: Throwable) {
@@ -162,8 +187,11 @@ class CreditCardSimulationFragment : BaseDaggerFragment(){
     }
 
     companion object {
+        const val MAX_BANK_LIST_VIEW_SIZE = 4
+
         @JvmStatic
         fun newInstance() = CreditCardSimulationFragment()
+
     }
 
     interface CreditCardSimulationCallback {

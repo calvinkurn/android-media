@@ -4,11 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.paylater.domain.model.CreditCardBank
+import com.tokopedia.paylater.domain.model.SimulationBank
 import com.tokopedia.paylater.presentation.viewholder.CreditCardBankInfoViewHolder
 import com.tokopedia.paylater.presentation.viewholder.CreditCardBankShimmerViewHolder
 
 class CreditCardAvailableBanksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var bankList = arrayListOf<CreditCardBank>()
+    private var bankList = arrayListOf<SimulationBank>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -35,7 +36,7 @@ class CreditCardAvailableBanksAdapter : RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
 
-    fun setBankList(bankList: ArrayList<CreditCardBank>) {
+    fun setBankList(bankList: ArrayList<SimulationBank>) {
         this.bankList = bankList
         notifyDataSetChanged()
     }

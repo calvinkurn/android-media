@@ -1,6 +1,8 @@
 package com.tokopedia.paylater.domain.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 
 data class CreditCardGetSimulationResponse(
@@ -19,7 +21,7 @@ data class CreditCardSimulationResult(
         @SerializedName("principal_amount")
         val principalAmount: Float?,
         @SerializedName("ticket_info")
-        val ticketInformation: String?,
+        val tickerInformation: String?,
         @SerializedName("cta_main_label")
         val ctaMainLabelText: String?,
         @SerializedName("cta_description")
@@ -31,6 +33,8 @@ data class CreditCardInstallmentItem(
         val tenureId: Int?,
         @SerializedName("tenure_desc")
         val tenureDescription: String?,
+        @SerializedName("min_amount")
+        val minAmount: Float?,
         @SerializedName("installment_amount")
         val installmentAmount: Float?,
         @SerializedName("total_bank")
@@ -38,11 +42,13 @@ data class CreditCardInstallmentItem(
         @SerializedName("is_popular")
         val isPopular: Boolean?,
         @SerializedName("bank")
-        val simulationBankList: ArrayList<SimulationBank?>?,
+        val simulationBankList: ArrayList<SimulationBank>?,
         @SerializedName("is_disabled")
         val isDisabled: Boolean?,
+        var isSelected: Boolean
 )
 
+@Parcelize
 data class SimulationBank(
         @SerializedName("bank_id")
         val bankId: Int?,
@@ -54,4 +60,4 @@ data class SimulationBank(
         val availableDurationList: ArrayList<Int>?,
         @SerializedName("bank_image_url")
         val bankImageUrl: String?,
-)
+): Parcelable
