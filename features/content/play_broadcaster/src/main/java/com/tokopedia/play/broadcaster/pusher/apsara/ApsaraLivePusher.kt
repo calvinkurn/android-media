@@ -110,7 +110,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         if (ingestUrl.isNotEmpty()) {
             this.mIngestUrl = ingestUrl
         }
-        if (this.mIngestUrl.isBlank()) {
+        if (mIngestUrl.isEmpty() || mIngestUrl.isBlank()) {
             throw IllegalArgumentException("ingestUrl must not be empty")
         }
 //        if (!validUrl(ingestUrl)) {
