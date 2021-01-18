@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_ovo"
-    android:layout_marginTop="@dimen/dp_8"
     android:layout_marginLeft="@dimen/dp_14"
     android:layout_marginStart="@dimen/dp_14"
     android:layout_marginRight="@dimen/dp_10"
