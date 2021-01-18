@@ -76,7 +76,7 @@ class TalkReplyViewHolder(view: View,
     private fun showDisplayName(userName: String, userId: String, isSeller: Boolean, shopId: String) {
         if(userName.isNotEmpty()) {
             itemView.replyDisplayName.apply{
-                text = userName
+                text = HtmlCompat.fromHtml(userName, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
                 setOnClickListener {
                     threadListener.onUserDetailsClicked(userId, isSeller, shopId)
                 }

@@ -492,7 +492,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         }
         autoRepliedFilter.listener = {
             autoRepliedFilter.toggle()
-//            selectFilter(TalkInboxFilter.TalkInboxProblemFilter())
+            selectFilter(TalkInboxFilter.TalkInboxAutorepliedFilter())
             if (autoRepliedFilter.type == ChipsUnify.TYPE_SELECTED) {
                 unrespondedFilter.type = ChipsUnify.TYPE_NORMAL
                 problemFilter.type = ChipsUnify.TYPE_NORMAL

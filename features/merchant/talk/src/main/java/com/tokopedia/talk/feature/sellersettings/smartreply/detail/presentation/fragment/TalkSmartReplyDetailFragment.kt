@@ -70,6 +70,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setCardText()
         initSwitchState()
         initTextArea()
         setDescriptionText()
@@ -118,12 +119,17 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         talkSmartReplyDetailCard.setData(viewModel.shopName, viewModel.shopAvatar)
     }
 
+    private fun setCardText() {
+        talkSmartReplyDetailCard.setSmartReply(viewModel.messageReady)
+    }
+
     private fun initTextArea() {
         talkSmartReplyDetailAvailableStockTextArea.textAreaInput.apply {
             setText(viewModel.messageReady)
             addTextChangedListener(object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     viewModel.messageReady = s?.let { it.toString() } ?: ""
+                    setCardText()
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

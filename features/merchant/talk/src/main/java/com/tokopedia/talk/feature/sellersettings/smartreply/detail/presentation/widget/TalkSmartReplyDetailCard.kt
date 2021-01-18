@@ -29,4 +29,8 @@ class TalkSmartReplyDetailCard : BaseCustomView {
         talkSmartReplyDetailSellerName.text = sellerName
         talkSmartReplyDetailSellerThumbnail.loadImage(sellerThumbnail)
     }
+
+    fun setSmartReply(smartReply: String) {
+        talkSmartReplyDetailPreview.text = smartReply
+    }
 }
