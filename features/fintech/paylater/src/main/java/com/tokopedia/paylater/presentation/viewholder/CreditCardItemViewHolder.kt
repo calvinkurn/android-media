@@ -30,9 +30,13 @@ class CreditCardItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
                 tvBenefitsMore.text = "+${size} Lainnya"
             else tvBenefitsMore.gone()
             if (creditCardItem.isSpecialOffer == true) {
+                clCreditCard.background = ContextCompat.getDrawable(context, R.drawable.bg_credit_card_border_recommendation)
                 ivRecommendationBadge.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_credit_card_header_recommendation))
                 recommendationGroup.visible()
-            } else recommendationGroup.gone()
+            } else {
+                clCreditCard.background = null
+                recommendationGroup.gone()
+            }
 
         }
     }

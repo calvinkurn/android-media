@@ -22,7 +22,7 @@ import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.PayLaterSimulationGatewayItem
 import com.tokopedia.paylater.domain.model.SimulationItemDetail
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
-import com.tokopedia.paylater.helper.PayLaterException
+import com.tokopedia.paylater.helper.PdpSimulationException
 import com.tokopedia.paylater.helper.PayLaterHelper
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.paylater.presentation.widget.*
@@ -122,7 +122,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             is IllegalStateException -> {
                 simulationGlobalError.setType(GlobalError.PAGE_FULL)
             }
-            is PayLaterException.PayLaterNotApplicableException -> {
+            is PdpSimulationException.PayLaterNotApplicableException -> {
                 payLaterTermsEmptyView.visible()
                 tickerSimulation.setHtmlDescription(context?.getString(R.string.pay_later_not_applicable_ticker_text)
                         ?: "")

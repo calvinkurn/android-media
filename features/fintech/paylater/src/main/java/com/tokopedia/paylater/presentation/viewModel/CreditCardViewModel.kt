@@ -10,6 +10,7 @@ import com.tokopedia.paylater.domain.model.*
 import com.tokopedia.paylater.domain.usecase.CreditCardBankDataUseCase
 import com.tokopedia.paylater.domain.usecase.CreditCardPdpMetaInfoUseCase
 import com.tokopedia.paylater.domain.usecase.CreditCardSimulationUseCase
+import com.tokopedia.paylater.helper.PdpSimulationException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -79,12 +80,15 @@ class CreditCardViewModel @Inject constructor(
     }
 
     private fun onPdpInfoMetaDataSuccess(creditCardPdpMetaData: CreditCardPdpMetaData?) {
-        Timber.d(creditCardPdpMetaData.toString())
+        if (creditCardPdpMetaData != null && !creditCardPdpMetaData.pdpInfoContentList.isNullOrEmpty())
+            creditCardPdpMetaInfoLiveData.value = Success(creditCardPdpMetaData)
+        else onPdpInfoMetaDataError(PdpSimulationException.CreditCardNullDataException(CREDIT_CARD_TNC_DATA_FAILURE))
     }
 
     private fun onPdpInfoMetaDataError(throwable: Throwable) {
         //getCreditCardData()
         //creditCardPdpMetaInfoLiveData.value = Fail(throwable)
+        creditCardPdpMetaInfoLiveData.value = Fail(throwable)
     }
 
 
@@ -106,7 +110,7 @@ class CreditCardViewModel @Inject constructor(
 
     companion object {
         const val SIMULATION_DATA_FAILURE = "NULL DATA"
-        const val PAY_LATER_DATA_FAILURE = "NULL DATA"
+        const val CREDIT_CARD_TNC_DATA_FAILURE = "NULL DATA"
         const val APPLICATION_STATE_DATA_FAILURE = "NULL_DATA"
         const val PAY_LATER_NOT_APPLICABLE = "PayLater Not Applicable"
     }

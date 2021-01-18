@@ -12,7 +12,7 @@ import com.tokopedia.paylater.domain.model.*
 import com.tokopedia.paylater.domain.usecase.PayLaterApplicationStatusUseCase
 import com.tokopedia.paylater.domain.usecase.PayLaterProductDetailUseCase
 import com.tokopedia.paylater.domain.usecase.PayLaterSimulationUseCase
-import com.tokopedia.paylater.helper.PayLaterException
+import com.tokopedia.paylater.helper.PdpSimulationException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -57,7 +57,7 @@ class PayLaterViewModel @Inject constructor(
                     ::onPayLaterSimulationDataError,
                     amount
             )
-        else onPayLaterSimulationDataError(PayLaterException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
+        else onPayLaterSimulationDataError(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
     }
 
 
@@ -68,7 +68,7 @@ class PayLaterViewModel @Inject constructor(
             }
             if (payLaterGatewayList.isNotEmpty())
                 payLaterSimulationResultLiveData.value = Success(payLaterGatewayList)
-            else onPayLaterSimulationDataError(PayLaterException.PayLaterNullDataException(SIMULATION_DATA_FAILURE))
+            else onPayLaterSimulationDataError(PdpSimulationException.PayLaterNullDataException(SIMULATION_DATA_FAILURE))
         }, onError = {
             onPayLaterSimulationDataError(it)
         })
@@ -89,7 +89,7 @@ class PayLaterViewModel @Inject constructor(
             }
             if (isResponseValid)
                 payLaterApplicationStatusResultLiveData.value = Success(userCreditApplicationStatus)
-            else onPayLaterApplicationStatusError(PayLaterException.PayLaterNullDataException(APPLICATION_STATE_DATA_FAILURE))
+            else onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(APPLICATION_STATE_DATA_FAILURE))
         }, onError = { onPayLaterApplicationStatusError(it) })
     }
 
@@ -101,7 +101,7 @@ class PayLaterViewModel @Inject constructor(
             payLaterData?.also {
                 payLaterActivityResultLiveData.value = Success(it)
             }
-                    ?: onPayLaterDataError(PayLaterException.PayLaterNullDataException(PAY_LATER_DATA_FAILURE))
+                    ?: onPayLaterDataError(PdpSimulationException.PayLaterNullDataException(PAY_LATER_DATA_FAILURE))
         }, onError = {
             onPayLaterDataError(it)
         })

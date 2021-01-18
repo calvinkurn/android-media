@@ -5,7 +5,9 @@
     android:id="@+id/creditCardLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:card_type="shadow">
+    android:layout_marginTop="@dimen/pay_later_benefit_margin_dp_6"
+    android:layout_marginBottom="@dimen/pay_later_benefit_margin_dp_6"
+   >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clCreditCard"
@@ -17,10 +19,10 @@
             android:id="@+id/ivRecommendationBadge"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_32"
-            app:unify_image_corner_radius="0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="0" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/icRecommendationLike"
@@ -58,11 +60,11 @@
             android:layout_marginStart="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_8"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/ic_credit_card_demo"
             app:layout_constraintDimensionRatio="H, 4:3"
             app:layout_constraintEnd_toStartOf="@+id/imageGuideLine"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivRecommendationBadge"
+            app:srcCompat="@drawable/ic_credit_card_demo"
             app:unify_image_corner_radius="8" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -103,21 +105,21 @@
             android:id="@+id/benefitLabel1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/credit_card_dp_10"
             app:labelTitle="Easy Approval"
             app:labelType="general_dark_green"
-            android:layout_marginTop="@dimen/credit_card_dp_10"
-            app:layout_constraintTop_toBottomOf="@+id/ivCreditCard"
-            app:layout_constraintStart_toStartOf="@+id/ivCreditCard"/>
+            app:layout_constraintStart_toStartOf="@+id/ivCreditCard"
+            app:layout_constraintTop_toBottomOf="@+id/ivCreditCard" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/benefitLabel2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
             app:labelTitle="100% Cashback"
             app:labelType="general_dark_green"
-            android:layout_marginStart="@dimen/unify_space_4"
             app:layout_constraintStart_toEndOf="@+id/benefitLabel1"
-            app:layout_constraintTop_toTopOf="@id/benefitLabel1"/>
+            app:layout_constraintTop_toTopOf="@id/benefitLabel1" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvBenefitsMore"
@@ -125,28 +127,28 @@
             android:layout_height="wrap_content"
             android:text="+2 Lainnya"
             android:textColor="@color/Unify_N700_68"
+            app:layout_constraintBottom_toBottomOf="@id/benefitLabel2"
             app:layout_constraintStart_toEndOf="@id/benefitLabel2"
             app:layout_constraintTop_toTopOf="@id/benefitLabel2"
-            app:layout_constraintBottom_toBottomOf="@id/benefitLabel2"
-            app:typographyType="body_3"/>
+            app:typographyType="small" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvBenefitsDesc"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/credit_card_dp_10"
-            android:layout_marginBottom="@dimen/unify_space_24"
-            app:layout_constraintTop_toBottomOf="@id/benefitLabel1"
-            app:layout_constraintStart_toStartOf="@id/ivCreditCard"
-            app:layout_constraintEnd_toEndOf="@id/tvCreditCardName"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:layout_marginBottom="@dimen/unify_space_16"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:listitem="@layout/base_payment_offer_description_item"/>
+            app:layout_constraintEnd_toEndOf="@id/tvCreditCardName"
+            app:layout_constraintStart_toStartOf="@id/ivCreditCard"
+            app:layout_constraintTop_toBottomOf="@id/benefitLabel1"
+            tools:listitem="@layout/base_payment_offer_description_item" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/recommendationGroup"
-            app:constraint_referenced_ids="ivRecommendationBadge, icRecommendationLike, tvBestOffer"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="ivRecommendationBadge, icRecommendationLike, tvBestOffer" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
 

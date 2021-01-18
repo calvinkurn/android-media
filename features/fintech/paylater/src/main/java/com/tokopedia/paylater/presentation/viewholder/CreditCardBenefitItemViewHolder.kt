@@ -12,10 +12,10 @@ import kotlinx.android.synthetic.main.base_payment_offer_description_item.view.*
 
 class CreditCardBenefitItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bindData(benefitText: String, isRecommended: Boolean = false) {
+    fun bindData(benefitText: String, isRecommended: Boolean?) {
         view.apply {
             tvBenefitsDesc.text = benefitText
-            if (isRecommended) {
+            if (isRecommended == true) {
                 ivBenefitsHeader.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_credit_card_benifits_star))
             } else {
                 AppCompatResources.getDrawable(context, R.drawable.iconunify_check_big)?.let {

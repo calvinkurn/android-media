@@ -6,12 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PdpSimulationComponent
-import com.tokopedia.paylater.domain.model.PayLaterProductData
-import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
+import com.tokopedia.paylater.domain.model.CreditCardPdpMetaData
+import com.tokopedia.paylater.presentation.adapter.CreditCardTncAdapter
 import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_credit_card_tnc.*
 import javax.inject.Inject
 
 class CreditCardTncFragment : BaseDaggerFragment() {
@@ -45,22 +49,20 @@ class CreditCardTncFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        rvPdpInfo.adapter = CreditCardTncAdapter()
+        rvPdpInfo.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        btnMoreInfo.setOnClickListener {
+
+        }
     }
 
     private fun observeViewModel() {
-        /*payLaterViewModel.payLaterActivityResultLiveData.observe(viewLifecycleOwner, {
+        creditCardViewModel.creditCardPdpMetaInfoLiveData.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> onPayLaterDataLoaded(it.data)
-                is Fail -> onPayLaterDataLoadingFail(it.throwable)
+                is Success -> onPdpInfoMetaDataLoaded(it.data)
+                is Fail -> onPdpInfoMetaDataLoadingFailed(it.throwable)
             }
         })
-
-        payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> onPayLaterApplicationStatusLoaded(it.data)
-                is Fail -> onPayLaterApplicationLoadingFail(it.throwable)
-            }
-        })*/
     }
 
     override fun getScreenName(): String {
@@ -68,11 +70,12 @@ class CreditCardTncFragment : BaseDaggerFragment() {
     }
 
 
-    private fun onPayLaterDataLoaded(data: PayLaterProductData) {
-        creditCardTnCCallback?.getApplicationStatusInfo()
+    private fun onPdpInfoMetaDataLoaded(data: CreditCardPdpMetaData) {
+        // pdpInfoContentList is non nullable here in case of Success
+        (rvPdpInfo.adapter as CreditCardTncAdapter).setData(data.pdpInfoContentList!!)
     }
 
-    private fun onPayLaterDataLoadingFail(throwable: Throwable) {
+    private fun onPdpInfoMetaDataLoadingFailed(throwable: Throwable) {
         /*  payLaterOffersShimmerGroup.gone()
           when (throwable) {
               is UnknownHostException, is SocketTimeoutException -> {
@@ -93,16 +96,6 @@ class CreditCardTncFragment : BaseDaggerFragment() {
               payLaterOffersShimmerGroup.visible()
               creditCardTnCCallback?.getPayLaterProductInfo()
           }*/
-    }
-
-    // set payLater + application status data in pager adapter
-    private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
-
-    }
-
-    private fun onPayLaterApplicationLoadingFail(throwable: Throwable) {
-        // set payLater data in view pager
-
     }
 
     fun setCreditCardTncCallback(creditCardTnCCallback: CreditCardTnCCallback) {

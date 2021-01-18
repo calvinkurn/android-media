@@ -89,7 +89,7 @@
             android:id="@+id/rvPaymentDesciption"
             android:layout_width="match_parent"
             android:layout_height="@dimen/unify_space_0"
-            android:layout_marginTop="@dimen/unify_space_2"
+            android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginBottom="@dimen/unify_space_8"
             android:clipToPadding="false"
             app:layout_constraintBottom_toTopOf="@+id/btnHowToUse"
