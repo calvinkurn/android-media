@@ -54,7 +54,8 @@ class PlayViewerVideoBufferGovernor (
     }
 
     private fun stopPlayer() {
-        playVideoManager.stop(resetState = false)
+        if (playVideoManager.isVideoLive()) playVideoManager.release()
+        else playVideoManager.stop(resetState = false)
     }
 
     companion object {
