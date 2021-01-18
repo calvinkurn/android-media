@@ -1,8 +1,8 @@
 package com.tokopedia.top_ads_headline.view.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE_CREATE_HEADLINE
+import com.tokopedia.top_ads_headline.Constants.HEADLINE
+import com.tokopedia.top_ads_headline.Constants.SOURCE_CREATE_HEADLINE
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
@@ -32,7 +32,7 @@ class TopAdsHeadlineKeyViewModel @Inject constructor(
     }
 
     fun getBidInfo(suggestion: List<DataSuggestions>, onSuccess: ((List<TopadsBidInfo.DataItem>) -> Unit), onEmpty: (() -> Unit)) {
-        bidInfoUseCase.setParams(suggestion, ParamObject.HEADLINE, SOURCE_CREATE_HEADLINE)
+        bidInfoUseCase.setParams(suggestion, HEADLINE, SOURCE_CREATE_HEADLINE)
         bidInfoUseCase.executeQuerySafeMode({
             if (it.topadsBidInfo.data.isEmpty())
                 onEmpty()

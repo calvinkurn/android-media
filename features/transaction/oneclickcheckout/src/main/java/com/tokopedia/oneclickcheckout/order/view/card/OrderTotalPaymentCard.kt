@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.card
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
@@ -21,7 +21,7 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
 
     private val layoutPayment by lazy { view.findViewById<View>(R.id.layout_payment) }
     private val tvTotalPaymentValue by lazy { view.findViewById<Typography>(R.id.tv_total_payment_value) }
-    private val btnOrderDetail by lazy { view.findViewById<ImageView>(R.id.btn_order_detail) }
+    private val btnOrderDetail by lazy { view.findViewById<IconUnify>(R.id.btn_order_detail) }
     private val btnPay by lazy { view.findViewById<UnifyButton>(R.id.btn_pay) }
     private val tickerPaymentError by lazy { view.findViewById<Ticker>(R.id.ticker_payment_error) }
 

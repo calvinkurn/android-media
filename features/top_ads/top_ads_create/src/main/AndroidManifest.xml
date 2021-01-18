@@ -12,7 +12,7 @@
             android:name="com.tokopedia.topads.view.activity.OnboardingActivity"
             android:label="@string/mulai_beriklan"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -30,14 +30,14 @@
             android:name="com.tokopedia.topads.view.activity.StepperActivity"
             android:label="@string/create_group"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name="com.tokopedia.topads.view.activity.CreationOnboardingActivity"
             android:label="@string/topads_create_onboarding_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -56,7 +56,7 @@
             android:name="com.tokopedia.topads.view.activity.AdCreationChooserActivity"
             android:label="@string/creat_ad"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -74,7 +74,7 @@
         <activity
             android:name="com.tokopedia.topads.view.activity.KeywordSearchActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
 
         </activity>
     </application>

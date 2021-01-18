@@ -60,10 +60,10 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
-                app:srcCompat="@drawable/ic_cart_grayscale_20"
-                android:tint="@color/white"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
+                android:tint="@color/Unify_Static_White"
+                app:srcCompat="@drawable/ic_cart_grayscale_20"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -76,7 +76,7 @@
                 android:gravity="center"
                 android:textSize="@dimen/fontSize_lvl10"
                 android:textStyle="bold"
-                android:textColor="@color/Neutral_N0"
+                android:textColor="@color/Unify_Static_White"
                 android:visibility="invisible"
                 tools:text="99"/>
 
