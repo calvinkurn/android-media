@@ -46,6 +46,7 @@ object ApplinkConstInternalGlobal {
     const val PARAM_IS_SKIP_OTP = "is_skip_otp"
     const val PARAM_ENABLE_2FA = "enable_2fa"
     const val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
+    const val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
 
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
