@@ -34,7 +34,8 @@
         android:padding="@dimen/spacing_lvl4"
         android:scaleType="centerInside"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:srcCompat="@drawable/liveness_ic_icon_md_arrow_back" />
+        app:srcCompat="@drawable/liveness_ic_icon_md_arrow_back"
+        android:contentDescription="@string/liveness_cancel"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
