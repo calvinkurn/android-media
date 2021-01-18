@@ -2,20 +2,15 @@ package com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
-import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
-import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -98,10 +93,10 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
                 itemView.tv_uoh_product_name?.text = item.dataObject.metadata.products.first().title
                 itemView.tv_uoh_product_desc?.text = item.dataObject.metadata.products.first().inline1.label
                 if (item.dataObject.metadata.products.first().imageURL.isNotEmpty()) {
-                    itemView.cv_uoh_product?.visible()
-                    ImageHandler.loadImage(itemView.context, itemView.iv_uoh_product, item.dataObject.metadata.products.first().imageURL, null)
+                    itemView.iv_uoh_product?.visible()
+                    ImageHandler.loadImageRounded2(itemView.context, itemView.iv_uoh_product, item.dataObject.metadata.products.first().imageURL, 6f.toPx())
                 } else {
-                    itemView.cv_uoh_product?.gone()
+                    itemView.iv_uoh_product?.gone()
                 }
             }
 

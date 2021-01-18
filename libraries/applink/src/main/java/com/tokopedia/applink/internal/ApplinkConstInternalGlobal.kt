@@ -66,6 +66,8 @@ object ApplinkConstInternalGlobal {
 
     @JvmField
     val PARAM_IS_SUCCESS_REGISTER = "isSuccessRegister"
+    @JvmField
+    val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
 
     @JvmField
     val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
