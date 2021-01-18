@@ -1,4 +1,4 @@
-package com.tokopedia.explore.view.viewmodel
+package com.tokopedia.explore.view.uimodel
 
 /**
  * @author by milhamj on 20/07/18.

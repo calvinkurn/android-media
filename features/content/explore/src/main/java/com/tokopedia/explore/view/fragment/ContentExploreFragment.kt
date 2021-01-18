@@ -1,17 +1,14 @@
 package com.tokopedia.explore.view.fragment
 
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
-import com.tokopedia.track.TrackApp
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -35,12 +32,12 @@ import com.tokopedia.explore.view.adapter.ExploreCategoryAdapter
 import com.tokopedia.explore.view.adapter.ExploreImageAdapter
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactoryImpl
 import com.tokopedia.explore.view.listener.ContentExploreContract
-import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel
-import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel
-import com.tokopedia.explore.view.viewmodel.ExploreViewModel
+import com.tokopedia.explore.view.uimodel.ExploreCategoryViewModel
+import com.tokopedia.explore.view.uimodel.ExploreImageViewModel
+import com.tokopedia.explore.view.uimodel.ExploreViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.user.session.UserSessionInterface
-
 import javax.inject.Inject
 
 /**
@@ -166,14 +163,18 @@ class ContentExploreFragment :
                 false)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                if (imageAdapter.list[position] is ExploreImageViewModel) {
-                    return IMAGE_SPAN_SINGLE
-                } else if (imageAdapter.list[position] is LoadingMoreModel) {
-                    return IMAGE_SPAN_COUNT
-                } else if (imageAdapter.list[position] is EmptyModel) {
-                    return IMAGE_SPAN_COUNT
+                when {
+                    imageAdapter.list[position] is ExploreImageViewModel -> {
+                        return IMAGE_SPAN_SINGLE
+                    }
+                    imageAdapter.list[position] is LoadingMoreModel -> {
+                        return IMAGE_SPAN_COUNT
+                    }
+                    imageAdapter.list[position] is EmptyModel -> {
+                        return IMAGE_SPAN_COUNT
+                    }
+                    else -> return 0
                 }
-                return 0
             }
         }
         exploreImageRv.layoutManager = gridLayoutManager
@@ -212,7 +213,7 @@ class ContentExploreFragment :
     override fun onSuccessGetExploreData(exploreViewModel: ExploreViewModel, clearData: Boolean) {
         analytics.eventImpressionSuccessGetData()
 
-        if (!exploreViewModel.exploreImageViewModelList.isEmpty()) {
+        if (exploreViewModel.exploreImageViewModelList.isNotEmpty()) {
             loadImageData(exploreViewModel.exploreImageViewModelList)
         } else if (clearData) {
             showEmpty()
@@ -283,14 +284,14 @@ class ContentExploreFragment :
                 categoryAdapter.list[position].isActive = true
                 categoryAdapter.notifyItemChanged(position)
             }
-            if (categoryId == ExploreCategoryAdapter.CAT_ID_AFFILIATE && !affiliatePreference.isCoachmarkExploreAsAffiliateShown(userSession.getUserId())) {
-                view.getViewTreeObserver().addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            if (categoryId == ExploreCategoryAdapter.CAT_ID_AFFILIATE && !affiliatePreference.isCoachmarkExploreAsAffiliateShown(userSession.userId)) {
+                view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        view.getViewTreeObserver().removeOnGlobalLayoutListener(this)
+                        view.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         val originalPost = IntArray(2)
                         view.getLocationOnScreen(originalPost)
-                        val xpos2 = originalPost[0] + view.getWidth()
-                        val ypos2 = originalPost[1] + view.getHeight()
+                        val xpos2 = originalPost[0] + view.width
+                        val ypos2 = originalPost[1] + view.height
                         val arrayList = intArrayOf(originalPost[0], originalPost[1], xpos2, ypos2)
                         val coachMarkItem = CoachMarkItem(
                                 view,
