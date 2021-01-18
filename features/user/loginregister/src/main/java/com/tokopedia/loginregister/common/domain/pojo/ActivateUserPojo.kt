@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.registerinitial.domain.pojo
+package com.tokopedia.loginregister.common.domain.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -9,9 +9,15 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class ActivateUserPojo(
+        @SerializedName("activate_user")
+        @Expose
+        var data: ActivateUserData = ActivateUserData()
+)
+
+data class ActivateUserData(
         @SerializedName("is_success")
         @Expose
-        var isSuccess: Boolean = false,
+        var isSuccess: Int = 0,
         @SerializedName("message")
         @Expose
         var message: String = "",
