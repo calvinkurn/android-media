@@ -107,7 +107,7 @@ ext {
     unifyIconsVersion = '1.0.1'
     unifyPrinciplesVersion = '1.3.5'
     unifyComponentsVersion = '1.1.57'
-    unifyCoachMarkVersion = '1.2.8.1'
+    unifyCoachMarkVersion = '1.2.10'
     unifyCalendarVersion = '1.1.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.5'
