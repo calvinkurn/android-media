@@ -124,31 +124,31 @@ class MainNavViewModel @Inject constructor(
     }
 
     fun addInitialWidgetList(visitables: List<Visitable<*>>) {
-        val newMainNavList = _mainNavListVisitable
+        val newMainNavList = _mainNavListVisitable.toMutableList()
         newMainNavList.addAll(visitables)
         _mainNavListVisitable = newMainNavList
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = _mainNavListVisitable))
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
     fun deleteWidget(position: Int) {
-        val newMainNavList = _mainNavListVisitable
+        val newMainNavList = _mainNavListVisitable.toMutableList()
         newMainNavList.removeAt(position)
         _mainNavListVisitable = newMainNavList
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = _mainNavListVisitable))
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
     fun deleteWidget(visitable: Visitable<*>) {
-        val newMainNavList = _mainNavListVisitable
+        val newMainNavList = _mainNavListVisitable.toMutableList()
         newMainNavList.remove(visitable)
         _mainNavListVisitable = newMainNavList
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = _mainNavListVisitable))
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
     fun deleteWidgetList(visitables: List<Visitable<*>>) {
-        val newMainNavList = _mainNavListVisitable
+        val newMainNavList = _mainNavListVisitable.toMutableList()
         newMainNavList.removeAll(visitables)
         _mainNavListVisitable = newMainNavList
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = _mainNavListVisitable))
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
     fun setPageSource(pageSource: String = "") {
