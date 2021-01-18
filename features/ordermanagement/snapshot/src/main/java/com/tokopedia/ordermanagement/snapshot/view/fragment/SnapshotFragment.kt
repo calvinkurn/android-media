@@ -1,12 +1,13 @@
-package com.tokopedia.ordermanagement.snapshot.ui.main
+package com.tokopedia.ordermanagement.snapshot.view.fragment
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.ordermanagement.snapshot.R
+import com.tokopedia.ordermanagement.snapshot.ui.main.SnapshotViewModel
 
 class SnapshotFragment : Fragment() {
 

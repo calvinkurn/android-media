@@ -7,7 +7,7 @@
         android:label="@string/title_snapshot"
         android:supportsRtl="true"
         android:theme="@style/Theme.Androidtokopediacore">
-        <activity android:name=".SnapshotActivity">
+        <activity android:name=".view.activity.SnapshotActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
