@@ -3,27 +3,69 @@
   "mode": "subset",
   "query": [
     {
-      "event": "view_item_list",
+      "businessUnit": "",
+      "clientId": "{{.+}}",
       "eventCategory": "chat detail",
+      "currentSite": "",
       "item_list": "/chat - search chat",
+      "screenName": "",
+      "event": "view_item_list",
+      "userId": "{{.*}}",
       "eventAction": "view on product thumbnail",
+      "sessionIris": "{{.+}}",
       "items": [
         {
+          "dimension87": "",
+          "dimension88": "",
+          "item_id": "{{.+}}",
+          "price": "{{.+}}",
           "dimension40": "/chat - search chat",
-          "list": "/chat - search chat"
+          "item_name": "{{.+}}",
+          "currency": "{{.+}}",
+          "list": "/chat - search chat",
+          "item_brand": "{{.+}}",
+          "item_variant": "{{.+}}",
+          "item_category": ""
         }
       ]
     },
     {
-      "event": "select_content",
+      "businessUnit": "",
+      "clientId": "{{.+}}",
       "eventCategory": "chat detail",
+      "currentSite": "",
       "item_list": "/chat - search chat",
+      "screenName": "",
+      "event": "select_content",
+      "userId": "{{.*}}",
       "eventAction": "click on product thumbnail",
+      "sessionIris": "{{.+}}",
       "items": [
         {
-          "dimension40": "/chat - search chat"
+          "item_id": "{{.+}}",
+          "dimension40": "/chat - search chat",
+          "item_name": "{{.+}}",
+          "currency": "{{.+}}",
+          "item_brand": "{{.+}}",
+          "item_variant": "{{.+}}",
+          "item_category": ""
         }
       ]
+    },
+    {
+      "eventCategory": "chat detail",
+      "event": "clickChatDetail",
+      "userId": "{{.*}}",
+      "eventAction": "click atc on product thumbnail",
+      "sessionIris": "{{.+}}",
+      "eventLabel": "chat - {{.*}}"
+    },
+    {
+      "eventCategory": "chat detail",
+      "event": "clickChatDetail",
+      "eventAction": "click buy on product thumbnail",
+      "sessionIris": "{{.+}}",
+      "eventLabel": "chat - {{.*}}"
     }
   ]
 }

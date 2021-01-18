@@ -7,9 +7,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -65,8 +65,6 @@ class TopChatRoomActivityTest {
 
     private lateinit var activity: TopChatRoomActivityStub
 
-    private var idlingResource: IdlingResource? = null
-
     private var firstPageChat: GetExistingChatPojo = AndroidFileUtil.parse(
             "success_get_chat_first_page.json",
             GetExistingChatPojo::class.java
@@ -105,7 +103,7 @@ class TopChatRoomActivityTest {
     @ExperimentalCoroutinesApi
     @Before
     fun before() {
-        idlingResource = SimpleIdlingResource.getIdlingResource()
+        idlingResource = SimpleIdlingResource().getCountingIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
 
         Dispatchers.setMain(TestCoroutineDispatcher())
@@ -155,7 +153,7 @@ class TopChatRoomActivityTest {
             map[eventName] = value
 
             if (eventName.equals(AddToCartBundler.KEY)) {
-                SimpleIdlingResource.decrement()
+                idlingResource?.decrement()
             }
         }
 
@@ -191,7 +189,7 @@ class TopChatRoomActivityTest {
         val viewInteraction = onView(AllOf.allOf(isDisplayed(), withId(R.id.recycler_view))).check(matches(isDisplayed()))
         var position = 1
         var idToClick = R.id.tv_occ
-        viewInteraction.perform(actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(position, ClickChildViewWithIdAction.clickChildViewWithId(idToClick)))
+        viewInteraction.perform(actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(position, ClickChildViewWithIdAction(idlingResource).clickChildViewWithId(idToClick)))
 
         // this is problematic
         var enableIDle = false
@@ -211,6 +209,10 @@ class TopChatRoomActivityTest {
 
     private fun setupActivityIntent(messageId: String = "") {
         mActivityTestRule.activity.intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
+    }
+
+    companion object {
+        var idlingResource: CountingIdlingResource? = null
     }
 
 }

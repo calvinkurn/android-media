@@ -4,8 +4,10 @@ import androidx.annotation.VisibleForTesting
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.idling.CountingIdlingResource
 
-object SimpleIdlingResource {
-    private const val RESOURCE = "GLOBAL"
+class SimpleIdlingResource {
+    companion object {
+        private const val RESOURCE = "GLOBAL"
+    }
 
     private var idlingResource: CountingIdlingResource? = null
 
@@ -18,8 +20,10 @@ object SimpleIdlingResource {
     }
 
     @VisibleForTesting
-    fun getIdlingResource(): IdlingResource {
-        idlingResource = CountingIdlingResource(RESOURCE, true)
+    fun getCountingIdlingResource(resourceName: String = RESOURCE): CountingIdlingResource {
+        if(idlingResource == null) {
+            idlingResource = CountingIdlingResource(resourceName, true)
+        }
         return idlingResource!!
     }
 }
