@@ -45,8 +45,6 @@ class HomeDataMapper(
                 .addHomeHeaderOvo()
                 .addAtfComponentVisitable()
 
-        if (showGeolocation) factory.addGeolocationVisitable()
-
         factory.addDynamicChannelVisitable(firstPage)
                 .build()
 
