@@ -3,6 +3,7 @@ package com.tokopedia.editshipping.ui.shippingeditor.adapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
@@ -13,7 +14,9 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItemAdapterListener): RecyclerView.Adapter<ShippingEditorOnDemandItemAdapter.ShippingEditorOnDemandViewHolder>() {
 
-    var shipperOnDemandModel = mutableListOf<OnDemandModel>()
+    private var shipperOnDemandModel = mutableListOf<OnDemandModel>()
+
+    private var shipperProductOnDemandChild: ShipperProductOnDemandItemAdapter? = null
 
     interface ShippingEditorItemAdapterListener {
             fun onShipperInfoClicked()
@@ -41,25 +44,49 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         notifyDataSetChanged()
     }
 
-    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener): RecyclerView.ViewHolder(itemView) {
+    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener): RecyclerView.ViewHolder(itemView), ShipperProductOnDemandItemAdapter.ShipperProductOnDemandItemListener {
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)
         private val shipmentItemCb = itemView.findViewById<CheckboxUnify>(R.id.cb_shipment_item)
+        private val shipmentCategory = itemView.findViewById<Typography>(R.id.shipment_category)
+        private val shipmentProductRv = itemView.findViewById<RecyclerView>(R.id.shipment_item_list)
 
 
         fun binData(data: OnDemandModel) {
             setItemData(data)
         }
 
-        private fun setItemData(data: OnDemandModel){
+        private fun setItemData(data: OnDemandModel) {
+            val shipperName = data.shipperProduct
+            var sb = StringBuilder()
+
             shipmentItemImage?.let {
                 ImageHandler.loadImageFitCenter(itemView.context, it, data.image)
             }
-            shipmentName.text = data.name
+            shipmentName.text = data.shipperName
             shipmentItemCb.isChecked = data.isActive
+
+            for (x in shipperName.indices) {
+                sb.append(shipperName[x].shipperProductName).append(" | ")
+            }
+
+            shipmentCategory.text = sb.substring(0, sb.length - 2)
+
+            shipperProductOnDemandChild = ShipperProductOnDemandItemAdapter(this@ShippingEditorOnDemandViewHolder)
+            shipmentProductRv.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = shipperProductOnDemandChild
+            }
+
+            shipperProductOnDemandChild?.addData(data.shipperProduct)
+
         }
 
-       /* private fun setListener(data: OnDemandModel) {
+        override fun onShipperProductItemClicked() {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        /* private fun setListener(data: OnDemandModel) {
             shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
                 listener.onShipperInfoClicked()
             }

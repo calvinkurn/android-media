@@ -21,11 +21,14 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticCommon.data.entity.shippingeditor.OnDemandModel
+import com.tokopedia.logisticCommon.data.entity.shippingeditor.ShippersModel
+import com.tokopedia.logisticCommon.data.entity.shippingeditor.TickerModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
@@ -87,10 +90,12 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         btnSaveShipper = view?.findViewById(R.id.btn_save_shipper)
         globalErrorLayout = view?.findViewById(R.id.global_error)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
+
+        shipperListOnDemand?.isNestedScrollingEnabled = false
     }
 
     private fun initAdapter() {
-        shipperListOnDemand?.adapter = shippingEditorConventionalAdapter
+        shipperListOnDemand?.adapter = shippingEditorOnDemandAdapter
         shipperListConventional?.adapter = shippingEditorConventionalAdapter
         shipperListOnDemand?.layoutManager = LinearLayoutManager(context)
         shipperListConventional?.layoutManager = LinearLayoutManager(context)
@@ -102,7 +107,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                 is ShippingEditorState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     globalErrorLayout?.gone()
-                    updateData(it.data.shippers.onDemand)
+                    updateData(it.data.shippers)
+                    renderTicker(it.data.ticker)
                 }
 
                 is ShippingEditorState.Fail -> {
@@ -121,8 +127,22 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         viewModel.getShipperList(userSession?.shopId.toInt())
     }
 
-    private fun updateData(data: List<OnDemandModel>) {
-        shippingEditorOnDemandAdapter.updateData(data)
+    private fun updateData(data: ShippersModel) {
+        shippingEditorOnDemandAdapter.updateData(data.onDemand)
+        shippingEditorConventionalAdapter.updateData(data.conventional)
+    }
+
+    private fun renderTicker(tickers: List<TickerModel>) {
+        if (tickers.isNotEmpty()) {
+            val messages = ArrayList<TickerData>()
+            for (item in tickers) {
+                messages.add(TickerData(item.header, item.body + item.textLink, Ticker.TYPE_ANNOUNCEMENT))
+            }
+            context?.run { tickerShipperInfo?.addPagerView(TickerPagerAdapter(this, messages), messages) }
+            tickerShipperInfo?.visibility = View.VISIBLE
+        } else {
+            tickerShipperInfo?.visibility = View.GONE
+        }
     }
 
     override fun onShipperInfoClicked() {

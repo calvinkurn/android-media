@@ -33,8 +33,8 @@ data class Shippers(
 data class OnDemand(
         @SerializedName("shipper_id")
         var shipperId: Int = -1,
-        @SerializedName("name")
-        var name: String = "",
+        @SerializedName("shipper_name")
+        var shipperName: String = "",
         @SerializedName("is_active")
         var isActive: Boolean = false,
         @SerializedName("text_promo")

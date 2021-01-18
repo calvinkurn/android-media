@@ -17,7 +17,7 @@ data class ShippersModel(
 @Parcelize
 data class OnDemandModel(
         var shipperId: Int = -1,
-        var name: String = "",
+        var shipperName: String = "",
         var isActive: Boolean = false,
         var textPromo: String = "",
         var image: String = "",
@@ -27,7 +27,7 @@ data class OnDemandModel(
 
 data class ConventionalModel(
         var shipperId: Int = -1,
-        var name: String = "",
+        var shipperName: String = "",
         var isActive: Boolean = false,
         var textPromo: String = "",
         var image: String = "",

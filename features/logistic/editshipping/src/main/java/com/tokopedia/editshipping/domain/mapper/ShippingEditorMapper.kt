@@ -36,7 +36,7 @@ class ShippingEditorMapper @Inject constructor() {
         data.forEach { data ->
             val onDemandUiModel = OnDemandModel().apply {
                 shipperId = data.shipperId
-                name = data.name
+                shipperName = data.shipperName
                 isActive = data.isActive
                 textPromo = data.textPromo
                 image = data.image
@@ -53,7 +53,7 @@ class ShippingEditorMapper @Inject constructor() {
         response.forEach { data ->
             val conventionalUiModel = ConventionalModel().apply {
                 shipperId = data.shipperId
-                name = data.name
+                shipperName = data.name
                 isActive = data.isActive
                 textPromo = data.textPromo
                 image = data.image
