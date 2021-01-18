@@ -8,10 +8,12 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.*
@@ -67,11 +69,11 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     private fun highlightLastThreeDigits(amountStr: String) {
         context?.let {
-            tvTotalAmount.setTextColor(ContextCompat.getColor(it, com.tokopedia.design.R.color.grey_796))
+            tvTotalAmount.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifycomponents.R.color.Unify_N700_96))
             val spannable = SpannableString(getString(R.string.thankyou_rp_without_space, amountStr))
             if (amountStr.length > HIGHLIGHT_DIGIT_COUNT) {
                 val startIndex = spannable.length - HIGHLIGHT_DIGIT_COUNT
-                spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.design.R.color.orange_500)),
+                spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifycomponents.R.color.Unify_Y500)),
                         startIndex, spannable.length,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
@@ -81,7 +83,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     private fun inflateWaitingUI(numberTypeTitle: String?, isCopyVisible: Boolean, highlightAmountDigits: Boolean) {
         tvPaymentGatewayName.text = thanksPageData.gatewayName
-        ImageLoader.LoadImage(ivPaymentGatewayImage, thanksPageData.gatewayImage)
+        ivPaymentGatewayImage.loadImage(thanksPageData.gatewayImage)
         numberTypeTitle?.let {
             tvAccountNumberTypeTag.text = numberTypeTitle
             tvAccountNumber.text = thanksPageData.additionalInfo.accountDest
@@ -138,7 +140,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             }
         }
         thankYouPageAnalytics.get()
-                .sendSalinButtonClickEvent(thanksPageData.profileCode,thanksPageData.gatewayName,
+                .sendSalinButtonClickEvent(thanksPageData.profileCode, thanksPageData.gatewayName,
                         thanksPageData.paymentID.toString())
     }
 

@@ -21,7 +21,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/thank_payment_deadline"
-                android:textColor="@color/black_54"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3" />
@@ -34,7 +34,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_10"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/tvDeadlineTimer"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvDeadlineHeading"
@@ -52,12 +52,11 @@
                 app:layout_constraintTop_toTopOf="@+id/tvDeadlineTime" />
 
 
-            <View
+            <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/view_divider_1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/thank_divider_color"
                 app:layout_constraintTop_toBottomOf="@+id/tvDeadlineTime" />
 
 
@@ -68,7 +67,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/ivPaymentGatewayImage"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
                 app:layout_constraintTop_toBottomOf="@+id/view_divider_1"
@@ -76,7 +75,7 @@
                 app:typographyWeight="bold"
                 tools:text="Name of Payment Gateway" />
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivPaymentGatewayImage"
                 android:layout_width="@dimen/dp_48"
                 android:layout_height="@dimen/dp_48"
@@ -84,16 +83,16 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_12"
                 android:paddingBottom="@dimen/dp_12"
-                android:scaleType="centerInside"
+                app:unify_image_corner_radius="0"
+                app:unify_image_type="rect"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view_divider_1" />
 
 
-            <View
+            <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/view_divider_2"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_1"
-                android:background="@color/thank_divider_color"
                 app:layout_constraintEnd_toEndOf="@+id/ivPaymentGatewayImage"
                 app:layout_constraintStart_toStartOf="@+id/tvPaymentGatewayName"
                 app:layout_constraintTop_toBottomOf="@+id/ivPaymentGatewayImage" />
@@ -106,7 +105,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:textColor="@color/black_54"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
                 app:layout_constraintTop_toBottomOf="@+id/view_divider_2"
@@ -119,7 +118,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
-                android:textColor="@color/black_70"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
                 app:layout_constraintTop_toBottomOf="@+id/tvAccountNumberTypeTag"
                 app:typographyType="body_2"
@@ -133,7 +132,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
                 app:layout_constraintTop_toBottomOf="@+id/tvAccountNumber"
@@ -149,7 +148,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/thank_copy"
-                android:textColor="@color/thank_green_41"
+                android:textColor="@color/Unify_G500"
                 app:layout_constraintBottom_toBottomOf="@+id/tvAccountNumber"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvAccountNumber"
@@ -162,7 +161,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/thank_total_amount_label"
-                android:textColor="@color/black_54"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintStart_toStartOf="@+id/tvBankName"
                 app:layout_constraintTop_toBottomOf="@+id/tvBankName"
                 app:typographyType="body_3" />
@@ -173,7 +172,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
-                android:textColor="@color/Yellow_Y500"
+                android:textColor="@color/Unify_Y500"
                 app:layout_constraintEnd_toStartOf="@+id/tvSeeDetail"
                 app:layout_constraintStart_toStartOf="@+id/tvTotalAmountLabel"
                 app:layout_constraintTop_toBottomOf="@+id/tvTotalAmountLabel"
@@ -188,7 +187,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/thank_see_detail"
-                android:textColor="@color/thank_green_41"
+                android:textColor="@color/Unify_G500"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTotalAmount"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTotalAmountLabel"
@@ -209,12 +208,11 @@
                 tools:visibility="visible" />
 
 
-            <View
+            <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/view_divider_3"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/thank_divider_color"
                 app:layout_constraintEnd_toEndOf="@+id/ivPaymentGatewayImage"
                 app:layout_constraintStart_toStartOf="@+id/tvPaymentGatewayName"
                 app:layout_constraintTop_toBottomOf="@+id/tickerAnnouncementExactDigits"
@@ -228,19 +226,18 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:gravity="center"
                 android:text="@string/thank_see_payment_methods"
-                android:textColor="@color/thank_green_41"
+                android:textColor="@color/Unify_G500"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view_divider_3"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
 
-            <View
+            <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/view_divider_4"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/thank_divider_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvSeePaymentMethods" />
@@ -254,7 +251,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:gravity="center"
                 android:text="@string/thank_processing_payment_check_order"
-                android:textColor="@color/black_54"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_divider_4"
@@ -293,12 +290,11 @@
                 app:unifyButtonVariant="filled" />
 
 
-            <View
+            <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/view_divider_5"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/thank_divider_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnCheckPaymentStatus" />
@@ -324,12 +320,12 @@
     </androidx.core.widget.NestedScrollView>
 
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loadingLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl7"
+        android:layout_height="@dimen/layout_lvl7"
         android:padding="@dimen/dp_10"
         android:layout_gravity="center"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </FrameLayout>
