@@ -240,6 +240,7 @@ object QueryHome {
             "              applinks\n" +
             "              bu_identifier\n" +
             "              campaignCode\n" +
+            "              withBackground\n" +
             "            }\n" +
             "          }\n" +
             "        }"
