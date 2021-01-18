@@ -10,7 +10,7 @@
         android:id="@+id/header_campaign_stock"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/transparent"
+        android:background="@color/Unify_N0"
         app:unify_header_title="@string/product_manage_campaign_stock_allocation"
         app:layout_constraintTop_toTopOf="parent"/>
 

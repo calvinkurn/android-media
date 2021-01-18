@@ -249,7 +249,6 @@ dependencies {
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
-    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.productManageCommon)
     implementation project(rootProject.ext.features.kolCommon)
@@ -361,6 +360,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.libraries.tokopatch)
 
+    // Warning: removing imageCropper lib might cause youtube library crash
+    // when load recommendation at the end of video
+    // Need to recheck
+    implementation(rootProject.ext.miscDependencies.imagecropper) {
+        exclude group: "com.android.support"
+    }
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'
     }

@@ -246,7 +246,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onClickUsePromo() {
-        digitalAnalytics.eventclickUseVoucher(getCategoryName());
+        presenter.onClickPromoButton();
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
         intent.putExtra("EXTRA_COUPON_ACTIVE",
                 Objects.requireNonNull(cartDigitalInfoData.getAttributes()).isCouponActive()
@@ -302,6 +302,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onClickDetailPromo() {
+        presenter.onClickPromoDetail();
         Intent intent;
         String promoCode = promoData.getPromoCode();
         if (!promoCode.isEmpty()) {

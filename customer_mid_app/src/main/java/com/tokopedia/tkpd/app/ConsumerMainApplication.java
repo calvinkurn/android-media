@@ -31,6 +31,7 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -120,6 +121,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     @Override
     public void onCreate() {
+        SplashScreenPerformanceTracker.isColdStart = true;
         initConfigValues();
         initializeSdk();
         initRemoteConfig();

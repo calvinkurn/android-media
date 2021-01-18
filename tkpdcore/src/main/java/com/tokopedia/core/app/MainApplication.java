@@ -41,14 +41,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
     private final String ENABLE_ASYNC_BRANCH_USER_INFO = "android_async_branch_user_info";
 
     protected void initRemoteConfig() {
-        WeaveInterface remoteConfigWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT, MainApplication.this);
+        remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
     }
 
     public static boolean isDebug() {

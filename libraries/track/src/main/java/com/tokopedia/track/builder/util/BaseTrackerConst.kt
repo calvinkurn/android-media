@@ -15,6 +15,7 @@ abstract class BaseTrackerConst {
         const val CLICK = "click"
         const val IMPRESSION = "impression"
         const val PROMO_VIEW = "promoView"
+        const val OPEN_SCREEN = "openScreen"
         const val PRODUCT_VIEW = "productView"
         const val PRODUCT_VIEW_IRIS = "productViewIris"
         const val PROMO_CLICK = "promoClick"

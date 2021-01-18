@@ -41,7 +41,7 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
                     androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_official_store_product)
                 }
                 isPm -> {
-                    androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_power_merchant)
+                    androidx.core.content.ContextCompat.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant)
                 }
                 else -> {
                     null
@@ -112,13 +112,13 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
             if (isFavorite) {
                 btn_favorite.text = context.getString(R.string.label_favorited)
                 btn_favorite.setTextColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-                btn_favorite.background = androidx.core.content.ContextCompat.getDrawable(context, R.drawable.bg_button_white_border)
+                btn_favorite.background = androidx.core.content.ContextCompat.getDrawable(context, com.tokopedia.design.R.drawable.bg_button_white_border)
                 btn_favorite.setCompoundDrawablesWithIntrinsicBounds(
                         androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_check_green_24), null, null, null)
             } else {
                 btn_favorite.text = context.getString(R.string.label_follow)
                 btn_favorite.setTextColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                btn_favorite.background = androidx.core.content.ContextCompat.getDrawable(context, R.drawable.bg_button_green)
+                btn_favorite.background = androidx.core.content.ContextCompat.getDrawable(context, com.tokopedia.design.R.drawable.bg_button_green)
                 btn_favorite.setCompoundDrawablesWithIntrinsicBounds(
                         androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_plus_add_white_24), null, null, null)
             }
