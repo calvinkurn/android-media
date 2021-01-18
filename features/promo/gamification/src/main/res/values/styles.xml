@@ -42,4 +42,9 @@
         <item name="android:layout_width">0dp</item>
     </style>
 
+    <style name="GamiDirectView">
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+
 </resources>

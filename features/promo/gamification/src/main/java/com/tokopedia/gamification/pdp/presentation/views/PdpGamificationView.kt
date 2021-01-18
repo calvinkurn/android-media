@@ -44,7 +44,7 @@ class PdpGamificationView : FrameLayout {
     private val CONTAINER_LOADING = 1
     private val CONTAINER_ERROR = 2
 
-    private var DEFAULT_SPAN_COUNT = 2
+    private var spanCount = 2
 
     private lateinit var tvTitle: Typography
     private lateinit var recyclerView: RecyclerView
@@ -111,7 +111,8 @@ class PdpGamificationView : FrameLayout {
         listener = getRecommendationListener()
         val typeFactory = PdpGamificationAdapterTypeFactory(listener!!)
         adapter = PdpGamificationAdapter(dataList, typeFactory)
-        val layoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+        spanCount = context.resources.getInteger(com.tokopedia.gamification.R.integer.gami_bottom_sheet_span_count)
+        val layoutManager = StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 

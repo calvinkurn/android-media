@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -44,7 +45,9 @@ import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -178,7 +181,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         bottomSheetContainer = v.findViewById(R.id.bottomSheetContainer)
 
         super.initViews(v)
-        setTextSize()
+        setTabletConfigurations()
         setShadows()
         setListeners()
         setupBottomSheet(false)
@@ -212,9 +215,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     }
 
-    fun setTextSize() {
+    fun setTabletConfigurations() {
         if (isTablet) {
+
 //            tvBenefits.setTextSize(TypedValue.COMPLEX_UNIT_PX, 24.toPx().toFloat())
+//            val marginStart = (directGiftView.layoutParams as FrameLayout.LayoutParams).marginStart
+//            val marginEnd = (directGiftView.layoutParams as FrameLayout.LayoutParams).marginEnd
+//            val marginBottom = (screenHeight*0.08).toInt()
+//            directGiftView.setMargin(marginStart,0,marginEnd,marginBottom)
         }
     }
 
@@ -669,7 +677,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         rewardContainer.setFinalTranslationOfCirclesTap(giftBoxDailyView.fmGiftBox.top)
 
         giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
-            val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(com.tokopedia.gamification.R.dimen.gami_rv_coupons_height)
+            val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(com.tokopedia.gamification.R.dimen.gami_rv_coupons_height_daily)
+//            val heightOfRvCoupons = fmGiftBox.dpToPx(96)
             val lidTop = fmGiftBox.top
             var translationY = lidTop - heightOfRvCoupons + fmGiftBox.dpToPx(3)
             if (isTablet) {

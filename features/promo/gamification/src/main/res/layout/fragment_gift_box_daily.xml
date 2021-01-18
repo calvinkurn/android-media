@@ -181,15 +181,20 @@
                 android:id="@+id/direct_gift_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:layout_gravity="bottom"
-                android:layout_margin="@dimen/dp_16" />
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/gami_direct_view_bottom_margin"
+                />
         </FrameLayout>
 
         <View
             android:id="@+id/emptyView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/gamification_pdp_peek_height_xml"
-            tools:layout_height="88dp" />
+            tools:layout_height="0dp" />
     </LinearLayout>
 
 
@@ -203,6 +208,6 @@
             android:id="@+id/pdpGamificationView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:layout_height="300dp" />
+            tools:layout_height="0dp" />
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

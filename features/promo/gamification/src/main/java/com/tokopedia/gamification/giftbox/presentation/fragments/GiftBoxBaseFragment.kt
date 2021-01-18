@@ -26,7 +26,6 @@ import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
 import com.tokopedia.gamification.giftbox.presentation.helpers.GiftBoxTapTapAudio
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
-import com.tokopedia.gamification.giftbox.presentation.views.RewardContainerDaily
 import com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster

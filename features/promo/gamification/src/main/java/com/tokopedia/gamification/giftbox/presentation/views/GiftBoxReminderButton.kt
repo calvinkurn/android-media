@@ -20,6 +20,7 @@ class GiftBoxReminderButton @JvmOverloads constructor(
     val loaderReminder: LoaderUnify
     val tvReminderBtn: Typography
     val imageBell: AppCompatImageView
+    var isTablet = false
 
     init {
         View.inflate(context, LAYOUT_ID, this)
@@ -27,13 +28,26 @@ class GiftBoxReminderButton @JvmOverloads constructor(
         tvReminderBtn = findViewById(R.id.tvReminderBtn1)
         imageBell = findViewById(R.id.imageBell)
 
-        val padding = dpToPx(11).toInt()
+        val paddingTop = context.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_green_gradient_btn_top_padding)?.toInt() ?: 0
+        val paddingSide = context.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_green_gradient_btn_side_padding)?.toInt() ?: 0
+
         val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         lp.apply {
-            setPadding(padding, padding, padding, padding)
+            setPadding(paddingSide, paddingTop, paddingSide, paddingTop)
         }
         layoutParams = lp
         background = ContextCompat.getDrawable(context, R.drawable.gami_bg_reminder)
+
+        val tabletRes = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet)
+        tabletRes?.let { tablet ->
+            isTablet = tablet
+        }
+        imageBell.layoutParams.apply {
+            if (isTablet) {
+                width = dpToPx(28).toInt()
+                height = dpToPx(28).toInt()
+            }
+        }
     }
 
     fun performLoading() {

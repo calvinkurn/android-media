@@ -160,6 +160,8 @@ open class RewardContainerDaily @JvmOverloads constructor(
             hasCoupons = true
             couponList.clear()
             couponList.addAll(list)
+            //todo Rahul remove duplicate bottom (only used for testing)
+            couponList.addAll(list)
         }
 
         //set coins

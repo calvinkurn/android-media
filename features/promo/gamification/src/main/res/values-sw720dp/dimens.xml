@@ -16,9 +16,9 @@
    <dimen name="gami_bell_end_margin">8dp</dimen>
    <dimen name="gami_direct_view_title_start_margin">17dp</dimen>
    <dimen name="gami_direct_view_image_w">104dp</dimen>
-   <dimen name="gami_direct_view_padding">18dp</dimen>
+   <dimen name="gami_direct_view_padding">24dp</dimen>
    <dimen name="gami_direct_view_tvMessage_top_margin">12dp</dimen>
    <integer name="gami_direct_view_tvMessage_typography">7</integer>
    <dimen name="gami_direct_view_cta_top_margin">24dp</dimen>
-   <dimen name="gami_direct_view_bottom_margin">25dp</dimen>
+   <dimen name="gami_direct_view_bottom_margin">105dp</dimen>
 </resources>

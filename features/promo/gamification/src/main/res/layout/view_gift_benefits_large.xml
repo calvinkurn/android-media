@@ -12,6 +12,7 @@
         android:layout_height="0dp"
         android:scaleType="fitXY"
         app:srcCompat="@drawable/gf_bg_large_benefit"
+        tools:background="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +48,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        tools:text="Special Hari Ini" />
+        tools:text="Hadiah langsung" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDesc"
@@ -66,7 +67,7 @@
         android:maxLines="2"
         android:ellipsize="end"
         app:typographyWeight="reguler"
-        tools:text="Kupon Diskon Bimoli saljdlskadjl asldjalksaldjlas sad" />
+        tools:text="Untuk pengguna baru, aktif dan dikangenin yang telah disesuaikan dengan persona kamu." />
 
 
     <com.tokopedia.unifyprinciples.Typography

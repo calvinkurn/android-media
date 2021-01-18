@@ -6,7 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:background="@drawable/gami_green_grad_btn"
-    tools:padding="@dimen/dp_11">
+    tools:paddingBottom="@dimen/gami_green_gradient_btn_top_padding"
+    tools:paddingEnd="@dimen/gami_green_gradient_btn_side_padding"
+    tools:paddingStart="@dimen/gami_green_gradient_btn_side_padding"
+    tools:paddingTop="@dimen/gami_green_gradient_btn_top_padding">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/cta"
@@ -14,6 +17,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="@color/white"
-        app:typographyType="heading_5"
+        app:typographyType="@integer/gami_green_gradient_btn_typography"
         tools:text="Cek Hadiah Yang Bisa Didapat" />
 </merge>
