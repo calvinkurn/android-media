@@ -381,7 +381,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
         fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
-        startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
+        startToTransitionOffset = homeMainToolbarHeight
         registerBroadcastReceiverTokoCash()
     }
 
