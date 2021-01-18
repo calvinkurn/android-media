@@ -70,7 +70,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
             view.group_title.text = it.data.groupName
             view.label.text = it.data.groupStatusDesc
             if (countList.isNotEmpty() && adapterPosition < countList.size && adapterPosition != RecyclerView.NO_POSITION) {
-                view.total_item.text = countList[adapterPosition].totalAds.toString()
+                view.total_item.text = countList[adapterPosition].totalProducts.toString()
                 view.key_count.text = countList[adapterPosition].totalKeywords.toString()
             }
             setProgressBar(it.data)
@@ -82,8 +82,6 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
                     view.pengeluaran_count.text = statsData[index].statTotalSpent
                     view.produk_terjual_count.text = statsData[index].statTotalConversion
                     view.pendapatan_count.text = statsData[index].groupTotalIncome
-                    view.total_item.visibility = View.GONE
-                    view.img_total.visibility = View.GONE
                     if (it.data.groupEndDate != TIDAK_DIBATASI) {
                         view.scheduleImg.visibility = View.VISIBLE
                         view.scheduleDate.visibility = View.VISIBLE

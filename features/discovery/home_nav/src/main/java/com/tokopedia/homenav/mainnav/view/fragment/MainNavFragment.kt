@@ -77,7 +77,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private var navToolbar: NavToolbar? = null
 
     private lateinit var userSession: UserSessionInterface
-    val args: MainNavFragmentArgs by navArgs()
+    private val args: MainNavFragmentArgs by navArgs()
 
     private var pageSource = ""
 
