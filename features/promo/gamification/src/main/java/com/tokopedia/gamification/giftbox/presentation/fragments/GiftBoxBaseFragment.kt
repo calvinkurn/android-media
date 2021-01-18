@@ -1,10 +1,14 @@
 package com.tokopedia.gamification.giftbox.presentation.fragments
 
+import android.R.color
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
@@ -161,14 +165,23 @@ open class GiftBoxBaseFragment : Fragment() {
         loader.visibility = View.GONE
     }
 
+    open fun getMenu() = R.menu.gami_menu_share
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.gami_menu_share, menu)
+        inflater.inflate(getMenu(), menu)
         super.onCreateOptionsMenu(menu, inflater)
-        val drawable = menu.getItem(0).icon
-        drawable.mutate()
-        context?.let {
-            drawable.setColorFilter(ContextCompat.getColor(it, android.R.color.white), PorterDuff.Mode.SRC_IN)
-        }
+//        val drawable = menu.getItem(0).icon
+//        drawable.mutate()
+//        context?.let {
+//            val color = ContextCompat.getColor(it, android.R.color.white)
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//                drawable.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+//            } else {
+//                drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+//            }
+//            drawable.setColorFilter(, PorterDuff.Mode.SRC_IN)
+//            drawable.setColorFilter(ContextCompat.getColor(it, android.R.color.white), PorterDuff.Mode.SRC_ATOP)
+//        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -176,9 +189,14 @@ open class GiftBoxBaseFragment : Fragment() {
             R.id.action_share -> {
                 performShareAction()
             }
+            R.id.action_info -> {
+                handleInfoIconClick()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
+
+    open fun handleInfoIconClick() {}
 
     open fun performShareAction() {
         try {

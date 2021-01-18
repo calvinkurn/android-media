@@ -47,12 +47,12 @@
                             android:visibility="gone"
                             app:srcCompat="@drawable/gf_ic_sound_on" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/imageInfo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            app:srcCompat="@drawable/gf_ic_info" />
+<!--                        <androidx.appcompat.widget.AppCompatImageView-->
+<!--                            android:id="@+id/imageInfo"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:visibility="gone"-->
+<!--                            app:srcCompat="@drawable/gf_ic_info" />-->
 
                     </LinearLayout>
 

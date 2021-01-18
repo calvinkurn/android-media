@@ -14,10 +14,8 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -45,9 +43,6 @@ import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -72,7 +67,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //    lateinit var loaderReminder: LoaderUnify
 //    lateinit var reminderLayout: RelativeLayout
 //    lateinit var fmReminder: FrameLayout
-    lateinit var imageInfo: AppCompatImageView
+//    lateinit var imageInfo: AppCompatImageView
     lateinit var directGiftView: DirectGiftView
     lateinit var pdpGamificationView: PdpGamificationView
     lateinit var bottomSheetContainer: ViewGroup
@@ -91,6 +86,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
+    var infoUrl: String? = null
 
     //    var totalPrizeImagesCount = 0
 //    var loadedPrizeImagesCount = 0
@@ -175,7 +171,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //        loaderReminder = v.findViewById(R.id.loaderReminder)
 //        reminderLayout = v.findViewById(R.id.reminderLayout)
 //        fmReminder = v.findViewById(R.id.fmReminder)
-        imageInfo = v.findViewById(R.id.imageInfo)
+//        imageInfo = v.findViewById(R.id.imageInfo)
         directGiftView = v.findViewById(R.id.direct_gift_view)
         pdpGamificationView = v.findViewById(R.id.pdpGamificationView)
         bottomSheetContainer = v.findViewById(R.id.bottomSheetContainer)
@@ -187,14 +183,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         setupBottomSheet(false)
     }
 
-    private fun setupBottomSheet(show:Boolean) {
-        if(show){
+    private fun setupBottomSheet(show: Boolean) {
+        if (show) {
             val bottomSheetBehavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<ViewGroup>(bottomSheetContainer)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             bottomSheetBehavior.isHideable = false
 
-        }else{
-            val peekHeight = resources.getDimension(R.dimen.gami_peek_height) .toInt()
+        } else {
+            val peekHeight = resources.getDimension(R.dimen.gami_peek_height).toInt()
             val bottomSheetBehavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<ViewGroup>(bottomSheetContainer)
             bottomSheetBehavior.peekHeight = peekHeight
             bottomSheetBehavior.isHideable = true
@@ -527,7 +523,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun handleRecomPage(recommendation: Recommendation?) {
         recommendation?.isShow?.let { show ->
-            if ( show && !recommendation.pageName.isNullOrEmpty() && !recommendation.shopId.isNullOrEmpty()) {
+            if (show && !recommendation.pageName.isNullOrEmpty() && !recommendation.shopId.isNullOrEmpty()) {
                 pdpGamificationView.postDelayed({
                     setupBottomSheet(true)
                 }, 1000L)
@@ -547,11 +543,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     private fun handleInfoIcon(statusCode: String?, infoUrl: String?) {
         if (statusCode == HTTP_STATUS_OK && !infoUrl.isNullOrEmpty()) {
-            imageInfo.show()
-            imageInfo.setOnClickListener {
-                RouteManager.route(it.context, infoUrl)
-            }
+            this.infoUrl = infoUrl
+            activity?.invalidateOptionsMenu()
+//            imageInfo.show()
+//            imageInfo.setOnClickListener {
+//            RouteManager.route(it.context, infoUrl)
+//            }
         }
+    }
+
+    override fun handleInfoIconClick() {
+        RouteManager.route(context, infoUrl)
     }
 
     fun handleButtonAction() {
@@ -874,11 +876,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         val tapHintAnim = ObjectAnimator.ofPropertyValuesHolder(tvTapHint, alphaProp)
 //        val tvBenefitsAnim = ObjectAnimator.ofPropertyValuesHolder(tvBenefits, alphaProp)
         val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(directGiftView, alphaProp)
-        val infoAnim = ObjectAnimator.ofPropertyValuesHolder(imageInfo, alphaProp)
+//        val infoAnim = ObjectAnimator.ofPropertyValuesHolder(imageInfo, alphaProp)
 
         val animatorSet = AnimatorSet()
 //        animatorSet.playTogether(tapHintAnim, prizeListContainerAnim, tvBenefitsAnim, infoAnim)
-        animatorSet.playTogether(tapHintAnim, infoAnim, prizeListContainerAnim)
+//        animatorSet.playTogether(tapHintAnim, infoAnim, prizeListContainerAnim)
+        animatorSet.playTogether(tapHintAnim, prizeListContainerAnim)
         animatorSet.duration = 300L
 
         animatorSet.start()
@@ -960,6 +963,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
+    override fun getMenu() = if (infoUrl.isNullOrEmpty()) R.menu.gami_menu_share else R.menu.gami_menu_daily
 }
 
 @Retention(AnnotationRetention.SOURCE)
