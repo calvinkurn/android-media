@@ -40,7 +40,6 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
-import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor;
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;

@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
@@ -245,7 +246,7 @@ class HomeVisitableFactoryImpl(
         return this
     }
 
-    override fun addAtfComponentVisitable(): HomeVisitableFactory {
+    override fun addAtfComponentVisitable(isProcessingAtf: Boolean): HomeVisitableFactory {
         if (homeData?.atfData?.dataList?.isNotEmpty() == true) {
             homeData?.atfData?.let {
                 var channelPosition = 0
@@ -307,14 +308,18 @@ class HomeVisitableFactoryImpl(
                     }
                 }
             }
-        } else {
+        } else if(isProcessingAtf)  {
+            visitableList.add(HomeInitialShimmerDataModel())
+        }
+
+        if (homeData?.atfData == null) {
             visitableList.add(ErrorStateAtfModel())
         }
         return this
     }
 
-    override fun addDynamicChannelVisitable(addLoadingMore: Boolean): HomeVisitableFactory {
-        addDynamicChannelData(addLoadingMore = addLoadingMore, useDefaultWhenEmpty = true)
+    override fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean): HomeVisitableFactory {
+        addDynamicChannelData(addLoadingMore = addLoadingMore, useDefaultWhenEmpty = useDefaultWhenEmpty)
         return this
     }
 

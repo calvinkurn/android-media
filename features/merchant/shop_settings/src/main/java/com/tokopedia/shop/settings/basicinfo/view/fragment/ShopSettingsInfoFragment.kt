@@ -448,7 +448,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun onErrorGetShopBasicData(throwable: Throwable) {
         hideLoading()
-        val message = ErrorHandler.getErrorMessage(context, throwable)
+        val message = ShopSettingsErrorHandler.getErrorMessage(context, throwable.cause)
         NetworkErrorHelper.showEmptyState(context, view, message) { loadShopBasicData() }
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
@@ -466,16 +466,18 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun onErrorUpdateShopSchedule(throwable: Throwable) {
         hideSubmitLoading()
-        showSnackbarErrorSubmitEdit(throwable)
+        showSnackbarErrorUpdateShopSchedule(throwable)
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
-    private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
-        val message = ErrorHandler.getErrorMessage(context, throwable)
-        view?.let {
-            snackbar = Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-            snackbar?.show()
+    private fun showSnackbarErrorUpdateShopSchedule(throwable: Throwable) {
+        val message = ShopSettingsErrorHandler.getErrorMessage(context, throwable.cause)
+        view?.let { view ->
+            message?.let {
+                snackbar = Toaster.build(view, it, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                snackbar?.show()
+            }
         }
     }
 
@@ -506,10 +508,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        shopSettingsInfoViewModel.shopBasicData.removeObservers(this)
-        shopSettingsInfoViewModel.shopStatusData.removeObservers(this)
-        shopSettingsInfoViewModel.checkOsMerchantTypeData.removeObservers(this)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        shopSettingsInfoViewModel.resetAllLiveData()
     }
 }

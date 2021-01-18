@@ -108,7 +108,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 val homeAtfResponse = async { homeRemoteDataSource.getAtfDataUseCase() }.await()
                 homeData.atfData = homeAtfResponse
             } catch (e: Exception) {
-                homeData.atfData = HomeAtfData(listOf())
+                homeData.atfData = null
             }
 
             /**
@@ -118,6 +118,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 homeCachedDataSource.saveToDatabase(homeData)
             })
 
+            homeData.atfData?.isProcessingAtf
             /**
              * 4. Get above the fold content
              */
@@ -209,6 +210,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 }
             }
 
+            homeData.atfData?.isProcessingAtf = false
             /**
              * 6. Get dynamic channel data
              */

@@ -752,7 +752,7 @@ class DeepLinkMapperCustomerAppTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check seller info detail appLink then should return tokopedia internal seller info detail in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://sellerinfo"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/notif-center"
         assertEqualsDeepLinkMapper(ApplinkConst.SELLER_INFO_DETAIL, expectedDeepLink)
     }
 
