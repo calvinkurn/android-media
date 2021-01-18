@@ -5,8 +5,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.inboxcommon.RoleType
 
 data class InboxCounter(
-        @SerializedName("all")
-        val all: All = All(),
         @SerializedName("buyer")
         val buyer: Buyer = Buyer(),
         @SerializedName("seller")
