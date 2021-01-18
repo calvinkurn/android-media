@@ -71,6 +71,7 @@ class ShopHomeViewModel @Inject constructor(
 
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
+        const val CODE_STATUS_SUCCESS = "200"
     }
 
     val initialProductListData: LiveData<Result<GetShopHomeProductUiModel>>
@@ -209,7 +210,11 @@ class ShopHomeViewModel @Inject constructor(
                         data = ShopPageHomeMapper.mapToVoucherCouponUiModel(response.data, shopId),
                         isError = false
                 )
-                _shopHomeMerchantVoucherLayoutData.postValue(Success(uiModel as ShopHomeVoucherUiModel))
+                if (response.data?.resultStatus?.code == CODE_STATUS_SUCCESS) {
+                    _shopHomeMerchantVoucherLayoutData.postValue(Success(uiModel as ShopHomeVoucherUiModel))
+                } else {
+                    _shopHomeMerchantVoucherLayoutData.postValue(Fail(MessageErrorException(response.data?.resultStatus?.message.toString())))
+                }
             }) {
                 _shopHomeMerchantVoucherLayoutData.postValue(Fail(it))
             }
