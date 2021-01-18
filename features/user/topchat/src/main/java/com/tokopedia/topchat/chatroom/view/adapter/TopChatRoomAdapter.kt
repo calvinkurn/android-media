@@ -248,13 +248,23 @@ class TopChatRoomAdapter constructor(
         var insertedPosition = RecyclerView.NO_POSITION
         if (visitables.isEmpty()) return insertedPosition
         val latestMessage = visitables.first()
-        if (latestMessage is MessageViewModel && latestMessage.isFromBroadCast() && !latestMessage.isSender) {
+        if (isFromBroadcast(latestMessage) || isFromUnifiedBroadcast(latestMessage)) {
             val spamHandlerModel = BroadcastSpamHandlerUiModel()
             insertedPosition = 0
             visitables.add(insertedPosition, spamHandlerModel)
             notifyItemInserted(insertedPosition)
         }
         return insertedPosition
+    }
+
+    private fun isFromUnifiedBroadcast(latestMessage: Visitable<*>?): Boolean {
+        return latestMessage is BroadCastUiModel && latestMessage.isOpposite
+    }
+
+    private fun isFromBroadcast(latestMessage: Visitable<*>?): Boolean {
+        return latestMessage is MessageViewModel &&
+                latestMessage.isFromBroadCast() &&
+                !latestMessage.isSender
     }
 
     fun removeBroadcastHandler(element: BroadcastSpamHandlerUiModel) {
