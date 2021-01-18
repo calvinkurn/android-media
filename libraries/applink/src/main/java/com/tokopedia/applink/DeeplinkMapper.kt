@@ -69,6 +69,7 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedApp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import org.json.JSONObject
+import timber.log.Timber
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -150,6 +151,8 @@ object DeeplinkMapper {
             if (GlobalConfig.VERSION_NAME !in versionList) return mappedLink
 
             val webviewApplink = UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, weblink)
+
+            Timber.w("P1#WEBVIEW_SWITCH#'$link';url='$weblink'")
 
             return createAppendDeeplinkWithQuery(webviewApplink, uri.query)
         } catch (e: Exception) { return mappedLink }
