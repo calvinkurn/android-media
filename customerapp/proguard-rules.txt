@@ -245,3 +245,6 @@
 -keepnames class com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
 -keepnames class com.tokopedia.home_recom.view.fragment.RecommendationFragment
 -keepnames class com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
+-keepnames class com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment
+-keepnames class com.tokopedia.cart.view.CartFragment
+-keepnames class com.tokopedia.home.account.presentation.fragment.AccountHomeFragment
