@@ -6,5 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class HomeAtfData (
         @SerializedName("dynamicPosition")
         @Expose
-        val dataList: List<AtfData> = listOf()
+        val dataList: List<AtfData> = listOf(),
+        @SerializedName("isProcessingAtf")
+        @Expose
+        var isProcessingAtf: Boolean = true
 )
