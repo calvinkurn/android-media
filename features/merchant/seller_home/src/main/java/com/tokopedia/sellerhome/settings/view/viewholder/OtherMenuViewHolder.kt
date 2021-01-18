@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller.menu.common.analytics.*
+import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
@@ -139,6 +140,12 @@ class OtherMenuViewHolder(private val itemView: View,
     @SuppressLint("SetTextI18n")
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
         itemView.shopInfoLayout.findViewById<Typography>(R.id.shopFollowers)?.run {
+            val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
+            if (shouldShowFollowers) {
+                visible()
+            } else {
+                gone()
+            }
             text = "${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}"
             setOnClickListener {
                 shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()

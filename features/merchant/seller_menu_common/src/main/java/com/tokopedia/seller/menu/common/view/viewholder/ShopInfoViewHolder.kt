@@ -20,16 +20,17 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
+import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.setting_balance.view.*
-import kotlinx.android.synthetic.main.layout_seller_menu_shop_info_success.view.*
-import kotlinx.android.synthetic.main.setting_partial_others_local_load.view.*
 import kotlinx.android.synthetic.main.layout_seller_menu_shop_info.view.*
+import kotlinx.android.synthetic.main.layout_seller_menu_shop_info_success.view.*
+import kotlinx.android.synthetic.main.setting_balance.view.*
+import kotlinx.android.synthetic.main.setting_partial_others_local_load.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 
@@ -131,6 +132,12 @@ class ShopInfoViewHolder(
     @SuppressLint("SetTextI18n")
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
         itemView.successShopInfoLayout.shopFollowers?.run {
+            val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
+            if (shouldShowFollowers) {
+                visible()
+            } else {
+                gone()
+            }
             text = "${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}"
             setOnClickListener {
                 shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
