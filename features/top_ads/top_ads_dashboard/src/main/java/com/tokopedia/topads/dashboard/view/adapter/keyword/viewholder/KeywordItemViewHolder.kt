@@ -26,7 +26,7 @@ class KeywordItemViewHolder(val view: View,
         var LAYOUT = R.layout.topads_dash_item_keyword_card
     }
 
-    override fun bind(item: KeywordItemViewModel, selectMode: Boolean, fromSearch: Boolean, fromHeadline: Boolean) {
+    override fun bind(item: KeywordItemViewModel, selectMode: Boolean, fromSearch: Boolean) {
         item.let {
             if (headline)
                 view.per_click.text = view.context.getString(com.tokopedia.topads.common.R.string.topads_common_headline_klik)

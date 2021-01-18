@@ -16,13 +16,13 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.response.KeywordData
+import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.SearchData
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.sheet.TipSheetKeywordList
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
-import com.tokopedia.topads.data.response.KeywordData
-import com.tokopedia.topads.data.response.KeywordDataItem
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.KeywordSearchActivity
 import com.tokopedia.topads.view.activity.StepperActivity

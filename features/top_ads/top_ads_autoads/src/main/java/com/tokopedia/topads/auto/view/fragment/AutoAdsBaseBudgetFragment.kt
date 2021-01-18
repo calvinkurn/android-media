@@ -9,8 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.lifecycle.Observer
@@ -19,7 +17,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.network.response.EstimationResponse
-import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
@@ -29,6 +26,7 @@ import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
@@ -96,9 +94,9 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         showLoading()
         budgetViewModel.getTopAdsDeposit()
-        budgetViewModel.topAdsDeposit.observe(viewLifecycleOwner, Observer {
+        budgetViewModel.getTopAdsDepositLiveData().observe(viewLifecycleOwner, Observer {
             topAdsDeposit = it
-            budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source, this::onSuccessBudgetInfo)
+            budgetViewModel.getBudgetInfo(requestType, source, this::onSuccessBudgetInfo)
         })
         budgetViewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
             if (topAdsDeposit <= 0) {
@@ -136,22 +134,23 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     }
 
 
-    private fun onSuccessBudgetInfo(response: TopadsBidInfo.Response) {
-        val data = response.bidInfo.data[0]
-        var budget = data.minDailyBudget
-        val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
-        if (status == AutoAdsStatus.STATUS_ACTIVE || status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
-            budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
+    private fun onSuccessBudgetInfo(response: ResponseBidInfo.Result) {
+        response.topadsBidInfo.data.firstOrNull()?.let { data ->
+            var budget = data.minDailyBudget
+            val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
+            if (status == AutoAdsStatus.STATUS_ACTIVE || status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
+                budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
+            }
+            rangeStart.text = data.minDailyBudgetFmt
+            rangeEnd.text = data.maxDailyBudgetFmt
+            minDailyBudget = data.minDailyBudget
+            maxDailyBudget = data.maxDailyBudget
+            priceEditText.textFieldInput.setText(data.minDailyBudgetFmt.replace("Rp", ""))
+            shopStatus = data.shopStatus
+            seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
+            seekBar.value = budget
+            budgetViewModel.topadsStatisticsEstimationPotentialReach(this::onSuccessPotentialEstimation, userSession.shopId, source)
         }
-        rangeStart.text = data.minDailyBudgetFmt
-        rangeEnd.text = data.maxDailyBudgetFmt
-        minDailyBudget = data.minDailyBudget
-        maxDailyBudget = data.maxDailyBudget
-        priceEditText.textFieldInput.setText(data.minDailyBudgetFmt.replace("Rp", ""))
-        shopStatus = data.shopStatus
-        seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
-        seekBar.value = budget
-        budgetViewModel.topadsStatisticsEstimationPotentialReach(this::onSuccessPotentialEstimation, userSession.shopId, source)
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 estimateImpression(progress)
