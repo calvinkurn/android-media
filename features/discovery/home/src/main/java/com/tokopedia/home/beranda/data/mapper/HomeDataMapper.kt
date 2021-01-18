@@ -46,9 +46,10 @@ class HomeDataMapper(
                 .addHomeHeaderOvo()
                 .addAtfComponentVisitable(processingAtf)
 
+
         factory.addDynamicChannelVisitable(firstPage, false)
                 .build()
-        
+
         BenchmarkHelper.endSystraceSection()
         return HomeDataModel(homeData.homeFlag, factory.build(), isCache, firstPage, processingAtf)
     }
