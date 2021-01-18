@@ -13,17 +13,19 @@ import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifyprinciples.Typography;
 
 public class ShipmentEmasViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_EMAS = R.layout.checkout_holder_item_emas;
 
-    private CheckBox buyEmas;
+    private CheckboxUnify buyEmas;
     private Typography tvEmasTitle;
     private Typography tvEmasDesc;
-    private ImageView imgEmasInfo;
+    private IconUnify imgEmasInfo;
     private LinearLayout llContainer;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -43,6 +45,7 @@ public class ShipmentEmasViewHolder extends RecyclerView.ViewHolder {
     public void bindViewHolder(EgoldAttributeModel egoldAttributeModel) {
         llContainer.setOnClickListener(v -> buyEmas.setChecked(!buyEmas.isChecked()));
         buyEmas.setChecked(egoldAttributeModel.isChecked());
+        buyEmas.skipAnimation();
         tvEmasTitle.setText(egoldAttributeModel.getTitleText());
         imgEmasInfo.setOnClickListener(v -> showBottomSheet(egoldAttributeModel));
         tvEmasDesc.setText(Html.fromHtml(String.format(llContainer.getContext()

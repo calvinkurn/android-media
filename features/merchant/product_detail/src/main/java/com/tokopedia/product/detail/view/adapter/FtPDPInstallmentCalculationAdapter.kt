@@ -57,7 +57,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                 }
             }
 
-            ImageHandler.loadImage(mContext, vHolder.ivMainIcon, item.partnerIcon, R.drawable.ic_loading_image)
+            ImageHandler.loadImage(mContext, vHolder.ivMainIcon, item.partnerIcon, com.tokopedia.design.R.drawable.ic_loading_image)
             vHolder.tvInstallmentTitle.text = String.format(mContext.getString(R.string.ft_installment_heading), item.partnerName)
             vHolder.llInstallmentContainer.hide()
 
@@ -160,7 +160,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                 instructionDesc.text = instructionData.description
 
                 val instructionIcon: ImageView = view.findViewById(R.id.iv_instruction_icon)
-                ImageHandler.loadImage(context, instructionIcon, instructionData.insImageUrl, R.drawable.ic_loading_image)
+                ImageHandler.loadImage(context, instructionIcon, instructionData.insImageUrl, com.tokopedia.design.R.drawable.ic_loading_image)
 
                 vHolder.llInstructionDetailContainer.addView(view)
             }
