@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.list.view.ui.tab
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.sortfilter.SortFilter
@@ -11,9 +11,9 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 
 class ProductManageFilterTab(
-        private val sortFilterTab: SortFilter,
-        private val onClickMoreFilter: (FilterTabViewModel) -> Unit,
-        private val onClickFilterTab: (FilterTabViewModel) -> Unit
+    private val sortFilterTab: SortFilter,
+    private val onClickMoreFilter: (FilterTabUiModel) -> Unit,
+    private val onClickFilterTab: (FilterTabUiModel) -> Unit
 ) {
 
     private var activeFilterCount = 0
@@ -109,7 +109,7 @@ class ProductManageFilterTab(
         setActiveFilterCount(0)
     }
 
-    private fun updateTabs(tabs: List<FilterTabViewModel>) {
+    private fun updateTabs(tabs: List<FilterTabUiModel>) {
         sortFilterTab.apply {
             val filterTabs = tabs.map { tab ->
                 val title = context.getString(tab.titleId, tab.count)
@@ -123,7 +123,7 @@ class ProductManageFilterTab(
         }
     }
 
-    private fun toggleFilterTab(filter: SortFilterItem, tab: FilterTabViewModel) {
+    private fun toggleFilterTab(filter: SortFilterItem, tab: FilterTabUiModel) {
         val selectedFilter = selectedTab?.filter
 
         if (filter == selectedFilter) {
@@ -145,18 +145,18 @@ class ProductManageFilterTab(
         onClickFilterTab(tab)
     }
 
-    private fun setOnClickMoreFilter(tabs: List<FilterTabViewModel>) {
+    private fun setOnClickMoreFilter(tabs: List<FilterTabUiModel>) {
         tabs.firstOrNull()?.let { clickMoreFilterTab(it) }
     }
 
-    private fun clickMoreFilterTab(tab: FilterTabViewModel) {
+    private fun clickMoreFilterTab(tab: FilterTabUiModel) {
         val moreFilterTab = sortFilterTab.sortFilterPrefix
         moreFilterTab.setOnClickListener {
             onClickMoreFilter(tab)
         }
     }
 
-    private fun setSelectedFilter(filter: SortFilterItem, tab: FilterTabViewModel) {
+    private fun setSelectedFilter(filter: SortFilterItem, tab: FilterTabUiModel) {
         tab.status?.let { selectedTab = SelectedTab(filter, tab.count, it) }
     }
 

@@ -25,12 +25,20 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
+        multiDexEnabled true
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
         vectorDrawables.useSupportLibrary = vectorDrawable.toBoolean()
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        exclude 'META-INF/**'
     }
 }
 
@@ -56,7 +64,6 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.variantCommon)
-    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.thankYouNative)
     implementation project(rootProject.ext.features.commonPayment)
@@ -101,6 +108,7 @@ dependencies {
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.playCommon)
+    implementation project(rootProject.ext.features.productShare)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.pushNotification)
@@ -267,6 +275,12 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
+    // Warning: removing imageCropper lib might cause youtube library crash
+    // when load recommendation at the end of video
+    // Need to recheck
+    implementation(rootProject.ext.miscDependencies.imagecropper) {
+        exclude group: "com.android.support"
+    }
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
@@ -302,6 +316,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticGTMUtil
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
@@ -320,7 +336,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.miscDependencies.rxJava
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
-    androidTestImplementation rootProject.ext.testDependencies.uiautomator
     androidTestImplementation rootProject.ext.testDependencies.spoon
     androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
@@ -343,12 +358,6 @@ dependencies {
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     androidTestImplementation rootProject.ext.miscDependencies.gson
-    androidTestImplementation rootProject.ext.testDependencies.dexMaker
-    androidTestImplementation(rootProject.ext.testDependencies.dexMakerMockito) {
-        exclude group: 'org.hamcrest', module: 'hamcrest-core, mockito-core'
-        exclude group: 'org.mockito'
-    }
-
     // Cloud testing
     androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
     androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
@@ -357,5 +366,17 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
 
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.benchmark
+    androidTestImplementation rootProject.ext.testDependencies.testCore
 
 }

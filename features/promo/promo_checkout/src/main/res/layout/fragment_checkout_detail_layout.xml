@@ -92,18 +92,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/spacing_lvl4"
+            android:paddingVertical="@dimen/spacing_lvl3">
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/buttonUse"
-                style="@style/Button.Submit.Green"
-                android:text="@string/promo_label_use" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/promo_label_use"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="main" />
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/buttonCancel"
-                style="@style/Button.Submit.White.Border"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/promo_label_cancel_use"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="alternate"
+                app:unifyButtonVariant="ghost" />
 
         </LinearLayout>
     </RelativeLayout>
