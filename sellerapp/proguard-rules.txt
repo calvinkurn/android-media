@@ -234,7 +234,7 @@
 -dontwarn com.tokopedia.home.beranda.presentation.view.**
 -dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
 
--dontwarn com.tokopedia.sortfilter.SortFilter.*
+-dontwarn com.tokopedia.sortfilter.SortFilter*
 
 
 #SELLERAPP ONLY:
