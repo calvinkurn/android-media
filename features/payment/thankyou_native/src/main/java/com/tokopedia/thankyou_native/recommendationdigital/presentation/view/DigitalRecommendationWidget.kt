@@ -3,10 +3,9 @@ package com.tokopedia.thankyou_native.recommendationdigital.presentation.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
@@ -14,7 +13,7 @@ import kotlinx.android.synthetic.main.thank_digital_recommendation_item.view.*
 
 
 class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : FrameLayout(context, attrs, defStyleAttr) {
 
     var data: RecommendationsItem? = null
         set(value) {

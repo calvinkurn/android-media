@@ -1,7 +1,7 @@
 package com.tokopedia.thankyou_native.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 
@@ -43,8 +43,8 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         }?.forEach {
             invoiceSummaryMapList.add(InvoiceSummaryMap(it.itemDesc, it.amountStr, true))
         }
-        val totalPriceStr = CurrencyFormatUtil.convertPriceValue(totalPrice.toDouble(),
-                false)
+        val totalPriceStr = CurrencyFormatHelper.ConvertToRupiah(totalPrice.toString())
+        //CurrencyFormatUtil.convertPriceValue(totalPrice.toDouble(), false)
         visitableList.add(InvoiceSummery(totalPriceStr, totalItemCount, invoiceSummaryMapList))
     }
 
@@ -128,8 +128,8 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                     orderedItemList,
                     discountFromMerchant,
                     if (totalProductProtectionForShop > 0.0)
-                        CurrencyFormatUtil.convertPriceValue(totalProductProtectionForShop,
-                                false)
+                        CurrencyFormatHelper.ConvertToRupiah(totalProductProtectionForShop.toString())
+                        ///CurrencyFormatUtil.convertPriceValue(totalProductProtectionForShop,false)
                     else null,
                     if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null,
                     shippingInfo,
