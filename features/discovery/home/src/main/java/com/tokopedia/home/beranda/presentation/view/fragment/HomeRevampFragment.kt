@@ -506,6 +506,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
+        homeRecyclerView?.itemAnimator?.moveDuration = 150
+        homeRecyclerView?.itemAnimator?.addDuration = 70
+
         navAbTestCondition(
                 ifNavOld = {
                     oldToolbar?.setAfterInflationCallable(afterInflationCallable)
@@ -1556,6 +1559,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
+        getHomeViewModel().showTicker()
     }
 
     private fun remoteConfigIsShowOnboarding(): Boolean {

@@ -100,6 +100,9 @@ class HomeRevampRepositoryImpl @Inject constructor(
              * 1. Provide initial HomeData
              */
             var homeData = HomeData()
+            cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                homeCachedDataSource.saveToDatabase(homeData)
+            })
 
             /**
              * 2. Get above the fold skeleton
@@ -112,38 +115,28 @@ class HomeRevampRepositoryImpl @Inject constructor(
             }
 
             /**
-             * 3. Save immediately to produce shimmering for ATF data
-             */
-            cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                homeCachedDataSource.saveToDatabase(homeData)
-            })
-
-            homeData.atfData?.isProcessingAtf
-            /**
              * 4. Get above the fold content
              */
-            if (homeData?.atfData?.dataList?.isNotEmpty() == true) {
+            if (homeData.atfData?.dataList?.isNotEmpty() == true) {
                 homeData.atfData?.dataList?.map { atfData ->
                     when(atfData.component) {
                         TYPE_TICKER -> {
-                            val job = async {
-                                try {
-                                    val ticker = homeRemoteDataSource.getHomeTickerUseCase()
-                                    ticker?.let {
-                                        atfData.content = gson.toJson(ticker.ticker)
-                                        atfData.status = AtfKey.STATUS_SUCCESS
-                                        cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                                            homeCachedDataSource.saveToDatabase(homeData)
-                                        })
-                                    }
-                                } catch (e: Exception) {
-                                    atfData.status = AtfKey.STATUS_ERROR
+                            try {
+                                val ticker = homeRemoteDataSource.getHomeTickerUseCase()
+                                ticker?.let {
+                                    atfData.content = gson.toJson(ticker.ticker)
+                                    atfData.status = AtfKey.STATUS_SUCCESS
                                     cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
                                         homeCachedDataSource.saveToDatabase(homeData)
                                     })
                                 }
+                                Log.d("DevaSelect","Ticker saved to database!")
+                            } catch (e: Exception) {
+                                atfData.status = AtfKey.STATUS_ERROR
+                                cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                    homeCachedDataSource.saveToDatabase(homeData)
+                                })
                             }
-                            jobList.add(job)
                         }
                         TYPE_CHANNEL -> {
                             val job = async {
@@ -156,6 +149,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                         cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
                                             homeCachedDataSource.saveToDatabase(homeData)
                                         })
+                                        Log.d("DevaSelect","Channel saved to database!")
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
@@ -178,6 +172,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                             homeCachedDataSource.saveToDatabase(homeData)
                                         })
                                     }
+                                    Log.d("DevaSelect","Icon saved to database!")
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
                                     cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
@@ -192,22 +187,27 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         }
                     }
                 }
-                /**
-                 * this is to filter the first deffered finished
-                 *
-                 * 5. Submit current data to database, to trigger HomeViewModel flow
-                 * if there is no cache, then submit immediately
-                 * if cache exist, don't submit to database because it will trigger jumpy experience
-                 */
-                select<Unit?> {
-                    jobList.forEach {
-                        it.onAwait {
-                            cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                                homeCachedDataSource.saveToDatabase(homeData)
-                            })
-                        }
-                    }
-                }
+//                /**
+//                 * this is to filter the first deffered finished
+//                 *
+//                 * 5. Submit current data to database, to trigger HomeViewModel flow
+//                 * if there is no cache, then submit immediately
+//                 * if cache exist, don't submit to database because it will trigger jumpy experience
+//                 */
+//                select<Unit?> {
+//                    jobList.forEach {
+//                        it.onAwait {
+//                            Log.d("DevaSelect","Select called before database!")
+//
+//                            cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+//                                homeCachedDataSource.saveToDatabase(homeData)
+//                            })
+//
+//                            Log.d("DevaSelect","Select called after save database!")
+//
+//                        }
+//                    }
+//                }
             }
 
             homeData.atfData?.isProcessingAtf = false

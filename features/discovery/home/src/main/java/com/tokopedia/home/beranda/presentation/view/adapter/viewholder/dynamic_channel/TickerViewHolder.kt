@@ -54,7 +54,7 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                }, 2000)
+                }, 1000)
             }
         }
     }
