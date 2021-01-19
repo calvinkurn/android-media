@@ -79,7 +79,6 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
     }
 
     private fun renderBackgroundHeight() {
-//        ImageHandler.LoadImage(backgroundViewImage, backgroundUrl)
 //        val ovoView = itemView.findViewById<OvoWidgetView>(R.id.view_ovo)
 //        if (ovoView.visibility == View.VISIBLE) {
 //            val backgroundView = itemView.findViewById<FrameLayout>(R.id.view_background)
