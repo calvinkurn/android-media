@@ -143,6 +143,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 .inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initPltPerformanceMonitoring()
+        startHomeLayoutNetworkMonitoring()
+        sellerHomeViewModel.getWidgetLayout()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_sah, container, false)
@@ -150,7 +158,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initPltPerformanceMonitoring()
         hideTooltipIfExist()
         setupView()
 
@@ -584,8 +591,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         view?.swipeRefreshLayout?.isRefreshing = true
         setProgressBarVisibility(true)
-        startHomeLayoutNetworkMonitoring()
-        sellerHomeViewModel.getWidgetLayout()
     }
 
     private fun startHomeLayoutNetworkMonitoring() {

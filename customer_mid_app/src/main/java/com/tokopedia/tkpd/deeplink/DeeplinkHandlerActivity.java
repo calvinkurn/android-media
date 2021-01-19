@@ -13,6 +13,7 @@ import androidx.core.app.TaskStackBuilder;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -40,8 +41,6 @@ import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
-import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
-import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.data.repository.HistoryRepository;
@@ -62,6 +61,8 @@ import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -72,7 +73,6 @@ import timber.log.Timber;
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         SellerApplinkModule.class,
-        ProductDetailApplinkModule.class,
         FeedDeeplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
@@ -85,6 +85,9 @@ import timber.log.Timber;
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static final String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
+    private static final String APPLINK_LOG_FORMAT = "P1#WEBVIEW_OPENED#applink;domain='%s';url='%s'";
+    private static final String TOKOPEDIA_DOMAIN = "tokopedia";
+    private static final String URL_QUERY_PARAM = "url";
     private static ApplinkDelegate applinkDelegate;
     private Subscription clearNotifUseCase;
 
@@ -94,7 +97,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ConsumerDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
-                    new ProductDetailApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
@@ -188,6 +190,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         }
         iniBranchIO(this);
         logDeeplink();
+        logWebViewApplink();
         finish();
     }
 
@@ -316,5 +319,40 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
         Timber.w("P1#DEEPLINK_OPEN_APP#%s;referrer='%s';extra_referrer='%s';uri='%s'",
                 getClass().getSimpleName(), referrer, extraReferrer.toString(), uri.toString());
+    }
+
+    private void logWebViewApplink() {
+        Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
+        if(uri.toString().contains(ApplinkConst.WEBVIEW)) {
+            Uri urlToLoad = getUrlToLoad(uri);
+            if(urlToLoad != null) {
+                String domain = urlToLoad.getHost();
+                if(domain != null) {
+                    if (!getBaseDomain(domain).equalsIgnoreCase(TOKOPEDIA_DOMAIN)) {
+                        Timber.w(APPLINK_LOG_FORMAT, domain, uri);
+                    }
+                }
+            }
+        }
+    }
+
+    private String getBaseDomain(String host) {
+        if(host == null) {
+            return "";
+        }
+        String[] split = host.split("\\.");
+        if (split.length > 2) {
+            return split[1];
+        } else {
+            return split[0];
+        }
+    }
+
+    private Uri getUrlToLoad(Uri url) {
+        try {
+            return Uri.parse(url.getQueryParameter(URL_QUERY_PARAM));
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

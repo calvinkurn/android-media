@@ -2,9 +2,9 @@
     android:shape="oval"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-    <solid android:color="@color/Neutral_N0"/>
+    <solid android:color="@color/Unify_N0"/>
     <stroke
         android:width="@dimen/shake_landing_dp_1"
-        android:color="@color/shake_tkpd_main_green"/>
+        android:color="@color/Unify_G400"/>
     <size android:width="@dimen/shake_landing_dp_15" android:height="@dimen/shake_landing_dp_15"/>
 </shape>
