@@ -175,12 +175,8 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
                 if (confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) && isInAppEnable) {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
                 } else if (isPushEnable) {
-                    val validator = NotificationValidationManager(
-                            applicationContext,
-                            //TODO change from notification payload
-                            NotificationValidationManager.NotificationPrioMock.Both
-                    )
-
+                    val mockValidationByMessage = bundle.getString(CMConstant.PayloadKeys.MESSAGE, "")
+                    val validator = NotificationValidationManager(applicationContext, mockValidationByMessage)
                     aidlApiBundle?.let {
                         validator.validate(aidlApiBundle) {
                             PushController(applicationContext).handleNotificationBundle(bundle)

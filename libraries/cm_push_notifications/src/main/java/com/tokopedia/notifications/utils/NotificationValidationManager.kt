@@ -9,19 +9,28 @@ import com.tokopedia.user.session.UserSession
 
 class NotificationValidationManager(
         private val context: Context,
-        private val priorityStatus: NotificationPrioMock
+        private val mockValidationByMessage: String
 ) {
 
     private val userSession by lazy { UserSession(context) }
 
+    //TODO: please remove this after notification_priority has merged from BE
+    private fun validationByMessage(): NotificationPriorityType {
+        return when (mockValidationByMessage.toLowerCase().trim()) {
+            "seller" -> NotificationPriorityType.SellerApp
+            "customer" -> NotificationPriorityType.MainApp
+            else -> NotificationPriorityType.Both
+        }
+    }
+
     fun validate(bundle: Bundle?, notify: () -> Unit) {
-        when (priorityStatus) {
-            is NotificationPrioMock.SellerApp -> { // sellerAppPriority > mainAppPriority
+        when (validationByMessage()) {
+            is NotificationPriorityType.SellerApp -> { // sellerAppPriority > mainAppPriority
                 if (GlobalConfig.isSellerApp()) {
                     notify()
                 }
             }
-            is NotificationPrioMock.MainApp -> { // sellerAppPriority < mainAppPriority
+            is NotificationPriorityType.MainApp -> { // sellerAppPriority < mainAppPriority
                 val isSellerAppInstalled = context.isInstalled(SELLER_APP)
                 val isSellerAppLogged = bundle?.getBoolean(UserKey.IS_LOGIN)?: false
                 val sellerAppUserId = bundle?.getString(UserKey.USER_ID)?: ""
@@ -31,14 +40,14 @@ class NotificationValidationManager(
                     notify()
                 }
             }
-            is NotificationPrioMock.Both -> notify()
+            is NotificationPriorityType.Both -> notify()
         }
     }
 
-    sealed class NotificationPrioMock {
-        object SellerApp: NotificationPrioMock()
-        object MainApp: NotificationPrioMock()
-        object Both: NotificationPrioMock()
+    sealed class NotificationPriorityType {
+        object SellerApp: NotificationPriorityType()
+        object MainApp: NotificationPriorityType()
+        object Both: NotificationPriorityType()
     }
 
 }
