@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
@@ -181,6 +182,16 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         setShadows()
         setListeners()
         setupBottomSheet(false)
+        preloadAssets()
+    }
+
+    fun preloadAssets() {
+        context?.let {
+            val w = directGiftView.dpToPx(56).toInt()
+            Glide.with(it)
+                    .load(R.drawable.gf_glowing_ovo)
+                    .preload()
+        }
     }
 
     private fun setupBottomSheet(show: Boolean) {
