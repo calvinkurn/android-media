@@ -5,18 +5,28 @@ apply plugin: 'io.hansel.preprocessor.module'
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
+
 buildscript {
     repositories {
         mavenCentral()
         jcenter()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
+
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
-android{
+android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+    }
+
     testOptions {
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
@@ -25,8 +35,11 @@ android{
 }
 
 dependencies {
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+
     implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
+    implementation project(rootProject.ext.features.sellerHomeNavigationCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
@@ -36,6 +49,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.analytics)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -65,13 +79,27 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
-    implementation (rootProject.ext.firebase.crashlytics) {
+    implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.androidxTest
+
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+        exclude group: "com.google.android.gms", module: "play-services-plus"
+        exclude group: "com.google.android.gms", module: "play-services-location"
+        exclude group: "com.google.android.gms", module: "play-services-maps"
+        exclude group: "com.google.android.gms", module: "play-services-auth"
+        exclude group: "com.google.android.gms", module: "play-services-places"
+    }
+    androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
 }
 
 project.ext {
@@ -84,3 +112,4 @@ project.ext {
 apply from: "$rootProject.projectDir/publish_local.gradle"
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
+apply from: '../../../compile-instrument-test.gradle'

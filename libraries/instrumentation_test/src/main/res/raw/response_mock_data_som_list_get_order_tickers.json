@@ -1,0 +1,23 @@
+[
+  {
+    "data": {
+      "orderTickers": {
+        "total": 2,
+        "tickers": [
+          {
+            "id": 1025,
+            "body": "\u003cp\u003e\u003cspan style=\"font-size: 14px;\"\u003ePengiriman pesanan dari dan menuju Sulawesi Barat berpotensi mengalami keterlambatan karena gempa. Mohon tunggu dan cek Status Pengiriman berkala.\u003c/span\u003e\u003cbr\u003e\u003c/p\u003e",
+            "short_desc": "Informasi Keterlambatan Pengiriman Pesanan Wilayah Sulawesi Barat",
+            "is_active": true
+          },
+          {
+            "id": 1023,
+            "body": "\u003cp\u003e\u003cspan style=\"font-size: 14px;\"\u003ePengiriman pesanan dari dan menuju Kalimantan Barat berpotensi mengalami keterlambatan karena banjir. Mohon tunggu dan cek Status Pengiriman berkala.\u003c/span\u003e\u003cbr\u003e\u003c/p\u003e",
+            "short_desc": "Informasi Keterlambatan Pengiriman Pesanan Wilayah Kalimantan Barat",
+            "is_active": true
+          }
+        ]
+      }
+    }
+  }
+]

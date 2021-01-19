@@ -8,10 +8,10 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import com.example.sellerhomenavigationcommon.plt.LoadTimeMonitoringListener
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeIdlingResource
-import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitoringListener
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.test.application.TestRepeatRule
@@ -33,7 +33,7 @@ class SellerHomeTrackerValidationTest {
         override fun afterActivityLaunched() {
             super.afterActivityLaunched()
             sellerHomeLoadTimeMonitoringListener.onStartPltMonitoring()
-            activity.sellerHomeLoadTimeMonitoringListener = sellerHomeLoadTimeMonitoringListener
+            activity.loadTimeMonitoringListener = sellerHomeLoadTimeMonitoringListener
             markAsIdleIfPltIsSucceed()
         }
     }
@@ -42,7 +42,7 @@ class SellerHomeTrackerValidationTest {
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
     // this is only to make the test wait until widgets rendered
-    val sellerHomeLoadTimeMonitoringListener = object : SellerHomeLoadTimeMonitoringListener {
+    val sellerHomeLoadTimeMonitoringListener = object : LoadTimeMonitoringListener {
         override fun onStartPltMonitoring() {
             SellerHomeIdlingResource.increment()
         }

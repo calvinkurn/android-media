@@ -25,7 +25,7 @@ class SomListGetWaitingPaymentUseCase @Inject constructor(
 
     companion object {
         private val QUERY = """
-            query OrderFilterSom {
+            query GetWaitingPaymentCounter {
               orderFilterSom {
                 waiting_payment_counter {
                   text

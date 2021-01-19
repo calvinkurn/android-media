@@ -7,9 +7,9 @@ import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.example.sellerhomenavigationcommon.plt.LoadTimeMonitoringListener
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.sellerhome.SellerHomeIdlingResource
-import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitoringListener
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity.Companion.createIntent
 import com.tokopedia.test.application.TestRepeatRule
@@ -50,7 +50,7 @@ class PltSellerHomePerformanceTest {
         override fun afterActivityLaunched() {
             super.afterActivityLaunched()
             sellerHomeLoadTimeMonitoringListener.onStartPltMonitoring()
-            activity.sellerHomeLoadTimeMonitoringListener = sellerHomeLoadTimeMonitoringListener
+            activity.loadTimeMonitoringListener = sellerHomeLoadTimeMonitoringListener
             markAsIdleIfPltIsSucceed()
         }
     }
@@ -58,7 +58,7 @@ class PltSellerHomePerformanceTest {
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
-    val sellerHomeLoadTimeMonitoringListener = object : SellerHomeLoadTimeMonitoringListener {
+    val sellerHomeLoadTimeMonitoringListener = object : LoadTimeMonitoringListener {
         override fun onStartPltMonitoring() {
             SellerHomeIdlingResource.increment()
         }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.example.sellerhomenavigationcommon.plt.LoadTimeMonitoringActivity
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -604,7 +605,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun stopHomeLayoutRenderMonitoring(fromCache: Boolean) {
         performanceMonitoringSellerHomePlt?.addDataSourceAttribution(fromCache)
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
-        (activity as? SellerHomeActivity)?.sellerHomeLoadTimeMonitoringListener?.onStopPltMonitoring()
+        (activity as? LoadTimeMonitoringActivity)?.loadTimeMonitoringListener?.onStopPltMonitoring()
     }
 
     @Suppress("UNCHECKED_CAST")
