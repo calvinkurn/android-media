@@ -15,11 +15,10 @@ import com.tokopedia.sellerhome.SellerHomeIdlingResource
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.test.application.TestRepeatRule
+import com.tokopedia.test.application.environment.InstrumentationTestApp
+import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor
+import com.tokopedia.test.application.util.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -61,7 +60,7 @@ class SellerHomeTrackerValidationTest {
         setUpTimeoutPolicy()
         this.registerIdlingResources()
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor(createMockModelConfig(), emptyList())
+        setupGraphqlMockResponse(createMockModelConfig())
         login()
         Espresso.onIdle()
         activityRule.launchActivity(SellerHomeActivity.createIntent(InstrumentationRegistry.getInstrumentation().targetContext))
