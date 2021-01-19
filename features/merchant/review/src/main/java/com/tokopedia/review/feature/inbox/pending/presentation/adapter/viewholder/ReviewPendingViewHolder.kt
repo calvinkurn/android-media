@@ -65,7 +65,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         }
     }
 
-    private fun setListener(reputationId: Int, productId: Int, inboxReviewId: Int, seen: Boolean, isEligible: Boolean) {
+    private fun setListener(reputationId: Long, productId: Int, inboxReviewId: Long, seen: Boolean, isEligible: Boolean) {
         itemView.setOnClickListener {
             reviewPendingItemListener.trackCardClicked(reputationId, productId, isEligible)
             itemView.reviewPendingStars.renderInitialReviewWithData(5)
@@ -73,7 +73,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         }
     }
 
-    private fun setupStars(reputationId: Int, productId: Int, inboxReviewId: Int, seen: Boolean, isEligible: Boolean) {
+    private fun setupStars(reputationId: Long, productId: Int, inboxReviewId: Long, seen: Boolean, isEligible: Boolean) {
         itemView.reviewPendingStars.apply {
             resetStars()
             setListener(object : AnimatedRatingPickerReviewPendingView.AnimatedReputationListener {
