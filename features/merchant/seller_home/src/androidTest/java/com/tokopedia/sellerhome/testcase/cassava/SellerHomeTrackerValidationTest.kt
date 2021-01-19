@@ -19,6 +19,7 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -60,7 +61,7 @@ class SellerHomeTrackerValidationTest {
         setUpTimeoutPolicy()
         this.registerIdlingResources()
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setupGraphqlMockResponse(createMockModelConfig())
+        setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor(createMockModelConfig(), emptyList())
         login()
         Espresso.onIdle()
         activityRule.launchActivity(SellerHomeActivity.createIntent(InstrumentationRegistry.getInstrumentation().targetContext))

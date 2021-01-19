@@ -15,10 +15,7 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity.Companion.creat
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
-import com.tokopedia.test.application.util.setupTotalSizeInterceptor
+import com.tokopedia.test.application.util.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,14 +34,16 @@ class PltSellerHomePerformanceTest {
     var activityRule: ActivityTestRule<SellerHomeActivity> = object : ActivityTestRule<SellerHomeActivity>(SellerHomeActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            setupGraphqlMockResponseWithCheck(createMockModelConfig())
-            setupTotalSizeInterceptor(
+            setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor(
+                    createMockModelConfig(),
                     listOf("getNotifications", "getShopInfoMoengage", "shopInfoByID",
                             "goldGetPMOSStatus", "GetSellerDashboardLayout", "getCardWidgetData",
                             "getLineGraphData", "getCarouselWidgetData", "getPostWidgetData",
                             "getProgressData", "getBarChartData", "getPieChartData", "getTableData",
                             "getTicker"
-                    ))
+                    )
+            )
+
         }
 
         override fun afterActivityLaunched() {
