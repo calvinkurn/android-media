@@ -26,9 +26,10 @@ class RemoteService: Service() {
         val data = Bundle()
         if (userSession.isLoggedIn) {
             data.apply {
-                data.putBoolean(UserKey.IS_LOGIN, true)
+                putBoolean(UserKey.IS_LOGIN, true)
                 putString(UserKey.NAME, userSession.name)
                 putString(UserKey.EMAIL, userSession.email)
+                putString(UserKey.USER_ID, userSession.userId)
             }
         } else {
             data.putBoolean(UserKey.IS_LOGIN, false)
