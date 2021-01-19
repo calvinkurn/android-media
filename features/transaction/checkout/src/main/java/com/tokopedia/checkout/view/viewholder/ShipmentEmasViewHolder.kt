@@ -6,6 +6,7 @@ import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
@@ -27,9 +28,12 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
         buyEmas.isChecked = egoldAttributeModel.isChecked
         tvEmasTitle.text = egoldAttributeModel.titleText
         imgEmasInfo.setOnClickListener { showBottomSheet(egoldAttributeModel) }
-        tvEmasDesc.text = Html.fromHtml(String.format(llContainer.context
-                .getString(R.string.emas_checkout_desc), egoldAttributeModel.subText,
-                removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.buyEgoldValue, false))))
+        tvEmasDesc.text = MethodChecker.fromHtml(
+                String.format(llContainer.context.getString(R.string.emas_checkout_desc),
+                        egoldAttributeModel.subText,
+                        removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.buyEgoldValue, false))
+                )
+        )
         buyEmas.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean -> shipmentAdapterActionListener.onEgoldChecked(isChecked) }
     }
 
