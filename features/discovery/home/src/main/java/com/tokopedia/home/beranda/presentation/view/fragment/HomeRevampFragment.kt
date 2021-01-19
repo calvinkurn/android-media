@@ -103,7 +103,6 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
-import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -542,7 +541,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                                 }
                                         )
                                     }
-                                }
+                                },
+                                fixedIconColor = NavRecyclerViewScrollListener.FixedTheme.TOOLBAR_LIGHT_TYPE
                         ))
                         it.setIcon(
                                 IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
@@ -1147,7 +1147,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun calculateSearchbarView(offset: Int) {
+    private fun calculateSearchbarView(offset: Int, fixedIconColor: Int = FixedTheme.TOOLBAR_DARK_TYPE) {
         val endTransitionOffset = startToTransitionOffset + searchBarTransitionRange
         val maxTransitionOffset = endTransitionOffset - startToTransitionOffset
         //mapping alpha to be rendered per pixel for x height
@@ -1157,11 +1157,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             offsetAlpha = 0f
         }
         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+            when (fixedIconColor) {
+                FixedTheme.TOOLBAR_DARK_TYPE -> oldToolbar?.switchToDarkToolbar()
+                FixedTheme.TOOLBAR_LIGHT_TYPE -> oldToolbar?.switchToLightToolbar()
+            }
             if (offsetAlpha >= 150) {
-                oldToolbar?.switchToDarkToolbar()
                 if (isLightThemeStatusBar) requestStatusBarDark()
             } else {
-                oldToolbar?.switchToLightToolbar()
                 if (!isLightThemeStatusBar) requestStatusBarLight()
             }
         }
@@ -1174,6 +1176,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 setStatusBarAlpha(offsetAlpha)
             }
         }
+    }
+
+    private object FixedTheme {
+        const val TOOLBAR_DARK_TYPE = 0
+        const val TOOLBAR_LIGHT_TYPE = 1
     }
 
     private fun setStatusBarAlpha(alpha: Float) {
