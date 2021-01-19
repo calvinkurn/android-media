@@ -117,11 +117,6 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity"
-            android:label="@string/title_detail_feed"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait">
             <intent-filter>

@@ -50,6 +50,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkDFMapper;
+import com.tokopedia.applink.FragmentConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -645,7 +646,7 @@ public class MainParentActivity extends BaseActivity implements
         List<Fragment> fragmentList = new ArrayList<>();
 
         fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
-        fragmentList.add(RouteManager.instantiateFragment(this, "com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment", getIntent().getExtras()));
+        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
         fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
         fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
