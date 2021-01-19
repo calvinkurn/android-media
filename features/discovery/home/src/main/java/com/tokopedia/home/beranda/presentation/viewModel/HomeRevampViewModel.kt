@@ -260,6 +260,9 @@ open class HomeRevampViewModel @Inject constructor(
 
     private var onRefreshState = true
 
+    private var homeTicker: Pair<Int, TickerDataModel>? = null
+    private var takeTicker = true
+
     init {
         initialShimmerData = HomeInitialShimmerDataModel()
         _isViewModelInitialized.value = Event(true)
@@ -498,7 +501,6 @@ open class HomeRevampViewModel @Inject constructor(
     private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let {
             var newHomeRevampViewModel = homeDataModel
-            if(isNeedShowGeoLocation) newHomeRevampViewModel = onRemoveSuggestedReview(newHomeRevampViewModel)
             newHomeRevampViewModel = evaluatePlayWidget(newHomeRevampViewModel)
             newHomeRevampViewModel = evaluateBuWidgetData(newHomeRevampViewModel)
             newHomeRevampViewModel = evaluateRecommendationSection(newHomeRevampViewModel)
@@ -603,6 +605,24 @@ open class HomeRevampViewModel @Inject constructor(
                     return it.copy(
                             list = list
                     )
+                }
+            }
+        }
+        return homeDataModel
+    }
+
+    private fun takeHomeTicker(homeDataModel: HomeDataModel?): HomeDataModel? {
+        if (takeTicker) {
+            homeDataModel?.let { homeModel->
+                val findTickerModel =
+                        homeModel.list.withIndex().find { visitable -> visitable.value is TickerDataModel }
+                findTickerModel?.let { indexedValue ->
+                    val currentList = homeModel.list.toMutableList()
+                    (indexedValue.value as? TickerDataModel)?.let {
+                        homeTicker = Pair(indexedValue.index, it)
+                        currentList.remove(findTickerModel.value)
+                        return homeModel.copy(list = currentList)
+                    }
                 }
             }
         }
@@ -881,9 +901,11 @@ open class HomeRevampViewModel @Inject constructor(
                 if (homeDataModel?.isCache == false) {
                     onRefreshState = false
                     _isRequestNetworkLiveData.postValue(Event(false))
-                    var homeData: HomeDataModel? = homeDataModel
-                    homeData = evaluateGeolocationComponent(homeData)
-                    homeData = evaluateAvailableComponent(homeData)
+                    var homeData = takeHomeTicker(homeDataModel)
+                    if (homeData?.isProcessingAtf == false) {
+                        homeData = evaluateAvailableComponent(homeData)
+                    }
+
                     homeData?.let {
                         homeProcessor.get().sendWithQueueMethod(UpdateHomeData(it, this@HomeRevampViewModel))
 
@@ -907,18 +929,10 @@ open class HomeRevampViewModel @Inject constructor(
                 } else if (onRefreshState) {
                     if (homeDataModel?.list?.size?:0 > 1) {
                         _isRequestNetworkLiveData.postValue(Event(false))
+                        takeTicker = false
                     }
                     homeDataModel?.let {
-                        //loading-homepage ATF
-                        if (homeDataModel.list.isEmpty()) {
-                            val homeInitialShimmer = homeDataModel.copy(
-                                    list = listOf(HomeInitialShimmerDataModel()),
-                                    isProcessingAtf = true
-                            )
-                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeInitialShimmer, this@HomeRevampViewModel))
-                        }  else {
-                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
-                        }
+                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
                     }
                     refreshHomeData()
                 }
@@ -936,6 +950,10 @@ open class HomeRevampViewModel @Inject constructor(
                 _updateNetworkLiveData.postValue(it)
                 if (it.status === Result.Status.ERROR_PAGINATION) {
                     removeDynamicChannelLoadingModel()
+                }
+
+                if (it.status === Result.Status.ERROR_ATF) {
+                    _updateNetworkLiveData.postValue(it)
                 }
             }
         }) {
@@ -1523,6 +1541,16 @@ open class HomeRevampViewModel @Inject constructor(
                     success = false,
                     position = position
             ))
+        }
+    }
+
+    fun showTicker() {
+        if (homeVisitableListData.filterIsInstance(TickerDataModel::class.java).isEmpty()) {
+            homeTicker?.let {
+                homeProcessor.get().sendWithQueueMethod(AddWidgetCommand(it.second, it.first, this), 3000) {
+                    takeTicker = false
+                }
+            }
         }
     }
 

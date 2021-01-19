@@ -95,55 +95,56 @@ class HomeRevampRepositoryImpl @Inject constructor(
             val isCacheExistForProcess = isCacheExist
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
+            var isAtfSuccess = true
 
             /**
              * 1. Provide initial HomeData
              */
             var homeData = HomeData()
+            cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                homeCachedDataSource.saveToDatabase(homeData)
+            })
 
             /**
              * 2. Get above the fold skeleton
              */
             try {
                 val homeAtfResponse = async { homeRemoteDataSource.getAtfDataUseCase() }.await()
-                homeData.atfData = homeAtfResponse
+                if (homeAtfResponse?.dataList == null) {
+                    isAtfSuccess = false
+                    homeData.atfData = null
+                    emit(Result.errorAtf(Throwable("ATF data list is null"),null))
+                } else {
+                    homeData.atfData = homeAtfResponse
+                }
             } catch (e: Exception) {
                 homeData.atfData = null
+                isAtfSuccess = false
+                emit(Result.errorAtf(e,null))
             }
 
             /**
-             * 3. Save immediately to produce shimmering for ATF data
-             */
-            cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                homeCachedDataSource.saveToDatabase(homeData)
-            })
-
-            homeData.atfData?.isProcessingAtf
-            /**
              * 4. Get above the fold content
              */
-            if (homeData?.atfData?.dataList?.isNotEmpty() == true) {
+            if (homeData.atfData?.dataList?.isNotEmpty() == true) {
                 homeData.atfData?.dataList?.map { atfData ->
                     when(atfData.component) {
                         TYPE_TICKER -> {
-                            val job = async {
-                                try {
-                                    val ticker = homeRemoteDataSource.getHomeTickerUseCase()
-                                    ticker?.let {
-                                        atfData.content = gson.toJson(ticker.ticker)
-                                        atfData.status = AtfKey.STATUS_SUCCESS
-                                        cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                                            homeCachedDataSource.saveToDatabase(homeData)
-                                        })
-                                    }
-                                } catch (e: Exception) {
-                                    atfData.status = AtfKey.STATUS_ERROR
+                            try {
+                                val ticker = homeRemoteDataSource.getHomeTickerUseCase()
+                                ticker?.let {
+                                    atfData.content = gson.toJson(ticker.ticker)
+                                    atfData.status = AtfKey.STATUS_SUCCESS
                                     cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
                                         homeCachedDataSource.saveToDatabase(homeData)
                                     })
                                 }
+                            } catch (e: Exception) {
+                                atfData.status = AtfKey.STATUS_ERROR
+                                cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                    homeCachedDataSource.saveToDatabase(homeData)
+                                })
                             }
-                            jobList.add(job)
                         }
                         TYPE_CHANNEL -> {
                             val job = async {
@@ -161,6 +162,8 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     atfData.status = AtfKey.STATUS_ERROR
                                     atfData.content = null
                                     cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                        homeCachedDataSource.saveToDatabase(homeData)
+                                    }, isCacheExistAction = {
                                         homeCachedDataSource.saveToDatabase(homeData)
                                     })
                                 }
@@ -192,21 +195,19 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         }
                     }
                 }
-                /**
-                 * this is to filter the first deffered finished
-                 *
-                 * 5. Submit current data to database, to trigger HomeViewModel flow
-                 * if there is no cache, then submit immediately
-                 * if cache exist, don't submit to database because it will trigger jumpy experience
-                 */
-                select<Unit?> {
-                    jobList.forEach {
-                        it.onAwait {
-                            cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                                homeCachedDataSource.saveToDatabase(homeData)
-                            })
-                        }
-                    }
+            }
+
+            cacheCondition(isCache = isCacheExistForProcess, isCacheExistAction = {
+                jobList.forEach {
+                    it.await()
+                }
+                homeCachedDataSource.saveToDatabase(homeData)
+            })
+
+            homeData.atfData?.dataList?.forEach error@{
+                if (it.status == AtfKey.STATUS_ERROR) {
+                    emit(Result.errorAtf(Throwable(),null))
+                    return@error
                 }
             }
 
@@ -216,9 +217,12 @@ class HomeRevampRepositoryImpl @Inject constructor(
              */
             val dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION) }
             val dynamicChannelResponseValue = try {
+                if (!isAtfSuccess) {
+                    homeData.atfData = null
+                }
                 dynamicChannelResponse.await()
             } catch (e: Exception) {
-                if (e is SocketTimeoutException && !isCacheExist) {
+                if (!isAtfSuccess && !isCacheExistForProcess) {
                     null
                 } else {
                     HomeChannelData()

@@ -18,8 +18,11 @@ class ErrorStateChannelOneViewHolder(itemView: View, private val listener: HomeC
     }
 
     override fun bind(element: ErrorStateChannelOneModel) {
+        itemView.localload_error_state_channel.progressState = false
+
         itemView.localload_error_state_channel.refreshBtn?.setOnClickListener {
             listener?.refreshHomeData(forceRefresh = true)
+            itemView.localload_error_state_channel.progressState = true
         }
     }
 }

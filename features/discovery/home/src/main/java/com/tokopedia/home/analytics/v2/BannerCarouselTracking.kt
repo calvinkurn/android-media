@@ -12,6 +12,7 @@ object BannerCarouselTracking : BaseTrackerConst() {
 
     private const val BANNER_CAROUSEL_IMAGE_NAME = "dynamic channel carousel"
     private const val CLICK_ON_BANNER_CAROUSEL = "dynamic channel carousel click"
+    private const val DEFAULT_VALUE_HEADER_NAME = "default"
 
     fun sendBannerCarouselClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         getTracker().sendEnhanceEcommerceEvent(getBannerCarouselClick(channelModel, channelGrid, position))
@@ -27,7 +28,10 @@ object BannerCarouselTracking : BaseTrackerConst() {
                     event = Event.PROMO_CLICK,
                     eventCategory = Category.HOMEPAGE,
                     eventAction = CLICK_ON_BANNER_CAROUSEL,
-                    eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, channelModel.channelHeader.name),
+                    eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id,
+                            if (channelModel.channelHeader.name.isNotEmpty()) channelModel.channelHeader.name
+                            else DEFAULT_VALUE_HEADER_NAME
+                    ),
                     promotions = listOf(channelGrid.convertToHomePromotionModel(channelModel, position)))
                 .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
