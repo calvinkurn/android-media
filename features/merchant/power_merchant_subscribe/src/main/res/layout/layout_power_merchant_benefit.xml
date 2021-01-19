@@ -9,7 +9,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:text="@string/power_merchant_benefit_title"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:textAllCaps="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textLearnMore"
         android:text="@string/power_merchant_learn_more"
-        android:textColor="@color/light_G500"
+        android:textColor="@color/Unify_G500"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
