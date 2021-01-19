@@ -57,6 +57,14 @@ data class Result<out T>(val status: Status, val data: T?, val error: Throwable?
                     error
             )
         }
+
+        fun <T> errorGeneral(error: Throwable, data: T? = null): Result<T> {
+            return Result(
+                    Status.ERROR_GENERAL,
+                    data,
+                    error
+            )
+        }
     }
 
     enum class Status {
@@ -64,7 +72,8 @@ data class Result<out T>(val status: Status, val data: T?, val error: Throwable?
         ERROR,
         ERROR_PAGINATION,
         LOADING,
-        ERROR_ATF
+        ERROR_ATF,
+        ERROR_GENERAL
     }
 
     fun Status.isLoading() = this == Status.LOADING

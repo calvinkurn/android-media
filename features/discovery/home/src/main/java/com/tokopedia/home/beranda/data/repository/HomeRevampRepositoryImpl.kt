@@ -95,6 +95,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
             val isCacheExistForProcess = isCacheExist
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
+            var isAtfSuccess = true
 
             /**
              * 1. Provide initial HomeData
@@ -109,9 +110,16 @@ class HomeRevampRepositoryImpl @Inject constructor(
              */
             try {
                 val homeAtfResponse = async { homeRemoteDataSource.getAtfDataUseCase() }.await()
-                homeData.atfData = homeAtfResponse
+                if (homeAtfResponse?.dataList == null) {
+                    isAtfSuccess = false
+                    homeData.atfData = null
+                    emit(Result.errorAtf(Throwable("ATF data list is null"),null))
+                } else {
+                    homeData.atfData = homeAtfResponse
+                }
             } catch (e: Exception) {
                 homeData.atfData = null
+                isAtfSuccess = false
                 emit(Result.errorAtf(e,null))
             }
 
@@ -209,9 +217,12 @@ class HomeRevampRepositoryImpl @Inject constructor(
              */
             val dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION) }
             val dynamicChannelResponseValue = try {
+                if (!isAtfSuccess) {
+                    homeData.atfData = null
+                }
                 dynamicChannelResponse.await()
             } catch (e: Exception) {
-                if (e is SocketTimeoutException && !isCacheExist) {
+                if (!isAtfSuccess && !isCacheExistForProcess) {
                     null
                 } else {
                     HomeChannelData()
