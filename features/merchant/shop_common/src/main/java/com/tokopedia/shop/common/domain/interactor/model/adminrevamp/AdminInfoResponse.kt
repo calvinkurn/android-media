@@ -16,6 +16,9 @@ data class GetAdminInfo(
 )
 
 data class AdminInfoData(
+        @SerializedName("location_list")
+        @Expose
+        val locationList: List<ShopLocationResponse>? = listOf(),
         @SerializedName("permission_list")
         @Expose
         val permissionList: List<AdminPermission>? = listOf(),
