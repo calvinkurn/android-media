@@ -9,7 +9,7 @@ import com.tokopedia.logisticCommon.data.entity.shippingeditor.ShipperProductMod
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ShipperProductOnDemandItemAdapter(private val listener: ShipperProductOnDemandItemListener): RecyclerView.Adapter<ShipperProductOnDemandItemAdapter.ShipperProductOnDemandViewHolder>() {
+class ShipperProductItemAdapter(private val listener: ShipperProductOnDemandItemListener): RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
 
     private var shipperProductOnDemandModel = mutableListOf<ShipperProductModel>()
 

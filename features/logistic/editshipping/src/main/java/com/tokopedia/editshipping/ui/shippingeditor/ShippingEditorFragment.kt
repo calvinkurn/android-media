@@ -1,6 +1,9 @@
 package com.tokopedia.editshipping.ui.shippingeditor
 
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,6 +54,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private var shipperListOnDemand: RecyclerView? = null
     private var shipperListConventional: RecyclerView? = null
     private var btnSaveShipper: UnifyButton? = null
+    private var tvDetailCourier: Typography? = null
 
     private var bottomSheetShipperInfo: BottomSheetUnify? = null
     private var bottomSheetImageInfo: DeferredImageView? = null
@@ -90,8 +94,26 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         btnSaveShipper = view?.findViewById(R.id.btn_save_shipper)
         globalErrorLayout = view?.findViewById(R.id.global_error)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
+        tvDetailCourier = view?.findViewById(R.id.tv_detail_kurir)
 
-        shipperListOnDemand?.isNestedScrollingEnabled = false
+        renderTextDetailCourier()
+    }
+
+    private fun renderTextDetailCourier() {
+        val textDetailCourier = context?.getString(R.string.tv_detail_kurir)
+        val spannableString = SpannableString(textDetailCourier)
+        val startIndexOf = textDetailCourier?.indexOf("Selengkapnya")
+        tvDetailCourier?.text = spannableString
+        if (startIndexOf != null) {
+            spannableString.setSpan(object: ClickableSpan() {
+                override fun onClick(widget: View) {
+                    //openBottomSheet
+                    openBottomSheetShipperInfo()
+                }
+
+            }, startIndexOf, startIndexOf + 12, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+
     }
 
     private fun initAdapter() {

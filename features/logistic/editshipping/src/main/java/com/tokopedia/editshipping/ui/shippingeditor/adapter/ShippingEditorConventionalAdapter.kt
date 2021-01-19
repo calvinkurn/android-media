@@ -16,7 +16,7 @@ class ShippingEditorConventionalAdapter() : RecyclerView.Adapter<ShippingEditorC
 
     private var shipperConventionalModel = mutableListOf<ConventionalModel>()
 
-    private var shipperProductConventionalChild: ShipperProductOnDemandItemAdapter? = null
+    private var shipperProductConventionalChild: ShipperProductItemAdapter? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShippingEditorConventionalViewHolder {
         return ShippingEditorConventionalViewHolder(parent.inflateLayout(R.layout.item_shipping_editor_card))
@@ -40,7 +40,7 @@ class ShippingEditorConventionalAdapter() : RecyclerView.Adapter<ShippingEditorC
         notifyDataSetChanged()
     }
 
-    inner class ShippingEditorConventionalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), ShipperProductOnDemandItemAdapter.ShipperProductOnDemandItemListener {
+    inner class ShippingEditorConventionalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), ShipperProductItemAdapter.ShipperProductOnDemandItemListener {
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)
         private val shipmentItemCb = itemView.findViewById<CheckboxUnify>(R.id.cb_shipment_item)
@@ -67,7 +67,7 @@ class ShippingEditorConventionalAdapter() : RecyclerView.Adapter<ShippingEditorC
 
             shipmentCategory.text = sb.substring(0, sb.length - 2)
 
-            shipperProductConventionalChild = ShipperProductOnDemandItemAdapter(this@ShippingEditorConventionalViewHolder)
+            shipperProductConventionalChild = ShipperProductItemAdapter(this@ShippingEditorConventionalViewHolder)
             shipmentProductRv.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = shipperProductConventionalChild

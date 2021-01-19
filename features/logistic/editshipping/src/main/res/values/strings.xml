@@ -38,5 +38,6 @@
     <string name="awb_otomatis_detail">Dengan fitur ini, resi pengiriman otomatis terisi dan penjual tidak perlu bayar ongkir ke kurir.</string>
     <string name="non_tunai_title">Non Tunai</string>
     <string name="non_tunai_detail">Penjual tidak perlu bayar ongkir ke kurir. Ongkir dipotong langsung dari saldo penjual saat barang sudah diterima pembeli.</string>
+    <string name="tv_detail_kurir">Kenali detail kurir pengiriman agar kamu bisa memilih yang terbaik untuk pembelimu. &lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
 
 </resources>

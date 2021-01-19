@@ -16,7 +16,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
 
     private var shipperOnDemandModel = mutableListOf<OnDemandModel>()
 
-    private var shipperProductOnDemandChild: ShipperProductOnDemandItemAdapter? = null
+    private var shipperProductChild: ShipperProductItemAdapter? = null
 
     interface ShippingEditorItemAdapterListener {
             fun onShipperInfoClicked()
@@ -44,7 +44,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         notifyDataSetChanged()
     }
 
-    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener): RecyclerView.ViewHolder(itemView), ShipperProductOnDemandItemAdapter.ShipperProductOnDemandItemListener {
+    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener): RecyclerView.ViewHolder(itemView), ShipperProductItemAdapter.ShipperProductOnDemandItemListener {
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)
         private val shipmentItemCb = itemView.findViewById<CheckboxUnify>(R.id.cb_shipment_item)
@@ -72,13 +72,14 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
 
             shipmentCategory.text = sb.substring(0, sb.length - 2)
 
-            shipperProductOnDemandChild = ShipperProductOnDemandItemAdapter(this@ShippingEditorOnDemandViewHolder)
+            shipperProductChild = ShipperProductItemAdapter(this@ShippingEditorOnDemandViewHolder)
             shipmentProductRv.apply {
                 layoutManager = LinearLayoutManager(context)
-                adapter = shipperProductOnDemandChild
+                adapter = shipperProductChild
             }
 
-            shipperProductOnDemandChild?.addData(data.shipperProduct)
+            shipperProductChild?.addData(data.shipperProduct)
+
 
         }
 

@@ -59,39 +59,55 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_shipment_label"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_18"
+            android:layout_marginBottom="@dimen/dp_18"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/label_feature_items"
             app:layout_constraintTop_toBottomOf="@id/shipment_category"
-            android:visibility="gone" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/shipping_editor_expand"/>
 
-        <View
-            android:id="@+id/divider_shipment"
+        <LinearLayout
+            android:id="@+id/shipping_editor_expand"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/unify_space_12"
-            android:background="@color/Unify_N75"
-            android:layout_marginEnd="@dimen/unify_space_12"
-            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rv_shipment_label" />
+            app:layout_constraintTop_toBottomOf="@+id/rv_shipment_label"
+            android:animateLayoutChanges="true"
+            android:visibility="visible"
+            android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/shipment_item_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:itemCount="3"
-            android:layout_marginTop="@dimen/unify_space_16"
-            android:layout_marginBottom="@dimen/unify_space_16"
-            android:layout_marginEnd="@dimen/unify_space_16"
-            android:layout_marginStart="@dimen/unify_space_16"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:listitem="@layout/item_shipper_product_name"
-            app:layout_constraintTop_toBottomOf="@id/divider_shipment" />
+            <View
+                android:id="@+id/divider_shipment"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/Unify_N75"
+                android:layout_marginEnd="@dimen/unify_space_12"
+                android:layout_marginStart="@dimen/unify_space_12" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/shipment_item_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:itemCount="3"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginStart="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:listitem="@layout/item_shipper_product_name"
+                app:layout_constraintTop_toBottomOf="@id/divider_shipment" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

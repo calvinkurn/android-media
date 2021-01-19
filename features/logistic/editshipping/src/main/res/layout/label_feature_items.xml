@@ -8,10 +8,7 @@
         android:id="@+id/lbl_main_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_6"
         android:text="Label"
         android:visibility="visible"
         app:labelType="general_light_grey"/>
