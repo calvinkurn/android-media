@@ -339,15 +339,8 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.add_product_menu) {
             if (GlobalConfig.isSellerApp()) {
-                val subMenu = item.subMenu
-                val addProductMenu = subMenu.findItem(R.id.label_view_add_image)
-
-                addProductMenu.setOnMenuItemClickListener {
-                    val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
-                    startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
-                    true
-                }
-
+                val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
+                startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
                 ProductManageTracking.eventAddProduct()
             } else {
                 showAddEditMenuBottomSheet()
