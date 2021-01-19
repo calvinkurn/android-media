@@ -96,7 +96,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
     }
 
     private fun animateSlideUp() = with(view) {
-        base_btn_follow_npl_container?.visibility = View.VISIBLE
+        view.visibility = View.VISIBLE
         animate().translationY(0F).setDuration(GONE_ANIMATION_DURATION).setListener(null)
     }
 
@@ -104,7 +104,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         animate().translationY(view.height.toFloat()).setDuration(GONE_ANIMATION_DURATION).setListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 super.onAnimationEnd(animation)
-                base_btn_follow_npl_container?.visibility = View.GONE
+                view.visibility = View.GONE
                 stopLoading()
             }
         })
