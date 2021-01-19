@@ -62,7 +62,7 @@ public class AccessTokenRefresh {
                 tokenResponseError = response.errorBody().string();
                 Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "error_refresh_token", userSession.getAccessToken(), tokenResponseError, path);
                 networkRouter.sendRefreshTokenAnalytics(tokenResponseError);
-                checkShowForceLogout(tokenResponseError, networkRouter, path);
+                checkShowForceLogout(tokenResponseError, networkRouter, path, userSession);
             } else if (response.body() != null) {
                 tokenResponse = response.body();
                 networkRouter.sendRefreshTokenAnalytics("");
@@ -124,9 +124,10 @@ public class AccessTokenRefresh {
         return responseString.toLowerCase().contains(FORCE_LOGOUT);
     }
 
-    protected void checkShowForceLogout(String response, NetworkRouter networkRouter, String path) {
+    protected void checkShowForceLogout(String response, NetworkRouter networkRouter, String path, UserSessionInterface userSession) {
         if (isRequestDenied(response)) {
             networkRouter.showForceLogoutTokenDialog(path);
+            forceLogoutAndShowDialogForLoggedInUsers(userSession, networkRouter, path);
         }
     }
 }
