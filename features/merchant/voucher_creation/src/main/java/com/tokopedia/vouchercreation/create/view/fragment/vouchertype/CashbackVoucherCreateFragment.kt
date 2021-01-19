@@ -474,16 +474,16 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                         val recommendationData = result.data
                         viewModel.updateVoucherRecommendation(CashbackType.Rupiah, recommendationData)
                         val isActiveCashBackType = activeCashbackType is CashbackType.Rupiah
-                        // only applied the recommendation data for :
-                        // 1. new voucher creation process
-                        // 2. inactive cash back type
-                        if (isCreateNew || !isActiveCashBackType) {
+                        // only applied the recommendation data for new voucher creation process
+                        if (isCreateNew ) {
                             updateTextFieldValues(CashbackType.Rupiah, recommendationData)
-                            rupiahCashbackTextFieldList.forEach { uiModel ->
-                                viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
+                            // only render and calculate the recommendation data if the cash back type is active
+                            if (isActiveCashBackType) {
+                                adapter.notifyDataSetChanged()
+                                rupiahCashbackTextFieldList.forEach { uiModel ->
+                                    viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
+                                }
                             }
-                            // only render the recommendation data if the cash back type is active
-                            if (isActiveCashBackType) adapter.notifyDataSetChanged()
                         }
                         // only change the ticker content based on the active cash back type
                         if (isActiveCashBackType) viewModel.updateRecommendationStatus(CashbackType.Rupiah)
@@ -500,16 +500,16 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                         val recommendationData = result.data
                         viewModel.updateVoucherRecommendation(CashbackType.Percentage, recommendationData)
                         val isActiveCashBackType = activeCashbackType is CashbackType.Percentage
-                        // only applied the recommendation data for :
-                        // 1. new voucher creation process
-                        // 2. inactive cash back type
-                        if (isCreateNew || !isActiveCashBackType) {
+                        // only applied the recommendation data for new voucher creation process
+                        if (isCreateNew) {
                             updateTextFieldValues(CashbackType.Percentage, recommendationData)
-                            percentageCashbackTextFieldList.forEach { uiModel ->
-                                viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
+                            // only render and calculate the recommendation data if the cash back type is active
+                            if (isActiveCashBackType) {
+                                adapter.notifyDataSetChanged()
+                                percentageCashbackTextFieldList.forEach { uiModel ->
+                                    viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
+                                }
                             }
-                            // only render the recommendation data if the cash back type is active
-                            if (isActiveCashBackType) adapter.notifyDataSetChanged()
                         }
                         // only change the ticker content based on the active cash back type
                         if (isActiveCashBackType) viewModel.updateRecommendationStatus(CashbackType.Percentage)
