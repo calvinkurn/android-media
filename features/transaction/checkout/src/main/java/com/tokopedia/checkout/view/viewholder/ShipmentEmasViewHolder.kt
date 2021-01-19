@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.viewholder
 
-import android.text.Html
 import android.view.View
 import android.widget.CheckBox
 import android.widget.CompoundButton
