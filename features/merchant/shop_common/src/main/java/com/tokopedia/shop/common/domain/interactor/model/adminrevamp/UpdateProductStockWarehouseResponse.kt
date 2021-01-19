@@ -7,17 +7,19 @@ import com.tokopedia.network.data.model.response.Header
 data class UpdateProductStockWarehouseResponse(
         @SerializedName("IMSUpdateProductWarehouse")
         @Expose
-        val result: UpdateProductStockWarehouse? = UpdateProductStockWarehouse()
+        val result: UpdateProductStockWarehouseResult? = UpdateProductStockWarehouseResult()
 )
 
-data class UpdateProductStockWarehouse(
+data class UpdateProductStockWarehouseResult(
         @SerializedName("header")
         @Expose
         val header: Header? = Header(),
         @SerializedName("data")
         @Expose
-        val data: List<ProductStockWarehouse>? = listOf()
-)
+        val data: List<ProductStockWarehouse>? = listOf()) {
+
+        fun isSuccess(): Boolean = data?.isNotEmpty() == true
+}
 
 data class ProductStockWarehouse(
         @SerializedName("product_id")

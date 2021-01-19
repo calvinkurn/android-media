@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.domain.interactor.model.adminrevamp
+package com.tokopedia.shop.common.data.source.cloud.query.param
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
