@@ -45,6 +45,9 @@ class GetAllShopInfoUseCaseTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -58,7 +61,8 @@ class GetAllShopInfoUseCaseTest {
                 getShopTotalFollowersUseCase,
                 shopStatusTypeUseCase,
                 topAdsAutoTypeUseCase,
-                topAdsDashboardDepositUseCase
+                topAdsDashboardDepositUseCase,
+                coroutineTestRule.dispatchers
         )
     }
 
@@ -66,7 +70,7 @@ class GetAllShopInfoUseCaseTest {
     fun `success get all shop info`() = runBlocking {
         val balanceSuccess = OthersBalance()
         val shopTypeSuccess = PowerMerchantStatus.Active
-        val totalFollowersSuccess = anyInt()
+        val totalFollowersSuccess = anyLong()
         val shopBadgeUrlSuccess = anyString()
         val topAdsDepositSuccess = anyFloat()
         val isTopAdsAutoTopupSuccess = anyBoolean()
