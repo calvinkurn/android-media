@@ -13,7 +13,7 @@ import com.tokopedia.notifications.factory.BaseNotificationContract
 import com.tokopedia.notifications.model.ActionButton
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.ProductInfo
-import com.tokopedia.notifications.util.onlyOne
+import com.tokopedia.notifications.utils.onlyOne
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC as TYPE_ATC
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC as TYPE_OCC
