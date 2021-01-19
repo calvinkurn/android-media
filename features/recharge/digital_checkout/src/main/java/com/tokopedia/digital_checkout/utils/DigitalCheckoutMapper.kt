@@ -8,6 +8,7 @@ import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
+import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 
 /**
  * @author by jessica on 11/01/21
@@ -131,6 +132,116 @@ object DigitalCheckoutMapper {
             cartDigitalInfoData.smsState = responseCartData.attributes!!.smsState
             cartDigitalInfoData.title = responseCartData.attributes!!.title
             cartDigitalInfoData.type = responseCartData.type
+
+            return cartDigitalInfoData
+
+        } catch (e: Exception) {
+            throw Throwable(e.message, e)
+        }
+    }
+
+    fun mapGetCartToCartDigitalInfoData(responseRechargeGetCart: RechargeGetCart.Response): CartDigitalInfoData {
+        try {
+            val cartDigitalInfoData = CartDigitalInfoData()
+
+            responseRechargeGetCart.response.mainnInfo.let { mainInfos ->
+                cartDigitalInfoData.mainInfo = mainInfos.map {
+                    CartItemDigital(it.label ?: "", it.value ?: "")
+                }
+            }
+
+            responseRechargeGetCart.response.additionalInfo.let { additionalInfos ->
+                cartDigitalInfoData.additionalInfos = additionalInfos.map {
+                    CartItemDigitalWithTitle(it.title ?: "",
+                            it.detail?.map { detail ->
+                                CartItemDigital(detail.label ?: "", detail.value ?: "")
+                            } ?: listOf())
+                }
+            }
+
+            val attributesDigital = AttributesDigitalData()
+            responseRechargeGetCart.response.let { attributes ->
+                attributesDigital.categoryName = attributes.categoryName
+                attributesDigital.operatorName = attributes.operatorName
+                attributesDigital.clientNumber = attributes.clientNumber
+                attributesDigital.icon = attributes.icon
+                attributesDigital.isInstantCheckout = attributes.isInstantCheckout
+                attributesDigital.isNeedOtp = attributes.isOtpRequired
+                attributesDigital.smsState = attributes.sms_state
+                attributesDigital.price = attributes.priceText
+                attributesDigital.pricePlain = attributes.price
+                attributesDigital.isEnableVoucher = attributes.enableVoucher
+                if (attributes.isCouponActive) attributesDigital.isCouponActive = 1 else attributesDigital.isCouponActive = 0
+                attributesDigital.voucherAutoCode = attributes.voucher
+
+                val userInputPrice = responseRechargeGetCart.response.openPaymentConfig
+                val userInputPriceDigital = AttributesDigitalData.UserInputPriceDigital()
+                userInputPriceDigital.maxPaymentPlain = userInputPrice.maxPayment
+                userInputPriceDigital.minPaymentPlain = userInputPrice.minPayment
+                userInputPriceDigital.minPayment = userInputPrice.minPaymentText
+                userInputPriceDigital.maxPayment = userInputPrice.maxPaymentText
+                attributesDigital.userInputPrice = userInputPriceDigital
+
+
+                if (attributes.autoApply != null) {
+                    val entity = attributes.autoApply
+                    val applyVoucher = AttributesDigitalData.CartAutoApplyVoucher()
+                    applyVoucher.code = entity.code
+                    applyVoucher.isSuccess = entity.success
+                    applyVoucher.discountAmount = entity.discountAmount
+                    applyVoucher.isCoupon = entity.isCoupon
+                    applyVoucher.promoId = entity.promoId.toLong()
+                    applyVoucher.title = entity.titleDescription
+                    applyVoucher.messageSuccess = entity.messageSuccess
+                    attributesDigital.autoApplyVoucher = applyVoucher
+                }
+
+                if (responseRechargeGetCart.response.popUp.content.isNotEmpty() &&
+                        responseRechargeGetCart.response.popUp.action.yesButtonTitle.isNotEmpty()) {
+                    val postPaidPopup = responseRechargeGetCart.response.popUp
+                    val postPaidPopupAttribute = PostPaidPopupAttribute()
+                    postPaidPopupAttribute.title = postPaidPopup.title
+                    postPaidPopupAttribute.content = postPaidPopup.content
+                    postPaidPopupAttribute.imageUrl = postPaidPopup.imageUrl
+                    postPaidPopupAttribute.confirmButtonTitle = postPaidPopup.action.yesButtonTitle
+                    attributesDigital.postPaidPopupAttribute = postPaidPopupAttribute
+                }
+
+                attributesDigital.defaultPromoTab = attributes.defaultPromo
+                attributesDigital.userId = attributes.userId.toString()
+            }
+
+            responseRechargeGetCart.response.run {
+                cartDigitalInfoData.crossSellingType = crossSellingType
+                crossSellingConfig.run {
+                    val crossSellingConfig = CartDigitalInfoData.CrossSellingConfig()
+                    crossSellingConfig.isSkipAble = canBeSkipped
+                    crossSellingConfig.isChecked = isChecked
+
+                    val crossSellingWording = if (cartDigitalInfoData.crossSellingType
+                            == SUBSCRIBED) {
+                        wordingIsSubscribe
+                    } else {
+                        wording
+                    }
+                    crossSellingWording?.run {
+                        crossSellingConfig.headerTitle = headerTitle
+                        crossSellingConfig.bodyTitle = bodyTitle
+                        crossSellingConfig.bodyContentBefore = bodyContentBefore
+                        crossSellingConfig.bodyContentAfter = bodyContentAfter
+                        crossSellingConfig.checkoutButtonText = checkoutButtonText
+                        cartDigitalInfoData.crossSellingConfig = crossSellingConfig
+                    }
+                }
+                attributesDigital.fintechProduct = fintechProduct
+            }
+
+            cartDigitalInfoData.attributes = attributesDigital
+            cartDigitalInfoData.id = responseRechargeGetCart.response.id
+            cartDigitalInfoData.isInstantCheckout = responseRechargeGetCart.response.isInstantCheckout
+            cartDigitalInfoData.isNeedOtp = responseRechargeGetCart.response.isOtpRequired
+            cartDigitalInfoData.smsState = responseRechargeGetCart.response.sms_state
+            cartDigitalInfoData.title = responseRechargeGetCart.response.title
 
             return cartDigitalInfoData
 
