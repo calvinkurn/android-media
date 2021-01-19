@@ -174,12 +174,10 @@ class PdpGamificationView : LinearLayout {
                             if (viewFlipper.displayedChild != CONTAINER_LIST) {
                                 viewFlipper.displayedChild = CONTAINER_LIST
                             }
-                            recyclerView.post {
-                                val oldSize = dataList.size
-                                dataList.addAll(oldSize, it.data)
-                                adapter.notifyItemRangeInserted(oldSize, it.data.size)
-                                scrollListener.updateStateAfterGetData()
-                            }
+                            val oldSize = dataList.size
+                            dataList.addAll(oldSize, it.data)
+                            adapter.notifyItemRangeInserted(oldSize, it.data.size)
+                            scrollListener.updateStateAfterGetData()
 
                         }
                     }
@@ -188,7 +186,7 @@ class PdpGamificationView : LinearLayout {
                         viewFlipper.displayedChild = CONTAINER_ERROR
                     }
                 }
-            },2500L)
+            }, 500L)
         })
 
         viewModel.recommendationLiveData.observe(context as AppCompatActivity, Observer {
