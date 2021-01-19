@@ -1,0 +1,13 @@
+package com.tokopedia.shop.common.domain.interactor.model.adminrevamp
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+data class ShopLocationResponse(
+    @Expose
+    @SerializedName("location_id")
+    val locationId: Int,
+    @Expose
+    @SerializedName("location_type")
+    val locationType: Int
+)
