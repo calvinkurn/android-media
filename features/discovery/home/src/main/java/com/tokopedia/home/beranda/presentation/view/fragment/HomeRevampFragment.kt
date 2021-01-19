@@ -977,6 +977,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if (status === Result.Status.ERROR_ATF) {
                 hideLoading()
                 showNetworkError(getString(R.string.home_error_connection))
+                adapter?.resetChannelErrorState()
             } else {
                 showLoading()
             }

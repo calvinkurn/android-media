@@ -6,7 +6,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
-class ErrorStateChannelOneModel(val createdMillis: Long) : ImpressHolder(), HomeVisitable {
+class ErrorStateChannelOneModel() : ImpressHolder(), HomeVisitable {
     var createdTimeMillis = ""
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
@@ -28,7 +28,7 @@ class ErrorStateChannelOneModel(val createdMillis: Long) : ImpressHolder(), Home
     }
 
     override fun visitableId(): String {
-        return createdMillis.toString()
+        return "errorStateOne"
     }
 
     fun setCache(cache: Boolean) {
