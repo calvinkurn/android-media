@@ -249,7 +249,7 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
             val actionText = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
             Toaster.build(it, message, Toaster.TYPE_ERROR, Toaster.LENGTH_LONG, actionText, View.OnClickListener {
                 getEtalaseList()
-            })
+            }).show()
         }
     }
 }

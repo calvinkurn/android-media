@@ -248,7 +248,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                 View.OnClickListener {
                     viewModel.setCashback(productId = setCashbackResult.productId,
                             productName = setCashbackResult.productName, cashback = setCashbackResult.cashback)
-                })
+                }).show()
     }
 
 }
