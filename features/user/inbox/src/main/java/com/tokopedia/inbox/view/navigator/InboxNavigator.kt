@@ -53,19 +53,11 @@ class InboxNavigator constructor(
             showFragment(it, transaction)
             setSelectedPage(page)
         }
-
-//        updateFragmentVisibilityHint(fragment)
     }
 
-    /**
-     * TODO: Remove this later
-     * previously known as:
-     * fun showPage(@InboxFragmentType page: Int) { .. }
-     */
     fun onPageSelected(@InboxFragmentType page: Int) {
         if (isActivityResumed() && !isCurrentlyOnThePage(page)) {
             showPage(page)
-//            updateFragmentVisibilityHint(fragment)
         } else {
             onPageClickedAgain(page)
         }
@@ -100,96 +92,6 @@ class InboxNavigator constructor(
             }
         }
     }
-
-    //
-//    fun navigateFromAppLink(page: PageFragment) {
-//        val type = page.type
-//
-//        getPageFragment(type)?.let { currentPage ->
-//            val fragment = setupPageFromAppLink(page)
-//
-//            fragment?.let { selectedPage ->
-//                val tag = page::class.java.canonicalName
-//                val transaction = fm.beginTransaction()
-//                val fragments = fm.fragments
-//
-//                when {
-//                    fragments.isEmpty() -> {
-//                        addAllPages(selectedPage, transaction)
-//                        showFragment(selectedPage, transaction)
-//                    }
-//                    currentPage != selectedPage -> {
-//                        hideAllPages(transaction)
-//
-//                        transaction
-//                                .remove(currentPage)
-//                                .add(R.id.sahContainer, selectedPage, tag)
-//                                .commit()
-//                    }
-//                    else -> showFragment(fragment, transaction)
-//                }
-//
-//                setSelectedPage(type)
-//                updateFragmentVisibilityHint(selectedPage)
-//            }
-//        }
-//    }
-//
-//    fun getPageTitle(@InboxFragmentType pageType: Int): String? {
-//        return when (pageType) {
-//            FragmentType.HOME -> pages[homeFragment]
-//            FragmentType.PRODUCT -> pages[productManageFragment]
-//            FragmentType.CHAT -> pages[chatFragment]
-//            FragmentType.ORDER -> pages[somListFragment]
-//            else -> pages[otherSettingsFragment]
-//        }
-//    }
-//
-//    fun cleanupNavigator() {
-//        val transaction = fm.beginTransaction()
-//        fm.fragments.forEach {
-//            if (it.isAdded) {
-//                transaction.remove(it)
-//            }
-//        }
-//        transaction.commitAllowingStateLoss()
-//    }
-//
-//    private fun setupPageFromAppLink(selectedPage: PageFragment?): Fragment? {
-//        return selectedPage?.let {
-//            val pageType = it.type
-//            val title = getPageTitle(pageType)
-//            val fragment = getPageFragment(pageType)
-//            pages.remove(fragment)
-//
-//            val page = when (pageType) {
-//                FragmentType.PRODUCT -> setupProductManagePage(it)
-//                FragmentType.ORDER -> setupSellerOrderPage(it)
-//                else -> fragment
-//            }
-//
-//            pages[page] = title
-//            page
-//        }
-//    }
-//
-//    fun setHomeTitle(title: String) {
-//        homeFragment?.let {
-//            pages[it] = title
-//        }
-//    }
-//
-//    fun getHomeFragment(): SellerHomeFragment? {
-//        return homeFragment as? SellerHomeFragment
-//    }
-//
-//    fun isHomePageSelected(): Boolean {
-//        return currentSelectedPage == FragmentType.HOME
-//    }
-//
-//    fun getCurrentSelectedPage(): Int {
-//        return currentSelectedPage ?: FragmentType.HOME
-//    }
 
     private fun addAllPages(selectedPage: Fragment?, transaction: FragmentTransaction) {
         pages.keys.forEach {
@@ -237,45 +139,6 @@ class InboxNavigator constructor(
             else -> null
         }
     }
-
-//    }
-
-    //
-//    @Suppress("DEPRECATION")
-//    private fun updateFragmentVisibilityHint(visibleFragment: Fragment?) {
-//        if (visibleFragment == null) {
-//            homeFragment?.userVisibleHint = false
-//            productManageFragment?.userVisibleHint = false
-//            chatFragment?.userVisibleHint = false
-//            somListFragment?.userVisibleHint = false
-//        } else {
-//            homeFragment?.userVisibleHint = visibleFragment == homeFragment
-//            productManageFragment?.userVisibleHint = visibleFragment == productManageFragment
-//            chatFragment?.userVisibleHint = visibleFragment == chatFragment
-//            somListFragment?.userVisibleHint = visibleFragment == somListFragment
-//        }
-//    }
-//
-//    private fun setupProductManagePage(page: PageFragment): Fragment? {
-//        val searchKeyword = page.keywordSearch
-//        val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
-//
-//        when {
-//            page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock -> {
-//                val filterOptions = arrayListOf(filterOptionEmptyStock)
-//                productManageFragment = sellerHomeRouter?.getProductManageFragment(filterOptions, searchKeyword)
-//            }
-//            page.tabPage.isBlank() && searchKeyword.isNotBlank() -> {
-//                productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), searchKeyword)
-//            }
-//        }
-//
-//        return productManageFragment
-//    }
-//
-//    private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-//        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
-//        return somListFragment
 
     private fun addPage(fragment: Fragment?, title: String?) {
         fragment?.let { pages[it] = title }

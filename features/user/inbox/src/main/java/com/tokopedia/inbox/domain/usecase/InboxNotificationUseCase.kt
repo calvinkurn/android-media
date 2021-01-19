@@ -69,6 +69,9 @@ class InboxNotificationUseCase @Inject constructor(
                 chat_int
                 talk_int
               }
+              seller_discussion_unresponded {
+                total_int
+              }
             }
           }
         }

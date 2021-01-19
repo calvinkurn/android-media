@@ -72,8 +72,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/orderSawSmallHeader"
-            android:paddingTop="@dimen/layout_lvl2"
-            android:paddingBottom="@dimen/layout_lvl2">
+            android:paddingTop="@dimen/saw_dimen_12dp"
+            android:paddingBottom="@dimen/saw_dimen_12dp">
 
             <LinearLayout
                 android:id="@+id/containerSawSmallOrderNewOrder"

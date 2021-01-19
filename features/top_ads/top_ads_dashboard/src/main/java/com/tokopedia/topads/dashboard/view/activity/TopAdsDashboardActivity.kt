@@ -27,6 +27,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.AUTO_ADS_DISABLED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EXPIRE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FIRST_LAUNCH
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.IS_CHANGED
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -121,7 +122,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AUTO_ADS_DISABLED) {
+        if (requestCode == AUTO_ADS_DISABLED || requestCode == TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE || intent.getBooleanExtra(IS_CHANGED, false)) {
             if (resultCode == Activity.RESULT_OK)
                 renderTabAndViewPager()
         }

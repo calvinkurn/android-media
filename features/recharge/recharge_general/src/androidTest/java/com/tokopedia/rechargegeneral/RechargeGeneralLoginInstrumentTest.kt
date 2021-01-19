@@ -93,7 +93,7 @@ class RechargeGeneralLoginInstrumentTest {
                 hasAllSuccess())
     }
 
-    fun validate_recent_transaction() {
+    private fun validate_recent_transaction() {
         onView(withId(R.id.recent_transaction_widget)).check(matches(isDisplayed()))
         onView(AllOf.allOf(
                 withId(R.id.recycler_view_menu_component),
@@ -112,7 +112,7 @@ class RechargeGeneralLoginInstrumentTest {
         onView(withId(R.id.recent_transaction_widget)).check(matches(isDisplayed()))
     }
 
-    fun validate_favorite_number() {
+    private fun validate_favorite_number() {
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
                         1, click()
@@ -122,8 +122,8 @@ class RechargeGeneralLoginInstrumentTest {
         onView(withId(R.id.recharge_general_enquiry_button)).check(matches(isEnabled()))
     }
 
-    fun validate_promo() {
-        onView(withId(R.id.tab_layout)).check(matches(isDisplayed())).perform(CommonActions.selectTabLayoutPosition(1))
+    private fun validate_promo() {
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(click())
         Thread.sleep(1000)
         onView(withId(R.id.promo_list_widget)).check(matches(isDisplayed()))
         onView(AllOf.allOf(

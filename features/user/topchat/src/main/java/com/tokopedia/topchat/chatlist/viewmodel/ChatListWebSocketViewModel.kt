@@ -4,9 +4,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant
+import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
+import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
 import com.tokopedia.topchat.chatlist.domain.websocket.PendingMessageHandler
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
@@ -17,22 +17,19 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ChatListWebSocketViewModel @Inject constructor(
-        dispatchers: TopchatCoroutineContextProvider,
-        userSession: UserSessionInterface,
-        tkpdAuthInterceptor: TkpdAuthInterceptor,
-        fingerprintInterceptor: FingerprintInterceptor,
+        webSocket: TopChatWebSocket,
+        private val userSession: UserSessionInterface,
+        private val dispatchers: TopchatCoroutineContextProvider,
         private val pendingMessageHandler: PendingMessageHandler
 ) : WebSocketViewModel(
-        dispatchers,
-        userSession,
-        tkpdAuthInterceptor,
-        fingerprintInterceptor
+        webSocket,
+        dispatchers
 ), LifecycleObserver {
 
-    var activeRoom: String = ""
     val pendingMessages get() = pendingMessageHandler.pendingMessages
 
     var role: Int = RoleType.BUYER
+    var activeRoom: String = ""
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onLifeCycleStart() {
@@ -45,36 +42,28 @@ class ChatListWebSocketViewModel @Inject constructor(
         isOnStop = true
     }
 
-
     override fun connectWebSocket() {
         launch {
-            client.run {
-                newBuilder().addInterceptor(tkpdAuthInterceptor)
-                        .addInterceptor(fingerprintInterceptor)
-            }
-            easyWS = client.easyWebSocket(webSocketUrl, userSession.accessToken)
-            easyWS?.let {
-                for (response in it.textChannel) {
-                    when (response.code) {
-                        ChatListWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                            val data = mapToIncomingChat(response)
-                            val chat = Success(data)
-                            if (!isOnStop && !pendingMessageHandler.hasPendingMessage()) {
-                                _itemChat.postValue(chat)
-                            } else {
-                                withContext(dispatchers.Main) {
-                                    queueIncomingMessage(data)
-                                }
+            for (response in webSocket.createWebSocket()) {
+                when (response.code) {
+                    ChatListWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE -> {
+                        val data = mapToIncomingChat(response)
+                        val chat = Success(data)
+                        if (!isOnStop && !pendingMessageHandler.hasPendingMessage()) {
+                            _itemChat.postValue(chat)
+                        } else {
+                            withContext(dispatchers.Main) {
+                                queueIncomingMessage(data)
                             }
                         }
-                        ChatListWebSocketConstant.EVENT_TOPCHAT_TYPING -> {
-                            val stateTyping = Success(mapToIncomingTypeState(response, true))
-                            _itemChat.postValue(stateTyping)
-                        }
-                        ChatListWebSocketConstant.EVENT_TOPCHAT_END_TYPING -> {
-                            val stateEndTyping = Success(mapToIncomingTypeState(response, false))
-                            _itemChat.postValue(stateEndTyping)
-                        }
+                    }
+                    ChatListWebSocketConstant.EVENT_TOPCHAT_TYPING -> {
+                        val stateTyping = Success(mapToIncomingTypeState(response, true))
+                        _itemChat.postValue(stateTyping)
+                    }
+                    ChatListWebSocketConstant.EVENT_TOPCHAT_END_TYPING -> {
+                        val stateEndTyping = Success(mapToIncomingTypeState(response, false))
+                        _itemChat.postValue(stateEndTyping)
                     }
                 }
             }

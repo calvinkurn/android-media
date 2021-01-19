@@ -34,6 +34,7 @@
         android:background="@drawable/saw_shape_shimmer_radius_6dp" />
 
     <RelativeLayout
+        android:id="@+id/sawOrderItemHorLine"
         android:layout_width="match_parent"
         android:layout_height="0.8dp"
         android:layout_below="@+id/shimmerSawOrder3"

@@ -121,6 +121,10 @@ data class NotificationUiModel(
         readStatus = STATUS_READ
     }
 
+    fun hasBeenSeen(): Boolean {
+        return readStatus != STATUS_UNREAD
+    }
+
     companion object {
         const val STATUS_UNREAD = 1
         const val STATUS_READ = 2

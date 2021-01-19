@@ -1,5 +1,6 @@
 package tokopedia.applink.deeplink
 
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
@@ -183,9 +184,43 @@ class DeepLinkMapperCustomerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check product info appLink then should return empty in customerapp`() {
-        val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_INFO,  "890495024")
-        assertEqualsDeepLinkMapper(appLink, "")
+    fun `check product info appLink with no extras then should return internal product info`() {
+        val productId = "890495024"
+        val keyLayoutId = "layoutID"
+
+        val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, productId)
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-detail/${productId}/"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeeplinkParameters(appLink, keyLayoutId to null)
+    }
+
+    @Test
+    fun `check product info appLink with layoutId extras then should return internal product info`() {
+        val productId = "890495024"
+        val layoutId = "4"
+        val keyLayoutId = "layoutID"
+
+        val appLink = Uri.parse(UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, productId))
+                .buildUpon()
+                .appendQueryParameter(keyLayoutId, layoutId)
+                .build()
+                .toString()
+
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-detail/${productId}/?${keyLayoutId}=${layoutId}"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeeplinkParameters(appLink, keyLayoutId to layoutId)
+    }
+
+    @Test
+    fun `check product info from affiliate then should return internal product info`() {
+        val productId = "890495024"
+
+        val appLink = UriUtil.buildUri(ApplinkConst.AFFILIATE_PRODUCT, productId)
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-detail/${productId}/?is_from_explore_affiliate=isAffiliate"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     @Test
@@ -752,7 +787,7 @@ class DeepLinkMapperCustomerAppTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check seller info detail appLink then should return tokopedia internal seller info detail in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://sellerinfo"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/notif-center"
         assertEqualsDeepLinkMapper(ApplinkConst.SELLER_INFO_DETAIL, expectedDeepLink)
     }
 
@@ -1244,12 +1279,6 @@ class DeepLinkMapperCustomerAppTest: DeepLinkMapperTestFixture() {
     @Test
     fun `check home credit selfie with type appLink then should return empty in customerapp`() {
         assertEqualsDeepLinkMapper(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, "")
-    }
-
-    @Test
-    fun `check inbox appLink then should return tokopedia internal inbox in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
-        assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
     }
 
     @Test

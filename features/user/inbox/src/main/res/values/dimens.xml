@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="dp_inbox_1">1dp</dimen>
     <dimen name="dp_inbox_6">6dp</dimen>
     <dimen name="dp_inbox_10">10dp</dimen>
     <dimen name="dp_inbox_12">12dp</dimen>

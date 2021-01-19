@@ -9,7 +9,7 @@
             android:launchMode="singleInstance"
             android:label="@string/two_factor_title"
             android:name=".view.activity.TwoFactorActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.WhiteUnify">
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

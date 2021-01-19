@@ -40,6 +40,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
@@ -76,8 +77,8 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupInjector()
         setContentView(R.layout.activity_inbox)
+        setupInjector()
         setupLastPreviousState()
         trackOpenInbox()
         setupView()
@@ -216,7 +217,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun setupSwitcher() {
         switcher = AccountSwitcherBottomSheet.create()
         navHeaderContainer?.setOnClickListener {
-            switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
+            if (onBoardingCoachMark?.isShowing == true) {
+                onBoardingCoachMark?.stepNext?.performClick()
+            } else {
+                switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
+            }
             analytic.trackClickSwitchAccount()
         }
     }
@@ -260,9 +265,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         onBoardingCoachMark?.showCoachMark(anchors)
         onBoardingCoachMark?.onFinishListener = {
             viewModel.markFinishedSellerOnBoarding()
+            switcher?.setShowListener { }
         }
         onBoardingCoachMark?.onDismissListener = {
             viewModel.markFinishedSellerOnBoarding()
+            switcher?.setShowListener { }
         }
         onBoardingCoachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
@@ -274,7 +281,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                         Handler().postDelayed({
                             onBoardingCoachMark?.isDismissed = false
                             onBoardingCoachMark?.showCoachMark(anchors, index = 2)
-                        }, 500)
+                        }, 250)
                     }
                 } else if (currentIndex == 1) {
                     switcher?.dialog?.let {
@@ -285,7 +292,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                         Handler().postDelayed({
                             onBoardingCoachMark?.isDismissed = false
                             onBoardingCoachMark?.showCoachMark(anchors, index = 1)
-                        }, 500)
+                        }, 250)
                     }
                 }
             }
@@ -405,7 +412,4 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         navigator?.onPageSelected(page)
     }
 
-    private fun isDarkMode(): Boolean {
-        return AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-    }
 }

@@ -96,8 +96,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    //    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy {
         viewModelProvider.get(ChatItemListViewModel::class.java)
@@ -107,9 +105,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private lateinit var performanceMonitoring: PerformanceMonitoring
-//    private var chatTabListContract: ChatListContract.TabFragment? = null
-//    private var mUserSeen = false
-//    private var mViewCreated = false
 
     @RoleType
     private var role: Int = RoleType.BUYER
@@ -133,18 +128,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             containerListener = context
         }
     }
-
-//    override fun onAttachActivity(context: Context?) {
-//        if (context is ChatListContract.TabFragment) {
-//            chatTabListContract = context
-//            return
-//        }
-//        parentFragment?.let { parent ->
-//            if (parent is ChatListContract.TabFragment) {
-//                chatTabListContract = parent
-//            }
-//        }
-//    }
 
     override fun onRoleChanged(role: Int) {
         if (assignRole(role)) {
@@ -226,7 +209,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 true
             }
             R.id.menu_chat_search -> {
-//                chatTabListContract?.closeSearchTooltip()
                 RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SEARCH)
                 true
             }
@@ -305,11 +287,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         }
     }
 
-//    override fun onPrepareOptionsMenu(menu: Menu) {
-//        chatTabListContract?.showSearchOnBoardingTooltip()
-//        super.onPrepareOptionsMenu(menu)
-//    }
-
     private fun setupSellerBroadcast() {
         if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
         setupSellerBroadcastButton()
@@ -351,12 +328,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             }
         })
     }
-
-//    private fun tryViewCreatedFirstSight() {
-//        if (mUserSeen && mViewCreated) {
-//            onViewCreatedFirstSight(view)
-//        }
-//    }
 
     private fun initView(view: View) {
         broadCastButton = view.findViewById(R.id.fab_broadcast)
@@ -634,18 +605,10 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 
     override fun increaseNotificationCounter() {
         containerListener?.increaseChatUnreadCounter()
-        when (role) {
-//            PARAM_TAB_USER -> chatTabListContract?.increaseUserNotificationCounter()
-//            PARAM_TAB_SELLER -> chatTabListContract?.increaseSellerNotificationCounter()
-        }
     }
 
     override fun decreaseNotificationCounter() {
         containerListener?.decreaseChatUnreadCounter()
-        when (role) {
-//            PARAM_TAB_USER -> chatTabListContract?.decreaseUserNotificationCounter()
-//            PARAM_TAB_SELLER -> chatTabListContract?.decreaseSellerNotificationCounter()
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -690,35 +653,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         viewModel.broadCastButtonUrl.removeObservers(this)
         viewModel.chatBannedSellerStatus.removeObservers(this)
     }
-
-//    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-//        super.setUserVisibleHint(isVisibleToUser)
-//        if (!mUserSeen && isVisibleToUser) {
-//            mUserSeen = true
-//            onUserFirstSight()
-//            tryViewCreatedFirstSight()
-//        }
-//        onUserVisibleChanged(isVisibleToUser)
-//    }
-
-//    private fun onViewCreatedFirstSight(view: View?) {
-//        Timber.d("$sightTag onViewCreatedFirstSight")
-//        chatTabListContract?.notifyViewCreated()
-//        loadInitialData()
-//    }
-
-//    private fun onUserFirstSight() {
-//        Timber.d("$sightTag onUserFirstSight")
-//    }
-
-
-//    private fun onUserVisibleChanged(visible: Boolean) {
-//        Timber.d("$sightTag onUserVisibleChanged $visible")
-//    }
-
-//    override fun callInitialLoadAutomatically(): Boolean {
-//        return true
-//    }
 
     override fun hasInitialSwipeRefresh(): Boolean {
         return true
@@ -769,7 +703,6 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     override fun onSwipeRefresh() {
         containerListener?.refreshNotificationCounter()
         super.onSwipeRefresh()
-//        chatTabListContract?.loadNotificationCounter()
     }
 
     override fun trackChangeReadStatus(element: ItemChatListPojo) {

@@ -164,20 +164,27 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
             status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
+        initNavRevampAbTest()
         initInboxAbTest()
         initToolbar()
         initView()
         requestFeedTab()
     }
 
+    private fun initNavRevampAbTest() {
+        showOldToolbar = !RemoteConfigInstance.getInstance()
+                .abTestPlatform
+                .getString(EXP_NAME, VARIANT_OLD)
+                .equals(VARIANT_REVAMP, true)
+    }
+
     private fun initInboxAbTest() {
         useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ) == AbTestPlatform.VARIANT_NEW_INBOX
+        ) == AbTestPlatform.VARIANT_NEW_INBOX && !showOldToolbar
     }
 
     private fun initToolbar() {
-        showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
         status_bar_bg.visibility = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE

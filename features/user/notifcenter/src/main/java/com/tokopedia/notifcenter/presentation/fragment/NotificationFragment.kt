@@ -28,6 +28,7 @@ import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
@@ -53,6 +54,7 @@ import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFa
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationProductLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
+import com.tokopedia.notifcenter.service.MarkAsSeenService
 import com.tokopedia.notifcenter.widget.NotificationFilterView
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
@@ -74,6 +76,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     @Inject
     lateinit var analytic: NotificationAnalytic
+
+    @Inject
+    lateinit var markAsSeenAnalytic: MarkAsSeenAnalytic
 
     private var rvLm = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
     private var rv: RecyclerView? = null
@@ -123,6 +128,17 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         super.onCreate(savedInstanceState)
         initRecommendationComponent()
         viewModel.loadNotificationFilter(containerListener?.role)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        if (hidden) {
+            triggerMarkAsSeenTracker(containerListener?.role)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        triggerMarkAsSeenTracker(containerListener?.role)
     }
 
     private fun initRecommendationComponent() {
@@ -193,7 +209,12 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     private fun setupObserver() {
         viewModel.notificationItems.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> renderNotifications(it.data)
+                is Success -> {
+                    renderNotifications(it.data)
+                    if (!viewModel.hasFilter() && isVisible) {
+                        viewModel.clearNotifCounter(containerListener?.role)
+                    }
+                }
                 is Fail -> showGetListError(it.throwable)
                 else -> {
                 }
@@ -374,12 +395,26 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         }
     }
 
-    override fun onRoleChanged(role: Int) {
+    override fun onRoleChanged(@RoleType role: Int) {
+        val previousRole = getOppositeRole(role)
         viewModel.cancelAllUseCase()
         viewModel.reset()
         filter?.reset()
         viewModel.loadNotificationFilter(role)
+        triggerMarkAsSeenTracker(previousRole)
         loadInitialData()
+    }
+
+    private fun triggerMarkAsSeenTracker(@RoleType role: Int?) {
+        MarkAsSeenService.startService(context, role, markAsSeenAnalytic)
+    }
+
+    private fun getOppositeRole(role: Int): Int {
+        return if (role == RoleType.BUYER) {
+            RoleType.SELLER
+        } else {
+            RoleType.BUYER
+        }
     }
 
     override fun onPageClickedAgain() {
@@ -456,6 +491,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun trackDeleteReminder() {
         analytic.trackDeleteReminder()
+    }
+
+    override fun markAsSeen(notifId: String) {
+        markAsSeenAnalytic.markAsSeen(notifId)
     }
 
     private fun createViewHolderState(

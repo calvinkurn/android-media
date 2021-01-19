@@ -43,6 +43,7 @@ abstract class BaseNotificationViewHolder constructor(
         bindIcon(element)
         bindTime(element)
         bindClick(element)
+        trackSeenNotification(element)
     }
 
     protected open fun bindClick(element: NotificationUiModel) {
@@ -53,6 +54,12 @@ abstract class BaseNotificationViewHolder constructor(
             } else {
                 RouteManager.route(itemView.context, element.dataNotification.appLink)
             }
+        }
+    }
+
+    private fun trackSeenNotification(element: NotificationUiModel) {
+        if (!element.hasBeenSeen()) {
+            listener?.markAsSeen(element.notifId)
         }
     }
 

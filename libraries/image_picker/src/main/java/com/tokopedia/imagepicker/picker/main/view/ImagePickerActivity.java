@@ -532,7 +532,8 @@ public final class ImagePickerActivity extends BaseSimpleActivity
                         imagePickerBuilder.getRatioOptionList(),
                         imagePickerBuilder.getBelowMinResolutionErrorMessage(),
                         imagePickerBuilder.getImageTooLargeErrorMessage(),
-                        imagePickerBuilder.isRecheckSizeAfterResize()
+                        imagePickerBuilder.isRecheckSizeAfterResize(),
+                        imagePickerBuilder.getConvertToWebp()
                 ));
     }
 
@@ -558,7 +559,8 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         showFinishProgressDialog();
         initImagePickerPresenter();
         if (imagePickerBuilder.getGalleryType() == GalleryType.IMAGE_ONLY) {
-            imagePickerPresenter.resizeImage(imagePathList, maxFileSizeInKB, imagePickerBuilder.isRecheckSizeAfterResize());
+            imagePickerPresenter.resizeImage(imagePathList, maxFileSizeInKB,
+                    imagePickerBuilder.isRecheckSizeAfterResize(), imagePickerBuilder.getConvertToWebp());
         } else {
             onSuccessResizeImage(imagePathList);
         }

@@ -85,16 +85,13 @@ class InboxBottomNavigationView : BottomNavigationView {
     }
 
     private fun disableAnimation() {
-        val typeface = getTypeface(context, DEFAULT_TYPEFACE)
         buttons?.let {
             for (button in it) {
                 getField<TextView?>(button.javaClass, button, "largeLabel")?.apply {
-                    this.typeface = typeface
                     this.setTextSize(TypedValue.COMPLEX_UNIT_PX, labelFontSize)
                     this.setPadding(0, 0, 0, 0)
                 }
                 getField<TextView?>(button.javaClass, button, "smallLabel")?.apply {
-                    this.typeface = typeface
                     this.setTextSize(TypedValue.COMPLEX_UNIT_PX, labelFontSize)
                 }
                 setField(button.javaClass, button, "shiftAmount", 0)
@@ -139,7 +136,6 @@ class InboxBottomNavigationView : BottomNavigationView {
     }
 
     companion object {
-        const val DEFAULT_TYPEFACE = "NunitoSansExtraBold.ttf"
         val DEFAULT_FONT_SIZE = 12f.toPx()
     }
 }

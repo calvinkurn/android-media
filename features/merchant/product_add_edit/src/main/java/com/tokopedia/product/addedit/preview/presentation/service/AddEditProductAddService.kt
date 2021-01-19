@@ -102,8 +102,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        return object : AddEditProductNotificationManager(urlImageCount, manager,
-                this@AddEditProductAddService) {
+        return object : AddEditProductNotificationManager(urlImageCount, manager, applicationContext) {
             override fun getSuccessIntent(): PendingIntent {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
                 return PendingIntent.getActivity(context, 0, intent, 0)

@@ -28,6 +28,7 @@ class InboxViewModel @Inject constructor(
     fun getNotifications() {
         notificationUseCase.getNotification(
                 {
+                    it.inboxCounter.updateTotalDiscussion()
                     _notifications.value = Success(it)
                 },
                 {

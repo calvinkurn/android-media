@@ -11,4 +11,7 @@ class CMRemoteConfigUtils(val context: Context) {
     fun getBooleanRemoteConfig(key: String, defaultValue: Boolean): Boolean = remoteConfig.getBoolean(key, defaultValue)
 
     fun getLongRemoteConfig(key: String, defaultValue: Long): Long = remoteConfig.getLong(key, defaultValue)
+
+    fun getStringRemoteConfig(key: String): String = remoteConfig.getString(key, "")
+
 }
