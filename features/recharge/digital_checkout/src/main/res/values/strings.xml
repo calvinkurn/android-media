@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">tkpddigital</string>
+
+    <string name="digital_cart_toolbar_title">Checkout</string>
+
+    <string name="digital_cart_detail_see_detail_label">Lihat Detail</string>
+    <string name="digital_cart_detail_close_label">Tutup</string>
+
+    <string name="digital_cart_total_payment_label">Total Pembayaran</string>
+    <string name="digital_cart_checkout_pay_label">Bayar</string>
+    <string name="digital_cart_hint_input_price">Contoh: 422500</string>
+
+    <string name="digital_cart_login_message">Silakan login terlebih dahulu</string>
+
+    <string name="digital_cart_generate_token_checkout">%1$s_%2$s</string>
+
+    <string name="digital_cart_additional_payment_cost_label">Harga</string>
+    <string name="digital_cart_additional_payment_promo_label">Promo</string>
+    <string name="digital_cart_additional_payment_total_cost_label">Total Bayar</string>
+    <string name="digital_cart_additional_payment_label">Pembayaran</string>
+</resources>
