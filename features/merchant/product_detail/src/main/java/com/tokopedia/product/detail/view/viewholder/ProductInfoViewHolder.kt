@@ -55,7 +55,7 @@ class ProductInfoViewHolder(private val view: View,
                     LinearLayoutManager.HORIZONTAL, false)
 
             if (youtube_scroll.itemDecorationCount == 0)
-                youtube_scroll.addItemDecoration(SpaceItemDecoration(context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
+                youtube_scroll.addItemDecoration(SpaceItemDecoration(context?.resources?.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
                         ?: 0, LinearLayoutManager.HORIZONTAL))
 
             youtube_scroll.show()

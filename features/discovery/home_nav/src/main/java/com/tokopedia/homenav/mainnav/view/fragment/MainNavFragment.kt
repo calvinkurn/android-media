@@ -24,7 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
+import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
@@ -40,8 +40,8 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingUserMenuSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.activity.HomeNavPerformanceInterface
 import com.tokopedia.homenav.view.router.NavigationRouter
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -77,7 +77,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private var navToolbar: NavToolbar? = null
 
     private lateinit var userSession: UserSessionInterface
-    val args: MainNavFragmentArgs by navArgs()
+    private val args: MainNavFragmentArgs by navArgs()
 
     private var pageSource = ""
 
@@ -194,33 +194,33 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         viewModel.refreshTransactionListData()
     }
 
-    override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
+    override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
-            if (homeNavMenuViewModel.sectionId == MainNavConst.Section.BU_ICON) {
-                if(homeNavMenuViewModel.applink.isNotEmpty()){
-                    RouteManager.route(context, homeNavMenuViewModel.applink)
+            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
+                if(homeNavMenuDataModel.applink.isNotEmpty()){
+                    RouteManager.route(context, homeNavMenuDataModel.applink)
                 } else {
                     NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
-                            bundleOf("title" to homeNavMenuViewModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuViewModel))
+                            bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
                 }
-                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuViewModel.itemTitle, userSession.userId)
+                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
             } else {
-                RouteManager.route(requireContext(), homeNavMenuViewModel.applink)
-                hitClickTrackingBasedOnId(homeNavMenuViewModel)
+                RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
+                hitClickTrackingBasedOnId(homeNavMenuDataModel)
             }
         }
     }
 
-    private fun hitClickTrackingBasedOnId(homeNavMenuViewModel: HomeNavMenuViewModel) {
-        when(homeNavMenuViewModel.id) {
+    private fun hitClickTrackingBasedOnId(homeNavMenuDataModel: HomeNavMenuDataModel) {
+        when(homeNavMenuDataModel.id) {
             ID_ALL_TRANSACTION -> TrackingTransactionSection.clickOnAllTransaction(userSession.userId)
             ID_TICKET -> TrackingTransactionSection.clickOnTicket(userSession.userId)
             ID_REVIEW -> TrackingTransactionSection.clickOnReview(userSession.userId)
-            else -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuViewModel.trackerName, userSession.userId)
+            else -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuDataModel.trackerName, userSession.userId)
         }
     }
 
-    override fun onMenuImpression(homeNavMenuViewModel: HomeNavMenuViewModel) {
+    override fun onMenuImpression(homeNavMenuDataModel: HomeNavMenuDataModel) {
 
     }
 
@@ -260,7 +260,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         recyclerView.adapter = adapter
     }
 
-    private fun populateAccountHeader(data: AccountHeaderViewModel) {
+    private fun populateAccountHeader(data: AccountHeaderDataModel) {
         val dataList: List<Visitable<*>> = mutableListOf(data)
         adapter.submitList(dataList)
     }
@@ -357,9 +357,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     //return is the function is success or not
     private fun showNavigationPageOnboarding(list: List<Visitable<*>>): Boolean {
-        val profileSectionView = list.indexOf( list.find { it is AccountHeaderViewModel } ).getViewForThisPosition()
-        val allTransactionView = list.indexOf( list.find { it is HomeNavMenuViewModel && it.id == ID_ALL_TRANSACTION } ).getViewForThisPosition()
-        val complainSectionView = list.indexOf( list.find { it is HomeNavMenuViewModel && it.id == ID_COMPLAIN } ).getViewForThisPosition()
+        val profileSectionView = list.indexOf( list.find { it is AccountHeaderDataModel } ).getViewForThisPosition()
+        val allTransactionView = list.indexOf( list.find { it is HomeNavMenuDataModel && it.id == ID_ALL_TRANSACTION } ).getViewForThisPosition()
+        val complainSectionView = list.indexOf( list.find { it is HomeNavMenuDataModel && it.id == ID_COMPLAIN } ).getViewForThisPosition()
 
         if (allTransactionView == null || complainSectionView == null) return false
 
@@ -461,11 +461,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun haveUserLogoutData(): Boolean {
-        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
+        val name = getSharedPreference().getString(AccountHeaderDataModel.KEY_USER_NAME, "") ?: ""
         return name.isNotEmpty()
     }
 
     private fun getSharedPreference(): SharedPreferences {
-        return requireContext().getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
+        return requireContext().getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 }
