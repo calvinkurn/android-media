@@ -7,14 +7,13 @@ import android.text.TextUtils
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.appaidl.AidlApi
-import com.tokopedia.config.GlobalConfig
+import com.tokopedia.appaidl.manager.NotificationValidationManager
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMRemoteConfigUtils
 import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
 import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.inApp.CMInAppManager
-import com.tokopedia.notifications.utils.NotificationValidationManager
 import com.tokopedia.notifications.worker.PushWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -167,7 +166,6 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
             return
 
         val data = remoteMessage.data
-        val appName = if (GlobalConfig.isSellerApp()) "sellerapp" else "mainapp"
 
         val dataString = data.toString()
         try {
@@ -178,11 +176,10 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
                 } else if (isPushEnable) {
                     val mockValidationByMessage = bundle.getString(CMConstant.PayloadKeys.MESSAGE, "")
-                    Log.d("AIDL_App ($appName)", "handlePushPayload: get mockValidationByMessage: $mockValidationByMessage")
-                    val validator = NotificationValidationManager(applicationContext, mockValidationByMessage)
+                    val mockAppPriorities = NotificationValidationManager.mockPriorities(mockValidationByMessage)
+                    val validator = NotificationValidationManager(applicationContext, mockAppPriorities)
                     aidlApiBundle?.let {
                         validator.validate(aidlApiBundle) {
-                            Log.d("AIDL_App ($appName)", "validator.validate(aidlApiBundle)")
                             PushController(applicationContext).handleNotificationBundle(bundle)
                         }
                     }
