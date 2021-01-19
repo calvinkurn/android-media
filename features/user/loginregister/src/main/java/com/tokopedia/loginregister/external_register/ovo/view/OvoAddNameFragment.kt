@@ -77,6 +77,7 @@ class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
 
     fun onSuccessActivateOvo(data: ActivateOvoData){
         goToExternalWebView("${data.activationUrl}?k=${data.goalKey}")
+        activity?.finish()
     }
 
     fun onErrorActivateOvo(error: Throwable) {
@@ -86,6 +87,8 @@ class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
     fun goToErrorPage(){
         val intent = OvoFinalPageActivity.createIntentError(activity)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         activity?.finish()
     }

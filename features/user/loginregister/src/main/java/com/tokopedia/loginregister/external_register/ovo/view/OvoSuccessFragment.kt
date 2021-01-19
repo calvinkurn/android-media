@@ -1,8 +1,8 @@
 package com.tokopedia.loginregister.external_register.ovo.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.app.TaskStackBuilder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.loginregister.R
@@ -33,9 +33,14 @@ class OvoSuccessFragment: ExternalAccountFinalFragment(), BaseFinalListener {
     }
 
     override fun onMainSuccessButtonClicked() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-        activity?.finish()
+        context?.run {
+            val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME)
+            val nuzIntent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+            val task = TaskStackBuilder.create(this)
+            task.addNextIntent(homeIntent)
+            task.addNextIntent(nuzIntent)
+            task.startActivities()
+            activity?.finish()
+        }
     }
 }
