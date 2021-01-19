@@ -137,7 +137,7 @@ object FingerprintModelGenerator {
                 androidId = androidId,
                 isx86 = isx86,
                 packageName = packageName,
-                is_nakama = isNakama.toString().capitalize(Locale.ROOT),
+                is_nakama = isNakama.toString().toUpperCase(Locale.ROOT),
                 availableProcessor = deviceAvailableProcessor,
                 deviceMemoryClassCapacity = deviceMemoryClass,
                 deviceDpi = deviceDpi,

@@ -198,39 +198,16 @@ object DeviceInfo {
             }
 
     @JvmStatic
-    @SuppressLint("HardwareIds")
     fun getImei(context: Context): String? {
         return try {
             val deviceInfoCache = DeviceInfoCache(context.applicationContext)
             val (imeiCache, isCached) = deviceInfoCache.getImei()
             if (isCached) {
                 return imeiCache
-            }
-            val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            if (ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                try {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                        val deviceId = tm.deviceId
-                        val hash = deviceInfoCache.setImei(deviceId)
-                        return hash
-                    } else {
-                        var imei = tm.imei
-                        val hash = if (imei.isNotEmpty()) {
-                            deviceInfoCache.setImei(imei)
-                        } else {
-                            imei = tm.meid
-                            deviceInfoCache.setImei(imei)
-                        }
-                        hash
-                    }
-                } catch (e: Exception) {
-                    deviceInfoCache.setImei("")
-                    ""
-                }
             } else {
-                ""
+                // target sdk 29 can no longer get imei without READ_PRIVILEGED_PHONE_STATE
+                // set to empty
+                deviceInfoCache.setImei("")
             }
         } catch (e: Exception) {
             ""
