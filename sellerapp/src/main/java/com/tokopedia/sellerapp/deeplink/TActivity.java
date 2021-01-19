@@ -1,4 +1,4 @@
-package com.tokopedia.core.app;
+package com.tokopedia.sellerapp.deeplink;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +17,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core2.R;
+
+import com.tokopedia.sellerapp.R;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 

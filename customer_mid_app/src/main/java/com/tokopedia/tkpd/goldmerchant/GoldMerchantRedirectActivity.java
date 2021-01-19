@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.customer_mid_app.R;
-import com.tokopedia.core.app.TActivity;
+import com.tokopedia.tkpd.deeplink.activity.TActivity;
 import com.tokopedia.track.TrackApp;
 
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.GM_TITLE;

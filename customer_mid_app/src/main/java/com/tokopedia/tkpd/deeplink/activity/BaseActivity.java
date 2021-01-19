@@ -1,4 +1,4 @@
-package com.tokopedia.core.app;
+package com.tokopedia.tkpd.deeplink.activity;
 
 
 import android.content.Intent;
@@ -16,14 +16,18 @@ import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.util.DialogForceLogout;
-import com.tokopedia.core.util.ErrorNetworkReceiver;
-import com.tokopedia.core2.R;
+import com.tokopedia.core.common.ui.MaintenancePage;
+import com.tokopedia.customer_mid_app.R;
+import com.tokopedia.tkpd.ConsumerSplashScreen;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -193,11 +197,8 @@ public class BaseActivity extends AppCompatActivity implements
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {
-                        try {
-                            ((TkpdCoreRouter) getApplication()).onLogout(getApplicationComponent());
-                        } catch (Exception ex) {
-                        }
-                        Intent intent = ((TkpdCoreRouter) getApplicationContext()).getSplashScreenIntent(getBaseContext());
+                        onLogout();
+                        Intent intent = new Intent(BaseActivity.this, ConsumerSplashScreen.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
@@ -227,5 +228,11 @@ public class BaseActivity extends AppCompatActivity implements
 
     public BaseAppComponent getBaseAppComponent() {
         return ((MainApplication) getApplication()).getBaseAppComponent();
+    }
+
+    public void onLogout() {
+        ((AbstractionRouter) getApplication()).onForceLogout(this);
+        PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
+        new CacheApiClearAllUseCase(this).executeSync();
     }
 }

@@ -78,4 +78,9 @@
     <dimen name="margin_ms">8dp</dimen>
     <dimen name="padding_detail">15dp</dimen>
     <dimen name="banner_margin">-42dp</dimen>
+    <dimen name="img_hotprod">156dp</dimen>
+    <dimen name="text_size_xxsmall">10sp</dimen>
+    <dimen name="fontvvs">10sp</dimen>
+    <dimen name="fontvl">25sp</dimen>
+    <dimen name="text_size_medium">14sp</dimen>
 </resources>
