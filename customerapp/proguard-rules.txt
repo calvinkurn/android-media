@@ -242,3 +242,10 @@
 -keepnames class com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
 -keepnames class com.tokopedia.home_recom.view.fragment.RecommendationFragment
 -keepnames class com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
+
+# Hansel proguard rules
+-dontwarn io.hansel.**
+-keep class io.hansel.**{*;}
+-keep class **.HanselDialog.*{*;}
+-keep class * implements io.hansel.**.* {*;}
+-keep class * extends io.hansel.**.* {*;}
