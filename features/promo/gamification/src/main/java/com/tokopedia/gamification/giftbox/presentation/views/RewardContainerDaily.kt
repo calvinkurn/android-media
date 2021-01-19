@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -57,9 +58,13 @@ open class RewardContainerDaily @JvmOverloads constructor(
     open fun initViews() {
         rvCoupons = findViewById(R.id.rv_coupons)
         imageGreenGlow = findViewById(R.id.image_green_glow)
-
+        val lp = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        this.layoutParams = lp
         rvCoupons.alpha = 0f
-        rvCoupons.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        rvCoupons.hasFixedSize()
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        layoutManager.isItemPrefetchEnabled = true
+        rvCoupons.layoutManager = layoutManager
 
         var isTablet = context?.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet)
         var listItemWidthInTablet = context?.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_rv_coupons_width)
@@ -159,7 +164,7 @@ open class RewardContainerDaily @JvmOverloads constructor(
         if (list != null && list.isNotEmpty()) {
             hasCoupons = true
             couponList.clear()
-            couponList.addAll(list)
+//            couponList.addAll(list)
             //todo Rahul remove duplicate bottom (only used for testing)
             couponList.addAll(list)
         }
@@ -174,7 +179,7 @@ open class RewardContainerDaily @JvmOverloads constructor(
 //                    if (!benefit.color.isNullOrEmpty()) {
 //                        tvSmallReward.setTextColor(Color.parseColor(benefit.color))
 //                    }
-                    couponList.add(OvoListItem(benefit.imageUrl,benefit.text))
+                    couponList.add(OvoListItem(benefit.imageUrl, benefit.text))
                     GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
 //                    iconUrl = benefit.imageUrl
                 } else if (benefit.benefitType == BenefitType.COUPON) {

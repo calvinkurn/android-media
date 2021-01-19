@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.text.PrecomputedTextCompat
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.gamification.R
@@ -84,9 +86,16 @@ class OvoVh(itemView: View) : CouponListVHDaily(itemView) {
     override fun setData(data: CouponType) {
         if (data is OvoListItem) {
             val item = data as OvoListItem
-            tvTitle.text = item.text
+//            tvTitle.text = item.text
+            tvTitle.setTextFuture(PrecomputedTextCompat.getTextFuture(
+                    item.text,
+                    TextViewCompat.getTextMetricsParams(tvTitle),
+                     null))
+
             Glide.with(imageView)
-                    .load(data.imageUrl)
+                    .load(R.drawable.gf_glowing_ovo)
+                    .dontAnimate()
+                    .dontTransform()
                     .into(imageView)
         }
     }
