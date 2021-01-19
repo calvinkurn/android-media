@@ -31,4 +31,5 @@ object WidgetName {
     const val PRODUCT = "product"
     const val VOUCHER = "voucher"
     const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
+    const val VOUCHER_STATIC = "voucher_static"
 }
