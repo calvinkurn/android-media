@@ -28,5 +28,8 @@ data class ProductStockWarehouse(
         val warehouseId: String? = "",
         @SerializedName("stock")
         @Expose
-        val stock: String? = ""
+        val stock: String? = "",
+        @SerializedName("shop_id")
+        @Expose
+        val shopId: String? = ""
 )
