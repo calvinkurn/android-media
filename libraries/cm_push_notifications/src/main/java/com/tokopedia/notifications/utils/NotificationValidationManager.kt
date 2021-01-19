@@ -1,4 +1,4 @@
-package com.tokopedia.appaidl.manager
+package com.tokopedia.notifications.utils
 
 import android.content.Context
 import android.os.Bundle
