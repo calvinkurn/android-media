@@ -22,8 +22,8 @@ import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.PayLaterSimulationGatewayItem
 import com.tokopedia.paylater.domain.model.SimulationItemDetail
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
-import com.tokopedia.paylater.helper.PdpSimulationException
 import com.tokopedia.paylater.helper.PayLaterHelper
+import com.tokopedia.paylater.helper.PdpSimulationException
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.paylater.presentation.widget.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -147,15 +147,19 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
+        supervisorWidget.visible()
         if (PayLaterHelper.isKredivoApplicationStatusEmpty(data.applicationDetailList
                         ?: arrayListOf())) {
             btnDaftarPayLater.visible()
             paylaterDaftarWidget.gone()
+        } else if (payLaterViewModel.payLaterSimulationResultLiveData.value is Fail) {
+            btnDaftarPayLater.gone()
+            paylaterDaftarWidget.gone()
+            supervisorWidget.gone()
         } else {
             btnDaftarPayLater.gone()
             paylaterDaftarWidget.visible()
         }
-        supervisorWidget.visible()
     }
 
     private fun populateRowHeaders(context: Context, simulationDataItem: ArrayList<PayLaterSimulationGatewayItem>, position: Int) {
@@ -163,8 +167,8 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         llPayLaterPartner.apply {
             when (position) {
                 0 -> addView(getBlankView(layoutParam))
-                1 -> addView(getRecomView(layoutParam, simulationDataItem[position-1]))
-                else -> addView(getNoRecomView(layoutParam, simulationDataItem[position-1], position % 2 == 0))
+                1 -> addView(getRecomView(layoutParam, simulationDataItem[position - 1]))
+                else -> addView(getNoRecomView(layoutParam, simulationDataItem[position - 1], position % 2 == 0))
             }
         }
     }

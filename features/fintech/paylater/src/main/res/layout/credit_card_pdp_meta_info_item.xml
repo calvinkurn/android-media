@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
+    android:layout_marginTop="@dimen/unify_space_16"
     android:orientation="vertical">
 
     <View
@@ -36,46 +37,11 @@
         android:layout_marginTop="@dimen/unify_space_12"
         android:text="Berikut ini daftar min. transaksi untuk penggunaan kartu kredit: "
         android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/tvTitlePdpInfo"
         app:layout_constraintStart_toStartOf="@id/tvTitlePdpInfo"
         app:layout_constraintTop_toBottomOf="@id/tvTitlePdpInfo"
         app:typographyType="body_2" />
-
-    <LinearLayout
-        android:id="@+id/llBulletContents"
-        android:layout_width="@dimen/unify_space_0"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="@+id/tvTitlePdpInfo"
-        app:layout_constraintStart_toStartOf="@+id/tvTitlePdpInfo"
-        app:layout_constraintTop_toBottomOf="@+id/tvDescription">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_16"
-            android:text="Pembayaran dengan sistem cicilan 0%, berlaku untuk pemegang kartu kredit berlogo Visa, Mastercard, JCB, dan American Express"
-            android:textColor="@color/Unify_N700_68"
-            app:typographyType="body_2" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_16"
-            android:text="1 (satu) akun pengguna dan satu kartu kredit hanya bisa mengikuti promo cicilan 0% sebanyak 1 (satu) kali per hari."
-            android:textColor="@color/Unify_N700_68"
-            app:typographyType="body_2" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_16"
-            android:text="Promo cicilan 0% tidak bisa digabung dengan promo lain yang sedang berlangsung di Tokopedia."
-            android:textColor="@color/Unify_N700_68"
-            app:typographyType="body_2" />
-
-    </LinearLayout>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPdpInfoContent"
@@ -83,20 +49,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_12"
         app:layout_constraintEnd_toEndOf="@id/tvTitlePdpInfo"
-        app:layout_constraintStart_toStartOf="@id/tvNotes"
-        app:layout_constraintTop_toBottomOf="@id/llBulletContents" />
+        app:layout_constraintStart_toStartOf="@id/tvTitlePdpInfo"
+        app:layout_constraintTop_toBottomOf="@id/tvDescription" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvNotes"
+    <LinearLayout
+        android:id="@+id/llNotes"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_12"
-        android:text="*Khusus BRI, min. transaksi untuk cicilan selama 12 bulan adalah Rp3.000.000"
-        android:textColor="@color/Unify_N700_68"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="@id/tvTitlePdpInfo"
         app:layout_constraintStart_toStartOf="@+id/tvTitlePdpInfo"
-        app:layout_constraintTop_toBottomOf="@+id/rvPdpInfoContent"
-        app:typographyType="body_3" />
+        app:layout_constraintTop_toBottomOf="@+id/rvPdpInfoContent" />
+
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerInstallment"
@@ -105,6 +70,6 @@
         android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvTitlePdpInfo"
-        app:layout_constraintTop_toBottomOf="@+id/tvNotes" />
+        app:layout_constraintTop_toBottomOf="@+id/llNotes" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

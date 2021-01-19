@@ -29,5 +29,13 @@ data class CreditCardPdpInfoContent(
         @SerializedName("content")
         val content: String?,
         @SerializedName("notes")
-        val notesList: ArrayList<String>?
+        val notesList: ArrayList<String>?,
+        var bulletList: ArrayList<String>?,
+        var tableData: PdpInfoTableItem?,
+        var viewType: Int
+)
+
+data class PdpInfoTableItem(
+        @SerializedName("table_data")
+        val tableList: ArrayList<ArrayList<String>>?,
 )

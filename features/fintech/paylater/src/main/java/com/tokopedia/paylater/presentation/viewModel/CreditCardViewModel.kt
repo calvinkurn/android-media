@@ -84,7 +84,12 @@ class CreditCardViewModel @Inject constructor(
 
     private fun onPdpInfoMetaDataSuccess(creditCardPdpMetaData: CreditCardPdpMetaData?) {
         if (creditCardPdpMetaData != null && !creditCardPdpMetaData.pdpInfoContentList.isNullOrEmpty())
-            creditCardPdpMetaInfoLiveData.value = Success(creditCardPdpMetaData)
+            launchCatchError(block = {
+                withContext(ioDispatcher) {
+                    return@withContext CreditCardResponseMapper.populatePdpInfoMetaDataResponse(creditCardPdpMetaData)
+                }
+                creditCardPdpMetaInfoLiveData.value = Success(creditCardPdpMetaData)
+            }, onError = { onPdpInfoMetaDataError(PdpSimulationException.CreditCardNullDataException(CREDIT_CARD_TNC_DATA_FAILURE)) })
         else onPdpInfoMetaDataError(PdpSimulationException.CreditCardNullDataException(CREDIT_CARD_TNC_DATA_FAILURE))
     }
 
@@ -104,6 +109,12 @@ class CreditCardViewModel @Inject constructor(
     private fun onBankCardListDataError(throwable: Throwable) {
         //getCreditCardData()
         creditCardBankResultLiveData.value = Fail(throwable)
+    }
+
+    fun getRedirectionUrl(): String {
+        if (creditCardPdpMetaInfoLiveData.value is Success)
+            return (creditCardPdpMetaInfoLiveData.value as Success).data.ctaRedirectionAppLink ?: ""
+        return ""
     }
 
     override fun onCleared() {

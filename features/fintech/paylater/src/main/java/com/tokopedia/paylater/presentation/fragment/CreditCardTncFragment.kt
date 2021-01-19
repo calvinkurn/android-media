@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.CreditCardPdpMetaData
@@ -49,7 +51,9 @@ class CreditCardTncFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        rvPdpInfo.adapter = CreditCardTncAdapter()
+        rvPdpInfo.adapter = CreditCardTncAdapter {
+            openUrlWebView(creditCardViewModel.getRedirectionUrl())
+        }
         rvPdpInfo.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         btnMoreInfo.setOnClickListener {
 
@@ -101,6 +105,14 @@ class CreditCardTncFragment : BaseDaggerFragment() {
     fun setCreditCardTncCallback(creditCardTnCCallback: CreditCardTnCCallback) {
         this.creditCardTnCCallback = creditCardTnCCallback
     }
+
+    private fun openUrlWebView(urlString: String) {
+        if (urlString.isNotEmpty()) {
+            val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
+            RouteManager.route(context, webViewAppLink)
+        }
+    }
+
 
     companion object {
 
