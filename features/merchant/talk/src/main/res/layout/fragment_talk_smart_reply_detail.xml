@@ -106,8 +106,7 @@
             android:gravity="bottom"
             android:text="@string/smart_reply_detail_save_button"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/talkSmartReplyDetailUnavailableStockTextArea" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
