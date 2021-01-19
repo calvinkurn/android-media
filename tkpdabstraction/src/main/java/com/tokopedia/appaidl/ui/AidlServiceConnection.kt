@@ -5,7 +5,7 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import com.tokopedia.appaidl.AppApi
 
-class ServiceView(
+class AidlServiceConnection(
         private var tag: String,
         private val getData: (String, AppApi?) -> Unit,
 ) : ServiceConnection {
