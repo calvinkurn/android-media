@@ -68,6 +68,11 @@ class TkpdAuthenticator(
                 Timber.w("P2#USER_AUTHENTICATOR#'%s'", "response_count")
                 return response.request()
             }
+        } else {
+            if(responseCount(response)!=0) {
+                Timber.w("P2#USER_AUTHENTICATOR#'%s'", "response_count")
+                return null
+            }
         }
         return response.request()
     }

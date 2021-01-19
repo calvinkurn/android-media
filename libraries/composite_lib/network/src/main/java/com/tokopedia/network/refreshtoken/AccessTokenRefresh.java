@@ -1,6 +1,7 @@
 package com.tokopedia.network.refreshtoken;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.network.NetworkRouter;
@@ -12,6 +13,7 @@ import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,10 +70,14 @@ public class AccessTokenRefresh {
                 return "";
             }
 
+        } catch (SocketException e) {
+            e.printStackTrace();
+            Timber.w("P2#USER_AUTHENTICATOR#'%s';error='%s';path='%s'", "socket_exception", TkpdAuthenticator.Companion.formatThrowable(e), path);
         } catch (Exception e) {
             e.printStackTrace();
             networkRouter.sendRefreshTokenAnalytics(e.toString());
             Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "failed_refresh_token", userSession.getAccessToken(), TkpdAuthenticator.Companion.formatThrowable(e), path);
+            forceLogoutAndShowDialogForLoggedInUsers(userSession, networkRouter, path);
         }
 
         TokenModel model = null;
@@ -91,6 +97,13 @@ public class AccessTokenRefresh {
             return model.getAccessToken();
         } else {
             return "";
+        }
+    }
+
+    private void forceLogoutAndShowDialogForLoggedInUsers(UserSessionInterface userSession, NetworkRouter networkRouter, String path) {
+        if(!TextUtils.isEmpty(userSession.getAccessToken())) {
+            userSession.logoutSession();
+            networkRouter.showForceLogoutTokenDialog(path);
         }
     }
 
