@@ -5,9 +5,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.swipeDown
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
@@ -81,8 +79,8 @@ class FlightHomepageActivityTest {
     @Test
     fun validateFlightHomepageP1Tracking() {
         Thread.sleep(3000)
-        onView(withId(R.id.nsvFlightHomepage)).perform(ViewActions.swipeUp())
-        onView(withId(R.id.nsvFlightHomepage)).perform(ViewActions.swipeUp())
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
 
         validateFlightHomepageBannerDisplayedAndScrollable()
         validateFlightHomepageBannerClickableAndPerformClick()
