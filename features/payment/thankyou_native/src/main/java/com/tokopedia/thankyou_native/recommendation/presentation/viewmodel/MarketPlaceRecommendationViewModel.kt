@@ -4,14 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.thankyou_native.recommendation.model.MarketPlaceRecommendationModel
-import com.tokopedia.thankyou_native.recommendation.model.MarketPlaceRecommendationResult
+import com.tokopedia.thankyou_native.recommendation.model.ThankYouProductCardModel
+import com.tokopedia.thankyou_native.recommendation.model.ProductRecommendationData
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
@@ -39,7 +38,7 @@ class MarketPlaceRecommendationViewModel @Inject constructor(
 
     private var currentPage = 0
 
-    val recommendationMutableData = MutableLiveData<Result<MarketPlaceRecommendationResult>>()
+    val recommendationMutableData = MutableLiveData<Result<ProductRecommendationData>>()
 
     fun loadRecommendationData() {
         launchCatchError(block = {
@@ -48,11 +47,11 @@ class MarketPlaceRecommendationViewModel @Inject constructor(
                 val recommendationItemList = data.first().recommendationItemList
                 if (!recommendationItemList.isNullOrEmpty()) {
                     val marketPlaceRecommendationModelList = getProductCardModel(recommendationItemList)
-                    val blankSpaceConfig = getBlankSpaceConfig(marketPlaceRecommendationModelList)
-                    val marketPlaceRecommendationResult = MarketPlaceRecommendationResult(
+                   // val blankSpaceConfig = getBlankSpaceConfig(marketPlaceRecommendationModelList)
+                    val marketPlaceRecommendationResult = ProductRecommendationData(
                             data.first().title,
-                            marketPlaceRecommendationModelList,
-                            blankSpaceConfig)
+                            marketPlaceRecommendationModelList/*,
+                            blankSpaceConfig*/)
                     recommendationMutableData.value = Success(marketPlaceRecommendationResult)
                 } else {
                     recommendationMutableData.value = Fail(IOException(NO_DATA_FOUND))
@@ -66,9 +65,9 @@ class MarketPlaceRecommendationViewModel @Inject constructor(
     }
 
     private suspend fun getProductCardModel(recommendationItemList: List<RecommendationItem>)
-            : List<MarketPlaceRecommendationModel> = withContext(backgroundDispatcher.get()) {
+            : List<ThankYouProductCardModel> = withContext(backgroundDispatcher.get()) {
         recommendationItemList.map { recommendationItem ->
-            MarketPlaceRecommendationModel(recommendationItem,
+            ThankYouProductCardModel(recommendationItem,
                     ProductCardModel(
                             slashedPrice = recommendationItem.slashedPrice,
                             productName = recommendationItem.name,
@@ -79,18 +78,26 @@ class MarketPlaceRecommendationViewModel @Inject constructor(
                             reviewCount = recommendationItem.countReview,
                             ratingCount = recommendationItem.rating,
                             shopLocation = recommendationItem.location,
-                            isWishlistVisible = true,
-                            isWishlisted = recommendationItem.isWishlist,
                             shopBadgeList = recommendationItem.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it ?: "")
+                                ProductCardModel.ShopBadge(imageUrl = it
+                                        ?: "")
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = recommendationItem.isFreeOngkirActive,
-                                    imageUrl = recommendationItem.freeOngkirImageUrl)
+                                    imageUrl = recommendationItem.freeOngkirImageUrl
+                            ),
+                            labelGroupList = recommendationItem.labelGroupList.map { recommendationLabel ->
+                                ProductCardModel.LabelGroup(
+                                        position = recommendationLabel.position,
+                                        title = recommendationLabel.title,
+                                        type = recommendationLabel.type
+                                )
+                            }
                     )
             )
         }
     }
+/*
 
     private suspend fun getBlankSpaceConfig(
             marketPlaceRecommendationModelList: List<MarketPlaceRecommendationModel>)
@@ -115,6 +122,7 @@ class MarketPlaceRecommendationViewModel @Inject constructor(
         }
         return@withContext blankSpaceConfig
     }
+*/
 
     private suspend fun loadRecommendationDataFromApi(): List<RecommendationWidget>? =
             withContext(backgroundDispatcher.get()) {

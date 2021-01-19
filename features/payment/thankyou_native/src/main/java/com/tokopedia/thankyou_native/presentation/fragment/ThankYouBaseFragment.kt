@@ -347,12 +347,12 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         return RouteManager.getIntent(context, ApplinkConst.MARKETPLACE_ORDER)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (iRecommendationView != null) {
             iRecommendationView?.onActivityResult(requestCode, resultCode, data)
         }
-    }
+    }*/
 
     fun showErrorOnUI(errorMessage: String, retry: (() -> Unit)?) {
         view?.let { view ->
