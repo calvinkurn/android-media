@@ -76,6 +76,14 @@ data class RechargeGetCart(
         @Expose
         val additionalInfo: List<AdditionalInfo> = listOf(),
 
+        @SerializedName("enable_voucher")
+        @Expose
+        val enableVoucher: Boolean = false,
+
+        @SerializedName("is_coupon_active")
+        @Expose
+        val isCouponActive: Boolean = false,
+
         @SerializedName("auto_apply")
         @Expose
         val autoApply: AutoApplyVoucher = AutoApplyVoucher(),
@@ -98,7 +106,7 @@ data class RechargeGetCart(
 
         @SerializedName("fintech_products")
         @Expose
-        val fintechProduct: FintechProduct = FintechProduct(),
+        val fintechProduct: List<FintechProduct> = listOf<FintechProduct>(),
 
         @SerializedName("atc_source")
         @Expose
