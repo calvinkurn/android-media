@@ -2,6 +2,8 @@ package com.tokopedia.shop.common.domain.interactor
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.source.cloud.query.UpdateProductStockWarehouse
 import com.tokopedia.shop.common.data.source.cloud.query.param.UpdateProductStockWarehouseParam
@@ -14,6 +16,8 @@ class UpdateProductStockWarehouseUseCase @Inject constructor(graphqlRepository: 
     : GraphqlUseCase<UpdateProductStockWarehouseResponse>(graphqlRepository) {
 
     companion object {
+        private const val ERROR_MESSAGE = "Error updating IMS product warehouse stock"
+
         @JvmStatic
         fun createRequestParams(shopId: String,
                                 productId: String,
@@ -26,19 +30,25 @@ class UpdateProductStockWarehouseUseCase @Inject constructor(graphqlRepository: 
     }
 
     init {
+        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        setCacheStrategy(cacheStrategy)
+
         setGraphqlQuery(UpdateProductStockWarehouse.QUERY)
         setTypeClass(UpdateProductStockWarehouseResponse::class.java)
     }
 
-    suspend fun execute(requestParams: RequestParams): ProductStockWarehouse? {
+    suspend fun execute(requestParams: RequestParams): ProductStockWarehouse {
         setRequestParams(requestParams.parameters)
         executeOnBackground().let { response ->
-            response.result?.header?.messages?.let {
-                if (!it.isNullOrEmpty()) {
-                    throw MessageErrorException(it.joinToString())
+            response.result?.header?.messages?.let { errors ->
+                if (!errors.isNullOrEmpty()) {
+                    throw MessageErrorException(errors.joinToString())
                 }
             }
-            return response.result?.data?.firstOrNull()
+            response.result?.data?.firstOrNull()?.let {
+                return it
+            }
+            throw MessageErrorException(ERROR_MESSAGE)
         }
     }
 
