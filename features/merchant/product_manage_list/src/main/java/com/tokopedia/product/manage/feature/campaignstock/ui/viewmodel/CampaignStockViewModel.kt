@@ -23,6 +23,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.Sto
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.UpdateCampaignStockResult
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.VariantStockAllocationResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,6 +39,7 @@ class CampaignStockViewModel @Inject constructor(
         private val editStockUseCase: EditStockUseCase,
         private val editProductVariantUseCase: EditProductVariantUseCase,
         private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
+        private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers): BaseViewModel(dispatchers.main) {
 
@@ -75,7 +77,8 @@ class CampaignStockViewModel @Inject constructor(
             launchCatchError(
                 block = {
                     mGetStockAllocationLiveData.value = Success(withContext(dispatchers.io) {
-                        campaignStockAllocationUseCase.params = CampaignStockAllocationUseCase.createRequestParam(productIds, shopId)
+                        val warehouseId = getWarehouseId(shopId)
+                        campaignStockAllocationUseCase.params = CampaignStockAllocationUseCase.createRequestParam(productIds, shopId, warehouseId)
                         val stockAllocationData = campaignStockAllocationUseCase.executeOnBackground()
                         campaignProductName = stockAllocationData.summary.productName
                         stockAllocationData.summary.isVariant.let { isVariant ->
@@ -284,5 +287,10 @@ class CampaignStockViewModel @Inject constructor(
     private suspend fun getProductManageAccess(): ProductManageAccess {
         val response = getProductManageAccessUseCase.execute(userSession.shopId)
         return ProductManageAccessMapper.mapToProductManageAccess(response)
+    }
+
+    private suspend fun getWarehouseId(shopId: String): String {
+        val response = getAdminInfoShopLocationUseCase.execute(shopId.toIntOrZero())
+        return response.firstOrNull { it.isMainLocation() } ?.locationId.toString()
     }
 }

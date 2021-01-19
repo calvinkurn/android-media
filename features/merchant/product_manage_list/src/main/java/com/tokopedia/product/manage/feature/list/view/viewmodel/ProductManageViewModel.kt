@@ -50,6 +50,7 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
+import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -65,22 +66,23 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
-        private val editPriceUseCase: EditPriceUseCase,
-        private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-        private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
-        private val userSessionInterface: UserSessionInterface,
-        private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
-        private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
-        private val getProductListUseCase: GQLGetProductListUseCase,
-        private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
-        private val editStockUseCase: EditStockUseCase,
-        private val deleteProductUseCase: DeleteProductUseCase,
-        private val multiEditProductUseCase: MultiEditProductUseCase,
-        private val getProductListMetaUseCase: GetProductListMetaUseCase,
-        private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
-        private val editProductVariantUseCase: EditProductVariantUseCase,
-        private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val dispatchers: CoroutineDispatchers
+    private val editPriceUseCase: EditPriceUseCase,
+    private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+    private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
+    private val userSessionInterface: UserSessionInterface,
+    private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
+    private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
+    private val getProductListUseCase: GQLGetProductListUseCase,
+    private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
+    private val editStockUseCase: EditStockUseCase,
+    private val deleteProductUseCase: DeleteProductUseCase,
+    private val multiEditProductUseCase: MultiEditProductUseCase,
+    private val getProductListMetaUseCase: GetProductListMetaUseCase,
+    private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
+    private val editProductVariantUseCase: EditProductVariantUseCase,
+    private val getProductVariantUseCase: GetProductVariantUseCase,
+    private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -168,6 +170,7 @@ class ProductManageViewModel @Inject constructor(
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
+    private var warehouseId: String? = null
 
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
 
@@ -270,8 +273,9 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val productList = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
+                val warehouseId = getWarehouseId(shopId)
                 val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
-                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption, extraInfo)
+                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, warehouseId, filterOptions, sortOption, extraInfo)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListResponse = getProductList.productList
                 productListResponse?.data
@@ -355,7 +359,13 @@ class ProductManageViewModel @Inject constructor(
     fun getFeaturedProductCount(shopId: String) {
         launchCatchError(block = {
             val productListFeaturedOnly = withContext(dispatchers.io) {
-                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, listOf(FilterOption.FilterByCondition.FeaturedOnly), null)
+                val warehouseId = getWarehouseId(shopId)
+                val requestParams = GQLGetProductListUseCase.createRequestParams(
+                    shopId,
+                    warehouseId,
+                    listOf(FilterOption.FilterByCondition.FeaturedOnly),
+                    null
+                )
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListSize = getProductList.productList?.data?.size
                 productListSize
@@ -641,6 +651,14 @@ class ProductManageViewModel @Inject constructor(
     private fun getAccess(): ProductManageAccess {
         return (_productManageAccess.value as? Success<ProductManageAccess>)?.data
             ?: ProductManageAccessMapper.mapProductManageOwnerAccess()
+    }
+
+    private suspend fun getWarehouseId(shopId: String): String {
+        if(warehouseId == null) {
+            val shopLocation = getAdminInfoShopLocationUseCase.execute(shopId.toIntOrZero())
+            warehouseId = shopLocation.firstOrNull { it.isMainLocation() }?.locationId.toString()
+        }
+        return warehouseId.orEmpty()
     }
 
     private fun setProductListFeaturedOnly(productsSize: Int) {
