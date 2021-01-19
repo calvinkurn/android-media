@@ -1212,6 +1212,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onPurchaseProtectionInfoClicked(url: String) {
         PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
+        orderSummaryAnalytics.eventPpClickTooltip(userSession.get().userId, viewModel.orderProduct.categoryId.toString(), "", viewModel.orderProduct.purchaseProtectionPlanData.protectionTitle, emptyMap())
     }
 
     override fun onPurchaseProtectionCheckedChange(isChecked: Boolean) {

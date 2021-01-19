@@ -166,6 +166,20 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapPurchaseProtectionPlanData(purchaseProtectionPlanDataResponse: PurchaseProtectionPlanDataResponse): PurchaseProtectionPlanData {
+//        return PurchaseProtectionPlanData(
+//                isProtectionAvailable = true,
+//                protectionTypeId = 1871,
+//                protectionPricePerProduct = 500,
+//                protectionPrice = 10000,
+//                protectionTitle = "Proteksi Fashion",
+//                protectionSubtitle = "Kompensasi 70% jika produk rusak akibat pemakaian dalam 90 hari hanya Rp513",
+//                protectionLinkText = "Pelajari",
+//                protectionLinkUrl = "https://www.tokopedia.com/asuransi/proteksi/kerusakan-total/",
+//                isProtectionOptIn = false,
+//                isProtectionCheckboxDisabled = false,
+//                unit = "per barang",
+//                source = "purchase-protection"
+//        )
         return PurchaseProtectionPlanData(
                 isProtectionAvailable = purchaseProtectionPlanDataResponse.protectionAvailable,
                 protectionTypeId = purchaseProtectionPlanDataResponse.protectionTypeId,

@@ -59,6 +59,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             val shopPromos = generateShopPromos(finalPromo, orderCart)
             val checkoutPromos = generateCheckoutPromos(finalPromo)
             val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
+            val isPPPChecked = product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
             val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                     pref.preference.address.addressId,
                     listOf(
@@ -72,7 +73,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                                     product.productId,
                                                     product.quantity.orderQuantity,
                                                     product.notes,
-                                                    product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
+                                                    isPPPChecked
                                             )
                                     ),
                                     shippingInfo = ShippingInfo(
@@ -94,6 +95,14 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                         var paymentType = pref.preference.payment.gatewayName
                         if (paymentType.isBlank()) {
                             paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
+                        }
+                        if (product.purchaseProtectionPlanData.isProtectionAvailable) {
+                            orderSummaryAnalytics.eventPpClickBayar(userId,
+                                    product.categoryId.toString(),
+                                    "",
+                                    product.purchaseProtectionPlanData.protectionTitle,
+                                    isPPPChecked,
+                                    orderSummaryPageEnhanceECommerce.buildForPP(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION))
                         }
                         orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment,
                                 userId,

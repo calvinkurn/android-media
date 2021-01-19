@@ -617,6 +617,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private fun sendViewOspEe() {
         if (!hasSentViewOspEe) {
             orderSummaryAnalytics.eventViewOrderSummaryPage(userSession.userId, _orderPreference.preference.payment.gatewayName, generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
+            if (orderProduct.purchaseProtectionPlanData.isProtectionAvailable) {
+                orderSummaryAnalytics.eventPpImpressionOnInsuranceSection(userSession.userId, orderProduct.categoryId.toString(), "", orderProduct.purchaseProtectionPlanData.protectionTitle, emptyMap())
+            }
             hasSentViewOspEe = true
         }
     }
@@ -644,9 +647,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             setCodFlag(false)
             setCornerFlag(false)
             setIsFullfilment(false)
-            setShopId(orderShop.shopId.toString())
-            setShopName(orderShop.shopName)
-            setShopType(orderShop.isOfficial, orderShop.isGold)
+            setShopIdDimension(orderShop.shopId.toString())
+            setShopNameDimension(orderShop.shopName)
+            setShopTypeDimension(orderShop.isOfficial, orderShop.isGold)
             setCategoryId(orderProduct.categoryId.toString())
             if (_orderShipment.getRealShipperProductId() > 0) {
                 setShippingPrice(_orderShipment.getRealShippingPrice().toString())
