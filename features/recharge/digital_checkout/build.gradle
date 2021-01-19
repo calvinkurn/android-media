@@ -30,7 +30,6 @@ android {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.commonPayment)
@@ -51,7 +50,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.akamaiBotLib)
 
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons

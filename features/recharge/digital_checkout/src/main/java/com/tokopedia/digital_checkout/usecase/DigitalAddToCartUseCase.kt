@@ -21,7 +21,6 @@ import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.usecase.RequestParams
 import okhttp3.Interceptor
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -38,7 +37,7 @@ class DigitalAddToCartUseCase @Inject constructor(authInterceptor: ArrayList<Int
         val requestBodyAtcDigital = requestParams.getObject(PARAM_REQUEST_BODY_ATC_DIGITAL) as RequestBodyAtcDigital
         val jsonElement = JsonParser().parse(Gson().toJson(requestBodyAtcDigital))
         val requestBody = JsonObject()
-        requestBody.add("data", jsonElement)
+        requestBody.add(PARAM_DATA, jsonElement)
 
         val idemPotencyKeyHeader = requestParams.getString(PARAM_IDEM_POTENCY_KEY, "")
         val mapHeader = mutableMapOf<String, String>()
@@ -65,9 +64,16 @@ class DigitalAddToCartUseCase @Inject constructor(authInterceptor: ArrayList<Int
     companion object {
         private const val PARAM_REQUEST_BODY_ATC_DIGITAL = "PARAM_REQUEST_BODY_ATC_DIGITAL"
         private const val PARAM_IDEM_POTENCY_KEY = "PARAM_IDEM_POTENCY_KEY"
+        private const val PARAM_ADD_TO_CART = "add_cart"
+        private const val PARAM_DATA = "data"
+        private const val PARAM_CLIENT_NUMBER = "client_number"
+        private const val PARAM_ZONE_ID = "zone_id"
+
         private const val KEY_IDEM_POTENCY_KEY = "Idempotency-Key"
         private const val KEY_CONTENT_TYPE = "Content-Type"
         private const val VALUE_CONTENT_TYPE = "application/json"
+        private const val VALUE_ANDROID_DEVICE_ID = 5
+        private const val VALUE_INSTANT_CHECKOUT_ID = "1"
 
         fun getRequestBodyAtcDigital(digitalCheckoutPassData: DigitalCheckoutPassData,
                                      userId: Int,
@@ -77,11 +83,11 @@ class DigitalAddToCartUseCase @Inject constructor(authInterceptor: ArrayList<Int
             val requestBodyAtcDigital = RequestBodyAtcDigital()
             val fieldList: MutableList<Attributes.Field> = ArrayList()
             if (!digitalCheckoutPassData.clientNumber.isNullOrEmpty()) {
-                val field: Attributes.Field = Attributes.Field("client_number", digitalCheckoutPassData.clientNumber)
+                val field: Attributes.Field = Attributes.Field(PARAM_CLIENT_NUMBER, digitalCheckoutPassData.clientNumber)
                 fieldList.add(field)
             }
             if (!digitalCheckoutPassData.zoneId.isNullOrEmpty()) {
-                val field: Attributes.Field = Attributes.Field("zone_id", digitalCheckoutPassData.zoneId)
+                val field: Attributes.Field = Attributes.Field(PARAM_ZONE_ID, digitalCheckoutPassData.zoneId)
                 fieldList.add(field)
             }
             for ((key, value) in digitalCheckoutPassData.fields ?: hashMapOf()) {
@@ -90,8 +96,8 @@ class DigitalAddToCartUseCase @Inject constructor(authInterceptor: ArrayList<Int
             }
 
             val attributes = Attributes()
-            attributes.deviceId = 5
-            attributes.instantCheckout = digitalCheckoutPassData.instantCheckout == "1"
+            attributes.deviceId = VALUE_ANDROID_DEVICE_ID
+            attributes.instantCheckout = digitalCheckoutPassData.instantCheckout == VALUE_INSTANT_CHECKOUT_ID
             attributes.ipAddress = DeviceUtil.localIpAddress
             attributes.userAgent = DeviceUtil.userAgentForApiCall
             attributes.userId = userId
@@ -116,7 +122,7 @@ class DigitalAddToCartUseCase @Inject constructor(authInterceptor: ArrayList<Int
             if (subParams.autoSubscribe != null) {
                 attributes.autoSubscribe = subParams.autoSubscribe
             }
-            requestBodyAtcDigital.type = "add_cart"
+            requestBodyAtcDigital.type = PARAM_ADD_TO_CART
             requestBodyAtcDigital.attributes = attributes
             return requestBodyAtcDigital
         }

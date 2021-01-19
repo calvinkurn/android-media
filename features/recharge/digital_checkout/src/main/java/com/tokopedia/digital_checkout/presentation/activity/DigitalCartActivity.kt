@@ -78,7 +78,7 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
         val timeMillis = System.currentTimeMillis().toString()
         val token = AuthHelper.getMD5Hash(timeMillis)
         val userSession = UserSession(context)
-        return String.format(getString(R.string.digital_generate_token_checkout),
+        return String.format(getString(R.string.digital_cart_generate_token_checkout),
                 userSession.userId, if (token.isEmpty()) timeMillis else token)
     }
 
