@@ -34,6 +34,7 @@ class ManagePasswordWebViewFragment : BaseWebViewFragment() {
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
         if (isContainsLoginApplink(url)) {
             setResultForLoginFLow(url)
+            return true
         } else if (isContainsHomeApplink(url)) {
             saveStateReset(true)
         }
@@ -46,6 +47,7 @@ class ManagePasswordWebViewFragment : BaseWebViewFragment() {
         request?.url?.let {
             if (isContainsLoginApplink(it.toString())) {
                 setResultForLoginFLow(it.toString())
+                return
             } else if (isContainsHomeApplink(it.toString())) {
                 saveStateReset(true)
             }

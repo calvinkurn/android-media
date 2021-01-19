@@ -12,5 +12,5 @@ object ManagePasswordConstant {
     const val KEY_MANAGE_PASSWORD = "KEY_MANAGE_PASSWORD"
     const val IS_SUCCESS_RESET = "IS_SUCCESS_RESET"
 
-    const val PARAM_AUTO_FILL = "auto_fill"
+    const val PARAM_AUTO_FILL = "email"
 }

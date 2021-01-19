@@ -71,10 +71,10 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
 
         getAbTestPlatform()?.fetch(null)
 
-        if (isDirectToWebView) {
+//        if (isDirectToWebView) {
             gotoWebView(urlResetPassword())
-            return
-        }
+//            return
+//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -100,13 +100,12 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     }
 
     private fun gotoWebView(url: String) {
-        if (userSession.isLoggedIn) {
-            val intent = ManagePasswordWebViewActivity.createIntent(this, url, false)
-            startActivityForResult(intent, REQUEST_CODE_WEB_VIEW)
+        val intent = if (userSession.isLoggedIn) {
+            ManagePasswordWebViewActivity.createIntent(this, url, false)
         } else {
-            val intent = ManagePasswordWebViewActivity.createIntent(this, url)
-            startActivityForResult(intent, REQUEST_CODE_WEB_VIEW)
+            ManagePasswordWebViewActivity.createIntent(this, url)
         }
+        startActivityForResult(intent, REQUEST_CODE_WEB_VIEW)
     }
 
     private fun gotoLogin(url: String) {
@@ -115,10 +114,10 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         val phone = uri.getQueryParameter(QUERY_PARAM_PHONE)
 
         val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
-        if (email.isNullOrEmpty()) {
+        if (!email.isNullOrEmpty()) {
             intent.putExtra(PARAM_AUTO_FILL, email)
             userSession.autofillUserData = email
-        } else if (phone.isNullOrEmpty()) {
+        } else if (!phone.isNullOrEmpty()) {
             intent.putExtra(PARAM_AUTO_FILL, phone)
             userSession.autofillUserData = phone
         }
@@ -156,7 +155,8 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         const val QUERY_PARAM_PHONE = "phone"
 
         private const val SCREEN_FORGOT_PASSWORD = "Forgot password page"
-        private const val URL_FORGOT_PASSWORD = "https://m.tokopedia.com/reset-password"
+//        private const val URL_FORGOT_PASSWORD = "https://m.tokopedia.com/reset-password"
+        private const val URL_FORGOT_PASSWORD = "https://staging.tokopedia.com/reset-password"
         private const val REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL = "android_forgot_password_webview_url"
         private const val AB_TEST_RESET_PASSWORD_KEY = "Reset Password AND"
         private const val AB_TEST_RESET_PASSWORD = "Reset Password AND"
