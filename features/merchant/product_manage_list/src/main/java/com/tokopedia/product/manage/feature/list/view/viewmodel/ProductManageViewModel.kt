@@ -1,7 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import android.accounts.NetworkErrorException
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -44,7 +43,9 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
-import com.tokopedia.shop.common.domain.interactor.*
+import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -71,8 +72,6 @@ class ProductManageViewModel @Inject constructor(
         private val getProductListMetaUseCase: GetProductListMetaUseCase,
         private val editProductVariantUseCase: EditProductVariantUseCase,
         private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
-        private val updateProductStockWarehouseUseCase: UpdateProductStockWarehouseUseCase,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -350,28 +349,21 @@ class ProductManageViewModel @Inject constructor(
     fun editStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
         showProgressDialog()
         launchCatchError(block = {
-            withContext(dispatchers.io) {
-                val warehouseId = getAdminInfoShopLocationUseCase.execute(userSessionInterface.shopId.toIntOrZero()).find { it.isMainLocation() }?.locationId ?: 0
-                val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(userSessionInterface.shopId, productId, warehouseId.toString(), stock.toString())
-                updateProductStockWarehouseUseCase.execute(requestParams).let { updateProductStockWarehouseResponse ->
-                    Log.d("TEst warehouse", updateProductStockWarehouseResponse.toString())
+            val result = withContext(dispatchers.io) {
+                editStockUseCase.setParams(userSessionInterface.shopId, productId, stock, status)
+                editStockUseCase.executeOnBackground()
+            }
+            when {
+                result.productUpdateV3Data.isSuccess -> {
+                    _editStockResult.postValue(Success(EditStockResult(productName, productId, stock, status)))
+                }
+                result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
+                    _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
+                }
+                else -> {
+                    _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
                 }
             }
-//            val result = withContext(dispatchers.io) {
-//                editStockUseCase.setParams(userSessionInterface.shopId, productId, stock, status)
-//                editStockUseCase.executeOnBackground()
-//            }
-//            when {
-//                result.productUpdateV3Data.isSuccess -> {
-//                    _editStockResult.postValue(Success(EditStockResult(productName, productId, stock, status)))
-//                }
-//                result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
-//                    _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
-//                }
-//                else -> {
-//                    _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
-//                }
-//            }
         }) {
             _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()))))
         }
