@@ -28,6 +28,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.applink)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
