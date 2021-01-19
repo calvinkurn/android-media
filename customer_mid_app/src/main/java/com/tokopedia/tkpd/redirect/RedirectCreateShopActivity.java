@@ -10,7 +10,7 @@ import android.view.View;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.customer_mid_app.R;
-import com.tokopedia.core.app.TActivity;
+import com.tokopedia.tkpd.deeplink.activity.TActivity;
 import com.tokopedia.track.TrackApp;
 
 public class RedirectCreateShopActivity extends TActivity {
