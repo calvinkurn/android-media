@@ -5,17 +5,15 @@ import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.widget.Toast
 import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.appaidl.AidlApi
-import com.tokopedia.appaidl.data.UserKey
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMRemoteConfigUtils
 import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
 import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.inApp.CMInAppManager
+import com.tokopedia.notifications.utils.NotificationValidationManager
 import com.tokopedia.notifications.worker.PushWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -55,6 +53,8 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
                 false) || BuildConfig.DEBUG
 
+    private var aidlApiBundle: Bundle? = null
+
     val cmPushEndTimeInterval: Long
         get() = cmRemoteConfigUtils.getLongRemoteConfig(CMConstant.RemoteKeys.KEY_CM_PUSH_END_TIME_INTERVAL,
                 HOURS_24_IN_MILLIS * 7)
@@ -82,31 +82,10 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
     }
 
     override fun onAidlReceive(tag: String, bundle: Bundle?) {
-        val receiverAppName = if (!GlobalConfig.isSellerApp()) "Seller" else "Customer"
-        bundle?.let {
-            if (it.containsKey(UserKey.IS_LOGIN) && it.getBoolean(UserKey.IS_LOGIN)) {
-                Toast.makeText(
-                        this.applicationContext,
-                        "Nama dari $receiverAppName adalah ${it.getString(UserKey.NAME)}",
-                        Toast.LENGTH_LONG
-                ).show()
-            } else {
-                Toast.makeText(
-                        this.applicationContext,
-                        "ngga ada yang login di $receiverAppName",
-                        Toast.LENGTH_LONG
-                ).show()
-            }
-        }
+        this.aidlApiBundle = bundle
     }
 
-    override fun onAidlError() {
-        Toast.makeText(
-                this.applicationContext,
-                "onAidlError",
-                Toast.LENGTH_LONG
-        ).show()
-    }
+    override fun onAidlError() {}
 
     /**
      * Send FCM token to server
@@ -196,7 +175,17 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
                 if (confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) && isInAppEnable) {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
                 } else if (isPushEnable) {
-                    PushController(applicationContext).handleNotificationBundle(bundle)
+                    val validator = NotificationValidationManager(
+                            applicationContext,
+                            //TODO change from notification payload
+                            NotificationValidationManager.NotificationPrioMock.Both
+                    )
+
+                    aidlApiBundle?.let {
+                        validator.validate(aidlApiBundle) {
+                            PushController(applicationContext).handleNotificationBundle(bundle)
+                        }
+                    }
                 } else if (!(confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) || confirmationValue.equals(CMConstant.PayloadKeys.FCM_EXTRA_CONFIRMATION_VALUE))){
                     Timber.w("${CMConstant.TimberTags.TAG}validation;reason='not_cm_source';data='${dataString.
                     take(CMConstant.TimberTags.MAX_LIMIT)}'")
