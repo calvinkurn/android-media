@@ -190,7 +190,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         viewModel.buttonState.observe(viewLifecycleOwner, Observer {
             when {
                 // Smart Reply active & text changed
-                it.isReadyTextChanged || it.isReadyTextChanged && it.isSwitchActive -> {
+                (it.isReadyTextChanged || it.isNotReadyTextChanged) && it.isSwitchActive -> {
                     talkSmartReplyDetailSubmitButton.apply {
                         isEnabled = true
                         show()
