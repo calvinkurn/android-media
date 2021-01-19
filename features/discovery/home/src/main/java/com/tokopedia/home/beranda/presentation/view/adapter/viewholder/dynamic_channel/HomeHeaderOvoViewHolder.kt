@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategoryListener)
 : AbstractViewHolder<HomeHeaderOvoDataModel>(itemView) {
@@ -79,7 +80,12 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
 
     private fun renderBackgroundHeight() {
         val backgroundViewImage = itemView.findViewById<ImageView>(R.id.view_background_image)
-        ImageHandler.LoadImage(backgroundViewImage, BACKGROUND_LIGHT_1)
+        val backgroundUrl = if (itemView.context.isDarkMode()) {
+            BACKGROUND_DARK_1
+        } else {
+            BACKGROUND_LIGHT_1
+        }
+        ImageHandler.LoadImage(backgroundViewImage, backgroundUrl)
 //        val ovoView = itemView.findViewById<OvoWidgetView>(R.id.view_ovo)
 //        if (ovoView.visibility == View.VISIBLE) {
 //            val backgroundView = itemView.findViewById<FrameLayout>(R.id.view_background)
