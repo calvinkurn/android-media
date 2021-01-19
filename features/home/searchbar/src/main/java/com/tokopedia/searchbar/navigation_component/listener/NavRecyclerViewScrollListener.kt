@@ -10,7 +10,8 @@ class NavRecyclerViewScrollListener(
         var startTransitionPixel: Int = 0,
         var toolbarTransitionRangePixel: Int = 0,
         val navScrollCallback: NavScrollCallback? = null,
-        val switchThemeOnScroll: Boolean = true
+        val switchThemeOnScroll: Boolean = true,
+        val fixedIconColor: Int? = null
 ): RecyclerView.OnScrollListener() {
     private val statusBarUtil = navToolbar.statusBarUtil
 
@@ -30,24 +31,40 @@ class NavRecyclerViewScrollListener(
         if (offsetAlpha < 0) {
             offsetAlpha = 0f
         }
-        if (offsetAlpha >= 150) {
-            if (switchThemeOnScroll) {
-                navToolbar.switchToLightToolbar()
-                darkModeCondition(
-                        lightCondition = { statusBarUtil?.requestStatusBarLight() },
-                        nightCondition = { statusBarUtil?.requestStatusBarDark() }
-                )
+        if (fixedIconColor != null) {
+            when (fixedIconColor) {
+                FixedTheme.TOOLBAR_DARK_TYPE -> navToolbar.switchToDarkToolbar()
+                FixedTheme.TOOLBAR_LIGHT_TYPE -> navToolbar.switchToLightToolbar()
             }
-            navScrollCallback?.onSwitchToLightToolbar()
+            darkModeCondition(
+                    lightCondition = { statusBarUtil?.requestStatusBarLight() },
+                    nightCondition = { statusBarUtil?.requestStatusBarDark() }
+            )
+            if (offsetAlpha >= 150) {
+                navScrollCallback?.onSwitchToLightToolbar()
+            } else {
+                navScrollCallback?.onSwitchToDarkToolbar()
+            }
         } else {
-            if (switchThemeOnScroll) {
-                navToolbar.switchToDarkToolbar()
-                darkModeCondition(
-                        lightCondition = { statusBarUtil?.requestStatusBarDark() },
-                        nightCondition = { statusBarUtil?.requestStatusBarLight() }
-                )
+            if (offsetAlpha >= 150) {
+                if (switchThemeOnScroll) {
+                    navToolbar.switchToLightToolbar()
+                    darkModeCondition(
+                            lightCondition = { statusBarUtil?.requestStatusBarLight() },
+                            nightCondition = { statusBarUtil?.requestStatusBarDark() }
+                    )
+                }
+                navScrollCallback?.onSwitchToLightToolbar()
+            } else {
+                if (switchThemeOnScroll) {
+                    navToolbar.switchToDarkToolbar()
+                    darkModeCondition(
+                            lightCondition = { statusBarUtil?.requestStatusBarDark() },
+                            nightCondition = { statusBarUtil?.requestStatusBarLight() }
+                    )
+                }
+                navScrollCallback?.onSwitchToDarkToolbar()
             }
-            navScrollCallback?.onSwitchToDarkToolbar()
         }
         if (offsetAlpha >= 255) {
             offsetAlpha = 255f
@@ -68,5 +85,10 @@ class NavRecyclerViewScrollListener(
         fun onAlphaChanged(offsetAlpha: Float)
         fun onSwitchToDarkToolbar()
         fun onSwitchToLightToolbar()
+    }
+
+    object FixedTheme {
+        const val TOOLBAR_DARK_TYPE = 0
+        const val TOOLBAR_LIGHT_TYPE = 1
     }
 }
