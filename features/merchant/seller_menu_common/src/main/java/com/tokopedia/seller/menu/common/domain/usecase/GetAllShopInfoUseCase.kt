@@ -1,5 +1,6 @@
 package com.tokopedia.seller.menu.common.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
@@ -8,7 +9,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.Partia
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 
 class GetAllShopInfoUseCase constructor(
         private val userSession: UserSessionInterface,
@@ -17,14 +18,16 @@ class GetAllShopInfoUseCase constructor(
         private val getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
         private val shopStatusTypeUseCase: ShopStatusTypeUseCase,
         private val topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
-        private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase
+        private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
+        private val dispatchers: CoroutineDispatchers
 ) : UseCase<Pair<PartialSettingResponse, PartialSettingResponse>>() {
 
-    override suspend fun executeOnBackground(): Pair<PartialSettingResponse, PartialSettingResponse> = coroutineScope {
-        with(userSession) {
-            val partialShopInfo = async { getPartialShopInfoData(shopId.toIntOrZero()) }
-            val partialTopAdsInfo = async { getPartialTopAdsData(shopId) }
-            return@coroutineScope Pair(partialShopInfo.await(), partialTopAdsInfo.await())
+    override suspend fun executeOnBackground(): Pair<PartialSettingResponse, PartialSettingResponse> {
+        return withContext(dispatchers.io) {
+            val partialShopInfo = async { getPartialShopInfoData(userSession.shopId.toIntOrZero()) }
+            val partialTopAdsInfo = async { getPartialTopAdsData(userSession.shopId) }
+
+            return@withContext Pair(partialShopInfo.await(), partialTopAdsInfo.await())
         }
     }
 
@@ -38,6 +41,7 @@ class GetAllShopInfoUseCase constructor(
                     getShopTotalFollowersUseCase.executeOnBackground(),
                     getShopBadgeUseCase.executeOnBackground()
             )
+
         } catch (exception: Exception) {
             getPartialFailResponse(exception)
         }
@@ -60,5 +64,4 @@ class GetAllShopInfoUseCase constructor(
         SellerMenuErrorHandler.logExceptionToCrashlytics(exception, SellerMenuErrorHandler.ERROR_GET_SETTING_SHOP_INFO)
         return PartialSettingFail
     }
-
 }

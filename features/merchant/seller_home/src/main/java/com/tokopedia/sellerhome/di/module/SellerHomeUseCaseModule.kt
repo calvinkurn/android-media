@@ -153,7 +153,8 @@ class SellerHomeUseCaseModule {
             getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
             shopStatusTypeUseCase: ShopStatusTypeUseCase,
             topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
-            topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase
+            topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
+            dispatchers: CoroutineDispatchers
     ): GetAllShopInfoUseCase {
         return GetAllShopInfoUseCase(
                 userSession,
@@ -162,7 +163,8 @@ class SellerHomeUseCaseModule {
                 getShopTotalFollowersUseCase,
                 shopStatusTypeUseCase,
                 topAdsAutoTopupUseCase,
-                topAdsDashboardDepositUseCase
+                topAdsDashboardDepositUseCase,
+                dispatchers
         )
     }
 }
