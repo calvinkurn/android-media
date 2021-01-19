@@ -835,9 +835,6 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
                 }
             }
         }
-        if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT) {
-            goToCreateBroadcastFromSellerMigration(productStock, isProductActive, isProductVariant, productId)
-        }
     }
 
     private fun showAddAsFeaturedProduct() {
