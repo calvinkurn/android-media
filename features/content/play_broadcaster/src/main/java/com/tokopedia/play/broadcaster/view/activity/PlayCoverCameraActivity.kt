@@ -220,20 +220,6 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     }
 
     private fun saveToFile(imageByte: ByteArray) {
-//        val mCaptureNativeSize = cvCamera.pictureSize
-//        try {
-//            mCaptureNativeSize?.let {
-//                CameraUtils.decodeBitmap(imageByte, it.width, it.height) { bitmap ->
-//                    val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
-//                            .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
-//                    onSuccessCaptureImageFromCamera(cameraResultFile)
-//                }
-//            }
-//        } catch (error: Throwable) {
-//            val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
-//                    .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
-//            onSuccessCaptureImageFromCamera(cameraResultFile)
-//        }
         val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, Bitmap.CompressFormat.JPEG)
         if (cameraResultFile!= null) {
             onSuccessCaptureImageFromCamera(cameraResultFile)

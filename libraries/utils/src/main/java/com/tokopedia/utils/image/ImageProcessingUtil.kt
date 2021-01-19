@@ -372,7 +372,7 @@ object ImageProcessingUtil {
             val fileOutput = getTokopediaPhotoPath(targetCompressFormat)
             return if (bitmap != null) {
                 val out = FileOutputStream(fileOutput)
-                bitmap.compress(CompressFormat.WEBP, quality, out)
+                bitmap.compress(targetCompressFormat, quality, out)
                 out.flush()
                 out.close()
                 fileOutput.absolutePath
