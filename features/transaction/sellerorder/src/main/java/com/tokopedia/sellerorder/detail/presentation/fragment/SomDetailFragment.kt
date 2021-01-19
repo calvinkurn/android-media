@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
@@ -256,7 +255,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initPltPerformanceMonitoring()
+        getActivityPltPerformanceMonitoring()
         if (arguments != null) {
             orderId = arguments?.getString(PARAM_ORDER_ID).toString()
             val userRoles = arguments?.getParcelable<SomGetUserRoleUiModel?>(PARAM_USER_ROLES)
@@ -1503,7 +1502,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun initPltPerformanceMonitoring() {
+    private fun getActivityPltPerformanceMonitoring() {
         somDetailLoadTimeMonitoring = (activity as? SomDetailActivity)?.somDetailLoadTimeMonitoring
     }
 

@@ -276,7 +276,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initPltPerformanceMonitoring()
+        getActivityPltPerformanceMonitoring()
         if (savedInstanceState == null && arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
             filterOrderType = arguments?.getInt(FILTER_ORDER_TYPE, 0).orZero()
@@ -353,7 +353,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        initPltPerformanceMonitoring()
+        getActivityPltPerformanceMonitoring()
         if (!hidden) {
             SomAnalytics.sendScreenName(SomConsts.LIST_ORDER_SCREEN_NAME)
             if (!isUserRoleFetched()) viewModel.getUserRoles()
@@ -1909,7 +1909,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }, DELAY_COACHMARK)
     }
 
-    private fun initPltPerformanceMonitoring() {
+    private fun getActivityPltPerformanceMonitoring() {
         somListLoadTimeMonitoring = (activity as? SomListLoadTimeMonitoringActivity)?.getSomListLoadTimeMonitoring()
     }
 
