@@ -3,7 +3,6 @@ package com.tokopedia.paylater.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.paylater.domain.model.CreditCardBank
 import com.tokopedia.paylater.domain.model.SimulationBank
 import com.tokopedia.paylater.presentation.viewholder.CreditCardBankInfoViewHolder
 import com.tokopedia.paylater.presentation.viewholder.CreditCardBankShimmerViewHolder
@@ -21,13 +20,13 @@ class CreditCardAvailableBanksAdapter : RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(holder) {
+        when (holder) {
             is CreditCardBankInfoViewHolder -> holder.bindData(bankList[position])
         }
     }
 
     override fun getItemCount(): Int {
-        return if(bankList.isEmpty()) 4 else bankList.size
+        return if (bankList.isEmpty()) 4 else bankList.size
     }
 
     override fun getItemViewType(position: Int): Int {

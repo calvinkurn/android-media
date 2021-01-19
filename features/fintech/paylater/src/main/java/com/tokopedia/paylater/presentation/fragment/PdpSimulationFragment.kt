@@ -27,9 +27,11 @@ import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.paylater.helper.PayLaterHelper
+import com.tokopedia.paylater.helper.PdpSimulationException
 import com.tokopedia.paylater.presentation.adapter.PayLaterPagerAdapter
 import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
+import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel.Companion.PAY_LATER_NOT_APPLICABLE
 import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardRegistrationBottomSheet
 import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardsListBottomSheet
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterSignupBottomSheet
@@ -105,6 +107,10 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         if (!(payLaterViewModel.payLaterActivityResultLiveData.value is Success ||
                         payLaterViewModel.payLaterActivityResultLiveData.value is Fail))
             payLaterViewModel.getPayLaterProductData()
+    }
+
+    override fun payLaterNotApplicable() {
+        payLaterViewModel.payLaterActivityResultLiveData.value = Fail(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
     }
 
     override fun getApplicationStatusInfo() {

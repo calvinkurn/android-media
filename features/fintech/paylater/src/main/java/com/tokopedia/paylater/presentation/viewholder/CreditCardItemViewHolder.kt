@@ -15,8 +15,7 @@ import kotlinx.android.synthetic.main.credit_card_item.view.*
 class CreditCardItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bindData(creditCardItem: CreditCardItem, creditCardBankName: String?) {
-        val labelBenefit = creditCardItem.specialLabel?.split(",")?.toList()
-        val size = (labelBenefit?.size ?: 0) - 2
+
         view.apply {
             tvCreditCardName.text = creditCardItem.cardName
             tvBankName.text = creditCardBankName ?: ""
@@ -24,11 +23,7 @@ class CreditCardItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
                     ivCreditCard,
                     creditCardItem.cardImageUrl,
                     R.drawable.ic_loading_image)
-            benefitLabel1.text = labelBenefit?.getOrNull(0)
-            benefitLabel2.text = labelBenefit?.getOrNull(1)
-            if (size > 0)
-                tvBenefitsMore.text = "+${size} Lainnya"
-            else tvBenefitsMore.gone()
+            setLabelData(this, creditCardItem.specialLabel)
             if (creditCardItem.isSpecialOffer == true) {
                 clCreditCard.background = ContextCompat.getDrawable(context, R.drawable.bg_credit_card_border_recommendation)
                 ivRecommendationBadge.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_credit_card_header_recommendation))
@@ -38,6 +33,28 @@ class CreditCardItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
                 recommendationGroup.gone()
             }
 
+        }
+    }
+
+    private fun setLabelData(itemView: View, labelBenefit: String?) {
+        val labelBenefitList = labelBenefit?.split(",")?.toList()
+        val size = (labelBenefitList?.size ?: 0) - 2
+        itemView.apply {
+            val benefitItemFirst = labelBenefitList?.getOrNull(0)?.trim()
+            val benefitItemSecond = labelBenefitList?.getOrNull(1)?.trim()
+            if (benefitItemFirst.isNullOrEmpty()) benefitLabel1.gone()
+            else {
+                benefitLabel1.visible()
+                benefitLabel1.text = benefitItemFirst
+            }
+            if (benefitItemSecond.isNullOrEmpty()) benefitLabel2.gone()
+            else {
+                benefitLabel2.visible()
+                benefitLabel2.text = benefitItemSecond
+            }
+            if (size > 0)
+                tvBenefitsMore.text = "+${size} Lainnya"
+            else tvBenefitsMore.gone()
         }
     }
 

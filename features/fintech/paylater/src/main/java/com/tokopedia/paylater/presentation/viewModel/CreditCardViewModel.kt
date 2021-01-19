@@ -40,7 +40,7 @@ class CreditCardViewModel @Inject constructor(
         )
     }
 
-    fun getCreditCardData() {
+  /*  fun getCreditCardData() {
         launchCatchError(block = {
             val creditCardData = withContext(ioDispatcher) {
                 delay(250)
@@ -51,7 +51,7 @@ class CreditCardViewModel @Inject constructor(
             creditCardSimulationResultLiveData.value = Fail(it)
         })
     }
-
+*/
     fun getCreditCardTncData() {
         creditCardPdpMetaInfoUseCase.cancelJobs()
         creditCardPdpMetaInfoUseCase.getPdpMetaData(

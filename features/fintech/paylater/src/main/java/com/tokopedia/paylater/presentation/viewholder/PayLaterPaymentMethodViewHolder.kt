@@ -11,19 +11,26 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.base_payment_register_item.view.*
 
 class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLaterItemProductData, PayLaterApplicationDetail?) -> Unit) : RecyclerView.ViewHolder(view) {
 
     fun bindData(payLaterItemProductData: PayLaterItemProductData, payLaterApplicationDataForPartner: PayLaterApplicationDetail?) {
+        val imageUrl: String?
         view.apply {
             setOnClickListener { clickListener(payLaterItemProductData, payLaterApplicationDataForPartner) }
             ivPartnerLogo.layoutParams.height = context.dpToPx(18).toInt()
             ivPartnerLogo.layoutParams.width = context.dpToPx(48).toInt()
-            ImageHandler.loadImage(context,
-                    ivPartnerLogo,
-                    payLaterItemProductData.partnerImgLightUrl,
-                    R.drawable.ic_loading_image)
+            if (context.isDarkMode())
+                imageUrl = payLaterItemProductData.partnerImgDarkUrl
+            else imageUrl = payLaterItemProductData.partnerImgLightUrl
+            if (!imageUrl.isNullOrEmpty())
+                ImageHandler.loadImage(context,
+                        ivPartnerLogo,
+                        imageUrl,
+                        R.drawable.ic_loading_image)
+
             tvTitlePaymentPartner.text = payLaterItemProductData.partnerName ?: ""
             tvDescription.text = payLaterApplicationDataForPartner?.payLaterStatusContent?.verificationContentSubHeader
                     ?: context.getString(R.string.pay_later_default_subtitle)

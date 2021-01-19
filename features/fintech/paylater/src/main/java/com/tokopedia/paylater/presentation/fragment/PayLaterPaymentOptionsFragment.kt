@@ -19,6 +19,7 @@ import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.presentation.adapter.PayLaterOfferDescriptionAdapter
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterFaqBottomSheet
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
 
 class PayLaterPaymentOptionsFragment : Fragment() {
@@ -30,8 +31,10 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         arguments?.getParcelable(PAY_LATER_APPLICATION_DATA)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?,
+    ): View? {
         return inflater.inflate(R.layout.fragment_paylater_cards_info, container, false)
     }
 
@@ -71,12 +74,15 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         applicationStatusData?.let {
             setLabelData(it)
         }
-
-        ImageHandler.loadImage(context,
-                ivPaylaterPartner,
-                responseData?.partnerImgLightUrl
-                        ?: "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
-                R.drawable.ic_loading_image)
+        val imageUrl: String?
+        if (context.isDarkMode())
+            imageUrl = responseData?.partnerImgDarkUrl
+        else imageUrl = responseData?.partnerImgLightUrl
+        if (!imageUrl.isNullOrEmpty())
+            ImageHandler.loadImage(context,
+                    ivPaylaterPartner,
+                    imageUrl,
+                    R.drawable.ic_loading_image)
     }
 
     private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {

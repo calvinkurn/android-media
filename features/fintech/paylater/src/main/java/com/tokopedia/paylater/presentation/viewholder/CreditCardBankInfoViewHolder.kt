@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.SimulationBank
 import kotlinx.android.synthetic.main.credit_card_available_bank_item.view.*
@@ -13,7 +15,6 @@ import kotlinx.android.synthetic.main.credit_card_available_bank_item.view.*
 class CreditCardBankInfoViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bindData(bankData: SimulationBank) {
-        val benefitArray = bankData.transactionBenefits?.split(";")
         val duration = bankData.availableDurationList?.joinToString(separator = ",")
         view.apply {
             ivBank.maxWidth = 40.dpToPx(context.resources.displayMetrics)
@@ -21,13 +22,26 @@ class CreditCardBankInfoViewHolder(val view: View) : RecyclerView.ViewHolder(vie
                     ivBank,
                     bankData.bankImageUrl,
                     R.drawable.ic_loading_image)
-            if (!benefitArray?.getOrNull(0).isNullOrEmpty()) {
-                benefitLabel1.text = benefitArray?.getOrNull(0)?.trim()
-            }
-            if (!benefitArray?.getOrNull(1).isNullOrEmpty()) {
-                benefitLabel2.text = benefitArray?.getOrNull(1)?.trim()
-            }
+            setLabelData(this, bankData.transactionBenefits)
             tvInstallments.text = "Cicilan ${duration} bulan"
+        }
+    }
+
+    private fun setLabelData(itemView: View, transactionBenefits: String?) {
+        val labelBenefitList = transactionBenefits?.split(";")?.toList()
+        itemView.apply {
+            val benefitItemFirst = labelBenefitList?.getOrNull(0)
+            val benefitItemSecond = labelBenefitList?.getOrNull(1)
+            if (benefitItemFirst.isNullOrEmpty()) benefitLabel1.gone()
+            else {
+                benefitLabel1.visible()
+                benefitLabel1.text = benefitItemFirst
+            }
+            if (benefitItemSecond.isNullOrEmpty()) benefitLabel2.gone()
+            else {
+                benefitLabel2.visible()
+                benefitLabel2.text = benefitItemSecond
+            }
         }
     }
 

@@ -4,7 +4,8 @@
     android:id="@+id/ccBankCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:card_type="border_disabled">
+    app:card_type="border_disabled"
+    android:background="@color/Unify_N0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clAvailableBank"

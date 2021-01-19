@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/unify_space_16"
     android:background="@color/Unify_N0"
     android:orientation="vertical">
 
@@ -13,6 +12,7 @@
         android:layout_height="@dimen/unify_space_32"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:textOff="@string/pay_later_content_switcher_heading"
         android:textOn="@string/pay_later_credit_content_switcher_heading"
         app:layout_constraintEnd_toEndOf="parent"

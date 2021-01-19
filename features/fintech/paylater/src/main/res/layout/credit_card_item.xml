@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/pay_later_benefit_margin_dp_6"
     android:layout_marginBottom="@dimen/pay_later_benefit_margin_dp_6"
-   >
+    android:background="@color/Unify_N0"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clCreditCard"

@@ -14,6 +14,7 @@ import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.domain.model.PayLaterProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
+import com.tokopedia.paylater.helper.PdpSimulationException
 import com.tokopedia.paylater.presentation.adapter.PayLaterOfferPagerAdapter
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -96,6 +97,10 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
                 payLaterOfferCallback?.noInternetCallback()
+                return
+            }
+            is PdpSimulationException.PayLaterNotApplicableException -> {
+                payLaterTermsEmptyView.visible()
                 return
             }
             is IllegalStateException -> {

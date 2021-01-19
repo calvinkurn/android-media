@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.PayLaterSimulationGatewayItem
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class RecommendationViewTableRowHeader(val context: Context, val layoutParams: ViewGroup.LayoutParams) {
 
@@ -19,15 +20,15 @@ class RecommendationViewTableRowHeader(val context: Context, val layoutParams: V
         recommendationView.layoutParams = layoutParams
         recommendationView.background = ContextCompat.getDrawable(context, R.drawable.ic_paylater_green_border)
         val ivPayLaterPartner = recommendationView.findViewById<ImageView>(R.id.ivPaylaterPartner)
-        var partnerLogo = "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png"
-
-        if (simulationDataItem.imgLightUrl.isNullOrEmpty()) {
-            partnerLogo = simulationDataItem.imgLightUrl ?: ""
-        }
-        ImageHandler.loadImage(context,
-                ivPayLaterPartner,
-                partnerLogo,
-                R.drawable.ic_loading_image)
+        val imageUrl: String?
+        if (context.isDarkMode())
+            imageUrl = simulationDataItem.imgDarkUrl
+        else imageUrl = simulationDataItem.imgLightUrl
+        if (!imageUrl.isNullOrEmpty())
+            ImageHandler.loadImage(context,
+                    ivPayLaterPartner,
+                    imageUrl,
+                    R.drawable.ic_loading_image)
         return recommendationView
     }
 }

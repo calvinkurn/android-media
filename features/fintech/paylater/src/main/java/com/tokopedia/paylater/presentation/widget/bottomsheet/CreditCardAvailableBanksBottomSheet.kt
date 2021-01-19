@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.paylater.R
-import com.tokopedia.paylater.domain.model.CreditCardBank
 import com.tokopedia.paylater.domain.model.SimulationBank
 import com.tokopedia.paylater.presentation.adapter.CreditCardAvailableBanksAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify

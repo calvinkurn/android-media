@@ -124,6 +124,9 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             }
             is PdpSimulationException.PayLaterNotApplicableException -> {
                 payLaterTermsEmptyView.visible()
+                dividerVertical.visible()
+                paylaterDaftarWidget.visible()
+                tickerSimulation.visible()
                 tickerSimulation.setHtmlDescription(context?.getString(R.string.pay_later_not_applicable_ticker_text)
                         ?: "")
                 return
@@ -152,10 +155,14 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
                         ?: arrayListOf())) {
             btnDaftarPayLater.visible()
             paylaterDaftarWidget.gone()
+        } else if (payLaterViewModel.isPayLaterNotApplicable()) {
+            btnDaftarPayLater.gone()
+            dividerVertical.visible()
+            paylaterDaftarWidget.visible()
+            supervisorWidget.gone()
         } else if (payLaterViewModel.payLaterSimulationResultLiveData.value is Fail) {
             btnDaftarPayLater.gone()
             paylaterDaftarWidget.gone()
-            supervisorWidget.gone()
         } else {
             btnDaftarPayLater.gone()
             paylaterDaftarWidget.visible()
@@ -175,6 +182,8 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
 
     private fun populateSimulationTable(simulationDataList: ArrayList<PayLaterSimulationGatewayItem>) {
         context?.let {
+            tlInstallmentTable.removeAllViews()
+            llPayLaterPartner.removeAllViews()
             val tenureList = arrayOf(1, 3, 6, 9, 12)
             val rowCount = simulationDataList.size + 1
             val colCount = 5
@@ -229,7 +238,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
 
     companion object {
         const val ROW_HEADER_WIDTH = 84
-        const val TABLE_ITEM_HEIGHT = 54
+        const val TABLE_ITEM_HEIGHT = 52
         const val CONTENT_WIDTH = 110
 
         @JvmStatic
@@ -240,6 +249,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         fun onRegisterPayLaterClicked()
         fun noInternetCallback()
         fun getPayLaterProductInfo()
+        fun payLaterNotApplicable()
         fun getSimulationProductInfo()
     }
 }

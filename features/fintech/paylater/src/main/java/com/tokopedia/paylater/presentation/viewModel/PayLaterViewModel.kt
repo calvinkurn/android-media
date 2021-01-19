@@ -78,6 +78,12 @@ class PayLaterViewModel @Inject constructor(
         payLaterSimulationResultLiveData.value = Fail(throwable)
     }
 
+    fun isPayLaterNotApplicable(): Boolean {
+        if (payLaterSimulationResultLiveData.value is Fail) {
+            return (payLaterSimulationResultLiveData.value as Fail).throwable.message == PAY_LATER_NOT_APPLICABLE
+        } else return false
+    }
+
     private fun onPayLaterApplicationStatusError(throwable: Throwable) {
         payLaterApplicationStatusResultLiveData.value = Fail(throwable)
     }
@@ -129,6 +135,6 @@ class PayLaterViewModel @Inject constructor(
         const val SIMULATION_DATA_FAILURE = "NULL DATA"
         const val PAY_LATER_DATA_FAILURE = "NULL DATA"
         const val APPLICATION_STATE_DATA_FAILURE = "NULL_DATA"
-        const val PAY_LATER_NOT_APPLICABLE = "PayLater Not Applicable"
+        const val PAY_LATER_NOT_APPLICABLE = "NOT_APPLICABLE"
     }
 }
