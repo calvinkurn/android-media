@@ -46,13 +46,6 @@
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}",
       "item_list": "{{.*}}"
-    },
-    {
-      "sessionIris": "{{.*}}",
-      "eventCategory": "{{.*}}",
-      "eventAction": "click reminder notification",
-      "event": "clickDiscovery",
-      "eventLabel": "{{.*}}"
     }
   ]
 }
