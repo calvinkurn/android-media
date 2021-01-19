@@ -128,6 +128,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotE
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.unifycomponents.Toaster;
@@ -2281,7 +2282,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void navigateToProtectionMore(String url) {
         mTrackerPurchaseProtection.eventClickOnPelajari(url);
-        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this,getActivityContext(), url, getString(R.string.title_activity_checkout_webview));
+        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this, getActivityContext(), url, getString(R.string.title_activity_checkout_webview));
     }
 
     @Override
@@ -3007,6 +3008,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         shipmentCartItemModel.setVoucherLogisticItemUiModel(log);
 
                         onNeedUpdateViewItem(shipmentAdapter.getShipmentCartItemModelPosition(shipmentCartItemModel));
+                    }
+                }
+            } else if (!promoCheckoutVoucherOrdersItemUiModel.getSuccess() && UtilsKt.isNullOrEmpty(promoCheckoutVoucherOrdersItemUiModel.getType())) {
+                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
+                    if (shipmentCartItemModel.getCartString().equals(promoCheckoutVoucherOrdersItemUiModel.getUniqueId()) &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData() != null && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getLogPromoCode().equals(promoCheckoutVoucherOrdersItemUiModel.getCode())) {
+                        resetCourier(shipmentCartItemModel);
                     }
                 }
             }
