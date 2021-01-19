@@ -6,14 +6,15 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
+import com.tokopedia.abstraction.aidl.PushNotificationApi
 import com.tokopedia.appaidl.AidlApi
-import com.tokopedia.appaidl.manager.NotificationValidationManager
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMRemoteConfigUtils
 import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
 import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.inApp.CMInAppManager
+import com.tokopedia.notifications.utils.NotificationValidationManager
 import com.tokopedia.notifications.worker.PushWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -63,7 +64,7 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED,
                 false)
 
-    var aidlApiApp: AidlApi? = null
+    var aidlApiApp: PushNotificationApi? = null
         private set
 
     /**
@@ -73,7 +74,7 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
      */
     fun init(application: Application) {
         this.applicationContext = application.applicationContext
-        aidlApiApp = AidlApi(this.applicationContext, this)
+        aidlApiApp = PushNotificationApi(this.applicationContext, this)
         CMInAppManager.getInstance().init(application)
         GraphqlClient.init(applicationContext)
         PushWorker.schedulePeriodicWorker()

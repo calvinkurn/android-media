@@ -29,6 +29,7 @@ import android.widget.ToggleButton;
 
 import com.chuckerteam.chucker.api.Chucker;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.tokopedia.abstraction.aidl.PushNotificationApi;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -138,7 +139,7 @@ public class DeveloperOptionActivity extends BaseActivity implements AidlApi.Rec
     private Button requestFcmToken;
 
     private PermissionCheckerHelper permissionCheckerHelper;
-    private AidlApi aidlApi;
+    private PushNotificationApi aidlApi;
 
     @Override
     public String getScreenName() {
@@ -150,7 +151,7 @@ public class DeveloperOptionActivity extends BaseActivity implements AidlApi.Rec
         super.onCreate(savedInstanceState);
         if (GlobalConfig.isAllowDebuggingTools()) {
             userSession = new UserSession(this);
-            aidlApi = new AidlApi(this, this);
+            aidlApi = new PushNotificationApi(this, this);
 
             Intent intent = getIntent();
             Uri uri = null;
@@ -487,9 +488,7 @@ public class DeveloperOptionActivity extends BaseActivity implements AidlApi.Rec
             notificationManagerCompat.notify(777, notifReview);
         });
 
-        btnAidlStatus.setOnClickListener(v -> {
-            aidlApi.bindService();
-        });
+        btnAidlStatus.setOnClickListener(v -> aidlApi.bindService());
 
         toggleDarkMode.setChecked((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
         toggleDarkMode.setOnCheckedChangeListener((view, state) -> AppCompatDelegate.setDefaultNightMode(state ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO));
