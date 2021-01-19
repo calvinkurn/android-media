@@ -3,11 +3,11 @@ package com.tokopedia.appaidl
 import android.content.*
 import android.os.Bundle
 import com.tokopedia.appaidl.data.*
-import com.tokopedia.appaidl.ui.ServiceView
+import com.tokopedia.appaidl.ui.AidlServiceConnection
 
 open class AidlApi(private val context: Context, private val listener: ReceiverListener) {
 
-    private var serviceView: ServiceView? = null
+    private var stubService: AidlServiceConnection? = null
 
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -20,16 +20,16 @@ open class AidlApi(private val context: Context, private val listener: ReceiverL
         }
     }
 
-    fun bindService() {
+    fun bindService(aidlTag: String = aidlTag(), serviceName: String) {
         // the serviceView is serviceConnection to register the receiver in activity and send the data
-        serviceView = ServiceView(aidlTag()) { tag, service ->
+        stubService = AidlServiceConnection(aidlTag) { tag, service ->
             if (service != null) {
                 context.registerReceiver(broadcastReceiver, IntentFilter().apply { addAction(tag) })
                 service.send(tag)
             }
         }.also {
             val success = context.bindService(Intent().apply {
-                component = ComponentName(componentTargetName(), REMOTE_SERVICE)
+                component = ComponentName(componentTargetName(), serviceName)
             }, it, Context.BIND_AUTO_CREATE)
 
             if (!success) listener.onAidlError()
@@ -37,7 +37,7 @@ open class AidlApi(private val context: Context, private val listener: ReceiverL
     }
 
     fun unbindService() {
-        serviceView?.let { context.unbindService(it) }
+        stubService?.let { context.unbindService(it) }
     }
 
     interface ReceiverListener {
