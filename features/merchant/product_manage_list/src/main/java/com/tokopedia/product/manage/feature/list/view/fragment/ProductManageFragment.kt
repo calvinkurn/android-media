@@ -304,6 +304,7 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
         observeClickTopAdsMenu()
         observeProductManageAccess()
         observeDeleteProductDialog()
+        observeOptionsMenu()
 
         getProductManageAccess()
         setupDialogFeaturedProduct()
@@ -325,14 +326,17 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        optionsMenu = menu
+
         val menuViewId = if (GlobalConfig.isSellerApp()) {
             R.menu.menu_product_manage
         } else {
             R.menu.menu_product_manage_dark
         }
+
         menu.clear()
         inflater.inflate(menuViewId, menu)
-        optionsMenu = menu
+        showHideOptionsMenu()
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -2183,7 +2187,7 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
                        getTopAdsInfo()
 
                        setupBottomSheet(access)
-                       showHideOptionsMenu(access)
+                       showHideOptionsMenu()
 
                        renderStockLocationBottomSheet()
                        hideNoAccessPage()
@@ -2205,14 +2209,16 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
             }
         }
     }
-    // endregion
 
-    private fun showHideOptionsMenu(access: ProductManageAccess) {
-        val addProductMenu = optionsMenu?.findItem(R.id.add_product_menu)
-        val moreMenu = optionsMenu?.findItem(R.id.action_more_menu)
-        addProductMenu?.isVisible = access.addProduct
-        moreMenu?.isVisible = access.etalaseList
+    private fun observeOptionsMenu() {
+        observe(viewModel.showAddProductOptionsMenu) {
+            optionsMenu?.findItem(R.id.add_product_menu)?.isVisible = it
+        }
+        observe(viewModel.showEtalaseOptionsMenu) {
+            optionsMenu?.findItem(R.id.action_more_menu)?.isVisible = it
+        }
     }
+    // endregion
 
     private fun renderStockLocationBottomSheet() {
         val multiLocationShop = userSession.isMultiLocationShop
@@ -2316,13 +2322,8 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
         textProductCount.text = getString(R.string.product_manage_count_format, productCount)
     }
 
-    private fun goToProductDraft(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
-        if (imageUrls != null && imageUrls.size > 0) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
-            intent.putStringArrayListExtra(LOCAL_PATH_IMAGE_LIST, imageUrls)
-            intent.putStringArrayListExtra(DESC_IMAGE_LIST, imageDescList)
-            startActivity(intent)
-        }
+    private fun showHideOptionsMenu() {
+        viewModel.showHideOptionsMenu()
     }
 
     private fun showAddEditMenuBottomSheet() {
@@ -2330,9 +2331,6 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
     }
 
     companion object {
-        private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
-        private const val DESC_IMAGE_LIST = "desc_img_list"
-
         private const val BOTTOM_SHEET_TAG = "BottomSheetTag"
 
         private const val MIN_FEATURED_PRODUCT = 0

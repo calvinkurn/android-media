@@ -1070,6 +1070,40 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             .verifyValueEquals(expectedDeleteProductDialog)
     }
 
+    @Test
+    fun `given user has add product access when showHideOptionsMenu should set show add product true`() {
+        val accessData = Data(listOf(Access(ADD_PRODUCT)))
+        val accessResponse = Response(data = accessData)
+
+        onGetProductManageAccess_thenReturn(accessResponse)
+
+        viewModel.getProductManageAccess()
+        viewModel.showHideOptionsMenu()
+
+        viewModel.showAddProductOptionsMenu
+            .verifyValueEquals(true)
+
+        viewModel.showEtalaseOptionsMenu
+            .verifyValueEquals(false)
+    }
+
+    @Test
+    fun `given user has etalase list access when showHideOptionsMenu should set show etalase menu true`() {
+        val accessData = Data(listOf(Access(ETALASE_LIST)))
+        val accessResponse = Response(data = accessData)
+
+        onGetProductManageAccess_thenReturn(accessResponse)
+
+        viewModel.getProductManageAccess()
+        viewModel.showHideOptionsMenu()
+
+        viewModel.showEtalaseOptionsMenu
+            .verifyValueEquals(true)
+
+        viewModel.showAddProductOptionsMenu
+            .verifyValueEquals(false)
+    }
+
     private fun testGetProductManageAccess(
         accessList: List<Access>,
         expectedProductManageAccess: ProductManageAccess

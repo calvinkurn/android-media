@@ -93,6 +93,10 @@ class ProductManageViewModel @Inject constructor(
         get() = _viewState
     val showStockTicker: LiveData<Boolean>
         get() = _showStockTicker
+    val showAddProductOptionsMenu: LiveData<Boolean>
+        get() = _showAddProductOptionsMenu
+    val showEtalaseOptionsMenu: LiveData<Boolean>
+        get() = _showEtalaseOptionsMenu
     val refreshList: LiveData<Boolean>
         get() = _refreshList
     val getProductVariantsResult: LiveData<Result<GetVariantResult>>
@@ -139,6 +143,8 @@ class ProductManageViewModel @Inject constructor(
     private val _viewState = MutableLiveData<ViewState>()
     private val _showStockTicker = MutableLiveData<Boolean>()
     private val _refreshList = MutableLiveData<Boolean>()
+    private val _showAddProductOptionsMenu = MutableLiveData<Boolean>()
+    private val _showEtalaseOptionsMenu = MutableLiveData<Boolean>()
     private val _getProductVariantsResult = MutableLiveData<Result<GetVariantResult>>()
     private val _productListResult = MutableLiveData<Result<List<ProductUiModel>>>()
     private val _productListFeaturedOnlyResult = MutableLiveData<Result<Int>>()
@@ -524,6 +530,14 @@ class ProductManageViewModel @Inject constructor(
         }, onError = { throwable ->
             _setFeaturedProductResult.postValue(Fail(throwable))
         })
+    }
+
+    fun showHideOptionsMenu() {
+        val access = _productManageAccess.value as? Success<ProductManageAccess>
+        val showAddMenu = access?.data?.addProduct ?: false
+        val showEtalaseMenu = access?.data?.etalaseList ?: false
+        _showAddProductOptionsMenu.value = showAddMenu
+        _showEtalaseOptionsMenu.value = showEtalaseMenu
     }
 
     fun setFilterOptionWrapper(filterOptionWrapper: FilterOptionWrapper) {
