@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_12">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ic_uoh_vertical"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
@@ -49,7 +49,7 @@
             android:textSize="@dimen/sp_10"
             android:textColor="@color/Unify_N700_68"/>
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_kebab_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -104,28 +104,18 @@
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_12">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_uoh_product"
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iv_uoh_product"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
-                app:cardCornerRadius="6dp"
-                app:cardElevation="@dimen/dp_0"
-                android:layout_marginEnd="@dimen/dp_10">
-
-                <ImageView
-                    android:id="@+id/iv_uoh_product"
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
-                    tools:ignore="ContentDescription"
-                    android:background="@color/Unify_N150"/>
-
-            </androidx.cardview.widget.CardView>
+                tools:ignore="ContentDescription"
+                android:layout_marginEnd="@dimen/dp_10"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_uoh_product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cv_uoh_product"
+                android:layout_toEndOf="@id/iv_uoh_product"
                 app:typographyWeight="bold"
                 app:typographyType="heading_5"
                 android:textColor="@color/Unify_N700_96"
@@ -137,7 +127,7 @@
                 android:id="@+id/tv_uoh_product_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cv_uoh_product"
+                android:layout_toEndOf="@id/iv_uoh_product"
                 android:layout_below="@id/tv_uoh_product_name"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"

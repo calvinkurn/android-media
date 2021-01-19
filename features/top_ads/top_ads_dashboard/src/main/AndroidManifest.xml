@@ -7,7 +7,7 @@
             android:name=".view.activity.TopAdsDashboardActivity"
             android:label="@string/top_ads_title_dashboard"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.WhiteUnify" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -45,7 +45,7 @@
         <activity
             android:name="com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity"
             android:label="@string/topads_headline_detail_title"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -62,7 +62,7 @@
         <activity
             android:name="com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity"
             android:label="@string/topads_dash_desc_credit_label"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -79,13 +79,13 @@
         <activity
             android:name=".view.activity.TopAdsPaymentCreditActivity"
             android:label="@string/title_top_ads_add_credit"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
 
         <activity
             android:name="com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity"
             android:label="@string/topads_dash_auto_topup_title"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -104,24 +104,24 @@
             android:name=".view.activity.TopAdsGroupDetailViewActivity"
             android:label="@string/topads_group_detail"
             android:exported="true"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.HiddenTrialActivity"
             android:label="@string/top_ads_title_dashboard"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".view.activity.TopAdsKeywordInsightsActivity"
             android:label="@string/top_ads_title_dashboard"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
 
         <activity android:name=".view.activity.TopAdsTypeSelectionActivity"
             android:label="@string/topads_dashboard_ad_type_selection_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

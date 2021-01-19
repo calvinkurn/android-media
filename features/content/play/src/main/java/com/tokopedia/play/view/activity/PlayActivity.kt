@@ -8,16 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.play.*
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
+import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
+import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
@@ -28,7 +28,7 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  * {@link com.tokopedia.applink.internal.ApplinkConstInternalContent#PLAY_DETAIL}
  */
-class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
+class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, PlayPiPCoordinator {
 
     @Inject
     lateinit var playLifecycleObserver: PlayVideoPlayerObserver
@@ -80,6 +80,11 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fl_fragment, getFragment(channelId), PLAY_FRAGMENT_TAG)
                 .commit()
+    }
+
+    override fun onEnterPiPMode() {
+        lifecycle.removeObserver(playLifecycleObserver)
+        onBackPressed(isSystemBack = false)
     }
 
     private fun inject() {

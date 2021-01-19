@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.data
 
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Picture
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Price
@@ -27,7 +27,7 @@ fun createProduct(
     return Product(id, name, price, stock, hasStockReserved, status, cashback, featured, isVariant, url, sku, pictures, topAds)
 }
 
-fun createProductViewModel(
+fun createProductUiModel(
     id: String = "",
     name: String? = "Tolak Angin",
     imageUrl: String? = "imageUrl",
@@ -43,8 +43,8 @@ fun createProductViewModel(
     isChecked: Boolean = false,
     hasStockReserved: Boolean = false,
     topAds: TopAdsInfo? = null
-): ProductViewModel {
-    return ProductViewModel(
+): ProductUiModel {
+    return ProductUiModel(
         id,
         name,
         imageUrl,

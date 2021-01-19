@@ -48,7 +48,7 @@ class ReviewInboxContainerViewModel @Inject constructor(
                     result.add(ReviewInboxTabs.ReviewInboxPending(this.toString()))
                 }
             }
-            is Fail -> {
+            else -> {
                 result.add(ReviewInboxTabs.ReviewInboxPending())
             }
         }

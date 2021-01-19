@@ -156,10 +156,9 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     private fun fetchNextPage(currentPage: Int) {
         val startDate = format.format((parentFragment as TopAdsProductIklanFragment).startDate)
         val endDate = format.format((parentFragment as TopAdsProductIklanFragment).endDate)
-        topAdsDashboardPresenter.getGroupData(resources, currentPage, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                startDate, endDate,GROUP_TYPE_PRODUCT,
-                this::onSuccessGroupResult)
+        topAdsDashboardPresenter.getGroupData(currentPage, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), startDate,
+                endDate, GROUP_TYPE_PRODUCT, this::onSuccessGroupResult)
     }
 
     private fun statusChange(pos: Int, status: Int) {
@@ -257,10 +256,9 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         val startDate = format.format((parentFragment as TopAdsProductIklanFragment).startDate)
         val endDate = format.format((parentFragment as TopAdsProductIklanFragment).endDate)
-        topAdsDashboardPresenter.getGroupData(resources, 1, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                startDate, endDate,1,
-                this::onSuccessGroupResult)
+        topAdsDashboardPresenter.getGroupData(1, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), startDate,
+                endDate, 1, this::onSuccessGroupResult)
     }
 
     private fun onSuccessGroupResult(response: GroupItemResponse.GetTopadsDashboardGroups) {
@@ -281,8 +279,8 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         } else if (groupIds.isNotEmpty()) {
             val startDate = format.format((parentFragment as TopAdsProductIklanFragment).startDate)
             val endDate = format.format((parentFragment as TopAdsProductIklanFragment).endDate)
-            topAdsDashboardPresenter.getGroupStatisticsData(resources, 1, ",", "", 0,
-                    startDate, endDate, groupIds, ::onSuccessStatistics)
+            topAdsDashboardPresenter.getGroupStatisticsData(1, ",", "", 0, startDate,
+                    endDate, groupIds, ::onSuccessStatistics)
             topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
         }
         setFilterCount()
