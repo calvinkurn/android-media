@@ -59,8 +59,11 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
             saveInstanceCacheManager?.run {
                 val smartReplyDataWrapper = get<SmartReplyDataWrapper>(TalkSmartReplyConstants.SMART_REPLY_DATA_WRAPPER, SmartReplyDataWrapper::class.java)
                 viewModel.isSmartReplyOn = smartReplyDataWrapper?.isSmartReplyOn ?: false
-                viewModel.messageReady = smartReplyDataWrapper?.messageReady ?: getString(R.string.smart_reply_available_stock_text_area_default_text)
-                viewModel.messageNotReady = smartReplyDataWrapper?.messageNotReady ?: getString(R.string.smart_reply_unavailable_stock_text_area_default_text)
+                viewModel.updateIsSwitchActive(viewModel.isSmartReplyOn)
+                viewModel.messageReady = smartReplyDataWrapper?.messageReady
+                        ?: getString(R.string.smart_reply_available_stock_text_area_default_text)
+                viewModel.messageNotReady = smartReplyDataWrapper?.messageNotReady
+                        ?: getString(R.string.smart_reply_unavailable_stock_text_area_default_text)
             }
         }
     }
@@ -105,6 +108,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         talkSmartReplySwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.isSmartReplyOn = isChecked
             viewModel.setSmartReply()
+            viewModel.updateIsSwitchActive(isChecked)
         }
     }
 
@@ -120,7 +124,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     private fun initTextArea() {
         talkSmartReplyDetailAvailableStockTextArea.textAreaInput.apply {
             setText(viewModel.messageReady)
-            addTextChangedListener(object: TextWatcher {
+            addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     viewModel.messageReady = s?.let {
                         it.toString()
@@ -140,7 +144,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
         }
         talkSmartReplyDetailUnavailableStockTextArea.textAreaInput.apply {
             setText(viewModel.messageNotReady)
-            addTextChangedListener(object: TextWatcher {
+            addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     viewModel.messageNotReady = s?.let { it.toString() } ?: ""
                     viewModel.updateMessageChanged(s.toString(), false)
@@ -159,7 +163,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
 
     private fun observeSetSmartReplyResult() {
         viewModel.setSmartReplyResult.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     when {
                         viewModel.isSmartReplyOn && !talkSmartReplyDetailSubmitButton.isEnabled -> {
@@ -175,7 +179,8 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
                     isTemplateEdited = true
                 }
                 is Fail -> {
-                    showToaster(it.throwable.message ?: getString(R.string.inbox_toaster_connection_error), true)
+                    showToaster(it.throwable.message
+                            ?: getString(R.string.inbox_toaster_connection_error), true)
                 }
             }
         })
@@ -184,22 +189,25 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     private fun observeButtonState() {
         viewModel.buttonState.observe(viewLifecycleOwner, Observer {
             when {
-                it.isReadyTextChanged || it.isReadyTextChanged -> {
+                // Smart Reply active & text changed
+                it.isReadyTextChanged || it.isReadyTextChanged && it.isSwitchActive -> {
                     talkSmartReplyDetailSubmitButton.apply {
                         isEnabled = true
                         show()
                     }
-                }
-                it.isSwitchActive -> {
-                    talkSmartReplyDetailSubmitButton.show()
-                    setCardData()
                     enableTextAreas()
+                    setCardData()
                 }
-                !it.isReadyTextChanged && !it.isNotReadyTextChanged -> {
+                // Smart Reply active & text not changed
+                !it.isReadyTextChanged && !it.isNotReadyTextChanged && it.isSwitchActive -> {
                     talkSmartReplyDetailSubmitButton.apply {
                         isEnabled = false
+                        show()
                     }
+                    enableTextAreas()
+                    setCardData()
                 }
+                //Smart Reply inactive
                 !it.isSwitchActive -> {
                     talkSmartReplyDetailSubmitButton.hide()
                     disableTextAreas()
@@ -231,7 +239,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
 
     private fun setFragmentResultWithBundle(requestValue: String) {
         arguments?.let {
-            if(isTemplateEdited) {
+            if (isTemplateEdited) {
                 val bundle = Bundle().apply {
                     putString(TalkSellerSettingsConstants.KEY_ACTION, requestValue)
                 }
@@ -246,7 +254,7 @@ class TalkSmartReplyDetailFragment : BaseDaggerFragment(), HasComponent<TalkSmar
     }
 
     private fun setupOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 setFragmentResultWithBundle(TalkSellerSettingsConstants.VALUE_ADD_EDIT)
             }

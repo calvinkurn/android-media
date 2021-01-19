@@ -78,6 +78,7 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
             val response = discussionSetSmartReplyTemplateUseCase.executeOnBackground()
             if (response.discussionSetSmartReplyTemplate.isSuccess) {
                 _setSmartReplyResult.postValue(Success(response.discussionSetSmartReplyTemplate.reason))
+                updateOriginalMessages(messageReady, messageNotReady)
             } else {
                 _setSmartReplyResult.postValue(Fail(Throwable(message = response.discussionSetSmartReplyTemplate.reason)))
             }
@@ -106,9 +107,18 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
         _buttonState.value = _buttonState.value?.copy(isNotReadyTextChanged = isNotReadyTextChanged)
     }
 
-    private fun updateIsSwitchActive(isSwitchActive: Boolean) {
+    fun updateIsSwitchActive(isSwitchActive: Boolean) {
         _buttonState.value = _buttonState.value?.copy(isSwitchActive = isSwitchActive)
     }
 
+    private fun resetMessagesFromBackgroundThread() {
+        _buttonState.postValue(_buttonState.value?.copy(isReadyTextChanged = false, isNotReadyTextChanged = false))
+    }
+
+    private fun updateOriginalMessages(messageReady: String, messageNotReady: String) {
+        originalMessageReady = messageReady
+        originalMessageNotReady = messageNotReady
+        resetMessagesFromBackgroundThread()
+    }
 
 }
