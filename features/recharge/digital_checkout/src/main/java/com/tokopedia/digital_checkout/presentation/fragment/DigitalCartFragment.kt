@@ -18,6 +18,8 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.digital_checkout.R
+import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
+import com.tokopedia.digital_checkout.data.MYBILLS
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
@@ -58,6 +60,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(DigitalCartViewModel::class.java) }
 
@@ -119,6 +122,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
             it.attributes?.fintechProduct?.getOrNull(0)?.let { fintechProduct ->
                 renderFintechProductWidget(fintechProduct)
             }
+            showMyBillsSubscriptionView(it.crossSellingType == MYBILLS)
         })
 
         viewModel.cartAdditionalInfoList.observe(viewLifecycleOwner, Observer {
@@ -148,6 +152,21 @@ class DigitalCartFragment : BaseDaggerFragment() {
         viewModel.totalPrice.observe(viewLifecycleOwner, Observer {
             tvTotalPayment.text = getStringIdrFormat((it - promoData.amount).toDouble())
         })
+
+        viewModel.showContentCheckout.observe(viewLifecycleOwner, Observer {showContent ->
+            if (showContent) {
+                contentCheckout.visibility = View.VISIBLE
+                layout_digital_checkout_bottom_view.visibility = View.VISIBLE
+            } else {
+                contentCheckout.visibility = View.GONE
+                layout_digital_checkout_bottom_view.visibility = View.GONE
+            }
+        })
+
+        viewModel.showLoading.observe(viewLifecycleOwner, Observer { showLoader ->
+            if (showLoader) loaderCheckout.visibility = View.VISIBLE
+            else loaderCheckout.visibility = View.GONE
+        })
     }
 
     private fun renderCartDigitalInfoData(cartInfo: CartDigitalInfoData) {
@@ -159,7 +178,9 @@ class DigitalCartFragment : BaseDaggerFragment() {
         } else digitalPromoTickerView.visibility = View.GONE
 
         cartInfo.attributes?.postPaidPopupAttribute?.let { postPaidPopupAttribute ->
-            if (digitalSubscriptionParams.isSubscribed) renderPostPaidPopup(postPaidPopupAttribute)
+            if (!digitalSubscriptionParams.isSubscribed && cartInfo.attributes?.postPaidPopupAttribute != null) {
+                renderPostPaidPopup(postPaidPopupAttribute)
+            }
         }
     }
 
@@ -333,7 +354,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
-        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
+        val dialog = DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
         dialog.setTitle(postPaidPopupAttribute.title)
         dialog.setDescription(postPaidPopupAttribute.content ?: "")
         dialog.setPrimaryCTAText(postPaidPopupAttribute.confirmButtonTitle ?: "")
@@ -371,6 +392,11 @@ class DigitalCartFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    private fun showMyBillsSubscriptionView(show: Boolean) {
+        if (show) subscriptionWidget.visibility = View.VISIBLE
+        else subscriptionWidget.visibility = View.GONE
     }
 
     private fun renderFintechProductWidget(fintechProduct: FintechProduct) {

@@ -75,11 +75,21 @@ class DigitalCartViewModel @Inject constructor(
     val totalPrice: LiveData<Long>
         get() = _totalPrice
 
+    private val _showContentCheckout = MutableLiveData<Boolean>()
+    val showContentCheckout: LiveData<Boolean>
+        get() = _showContentCheckout
+
+    private val _showLoading = MutableLiveData<Boolean>()
+    val showLoading: LiveData<Boolean>
+        get() = _showLoading
+
     fun getCart(digitalCheckoutPassData: DigitalCheckoutPassData,
                 errorNotLoginMessage: String = "") {
         if (!userSession.isLoggedIn) {
             _errorMessage.postValue(errorNotLoginMessage)
         } else {
+            _showContentCheckout.postValue(false)
+            _showLoading.postValue(true)
             digitalCheckoutPassData.categoryId?.let { categoryId ->
                 digitalGetCartUseCase.execute(
                         DigitalGetCartUseCase.createParams(categoryId.toInt()),
@@ -97,6 +107,8 @@ class DigitalCartViewModel @Inject constructor(
         if (!userSession.isLoggedIn) {
             _errorMessage.postValue(errorNotLoginMessage)
         } else {
+            _showContentCheckout.postValue(false)
+            _showLoading.postValue(true)
             val requestParams: RequestParams = digitalAddToCartUseCase.createRequestParams(
                     DigitalAddToCartUseCase.getRequestBodyAtcDigital(
                             digitalCheckoutPassData,
@@ -109,11 +121,30 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     private fun onSuccessGetCart(): (RechargeGetCart.Response) -> Unit {
-        return { }
+        return {
+            _showContentCheckout.postValue(true)
+            _showLoading.postValue(false)
+
+            val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
+
+            if (mappedCartData.isNeedOtp) {
+                _isNeedOtp.postValue(true)
+            } else {
+                _showContentCheckout.postValue(true)
+                _showLoading.postValue(false)
+                _cartDigitalInfoData.postValue(mappedCartData)
+                _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
+                _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0)
+            }
+        }
     }
 
     private fun onErrorGetCart(): (Throwable) -> Unit {
-        return { }
+        return {
+            it.printStackTrace()
+            _showLoading.postValue(false)
+            errorHandler(it)
+        }
     }
 
     private fun getSubscriberCart(): Subscriber<Map<Type, RestResponse>> {
@@ -121,19 +152,8 @@ class DigitalCartViewModel @Inject constructor(
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
                 e.printStackTrace()
-                if (e is UnknownHostException) {
-                    _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
-                } else if (e is SocketTimeoutException || e is ConnectException) {
-                    _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
-                } else if (e is ResponseErrorException) {
-                    _errorMessage.postValue(e.message)
-                } else if (e is ResponseDataNullException) {
-                    _errorMessage.postValue(e.message)
-                } else if (e is HttpErrorException) {
-                    _errorMessage.postValue(e.message)
-                } else {
-                    _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
-                }
+                _showLoading.postValue(false)
+                errorHandler(e)
             }
 
             override fun onNext(typeRestResponseMap: Map<Type, RestResponse>) {
@@ -146,11 +166,29 @@ class DigitalCartViewModel @Inject constructor(
                 if (mappedCartData.isNeedOtp) {
                     _isNeedOtp.postValue(true)
                 } else {
+                    _showContentCheckout.postValue(true)
+                    _showLoading.postValue(false)
                     _cartDigitalInfoData.postValue(mappedCartData)
                     _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
                     _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0)
                 }
             }
+        }
+    }
+
+    fun errorHandler(e: Throwable) {
+        if (e is UnknownHostException) {
+            _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
+        } else if (e is SocketTimeoutException || e is ConnectException) {
+            _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
+        } else if (e is ResponseErrorException) {
+            _errorMessage.postValue(e.message)
+        } else if (e is ResponseDataNullException) {
+            _errorMessage.postValue(e.message)
+        } else if (e is HttpErrorException) {
+            _errorMessage.postValue(e.message)
+        } else {
+            _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
         }
     }
 
