@@ -76,10 +76,11 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
 
-    fun loadOrderList(orderQuery: String, paramOrder: UohListParam) {
+    fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
         launch {
-            _orderHistoryListResult.postValue(uohListUseCase.execute(paramOrder, orderQuery))
+            _orderHistoryListResult.value = uohListUseCase.executeSuspend(paramOrder)
+            UohIdlingResource.decrement()
         }
     }
 
@@ -90,68 +91,78 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                     GetRecommendationRequestParam(
                             pageNumber = pageNumber,
                             pageName = UohConsts.PAGE_NAME))
-            _recommendationListResult.postValue(recommendationData.asSuccess())
+            _recommendationListResult.value = (recommendationData.asSuccess())
+            UohIdlingResource.decrement()
         }
     }
 
-    fun doFinishOrder(finishOrderQuery: String, paramFinishOrder: UohFinishOrderParam) {
+    fun doFinishOrder(paramFinishOrder: UohFinishOrderParam) {
         UohIdlingResource.increment()
         launch {
-            _finishOrderResult.postValue(uohFinishOrderUseCase.execute(finishOrderQuery, paramFinishOrder))
+            _finishOrderResult.value = (uohFinishOrderUseCase.executeSuspend(paramFinishOrder))
+            UohIdlingResource.decrement()
         }
     }
 
     fun doAtcMulti(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>) {
         UohIdlingResource.increment()
         launch {
-            _atcMultiResult.postValue(atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            _atcMultiResult.value = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            UohIdlingResource.decrement()
         }
     }
 
-    fun doLsPrintFinishOrder(lsPrintQuery: String, verticalId: String) {
+    fun doLsPrintFinishOrder(verticalId: String) {
         UohIdlingResource.increment()
         launch {
-            _lsPrintFinishOrderResult.postValue(lsPrintFinishOrderUseCase.execute(lsPrintQuery, verticalId))
+            _lsPrintFinishOrderResult.value = (lsPrintFinishOrderUseCase.executeSuspend(verticalId))
+            UohIdlingResource.decrement()
         }
     }
 
-    fun doFlightResendEmail(flightResendQuery: String, invoiceId: String, email: String) {
+    fun doFlightResendEmail(invoiceId: String, email: String) {
         UohIdlingResource.increment()
         launch {
-            _flightResendEmailResult.postValue(flightResendEmailUseCase.execute(flightResendQuery, invoiceId, email))
+            _flightResendEmailResult.value = (flightResendEmailUseCase.executeSuspend(invoiceId, email))
+            UohIdlingResource.decrement()
         }
     }
 
-    fun doTrainResendEmail(trainResendQuery: String, param: TrainResendEmailParam) {
+    fun doTrainResendEmail(param: TrainResendEmailParam) {
         UohIdlingResource.increment()
         launch {
-            _trainResendEmailResult.postValue(trainResendEmailUseCase.execute(trainResendQuery, param))
+            _trainResendEmailResult.value = (trainResendEmailUseCase.executeSuspend(param))
+            UohIdlingResource.decrement()
         }
     }
 
-    fun doRechargeSetFail(rechargeSetFailQuery: String, orderId: Int) {
+    fun doRechargeSetFail(orderId: Int) {
         UohIdlingResource.increment()
 
         launch {
-            _rechargeSetFailResult.postValue(rechargeSetFailUseCase.execute(rechargeSetFailQuery, orderId))
+            _rechargeSetFailResult.value = (rechargeSetFailUseCase.executeSuspend(orderId))
+            UohIdlingResource.decrement()
         }
     }
 
 
     fun doAtc(atcParams: AddToCartRequestParams) {
+        UohIdlingResource.increment()
         val requestParams = RequestParams.create()
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
         atcUseCase.execute(requestParams, object : Subscriber<AddToCartDataModel>() {
             override fun onNext(addToCartDataModel: AddToCartDataModel?) {
                 addToCartDataModel?.let {
-                    _atcResult.postValue(Success(it))
+                    _atcResult.value = (Success(it))
+                    UohIdlingResource.decrement()
                 }
             }
 
             override fun onCompleted() {}
 
             override fun onError(e: Throwable?) {
-                _atcResult.postValue(e?.let { Fail(it) })
+                _atcResult.value = (e?.let { Fail(it) })
+                UohIdlingResource.decrement()
             }
         })
     }

@@ -1,7 +1,6 @@
 package com.tokopedia.home_account.view.viewholder
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.home_account.R
@@ -21,9 +20,7 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener): B
         with(itemView) {
             account_user_item_common_title?.text = common.title
             if(common.icon != 0) {
-                this.context?.run {
-                    account_user_item_common_icon?.setImageDrawable(ContextCompat.getDrawable(this, common.icon))
-                }
+                account_user_item_common_icon?.setImage(common.icon)
             }
             if(common.urlIcon.isNotEmpty()){
                 ImageHandler.loadImageFit2(account_user_item_common_icon.context, account_user_item_common_icon, common.urlIcon)

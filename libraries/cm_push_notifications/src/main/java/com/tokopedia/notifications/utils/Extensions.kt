@@ -16,3 +16,8 @@ fun Context.isInstalled(packageName: String): Boolean {
         false
     }
 }
+
+fun <T, U> List<T>.intersect(
+        uList: List<U>,
+        filterPredicate : (T, U) -> Boolean
+) = filterNot { m -> uList.any { filterPredicate(m, it)} }

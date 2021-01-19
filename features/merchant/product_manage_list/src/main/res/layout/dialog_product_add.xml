@@ -21,7 +21,7 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:text="@string/popup_label_static"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N700"
             android:textStyle="bold"
             app:fontSize="subHeadline" />
 
@@ -33,7 +33,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/dp_20"
             android:text="dijual!"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N700"
             android:textStyle="bold"
             app:fontSize="subHeadline" />
 

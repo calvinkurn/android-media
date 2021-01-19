@@ -22,7 +22,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -263,7 +262,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     private fun initListener() {
-        server_error_view?.setErrorButtonClickListener { view -> mPresenter.onErrorButtonClick() }
+        server_error_view?.setErrorButtonClickListener(View.OnClickListener { mPresenter.onErrorButtonClick() })
     }
 
     override fun openWebView(url: String) {
