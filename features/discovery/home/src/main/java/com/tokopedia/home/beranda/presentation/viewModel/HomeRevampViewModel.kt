@@ -951,6 +951,10 @@ open class HomeRevampViewModel @Inject constructor(
                 if (it.status === Result.Status.ERROR_PAGINATION) {
                     removeDynamicChannelLoadingModel()
                 }
+
+                if (it.status === Result.Status.ERROR_ATF) {
+                    _updateNetworkLiveData.postValue(it)
+                }
             }
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)

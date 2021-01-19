@@ -112,6 +112,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 homeData.atfData = homeAtfResponse
             } catch (e: Exception) {
                 homeData.atfData = null
+                emit(Result.errorAtf(e,null))
             }
 
             /**
@@ -130,7 +131,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                         homeCachedDataSource.saveToDatabase(homeData)
                                     })
                                 }
-                                Log.d("DevaSelect","Ticker saved to database!")
                             } catch (e: Exception) {
                                 atfData.status = AtfKey.STATUS_ERROR
                                 cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
@@ -149,12 +149,13 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                         cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
                                             homeCachedDataSource.saveToDatabase(homeData)
                                         })
-                                        Log.d("DevaSelect","Channel saved to database!")
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
                                     atfData.content = null
                                     cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                        homeCachedDataSource.saveToDatabase(homeData)
+                                    }, isCacheExistAction = {
                                         homeCachedDataSource.saveToDatabase(homeData)
                                     })
                                 }
@@ -172,7 +173,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                             homeCachedDataSource.saveToDatabase(homeData)
                                         })
                                     }
-                                    Log.d("DevaSelect","Icon saved to database!")
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
                                     cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
@@ -187,27 +187,20 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         }
                     }
                 }
-//                /**
-//                 * this is to filter the first deffered finished
-//                 *
-//                 * 5. Submit current data to database, to trigger HomeViewModel flow
-//                 * if there is no cache, then submit immediately
-//                 * if cache exist, don't submit to database because it will trigger jumpy experience
-//                 */
-//                select<Unit?> {
-//                    jobList.forEach {
-//                        it.onAwait {
-//                            Log.d("DevaSelect","Select called before database!")
-//
-//                            cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-//                                homeCachedDataSource.saveToDatabase(homeData)
-//                            })
-//
-//                            Log.d("DevaSelect","Select called after save database!")
-//
-//                        }
-//                    }
-//                }
+            }
+
+            cacheCondition(isCache = isCacheExistForProcess, isCacheExistAction = {
+                jobList.forEach {
+                    it.await()
+                }
+                homeCachedDataSource.saveToDatabase(homeData)
+            })
+
+            homeData.atfData?.dataList?.forEach error@{
+                if (it.status == AtfKey.STATUS_ERROR) {
+                    emit(Result.errorAtf(Throwable(),null))
+                    return@error
+                }
             }
 
             homeData.atfData?.isProcessingAtf = false

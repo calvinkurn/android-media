@@ -290,7 +290,7 @@ class HomeVisitableFactoryImpl(
                                     },
                                     onError = {
                                         when(channelPosition) {
-                                            0 -> visitableList.add(ErrorStateChannelOneModel())
+                                            0 -> visitableList.add(ErrorStateChannelOneModel(System.currentTimeMillis()))
                                             1 -> visitableList.add(ErrorStateChannelTwoModel())
                                             2 -> visitableList.add(ErrorStateChannelThreeModel())
                                         }

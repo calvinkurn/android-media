@@ -974,6 +974,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if (status === Result.Status.ERROR_PAGINATION) {
                 hideLoading()
                 showNetworkError(getString(R.string.home_error_connection))
+            } else if (status === Result.Status.ERROR_ATF) {
+                hideLoading()
+                showNetworkError(getString(R.string.home_error_connection))
             } else {
                 showLoading()
             }
@@ -1117,20 +1120,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
-            adjustTickerLayout()
-        }
-    }
-
-    private fun adjustTickerLayout() {
-        /**
-         * Mandatory! Because ticker height is depends on the highest message, we need to requestLayout()
-         * when there is ticker available. Otherwise, ticker component will get cut.
-         */
-        val tickerPosition = adapter?.currentList?.indexOfFirst { it is TickerDataModel }
-        tickerPosition?.let {
-            if (it != -1) {
-                adapter?.notifyItemChanged(it)
-            }
         }
     }
 
@@ -2348,7 +2337,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun refreshHomeData(forceRefresh: Boolean) {
-        refreshLayout.isRefreshing = true
+        if (!forceRefresh) refreshLayout.isRefreshing = true
         onNetworkRetry(forceRefresh)
     }
 
