@@ -53,7 +53,7 @@ open class GiftBoxBaseFragment : Fragment() {
     lateinit var imageToolbarIcon: AppCompatImageView
     lateinit var tvToolbarTitle: AppCompatTextView
     lateinit var fmParent: ViewGroup
-    lateinit var imageSound: AppCompatImageView
+    var imageSound: AppCompatImageView?=null
 
     val CONTAINER_LOADER = 1
     val CONTAINER_GIFT_BOX = 0
@@ -117,7 +117,7 @@ open class GiftBoxBaseFragment : Fragment() {
             activity?.onBackPressed()
         }
 
-        imageSound.setOnClickListener {
+        imageSound?.setOnClickListener {
             val state = !isSoundEnabled()
             toggleSound(state)
             if (state) {
@@ -271,13 +271,15 @@ open class GiftBoxBaseFragment : Fragment() {
     }
 
     fun toggleSound(enable: Boolean) {
-        val editor = getSharedPres()?.edit()
-        editor?.putBoolean(GIFT_SOUND_ENABLE, enable)
-        editor?.apply()
-        if (enable) {
-            imageSound.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_on)
-        } else {
-            imageSound.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_off)
+        imageSound?.let {
+            val editor = getSharedPres()?.edit()
+            editor?.putBoolean(GIFT_SOUND_ENABLE, enable)
+            editor?.apply()
+            if (enable) {
+                it.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_on)
+            } else {
+                it.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_off)
+            }
         }
     }
 
@@ -389,14 +391,6 @@ open class GiftBoxBaseFragment : Fragment() {
 
     fun getSharedPres(): SharedPreferences? {
         return context?.getSharedPreferences(GIFT_SOUND_PREF, Context.MODE_PRIVATE)
-    }
-
-    fun fadeOutSoundIcon() {
-        imageSound.animate().alpha(0f).setDuration(300L).start()
-    }
-
-    fun fadeInSoundIcon() {
-        imageSound.animate().alpha(1f).setDuration(300L).start()
     }
 
     fun isConnectedToInternet(): Boolean {
