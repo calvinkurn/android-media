@@ -21,6 +21,11 @@ abstract class PlayViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(PlayParentViewModel::class)
+    abstract fun getPlayParentViewModel(viewModel: PlayParentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(PlayViewModel::class)
     abstract fun getPlayViewModel(viewModel: PlayViewModel): ViewModel
 

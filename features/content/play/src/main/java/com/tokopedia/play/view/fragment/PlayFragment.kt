@@ -51,6 +51,7 @@ import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.uimodel.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
+import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.event.EventObserver
@@ -93,6 +94,7 @@ class PlayFragment @Inject constructor(
         FragmentErrorViewComponent(channelId, it, R.id.fl_global_error, childFragmentManager)
     }
 
+    private lateinit var playParentViewModel: PlayParentViewModel
     private lateinit var playViewModel: PlayViewModel
 
     private val channelId: String
@@ -123,8 +125,9 @@ class PlayFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setOrientation()
+        playParentViewModel = ViewModelProvider(this, viewModelFactory).get(PlayParentViewModel::class.java)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        playViewModel.getChannelInfo(channelId)
+        getChannelInfo()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -148,7 +151,7 @@ class PlayFragment @Inject constructor(
         super.onResume()
         orientationManager.enable()
         stopPrepareMonitoring()
-        playViewModel.getChannelInfo(channelId)
+        getChannelInfo()
         view?.postDelayed({
             view?.let { registerKeyboardListener(it) }
         }, 200)
@@ -278,6 +281,10 @@ class PlayFragment @Inject constructor(
         if (this.channelId != channelId && activity is PlayNewChannelInteractor) {
             (activity as PlayNewChannelInteractor).onNewChannel(channelId)
         }
+    }
+
+    private fun getChannelInfo() {
+        playViewModel.getChannelInfo(playParentViewModel.getLatestChannelStorageData(channelId))
     }
 
     private fun invalidateVideoTopBounds(

@@ -23,6 +23,8 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
+import com.tokopedia.play.view.storage.PlayChannelStateStorage
+import com.tokopedia.play.view.storage.PlayChannelStorageData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
@@ -42,6 +44,7 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayViewModel @Inject constructor(
+        private val playChannelStateStorage: PlayChannelStateStorage,
         private val playVideoManager: PlayVideoManager,
         videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
         channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
@@ -440,6 +443,24 @@ class PlayViewModel @Inject constructor(
         else playVideoManager.stop()
     }
     //endregion
+
+    fun getChannelInfo(channelStorageData: PlayChannelStorageData) {
+        when (channelStorageData) {
+            is PlayChannelStorageData.Empty -> {
+
+            }
+            is PlayChannelStorageData.Placeholder -> {
+                _observablePinnedMessage.value = channelStorageData.pinnedMessage
+                _observablePinnedProduct.value = channelStorageData.pinnedProduct
+            }
+            is PlayChannelStorageData.Complete -> {
+                _observablePinnedMessage.value = channelStorageData.pinnedMessage
+                _observablePinnedProduct.value = channelStorageData.pinnedProduct
+            }
+        }
+
+        getChannelInfo(channelStorageData.channelId)
+    }
 
     fun getChannelInfo(channelId: String) {
 

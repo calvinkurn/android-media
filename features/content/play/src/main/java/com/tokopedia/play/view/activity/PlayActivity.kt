@@ -21,14 +21,16 @@ import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
  * {@link com.tokopedia.applink.internal.ApplinkConstInternalContent#PLAY_DETAIL}
  */
-class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, PlayPiPCoordinator {
+class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, PlayPiPCoordinator, SwipeContainerViewComponent.DataSource {
 
     @Inject
     lateinit var playLifecycleObserver: PlayVideoPlayerObserver
@@ -41,6 +43,16 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
+    private val swipeContainerView by viewComponent(isEagerInit = true) {
+        SwipeContainerViewComponent(
+                container = it,
+                rootId = R.id.vp_fragment,
+                fragmentManager = supportFragmentManager,
+                lifecycle = lifecycle,
+                dataSource = this,
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -77,14 +89,26 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
     }
 
     override fun onNewChannel(channelId: String?) {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fl_fragment, getFragment(channelId), PLAY_FRAGMENT_TAG)
-                .commit()
+//        supportFragmentManager.beginTransaction()
+//                .replace(R.id.fl_fragment, getFragment(channelId.orEmpty()), PLAY_FRAGMENT_TAG)
+//                .commit()
     }
 
     override fun onEnterPiPMode() {
         lifecycle.removeObserver(playLifecycleObserver)
         onBackPressed(isSystemBack = false)
+    }
+
+    /**
+     * Swipe Container View Component
+     */
+    override fun getFragment(channelId: String): Fragment {
+        val fragmentFactory = supportFragmentManager.fragmentFactory
+        return fragmentFactory.instantiate(classLoader, PlayFragment::class.java.name).apply {
+            arguments = Bundle().apply {
+                putString(PLAY_KEY_CHANNEL_ID, channelId)
+            }
+        }
     }
 
     private fun inject() {
@@ -97,9 +121,9 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
                 .inject(this)
     }
 
-    private fun getFragment(channelId: String?): Fragment {
-        return getPlayFragment(channelId)
-    }
+//    private fun getFragment(channelId: String?): Fragment {
+//        return getPlayFragment(channelId)
+//    }
 
     private fun setupPage() {
         lifecycle.addObserver(playLifecycleObserver)
