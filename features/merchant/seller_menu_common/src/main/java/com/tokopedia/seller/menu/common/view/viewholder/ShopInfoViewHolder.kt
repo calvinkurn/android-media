@@ -69,9 +69,11 @@ class ShopInfoViewHolder(
                         shopStatusUiModel?.let { setShopStatusType(it) }
                         saldoBalanceUiModel?.let { setSaldoBalance(it) }
                         shopBadgeUiModel?.let { setShopBadge(it) }
-                        shopFollowersUiModel?.let { setShopTotalFollowers(it) }
+                        shopFollowersUiModel?.let {
+                            setShopTotalFollowers(it)
+                            setDotVisibility(it.shopFollowers)
+                        }
 
-                        dot?.visible()
                         localLoadOthers?.gone()
                         shopStatus?.visible()
                         saldoBalance?.visible()
@@ -81,9 +83,11 @@ class ShopInfoViewHolder(
 
                         shopStatusUiModel?.let { setShopStatusType(it) }
                         shopBadgeUiModel?.let { setShopBadge(it) }
-                        shopFollowersUiModel?.let { setShopTotalFollowers(it) }
+                        shopFollowersUiModel?.let {
+                            setShopTotalFollowers(it)
+                            setDotVisibility(it.shopFollowers)
+                        }
 
-                        dot?.visible()
                         shopStatus?.visible()
                         localLoadOthers?.run {
                             setup()
@@ -110,6 +114,12 @@ class ShopInfoViewHolder(
         }
     }
 
+    private fun setDotVisibility(shopFollowers: Long) {
+        val shouldShowFollowers = shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
+        val dotVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
+        itemView.successShopInfoLayout?.dot?.visibility = dotVisibility
+    }
+
     private fun showNameAndAvatar() {
         setShopName(userSession?.shopName.orEmpty())
         setShopAvatar(ShopAvatarUiModel(userSession?.shopAvatar.orEmpty()))
@@ -131,19 +141,17 @@ class ShopInfoViewHolder(
 
     @SuppressLint("SetTextI18n")
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
+        val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
+        val followersVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
         itemView.successShopInfoLayout.shopFollowers?.run {
-            val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
-            if (shouldShowFollowers) {
-                visible()
-            } else {
-                gone()
-            }
+            visibility = followersVisibility
             text = "${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}"
             setOnClickListener {
                 shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
                 goToShopFavouriteList()
             }
         }
+        itemView.successShopInfoLayout.dot.visibility = followersVisibility
     }
 
     private fun setShopName(shopName: String) {
