@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 
 class NavRecyclerViewScrollListener(
         val navToolbar: NavToolbar,
@@ -33,8 +35,8 @@ class NavRecyclerViewScrollListener(
         }
         if (fixedIconColor != null) {
             when (fixedIconColor) {
-                FixedTheme.TOOLBAR_DARK_TYPE -> navToolbar.switchToDarkToolbar()
-                FixedTheme.TOOLBAR_LIGHT_TYPE -> navToolbar.switchToLightToolbar()
+                TOOLBAR_DARK_TYPE -> navToolbar.switchToDarkToolbar()
+                TOOLBAR_LIGHT_TYPE -> navToolbar.switchToLightToolbar()
             }
             darkModeCondition(
                     lightCondition = { statusBarUtil?.requestStatusBarLight() },
@@ -85,10 +87,5 @@ class NavRecyclerViewScrollListener(
         fun onAlphaChanged(offsetAlpha: Float)
         fun onSwitchToDarkToolbar()
         fun onSwitchToLightToolbar()
-    }
-
-    object FixedTheme {
-        const val TOOLBAR_DARK_TYPE = 0
-        const val TOOLBAR_LIGHT_TYPE = 1
     }
 }

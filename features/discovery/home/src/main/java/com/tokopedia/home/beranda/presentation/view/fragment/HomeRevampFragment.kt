@@ -137,6 +137,7 @@ import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -519,7 +520,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         viewLifecycleOwner.lifecycle.addObserver(it)
                         homeRecyclerView?.addOnScrollListener(NavRecyclerViewScrollListener(
                                 navToolbar = it,
-                                startTransitionPixel = startToTransitionOffset,
+                                startTransitionPixel = homeMainToolbarHeight,
                                 toolbarTransitionRangePixel = searchBarTransitionRange,
                                 navScrollCallback = object: NavRecyclerViewScrollListener.NavScrollCallback {
                                     override fun onAlphaChanged(offsetAlpha: Float) {
@@ -542,7 +543,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                         )
                                     }
                                 },
-                                fixedIconColor = NavRecyclerViewScrollListener.FixedTheme.TOOLBAR_LIGHT_TYPE
+                                fixedIconColor = TOOLBAR_LIGHT_TYPE
                         ))
                         it.setIcon(
                                 IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
