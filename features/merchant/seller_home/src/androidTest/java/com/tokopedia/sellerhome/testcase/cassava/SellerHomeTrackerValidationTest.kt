@@ -227,7 +227,9 @@ class SellerHomeTrackerValidationTest {
     private fun login() {
         InstrumentationAuthHelper.loginToAnUser(
                 InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application,
-                SellerHomeIdlingResource.idlingResource
+                SellerHomeIdlingResource.idlingResource,
+                "try.sugiharto+02@tokopedia.com",
+                "tokopedia789"
         )
     }
 
