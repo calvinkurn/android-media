@@ -10,4 +10,12 @@ data class ShopLocationResponse(
     @Expose
     @SerializedName("location_type")
     val locationType: Int
-)
+) {
+    companion object {
+        private const val MAIN_LOCATION = 1
+    }
+
+    fun isMainLocation(): Boolean {
+        return locationType == MAIN_LOCATION
+    }
+}
