@@ -1,14 +1,17 @@
 package com.tokopedia.gamification.pdp.presentation.views
 
 import android.content.Context
+import android.os.Handler
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,13 +20,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gamification.R
-import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.data.Recommendation
@@ -38,7 +39,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-class PdpGamificationView : FrameLayout {
+class PdpGamificationView : LinearLayout {
 
     private val CONTAINER_LIST = 0
     private val CONTAINER_LOADING = 1
@@ -84,6 +85,11 @@ class PdpGamificationView : FrameLayout {
 
     private fun setupUi() {
         val v = LayoutInflater.from(context).inflate(getLayout(), this, true)
+        orientation = LinearLayout.VERTICAL
+        val lp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        lp.gravity = Gravity.BOTTOM
+        background = ContextCompat.getDrawable(context, R.drawable.header_bottom_sheet_rounded_white)
+        layoutParams = lp
         initViews(v)
     }
 
@@ -158,24 +164,28 @@ class PdpGamificationView : FrameLayout {
         })
 
         viewModel.productLiveData.observe(context as AppCompatActivity, Observer {
-            when (it.status) {
-                LiveDataResult.STATUS.SUCCESS -> {
-                    if (it.data != null && it.data.isNotEmpty()) {
-                        val oldSize = dataList.size
-                        dataList.addAll(oldSize, it.data)
-                        adapter.notifyItemRangeInserted(oldSize, it.data.size)
-                        scrollListener.updateStateAfterGetData()
-                    }
+            val handler = Handler()
+            handler.postDelayed({
+                when (it.status) {
+                    LiveDataResult.STATUS.SUCCESS -> {
 
-                    if (viewFlipper.displayedChild != CONTAINER_LIST) {
-                        viewFlipper.displayedChild = CONTAINER_LIST
+                        if (it.data != null && it.data.isNotEmpty()) {
+                            val oldSize = dataList.size
+                            dataList.addAll(oldSize, it.data)
+                            adapter.notifyItemRangeInserted(oldSize, it.data.size)
+                            scrollListener.updateStateAfterGetData()
+                        }
+
+                        if (viewFlipper.displayedChild != CONTAINER_LIST) {
+                            viewFlipper.displayedChild = CONTAINER_LIST
+                        }
+                    }
+                    LiveDataResult.STATUS.ERROR -> {
+                        //Do nothing
+                        viewFlipper.displayedChild = CONTAINER_ERROR
                     }
                 }
-                LiveDataResult.STATUS.ERROR -> {
-                    //Do nothing
-                    viewFlipper.displayedChild = CONTAINER_ERROR
-                }
-            }
+            },500L)
         })
 
         viewModel.recommendationLiveData.observe(context as AppCompatActivity, Observer {
@@ -192,10 +202,10 @@ class PdpGamificationView : FrameLayout {
         }
     }
 
-    fun getRecommendationParams(pageName:String,shopId:String) {
+    fun getRecommendationParams(pageName: String, shopId: String) {
         this.pageName = pageName
         this.shopId = shopId
-        viewModel.getRecommendationParams(pageName,shopId)
+        viewModel.getRecommendationParams(pageName, shopId)
     }
 
 
@@ -310,7 +320,7 @@ class PdpGamificationView : FrameLayout {
 
     private fun prepareShimmer() {
         (0..1).forEach { _ ->
-            val v = LayoutInflater.from(context).inflate(R.layout.shimmer_pdp_gamification, null, false)
+            val v = LayoutInflater.from(context).inflate(R.layout.shimmer_pdp_gamification_new, null, false)
             loadingView.addView(v)
         }
     }

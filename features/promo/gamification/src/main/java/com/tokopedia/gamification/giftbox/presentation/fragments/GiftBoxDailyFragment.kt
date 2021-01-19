@@ -71,7 +71,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //    lateinit var imageInfo: AppCompatImageView
     lateinit var directGiftView: DirectGiftView
     lateinit var pdpGamificationView: PdpGamificationView
-    lateinit var bottomSheetContainer: ViewGroup
+//    lateinit var bottomSheetContainer: ViewGroup
 
 
     @Inject
@@ -82,6 +82,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var reminder: Reminder? = null
     var gameRemindMeCheck: GameRemindMeCheck? = null
     var pltPerf: PageLoadTimePerformanceInterface? = null
+    lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
 
     @TokenUserState
     var tokenUserState: String = TokenUserState.DEFAULT
@@ -175,8 +176,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //        imageInfo = v.findViewById(R.id.imageInfo)
         directGiftView = v.findViewById(R.id.direct_gift_view)
         pdpGamificationView = v.findViewById(R.id.pdpGamificationView)
-        bottomSheetContainer = v.findViewById(R.id.bottomSheetContainer)
-
+//        bottomSheetContainer = v.findViewById(R.id.bottomSheetContainer)
+        bottomSheetBehavior = BottomSheetBehavior.from<ViewGroup>(pdpGamificationView)
         super.initViews(v)
         setTabletConfigurations()
         setShadows()
@@ -196,13 +197,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     private fun setupBottomSheet(show: Boolean) {
         if (show) {
-            val bottomSheetBehavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<ViewGroup>(bottomSheetContainer)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             bottomSheetBehavior.isHideable = false
-
         } else {
             val peekHeight = resources.getDimension(R.dimen.gami_peek_height).toInt()
-            val bottomSheetBehavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<ViewGroup>(bottomSheetContainer)
             bottomSheetBehavior.peekHeight = peekHeight
             bottomSheetBehavior.isHideable = true
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -535,10 +533,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun handleRecomPage(recommendation: Recommendation?) {
         recommendation?.isShow?.let { show ->
             if (show && !recommendation.pageName.isNullOrEmpty() && !recommendation.shopId.isNullOrEmpty()) {
-                pdpGamificationView.postDelayed({
+                rewardContainer.postDelayed({
                     setupBottomSheet(true)
+                    pdpGamificationView.getRecommendationParams(recommendation.pageName, recommendation.shopId)
                 }, 1000L)
-                pdpGamificationView.getRecommendationParams(recommendation.pageName, recommendation.shopId)
+
             }
         }
     }

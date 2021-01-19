@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/header_bottom_sheet_rounded_white"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    tools:layout_gravity="bottom"
+    tools:background="@drawable/header_bottom_sheet_rounded_white"
+    tools:orientation="vertical">
 
     <TextView
         android:id="@+id/tray_close"
@@ -58,5 +60,5 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />
     </ViewFlipper>
-</LinearLayout>
+</merge>
 
