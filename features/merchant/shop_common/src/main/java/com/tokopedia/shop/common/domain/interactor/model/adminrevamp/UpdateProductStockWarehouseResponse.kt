@@ -16,7 +16,7 @@ data class UpdateProductStockWarehouse(
         val header: Header? = Header(),
         @SerializedName("data")
         @Expose
-        val data: ProductStockWarehouse? = ProductStockWarehouse()
+        val data: List<ProductStockWarehouse>? = listOf()
 )
 
 data class ProductStockWarehouse(
