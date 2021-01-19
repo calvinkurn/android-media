@@ -6,5 +6,5 @@ package com.tokopedia.seller.menu.common.constant
 
 object Constant {
 
-    const val INVALID_NUMBER_OF_FOLLOWERS = -1
+    const val INVALID_NUMBER_OF_FOLLOWERS: Long = -1
 }
