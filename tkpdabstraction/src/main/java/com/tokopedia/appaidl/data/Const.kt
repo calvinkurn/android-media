@@ -2,8 +2,6 @@ package com.tokopedia.appaidl.data
 
 import com.tokopedia.config.GlobalConfig
 
-const val REMOTE_SERVICE = "com.tokopedia.appaidl.service.RemoteService"
-
 const val CUSTOMER_APP = "com.tokopedia.tkpd"
 const val SELLER_APP = "com.tokopedia.sellerapp"
 
