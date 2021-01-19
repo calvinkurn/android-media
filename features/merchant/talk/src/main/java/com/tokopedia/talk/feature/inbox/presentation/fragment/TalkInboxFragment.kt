@@ -206,6 +206,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         clearAllData()
         setInboxType()
         initSortFilter()
+        updateSettingsIconVisibility()
         shouldHitRoleChangedTracker = true
     }
 
@@ -505,8 +506,21 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun setupSettingsIcon() {
-        talkInboxSettingsIcon.setOnClickListener {
-            goToSellerSettings()
+        talkInboxSettingsIcon.apply {
+            setOnClickListener {
+                goToSellerSettings()
+            }
+            updateSettingsIconVisibility()
+        }
+    }
+
+    private fun updateSettingsIconVisibility() {
+        talkInboxSettingsIcon.apply {
+            if(isSellerView()) {
+                show()
+                return
+            }
+            hide()
         }
     }
 
