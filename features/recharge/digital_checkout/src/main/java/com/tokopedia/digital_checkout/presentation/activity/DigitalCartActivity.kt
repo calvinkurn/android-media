@@ -2,9 +2,11 @@ package com.tokopedia.digital_checkout.presentation.activity
 
 import android.content.Context
 import android.net.Uri
+import android.view.MotionEvent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -84,5 +86,13 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
 
     override fun getComponent(): DigitalCheckoutComponent {
         return DigitalCheckoutComponentInstance.getDigitalCheckoutComponent(application)
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): kotlin.Boolean {
+        if(currentFocus != null) {
+            KeyboardHandler.hideSoftKeyboard(this)
+            currentFocus?.clearFocus()
+        }
+        return super.dispatchTouchEvent(ev)
     }
 }

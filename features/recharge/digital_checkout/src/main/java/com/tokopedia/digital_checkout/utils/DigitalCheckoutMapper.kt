@@ -1,7 +1,6 @@
 package com.tokopedia.digital_checkout.utils
 
 import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
-import com.tokopedia.digital_checkout.data.SUBSCRIBED
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData.PostPaidPopupAttribute
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
@@ -108,7 +107,7 @@ object DigitalCheckoutMapper {
                     crossSellingConfig.isChecked = isChecked
 
                     val crossSellingWording = if (cartDigitalInfoData.crossSellingType
-                            == SUBSCRIBED) {
+                            == DigitalCartCrossSellingType.SUBSCRIBED.id) {
                         wordingIsSubscribed
                     } else {
                         wording
@@ -219,7 +218,7 @@ object DigitalCheckoutMapper {
                     crossSellingConfig.isChecked = isChecked
 
                     val crossSellingWording = if (cartDigitalInfoData.crossSellingType
-                            == SUBSCRIBED) {
+                            == DigitalCartCrossSellingType.SUBSCRIBED.id) {
                         wordingIsSubscribe
                     } else {
                         wording

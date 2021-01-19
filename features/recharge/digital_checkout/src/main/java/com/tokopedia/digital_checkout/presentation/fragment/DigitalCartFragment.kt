@@ -19,7 +19,6 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
-import com.tokopedia.digital_checkout.data.MYBILLS
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
@@ -27,6 +26,7 @@ import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfoAdapter
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
+import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
@@ -122,7 +122,10 @@ class DigitalCartFragment : BaseDaggerFragment() {
             it.attributes?.fintechProduct?.getOrNull(0)?.let { fintechProduct ->
                 renderFintechProductWidget(fintechProduct)
             }
-            showMyBillsSubscriptionView(it.crossSellingType == MYBILLS)
+            it.attributes?.userInputPrice?.let { userInputPrice ->
+                renderInputPriceView(it.attributes?.pricePlain.toString(), userInputPrice)
+            }
+            showMyBillsSubscriptionView(it.crossSellingType == DigitalCartCrossSellingType.MYBILLS.id)
         })
 
         viewModel.cartAdditionalInfoList.observe(viewLifecycleOwner, Observer {
@@ -153,7 +156,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
             tvTotalPayment.text = getStringIdrFormat((it - promoData.amount).toDouble())
         })
 
-        viewModel.showContentCheckout.observe(viewLifecycleOwner, Observer {showContent ->
+        viewModel.showContentCheckout.observe(viewLifecycleOwner, Observer { showContent ->
             if (showContent) {
                 contentCheckout.visibility = View.VISIBLE
                 layout_digital_checkout_bottom_view.visibility = View.VISIBLE
@@ -244,7 +247,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
             override fun onClickDetailPromo() {
                 val intent: Intent
                 val promoCode: String = promoData.promoCode
-                if (!promoCode.isEmpty()) {
+                if (promoCode.isNotEmpty()) {
                     val requestCode: Int
                     if (promoData.typePromo == PromoData.TYPE_VOUCHER) {
                         intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
@@ -437,6 +440,27 @@ class DigitalCartFragment : BaseDaggerFragment() {
                 moreInfoBottomSheet.dismiss()
             }
             fragmentManager?.run { moreInfoBottomSheet.show(this, "E-gold more info bottom sheet") }
+        }
+    }
+
+    private fun renderInputPriceView(total: String?, userInputPriceDigital: AttributesDigitalData.UserInputPriceDigital) {
+        inputPriceContainer.visibility = View.VISIBLE
+        inputPriceHolderView.setLabelText(userInputPriceDigital.minPayment ?: "",
+                userInputPriceDigital.maxPayment ?: "")
+        inputPriceHolderView.setMinMaxPayment(total ?: "", userInputPriceDigital.minPaymentPlain,
+                userInputPriceDigital.maxPaymentPlain)
+        inputPriceHolderView.actionListener = object: DigitalCartInputPriceWidget.ActionListener {
+            override fun onInputPriceByUserFilled(paymentAmount: Long) {
+
+            }
+
+            override fun enableCheckoutButton() {
+
+            }
+
+            override fun disableCheckoutButton() {
+
+            }
         }
     }
 
