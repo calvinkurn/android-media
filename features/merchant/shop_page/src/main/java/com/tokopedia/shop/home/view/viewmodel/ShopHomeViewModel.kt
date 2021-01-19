@@ -202,15 +202,16 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getMerchantVoucherCoupon(shopId: String) {
         val result = shopHomeLayoutData.value
-        if (result is Success) {
+        if (result is Success && !result.data.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().isNullOrEmpty()) {
             launchCatchError(dispatcherProvider.io, block = {
                 var uiModel = result.data.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
-                val response =  mvcSummeryUseCase.getResponse(mvcSummeryUseCase.getQueryParams("480136"))
+                val response =  mvcSummeryUseCase.getResponse(mvcSummeryUseCase.getQueryParams(shopId))
                 uiModel = uiModel?.copy(
                         data = ShopPageHomeMapper.mapToVoucherCouponUiModel(response.data, shopId),
                         isError = false
                 )
-                if (response.data?.resultStatus?.code == CODE_STATUS_SUCCESS) {
+                val code = response.data?.resultStatus?.code
+                if (code == CODE_STATUS_SUCCESS) {
                     _shopHomeMerchantVoucherLayoutData.postValue(Success(uiModel as ShopHomeVoucherUiModel))
                 } else {
                     _shopHomeMerchantVoucherLayoutData.postValue(Fail(MessageErrorException(response.data?.resultStatus?.message.toString())))

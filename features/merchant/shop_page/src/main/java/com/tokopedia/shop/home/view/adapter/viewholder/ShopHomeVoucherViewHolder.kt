@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.mvcwidget.MvcData
@@ -100,7 +101,7 @@ class ShopHomeVoucherViewHolder(
                         subTitle = model.data.subTitle ?: "",
                         imageUrl = model.data.imageURL ?: ""
                 ))
-                merchantVoucherWidget?.shopId = 480136
+                merchantVoucherWidget?.shopId = model.data.shopId.toIntOrZero()
             }
         }
     }
