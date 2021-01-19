@@ -79,13 +79,7 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
     }
 
     private fun renderBackgroundHeight() {
-        val backgroundViewImage = itemView.findViewById<ImageView>(R.id.view_background_image)
-        val backgroundUrl = if (itemView.context.isDarkMode()) {
-            BACKGROUND_DARK_1
-        } else {
-            BACKGROUND_LIGHT_1
-        }
-        ImageHandler.LoadImage(backgroundViewImage, backgroundUrl)
+//        ImageHandler.LoadImage(backgroundViewImage, backgroundUrl)
 //        val ovoView = itemView.findViewById<OvoWidgetView>(R.id.view_ovo)
 //        if (ovoView.visibility == View.VISIBLE) {
 //            val backgroundView = itemView.findViewById<FrameLayout>(R.id.view_background)
