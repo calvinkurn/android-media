@@ -1,5 +1,6 @@
 package com.tokopedia.searchbar.navigation_component.listener
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.searchbar.R
@@ -22,6 +23,9 @@ class NavRecyclerViewScrollListener(
         if (startTransitionPixel == 0) startTransitionPixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_start_transition)
         if (toolbarTransitionRangePixel == 0) toolbarTransitionRangePixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_transition_range)
         calculateNavToolbarTransparency(recyclerView.computeVerticalScrollOffset())
+        val offset = recyclerView.computeVerticalScrollOffset();
+        navScrollCallback?.onYposChanged(offset)
+
     }
 
     private fun calculateNavToolbarTransparency(offset: Int) {
@@ -87,5 +91,6 @@ class NavRecyclerViewScrollListener(
         fun onAlphaChanged(offsetAlpha: Float)
         fun onSwitchToDarkToolbar()
         fun onSwitchToLightToolbar()
+        fun onYposChanged(yOffset: Int)
     }
 }

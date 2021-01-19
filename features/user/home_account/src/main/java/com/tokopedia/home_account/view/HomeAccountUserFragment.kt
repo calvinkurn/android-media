@@ -356,6 +356,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
                     override fun onSwitchToLightToolbar() {
                     }
+
+                    override fun onYposChanged(yOffset: Int) {
+                    }
                 }
         ))
 

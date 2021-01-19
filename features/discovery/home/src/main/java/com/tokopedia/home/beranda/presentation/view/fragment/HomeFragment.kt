@@ -541,6 +541,10 @@ open class HomeFragment : BaseDaggerFragment(),
                                                 }
                                         )
                                     }
+
+                                    override fun onYposChanged(yOffset: Int) {
+
+                                    }
                                 }
                         ))
                         it.setIcon(
