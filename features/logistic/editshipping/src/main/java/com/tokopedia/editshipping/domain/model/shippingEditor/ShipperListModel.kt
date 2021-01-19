@@ -1,8 +1,9 @@
-package com.tokopedia.logisticCommon.data.entity.shippingeditor
+package com.tokopedia.editshipping.domain.model.shippingEditor
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
+sealed class ShippingEditorVisitable
 
 data class ShipperListModel(
         var shippers: ShippersModel = ShippersModel(),
@@ -14,7 +15,6 @@ data class ShippersModel(
         var conventional: List<ConventionalModel> = emptyList()
 )
 
-@Parcelize
 data class OnDemandModel(
         var shipperId: Int = -1,
         var shipperName: String = "",
@@ -23,7 +23,7 @@ data class OnDemandModel(
         var image: String = "",
         var featureInfo: List<FeatureInfoModel> = listOf(),
         var shipperProduct: List<ShipperProductModel> = listOf()
-) : Parcelable
+) : ShippingEditorVisitable()
 
 data class ConventionalModel(
         var shipperId: Int = -1,
@@ -33,7 +33,7 @@ data class ConventionalModel(
         var image: String = "",
         var featureInfo: List<FeatureInfoModel> = listOf(),
         var shipperProduct: List<ShipperProductModel> = listOf()
-)
+) : ShippingEditorVisitable()
 
 @Parcelize
 data class FeatureInfoModel(

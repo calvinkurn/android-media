@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.logisticCommon.data.entity.shippingeditor.ShipperProductModel
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 

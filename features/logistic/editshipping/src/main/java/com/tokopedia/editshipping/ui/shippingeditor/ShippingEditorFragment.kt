@@ -1,9 +1,11 @@
 package com.tokopedia.editshipping.ui.shippingeditor
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
 import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +16,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.di.shippingeditor.ShippingEditorComponent
+import com.tokopedia.editshipping.domain.model.shippingEditor.CourierTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShippersModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorState
+import com.tokopedia.editshipping.domain.model.shippingEditor.TickerModel
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorConventionalAdapter
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorOnDemandItemAdapter
 import com.tokopedia.editshipping.util.EditShippingConstant
@@ -24,8 +31,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticCommon.data.entity.shippingeditor.ShippersModel
-import com.tokopedia.logisticCommon.data.entity.shippingeditor.TickerModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -68,6 +73,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
     private var shippingEditorOnDemandAdapter = ShippingEditorOnDemandItemAdapter(this)
     private var shippingEditorConventionalAdapter = ShippingEditorConventionalAdapter()
+//    private var shippingEditorAdapter = ShippingEditorAdapter()
 
     override fun getScreenName(): String = ""
 
@@ -100,18 +106,15 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     private fun renderTextDetailCourier() {
-        val textDetailCourier = context?.getString(R.string.tv_detail_kurir)
+        val textDetailCourier = MethodChecker.fromHtml(getString(R.string.tv_detail_kurir))
+        val selengkapnyaButton = "Selengkapnya"
         val spannableString = SpannableString(textDetailCourier)
-        val startIndexOf = textDetailCourier?.indexOf("Selengkapnya")
+        val color = getColor(context, com.tokopedia.unifyprinciples.R.color.light_B500)
+        spannableString.setSpan(ForegroundColorSpan(color), spannableString.length - selengkapnyaButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(StyleSpan(Typeface.BOLD), spannableString.length - selengkapnyaButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
         tvDetailCourier?.text = spannableString
-        if (startIndexOf != null) {
-            spannableString.setSpan(object: ClickableSpan() {
-                override fun onClick(widget: View) {
-                    //openBottomSheet
-                    openBottomSheetShipperInfo()
-                }
-
-            }, startIndexOf, startIndexOf + 12, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tvDetailCourier?.setOnClickListener {
+            openBottomSheetShipperInfo()
         }
 
     }
@@ -143,15 +146,39 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                 else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
+
+        viewModel.shipperTickerList.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    updateTickerData(it.data.courierTicker)
+                }
+            }
+        })
     }
 
     private fun fetchData() {
         viewModel.getShipperList(userSession?.shopId.toInt())
+        viewModel.getShipperTickerList(userSession?.shopId.toInt())
     }
 
     private fun updateData(data: ShippersModel) {
+//        shippingEditorAdapter.setData(data.onDemand, data.conventional)
         shippingEditorOnDemandAdapter.updateData(data.onDemand)
         shippingEditorConventionalAdapter.updateData(data.conventional)
+    }
+
+    private fun updateTickerData(data: List<CourierTickerModel>) {
+        shippingEditorOnDemandAdapter.setTickerData(data)
+    }
+
+    /*ToDO: put ticker*/
+    private fun updateList() {
+        for (x in shippingEditorOnDemandAdapter.shipperOnDemandModel.indices) {
+            val indesh = listOf<Int>()
+            if (shippingEditorOnDemandAdapter.shipperOnDemandModel[x].shipperId in indesh) {
+                //do something
+            }
+        }
     }
 
     private fun renderTicker(tickers: List<TickerModel>) {

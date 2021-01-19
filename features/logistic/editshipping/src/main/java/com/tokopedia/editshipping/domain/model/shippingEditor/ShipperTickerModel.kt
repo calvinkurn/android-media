@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.data.entity.shippingeditor
+package com.tokopedia.editshipping.domain.model.shippingEditor
 
 data class ShipperTickerModel(
         var headerTicker: HeaderTickerModel = HeaderTickerModel(),

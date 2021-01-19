@@ -54,7 +54,7 @@ object ShippingEditorQuery {
     """.trimIndent()
 
     val ongkirShippingEditorTicker = """
-        query ongkirShippingEditorGetShipperTicker (${'$'}input: ShippingEditorShopMultiLocInout!){
+        query ongkirShippingEditorGetShipperTicker (${'$'}input: ShippingEditorShopMultiLocInput!){
           ongkirShippingEditorGetShipperTicker(input: ${'$'}input) {
             status
             message

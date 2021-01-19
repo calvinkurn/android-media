@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.domain.model.shippingEditor.ConventionalModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.logisticCommon.data.entity.shippingeditor.ConventionalModel
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ShippingEditorConventionalAdapter() : RecyclerView.Adapter<ShippingEditorConventionalAdapter.ShippingEditorConventionalViewHolder>(){
+class ShippingEditorConventionalAdapter : RecyclerView.Adapter<ShippingEditorConventionalAdapter.ShippingEditorConventionalViewHolder>(){
 
     private var shipperConventionalModel = mutableListOf<ConventionalModel>()
 

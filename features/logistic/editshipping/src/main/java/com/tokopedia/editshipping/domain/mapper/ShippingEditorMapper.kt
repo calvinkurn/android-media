@@ -1,6 +1,6 @@
 package com.tokopedia.editshipping.domain.mapper
 
-import com.tokopedia.logisticCommon.data.entity.shippingeditor.*
+import com.tokopedia.editshipping.domain.model.shippingEditor.*
 import com.tokopedia.logisticCommon.data.response.shippingeditor.*
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ class ShippingEditorMapper @Inject constructor() {
         }
     }
 
-    private fun mapShipper(response: GetShipperListResponse): ShippersModel{
+    private fun mapShipper(response: GetShipperListResponse): ShippersModel {
         val data = response.ongkirShippingEditor.data.shippers
         return ShippersModel().apply {
             onDemand = mapShipperOnDemand(response)
@@ -53,7 +53,7 @@ class ShippingEditorMapper @Inject constructor() {
         response.forEach { data ->
             val conventionalUiModel = ConventionalModel().apply {
                 shipperId = data.shipperId
-                shipperName = data.name
+                shipperName = data.shipperName
                 isActive = data.isActive
                 textPromo = data.textPromo
                 image = data.image

@@ -7,14 +7,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.domain.model.shippingEditor.CourierTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.OnDemandModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.logisticCommon.data.entity.shippingeditor.OnDemandModel
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItemAdapterListener): RecyclerView.Adapter<ShippingEditorOnDemandItemAdapter.ShippingEditorOnDemandViewHolder>() {
 
-    private var shipperOnDemandModel = mutableListOf<OnDemandModel>()
+    var shipperOnDemandModel = mutableListOf<OnDemandModel>()
+    private var tickerModel = mutableListOf<CourierTickerModel>()
 
     private var shipperProductChild: ShipperProductItemAdapter? = null
 
@@ -31,11 +33,16 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
     }
 
     override fun onBindViewHolder(holder: ShippingEditorOnDemandViewHolder, position: Int) {
-        holder.binData(shipperOnDemandModel[position])
+        holder.bindData(shipperOnDemandModel[position])
     }
 
     fun updateData(data: List<OnDemandModel>) {
         shipperOnDemandModel.addAll(data)
+        notifyDataSetChanged()
+    }
+
+    fun setTickerData(data: List<CourierTickerModel>) {
+        tickerModel.addAll(data)
         notifyDataSetChanged()
     }
 
@@ -52,7 +59,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         private val shipmentProductRv = itemView.findViewById<RecyclerView>(R.id.shipment_item_list)
 
 
-        fun binData(data: OnDemandModel) {
+        fun bindData(data: OnDemandModel) {
             setItemData(data)
         }
 
@@ -60,16 +67,15 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
             val shipperName = data.shipperProduct
             var sb = StringBuilder()
 
+            shipmentName.text = data.shipperName
+            shipmentItemCb.isChecked = data.isActive
             shipmentItemImage?.let {
                 ImageHandler.loadImageFitCenter(itemView.context, it, data.image)
             }
-            shipmentName.text = data.shipperName
-            shipmentItemCb.isChecked = data.isActive
 
             for (x in shipperName.indices) {
                 sb.append(shipperName[x].shipperProductName).append(" | ")
             }
-
             shipmentCategory.text = sb.substring(0, sb.length - 2)
 
             shipperProductChild = ShipperProductItemAdapter(this@ShippingEditorOnDemandViewHolder)
@@ -77,10 +83,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                 layoutManager = LinearLayoutManager(context)
                 adapter = shipperProductChild
             }
-
             shipperProductChild?.addData(data.shipperProduct)
-
-
         }
 
         override fun onShipperProductItemClicked() {

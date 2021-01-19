@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.editshipping.domain.mapper.ShippingEditorMapper
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperListModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorState
-import com.tokopedia.logisticCommon.data.entity.shippingeditor.ShipperListModel
-import com.tokopedia.logisticCommon.data.entity.shippingeditor.ShipperTickerModel
 import com.tokopedia.logisticCommon.data.repository.ShippingEditorRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
