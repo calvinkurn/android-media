@@ -30,20 +30,18 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
                                              val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
                                              val userSession: UserSessionInterface,
                                              @Named(DispatcherModule.MAIN) val uiDispatcher: CoroutineDispatcher,
-                                             @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher) : BaseViewModel(uiDispatcher) {
+                                             @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher) : BaseViewModel(workerDispatcher) {
 
     val recommendationLiveData: MutableLiveData<LiveDataResult<GamingRecommendationParamResponse>> = MutableLiveData()
     val productLiveData: MutableLiveData<LiveDataResult<List<Recommendation>>> = MutableLiveData()
     val titleLiveData: MutableLiveData<LiveDataResult<String>> = MutableLiveData()
 
-    fun getRecommendationParams(pageName: String, shopId:String) {
+    fun getRecommendationParams(pageName: String, shopId: String) {
         launchCatchError(block = {
             withContext(workerDispatcher) {
                 val response = paramUseCase.getResponse(paramUseCase.getRequestParams(pageName, shopId))
-                withContext(uiDispatcher){
-                    recommendationLiveData.value = (LiveDataResult.success(response))
-                    getProducts(0)
-                }
+                recommendationLiveData.postValue(LiveDataResult.success(response))
+                getProducts(0)
             }
         }, onError = {
             recommendationLiveData.postValue(LiveDataResult.error(it))
@@ -54,14 +52,13 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
 
         launchCatchError(block = {
             val params = recommendationLiveData.value!!.data!!.params
-            withContext(workerDispatcher) {
-                val item = recommendationProductUseCase.getData(recommendationProductUseCase.getRequestParams(params, page)).first()
-                val list = recommendationProductUseCase.mapper.recommWidgetToListOfVisitables(item)
 
-                productLiveData.postValue(LiveDataResult.success(list))
-                if (titleLiveData.value == null) {
-                    titleLiveData.postValue(LiveDataResult.success(item.title))
-                }
+            val item = recommendationProductUseCase.getData(recommendationProductUseCase.getRequestParams(params, page)).first()
+            val list = recommendationProductUseCase.mapper.recommWidgetToListOfVisitables(item)
+
+            productLiveData.postValue(LiveDataResult.success(list))
+            if (titleLiveData.value == null) {
+                titleLiveData.postValue(LiveDataResult.success(item.title))
             }
         }, onError = {
             productLiveData.postValue(LiveDataResult.error(it))

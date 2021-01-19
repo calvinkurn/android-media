@@ -170,14 +170,17 @@ class PdpGamificationView : LinearLayout {
                     LiveDataResult.STATUS.SUCCESS -> {
 
                         if (it.data != null && it.data.isNotEmpty()) {
-                            val oldSize = dataList.size
-                            dataList.addAll(oldSize, it.data)
-                            adapter.notifyItemRangeInserted(oldSize, it.data.size)
-                            scrollListener.updateStateAfterGetData()
-                        }
 
-                        if (viewFlipper.displayedChild != CONTAINER_LIST) {
-                            viewFlipper.displayedChild = CONTAINER_LIST
+                            if (viewFlipper.displayedChild != CONTAINER_LIST) {
+                                viewFlipper.displayedChild = CONTAINER_LIST
+                            }
+                            recyclerView.post {
+                                val oldSize = dataList.size
+                                dataList.addAll(oldSize, it.data)
+                                adapter.notifyItemRangeInserted(oldSize, it.data.size)
+                                scrollListener.updateStateAfterGetData()
+                            }
+
                         }
                     }
                     LiveDataResult.STATUS.ERROR -> {
@@ -185,7 +188,7 @@ class PdpGamificationView : LinearLayout {
                         viewFlipper.displayedChild = CONTAINER_ERROR
                     }
                 }
-            },500L)
+            },2500L)
         })
 
         viewModel.recommendationLiveData.observe(context as AppCompatActivity, Observer {
