@@ -57,6 +57,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_inbox_empty.*
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapterTypeFactory>(),
@@ -450,12 +451,12 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun getSellerFilterList(): ArrayList<SortFilterItem> {
-        val unrespondedFilter = if (getUnrespondedCount() != 0) {
+        val unrespondedFilter = if (getUnrespondedCount() != 0L) {
             SortFilterItem(getString(R.string.inbox_unresponded) + " (${getUnrespondedCount()})")
         } else {
             SortFilterItem(getString(R.string.inbox_unresponded))
         }
-        val problemFilter = if (getUnrespondedCount() != 0) {
+        val problemFilter = if (getUnrespondedCount() != 0L) {
             SortFilterItem(getString(R.string.inbox_problem) + " (${getProblemCount()})")
         } else {
             SortFilterItem(getString(R.string.inbox_problem))
@@ -524,7 +525,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun isNewView(): Boolean {
-        return getAbTestPlatform().getString(
+        return getAbTestPlatform()?.getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
         ) == AbTestPlatform.VARIANT_NEW_INBOX
     }
@@ -533,23 +534,23 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         return viewModel.getType() == TalkInboxTab.SHOP_TAB || viewModel.getType() == TalkInboxTab.SHOP_OLD
     }
 
-    private fun getProblemCount(): Int {
-        return (viewModel.inboxList.value as? TalkInboxViewState.Success)?.data?.problemTotal ?: 0
+    private fun getProblemCount(): Long {
+        return (viewModel.inboxList.value as? TalkInboxViewState.Success)?.data?.problemTotal ?: 0L
     }
 
-    private fun getUnrespondedCount(): Int {
+    private fun getUnrespondedCount(): Long {
         return (viewModel.inboxList.value as? TalkInboxViewState.Success)?.data?.unrespondedTotal
-                ?: 0
+                ?: 0L
     }
 
     private fun setFilterCounter() {
         if(isSellerView() && isNewView()) {
-            if (getUnrespondedCount() != 0) {
+            if (getUnrespondedCount() != 0L) {
                 talkInboxSortFilter?.chipItems?.getOrNull(0)?.title = getString(R.string.inbox_unresponded) + " (${getUnrespondedCount()})"
             } else {
                 talkInboxSortFilter?.chipItems?.getOrNull(0)?.title = getString(R.string.inbox_unresponded)
             }
-            if (getProblemCount() != 0) {
+            if (getProblemCount() != 0L) {
                 talkInboxSortFilter?.chipItems?.getOrNull(1)?.title = getString(R.string.inbox_problem) + " (${getProblemCount()})"
             } else {
                 talkInboxSortFilter?.chipItems?.getOrNull(1)?.title = getString(R.string.inbox_problem)
@@ -557,14 +558,18 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         }
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        return try {
+            if (!::remoteConfigInstance.isInitialized) {
+                remoteConfigInstance = RemoteConfigInstance(activity?.application)
+            }
+            remoteConfigInstance.abTestPlatform
+        } catch (e: IllegalStateException) {
+            null
         }
-        return remoteConfigInstance.abTestPlatform
     }
 
-    private fun getCounterForTracking(): Int {
+    private fun getCounterForTracking(): Long {
         if(isSellerView() && isNewView()) {
             return viewModel.getUnrespondedCount()
         }

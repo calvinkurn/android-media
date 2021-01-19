@@ -14,7 +14,7 @@ class TalkInboxTracking @Inject constructor() {
 
     private val tracker = TrackApp.getInstance().gtm
 
-    fun eventClickFilter(filter: String, tab: String, counter: Int, filterStatus: Boolean, shopId: String, userId: String) {
+    fun eventClickFilter(filter: String, tab: String, counter: Long, filterStatus: Boolean, shopId: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TalkEventTracking(
                         category = getEventCategoryInbox(tab),
@@ -48,7 +48,7 @@ class TalkInboxTracking @Inject constructor() {
         )
     }
 
-    fun eventClickTab(tab: String, userId: String, shopId: String, countUnreadMessages: Int) {
+    fun eventClickTab(tab: String, userId: String, shopId: String, countUnreadMessages: Long) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TalkEventTracking(
                         category = getEventCategoryInbox(tab),
@@ -63,7 +63,7 @@ class TalkInboxTracking @Inject constructor() {
         )
     }
 
-    fun eventClickThread(tab: String, talkId: String, productId: String, filterActive: String, isRead: Boolean, shopId: String, countUnreadMessages: Int, userId: String) {
+    fun eventClickThread(tab: String, talkId: String, productId: String, filterActive: String, isRead: Boolean, shopId: String, countUnreadMessages: Long, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TalkEventTracking(
                         category = getEventCategoryInbox(tab),

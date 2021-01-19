@@ -18,16 +18,16 @@ data class DiscussionInbox(
         val inboxType: String = "",
         @SerializedName("sellerUnread")
         @Expose
-        val sellerUnread: Int = 0,
+        val sellerUnread: Long = 0,
         @SerializedName("buyerUnread")
         @Expose
-        val buyerUnread: Int = 0,
+        val buyerUnread: Long = 0,
         @SerializedName("problemTotal")
         @Expose
-        val problemTotal: Int = 0,
+        val problemTotal: Long = 0,
         @SerializedName("unrespondedTotal")
         @Expose
-        val unrespondedTotal: Int = 0,
+        val unrespondedTotal: Long = 0,
         @SerializedName("hasNext")
         @Expose
         val hasNext: Boolean = false,
