@@ -56,7 +56,7 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
         if(isScrollItem){
             itemView.dynamic_icon_recycler_view.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         } else {
-            itemView.dynamic_icon_recycler_view.layoutManager = GridLayoutManager(itemView.context, spanCount, GridLayoutManager.HORIZONTAL, false)
+            itemView.dynamic_icon_recycler_view.layoutManager = GridLayoutManager(itemView.context, spanCount, GridLayoutManager.VERTICAL, false)
         }
     }
 
