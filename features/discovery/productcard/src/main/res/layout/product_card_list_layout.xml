@@ -286,7 +286,7 @@
             android:visibility="gone"
             android:clickable="true"
             android:focusable="true"
-            android:textColor="@color/light_G500"
+            android:textColor="@color/Unify_G500"
             app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"
             app:layout_constraintTop_toBottomOf="@id/barrierImageContent"
             app:layout_constraintEnd_toEndOf="parent"
