@@ -314,7 +314,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             return
         }
         val productStock = productStockInput.toBigIntegerOrNull().orZero()
-        if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
+        if (productStock < minimumStockCount.toBigInteger()) {
             val errorMessage = provider.getEmptyProductStockErrorMessage()
             errorMessage?.let { productStockMessage = it }
             mIsProductStockInputError.value = true
