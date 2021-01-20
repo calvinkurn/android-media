@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -185,6 +186,7 @@ class ShopPageFragment :
     private lateinit var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
+    private lateinit var shopPageHeaderContentConstraintLayout: ConstraintLayout
     private lateinit var errorButton: View
     private var isForceNotShowingTab: Boolean = false
     private val iconTabHomeInactive: Int
@@ -295,14 +297,15 @@ class ShopPageFragment :
         }
         errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
+        shopPageHeaderContentConstraintLayout = view.findViewById(R.id.shop_page_header_content)
         setupBottomSheetSellerMigration(view)
         shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
         initToolbar()
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             swipeToRefresh.isEnabled = (verticalOffset == 0)
-            val appBarIsCollapsed = ((verticalOffset + appBarLayout.height) == 0)
-            if (appBarIsCollapsed) {
+            val appBarIsCollapsed = ((verticalOffset + shopPageHeaderContentConstraintLayout.height) == 0)
+            if (appBarIsCollapsed && !shopPageFragmentHeaderViewHolder.isCoachMarkNull()) {
                 shopPageFragmentHeaderViewHolder.dismissCoachMark()
             }
         })
@@ -974,6 +977,7 @@ class ShopPageFragment :
         super.onPause()
         shopPageTracking?.sendAllTrackingQueue()
         shopShareBottomSheet?.dismiss()
+        shopPageFragmentHeaderViewHolder.dismissCoachMark()
     }
 
     private fun setupTabs() {
