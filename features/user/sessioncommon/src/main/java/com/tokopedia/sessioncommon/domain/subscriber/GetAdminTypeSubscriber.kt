@@ -3,14 +3,14 @@ package com.tokopedia.sessioncommon.domain.subscriber
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.sessioncommon.data.admin.AdminData
+import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
 class GetAdminTypeSubscriber(
     private val userSession: UserSessionInterface,
-    private val onSuccessGetAdminType: ((AdminData) -> Unit)?,
+    private val onSuccessGetAdminType: ((AdminDataResponse) -> Unit)?,
     private val onErrorGetAdminType: ((e: Throwable) -> Unit)?
 ): Subscriber<GraphqlResponse>() {
 
@@ -26,13 +26,13 @@ class GetAdminTypeSubscriber(
 
     private fun onGetAdminTypeSuccess(response: GraphqlResponse) {
         response.getData<AdminTypeResponse>(AdminTypeResponse::class.java).let {
-            val adminInfo = it.response
-            val adminData = adminInfo.data
+            val adminDataResponse = it.response
+            val adminData = adminDataResponse.data
             val roleType = adminData.detail.roleType
             val isShopOwner = roleType.isShopOwner
             val isLocationAdmin = roleType.isLocationAdmin
             val isShopAdmin = roleType.isShopAdmin
-            val isMultiLocationShop = adminInfo.isMultiLocationShop
+            val isMultiLocationShop = adminDataResponse.isMultiLocationShop
 
             userSession.apply {
                 setIsShopOwner(isShopOwner)
@@ -41,7 +41,7 @@ class GetAdminTypeSubscriber(
                 setIsMultiLocationShop(isMultiLocationShop)
             }
 
-            onSuccessGetAdminType?.invoke(adminData)
+            onSuccessGetAdminType?.invoke(adminDataResponse)
         }
     }
 

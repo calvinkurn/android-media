@@ -1,7 +1,5 @@
 package com.tokopedia.search.result.presentation.mapper;
 
-import androidx.annotation.Nullable;
-
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
@@ -11,29 +9,24 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
+import com.tokopedia.search.result.presentation.model.LabelGroupVariantViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
-import com.tokopedia.search.result.presentation.ShopRatingABTestStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import kotlin.collections.CollectionsKt;
+
 public class ProductViewModelMapper {
-
-    @Nullable private final ShopRatingABTestStrategy shopRatingABTestStrategy;
-
-    public ProductViewModelMapper(@Nullable ShopRatingABTestStrategy shopRatingABTestStrategy) {
-        this.shopRatingABTestStrategy = shopRatingABTestStrategy;
-    }
 
     public ProductViewModel convertToProductViewModel(
             int lastProductItemPositionFromCache,
             SearchProductModel searchProductModel,
-            boolean useRatingString,
             String pageTitle
     ) {
         SearchProductModel.SearchProduct aceSearchProduct = searchProductModel.getSearchProduct();
@@ -48,7 +41,7 @@ public class ProductViewModelMapper {
         productViewModel.setCpmModel(searchProductModel.getCpmModel());
         productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProductData.getRelated()));
         productViewModel.setProductList(convertToProductItemViewModelList(
-                lastProductItemPositionFromCache, searchProductData.getProductList(), useRatingString, pageTitle
+                lastProductItemPositionFromCache, searchProductData.getProductList(), pageTitle
         ));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
         productViewModel.setTickerModel(createTickerModel(searchProductData));
@@ -153,8 +146,6 @@ public class ProductViewModelMapper {
                 otherRelatedProduct.getName(),
                 otherRelatedProduct.getPrice(),
                 otherRelatedProduct.getImageUrl(),
-                otherRelatedProduct.getRating(),
-                otherRelatedProduct.getCountReview(),
                 otherRelatedProduct.getUrl(),
                 otherRelatedProduct.getApplink(),
                 otherRelatedProduct.getPriceString(),
@@ -167,7 +158,9 @@ public class ProductViewModelMapper {
                 otherRelatedProduct.isOrganicAds(),
                 otherRelatedProduct.getAds().getProductViewUrl(),
                 otherRelatedProduct.getAds().getProductClickUrl(),
-                otherRelatedProduct.getAds().getProductWishlistUrl()
+                otherRelatedProduct.getAds().getProductWishlistUrl(),
+                otherRelatedProduct.getRatingAverage(),
+                convertToLabelGroupList(otherRelatedProduct.getLabelGroupList())
         );
     }
 
@@ -200,7 +193,6 @@ public class ProductViewModelMapper {
     private List<ProductItemViewModel> convertToProductItemViewModelList(
             int lastProductItemPositionFromCache,
             List<SearchProductModel.Product> productModels,
-            boolean useRatingString,
             String pageTitle
     ) {
         List<ProductItemViewModel> productItemList = new ArrayList<>();
@@ -209,7 +201,7 @@ public class ProductViewModelMapper {
 
         for (SearchProductModel.Product productModel : productModels) {
             position++;
-            productItemList.add(convertToProductItem(productModel, position, useRatingString, pageTitle));
+            productItemList.add(convertToProductItem(productModel, position, pageTitle));
         }
 
         return productItemList;
@@ -218,7 +210,6 @@ public class ProductViewModelMapper {
     private ProductItemViewModel convertToProductItem(
             SearchProductModel.Product productModel,
             int position,
-            boolean useRatingString,
             String pageTitle
     ) {
         ProductItemViewModel productItem = new ProductItemViewModel();
@@ -228,9 +219,7 @@ public class ProductViewModelMapper {
         productItem.setImageUrl(productModel.getImageUrl());
         productItem.setImageUrl300(productModel.getImageUrl300());
         productItem.setImageUrl700(productModel.getImageUrl700());
-        productItem.setRatingString(useRatingString ? productModel.getRatingAverage() : "");
-        productItem.setRating(useRatingString ? 0 : productModel.getRating());
-        productItem.setCountReview(productModel.getCountReview());
+        productItem.setRatingString(productModel.getRatingAverage());
         productItem.setDiscountPercentage(productModel.getDiscountPercentage());
         productItem.setOriginalPrice(productModel.getOriginalPrice());
         productItem.setPrice(productModel.getPrice());
@@ -249,6 +238,7 @@ public class ProductViewModelMapper {
         productItem.setCategoryName(productModel.getCategoryName());
         productItem.setCategoryBreadcrumb(productModel.getCategoryBreadcrumb());
         productItem.setLabelGroupList(convertToLabelGroupList(productModel.getLabelGroupList()));
+        productItem.setLabelGroupVariantList(convertToLabelGroupVariantList(productModel.getLabelGroupVariantList()));
         productItem.setFreeOngkirViewModel(convertToFreeOngkirViewModel(productModel.getFreeOngkir()));
         productItem.setBoosterList(productModel.getBoosterList());
         productItem.setSourceEngine(productModel.getSourceEngine());
@@ -259,10 +249,6 @@ public class ProductViewModelMapper {
         productItem.setMinOrder(productModel.getMinOrder());
         productItem.setProductUrl(productModel.getUrl());
         productItem.setPageTitle(pageTitle);
-
-        if (shopRatingABTestStrategy != null) {
-            shopRatingABTestStrategy.processShopRatingVariant(productModel, productItem);
-        }
 
         return productItem;
     }
@@ -302,6 +288,23 @@ public class ProductViewModelMapper {
         );
     }
 
+    private List<LabelGroupVariantViewModel> convertToLabelGroupVariantList(
+            List<SearchProductModel.ProductLabelGroupVariant> labelGroupVariantList
+    ) {
+        return CollectionsKt.map(labelGroupVariantList, this::convertToLabelGroupVariantViewModel);
+    }
+
+    private LabelGroupVariantViewModel convertToLabelGroupVariantViewModel(
+            SearchProductModel.ProductLabelGroupVariant labelGroupVariant
+    ) {
+        return new LabelGroupVariantViewModel(
+                labelGroupVariant.getTitle(),
+                labelGroupVariant.getType(),
+                labelGroupVariant.getTypeVariant(),
+                labelGroupVariant.getHexColor()
+        );
+    }
+
     private FreeOngkirViewModel convertToFreeOngkirViewModel(SearchProductModel.ProductFreeOngkir freeOngkir) {
         return new FreeOngkirViewModel(freeOngkir.isActive(), freeOngkir.getImageUrl());
     }
@@ -337,32 +340,44 @@ public class ProductViewModelMapper {
                     data.getType(),
                     data.getPosition(),
                     data.getLayout(),
-                    convertToInspirationCarouselOptionViewModel(data.getInspirationCarouselOptions(), data.getType(), data.getLayout())
+                    convertToInspirationCarouselOptionViewModel(data)
             ));
         }
 
         return inspirationCarousel;
     }
 
-    private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(List<SearchProductModel.InspirationCarouselOption> inspirationCarouselOptions, String inspirationCarouselType, String layout) {
+    private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(
+            SearchProductModel.InspirationCarouselData data
+    ) {
         List<InspirationCarouselViewModel.Option> options = new ArrayList<>();
 
-        for (SearchProductModel.InspirationCarouselOption opt : inspirationCarouselOptions) {
-            int position = inspirationCarouselOptions.indexOf(opt) + 1;
+        for (SearchProductModel.InspirationCarouselOption opt : data.getInspirationCarouselOptions()) {
+            int position = data.getInspirationCarouselOptions().indexOf(opt) + 1;
             options.add(new InspirationCarouselViewModel.Option(
                     opt.getTitle(),
                     opt.getUrl(),
                     opt.getApplink(),
-                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, inspirationCarouselType),
-                    inspirationCarouselType,
-                    layout
+                    opt.getBannerImageUrl(),
+                    opt.getBannerLinkUrl(),
+                    opt.getBannerApplinkUrl(),
+                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, data.getType(), data.getLayout()),
+                    data.getType(),
+                    data.getLayout(),
+                    data.getPosition(),
+                    data.getTitle()
             ));
         }
 
         return options;
     }
 
-    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct, int position, String inspirationCarouselType) {
+    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(
+            List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct,
+            int position,
+            String inspirationCarouselType,
+            String layout
+    ) {
         List<InspirationCarouselViewModel.Option.Product> products = new ArrayList<>();
 
         for (SearchProductModel.InspirationCarouselProduct product : inspirationCarouselProduct) {
@@ -378,7 +393,12 @@ public class ProductViewModelMapper {
                     product.getApplink(),
                     product.getDescription(),
                     position,
-                    inspirationCarouselType
+                    inspirationCarouselType,
+                    product.getRatingAverage(),
+                    convertToLabelGroupList(product.getLabelGroupList()),
+                    layout,
+                    product.getOriginalPrice(),
+                    product.getDiscountPercentage()
             ));
         }
 

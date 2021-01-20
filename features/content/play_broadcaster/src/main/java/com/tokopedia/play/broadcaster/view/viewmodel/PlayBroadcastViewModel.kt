@@ -24,8 +24,10 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.state.LivePusherErrorStatus
 import com.tokopedia.play.broadcaster.view.state.LivePusherState
 import com.tokopedia.play.broadcaster.view.state.LivePusherTimerState
+import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
@@ -43,7 +45,7 @@ class PlayBroadcastViewModel @Inject constructor(
         private val getConfigurationUseCase: GetConfigurationUseCase,
         private val getChannelUseCase: GetChannelUseCase,
         private val createChannelUseCase: CreateChannelUseCase,
-        private val updateChannelUseCase: UpdateChannelUseCase,
+        private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val dispatcher: CoroutineDispatcherProvider,
         private val userSession: UserSessionInterface,
@@ -86,10 +88,9 @@ class PlayBroadcastViewModel @Inject constructor(
         dataList.map { ProductContentUiModel.createFromData(it) }
     }
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
-    val observableReportDuration: LiveData<String>
-        get() = _observableReportDuration
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
+    val observableBroadcastSchedule = getCurrentSetupDataStore().getObservableSchedule()
 
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
@@ -109,7 +110,6 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private val _observableLivePusherState = MutableLiveData<LivePusherState>()
     private val _observableLiveDurationState = MutableLiveData<LivePusherTimerState>()
-    private val _observableReportDuration = MutableLiveData<String>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
 
     private var isManualStartTimer = false
@@ -148,12 +148,12 @@ class PlayBroadcastViewModel @Inject constructor(
                 }
             }
 
-            _observableReportDuration.value = configUiModel.timeElapsed
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
 
             setProductConfig(configUiModel.productTagConfig)
             setCoverConfig(configUiModel.coverConfig)
             setDurationConfig(configUiModel.durationConfig)
+            setScheduleConfig(configUiModel.scheduleConfig)
 
             // configure live streaming duration
             if (configUiModel.channelType == ChannelType.Pause)
@@ -202,6 +202,7 @@ class PlayBroadcastViewModel @Inject constructor(
             setChannelInfo(channelInfo)
             setSelectedProduct(playBroadcastMapper.mapChannelProductTags(channel.productTags))
             setSelectedCover(playBroadcastMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
+            setBroadcastSchedule(playBroadcastMapper.mapChannelSchedule(channel.basic.timestamp))
 
             generateShareLink(playBroadcastMapper.mapShareInfo(channel))
 
@@ -212,7 +213,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateChannelStatus(status: PlayChannelStatus) = withContext(dispatcher.io) {
+    private suspend fun updateChannelStatus(status: PlayChannelStatusType) = withContext(dispatcher.io) {
         updateChannelUseCase.apply {
             setQueryParams(
                     UpdateChannelUseCase.createUpdateStatusRequest(
@@ -232,7 +233,7 @@ class PlayBroadcastViewModel @Inject constructor(
         playPusher.setPlayPusherInfoListener(object : PlayPusherInfoListener {
             override fun onStarted() {
                 scope.launchCatchError(block = {
-                    updateChannelStatus(PlayChannelStatus.Live)
+                    updateChannelStatus(PlayChannelStatusType.Live)
                     _observableLivePusherState.value = LivePusherState.Started
                     if (!isManualStartTimer) playPusher.startTimer()
                     startWebSocket()
@@ -247,7 +248,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
             override fun onResumed() {
                 scope.launchCatchError(block = {
-                    updateChannelStatus(PlayChannelStatus.Live)
+                    updateChannelStatus(PlayChannelStatusType.Live)
                     _observableLivePusherState.value = LivePusherState.Started
                     playPusher.resumeTimer()
                 }) {
@@ -262,7 +263,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
             override fun onPaused() {
                 scope.launchCatchError(block = {
-                    updateChannelStatus(PlayChannelStatus.Pause)
+                    updateChannelStatus(PlayChannelStatusType.Pause)
                 }) {
                 }
             }
@@ -354,12 +355,12 @@ class PlayBroadcastViewModel @Inject constructor(
             if (err == null && _observableChannelInfo.value is NetworkResult.Success) {
                 val channelInfo = (_observableChannelInfo.value as NetworkResult.Success).data
                 when (channelInfo.status) {
-                    PlayChannelStatus.Pause -> {
+                    PlayChannelStatusType.Pause -> {
                         pausePushStream()
                         playPusher.pauseTimer()
                         _observableLivePusherState.value = LivePusherState.Paused
                     }
-                    PlayChannelStatus.Live ->  _observableLivePusherState.value = LivePusherState.Recovered
+                    PlayChannelStatusType.Live ->  _observableLivePusherState.value = LivePusherState.Recovered
                     else -> stopPushStream(shouldNavigate = true)
                 }
             } else {
@@ -392,7 +393,8 @@ class PlayBroadcastViewModel @Inject constructor(
                 playPusher.stopTimer()
                 playPusher.stopPush()
                 playPusher.stopPreview()
-                updateChannelStatus(PlayChannelStatus.Stop)
+                updateChannelStatus(PlayChannelStatusType.Stop)
+                playPusher.destroy()
             }
             _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
         }) {
@@ -408,13 +410,6 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun setChannelId(channelId: String) {
         hydraConfigStore.setChannelId(channelId)
-    }
-
-    fun getReportDuration() {
-        scope.launch {
-            val liveDuration = playPusher.getTimeElapsed()
-            _observableReportDuration.value = liveDuration
-        }
     }
 
     private fun startWebSocket() {
@@ -474,6 +469,10 @@ class PlayBroadcastViewModel @Inject constructor(
         getCurrentSetupDataStore().setFullCover(cover)
     }
 
+    private fun setBroadcastSchedule(schedule: BroadcastScheduleUiModel) {
+        getCurrentSetupDataStore().setBroadcastSchedule(schedule)
+    }
+
     private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
         hydraConfigStore.setIngestUrl(channelInfo.ingestUrl)
         hydraConfigStore.setTitle(channelInfo.title)
@@ -493,10 +492,16 @@ class PlayBroadcastViewModel @Inject constructor(
         hydraConfigStore.setMaxDurationDesc(configModel.maxDurationDesc)
     }
 
+    private fun setScheduleConfig(scheduleConfigModel: BroadcastScheduleConfigUiModel) {
+        hydraConfigStore.setMinScheduleDate(scheduleConfigModel.minimum)
+        hydraConfigStore.setMaxScheduleDate(scheduleConfigModel.maximum)
+        hydraConfigStore.setDefaultScheduleDate(scheduleConfigModel.default)
+    }
+
     private fun restartLiveDuration(duration: LiveDuration) {
         scope.launchCatchError(block = {
-            val durationUiModel = playBroadcastMapper.mapLiveDuration(duration)
-            playPusher.restartStreamDuration(durationUiModel.remaining)
+            val remainingDuration = duration.remaining*1000
+            playPusher.restartStreamDuration(durationInMillis = remainingDuration)
         }) { }
     }
 

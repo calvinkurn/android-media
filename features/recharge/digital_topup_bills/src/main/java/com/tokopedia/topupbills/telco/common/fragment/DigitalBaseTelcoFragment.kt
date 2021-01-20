@@ -7,11 +7,15 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.*
@@ -26,6 +30,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
+import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.common.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
@@ -42,6 +47,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.util.regex.Pattern
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * Created by nabillasabbaha on 23/05/19.
@@ -50,6 +56,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected lateinit var pageContainer: RelativeLayout
     protected lateinit var tickerView: Ticker
+    protected lateinit var appBarLayout: AppBarLayout
+    protected lateinit var bannerImage: ImageView
     private lateinit var viewModel: SharedTelcoViewModel
     protected var listMenu = mutableListOf<TelcoTabItem>()
     protected var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
@@ -90,6 +98,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setAnimationAppBarLayout()
         subscribeUi()
         val checkoutView = getCheckoutView()
         checkoutView?.run {
@@ -143,7 +152,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                             override fun onPermissionGranted() {
                                 openContactPicker()
                             }
-                        }, "")
+                        })
             }
         } else {
             openContactPicker()
@@ -156,8 +165,9 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         try {
             startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
         } catch (e: ActivityNotFoundException) {
-            NetworkErrorHelper.showSnackbar(activity,
-                    getString(R.string.error_message_contact_not_found))
+            view?.let {
+                Toaster.build(it, getString(R.string.error_message_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+            }
         }
     }
 
@@ -221,7 +231,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     private fun onErrorCustomData() {
         val errorData = (viewModel.catalogPrefixSelect.value as Fail).throwable
         view?.run {
-            Toaster.make(this, ErrorHandler.getErrorMessage(context, errorData), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(this, ErrorHandler.getErrorMessage(context, errorData), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -296,11 +306,17 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun onCheckVoucherError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+        view?.let { v ->
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
     }
 
     private fun sendOpenScreenTracking() {
@@ -317,6 +333,49 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             action = DigitalTopupEventTracking.Action.CLICK_TAB_RECENT
         }
         topupAnalytics.eventClickTabMenuTelco(categoryId, userSession.userId, action)
+    }
+
+    private fun setAnimationAppBarLayout() {
+        val fadeIn = AlphaAnimation(0f, 1.0f)
+        fadeIn.duration = 300
+        fadeIn.fillAfter = true
+
+        val fadeOut = AlphaAnimation(1.0f, 0f)
+        fadeOut.duration = 300
+        fadeOut.fillAfter = true
+
+        //initial appBar state is expanded
+        (activity as? BaseTelcoActivity)?.onExpandAppBar()
+
+        appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+            var lastOffset = -1
+            var lastIsCollapsed = false
+
+            override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
+                if (lastOffset == verticalOffSet) return
+
+                lastOffset = verticalOffSet
+                if (abs(verticalOffSet) >= appBarLayout.totalScrollRange && !lastIsCollapsed) {
+                    //Collapsed
+                    lastIsCollapsed = true
+                    onCollapseAppBar()
+                    if (!fadeOut.hasStarted() || fadeOut.hasEnded()) {
+                        bannerImage.clearAnimation()
+                        bannerImage.startAnimation(fadeOut)
+                    }
+                    (activity as? BaseTelcoActivity)?.onCollapseAppBar()
+                } else if (verticalOffSet == 0 && lastIsCollapsed) {
+                    //Expanded
+                    lastIsCollapsed = false
+                    onExpandAppBar()
+                    if (!fadeIn.hasStarted() || fadeIn.hasEnded()) {
+                        bannerImage.clearAnimation()
+                        bannerImage.startAnimation(fadeIn)
+                    }
+                    (activity as? BaseTelcoActivity)?.onExpandAppBar()
+                }
+            }
+        })
     }
 
     abstract fun onCollapseAppBar()

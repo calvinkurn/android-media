@@ -4,14 +4,13 @@ import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
+const val KEY_EVENT = "event"
+const val KEY_EVENT_CATEGORY = "eventCategory"
+const val KEY_EVENT_ACTION = "eventAction"
+const val KEY_EVENT_LABEL = "eventLabel"
+const val KEY_USER_ID = "userId"
+
 object TargetedPromotionAnalytics {
-
-    private const val KEY_EVENT = "event"
-    private const val KEY_EVENT_CATEGORY = "eventCategory"
-    private const val KEY_EVENT_ACTION = "eventAction"
-    private const val KEY_EVENT_LABEL = "eventLabel"
-    private const val KEY_USER_ID = "userId"
-
 
     private const val TARGETED_PROMOTION = "targeted promotion"
     private const val VIEW_TARGETED_PROMO_IRIS = "viewTargetedPromoIris"

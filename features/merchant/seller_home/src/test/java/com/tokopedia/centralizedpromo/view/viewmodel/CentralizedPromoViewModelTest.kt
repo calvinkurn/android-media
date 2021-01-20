@@ -2,17 +2,18 @@ package com.tokopedia.centralizedpromo.view.viewmodel
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -59,6 +60,7 @@ class CentralizedPromoViewModelTest {
         MockKAnnotations.init(this)
 
         mockkObject(PromoCreationStaticData)
+        mockkObject(CentralizedPromoTracking)
 
         CentralizedPromoViewModel::class.declaredMemberProperties.filter { it.name in arrayOf("startDate", "endDate") }.forEach {
             it.isAccessible = true
@@ -277,6 +279,31 @@ class CentralizedPromoViewModelTest {
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
         assert(result != null && result is Fail)
+    }
 
+    @Test
+    fun trackFreeShippingImpressionTest() {
+        every {
+            CentralizedPromoTracking.sendImpressionFreeShipping(userSession, any())
+        } just runs
+
+        viewModel.trackFreeShippingImpression()
+
+        verify {
+            CentralizedPromoTracking.sendImpressionFreeShipping(userSession, any())
+        }
+    }
+
+    @Test
+    fun trackFreeShippingClickTest() {
+        every {
+            CentralizedPromoTracking.sendClickFreeShipping(userSession, any())
+        } just runs
+
+        viewModel.trackFreeShippingClick()
+
+        verify {
+            CentralizedPromoTracking.sendClickFreeShipping(userSession, any())
+        }
     }
 }

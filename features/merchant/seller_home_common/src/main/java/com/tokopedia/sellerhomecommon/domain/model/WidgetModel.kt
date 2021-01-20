@@ -34,5 +34,8 @@ data class WidgetModel(
         val isShowEmpty: Boolean?,
         @Expose
         @SerializedName("postFilter")
-        val postFilter: List<PostFilterModel>?
+        val postFilter: List<PostFilterModel>?,
+        @Expose
+        @SerializedName("emptyState")
+        val emptyStateModel: WidgetEmptyStateModel
 )

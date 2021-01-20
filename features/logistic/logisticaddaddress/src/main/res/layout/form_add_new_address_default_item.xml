@@ -25,7 +25,7 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_14"/>
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -57,7 +57,7 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_14"/>
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -81,7 +81,7 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_14"/>
 
     </com.google.android.material.textfield.TextInputLayout>

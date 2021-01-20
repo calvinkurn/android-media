@@ -14,14 +14,9 @@ import kotlinx.coroutines.*
 import org.junit.Assert
 import org.junit.Test
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
-
-    @Test
-    fun `when detach view should unsubscribe use case`() {
-        shopEditBasicInfoViewModel.detachView()
-        verifyUnsubscribeUseCase()
-    }
 
     @Test
     fun `when get shop basic data should return success`() {
@@ -125,7 +120,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             onValidateDomainName_thenReturn()
 
             val domainName: String = "domain"
-            shopEditBasicInfoViewModel.validateShopDomain(domain = domainName)
+            shopEditBasicInfoViewModel.validateShopDomain(domainName)
             advanceTimeBy(2000)
 
             verifySuccessValidateDomainNameRequestParamsCalled(domainName)
@@ -146,7 +141,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             privateCurrentShopNameField.set(shopEditBasicInfoViewModel, "shop")
 
             onGetShopDomainNameSuggestion_thenReturn()
-            shopEditBasicInfoViewModel.validateShopDomain(domain = "domain")
+            shopEditBasicInfoViewModel.validateShopDomain("domain")
             advanceTimeBy(2000)
 
             verifySuccessValidateDomainNameCalled()
@@ -194,23 +189,5 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
         assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).name == shopName)
         assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).domain == shopDomain)
-    }
-
-    @Test
-    fun `when validate shop name should activate job and call validation again to cancel job then completion validation it will be active again`() {
-        coroutineTestRule.runBlockingTest {
-            shopEditBasicInfoViewModel.validateShopName("shop")
-            shopEditBasicInfoViewModel.validateShopName("shopName")
-            assertTrue(shopEditBasicInfoViewModel.validateShopNameJob?.isActive == true)
-        }
-    }
-
-    @Test
-    fun `when validate shop domain should activate job and call validation again to cancel job then completion validation it will be active again`() {
-       coroutineTestRule.runBlockingTest {
-           shopEditBasicInfoViewModel.validateShopDomain("domain")
-           shopEditBasicInfoViewModel.validateShopDomain("shopDomain")
-           assertTrue(shopEditBasicInfoViewModel.validateShopDomainJob?.isActive == true)
-       }
     }
 }

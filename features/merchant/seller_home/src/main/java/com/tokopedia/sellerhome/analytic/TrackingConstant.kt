@@ -32,11 +32,13 @@ object TrackingConstant {
     //event
     const val VIEW_SELLER_WIDGET = "viewSellerWidget"
     const val VIEW_SELLER_WIDGET_IRIS = "viewSellerWidgetIris"
+    const val VIEW_SELLER_HOMEPAGE_IRIS = "viewHomepageIris"
     const val CLICK_SELLER_WIDGET = "clickSellerWidget"
     const val PROMO_VIEW = "promoView"
     const val PROMO_CLICK = "promoClick"
     const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
     const val OPEN_SCREEN = "openScreen"
+    const val CLICK_HOMEPAGE = "clickHomepage"
 
     //category
     const val HOME = "home"
@@ -73,6 +75,7 @@ object TrackingConstant {
     const val IMPRESSION_WIDGET_MULTI_LINE_GRAPH = "impression multi trendline"
     const val IMPRESSION_WIDGET_ANNOUNCEMENT = "impression widget announcement "
     const val CLICK_WIDGET_ADVANCE_TABLE = "click widget advance table"
+    const val CLICK_WIDGET_SIMPLE_TABLE = "click widget simple table"
 
     //search
     const val CLICK_SEARCH = "clickSearch"
@@ -91,4 +94,5 @@ object TrackingConstant {
     const val WIDGET_SIMPLE_TABLE = "widget simple table"
     const val WIDGET_PIE_CHART = "widget pie chart"
     const val WIDGET_BAR_CHART = "widget bar chart"
+    const val EMPTY_STATE = "emptystate"
 }

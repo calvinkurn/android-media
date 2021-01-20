@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyProductHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyProductHeaderListener
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import kotlinx.android.synthetic.main.item_talk_reply_product_header.view.*
 
 class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductHeaderListener: TalkReplyProductHeaderListener) : AbstractViewHolder<TalkReplyProductHeaderModel>(view) {
@@ -47,11 +47,11 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
         itemView.replyProductHeaderName.apply {
             if(productName.isNotBlank()) {
                 text = productName
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 return
             }
             text = getString(R.string.reply_product_deleted)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             setOnClickListener(null)
         }
     }

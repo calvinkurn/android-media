@@ -1,6 +1,7 @@
 package com.tokopedia.digital.home.presentation.fragment
 
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -62,6 +64,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     private var platformId: Int = 0
     private var enablePersonalize: Boolean = false
+    private var sliceOpenApp: Boolean = false
 
     lateinit var homeComponentsData: List<RechargeHomepageSections.Section>
 
@@ -84,6 +87,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         arguments?.let {
             platformId = it.getInt(EXTRA_PLATFORM_ID, 0)
             enablePersonalize = it.getBoolean(EXTRA_ENABLE_PERSONALIZE, true)
+            sliceOpenApp = it.getBoolean(RECHARGE_HOME_PAGE_EXTRA, false)
         }
 
         searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(resources.displayMetrics)
@@ -122,6 +126,11 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         // Recharge Branch Event
         rechargeHomepageAnalytics.eventHomepageLaunched(userSession.userId)
 
+        if(sliceOpenApp){
+            rechargeHomepageAnalytics.sliceOpenApp(userSession.userId)
+            rechargeHomepageAnalytics.onOpenPageFromSlice()
+        }
+
         loadData()
     }
 
@@ -135,7 +144,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             var flags = digital_homepage_container.systemUiVisibility
             flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_container.systemUiVisibility = flags
-            activity?.window?.statusBarColor = Color.WHITE
+            context?.run {
+                activity?.window?.statusBarColor =
+                        androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            }
         }
 
         if (Build.VERSION.SDK_INT in 19..20) {
@@ -165,8 +177,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         if (offsetAlpha >= 255) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
-            digital_homepage_order_list.setColorFilter(com.tokopedia.unifyprinciples.R.color.Neutral_N200)
             context?.run {
+                digital_homepage_order_list.setColorFilter(
+                        ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N200), PorterDuff.Mode.MULTIPLY
+                )
                 searchBarContainer.background =
                         MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background_gray)
             }
@@ -368,15 +382,17 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     companion object {
         const val EXTRA_PLATFORM_ID = "platform_id"
         const val EXTRA_ENABLE_PERSONALIZE = "personalize"
+        const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16
 
-        fun newInstance(platformId: Int, enablePersonalize: Boolean = false): RechargeHomepageFragment {
+        fun newInstance(platformId: Int, enablePersonalize: Boolean = false, sliceOpenApp: Boolean = false): RechargeHomepageFragment {
             val fragment = RechargeHomepageFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PLATFORM_ID, platformId)
             bundle.putBoolean(EXTRA_ENABLE_PERSONALIZE, enablePersonalize)
+            bundle.putBoolean(RECHARGE_HOME_PAGE_EXTRA, sliceOpenApp)
             fragment.arguments = bundle
             return fragment
         }

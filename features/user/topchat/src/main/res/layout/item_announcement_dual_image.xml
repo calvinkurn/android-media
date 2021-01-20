@@ -18,7 +18,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:textAllCaps="true"
-        android:textColor="@color/grey_500"
+        android:textColor="@color/Unify_N200"
         android:textSize="@dimen/fontSize_lvl2"
         tools:text="13:16 wib" />
 
@@ -65,7 +65,7 @@
         android:layout_gravity="left"
         android:layout_marginTop="@dimen/dp_topchat_3"
         android:gravity="left"
-        android:textColor="@color/time_color"
+        android:textColor="@color/Unify_N300"
         android:textSize="@dimen/fontSize_lvl1"
         tools:text="testtest" />
 </RelativeLayout>

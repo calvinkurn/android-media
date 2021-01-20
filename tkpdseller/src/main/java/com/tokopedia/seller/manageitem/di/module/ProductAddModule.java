@@ -14,7 +14,6 @@ import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.seller.manageitem.di.scope.ProductAddScope;
-import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -26,7 +25,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
  * @author sebastianuskh on 4/13/17.
  */
 @ProductAddScope
-@Module(includes = ShopCommonModule.class)
+@Module
 public class ProductAddModule {
 
     protected final Context context;

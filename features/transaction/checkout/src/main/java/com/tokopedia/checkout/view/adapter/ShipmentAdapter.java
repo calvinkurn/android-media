@@ -94,7 +94,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private TickerAnnouncementHolderData tickerAnnouncementHolderData;
     private LastApplyUiModel lastApplyUiModel;
-    private List<PromoStackingData.Builder> listPromoStackingMerchantData;
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
     private ShipmentCostModel shipmentCostModel;
@@ -114,7 +113,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int lastChooseCourierItemPosition;
     private String cartIds;
     private int lastServiceId;
-    private String blackboxInfo;
     private boolean sendInsuranceImpressionEvent = false;
     private String insuranceProductId = "";
     private String insuranceTitle = "";
@@ -302,12 +300,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return new ShowCaseBuilder()
                 .customView(com.tokopedia.logisticcart.R.layout.show_case_checkout)
                 .prevStringRes(R.string.show_case_prev)
-                .titleTextColorRes(com.tokopedia.abstraction.R.color.white)
+                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 .spacingRes(com.tokopedia.abstraction.R.dimen.dp_12)
                 .arrowWidth(com.tokopedia.abstraction.R.dimen.dp_16)
-                .textColorRes(com.tokopedia.abstraction.R.color.grey_400)
-                .shadowColorRes(R.color.checkout_module_shadow)
-                .backgroundContentColorRes(com.tokopedia.abstraction.R.color.black)
+                .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
+                .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.checkout_module_selector_circle_green)
                 .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
                 .finishStringRes(R.string.show_case_finish)
@@ -346,20 +344,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 position += 1;
             }
             shipmentDataList.add(position, shipmentNotifierModel);
-        }
-    }
-
-    public void removeNotifierData() {
-        int position = HEADER_POSITION;
-        for (int i = 0; i < shipmentDataList.size(); i++) {
-            if (shipmentDataList.get(i) instanceof ShipmentNotifierModel) {
-                position = i;
-                break;
-            }
-        }
-        if (shipmentDataList.get(position) instanceof ShipmentNotifierModel) {
-            shipmentDataList.remove(position);
-            notifyItemRemoved(position);
         }
     }
 
@@ -524,41 +508,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return false;
     }
 
-    public void updateSelectedAddress(RecipientAddressModel newlySelectedAddress, boolean isUpdateAfterSelectTradeInDropOff) {
-        int addressIndex = 0;
-        for (Object item : shipmentDataList) {
-            if (item instanceof RecipientAddressModel) {
-                addressIndex = shipmentDataList.indexOf(item);
-                break;
-            }
-        }
-        if (addressIndex != 0) {
-            shipmentDataList.set(addressIndex, newlySelectedAddress);
-            this.recipientAddressModel = newlySelectedAddress;
-            if (isUpdateAfterSelectTradeInDropOff) {
-                notifyItemChanged(addressIndex);
-                int invoiceTradeInIndex = 0;
-                for (Object item : shipmentDataList) {
-                    if (item instanceof ShipmentCartItemModel) {
-                        invoiceTradeInIndex = shipmentDataList.indexOf(item);
-                        ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) item;
-                        shipmentCartItemModel.setHasSetDropOffLocation(true);
-                        shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(false);
-                        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
-                            shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourierTradeInDropOff(null);
-                        }
-                        break;
-                    }
-                }
-                notifyItemChanged(invoiceTradeInIndex);
-            } else {
-                resetCourier();
-                notifyDataSetChanged();
-                shipmentAdapterActionListener.resetTotalPrice();
-            }
-        }
-    }
-
     public void updateDonation(boolean checked) {
         if (shipmentDonationModel != null) {
             shipmentDonationModel.setChecked(checked);
@@ -606,39 +555,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return buyEgoldValue;
     }
 
-    private int getBuyEmasPosition() {
-        for (int i = 0; i < shipmentDataList.size(); i++) {
-            if (shipmentDataList.get(i) instanceof EgoldAttributeModel) {
-                return i;
-            }
-        }
-        return 0;
-    }
-
     public void updateEgold(boolean checked) {
         if (egoldAttributeModel != null) {
             egoldAttributeModel.setChecked(checked);
             updateShipmentCostModel();
             notifyItemChanged(getShipmentCostPosition());
         }
-    }
-
-    private void resetCourier() {
-        setLastServiceId(0);
-        for (Object item : shipmentDataList) {
-            if (item instanceof ShipmentCartItemModel) {
-                if (((ShipmentCartItemModel) item).getSelectedShipmentDetailData() != null) {
-                    ((ShipmentCartItemModel) item).setSelectedShipmentDetailData(null);
-                }
-            } else if (item instanceof ShipmentCostModel) {
-                ((ShipmentCostModel) item).setAdditionalFee(0);
-                ((ShipmentCostModel) item).setInsuranceFee(0);
-                ((ShipmentCostModel) item).setShippingFee(0);
-                ((ShipmentCostModel) item).setTotalPrice(0);
-                ((ShipmentCostModel) item).setPromoPrice(0);
-            }
-        }
-        updateInsuranceTncVisibility();
     }
 
     public void resetCourier(int cartPosition) {
@@ -1084,16 +1006,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(position);
     }
 
-    public void updateItemPromoStackVoucher(PromoStackingData promoStackingData) {
-        for (int i = 0; i < shipmentDataList.size(); i++) {
-            Object object = shipmentDataList.get(i);
-            if (object instanceof PromoStackingData) {
-                shipmentDataList.set(i, promoStackingData);
-                notifyItemChanged(i);
-            }
-        }
-    }
-
     public void setPromoBenefit(List<SummariesItemUiModel> benefitSummaries) {
         if (shipmentCostModel != null) {
             for (SummariesItemUiModel summariesUiModel : benefitSummaries) {
@@ -1221,18 +1133,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.lastServiceId = lastServiceId;
     }
 
-    public String getBlackboxInfo() {
-        return blackboxInfo;
-    }
-
-    public void setBlackboxInfo(String blackboxInfo) {
-        this.blackboxInfo = blackboxInfo;
-    }
-
-    public LastApplyUiModel getLastApplyUiModel() {
-        return lastApplyUiModel;
-    }
-
     public String getInsuranceProductId() {
         return insuranceProductId;
     }
@@ -1285,13 +1185,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public List<ShipmentCartItemModel> getShipmentCartItemModelList() {
         return shipmentCartItemModelList;
-    }
-
-    public ShipmentCartItemModel getShipmentCartItemModelDataByIndex(int index) {
-        if (shipmentCartItemModelList.get(index) != null) {
-            return shipmentCartItemModelList.get(index);
-        }
-        return null;
     }
 
     public int getShipmentCartItemModelPosition(ShipmentCartItemModel shipmentCartItemModel) {

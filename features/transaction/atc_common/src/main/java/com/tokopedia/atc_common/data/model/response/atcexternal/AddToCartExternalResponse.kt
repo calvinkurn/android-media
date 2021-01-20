@@ -25,7 +25,7 @@ data class DataResponse(
 
 data class AddToCartExternalDataResponse(
         @SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: Long = 0,
         @SerializedName("product_name")
         val productName: String = "",
         @SerializedName("quantity")
@@ -45,7 +45,7 @@ data class AddToCartExternalDataResponse(
         @SerializedName("url")
         val url: String = "",
         @SerializedName("cart_id")
-        val cartId: Int = 0,
+        val cartId: Long = 0,
         @SerializedName("brand")
         val brand: String = "",
         @SerializedName("category_id")

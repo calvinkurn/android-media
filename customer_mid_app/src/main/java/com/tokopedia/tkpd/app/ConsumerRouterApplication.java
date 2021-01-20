@@ -6,12 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
@@ -65,8 +67,8 @@ import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
-import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.promogamification.common.GamificationRouter;
+import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -127,7 +129,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ReactNativeRouter,
         NetworkRouter,
         OmsModuleRouter,
-        PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
         LinkerRouter,
         KYCRouter {
@@ -199,7 +200,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private boolean initLibraries() {
         initCMPushNotification();
         initTetraDebugger();
+        initCMDependencies();
         return true;
+    }
+
+    private void initCMDependencies(){
+        GratifCmInitializer.INSTANCE.start(this);
     }
 
     private void initialiseHansel() {
@@ -624,5 +630,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInboxTalkCallingIntent(Context mContext) {
         return null;
+    }
+
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
+        if(TextUtils.isEmpty(errorMessage)){
+            SessionAnalytics.trackRefreshTokenSuccess();
+        }else {
+            SessionAnalytics.trackRefreshTokenFailed(errorMessage);
+        }
     }
 }

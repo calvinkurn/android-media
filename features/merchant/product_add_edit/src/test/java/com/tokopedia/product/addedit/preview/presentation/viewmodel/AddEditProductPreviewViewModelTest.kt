@@ -1,17 +1,18 @@
 package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
 import androidx.lifecycle.MediatorLiveData
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
+import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
-import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -21,11 +22,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
 
 class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixture() {
-
-    private val defaultShopId = "123"
 
     @Test
     fun `When save and get product draft are success Expect can be saved and retrieved data draft`() = runBlocking {
@@ -57,11 +55,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
                 price = 1000.toBigInteger()
         )
         onGetProduct_thenReturn(product)
-        onGetIsShopOwner_thenReturn(true)
-        onGetShopId_thenReturnDefault()
-        onGetAdminProductPermission_thenReturn(true)
-        onGetAdminEditStockPermission_thenReturn(true)
-        viewModel.setProductId(product.productID)
         viewModel.getProductData(product.productID)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
@@ -90,11 +83,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     @Test
     fun `When get remote product is fail Expect fail object`() = runBlocking {
         onGetProduct_thenFailed()
-        onGetIsShopOwner_thenReturn(true)
-        onGetShopId_thenReturnDefault()
-        onGetAdminProductPermission_thenReturn(true)
-        onGetAdminEditStockPermission_thenReturn(true)
-        viewModel.setProductId("4")
         viewModel.getProductData("4")
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
@@ -231,17 +219,18 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         var pictureInputModel = PictureInputModel().apply {
             urlOriginal = "www.blank.com"
             fileName = "apa"
+            urlThumbnail = "www.gmail.com"
         }
         var product = ProductInputModel().apply {
-            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel)
-            detailInputModel.imageUrlOrPathList = listOf("ada", "apa")
+            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel, pictureInputModel)
+            detailInputModel.imageUrlOrPathList = listOf("ada", "apa", "ada")
         }
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
         var imagePickerResult = arrayListOf("pict1","pict2","pict3")
-        var originalImageUrl = arrayListOf("www.blank.com","num2","num3")
-        var editted = arrayListOf(true,false,true)
+        var originalImageUrl = arrayListOf("www.blank.com","num2","www.blank.com")
+        var editted = arrayListOf(false,false,true)
 
         viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
         viewModel.productInputModel.getOrAwaitValue()
@@ -267,6 +256,34 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.getOrAwaitValue()
 
         assertTrue(viewModel.imageUrlOrPathList.value != null)
+
+        val pictureInputModel2 = PictureInputModel().apply {
+            urlOriginal = "www.blank.com"
+            fileName = "apa"
+            urlThumbnail = ""
+        }
+        product = ProductInputModel().apply {
+            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel2)
+            detailInputModel.imageUrlOrPathList = listOf("ada", "apa")
+        }
+        viewModel.productInputModel.value = product
+        viewModel.productInputModel.getOrAwaitValue()
+
+        imagePickerResult = arrayListOf("pict1","pict2","pict3")
+        originalImageUrl = arrayListOf("www.blank.com","num2","num3")
+        editted = arrayListOf(false,false,false)
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
+        viewModel.productInputModel.getOrAwaitValue()
+
+        assertTrue(viewModel.imageUrlOrPathList.value != null)
+
+        viewModel.productInputModel.value = null
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
+        viewModel.productInputModel.getOrAwaitValue()
+
+        assertEquals(null, viewModel.productInputModel.value)
     }
 
     @Test
@@ -308,169 +325,85 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.setIsDataChanged(false)
         assertFalse(viewModel.getIsDataChanged())
+
+        viewModel.productInputModel.value = null
+        viewModel.productInputModel.getOrAwaitValue()
+
+        viewModel.setIsDataChanged(true)
+        assertFalse(viewModel.getIsDataChanged())
     }
 
     @Test
-    fun `When is shop owner should not get admin permission and role is eligible`() {
-        onGetIsShopOwner_thenReturn(true)
+    fun  `When validate shop location should be true`() = runBlocking {
+        onGetShopInfoLocation_thenReturn()
 
-        viewModel.setProductId("")
+        viewModel.validateShopLocation(121313)
 
-        verifyGetAdminProductPermissionNotCalled(getAccessId())
-        verifyGetAdminEditStockPermissionNotCalled()
-        verifyGetAdminProductPermissionResult(Success(true))
+        viewModel.locationValidation.getOrAwaitValue()
+        verifyValidateShopLocation()
     }
 
     @Test
-    fun `When is not shop owner but is shop admin should get admin permission`() {
-        onGetIsShopOwner_thenReturn(false)
-        onGetIsShopAdmin_thenReturn(true)
-        onGetShopId_thenReturnDefault()
+    fun  `When save shop location should be successful`() = runBlocking {
+        onSaveShopShipmentLocation_thenReturn()
 
-        viewModel.setProductId("")
+        viewModel.saveShippingLocation(mutableMapOf())
 
-        verifyGetAdminProductPermissionCalled(getAccessId())
-        verifyGetAdminEditStockPermissionCalled()
+        viewModel.saveShopShipmentLocationResponse.getOrAwaitValue()
+        verifyGetShopInfoLocation()
     }
 
     @Test
-    fun `When is not shop Owner and is not shop Admin should not get admin permission and role is not eligible`() {
-        onGetIsShopOwner_thenReturn(false)
-        onGetIsShopAdmin_thenReturn(false)
+    fun  `When validate product name is success Expect get the result`() = runBlocking {
+        viewModel.resetValidateResult()
 
-        viewModel.setProductId("")
+        val response = ValidateProductNameResponse().apply {
+            productValidateV3.isSuccess = true
+            productValidateV3.data.validationResults = listOf("test", "test", "hello")
+        }
 
-        verifyGetAdminProductPermissionNotCalled(getAccessId())
-        verifyGetAdminEditStockPermissionNotCalled()
-        verifyGetAdminProductPermissionResult(Success(false))
+        onValidateProductName_thenReturn(response)
+        viewModel.validateProductNameInput("testing")
+
+        coVerify { validateProductNameUseCase.executeOnBackground() }
+
+        viewModel.validationResult.getOrAwaitValue()
+
+        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.VALIDATION_SUCCESS,  response.productValidateV3.data.validationResults.joinToString("\n")))
+
+        viewModel.resetValidateResult()
+        viewModel.validationResult.getOrAwaitValue()
+
+        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.UNVALIDATED))
     }
 
     @Test
-    fun `When product id is not blank, is not shop owner, but is shop admin, and admin permission is not yet known, should get admin permission`() {
-        onGetIsShopOwner_thenReturn(false)
-        onGetIsShopAdmin_thenReturn(true)
-        onGetShopId_thenReturnDefault()
+    fun  `When validate product name if product name equals to current product name Expect get the result`() = runBlocking {
+        viewModel.resetValidateResult()
 
-        viewModel.setProductId("123")
+        val response = ValidateProductNameResponse().apply {
+            productValidateV3.isSuccess = true
+            productValidateV3.data.validationResults = listOf("test", "test", "hello")
+        }
 
-        verifyGetAdminProductPermissionCalled(getAccessId())
-        verifyGetAdminEditStockPermissionCalled()
-    }
+        viewModel.productInputModel.value = ProductInputModel(
+                detailInputModel = DetailInputModel(currentProductName = "testing")
+        )
 
-    @Test
-    fun `When product id is not blank, is not shop owner, but is shop admin, and admin permission result is already known, should not get admin permission`() = runBlocking {
-        val isEligible = true
+        onValidateProductName_thenReturn(response)
+        viewModel.validateProductNameInput("testing")
 
-        onGetIsShopOwner_thenReturn(false)
-        onGetIsShopAdmin_thenReturn(true)
-        onGetShopId_thenReturnDefault()
-        onGetAdminProductPermission_thenReturn(isEligible)
-        onGetAdminEditStockPermission_thenReturn(isEligible)
+        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.VALIDATION_SUCCESS))
 
-        viewModel.setProductId("123")
-        viewModel.setProductId("123")
+        viewModel.validateProductNameInput("another test")
+        viewModel.validationResult.getOrAwaitValue()
 
-        verifyGetAdminProductPermissionCalledOnlyOnce(getAccessId())
-        verifyGetAdminEditStockPermissionCalledOnlyOnce()
-    }
+        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.VALIDATION_SUCCESS,  response.productValidateV3.data.validationResults.joinToString("\n")))
 
-    @Test
-    fun `When both get admin permission use case success Expect admin is eligible`() = runBlocking {
-        val isEligible = true
+        viewModel.resetValidateResult()
+        viewModel.validationResult.getOrAwaitValue()
 
-        onGetIsShopOwner_thenReturn(false)
-        onGetIsShopAdmin_thenReturn(true)
-        onGetShopId_thenReturnDefault()
-        onGetAdminProductPermission_thenReturn(isEligible)
-        onGetAdminEditStockPermission_thenReturn(isEligible)
-
-        viewModel.setProductId("")
-
-        verifyGetAdminProductPermissionCalled(getAccessId())
-        verifyGetAdminEditStockPermissionCalled()
-        verifyGetAdminProductPermissionResult(Success((isEligible)))
-    }
-
-    @Test
-    fun `When product permission is eligible but edit stock permission is not eligible, admin is not eligible`() = runBlocking {
-        val isProductManageEligible = true
-        val isEditStockEligible = false
-
-        onGetIsShopOwner_thenReturn(false)
-        onGetIsShopAdmin_thenReturn(true)
-        onGetShopId_thenReturnDefault()
-        onGetAdminProductPermission_thenReturn(isProductManageEligible)
-        onGetAdminEditStockPermission_thenReturn(isEditStockEligible)
-
-        viewModel.setProductId("")
-
-        verifyGetAdminProductPermissionCalled(getAccessId())
-        verifyGetAdminEditStockPermissionCalled()
-        verifyGetAdminProductPermissionResult(Success(false))
-    }
-
-    @Test
-    fun `When product permission is not eligible but edit stock permission is eligible, admin is not eligible`() = runBlocking {
-        val isProductManageEligible = false
-        val isEditStockEligible = true
-
-        onGetIsShopOwner_thenReturn(false)
-        onGetIsShopAdmin_thenReturn(true)
-        onGetShopId_thenReturnDefault()
-        onGetAdminProductPermission_thenReturn(isProductManageEligible)
-        onGetAdminEditStockPermission_thenReturn(isEditStockEligible)
-
-        viewModel.setProductId("")
-
-        verifyGetAdminProductPermissionCalled(getAccessId())
-        verifyGetAdminEditStockPermissionCalled()
-        verifyGetAdminProductPermissionResult(Success(false))
-    }
-
-    @Test
-    fun `When both permissions are not eligible, admin is not eligible`() = runBlocking {
-        val isProductManageEligible = false
-        val isEditStockEligible = false
-
-        onGetIsShopOwner_thenReturn(false)
-        onGetIsShopAdmin_thenReturn(true)
-        onGetShopId_thenReturnDefault()
-        onGetAdminProductPermission_thenReturn(isProductManageEligible)
-        onGetAdminEditStockPermission_thenReturn(isEditStockEligible)
-
-        viewModel.setProductId("")
-
-        verifyGetAdminProductPermissionCalled(getAccessId())
-        verifyGetAdminEditStockPermissionCalled()
-        verifyGetAdminProductPermissionResult(Success(false))
-    }
-
-    @Test
-    fun `When get admin permission use case failed should return error object`() = runBlocking {
-        onGetIsShopOwner_thenReturn(false)
-        onGetIsShopAdmin_thenReturn(true)
-        onGetAdminEditStockPermission_thenReturn(true)
-        onGetAdminProductPermission_thenFailed()
-        onGetShopId_thenReturnDefault()
-
-        viewModel.setProductId("")
-
-        verifyGetAdminProductPermissionCalled(getAccessId())
-        verifyGetAdminProductPermissionFailed()
-    }
-
-    @Test
-    fun `When get admin edit stock permission use case failed should return error object`() = runBlocking {
-        onGetIsShopOwner_thenReturn(false)
-        onGetIsShopAdmin_thenReturn(true)
-        onGetAdminProductPermission_thenReturn(true)
-        onGetAdminEditStockPermission_thenFailed()
-        onGetShopId_thenReturnDefault()
-
-        viewModel.setProductId("")
-
-        verifyGetAdminProductPermissionCalled(getAccessId())
-        verifyGetAdminProductPermissionFailed()
+        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.UNVALIDATED))
     }
 
     private fun onGetProductDraft_thenReturn(draft: ProductDraft) {
@@ -485,24 +418,16 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         coEvery { getProductUseCase.executeOnBackground() } returns product
     }
 
-    private fun onGetAdminProductPermission_thenReturn(isEligible: Boolean) {
-        coEvery { authorizeAccessUseCase.execute(any()) } returns isEligible
+    private fun onValidateProductName_thenReturn(response: ValidateProductNameResponse) {
+        coEvery { validateProductNameUseCase.executeOnBackground() } returns response
     }
 
-    private fun onGetAdminEditStockPermission_thenReturn(isEligible: Boolean) {
-        coEvery { authorizeEditStockUseCase.execute(any()) } returns isEligible
+    private fun onGetShopInfoLocation_thenReturn() {
+        coEvery { getShopInfoLocationUseCase.executeOnBackground() } returns true
     }
 
-    private fun onGetIsShopOwner_thenReturn(isShowOwner: Boolean) {
-        coEvery { userSession.isShopOwner } returns isShowOwner
-    }
-
-    private fun onGetIsShopAdmin_thenReturn(isShopAdmin: Boolean) {
-        coEvery { userSession.isShopAdmin } returns isShopAdmin
-    }
-
-    private fun onGetShopId_thenReturnDefault() {
-        coEvery { userSession.shopId } returns defaultShopId
+    private fun onSaveShopShipmentLocation_thenReturn() {
+        coEvery { saveShopShipmentLocationUseCase.executeOnBackground() } returns SaveShipmentLocation()
     }
 
     private fun onSaveProductDraft_thenFailed() {
@@ -515,50 +440,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun onGetProduct_thenFailed() {
         coEvery { getProductUseCase.executeOnBackground() } throws MessageErrorException("")
-    }
-
-    private fun onGetAdminProductPermission_thenFailed() {
-        coEvery { authorizeAccessUseCase.execute(any()) } throws MessageErrorException("")
-    }
-
-    private fun onGetAdminEditStockPermission_thenFailed() {
-        coEvery { authorizeEditStockUseCase.execute(any()) } throws MessageErrorException("")
-    }
-
-    private fun verifyGetAdminProductPermissionCalled(accessId: Int) {
-        coVerify {
-            authorizeAccessUseCase.execute(any())
-        }
-    }
-
-    private fun verifyGetAdminProductPermissionCalledOnlyOnce(accessId: Int) {
-        coVerify(exactly = 1) {
-            authorizeAccessUseCase.execute(any())
-        }
-    }
-
-    private fun verifyGetAdminProductPermissionNotCalled(accessId: Int) {
-        coVerify(exactly = 0) {
-            authorizeAccessUseCase.execute(any())
-        }
-    }
-
-    private fun verifyGetAdminEditStockPermissionCalled() {
-        coVerify {
-            authorizeEditStockUseCase.execute(any())
-        }
-    }
-
-    private fun verifyGetAdminEditStockPermissionCalledOnlyOnce() {
-        coVerify(exactly = 1) {
-            authorizeEditStockUseCase.execute(any())
-        }
-    }
-
-    private fun verifyGetAdminEditStockPermissionNotCalled() {
-        coVerify(exactly = 0) {
-            authorizeEditStockUseCase.execute(any())
-        }
     }
 
     private fun verifyGetProductDraftResult(expectedResult: Success<ProductDraft>) {
@@ -581,11 +462,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertEquals(false, viewModel.isLoading.value)
     }
 
-    private fun verifyGetAdminProductPermissionResult(expectedResult: Success<Boolean>) {
-        val actualResult = viewModel.isProductManageAuthorized.value as Success<Boolean>
-        assertEquals(expectedResult, actualResult)
-    }
-
     private fun verifySaveProductDraftFailed() {
         val result = viewModel.saveProductDraftResultLiveData.value
         assertTrue(result is Fail)
@@ -604,17 +480,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertEquals(true, viewModel.isVariantEmpty.value)
     }
 
-    private fun verifyGetAdminProductPermissionFailed() {
-        val result = viewModel.isProductManageAuthorized.value
-        assertTrue(result is Fail)
+    private fun verifyGetShopInfoLocation() {
+        assertTrue(viewModel.saveShopShipmentLocationResponse.value == Success(SaveShipmentLocation()))
     }
 
-    private fun getAccessId() =
-            when {
-                viewModel.isAdding -> AccessId.PRODUCT_ADD
-                viewModel.isDuplicate -> AccessId.PRODUCT_DUPLICATE
-                viewModel.isEditing.value == true -> AccessId.PRODUCT_EDIT
-                else -> AccessId.PRODUCT_ADD
-            }
-
+    private fun verifyValidateShopLocation() {
+        assertTrue(viewModel.locationValidation.value == Success(true))
+    }
 }

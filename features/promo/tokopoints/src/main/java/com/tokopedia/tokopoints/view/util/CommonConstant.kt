@@ -34,6 +34,9 @@ interface CommonConstant {
             const val PIN = "pin"
             const val STACK_ID = "stackID"
             const val APIVERSION = "apiVersion"
+            const val SAVING_YEAR = "year"
+            const val SAVING_MONTH = "month"
+            const val SAVING_TYPE = "type"
         }
     }
 
@@ -64,6 +67,7 @@ interface CommonConstant {
             const val MEMBERSHIP = BaseUrl.WEB_DOMAIN_MOBILE + "rewards/membership"
             const val INFO = BaseUrl.WEB_DOMAIN_MOBILE + "rewards/intro"
             const val DETAIL = BaseUrl.WEB_DOMAIN_MOBILE + "rewards/kupon/detail"
+            const val USERSAVING = "tokopedia://webview?url=https://m.tokopedia.com/rewards/saving"
         }
     }
 
@@ -116,6 +120,7 @@ interface CommonConstant {
             const val TP_GQL_HOME_PAGE_SECTION = "tp_gql_home_page_section"
             const val TP_GQL_REWARD_INTRO = "tp_gql_reward_intro"
             const val TP_GQL_CATALOG_LIST = "tp_gql_catalog_listing"
+            const val TP_GQL_REWARD_USESAVING = "tp_gql_usersaving"
         }
     }
 
@@ -164,5 +169,7 @@ interface CommonConstant {
         const val APIVERSION = "2.0.0"
         const val IMPRESSION_LIST = "/tokopoints - p{x} - promo list"
         const val TIMER_RED_BACKGROUND_HEX = "#EF144A"
+        const val USERSAVING_COLORSTR= "color:"
+        const val CATALOG_CLAIM_MESSAGE = "CATALOG_CLAIM_MESSAGE"
     }
 }

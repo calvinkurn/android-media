@@ -59,6 +59,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.home.HomeInternalRouter;
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -87,6 +88,7 @@ import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeCo
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -163,9 +165,9 @@ public class MainParentActivity extends BaseActivity implements
 
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
 
-    private static final String ROLLANCE_EXP_NAME = "Navigation Revamp";
-    private static final String ROLLANCE_VARIANT_OLD = "Existing Navigation";
-    private static final String ROLLANCE_VARIANT_REVAMP = "Navigation Revamp";
+    private static final String ROLLANCE_EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
+    private static final String ROLLANCE_VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD;
+    private static final String ROLLANCE_VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -520,6 +522,7 @@ public class MainParentActivity extends BaseActivity implements
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
                 showSelectedFragment(fragment, manager, ft);
+                FragmentLifecycleObserver.INSTANCE.onFragmentSelected(fragment);
             }
             ft.commitNowAllowingStateLoss();
         });
@@ -530,8 +533,10 @@ public class MainParentActivity extends BaseActivity implements
             Fragment frag = manager.getFragments().get(i);
             if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
                 ft.show(frag); // only show fragment what you want to show
+                FragmentLifecycleObserver.INSTANCE.onFragmentSelected(frag);
             } else {
                 ft.hide(frag); // hide all fragment
+                FragmentLifecycleObserver.INSTANCE.onFragmentUnSelected(frag);
             }
         }
     }
@@ -592,16 +597,10 @@ public class MainParentActivity extends BaseActivity implements
 
         addShortcuts();
 
-        WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return checkAppSignature();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, getContext());
-
-        if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
+        if (currentFragment != null) {
+            configureStatusBarBasedOnFragment(currentFragment);
+            FragmentLifecycleObserver.INSTANCE.onFragmentSelected(currentFragment);
+        }
     }
 
     private void clearNotification() {
@@ -609,14 +608,6 @@ public class MainParentActivity extends BaseActivity implements
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
             NotificationManagerCompat.from(this).cancelAll();
         }
-    }
-
-    @NotNull
-    private boolean checkAppSignature(){
-        if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
-            finish();
-        }
-        return true;
     }
 
     @Override
@@ -949,10 +940,10 @@ public class MainParentActivity extends BaseActivity implements
 
                     Intent intentHome = MainParentActivity.start(MainParentActivity.this);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intentHome.setAction(Intent.ACTION_VIEW);
+                    intentHome.setAction(RouteManager.INTERNAL_VIEW);
 
                     Intent productIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
-                    productIntent.setAction(Intent.ACTION_VIEW);
+                    productIntent.setAction(RouteManager.INTERNAL_VIEW  );
                     productIntent.putExtras(args);
 
                     ShortcutInfo productShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_BELI_ID)
@@ -1065,7 +1056,6 @@ public class MainParentActivity extends BaseActivity implements
             }
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
             getPageLoadTimePerformanceInterface().stopMonitoring();
-            pageLoadTimePerformanceCallback = null;
         }
     }
 
@@ -1134,7 +1124,15 @@ public class MainParentActivity extends BaseActivity implements
         this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
             if (isRollanceTestingUsingNavigationRevamp()) {
-                globalNavAnalytics.get().eventBottomNavigationDrawer(menu.get(index).getTitle(), userSession.get().getUserId());
+                String pageName = "";
+                if (menu.get(index).getTitle().equals(getResources().getString(R.string.home))) {
+                    pageName = "/";
+                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
+                    pageName = "OS Homepage";
+                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
+                    pageName = "Feed";
+                }
+                globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
             } else {
                 globalNavAnalytics.get().eventBottomNavigation(menu.get(index).getTitle()); // push analytics
             }

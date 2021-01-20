@@ -22,6 +22,7 @@ import com.tokopedia.home.util.HomeCommandProcessor
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
@@ -66,6 +67,7 @@ fun createHomeViewModel(
         getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase = mockk(relaxed = true),
         getSalamWidgetUseCase: GetSalamWidgetUseCase = mockk(relaxed = true),
         declineSalamWidgetUseCase: DeclineSalamWIdgetUseCase = mockk{ mockk(relaxed = true)},
+        getRechargeBUWidgetUseCase: GetRechargeBUWidgetUseCase = mockk{ mockk(relaxed = true)},
         declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase = mockk(relaxed = true),
         topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
         getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
@@ -80,7 +82,6 @@ fun createHomeViewModel(
             getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
             getBusinessWidgetTab = Lazy{getBusinessWidgetTab},
             getHomeReviewSuggestedUseCase = Lazy{getHomeReviewSuggestedUseCase},
-            getHomeTokopointsDataUseCase = Lazy{getHomeTokopointsDataUseCase},
             getHomeTokopointsListDataUseCase = Lazy{getHomeTokopointsListDataUseCase},
             getKeywordSearchUseCase = Lazy{getKeywordSearchUseCase},
             getPendingCashbackUseCase = Lazy{getCoroutinePendingCashbackUseCase},
@@ -99,6 +100,7 @@ fun createHomeViewModel(
             declineSalamWidgetUseCase = Lazy{declineSalamWidgetUseCase},
             declineRechargeRecommendationUseCase = Lazy {declineRechargeRecommendationUseCase},
             getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
+            getRechargeBUWidgetUseCase = Lazy{getRechargeBUWidgetUseCase},
             topAdsImageViewUseCase = Lazy{topadsImageViewUseCase},
             getDisplayHeadlineAds = Lazy{ getDisplayHeadlineAds },
             getRecommendationUseCase = Lazy{ getRecommendationUseCase},
@@ -106,7 +108,8 @@ fun createHomeViewModel(
             getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
             playWidgetTools = Lazy { playWidgetTools },
             bestSellerMapper = Lazy { bestSellerMapper },
-            homeProcessor = Lazy{ homeProcessor }
+            homeProcessor = Lazy{ homeProcessor },
+            getHomeTokopointsDataUseCase = Lazy { getHomeTokopointsDataUseCase }
     )
 }
 
@@ -158,6 +161,14 @@ fun GetSalamWidgetUseCase.givenGetSalamWidgetThrowReturn(){
 
 fun DeclineSalamWIdgetUseCase.givenDeclineSalamWidgetUseCase(salamWidget: SalamWidget){
     coEvery { executeOnBackground() } returns salamWidget
+}
+
+fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetUseCase(rechargePerso: RechargePerso){
+    coEvery { executeOnBackground() } returns rechargePerso
+}
+
+fun GetRechargeBUWidgetUseCase.givenGetRechargeBUWidgetThrowReturn(){
+    coEvery { executeOnBackground() } throws Exception()
 }
 
 fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel) {

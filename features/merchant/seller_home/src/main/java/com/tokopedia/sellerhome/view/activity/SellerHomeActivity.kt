@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -61,6 +60,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
 
         private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
+        private const val ACTION_GET_ALL_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
     }
 
     @Inject lateinit var userSession: UserSessionInterface
@@ -84,7 +84,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private var lastProductManagePage = PageFragment(FragmentType.PRODUCT)
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
     private var navigator: SellerHomeNavigator? = null
-    private var isOrderShopAdmin = true
 
     private var statusBarCallback: StatusBarCallback? = null
 
@@ -112,15 +111,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
-        observeIsRoleEligible()
-        observeIsOrderShopAdmin()
+        fetchSellerAppWidget()
     }
 
     override fun onResume() {
         super.onResume()
         clearNotification()
         homeViewModel.getNotifications()
-        homeViewModel.getAdminInfo()
 
         if (!userSession.isLoggedIn) {
             RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)
@@ -185,6 +182,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     override fun menuReselected(position: Int, id: Int) {
 
+    }
+
+    private fun fetchSellerAppWidget() {
+        val broadcastIntent = Intent().apply {
+            action = ACTION_GET_ALL_APP_WIDGET_DATA
+            setPackage(packageName)
+        }
+        sendBroadcast(broadcastIntent)
     }
 
     fun attachCallback(callback: StatusBarCallback) {
@@ -333,9 +338,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             if (it is Success) {
                 showNotificationBadge(it.data.notifCenterUnread)
                 showChatNotificationCounter(it.data.chat)
-                if (isOrderShopAdmin) {
-                    showOrderNotificationCounter(it.data.sellerOrderStatus)
-                }
+                showOrderNotificationCounter(it.data.sellerOrderStatus)
             }
         })
     }
@@ -360,31 +363,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             }
         })
         homeViewModel.getShopInfo()
-    }
-
-    private fun observeIsRoleEligible() {
-        homeViewModel.isRoleEligible.observe(this) { result ->
-            if (result is Success) {
-                result.data.let { isRoleEligible ->
-                    if (!isRoleEligible) {
-                        RouteManager.route(this, ApplinkConstInternalGlobal.LOGOUT)
-                        finish()
-                    }
-                }
-            }
-            // TODO: Add logic when admin info request fails. Still asking PM. For now we will only preserve current user session value
-        }
-    }
-
-    private fun observeIsOrderShopAdmin() {
-        homeViewModel.isOrderShopAdmin.observe(this) { isOrderShopAdmin ->
-            this.isOrderShopAdmin = isOrderShopAdmin
-            if (!isOrderShopAdmin) {
-                sahBottomNav.run {
-                    setBadge(0, FragmentType.ORDER, View.INVISIBLE)
-                }
-            }
-        }
     }
 
     private fun showNotificationBadge(notifUnreadInt: Int) {

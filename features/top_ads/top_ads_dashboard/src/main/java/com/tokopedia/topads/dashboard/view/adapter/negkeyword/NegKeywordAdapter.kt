@@ -11,6 +11,8 @@ import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywo
 class NegKeywordAdapter(val typeFactory: NegKeywordAdapterTypeFactory) : RecyclerView.Adapter<NegKeywordViewHolder<NegKeywordViewModel>>() {
     private var isSelectMode = false
     private var fromSearch = false
+    private var fromHeadline = false
+
 
     var items: MutableList<NegKeywordViewModel> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NegKeywordViewHolder<NegKeywordViewModel> {
@@ -33,7 +35,7 @@ class NegKeywordAdapter(val typeFactory: NegKeywordAdapterTypeFactory) : Recycle
     }
 
     override fun onBindViewHolder(holder: NegKeywordViewHolder<NegKeywordViewModel>, position: Int) {
-        holder.bind(items[position], isSelectMode, fromSearch)
+        holder.bind(items[position], isSelectMode, fromSearch, fromHeadline)
     }
 
     fun getSelectedItems(): MutableList<NegKeywordItemViewModel> {
@@ -58,7 +60,8 @@ class NegKeywordAdapter(val typeFactory: NegKeywordAdapterTypeFactory) : Recycle
         }
     }
 
-    fun setEmptyView(fromSearch: Boolean) {
+    fun setEmptyView(fromSearch: Boolean,fromHeadline:Boolean = false) {
+        this.fromHeadline = fromHeadline
         this.fromSearch = fromSearch
         notifyDataSetChanged()
     }
