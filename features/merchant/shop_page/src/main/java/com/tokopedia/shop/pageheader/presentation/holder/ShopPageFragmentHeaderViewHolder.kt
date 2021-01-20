@@ -29,6 +29,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.extension.formatToSimpleNumber
+import com.tokopedia.shop.pageheader.data.model.FollowShop
 import com.tokopedia.shop.pageheader.data.model.FollowStatus
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -263,9 +264,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     fun isShopFavourited() = isShopFavorite
 
-    fun setFollowStatus(followStatus: FollowStatus?) {
-        followButton.isLoading = false
-        isShopFavorite = followStatus?.status?.userIsFollowing == true
+    private fun changeColorButton() {
         if (isShopFavorite) {
             followButton.buttonVariant = UnifyButton.Variant.GHOST
             followButton.buttonType = UnifyButton.Type.ALTERNATE
@@ -273,6 +272,11 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             followButton.buttonVariant = UnifyButton.Variant.FILLED
             followButton.buttonType = UnifyButton.Type.MAIN
         }
+    }
+
+    fun setFollowStatus(followStatus: FollowStatus?) {
+        followButton.isLoading = false
+        isShopFavorite = followStatus?.status?.userIsFollowing == true
         followStatus?.let {
             followButton.text = it.followButton?.buttonLabel
             val voucherUrl = it.followButton?.voucherIconURL
@@ -284,6 +288,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                 setCoachMark(coachMarkText)
             }
         }
+        changeColorButton()
     }
 
     fun isCoachMarkDismissed(): Boolean? {
@@ -365,8 +370,11 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         this.isShopFavorite = isShopFavorite
     }
 
-    fun toggleFavourite() {
-        isShopFavorite = !isShopFavorite
+    fun updateFollowStatus(followShop: FollowShop) {
+        followButton.isLoading = false
+        followButton.text = followShop.buttonLabel
+        isShopFavorite = followShop.isFollowing == true
+        changeColorButton()
     }
 
     interface ShopPageFragmentViewHolderListener {

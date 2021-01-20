@@ -15,13 +15,13 @@ class GetFollowStatusUseCase @Inject constructor(
 ) : UseCase<FollowStatusResponse>() {
 
     companion object {
-        private const val PARAM_SHOP_IDS = "shopId"
+        private const val PARAM_SHOP_ID = "shopId"
 
         @JvmStatic
         fun createParams(
                 shopId: String
         ): RequestParams = RequestParams.create().apply {
-            putObject(PARAM_SHOP_IDS, shopId)
+            putObject(PARAM_SHOP_ID, shopId)
         }
     }
 

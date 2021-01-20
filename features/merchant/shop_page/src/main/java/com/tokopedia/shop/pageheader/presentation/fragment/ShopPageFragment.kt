@@ -75,6 +75,8 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_CONTENT_DATA_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
@@ -86,6 +88,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterShared
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.pageheader.data.model.FollowShop
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
@@ -157,6 +160,8 @@ class ShopPageFragment :
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
+        private const val ACTION_FOLLOW = "follow"
+        private const val ACTION_UNFOLLOW = "unfollow"
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
@@ -280,6 +285,7 @@ class ShopPageFragment :
         shopViewModel.shopPageHeaderContentData.removeObservers(this)
         shopViewModel.shopImagePath.removeObservers(this)
         shopViewModel.followStatusData.removeObservers(this)
+        shopViewModel.followShopData.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel.flush()
@@ -430,6 +436,19 @@ class ShopPageFragment :
                     }
                 }
                 is Fail -> { }
+            }
+        }
+
+        shopViewModel.followShopData.observe(owner) {
+            when(it) {
+                is Success -> {
+                    it.data.followShop?.apply {
+                        onSuccessUpdateFollowStatus(this)
+                    }
+                }
+                is Fail -> {
+                    onErrorToggleFavourite(it.throwable)
+                }
             }
         }
     }
@@ -1173,10 +1192,16 @@ class ShopPageFragment :
         }
     }
 
-    private fun onSuccessToggleFavourite(successValue: Boolean) {
-        if (successValue) {
-            shopPageFragmentHeaderViewHolder.toggleFavourite()
+    private fun onSuccessUpdateFollowStatus(followShop: FollowShop) {
+        val success = followShop.success == true
+        if (success) {
+            shopPageFragmentHeaderViewHolder.updateFollowStatus(followShop)
             updateFavouriteResult(shopPageFragmentHeaderViewHolder.isShopFavourited())
+        } else {
+            activity?.run {
+                NetworkErrorHelper.showCloseSnackbar(this, followShop.message)
+            }
+            logExceptionToCrashlytics(ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, Throwable(followShop.message))
         }
     }
 
@@ -1207,6 +1232,7 @@ class ShopPageFragment :
 
         activity?.run {
             NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e))
+            logExceptionToCrashlytics(ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, e)
         }
     }
 
@@ -1323,11 +1349,11 @@ class ShopPageFragment :
                 isFavourite
         )
 
-        shopViewModel.toggleFavorite(
-                shopId,
-                this::onSuccessToggleFavourite,
-                this::onErrorToggleFavourite
-        )
+        var action = ACTION_FOLLOW
+        if (!isFavourite) {
+            action = ACTION_UNFOLLOW
+        }
+        shopViewModel.updateFollowStatus(shopId, action)
     }
 
     override fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence) {
