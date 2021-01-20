@@ -3,6 +3,7 @@ package com.tokopedia.shop.pageheader.presentation
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -38,9 +39,11 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.pageheader.data.model.FollowStatusResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
@@ -76,6 +79,7 @@ class ShopPageViewModel @Inject constructor(
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
         private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
+        private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val firebaseRemoteConfig: RemoteConfig,
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
@@ -98,6 +102,11 @@ class ShopPageViewModel @Inject constructor(
     val shopPageP1Data = MutableLiveData<Result<ShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
+
+    private val _followStatusData = MutableLiveData<Result<FollowStatusResponse>>()
+    val followStatusData: LiveData<Result<FollowStatusResponse>>
+        get() = _followStatusData
+
     var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
     val shopImagePath = MutableLiveData<String>()
     private val TEN_MINUTE_MS: Long = 1000 * 60 * 10.toLong()
@@ -237,6 +246,16 @@ class ShopPageViewModel @Inject constructor(
         }
         return broadcasterConfig
     }
+
+    fun getFollowStatus(shopId: String) {
+        launchCatchError(dispatcherProvider.io, block = {
+            getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId)
+            _followStatusData.postValue(Success(getFollowStatusUseCase.get().executeOnBackground()))
+        }, onError = {
+            _followStatusData.postValue(Fail(it))
+        })
+    }
+
 
     fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
         if (!userSessionInterface.isLoggedIn) {

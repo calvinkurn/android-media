@@ -277,6 +277,7 @@ class ShopPageFragment :
         shopViewModel.shopPageP1Data.removeObservers(this)
         shopViewModel.shopPageHeaderContentData.removeObservers(this)
         shopViewModel.shopImagePath.removeObservers(this)
+        shopViewModel.followStatusData.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel.flush()
@@ -411,6 +412,14 @@ class ShopPageFragment :
             }
         })
 
+        shopViewModel.followStatusData.observe(owner) {
+            when(it) {
+                is Success -> {
+                    it.data.followStatus.apply {}
+                }
+                is Fail -> { }
+            }
+        }
     }
 
     private fun onSuccessGetShopIdFromDomain(shopId: String) {
@@ -592,6 +601,7 @@ class ShopPageFragment :
             shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
         } else {
             getShopPageP1Data()
+            shopViewModel.getFollowStatus(shopId)
         }
     }
 
