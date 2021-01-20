@@ -917,18 +917,19 @@ class AddEditProductDetailViewModelTest {
         every { userSession.isShopAdmin } returns false
         every { userSession.isShopOwner } returns false
 
-        viewModel.setupDefaultStockAllocationMessage()
+        viewModel.setupMultiLocationShopValues()
 
         assert(stockAllocationDefaultMessage.isEmpty())
         assert(viewModel.productStockMessage.isEmpty())
     }
 
     @Test
-    fun `when either is shop admin or shop owner and not has multi location shop, stock message should be empty`() {
+    fun `when either is shop admin or shop owner and doesn't have multi location shop, stock message should be empty`() {
         every { userSession.isShopAdmin } returns true
         every { userSession.isShopOwner } returns false
+        every { userSession.isMultiLocationShop } returns false
 
-        viewModel.setupDefaultStockAllocationMessage()
+        viewModel.setupMultiLocationShopValues()
 
         assert(stockAllocationDefaultMessage.isEmpty())
         assert(viewModel.productStockMessage.isEmpty())
@@ -938,10 +939,11 @@ class AddEditProductDetailViewModelTest {
     fun `when either is shop admin or shop owner and has multi location shop, but not is editing or adding, stock message should be empty`() {
         every { userSession.isShopAdmin } returns false
         every { userSession.isShopOwner } returns true
+        every { userSession.isMultiLocationShop } returns true
 
         viewModel.isAdding = false
         viewModel.isEditing = false
-        viewModel.setupDefaultStockAllocationMessage()
+        viewModel.setupMultiLocationShopValues()
 
         assert(stockAllocationDefaultMessage.isEmpty())
         assert(viewModel.productStockMessage.isEmpty())
@@ -952,10 +954,11 @@ class AddEditProductDetailViewModelTest {
         val editMessage = "edit"
         every { userSession.isShopAdmin } returns false
         every { userSession.isShopOwner } returns true
+        every { userSession.isMultiLocationShop } returns true
         every { provider.getEditProductMultiLocationMessage() } returns editMessage
 
         viewModel.isEditing = true
-        viewModel.setupDefaultStockAllocationMessage()
+        viewModel.setupMultiLocationShopValues()
 
         assert(stockAllocationDefaultMessage == editMessage)
         assert(viewModel.productStockMessage == editMessage)
@@ -970,7 +973,7 @@ class AddEditProductDetailViewModelTest {
 
         viewModel.isEditing = false
         viewModel.isAdding = true
-        viewModel.setupDefaultStockAllocationMessage()
+        viewModel.setupMultiLocationShopValues()
 
         assert(stockAllocationDefaultMessage == addMessage)
         assert(viewModel.productStockMessage == addMessage)

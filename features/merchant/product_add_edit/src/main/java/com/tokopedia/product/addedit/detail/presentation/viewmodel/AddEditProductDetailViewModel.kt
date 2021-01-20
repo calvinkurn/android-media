@@ -70,6 +70,8 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isAddingValidationWholeSale = false
 
+    private var minimumStockCount = MIN_PRODUCT_STOCK_LIMIT
+
     private var stockAllocationDefaultMessage = ""
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
@@ -474,23 +476,39 @@ class AddEditProductDetailViewModel @Inject constructor(
         })
     }
 
-    fun setupDefaultStockAllocationMessage() {
-        stockAllocationDefaultMessage =
-                (userSession.isShopAdmin || userSession.isShopOwner).let { shouldDisplayDifferentMessage ->
-                    if (shouldDisplayDifferentMessage) {
-                        getStockAllocationMessage()
-                    } else {
-                        ""
-                    }
-                }.also { defaultMessage ->
-                    productStockMessage = defaultMessage
+    /**
+     * Modify stock related values if admin/owner has multi location shops
+     */
+    fun setupMultiLocationShopValues() {
+        userSession.run {
+            (isMultiLocationShop && (isShopAdmin || isShopOwner)).let { isMultiLoc ->
+                if (isMultiLoc) {
+                    setupMultiLocationStockAllocationMessage()
+                    setupMultiLocationDefaultMinimumStock()
+                } else {
+                    stockAllocationDefaultMessage = ""
+                    productStockMessage = ""
+                    minimumStockCount = MIN_PRODUCT_STOCK_LIMIT
                 }
+            }
+        }
     }
 
-    private fun getStockAllocationMessage(): String =
+    private fun setupMultiLocationStockAllocationMessage() {
+        getMultiLocationStockAllocationMessage().let {
+            stockAllocationDefaultMessage = it
+            productStockMessage = it
+        }
+    }
+
+    private fun setupMultiLocationDefaultMinimumStock() {
+        minimumStockCount = 0
+    }
+
+    private fun getMultiLocationStockAllocationMessage(): String =
             when {
-                userSession.isMultiLocationShop && isEditing -> provider.getEditProductMultiLocationMessage().orEmpty()
-                userSession.isMultiLocationShop && isAdding -> provider.getAddProductMultiLocationMessage().orEmpty()
+                isEditing -> provider.getEditProductMultiLocationMessage().orEmpty()
+                isAdding -> provider.getAddProductMultiLocationMessage().orEmpty()
                 else -> ""
             }
 
