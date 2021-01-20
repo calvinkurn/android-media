@@ -31,7 +31,6 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
         renderEmptySpace()
         renderOvoLayout(element.headerDataModel)
-        renderBackgroundHeight()
         BenchmarkHelper.endSystraceSection()
     }
 
@@ -70,30 +69,5 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
                 ovoView.gone()
             }
         }
-        renderBackgroundHeight()
-    }
-
-    private fun renderBackgroundHeight() {
-//        val ovoView = itemView.findViewById<OvoWidgetView>(R.id.view_ovo)
-//        if (ovoView.visibility == View.VISIBLE) {
-//            val backgroundView = itemView.findViewById<FrameLayout>(R.id.view_background)
-//            ovoView.viewTreeObserver.addOnGlobalLayoutListener(
-//                    object : ViewTreeObserver.OnGlobalLayoutListener {
-//                        override fun onGlobalLayout() {
-//                            val viewTreeObserver = ovoView.viewTreeObserver
-//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                                viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                            } else {
-//                                @Suppress("DEPRECATION")
-//                                viewTreeObserver.removeGlobalOnLayoutListener(this)
-//                            }
-//                            val ovoHeight = ovoView.measuredHeight
-//                            val backgroundParam = backgroundView.layoutParams as ViewGroup.MarginLayoutParams
-//                            backgroundParam.setMargins(0, 0, 0, ovoHeight / 2)
-//                            backgroundView.layoutParams = backgroundParam
-//                            backgroundView.invalidate()
-//                        }
-//                    })
-//        }
     }
 }
