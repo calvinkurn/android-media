@@ -180,66 +180,72 @@ class SearchProductFirstPageGqlUseCase(
                         ad_ref_key
                         redirect
                         ad_click_url
-                        headline{
-                        template_id
-                        name
-                        image {
-                            full_url
-                            full_ecs
-                        }
-                        shop {
-                            id
+                        headline {
+                            template_id
                             name
-                            domain
-                            tagline
-                            slogan
-                            location
-                            city
-                            gold_shop
-                            gold_shop_badge
-                            shop_is_official
-                            merchant_vouchers
-                            product {
+                            image {
+                                full_url
+                                full_ecs
+                            }
+                            shop {
                                 id
                                 name
-                                price_format
-                                applinks
-                                product_rating
-                                product_cashback
-                                product_cashback_rate
-                                product_new_label
-                                count_review_format
-                                image_product{
-                                    product_id
-                                    product_name
-                                    image_url
-                                    image_click_url
+                                domain
+                                tagline
+                                slogan
+                                location
+                                city
+                                gold_shop
+                                gold_shop_badge
+                                shop_is_official
+                                merchant_vouchers
+                                product {
+                                    id
+                                    name
+                                    price_format
+                                    applinks
+                                    product_rating
+                                    product_cashback
+                                    product_cashback_rate
+                                    product_new_label
+                                    count_review_format
+                                    rating_average
+                                    label_group {
+                                        title
+                                        type
+                                        position
+                                    }
+                                    image_product{
+                                        product_id
+                                        product_name
+                                        image_url
+                                        image_click_url
+                                    }
+                                    campaign {
+                                        original_price
+                                        discount_percentage
+                                    }
                                 }
-                                campaign {
-                                    original_price
-                                    discount_percentage
+                                image_shop {
+                                    cover
+                                    s_url
+                                    xs_url
+                                    cover_ecs
+                                    s_ecs
+                                    xs_ecs
                                 }
                             }
-                            image_shop {
-                                cover
-                                s_url
-                                xs_url
-                                cover_ecs
-                                s_ecs
-                                xs_ecs
+                            badges {
+                                image_url
+                                show
+                                title
                             }
-                        }
-                        badges{
-                        image_url
-                        show
-                        title
-                        }
-                        button_text
-                        promoted_text
-                        description
-                        uri
-                        layout
-                        position
+                            button_text
+                            promoted_text
+                            description
+                            uri
+                            layout
+                            position
                         }
                         applinks
                     }
