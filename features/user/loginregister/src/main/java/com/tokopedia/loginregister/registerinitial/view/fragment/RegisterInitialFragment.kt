@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
@@ -31,11 +30,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.graphql.util.getParamBoolean
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
@@ -145,18 +143,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var combineLoginTokenAndValidateToken: LiveData<Unit>
 
-    private val draw: Drawable?
-        get() {
-            var drawable: TextDrawable? = null
-            if (activity != null) {
-                drawable = TextDrawable(activity!!)
-                drawable.text = resources.getString(R.string.login)
-                drawable.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
-                drawable.textSize = 14f
-            }
-            return drawable
-        }
-
     override fun onStart() {
         super.onStart()
         activity?.run {
@@ -250,34 +236,23 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         fetchRemoteConfig()
         initObserver()
         initData()
+        setupToolbar()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu?.let {
-            it.add(Menu.NONE, ID_ACTION_LOGIN, 0, "")
-            val menuItem = it.findItem(ID_ACTION_LOGIN)
-            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-            if (draw != null) {
-                menuItem.icon = draw
-            }
-        }
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        item?.let {
-            activity?.run {
-                val id = it.itemId
-                if (id == ID_ACTION_LOGIN) {
-                    if (activity != null) {
-                        registerAnalytics.trackClickTopSignInButton()
-                        registerInitialRouter.goToLoginPage(this)
-                    }
-                    return true
+    private fun setupToolbar() {
+        activity?.let{ activity ->
+            activity.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
+                headerTitle = getString(R.string.register)
+                actionText = getString(R.string.login)
+                setNavigationOnClickListener {
+                    activity.onBackPressed()
+                }
+                actionTextView?.setOnClickListener {
+                    registerAnalytics.trackClickTopSignInButton()
+                    registerInitialRouter.goToLoginPage(activity)
                 }
             }
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun fetchRemoteConfig() {
@@ -1301,9 +1276,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     companion object {
-
-        private val ID_ACTION_LOGIN = 112
-
         val REQUEST_REGISTER_EMAIL = 101
         private val REQUEST_CREATE_PASSWORD = 102
         private val REQUEST_SECURITY_QUESTION = 103

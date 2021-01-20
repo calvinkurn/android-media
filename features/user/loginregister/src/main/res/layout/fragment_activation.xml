@@ -60,27 +60,18 @@
             android:layout_centerHorizontal="true"
             android:orientation="horizontal">
 
-            <com.tokopedia.design.widget.PinEditText
+            <com.tokopedia.pin.PinUnify
                 android:id="@+id/input_verify_code"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_24"
                 android:layout_weight="1"
-                android:background="@null"
-                android:cursorVisible="false"
-                android:digits="1234567890"
-                android:fontFamily="sans-serif-medium"
-                android:imeOptions="actionDone"
-                android:inputType="number"
-                android:maxLength="5"
+                app:pin_count="5"
                 android:paddingBottom="@dimen/dp_10"
-                android:textColor="@color/Unify_N700_68"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/sp_32"
-                android:textStyle="normal"
                 android:visibility="visible"
                 app:LineColors="@color/pin_line_colors"
-                tools:text="123123"/>
+                tools:text="123123"
+                app:pin_type="shown" />
 
         </LinearLayout>
 

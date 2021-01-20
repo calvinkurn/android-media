@@ -33,7 +33,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
-import com.tokopedia.design.widget.PinEditText;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.di.DaggerActivationComponent;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
@@ -44,7 +43,7 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.loginregister.login.view.activity.LoginActivity;
+import com.tokopedia.pin.PinUnify;
 import com.tokopedia.sessioncommon.data.model.TokenViewModel;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.unifycomponents.Toaster;
@@ -64,7 +63,7 @@ public class ActivationFragment extends BaseDaggerFragment
 
     private static final int REQUEST_AUTO_LOGIN = 101;
     private TextView activationText;
-    private PinEditText verifyCode;
+    private PinUnify verifyCode;
     private TextView activateButton;
     private TextView footer;
     private TextView errorOtp;
@@ -218,14 +217,14 @@ public class ActivationFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         activateButton.setOnClickListener(v -> {
             registerAnalytics.trackClickActivationButton();
-            presenter.activateAccount(email, verifyCode.getText().toString());
+            presenter.activateAccount(email, verifyCode.getPinTextField().getText().toString());
         });
         footer.setOnClickListener(v -> {
             registerAnalytics.trackClickResendButton();
             showChangeEmailDialog(email);
         });
 
-        verifyCode.addTextChangedListener(new TextWatcher() {
+        verifyCode.getPinTextField().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -252,15 +251,15 @@ public class ActivationFragment extends BaseDaggerFragment
             }
         });
 
-        verifyCode.setOnEditorActionListener((v, actionId, event) -> {
+        verifyCode.getPinTextField().setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEND) {
-                presenter.activateAccount(email, verifyCode.getText().toString());
+                presenter.activateAccount(email, verifyCode.getPinTextField().getText().toString());
                 return true;
             }
             return false;
         });
         errorImage.setOnClickListener(v -> {
-            verifyCode.setText("");
+            verifyCode.getPinTextField().setText("");
             removeErrorOtp();
         });
     }

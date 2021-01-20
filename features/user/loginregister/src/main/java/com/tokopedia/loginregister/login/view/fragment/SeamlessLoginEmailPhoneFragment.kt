@@ -12,8 +12,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -139,6 +141,15 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun setupToolbar() {
+        activity?.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
+            headerTitle = ""
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
         }
     }
 }
