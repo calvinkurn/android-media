@@ -33,6 +33,7 @@ class PromoCheckoutListDealsPresenter(
 ) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListDealsContract.Presenter {
 
     override fun processCheckDealPromoCode(flag: Boolean, requestParams: JsonObject) {
+        view?.let {
         view.showProgressLoading()
         compositeSubscription.add(
                 repository.postVerify(false, requestParams)
@@ -80,7 +81,8 @@ class PromoCheckoutListDealsPresenter(
                                 }
                             }
                         })
-        )
+              )
+            }
     }
 
     override fun getListTravelCollectiveBanner(resources: Resources) {
