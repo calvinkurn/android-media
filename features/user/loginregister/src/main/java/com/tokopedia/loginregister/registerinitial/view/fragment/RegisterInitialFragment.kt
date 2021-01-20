@@ -671,6 +671,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun onSuccessRegisterCheck(registerCheckData: RegisterCheckData) {
         when (registerCheckData.registerType) {
             PHONE_TYPE -> {
+                registerAnalytics.trackClickPhoneSignUpButton()
                 setTempPhoneNumber(registerCheckData.view)
                 if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
@@ -1053,7 +1054,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun showRegisteredPhoneDialog(phone: String) {
-        registerAnalytics.trackClickPhoneSignUpButton()
         registerAnalytics.trackFailedClickPhoneSignUpButton(RegisterAnalytics.LABEL_PHONE_EXIST)
         registerAnalytics.trackFailedClickPhoneSignUpButtonAlreadyRegistered()
         context?.let {
@@ -1104,7 +1104,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
-
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
     }
@@ -1115,7 +1115,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, FACEBOOK_LOGIN_TYPE)
-
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FACEBOOK, true)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
     }
@@ -1126,7 +1127,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
 
     private fun showProceedWithPhoneDialog(phone: String) {
-        registerAnalytics.trackClickPhoneSignUpButton()
         context?.let {
             activity?.runOnUiThread {
                 val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)

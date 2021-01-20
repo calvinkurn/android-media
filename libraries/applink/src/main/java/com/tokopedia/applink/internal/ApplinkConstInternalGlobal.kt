@@ -34,6 +34,8 @@ object ApplinkConstInternalGlobal {
     const val PARAM_MESSAGE_BODY = "messageBody"
     const val PARAM_STATUS = "status"
     const val PARAM_IS_FROM_2FA = "isFromTwoFactor"
+    const val PARAM_IS_FROM_REGISTER = "isFromRegister"
+    const val PARAM_IS_FACEBOOK = "isFacebook"
     const val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
     const val PARAM_USER_ID_ENC = "userIdEncrypted"
     const val PARAM_USER_ACCESS_TOKEN = "accessToken"

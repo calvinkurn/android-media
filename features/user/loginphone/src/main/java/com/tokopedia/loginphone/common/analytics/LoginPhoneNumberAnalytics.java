@@ -35,6 +35,7 @@ public class LoginPhoneNumberAnalytics {
     public static class Category {
         static final String LOGIN_WITH_PHONE = "login with phone";
         static final String PHONE_VERIFICATION = "phone verification";
+        static final String REGISTER_PAGE = "register page";
     }
 
     public static class Action {
@@ -43,6 +44,8 @@ public class LoginPhoneNumberAnalytics {
         static final String CLICK_ON_VERIFICATION = "click on verifikasi";
         static final String CLICK_ON_RESEND_VERIFICATION = "click on kirim ulang";
         static final String LOGIN_SUCCESS = "login success";
+        static final String CLICK_ON_BUTTON_DAFTAR_PHONE = "click on button daftar - phone number";
+        static final String CLICK_ON_BUTTON_FACEBOOK = "click on button facebook";
         public static final String CHANGE_METHOD = "change method";
 
     }
@@ -52,6 +55,7 @@ public class LoginPhoneNumberAnalytics {
         static final String SMS = "sms";
         static final String PHONE = "phone";
         static final String TOKOCASH = "Tokocash";
+        static final String LOGIN_SUCCESS = "login success";
     }
 
     public void sendScreen(Activity activity, String screenName) {
@@ -77,6 +81,21 @@ public class LoginPhoneNumberAnalytics {
                 Label.TOKOCASH));
     }
 
+    public void eventSuccessLoginPhoneNumberSmartRegister() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_REGISTER,
+                Category.REGISTER_PAGE,
+                Action.CLICK_ON_BUTTON_DAFTAR_PHONE,
+                Label.LOGIN_SUCCESS));
+    }
+
+    public void eventSuccessLoginPhoneNumberFBSmartRegister() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_REGISTER,
+                Category.REGISTER_PAGE,
+                Action.CLICK_ON_BUTTON_FACEBOOK,
+                Label.LOGIN_SUCCESS));
+    }
 
     public void trackVerifyOtpClick(String mode) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
