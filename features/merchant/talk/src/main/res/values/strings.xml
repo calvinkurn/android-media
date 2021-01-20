@@ -139,7 +139,6 @@
     <string name="smart_reply_settings_description">Smart Reply hanya akan menjawab diskusi untuk &lt;b>produk tanpa varian.&lt;/b></string>
     <string name="smart_reply_active_label">Aktif</string>
     <string name="smart_reply_inactive_label">Tidak Aktif</string>
-    <string name="smart_reply_tnc">Dengan mengaktifkan Smart Reply, kamu menyetujui\n&lt;a href = "">syarat dan ketentuan Tokopedia.&lt;/a></string>
     <string name="smart_reply_detail_ticker">Update selalu stok produkmu untuk menghindari pembatalan pesanan oleh pembeli.</string>
     <string name="smart_reply_detail_stock_availability_title">Ketersediaan Stok</string>
     <string name="smart_reply_available_stock_text_area_label">Stok Tersedia</string>

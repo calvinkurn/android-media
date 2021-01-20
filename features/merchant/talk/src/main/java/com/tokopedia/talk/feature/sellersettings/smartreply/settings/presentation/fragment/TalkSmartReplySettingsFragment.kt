@@ -71,7 +71,6 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
         showLoading()
         observeSmartReplyData()
         setDescriptionText()
-        setTncText()
         setToolbarTitle()
         setupOnBackPressed()
         onFragmentResult()
@@ -128,10 +127,6 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
 
     private fun setDescriptionText() {
         talkSmartReplySettingsDescription.text = context?.let { HtmlLinkHelper(it, getString(R.string.smart_reply_settings_description)).spannedString }
-    }
-
-    private fun setTncText() {
-        talkSmartReplyTnc.text = context?.let { HtmlLinkHelper(it, getString(R.string.smart_reply_tnc)).spannedString }
     }
 
     private fun setToolbarTitle() {
