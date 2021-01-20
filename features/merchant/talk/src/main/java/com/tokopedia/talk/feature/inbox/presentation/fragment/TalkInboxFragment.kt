@@ -270,7 +270,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             when (it) {
                 is TalkInboxViewState.Success -> {
                     with(it.data) {
-                        if(!isNewView() && !isNewNav()) {
+                        if(!isNewView() || !isNewNav()) {
                             talkInboxTracking.eventLazyLoad(viewModel.getType(), it.page, inbox.count { inbox -> inbox.isUnread }, inbox.count { inbox -> !inbox.isUnread }, shopID, viewModel.getUserId())
                         }
                         hideFullPageError()
@@ -479,7 +479,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun selectFilter(filter: TalkInboxFilter) {
-        viewModel.setFilter(filter, isSellerView())
+        viewModel.setFilter(filter, isSellerView() && isNewNav() && isNewView())
         showFullPageLoading()
         clearAllData()
     }

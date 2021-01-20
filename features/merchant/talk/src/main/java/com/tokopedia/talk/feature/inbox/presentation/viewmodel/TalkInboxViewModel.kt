@@ -72,11 +72,11 @@ class TalkInboxViewModel @Inject constructor(
 
     fun setFilter(selectedFilter: TalkInboxFilter, isSellerView: Boolean) {
         if(this.filter == selectedFilter) {
-            talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), if(isSellerView) unrespondedCount else unreadCount.toLong(), false, getShopId(), getUserId())
+            talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), if(isSellerView) unrespondedCount else unreadCount, false, getShopId(), getUserId())
             resetFilter()
             return
         }
-        talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), if(isSellerView) unrespondedCount else unreadCount.toLong(), true, getShopId(), getUserId())
+        talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), if(isSellerView) unrespondedCount else unreadCount, true, getShopId(), getUserId())
         this.filter = selectedFilter
         resetPage()
     }
