@@ -301,6 +301,7 @@ class ShopPageFragment :
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             swipeToRefresh.isEnabled = (verticalOffset == 0)
+            shopPageFragmentHeaderViewHolder.dismissCoachMark()
         })
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = viewPagerAdapter

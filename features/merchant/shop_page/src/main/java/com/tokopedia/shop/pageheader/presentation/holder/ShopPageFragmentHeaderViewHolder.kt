@@ -286,6 +286,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
+    fun dismissCoachMark() {
+        coachMark?.dismissCoachMark()
+    }
+
     private fun setCoachMark(description: String) {
         val coachMarkItem = ArrayList<CoachMark2Item>()
         coachMarkItem.add(
