@@ -58,6 +58,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         get() = view.shop_page_follow_unfollow_button.takeIf {
             isUsingNewNavigation()
         } ?: view.shop_page_follow_unfollow_button_old
+    var coachMark: CoachMark2? = null
 
     companion object {
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
@@ -294,6 +295,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                         description = description
                 )
         )
+        coachMark = CoachMark2(context)
         coachMark?.showCoachMark(coachMarkItem)
     }
 
