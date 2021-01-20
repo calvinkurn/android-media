@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             tools:layout_height="@dimen/spacing_lvl6"
             app:text_field_placeholder="@string/digital_cart_hint_input_price"
+            app:text_field_input_type="number"
             />
     </LinearLayout>
 

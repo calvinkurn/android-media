@@ -44,6 +44,7 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
 
                 if (isUserInputValid(s.toString(), minPayment, maxPayment)) {
                     etDigitalCheckoutInputPrice.setError(false)
+                    etDigitalCheckoutInputPrice.setMessage("")
                     actionListener?.enableCheckoutButton()
                 } else {
                     etDigitalCheckoutInputPrice.setError(true)
