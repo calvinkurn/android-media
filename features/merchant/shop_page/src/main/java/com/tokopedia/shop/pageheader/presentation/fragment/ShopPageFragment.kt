@@ -305,7 +305,7 @@ class ShopPageFragment :
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             swipeToRefresh.isEnabled = (verticalOffset == 0)
             val appBarIsCollapsed = ((verticalOffset + shopPageHeaderContentConstraintLayout.height) == 0)
-            if (appBarIsCollapsed && !shopPageFragmentHeaderViewHolder.isCoachMarkNull()) {
+            if (appBarIsCollapsed && shopPageFragmentHeaderViewHolder.isCoachMarkDismissed() == false) {
                 shopPageFragmentHeaderViewHolder.dismissCoachMark()
             }
         })
@@ -977,7 +977,9 @@ class ShopPageFragment :
         super.onPause()
         shopPageTracking?.sendAllTrackingQueue()
         shopShareBottomSheet?.dismiss()
-        shopPageFragmentHeaderViewHolder.dismissCoachMark()
+        if (shopPageFragmentHeaderViewHolder.isCoachMarkDismissed() == false) {
+            shopPageFragmentHeaderViewHolder.dismissCoachMark()
+        }
     }
 
     private fun setupTabs() {

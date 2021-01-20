@@ -286,8 +286,8 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    fun isCoachMarkNull(): Boolean {
-        return coachMark == null
+    fun isCoachMarkDismissed(): Boolean? {
+        return coachMark?.isDismissed
     }
 
     fun dismissCoachMark() {
