@@ -34,7 +34,7 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
 
     override fun bind(element: HomeHeaderOvoDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
-        renderEmptySpace()
+        renderEmptySpace(element.headerDataModel?.isUserLogin?:false)
         renderOvoLayout(element.headerDataModel)
         renderBackgroundHeight()
         BenchmarkHelper.endSystraceSection()
@@ -44,7 +44,7 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
         bind(element)
     }
 
-    private fun renderEmptySpace() {
+    private fun renderEmptySpace(isUserLogin: Boolean) {
         val emptySpace = itemView.findViewById<FrameLayout>(R.id.view_empty)
         emptySpace.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -57,7 +57,12 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
                             viewTreeObserver.removeGlobalOnLayoutListener(this)
                         }
                         val layoutParams = emptySpace.layoutParams
-                        layoutParams.height = listener.homeMainToolbarHeight
+                        if (!isUserLogin) {
+                            layoutParams.height = listener.homeMainToolbarHeight -
+                                    itemView.resources.getDimensionPixelOffset(R.dimen.dp_12)
+                        } else {
+                            layoutParams.height = listener.homeMainToolbarHeight
+                        }
                         emptySpace.layoutParams = layoutParams
                         emptySpace.invalidate()
                     }

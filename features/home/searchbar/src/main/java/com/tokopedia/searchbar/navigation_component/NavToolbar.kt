@@ -27,6 +27,8 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackTyp
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Fill.TOOLBAR_FILLED
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Fill.TOOLBAR_TRANSPARENT
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
@@ -46,6 +48,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         object Theme {
             const val TOOLBAR_DARK_TYPE = 0
             const val TOOLBAR_LIGHT_TYPE = 1
+        }
+
+        object Fill {
+            const val TOOLBAR_TRANSPARENT = 0
+            const val TOOLBAR_FILLED = 1
         }
 
         object BackType {
@@ -83,6 +90,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private var toolbarCustomReference: Int? = null
     private var toolbarCustomViewContent: View? = null
     private var toolbarPageName: String = DEFAULT_PAGE_NAME
+    private var toolbarInitialFillColor: Int = TOOLBAR_FILLED
+    private var invertSearchBarColor: Boolean = false
 
     //helper variable
     var shadowApplied: Boolean = false
@@ -110,6 +119,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 toolbarTitle = ta.getString(R.styleable.NavToolbar_toolbarTitle)?:""
                 toolbarDefaultHint = ta.getString(R.styleable.NavToolbar_toolbarDefaultHint)?:""
                 toolbarPageName = ta.getString(R.styleable.NavToolbar_toolbarPageName)?:DEFAULT_PAGE_NAME
+                toolbarInitialFillColor = ta.getInt(R.styleable.NavToolbar_toolbarInitialFillColor, TOOLBAR_FILLED)
+                invertSearchBarColor = ta.getBoolean(R.styleable.NavToolbar_toolbarInvertSearchBarColor, false)
                 toolbarCustomReference = ta.getResourceIdOrThrow(R.styleable.NavToolbar_toolbarCustomContent)
             } catch (e: IllegalArgumentException) {
 
@@ -117,11 +128,12 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 ta.recycle()
             }
         }
-        navToolbar?.background = ColorDrawable(toolbarFillColor)
         userSessionInterface = UserSession(context)
+        configureInvertedSearchBar()
         configureThemeBasedOnAttribute()
         configureBackButtonBasedOnAttribute()
         configureShadowBasedOnAttribute()
+        configureInitialFillBasedOnAttribute()
         configureToolbarContentTypeBasedOnAttribute()
     }
 
@@ -419,6 +431,21 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         } else {
             hideShadow()
         }
+    }
+
+    private fun configureInvertedSearchBar() {
+        if (invertSearchBarColor) {
+            layout_search.background = ContextCompat.getDrawable(context, R.drawable.nav_toolbar_searchbar_bg_corner_inverted)
+        }
+    }
+
+    private fun configureInitialFillBasedOnAttribute() {
+        if (toolbarInitialFillColor == TOOLBAR_TRANSPARENT) {
+            toolbarFillColor = ContextCompat.getColor(context, android.R.color.transparent)
+            dividerUnify?.visibility = View.INVISIBLE
+        }
+
+        navToolbar?.background = ColorDrawable(toolbarFillColor)
     }
 
     private fun configureThemeBasedOnAttribute() {

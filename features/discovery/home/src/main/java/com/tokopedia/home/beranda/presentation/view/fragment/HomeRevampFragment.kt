@@ -666,9 +666,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun setupHomeRecyclerView() {
         homeRecyclerView?.setItemViewCacheSize(20)
-        if (homeRecyclerView?.itemDecorationCount == 0) {
-            homeRecyclerView?.addItemDecoration(HomeRecyclerDecoration(resources.getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)))
-        }
         homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
