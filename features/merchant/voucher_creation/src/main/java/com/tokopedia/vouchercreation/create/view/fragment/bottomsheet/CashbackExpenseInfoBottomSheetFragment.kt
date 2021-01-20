@@ -26,6 +26,8 @@ class CashbackExpenseInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
                 this.getCashbackInfo = getCashbackInfo
             }
         }
+
+        const val TAG = "CashbackExpenseInfoBottomSheet"
     }
     private var getCashbackInfo: () -> CashbackPercentageInfoUiModel = {
         CashbackPercentageInfoUiModel(0,0,0,0)

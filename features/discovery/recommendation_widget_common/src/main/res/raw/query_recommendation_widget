@@ -26,6 +26,11 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
         trackerImageUrl
         imageUrl
         price
+        labelgroup{
+            position
+            title
+            type
+        }
         priceInt
         discountPercentage
         slashedPrice
@@ -46,6 +51,7 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
           imageUrl
         }
         rating
+        ratingAverage
         countReview
         recommendationType
         stock

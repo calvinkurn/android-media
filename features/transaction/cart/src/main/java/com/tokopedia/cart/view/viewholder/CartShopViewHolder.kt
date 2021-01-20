@@ -1,7 +1,6 @@
 package com.tokopedia.cart.view.viewholder
 
 import android.view.View
-import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -16,9 +15,9 @@ import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
@@ -35,7 +34,7 @@ class CartShopViewHolder(itemView: View,
     private val llWarningAndError: LinearLayout = itemView.findViewById(R.id.ll_warning_and_error)
     private val flShopItemContainer: FrameLayout = itemView.findViewById(R.id.fl_shop_item_container)
     private val llShopContainer: LinearLayout = itemView.findViewById(R.id.ll_shop_container)
-    private val cbSelectShop: CheckBox = itemView.findViewById(R.id.cb_select_shop)
+    private val cbSelectShop: CheckboxUnify = itemView.findViewById(R.id.cb_select_shop)
     private val tvShopName: Typography = itemView.findViewById(R.id.tv_shop_name)
     private val imgShopBadge: ImageView = itemView.findViewById(R.id.img_shop_badge)
     private val tvFulfillDistrict: Typography = itemView.findViewById(R.id.tv_fulfill_district)
@@ -110,29 +109,12 @@ class CartShopViewHolder(itemView: View,
     private fun renderCheckBox(cartShopHolderData: CartShopHolderData) {
         cbSelectShop.isEnabled = !cartShopHolderData.shopGroupAvailableData.isError
         cbSelectShop.isChecked = cartShopHolderData.isAllSelected
+        cbSelectShop.skipAnimation()
         initCheckboxWatcherDebouncer(cartShopHolderData, compositeSubscription)
     }
 
     private fun initCheckboxWatcherDebouncer(cartShopHolderData: CartShopHolderData, compositeSubscription: CompositeSubscription) {
         cbSelectShop.let {
-            compositeSubscription.add(
-                    rxCompoundButtonCheckDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
-                        override fun onNext(isChecked: Boolean) {
-                            var checked = isChecked
-                            if (cartShopHolderData.isPartialSelected) {
-                                checked = true
-                            }
-                            actionListener.onCartShopNameChecked(checked)
-                        }
-
-                        override fun onCompleted() {
-                        }
-
-                        override fun onError(e: Throwable?) {
-                        }
-                    })
-            )
-
             compositeSubscription.add(
                     rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
                         override fun onNext(isChecked: Boolean) {
@@ -146,7 +128,6 @@ class CartShopViewHolder(itemView: View,
                         }
                     })
             )
-
         }
     }
 
@@ -202,7 +183,7 @@ class CartShopViewHolder(itemView: View,
         } else {
             cbSelectShop.isEnabled = true
             flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, R.drawable.fg_enabled_item)
-            llShopContainer.setBackgroundColor(llShopContainer.context.resources.getColor(R.color.white))
+            llShopContainer.setBackgroundColor(llShopContainer.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             layoutError.gone()
         }
     }

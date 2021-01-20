@@ -1,5 +1,6 @@
 package com.tokopedia.autocomplete.initialstate
 
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
@@ -83,18 +84,19 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     private fun `Then verify visitable list has SeeMoreViewModel`() {
         val visitableList = slotVisitableList.captured
 
-        Assert.assertTrue(visitableList[0] is RecentViewTitleViewModel)
-        Assert.assertTrue(visitableList[1] is RecentViewViewModel)
-        Assert.assertTrue(visitableList[2] is RecentSearchTitleViewModel)
-        Assert.assertTrue(visitableList[3] is RecentSearchViewModel)
-        Assert.assertTrue(visitableList[4] is RecentSearchSeeMoreViewModel)
-        Assert.assertTrue(visitableList[5] is PopularSearchTitleViewModel)
-        Assert.assertTrue(visitableList[6] is PopularSearchViewModel)
-        Assert.assertTrue(visitableList[7] is DynamicInitialStateTitleViewModel)
-        Assert.assertTrue(visitableList[8] is DynamicInitialStateSearchViewModel)
-        Assert.assertTrue(visitableList.size == 9)
+        Assert.assertTrue(visitableList[0] is CuratedCampaignViewModel)
+        Assert.assertTrue(visitableList[1] is RecentViewTitleViewModel)
+        Assert.assertTrue(visitableList[2] is RecentViewViewModel)
+        Assert.assertTrue(visitableList[3] is RecentSearchTitleViewModel)
+        Assert.assertTrue(visitableList[4] is RecentSearchViewModel)
+        Assert.assertTrue(visitableList[5] is RecentSearchSeeMoreViewModel)
+        Assert.assertTrue(visitableList[6] is PopularSearchTitleViewModel)
+        Assert.assertTrue(visitableList[7] is PopularSearchViewModel)
+        Assert.assertTrue(visitableList[8] is DynamicInitialStateTitleViewModel)
+        Assert.assertTrue(visitableList[9] is DynamicInitialStateSearchViewModel)
+        Assert.assertTrue(visitableList.size == 10)
 
-        `Then verify RecentSearchViewModel only have n items`(3, visitableList[3] as RecentSearchViewModel)
+        `Then verify RecentSearchViewModel only have n items`(3, visitableList[4] as RecentSearchViewModel)
     }
 
     @Test

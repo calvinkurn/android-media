@@ -193,4 +193,12 @@ yang ditemukan</string>
     <string name="title_topchat_as_seller">Sebagai Penjual</string>
     <string name="title_topchat_see_detail">Lihat Selengkapnya</string>
     <string name="title_topchat_reply_from_broadcast">Reply from Broadcast Chat</string>
+    <string name="action_pay">Bayar</string>
+    <string name="title_topchat_sender_chat_banned">Pesan ini mengandung kata yang tidak diizinkan.</string>
+    <string name="title_topchat_check_tnc"><![CDATA[Cek Syarat & Ketentuan]]></string>
+    <string name="title_topchat_reviewed">Sudah Diulas</string>
+    <string name="title_topchat_review_expire">Tidak Bisa Diulas</string>
+    <string name="title_topchat_review_waiting">Menunggu Diulas</string>
+    <string name="title_topchat_review_other">Ulasan Lain</string>
+    <string name="title_topchat_review_success">Terima kasih sudah bantu calon pembeli lain lewat ulasanmu.</string>
 </resources>

@@ -7,4 +7,8 @@ data class ProfilesItemModel(
         var paymentModel: PaymentModel = PaymentModel(),
         var status: Int = 0,
         var enable: Boolean = false
-)
+) {
+    companion object {
+        internal const val MAIN_PROFILE_STATUS = 2
+    }
+}

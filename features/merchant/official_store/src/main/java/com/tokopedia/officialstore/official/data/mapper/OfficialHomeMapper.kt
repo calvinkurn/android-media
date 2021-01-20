@@ -1,23 +1,33 @@
 package com.tokopedia.officialstore.official.data.mapper
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
+import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
+import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
+import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
-import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
-class OfficialHomeMapper {
+class OfficialHomeMapper (
+        private val context: Context,
+        private val dispatchers: OfficialStoreDispatcherProvider
+){
     private val listOfficialStore = mutableListOf<Visitable<*>>()
     companion object {
         private const val BANNER_POSITION = 0
@@ -27,9 +37,9 @@ class OfficialHomeMapper {
 
     fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?) {
         listOfficialStore.run {
-            val index = indexOfFirst { it is OfficialBannerViewModel }
-            val officialBanner = OfficialBannerViewModel(banner.banners, categoryName.toEmptyStringIfNull())
-            removeAll { it is OfficialLoadingMoreViewModel || it is OfficialLoadingViewModel}
+            val index = indexOfFirst { it is OfficialBannerDataModel }
+            val officialBanner = OfficialBannerDataModel(banner.banners, categoryName.toEmptyStringIfNull())
+            removeAll { it is OfficialLoadingMoreDataModel || it is OfficialLoadingDataModel}
 
             if(index == -1) add(officialBanner)
             else set(index, officialBanner)
@@ -39,9 +49,9 @@ class OfficialHomeMapper {
 
     fun mappingBenefit(benefits: OfficialStoreBenefits, adapter: OfficialHomeAdapter?) {
         listOfficialStore.run {
-            val index = indexOfFirst { it is OfficialBenefitViewModel }
+            val index = indexOfFirst { it is OfficialBenefitDataModel }
 
-            val benefit = OfficialBenefitViewModel(benefits.benefits)
+            val benefit = OfficialBenefitDataModel(benefits.benefits)
 
             if(index == -1) add(BENEFIT_POSITION, benefit)
             else set(index, benefit)
@@ -52,23 +62,27 @@ class OfficialHomeMapper {
 
     fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?, categoryName: String?, listener: FeaturedShopListener) {
         listOfficialStore.run {
-            val index = indexOfFirst { it is OfficialFeaturedShopViewModel }
+            val index = indexOfFirst { it is OfficialFeaturedShopDataModel }
 
-            val officialFeaturedShop = OfficialFeaturedShopViewModel(
+            val officialFeaturedShop = OfficialFeaturedShopDataModel(
                     featuredShop.featuredShops,
                     featuredShop.header,
                     categoryName.toEmptyStringIfNull(),
                     listener
             )
-            if(index == -1) add(FEATURE_SHOP_POSITION, officialFeaturedShop)
-            else set(index, officialFeaturedShop)
+            if(index == -1) {
+                if(size < FEATURE_SHOP_POSITION) add(officialFeaturedShop)
+                else add(FEATURE_SHOP_POSITION, officialFeaturedShop)
+            } else {
+                set(index, officialFeaturedShop)
+            }
 
             adapter?.submitList(this.toMutableList())
         }
     }
 
-    fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?, remoteConfig: RemoteConfig?) {
-        if (dynamicChannel.channels.isNotEmpty()) {
+    fun mappingDynamicChannel(officialStoreChannels: List<OfficialStoreChannel>, adapter: OfficialHomeAdapter?, remoteConfig: RemoteConfig?) {
+        if (officialStoreChannels.isNotEmpty()) {
 
             val availableScreens: Set<String>
             var availableLegoBannerScreens = setOf<String>()
@@ -96,44 +110,50 @@ class OfficialHomeMapper {
 
             val views = mutableListOf<Visitable<*>>()
 
-            dynamicChannel.channels.forEachIndexed { position, channel ->
-                if (availableScreens.contains(channel.layout)) {
-                    views.add(DynamicChannelViewModel(channel))
-                } else if (availableLegoBannerScreens.contains(channel.layout)) {
+            officialStoreChannels.forEachIndexed { position, officialStore ->
+                if (availableScreens.contains(officialStore.channel.layout)) {
+                    when(officialStore.channel.layout) {
+                        DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> {
+                            views.add(MixLeftDataModel(
+                                    OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
+                        }
+                        else -> views.add(DynamicChannelDataModel(officialStore))
+                    }
+                } else if (availableLegoBannerScreens.contains(officialStore.channel.layout)) {
                     views.add(DynamicLegoBannerDataModel(
-                            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(channel, position)
+                            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)
                     ))
                 }
             }
-            listOfficialStore.removeAll { it is DynamicChannelViewModel || it is DynamicLegoBannerDataModel }
+            listOfficialStore.removeAll { it is DynamicChannelDataModel || it is DynamicLegoBannerDataModel }
             listOfficialStore.addAll(views)
             adapter?.submitList(listOfficialStore.toMutableList())
         }
     }
 
     fun mappingProductRecommendationTitle(title: String, adapter: OfficialHomeAdapter?) {
-        listOfficialStore.add(ProductRecommendationTitleViewModel(title))
+        listOfficialStore.add(ProductRecommendationTitleDataModel(title))
         adapter?.submitList(listOfficialStore.toMutableList())
     }
 
     fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {
         productRecommendation.recommendationItemList.forEach {
-            listOfficialStore.add(ProductRecommendationViewModel(it, listener))
+            listOfficialStore.add(ProductRecommendationDataModel(it, listener))
         }
-        listOfficialStore.removeAll { it is OfficialLoadingViewModel || it is OfficialLoadingMoreViewModel }
+        listOfficialStore.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
         adapter?.submitList(listOfficialStore.toMutableList())
     }
 
     fun removeRecommendation(adapter: OfficialHomeAdapter?){
         listOfficialStore.run {
-            removeAll { it is ProductRecommendationViewModel || it is ProductRecommendationTitleViewModel }
+            removeAll { it is ProductRecommendationDataModel || it is ProductRecommendationTitleDataModel }
             adapter?.submitList(this.toMutableList())
         }
     }
 
     fun showLoadingMore(adapter: OfficialHomeAdapter?){
         listOfficialStore.run {
-            this.add(OfficialLoadingMoreViewModel())
+            this.add(OfficialLoadingMoreDataModel())
             adapter?.submitList(this.toMutableList())
         }
     }
@@ -141,7 +161,7 @@ class OfficialHomeMapper {
     fun removeFlashSale(adapter: OfficialHomeAdapter?){
         listOfficialStore.run {
             removeAll {
-                it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+                it is DynamicChannelDataModel || it is ProductRecommendationDataModel
             }
             adapter?.submitList(this.toMutableList())
         }
@@ -149,7 +169,7 @@ class OfficialHomeMapper {
 
     fun updateWishlist(wishlist: Boolean, position: Int, adapter: OfficialHomeAdapter?) {
         listOfficialStore.run {
-            (getOrNull(position) as? ProductRecommendationViewModel)?.let {recom ->
+            (getOrNull(position) as? ProductRecommendationDataModel)?.let { recom ->
                 val newRecom = recom.copy(
                         productItem = recom.productItem.copy(isWishlist = wishlist)
                 )
@@ -161,7 +181,38 @@ class OfficialHomeMapper {
 
     fun resetState(adapter: OfficialHomeAdapter?) {
         listOfficialStore.clear()
-        listOfficialStore.add(BANNER_POSITION, OfficialLoadingViewModel())
+        listOfficialStore.add(BANNER_POSITION, OfficialLoadingDataModel())
         adapter?.submitList(listOfficialStore.toMutableList())
+    }
+
+    fun mappingProductCards(grids: List<Grid>): List<ProductCardModel> {
+        return grids.map {grid ->
+            ProductCardModel(
+                    slashedPrice = grid.slashedPrice,
+                    productName = grid.name,
+                    formattedPrice = grid.price,
+                    productImageUrl = grid.imageUrl,
+                    discountPercentage = grid.discount,
+                    freeOngkir = ProductCardModel.FreeOngkir(grid.freeOngkir?.isActive
+                            ?: false, grid.freeOngkir?.imageUrl ?: ""),
+                    labelGroupList = grid.labelGroup.map { label ->
+                        ProductCardModel.LabelGroup(
+                                position = label.position,
+                                title = label.title,
+                                type = label.type
+                        )
+                    },
+                    hasThreeDots = false
+            )
+
+        }
+    }
+
+    suspend fun getMaxHeightProductCards(productCardModels: List<ProductCardModel>): Int{
+        return productCardModels.getMaxHeightForGridView(
+                context = context,
+                coroutineDispatcher = dispatchers.io(),
+                productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
+        )
     }
 }

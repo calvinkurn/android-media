@@ -3,10 +3,9 @@ package com.tokopedia.discovery2.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
-import com.tokopedia.discovery2.R
+import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
@@ -17,27 +16,25 @@ import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsGQLRepository
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
-import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
-import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRepository
+import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
-import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
+import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
+import com.tokopedia.discovery2.repository.quickFilter.FilterRestRepository
+import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterGQLRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
-import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRestRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
 import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
 import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
-import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
-import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_NETWORK_METRICS
-import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_PREPARE_METRICS
-import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_RENDER_METRICS
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
@@ -46,7 +43,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class DiscoveryModule {
+class DiscoveryModule(val repoProvider: RepositoryProvider) {
 
     @Provides
     fun provideBaseRepository(): BaseRepository {
@@ -101,12 +98,12 @@ class DiscoveryModule {
 
     @Provides
     fun provideProductCardsRestRepository(): ProductCardsRepository {
-        return ProductCardsRestRepository()
+        return repoProvider.provideProductCardsRepository()
     }
 
     @Provides
     fun provideDiscoveryPageRepository(@ApplicationContext context: Context): DiscoveryPageRepository {
-        return DiscoveryDataGQLRepository(provideGetStringMethod(context))
+        return repoProvider.provideDiscoveryPageRepository(provideGetStringMethod(context))
     }
 
     @Provides
@@ -123,37 +120,39 @@ class DiscoveryModule {
     }
 
     @Provides
-    fun provideDiscoveryUIConfigRepository(@ApplicationContext context: Context): DiscoveryUIConfigGQLRepository {
-        return DiscoveryUIConfigGQLRepository(provideDiscoveryUIConfigQuery(context))
-    }
-
-    @Provides
-    fun provideDiscoveryUIConfigQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_discovery_ui_config)
-    }
-
-    @Provides
     fun provideQuickCouponGQLRepository(@ApplicationContext context: Context): QuickCouponRepository {
         return QuickCouponGQLRepository(provideGetStringMethod(context))
     }
 
     @Provides
-    fun providesDiscoveryTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): DiscoveryTopAdsTrackingUseCase {
-        return DiscoveryTopAdsTrackingUseCase(topAdsUrlHitter)
+    fun providesDiscoveryTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase {
+        return repoProvider.provideTopAdsTrackingUseCase(topAdsUrlHitter)
+    }
+
+    @Provides
+    fun provideFilterRestRepository(): FilterRepository {
+        return FilterRestRepository()
     }
 
     @Provides
     fun provideQuickFilterRestRepository(): QuickFilterRepository {
-        return QuickFilterRestRepository()
+        return repoProvider.provideQuickFilterRepository()
+    }
+
+    @Provides
+    fun provideEmptyStateRepository() : EmptyStateRepository {
+        return  repoProvider.provideEmptyStateRepository()
+    }
+
+    @Provides
+    fun provideQuickFilterGQLRepository(): IQuickFilterGqlRepository {
+        return QuickFilterGQLRepository()
     }
 
     @DiscoveryScope
     @Provides
     fun providePageLoadTimePerformanceMonitoring() : PageLoadTimePerformanceInterface {
-        return PageLoadTimePerformanceCallback(
-                DISCOVERY_PLT_PREPARE_METRICS,
-                DISCOVERY_PLT_NETWORK_METRICS,
-                DISCOVERY_PLT_RENDER_METRICS,0,0,0,0,null
-        )
+        return repoProvider.providePageLoadTimePerformanceMonitoring()
     }
+
 }

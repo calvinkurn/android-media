@@ -10,10 +10,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.const.Unify.Neutral_N700_96
+import com.tokopedia.settingnotif.usersetting.const.Unify.Unify_N0
+import com.tokopedia.settingnotif.usersetting.const.Unify.Unify_N700_96
 import com.tokopedia.settingnotif.usersetting.view.activity.UserNotificationSettingActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingTypeAdapter
 import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
+import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
 import com.tokopedia.showcase.*
 import java.util.*
 
@@ -68,6 +70,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
                     SettingTypeDataView.createSettingTypes(),
                     settingTypeContract
             )
+            addItemDecoration(NotifSettingDividerDecoration(requireContext()))
         }
     }
 
@@ -90,9 +93,9 @@ class SettingTypeFragment : BaseDaggerFragment() {
 
     private fun generateShowCaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
-                .backgroundContentColorRes(Neutral_N700_96)
-                .shadowColorRes(R.color.shadow)
-                .textColorRes(R.color.grey_400)
+                .backgroundContentColorRes(Unify_N700_96)
+                .shadowColorRes(R.color.settingnotif_shadow)
+                .textColorRes(Unify_N0)
                 .textSizeRes(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2)
                 .titleTextSizeRes(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
                 .clickable(true)

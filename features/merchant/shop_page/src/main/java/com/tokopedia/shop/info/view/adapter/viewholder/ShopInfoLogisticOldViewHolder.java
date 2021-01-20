@@ -7,14 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.info.view.model.ShopInfoLogisticViewModel;
-import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
+import com.tokopedia.shop.info.view.model.ShopInfoLogisticUiModel;
 
 /**
  * @author by alvarisi on 12/12/17.
  */
 @Deprecated
-public class ShopInfoLogisticOldViewHolder extends AbstractViewHolder<ShopInfoLogisticViewModel> {
+public class ShopInfoLogisticOldViewHolder extends AbstractViewHolder<ShopInfoLogisticUiModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_info_logistic;
@@ -31,7 +30,7 @@ public class ShopInfoLogisticOldViewHolder extends AbstractViewHolder<ShopInfoLo
     }
 
     @Override
-    public void bind(ShopInfoLogisticViewModel element) {
+    public void bind(ShopInfoLogisticUiModel element) {
         ImageHandler.loadImageRounded2(shopNoteLabelView.getImageView().getContext(), shopNoteLabelView.getImageView(), element.getShipmentImage());
         shopNoteLabelView.setTitle(element.getShipmentName());
         shopNoteLabelView.setContent(element.getShipmentPackage());

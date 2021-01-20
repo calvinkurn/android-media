@@ -4,7 +4,7 @@
     android:id="@+id/search_input_view_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:paddingBottom="@dimen/dp_10"
     android:paddingLeft="@dimen/dp_10"
     android:paddingRight="@dimen/dp_10"

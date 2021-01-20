@@ -12,7 +12,9 @@ public class ShopPageConstant {
     public static final int DEFAULT_PER_PAGE = 10;
     public static final int SHOP_PRODUCT_EMPTY_STATE_LIMIT = 20;
     public static final int ETALASE_HIGHLIGHT_COUNT = 5;
-
+    public static final String AB_TEST_NAVIGATION_REVAMP_KEY = "Navigation Revamp";
+    public static final String AB_TEST_NAVIGATION_REVAMP_OLD_VALUE = "Existing Navigation";
+    public static final String AB_TEST_NAVIGATION_REVAMP_NEW_VALUE = "Navigation Revamp";
     public static final int DEFAULT_MEMBERSHIP_POSITION = 0;
     public static final int DEFAULT_MERCHANT_VOUCHER_POSITION = 1;
     public static final int DEFAULT_FEATURED_POSITION = 2;
@@ -24,8 +26,6 @@ public class ShopPageConstant {
     // if the count data <= SMALL_DATA_LIMIT, the data become vertical list
     public static final int SMALL_DATA_LIMIT = 2;
 
-    public static final String MODERATE_STATUS_QUERY = "moderate_status_query";
-    public static final String MODERATE_REQUEST_QUERY = "moderate_request_query";
     public static final String SHOP_FAVORITE_QUERY = "shop_favorite_query";
 
     public static final String GO_TO_MEMBERSHIP_DETAIL = "membership detail";
@@ -46,4 +46,6 @@ public class ShopPageConstant {
     public static final String URL_IMAGE_SELLER_PRODUCT_ALL_ETALASE_EMPTY_STATE_BACKGROUND= "https://ecs7.tokopedia.net/android/shop_page/seller_shop_product_empty_background.png";
     public static final String URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE = "https://ecs7.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png";
     public static final String URL_IMAGE_BUYER_SHOP_SEARCH_EMPTY_STATE = "https://ecs7.tokopedia.net/android/empty_state_search_filter.png";
+    public static final String DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST = "android_shop_page_disable_cache_initial_product_list";
+
 }

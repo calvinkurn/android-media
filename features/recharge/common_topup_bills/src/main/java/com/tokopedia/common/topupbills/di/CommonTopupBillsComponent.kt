@@ -22,7 +22,7 @@ interface CommonTopupBillsComponent {
     @ApplicationContext
     fun context(): Context
 
-    fun userSessionInterface(): UserSessionInterface
+    fun userSession(): UserSessionInterface
 
     fun coroutineDispatcher(): CoroutineDispatcher
 

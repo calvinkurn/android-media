@@ -6,7 +6,7 @@
             android:shape="ring"
             android:thickness="@dimen/dp_5"
             android:useLevel="false">
-            <solid android:color="@color/bg_button_border_outline"/>
+            <solid android:color="@color/Unify_N100"/>
         </shape>
     </item>
     <item>
@@ -16,7 +16,7 @@
             android:thickness="@dimen/dp_4"
             android:thicknessRatio="2"
             android:useLevel="false">
-            <solid android:color="@android:color/white"/>
+            <solid android:color="@color/Unify_N0"/>
         </shape>
     </item>
 </layer-list>

@@ -10,7 +10,6 @@ import com.tokopedia.applink.DeepLinkChecker.DISCOVERY_PAGE
 import com.tokopedia.applink.DeepLinkChecker.ETALASE
 import com.tokopedia.applink.DeepLinkChecker.FIND
 import com.tokopedia.applink.DeepLinkChecker.FLIGHT
-import com.tokopedia.applink.DeepLinkChecker.GROUPCHAT
 import com.tokopedia.applink.DeepLinkChecker.HOT
 import com.tokopedia.applink.DeepLinkChecker.HOTEL
 import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
@@ -52,7 +51,6 @@ import tokopedia.applink.util.DeepLinkUrlConstant.EVENTS_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.FIND_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.FLIGHT_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.GOLD_LINK_URL
-import tokopedia.applink.util.DeepLinkUrlConstant.GROUP_CHAT_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.HELP_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.HOTEL_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.HOT_LINK_URL
@@ -92,11 +90,6 @@ class DeepLinkMatcherTest: DeepLinkMatcherTestFixture() {
     @Test
     fun `check link url of play then should return PLAY`() {
         assertEqualsDeepLinkMatcher(PLAY, PLAY_LINK_URL)
-    }
-
-    @Test
-    fun `check link url of group chat then should return GROUPCHAT`() {
-        assertEqualsDeepLinkMatcher(GROUPCHAT, GROUP_CHAT_LINK_URL)
     }
 
     @Test

@@ -30,7 +30,7 @@ class PackageParentViewHolder (view: View,
         with(itemView){
             idPackage = element.id
             if(!element.isChoosen){
-                if (onCoachmarkListener.getLocalCache()) {
+                if (!onCoachmarkListener.getLocalCache()) {
                     expand_event_pdp_ticket.setExpand((position != -1 && position == 0))
                 }else{
                     expand_event_pdp_ticket.setExpand(false)
@@ -40,8 +40,7 @@ class PackageParentViewHolder (view: View,
             eventPDPTicketAdapter.setList(element.packageItems, element.id, element.name)
             eventPDPTicketAdapter.eventPDPTracking = eventPDPTracking
             tg_event_pdp_expand_title.text = element.name
-            tg_event_pdp_expand_price.text = Html.fromHtml(context.resources.getString(R.string.ent_checkout_price_expand,
-                    CurrencyFormatter.getRupiahAllowZeroFormat(element.salesPrice.toLong())))
+            tg_event_pdp_expand_price.text = CurrencyFormatter.getRupiahAllowZeroFormat(element.salesPrice.toLong())
             rv_event_parent_ticket.apply {
                 adapter = eventPDPTicketAdapter
                 layoutManager = LinearLayoutManager(

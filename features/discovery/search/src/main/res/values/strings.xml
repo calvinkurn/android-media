@@ -66,7 +66,6 @@
     <string name="free_ongkir_promo_show_case_description">Semua barang berlogo Bebas Ongkir, biaya kirimnya berpotensi GRATIS!</string>
 
     <string name="banned_products_empty_search_title">Pencarian terbatas</string>
-    <string name="banned_products_empty_search_go_to_browser_button">Cari di Browser</string>
     <string name="banned_products_ticker_title">Hasil pencarian terbatas</string>
 
     <string name="inspiration_carousel_title">Pilih sesuai budget-mu</string>
@@ -76,12 +75,11 @@
     <string name="inspiration_carousel_product_description">Layar 6.22 in.\nKamera 12MP\nRAM 3/4GB\nBaterai 5000mAH</string>
     <string name="inspiration_carousel_product_price">Rp50.000.000</string>
     <string name="inspiration_carousel_review_count">(60)</string>
+    <string name="inspiration_carousel_button">Cek Sekarang</string>
 
     <string name="broad_match_title">Pot tanaman alumunium IKEA</string>
     <string name="broad_match_see_more">Lihat Semua</string>
 
-    <string name="search_product_filter_onboarding_title">Urutkan &amp; filter kini jadi satu</string>
-    <string name="search_product_filter_onboarding_description">Kamu bisa lebih mudah cari barang sesuai lokasi, kurir, hingga mengurutkannya sesuai harga dalam satu tempat.</string>
     <string name="search_product_three_dots_onboarding_title">Tertarik dengan barangnya?</string>
     <string name="search_product_three_dots_onboarding_description">Kamu bisa simpan ke Wishlist, kunjungi tokonya, hingga langsung tambah ke Keranjang di sini.</string>
 

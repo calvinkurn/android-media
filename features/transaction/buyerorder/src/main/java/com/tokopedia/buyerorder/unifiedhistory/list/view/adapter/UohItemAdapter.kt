@@ -1,8 +1,10 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.view.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_EMPTY
@@ -16,6 +18,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.*
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import timber.log.Timber
 
 /**
  * Created by fwidjaja on 22/07/20.
@@ -118,11 +121,15 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun showLoader() {
+        val oldList = listTypeData
         listTypeData.clear()
         for (x in 0 until 5) {
             listTypeData.add(UohTypeData("", TYPE_LOADER))
         }
-        notifyDataSetChanged()
+        val newList = listTypeData
+        val diffUtil = UohDiffUtil(oldList, newList)
+        val diffResult = DiffUtil.calculateDiff(diffUtil)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun getDataAtIndex(index: Int): UohListOrder.Data.UohOrders.Order {
@@ -130,13 +137,21 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun showLoaderAtIndex(index: Int) {
-        listTypeData[index] = UohTypeData("", TYPE_LOADER)
-        notifyItemChanged(index)
+        try {
+            listTypeData[index] = UohTypeData("", TYPE_LOADER)
+            notifyItemChanged(index)
+        } catch (ex: Exception) {
+            Timber.w("P2#ORDER_HISTORY#error_show;err='${Log.getStackTraceString(ex)}'")
+        }
     }
 
     fun updateDataAtIndex(index: Int, order: UohListOrder.Data.UohOrders.Order) {
-        listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
-        notifyItemChanged(index)
+        try {
+            listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
+            notifyItemChanged(index)
+        } catch (ex: Exception) {
+            Timber.w("P2#ORDER_HISTORY#error_update;err='${Log.getStackTraceString(ex)}'")
+        }
     }
 
     fun addList(list: List<UohTypeData>) {
@@ -146,8 +161,13 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun appendList(list: List<UohTypeData>) {
+        val oldList = listTypeData
         listTypeData.addAll(list)
-        notifyDataSetChanged()
+        val newList = listTypeData
+
+        val diffUtil = UohDiffUtil(oldList, newList)
+        val diffResult = DiffUtil.calculateDiff(diffUtil)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun setActionListener(fragment: UohListFragment) {

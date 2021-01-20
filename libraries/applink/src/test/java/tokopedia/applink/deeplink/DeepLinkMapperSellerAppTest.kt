@@ -1,6 +1,7 @@
 package tokopedia.applink.deeplink
 
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.config.GlobalConfig
 import org.junit.Test
@@ -165,4 +166,22 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CENTRALIZED_PROMO, expectedDeepLink)
     }
 
+    @Test
+    fun `check shop feed appLink then should return tokopedia internal feed in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-page/1479278/feed"
+        val appLink = UriUtil.buildUri(ApplinkConst.SellerApp.SHOP_FEED,  "1479278")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check content create post appLink then should return tokopedia internal content create post in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://content/create_post/"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CONTENT_CREATE_POST, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller info detail appLink then should return tokopedia internal seller info detail in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://sellerinfo"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_INFO_DETAIL, expectedDeepLink)
+    }
 }

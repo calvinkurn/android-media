@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.seamless_login.utils.AESUtils
+import com.tokopedia.seamless_login_common.utils.AESUtils
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -46,7 +46,9 @@ class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_M
                     LoginTokenSubscriber(
                             userSession,
                             onSuccessLoginToken(),
-                            onFailedLoginToken(), {},
+                            onFailedLoginToken(),
+                            onSuccessLoginToken(),
+                            {},
                             onGoToSecurityQuestion()
                     )
             )

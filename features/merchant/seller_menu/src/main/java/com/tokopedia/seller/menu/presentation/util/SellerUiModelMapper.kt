@@ -1,7 +1,7 @@
 package com.tokopedia.seller.menu.presentation.util
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.common.list.data.model.filter.Tab
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse

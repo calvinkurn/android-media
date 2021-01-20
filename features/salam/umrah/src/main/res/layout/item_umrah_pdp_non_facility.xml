@@ -10,9 +10,9 @@
         app:layout_constraintTop_toTopOf="@+id/item_umrah_pdp_non_facilities_title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:srcCompat="@drawable/umrah_ic_pdp_substract"
-        android:layout_width="@dimen/dp_12"
-        android:layout_height="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_3"/>
+        android:layout_width="@dimen/unify_space_12"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl2"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item_umrah_pdp_non_facilities_title"
@@ -22,9 +22,9 @@
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         android:textColor="@color/Neutral_N700_96"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         tools:text="Paspor"
-        android:layout_marginLeft="@dimen/dp_6"
-        android:layout_marginStart="@dimen/dp_6" />
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,17 +12,20 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.R
+import com.tokopedia.topads.edit.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.data.response.KeywordDataModel
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
 import com.tokopedia.topads.edit.utils.Constants
+import com.tokopedia.topads.edit.utils.Constants.ADDED_PRODUCTS
 import com.tokopedia.topads.edit.utils.Constants.ATUR_NAME
+import com.tokopedia.topads.edit.utils.Constants.DELETED_PRODUCTS
 import com.tokopedia.topads.edit.utils.Constants.KATA_KUNCI
 import com.tokopedia.topads.edit.utils.Constants.PRODUK_NAME
 import com.tokopedia.topads.edit.utils.Constants.TAB_POSITION
-import com.tokopedia.topads.edit.view.adapter.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.view.fragment.edit.BaseEditKeywordFragment
 import com.tokopedia.topads.edit.view.fragment.edit.EditGroupAdFragment
 import com.tokopedia.topads.edit.view.fragment.edit.EditProductFragment
@@ -36,12 +39,16 @@ private const val CLICK_PRODUK_TAB = "click - tab produk"
 private const val CLICK_KATA_KUNCI_TAB = "click - tab kata kunci"
 private const val CLICK_ATUR_TAB = "click - tab atur"
 private const val CLICK_SIMPAN_BUTTON = "click - simpan"
+
 class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, SaveButtonStateCallBack {
 
     @Inject
     lateinit var viewModel: EditFormDefaultViewModel
     private lateinit var adapter: TopAdsEditPagerAdapter
     var list: ArrayList<Fragment> = ArrayList()
+    var dataProduct = Bundle()
+    var dataKeyword = HashMap<String, Any?>()
+    var dataGroup = HashMap<String, Any?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,15 +61,14 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         }
 
         btn_submit.setOnClickListener {
-            showConfirmationDialog(true)
+            btn_submit?.isEnabled = false
+            getDataFromChildFragments()
+            saveChanges()
         }
     }
 
     private fun getDataFromChildFragments() {
         val fragments = (view_pager.adapter as TopAdsEditPagerAdapter).list
-        var dataProduct = Bundle()
-        var dataKeyword = HashMap<String, Any?>()
-        var dataGroup = HashMap<String, Any?>()
         for (fragment in fragments) {
             when (fragment) {
                 is EditProductFragment ->
@@ -77,9 +83,9 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
                 }
             }
         }
+    }
 
-
-
+    private fun saveChanges() {
         viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup,
                 ::onSuccessGroupEdited, ::finish)
     }
@@ -120,7 +126,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         tab_layout?.addNewTab(ATUR_NAME)
         tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 2) ?: 2)?.select()
         view_pager.currentItem = bundle?.getInt(TAB_POSITION, 2) ?: 2
-        tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
+        tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(p0: TabLayout.Tab?) {
                 //do nothing
             }
@@ -130,7 +136,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
             }
 
             override fun onTabSelected(p0: TabLayout.Tab) {
-                when(p0.position) {
+                when (p0.position) {
                     0 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_PRODUK_TAB, "")
                     1 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_KATA_KUNCI_TAB, "")
                     2 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_ATUR_TAB, "")
@@ -147,8 +153,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         list.add(EditProductFragment.newInstance(bundle))
         list.add(BaseEditKeywordFragment.newInstance(bundle))
         list.add(EditGroupAdFragment.newInstance(bundle))
-
-        adapter = TopAdsEditPagerAdapter(supportFragmentManager, 0)
+        adapter = TopAdsEditPagerAdapter(arrayOf(PRODUK_NAME, KATA_KUNCI, ATUR_NAME), supportFragmentManager, 0)
         adapter.setData(list)
         return adapter
     }
@@ -161,10 +166,36 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
     }
 
     override fun onBackPressed() {
-        showConfirmationDialog(false)
+        if (checkChangesMade())
+            showConfirmationDialog()
+        else
+            super.onBackPressed()
     }
 
-    private fun showConfirmationDialog(dismiss: Boolean) {
+    private fun checkChangesMade(): Boolean {
+        getDataFromChildFragments()
+        val dataAddProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>(ADDED_PRODUCTS)
+        val dataDeleteProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>(DELETED_PRODUCTS)
+        val keywordsPositiveCreate = dataKeyword[Constants.POSITIVE_CREATE] as? MutableList<*>
+        val keywordsPositiveDelete = dataKeyword[Constants.POSITIVE_DELETE] as? MutableList<*>
+        val keywordsNegCreate = dataKeyword[Constants.NEGATIVE_KEYWORDS_ADDED] as? MutableList<*>
+        val keywordsNegDelete = dataKeyword[Constants.NEGATIVE_KEYWORDS_DELETED] as? MutableList<*>
+        val keywordsPostiveEdit = dataKeyword[Constants.POSITIVE_EDIT] as? MutableList<*>
+        val isDataChanged = dataGroup[Constants.IS_DATA_CHANGE] as? Boolean
+
+
+        if (dataAddProduct?.isNotEmpty() != false || dataDeleteProduct?.isNotEmpty() != false || isDataChanged == true)
+            return true
+        if (keywordsPositiveCreate?.isNotEmpty() != false || keywordsPositiveDelete?.isNotEmpty() != false
+                || keywordsNegCreate?.isNotEmpty() != false || keywordsNegDelete?.isNotEmpty() != false
+                || keywordsPostiveEdit?.isNotEmpty() != false)
+            return true
+
+        return false
+
+    }
+
+    private fun showConfirmationDialog() {
         val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.topads_edit_leave_page_conf_dialog_title))
         dialog.setDescription(getString(R.string.topads_edit_leave_page_conf_dialog_desc))
@@ -173,18 +204,16 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
             setButton(false)
-            getDataFromChildFragments()
+            saveChanges()
         }
         dialog.setSecondaryCTAClickListener {
             dialog.dismiss()
-            setButton(true)
-            if (!dismiss)
-                super.onBackPressed()
+            super.onBackPressed()
         }
         dialog.show()
     }
 
-    private fun setButton(shouldEnable:Boolean) {
+    private fun setButton(shouldEnable: Boolean) {
         btn_submit.isEnabled = shouldEnable
     }
 

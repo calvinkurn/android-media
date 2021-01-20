@@ -39,12 +39,10 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
 
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
         super.onCreate(savedInstanceState)
         talkInboxTracking.openScreen(screenName)
-        setUpToolBar()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -126,9 +124,5 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
 
     override fun sendScreenAnalytics() {
         talkInboxTracking.openScreen(screenName)
-    }
-
-    private fun setUpToolBar() {
-        supportActionBar?.elevation = TalkConstants.NO_SHADOW_ELEVATION
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
@@ -23,8 +24,8 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.manageaddress.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
@@ -38,6 +39,7 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM
 import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_EDIT
 import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_USER_NEW
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.bottomsheet_action_address.view.*
@@ -59,9 +61,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         ViewModelProviders.of(this, viewModelFactory)[ManageAddressViewModel::class.java]
     }
 
-    private lateinit var searchAddress: SearchInputView
+    private var searchAddress: SearchBarUnify? = null
     private var addressList: RecyclerView? = null
-    private var searchInputView: SearchInputView? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var bottomSheetLainnya: BottomSheetUnify? = null
     private var emptySearchLayout: LinearLayout? = null
@@ -115,13 +116,14 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 performSearch("")
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
-            performSearch(searchAddress.searchTextView.text.toString())
+            performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "")
         }
     }
 
     private fun openSoftKeyboard() {
-        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(
-                searchAddress.searchTextView, InputMethodManager.SHOW_IMPLICIT)
+        searchAddress?.searchBarTextField?.let {
+            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
+        }
     }
 
     private fun performSearch(query: String) {
@@ -138,7 +140,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun initView() {
         addressList = view?.findViewById(R.id.address_list)
-        searchInputView = view?.findViewById(R.id.search_input_view)
+        searchAddress = view?.findViewById(R.id.search_input_view)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
         emptySearchLayout = view?.findViewById(R.id.empty_search)
         emptyStateLayout = view?.findViewById(R.id.empty_state_manage_address)
@@ -152,7 +154,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun initViewModel() {
-        viewModel.addressList.observe(this, Observer {
+        viewModel.addressList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ManageAddressState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -203,7 +205,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun setEmptyState() {
         if (adapter.addressList.isNotEmpty()) {
             emptyStateLayout?.gone()
-            searchAddress.visible()
+            searchAddress?.visible()
             addressList?.visible()
             emptySearchLayout?.gone()
         } else if (viewModel.savedQuery.isEmpty()) {
@@ -211,46 +213,43 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 openFormAddressView(null)
             }
             emptyStateLayout?.visible()
-            searchAddress.gone()
+            searchAddress?.gone()
             addressList?.gone()
             emptySearchLayout?.gone()
         } else {
             emptySearchLayout?.visible()
             emptyStateLayout?.gone()
-            searchAddress.visible()
+            searchAddress?.visible()
             addressList?.gone()
         }
     }
 
     private fun initSearch() {
         val searchKey = viewModel.savedQuery
-        searchInputView?.searchText = searchKey
+        searchAddress?.searchBarTextField?.setText(searchKey)
         performSearch(searchKey)
     }
 
     private fun initSearchView() {
-        searchAddress.searchTextView.setOnClickListener(onSearchViewClickListener())
-        searchAddress.searchTextView.setOnTouchListener(onSearchViewTouchListener())
-        searchAddress.setResetListener {
-            performSearch("")
-        }
-        searchAddress.setListener(this)
-        searchAddress.setSearchHint("Cari Alamat")
-    }
-
-    private fun onSearchViewClickListener(): View.OnClickListener {
-        return View.OnClickListener { view ->
-            searchAddress.searchTextView.isCursorVisible = true
+        searchAddress?.searchBarTextField?.setOnClickListener {
+            searchAddress?.searchBarTextField?.isCursorVisible = true
             openSoftKeyboard()
         }
-    }
 
-    private fun onSearchViewTouchListener(): View.OnTouchListener {
-        return View.OnTouchListener { view, motionEvent ->
-            searchAddress.searchTextView.isCursorVisible = true
-            openSoftKeyboard()
-            false
+        searchAddress?.searchBarTextField?.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchAddress?.clearFocus()
+                performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "")
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
         }
+
+        searchAddress?.clearListener = {
+           performSearch("")
+        }
+
+        searchAddress?.searchBarPlaceholder = "Cari Alamat"
     }
 
     private fun updateData(data: List<RecipientAddressModel>) {
@@ -327,7 +326,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.make(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                            Toaster.build(it, DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -335,8 +334,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable.message
-                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                    Toaster.build(it, throwable.message
+                            ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
                 }
             }
         }
@@ -347,7 +346,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         globalErrorLayout?.setActionClickListener {
             viewModel.searchAddress("")
         }
-        searchAddress.gone()
+        searchAddress?.gone()
         addressList?.gone()
         emptyStateLayout?.gone()
         globalErrorLayout?.visible()

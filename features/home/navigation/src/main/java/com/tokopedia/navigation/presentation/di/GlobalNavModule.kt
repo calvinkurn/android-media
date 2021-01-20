@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.navigation.GlobalNavRouter
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.data.mapper.NotificationRequestMapper
 import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase
@@ -71,11 +70,6 @@ class GlobalNavModule {
     @Named("recommendationQuery")
     fun provideRecommendationRawQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
-    }
-
-    @Provides
-    fun provideAppUpdate(@ApplicationContext context: Context): ApplicationUpdate {
-        return (context as GlobalNavRouter).getAppUpdate(context)
     }
 
     @Provides

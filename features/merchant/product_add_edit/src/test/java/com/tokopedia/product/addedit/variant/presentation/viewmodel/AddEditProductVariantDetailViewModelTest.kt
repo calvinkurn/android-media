@@ -1,15 +1,18 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
+import androidx.lifecycle.MutableLiveData
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
-import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert
 import org.junit.Test
-import org.junit.jupiter.api.assertAll
 
 @ExperimentalCoroutinesApi
 class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewModelTestFixture() {
@@ -188,6 +191,8 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
 
     @Test
     fun `When getAvailableFields Expect valid number of fields`() {
+        assert(viewModel.getAvailableFields().isEmpty())
+
         initVariantDetailInputMap()
         assert(viewModel.getAvailableFields().size == EXPECTED_AVAILABLE_FIELDS)
 
@@ -292,11 +297,44 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
                 mutableListOf(0, 1),
                 mutableListOf(1, 0),
                 mutableListOf(1, 1)))
+        val privateInputPriceErrorStatusMap = viewModel::class.java.getDeclaredField("inputPriceErrorStatusMap").apply {
+            isAccessible = true
+        }
+        val privateInputStockErrorStatusMap = viewModel::class.java.getDeclaredField("inputStockErrorStatusMap").apply {
+            isAccessible = true
+        }
+        privateInputPriceErrorStatusMap.set(viewModel, hashMapOf(1 to true, 2 to true))
+        privateInputStockErrorStatusMap.set(viewModel, hashMapOf(1 to true, 2 to true))
+
         viewModel.updateProductInputModel(multipleVariantEditInputModel)
 
         val isChanged = viewModel.productInputModel.value?.variantInputModel?.products?.all {
             it.price == 666.toBigInteger() && it.stock == 6 && it.sku == "SK-U"
         } ?: false
         assert(isChanged)
+    }
+
+    @Test
+    fun `When productInput model became null Expect empty objects`() {
+        viewModel.productInputModel = MutableLiveData<ProductInputModel>()
+        assert(viewModel.productInputModel.value == null)
+        viewModel.callPrivateFunc("setDefaultPrimaryVariant")
+
+        viewModel.collapseHeader(1, 1)
+        viewModel.expandHeader(1, 1)
+        Assert.assertFalse(viewModel.isEditMode)
+        Assert.assertTrue(viewModel.hasVariantCombination(MAX_SELECTED_VARIANT_TYPE))
+
+        val updateSwitchStatusResult = viewModel.updateSwitchStatus(false, 999)
+        val updateVariantSkuInputResult = viewModel.updateVariantSkuInput("KK", 999)
+        val validateVariantPriceInputResult = viewModel.validateVariantPriceInput("KK", 999)
+        val validateProductVariantStockInputResult = viewModel.validateProductVariantStockInput("KK", 999)
+        val generateVariantDetailInputModelResult = viewModel.generateVariantDetailInputModel(0, 0, "", true)
+
+        assert(updateSwitchStatusResult.headerPosition == 0)
+        assert(updateVariantSkuInputResult.headerPosition == 0)
+        assert(validateVariantPriceInputResult.headerPosition == 0)
+        assert(validateProductVariantStockInputResult.headerPosition == 0)
+        assert(generateVariantDetailInputModelResult.headerPosition == 0)
     }
 }

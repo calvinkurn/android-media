@@ -1,5 +1,8 @@
 package com.tokopedia.digital.newcart.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsListFragment;

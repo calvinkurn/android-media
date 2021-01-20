@@ -28,6 +28,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_DETAIL
@@ -49,15 +50,16 @@ import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
+import com.tokopedia.unifycomponents.setCounter
+import com.tokopedia.unifycomponents.setCustomText
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
+import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import kotlinx.android.synthetic.main.topads_dash_detail_view_widget.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.hari_ini
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.swipe_refresh_layout
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.header_toolbar
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.tab_layout
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
-import java.lang.NumberFormatException
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -124,12 +126,16 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         view_pager_frag.adapter = getViewPagerAdapter()
         view_pager_frag.offscreenPageLimit = 3
         view_pager_frag.currentItem = 0
-        view_pager_frag.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
         tab_layout.setupWithViewPager(view_pager_frag)
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
         val list: MutableList<Fragment> = mutableListOf()
+        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        tab_layout?.addNewTab(TopAdsDashboardConstant.PRODUK)
+        tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
+        tab_layout?.addNewTab(TopAdsDashboardConstant.NEG_KATA_KUNCI)
+        tab_layout?.customTabMode = TabLayout.MODE_FIXED
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
         bundle.putString(GROUP_NAME, groupName)
@@ -170,7 +176,6 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
                 putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
                 putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
-                putExtra(TopAdsDashboardConstant.GROUPNAME, groupName)
             }
             startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
         }
@@ -296,7 +301,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         dateRange = if (customStartDate?.isNotEmpty()!!) {
             "$customStartDate - $customEndDate"
         } else
-            getString(R.string.topads_dash_custom_date_desc) ?: ""
+            getString(R.string.topads_dash_custom_date_desc)
 
         datePickerSheet = DatePickerSheet.newInstance(this, index ?: 2, dateRange)
         datePickerSheet?.show()
@@ -311,17 +316,9 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     private fun startCustomDatePicker() {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, -1)
-        val selectDate: String = format.format(calendar.time)
-        calendar.add(Calendar.YEAR, -1)
-        val date = calendar.time
-        val minDate = format.format(date)
-        val maxDate: String = format.format(Date())
-        val sheet = CustomDatePicker.getInstance(minDate, maxDate, selectDate)
-        sheet.setTitle(resources.getString(R.string.topads_dash_choose_date))
+        val sheet = CustomDatePicker.getInstance()
         sheet.setListener(this)
-        sheet.show(supportFragmentManager, "datepicker")
+        sheet.show(supportFragmentManager, DATE_PICKER_SHEET)
     }
 
 
@@ -398,15 +395,13 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     fun setProductCount(size: Int) {
-        detailPagerAdapter.setTitleProduct(String.format(getString(R.string.topads_dash_product_count), size))
+        tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
     }
-
     fun setKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size))
+        tab_layout?.getUnifyTabLayout()?.getTabAt(1)?.setCounter(size)
     }
-
     fun setNegKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleNegKeyword(String.format(getString(R.string.topads_dash_neg_key_count), size))
+        tab_layout?.getUnifyTabLayout()?.getTabAt(2)?.setCounter(size)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {

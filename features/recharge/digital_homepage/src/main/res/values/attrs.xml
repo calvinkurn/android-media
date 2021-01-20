@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SearchInputViewSubhome">
+        <attr name="siv_search_icon_subhome" format="reference" />
+        <attr name="siv_search_text_subhome" format="string" />
+        <attr name="siv_search_hint_subhome" format="string" />
+        <attr name="isEditable_subhome" format="boolean" />
+    </declare-styleable>
+</resources>

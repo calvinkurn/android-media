@@ -40,9 +40,12 @@ class SmartBillsViewModel @Inject constructor(
     val multiCheckout: LiveData<Result<RechargeMultiCheckoutResponse>>
         get() = mutableMultiCheckout
 
-    fun getStatementMonths(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+    fun getStatementMonths(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val graphqlRequest = GraphqlRequest(rawQuery, RechargeStatementMonths.Response::class.java, mapParams)
+            val graphqlRequest = GraphqlRequest(
+                    SmartBillsQueries.STATEMENT_MONTHS_QUERY,
+                    RechargeStatementMonths.Response::class.java, mapParams
+            )
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
@@ -60,9 +63,12 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
-    fun getStatementBills(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+    fun getStatementBills(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val graphqlRequest = GraphqlRequest(rawQuery, RechargeStatementBills.Response::class.java, mapParams)
+            val graphqlRequest = GraphqlRequest(
+                    SmartBillsQueries.STATEMENT_BILLS_QUERY,
+                    RechargeStatementBills.Response::class.java, mapParams
+            )
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
@@ -102,8 +108,10 @@ class SmartBillsViewModel @Inject constructor(
         return mapOf(PARAM_LIMIT to limit)
     }
 
-    fun createStatementBillsParams(month: Int, year: Int): Map<String, Int> {
-        return mapOf(PARAM_MONTH to month, PARAM_YEAR to year)
+    fun createStatementBillsParams(month: Int, year: Int, source: Int? = null): Map<String, Int> {
+        val map = mutableMapOf(PARAM_MONTH to month, PARAM_YEAR to year)
+        source?.run { map[PARAM_SOURCE] = source }
+        return map
     }
 
     fun createMultiCheckoutParams(bills: List<RechargeBills>, userSession: UserSessionInterface): MultiCheckoutRequest? {
@@ -128,6 +136,7 @@ class SmartBillsViewModel @Inject constructor(
         const val PARAM_LIMIT = "limit"
         const val PARAM_MONTH = "month"
         const val PARAM_YEAR = "year"
+        const val PARAM_SOURCE = "source"
 
         const val STATEMENT_MONTHS_ERROR = "STATEMENT_MONTHS_ERROR"
         const val STATEMENT_BILLS_ERROR = "STATEMENT_BILLS_ERROR"

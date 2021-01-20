@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="ProgressBarWithTimer">
-        <attr name="pbwt_text" format="string" />
-        <attr name="pbwt_progress" format="integer" />
-        <attr name="pbwt_time" format="integer" />
-    </declare-styleable>
-
-</resources>

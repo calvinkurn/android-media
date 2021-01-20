@@ -156,8 +156,6 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         name shouldBe otherRelatedProduct.name
         price shouldBe otherRelatedProduct.price
         imageUrl shouldBe otherRelatedProduct.imageUrl
-        rating shouldBe otherRelatedProduct.rating
-        countReview shouldBe otherRelatedProduct.countReview
         url shouldBe otherRelatedProduct.url
         applink shouldBe otherRelatedProduct.applink
         priceString shouldBe otherRelatedProduct.priceString
@@ -165,10 +163,18 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         alternativeKeyword shouldBe expectedAlternativeKeyword
         isWishlisted shouldBe otherRelatedProduct.isWishlisted
         shopLocation shouldBe otherRelatedProduct.shop.city
+        ratingAverage shouldBe otherRelatedProduct.ratingAverage
 
         badgeItemViewModelList.listShouldBe(otherRelatedProduct.badgeList) { actual, expected ->
             actual.imageUrl shouldBe expected.imageUrl
             actual.isShown shouldBe expected.isShown
+        }
+
+        labelGroupList.listShouldBe(otherRelatedProduct.labelGroupList) { actual, expected ->
+            actual.title shouldBe expected.title
+            actual.position shouldBe expected.position
+            actual.type shouldBe expected.type
+            actual.imageUrl shouldBe expected.url
         }
 
         freeOngkirViewModel.isActive shouldBe otherRelatedProduct.freeOngkir.isActive
@@ -385,6 +391,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val expectedTopSeparatorPosition = -1
         val expectedBottomSeparatorPosition = 5
         val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
+
         `Test broad match with position`(
                 searchProductModelPage1, searchProductModelPage2,
                 expectedTopSeparatorPosition, expectedBottomSeparatorPosition
@@ -399,10 +406,11 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val expectedTopSeparatorPosition = 4
         val expectedBottomSeparatorPosition = 10
         val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
-            `Test broad match with position`(
-                    searchProductModelPage1, searchProductModelPage2,
-                    expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
-            { expectedSuggestionViewModelPosition }
+
+        `Test broad match with position`(
+                searchProductModelPage1, searchProductModelPage2,
+                expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
+        { expectedSuggestionViewModelPosition }
     }
 
     @Test
@@ -413,6 +421,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val expectedTopSeparatorPosition = 12
         val expectedBottomSeparatorPosition = 18
         val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
+
         `Test broad match with position`(
                 searchProductModelPage1, searchProductModelPage2,
                 expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
@@ -433,7 +442,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         `When load first page and load more data`(visitableList)
 
-        var expectedSuggestionViewModelPosition = getExpectedSuggestionViewModelPosition(visitableList)
+        val expectedSuggestionViewModelPosition = getExpectedSuggestionViewModelPosition(visitableList)
 
         `Then assert top separator view model is positioned before suggestion`(expectedTopSeparatorPosition, expectedSuggestionViewModelPosition, visitableList)
 

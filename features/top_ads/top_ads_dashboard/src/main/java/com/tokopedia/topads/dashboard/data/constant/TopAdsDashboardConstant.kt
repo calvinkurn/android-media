@@ -4,13 +4,8 @@ object TopAdsDashboardConstant {
     const val PARAM_TYPE = "type"
     const val PARAM_START_DATE = "startDate"
     const val PARAM_END_DATE = "endDate"
-
-    const val GROUP_PARAM_START_DATE = "start_date"
-    const val GROUP_PARAM_END_DATE = "end_date"
-
-    const val SOURCE = "source"
-
     const val PATH_DASHBOARD_STATISTIC = "/v1.1/dashboard/statistics"
+    const val PARAM_SOURCE_CREDIT_HISTORY = "dashboard_credit_history_app"
 
     const val SHOP_ID = "shopId"
     const val OFFSCREEN_PAGE_LIMIT = 3
@@ -18,7 +13,6 @@ object TopAdsDashboardConstant {
     const val EXTRA_APPLINK_FROM_PUSH = "applink_from_notif"
     const val EXTRA_LABEL = "label"
 
-    const val URL_ONECLICKPROMO = "https://ta.tokopedia.com/v2/manage/oneclickpromo"
     const val AUTO_TOPUP_INACTIVE: Int = 0
     const val REQUEST_CODE_ADD_CREDIT = 99
     const val ACTIVE_STATUS = "1"
@@ -63,10 +57,13 @@ object TopAdsDashboardConstant {
     const val TANPA_GRUP = "Tanpa Grup"
     const val TOASTER_DURATION :Long = 2000
     const val EXPIRE = "expiryDate"
+    const val IS_CHANGED = "isChanged"
+    const val EDIT_HEADLINE_REQUEST_CODE = 46
     const val EDIT_GROUP_REQUEST_CODE = 47
     const val EDIT_WITHOUT_GROUP_REQUEST_CODE = 49
     const val GROUP_UPDATED = 23
     const val AUTO_ADS_DISABLED = 111
+    const val HEADLINE_UPADTED = 74
     const val STATUS_ACTIVE = 1
     const val STATUS_TIDAK_TAMPIL = 2
     const val TAB_POSITION = "tab_position"
@@ -84,6 +81,17 @@ object TopAdsDashboardConstant {
     const val REQUEST_FROM_NEG = "Negative"
     const val REQUEST_FROM_BID = "Bid"
     const val INVALID_KEYWORD_TAG = "INVALID_KEYWORD_TAG"
-    const val SELLER_CREATE_FORM_PATH = "com.tokopedia.topads.view.activity.AdCreationChooserActivity"
-    const val SELLER_ONBOARDING_PATH = " com.tokopedia.topads.auto.view.acctivity.AutoAdsOnboardingActivity"
+    const val SEVEN_DAYS_RANGE_INDEX = 2
+    const val DATE_PICKER_SHEET = "datepicker"
+    const val GROUP_TYPE_HEADLINE = 3
+    const val GROUP_TYPE_PRODUCT = 1
+    const val CONST_0 = 0
+    const val CONST_1 = 1
+    const val CONST_2 = 2
+    const val CONST_3 = 3
+    const val CONST_4 = 4
+    const val CONST_5 = 5
+    const val CONST_6 = 6
+    const val CONST_7 = 7
+
 }

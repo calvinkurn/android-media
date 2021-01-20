@@ -120,8 +120,15 @@ query ORDERDETAIL($cartString: String, $paymentId: String,$orderCategory: String
       backgroundColor
       imageUrl
     }
+    discount {
+      label
+      value
+      textColor
+      backgroundColor
+      imageUrl
+    }
     detail {
-          label
+      label
       value
     }
     paymentData {

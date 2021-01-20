@@ -36,7 +36,7 @@ public class DeleteReviewResponseSubscriber extends Subscriber<DeleteReviewRespo
             viewListener.onSuccessDeleteReviewResponse();
         else
             viewListener.onErrorDeleteReviewResponse(
-                    viewListener.getContext().getApplicationContext().getString(R.string.default_request_error_unknown)
+                    viewListener.getContext().getApplicationContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
             );
 
     }

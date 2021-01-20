@@ -8,10 +8,6 @@ import com.tokopedia.sellerorder.common.SomProductionDispatcherProvider
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomChangeCourier
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
-import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
-import com.tokopedia.sellerorder.list.data.model.SomListFilter
-import com.tokopedia.sellerorder.list.data.model.SomListOrder
-import com.tokopedia.sellerorder.list.data.model.SomListTicker
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher

@@ -10,6 +10,7 @@ public interface CMConstant {
         String KEY_IS_CM_PUSH_ENABLE = "app_cm_push_enable_new2";
         String KEY_IS_OFFLINE_PUSH_ENABLE = "app_cm_offline_push_enabled";
         String KEY_CM_PUSH_END_TIME_INTERVAL = "app_cm_push_end_time_interval";
+        String KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED = "sellerapp_cm_add_token_enabled";
     }
 
 
@@ -26,6 +27,9 @@ public interface CMConstant {
     String GADSID_CACHE_KEY = "gadsid_cache";
     String UNIQUE_APP_ID_CACHE_KEY = "unique_app_id__cache";
     String APP_VERSION_CACHE_KEY = "app_version_cache_key";
+    String INAPP_DISPLAY_COUNTER = "inapp_display_counter";
+    String MAX_INAPP_DISPLAY_COUNT = "max_inapp_display_count";
+    String NEXT_INAPP_DISPLAY_TIME = "next_inapp_display_time";
     String EXTRA_CAMPAIGN_ID = "extra_campaign_id";
     String EXTRA_PRE_DEF_ACTION = "extra_pre_def_action";
     String HTTP = "http";
@@ -188,10 +192,12 @@ public interface CMConstant {
 
     interface CouponCodeExtra {
         String COUPON_CODE = "coupon_code";
+        String GRATIFICATION_ID = "gratificationId";
     }
 
     interface CustomValuesKeys {
         String COUPON_CODE = "coupon_code";
+        String GRATIFICATION_ID = "gratificationId";
     }
 
     interface TimberTags {

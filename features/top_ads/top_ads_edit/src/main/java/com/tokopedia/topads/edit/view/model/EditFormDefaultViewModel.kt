@@ -2,16 +2,20 @@ package com.tokopedia.topads.edit.view.model
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
-import com.tokopedia.topads.common.data.response.GroupInfoResponse
-import com.tokopedia.topads.common.data.response.SingleAd
-import com.tokopedia.topads.common.data.response.SingleAdInFo
-import com.tokopedia.topads.edit.data.param.DataSuggestions
-import com.tokopedia.topads.edit.data.response.*
-import com.tokopedia.topads.edit.usecase.*
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.domain.usecase.GetAdKeywordUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
+import com.tokopedia.topads.edit.data.response.GetAdProductResponse
+import com.tokopedia.topads.edit.usecase.EditSingleAdUseCase
+import com.tokopedia.topads.edit.usecase.GetAdsUseCase
+import com.tokopedia.topads.edit.usecase.GroupInfoUseCase
+import com.tokopedia.topads.edit.usecase.TopAdsCreateUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import java.util.*
@@ -22,48 +26,29 @@ import javax.inject.Inject
  */
 
 class EditFormDefaultViewModel @Inject constructor(
-        private val dispatcher: CoroutineDispatcher,
-        private val validGroupUseCase: ValidGroupUseCase,
+        dispatcher: CoroutineDispatcher,
+        private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
         private val bidInfoUseCase: BidInfoUseCase,
         private val getAdsUseCase: GetAdsUseCase,
         private val getAdKeywordUseCase: GetAdKeywordUseCase,
         private val groupInfoUseCase: GroupInfoUseCase,
         private val editSingleAdUseCase: EditSingleAdUseCase,
-        private val singleAdInfoUseCase: GraphqlUseCase<SingleAdInFo>,
+        private val getAdInfoUseCase: TopAdsGetPromoUseCase,
         private val userSession: UserSessionInterface,
         private val topAdsCreateUseCase: TopAdsCreateUseCase) : BaseViewModel(dispatcher) {
 
-    companion object {
-        private const val QUERY_PRODUCT = """query topAdsGetPromo(${'$'}shopID: String!, ${'$'}adID: String!) {
-            topAdsGetPromo(shopID:${'$'}shopID, adID: ${'$'}adID) {
-                data {
-                    adType
-                    itemID
-                    status
-                    priceBid
-                    priceDaily
-                }
-                errors {
-                    code
-                    detail
-                    title
-                }
-            }
-        }"""
-    }
-
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)) {
-        validGroupUseCase.setParams(groupName)
-        validGroupUseCase.executeQuerySafeMode(
+        validGroupUseCase.setParams(userSession.shopId.toIntOrZero(), groupName)
+        validGroupUseCase.execute(
                 {
-                    onSuccess(it)
+                    onSuccess(it.topAdsGroupValidateName)
                 },
                 { throwable ->
                     throwable.printStackTrace()
                 })
     }
 
-    fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) -> Unit) {
+    fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
         bidInfoUseCase.setParams(suggestions, ParamObject.PRODUCT)
         bidInfoUseCase.executeQuerySafeMode(
                 {
@@ -109,7 +94,7 @@ class EditFormDefaultViewModel @Inject constructor(
     }
 
     fun getAdKeyword(groupId: Int, cursor: String, onSuccess: (List<GetKeywordResponse.KeywordsItem>, cursor: String) -> Unit) {
-        getAdKeywordUseCase.setParams(groupId, cursor)
+        getAdKeywordUseCase.setParams(groupId, cursor, userSession.shopId, source = ParamObject.KEYWORD_SOURCE)
         getAdKeywordUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.topAdsListKeyword.data.keywords, it.topAdsListKeyword.data.pagination.cursor)
@@ -119,7 +104,7 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) -> Unit) {
+    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
         bidInfoUseCase.setParams(suggestions, KEYWORD)
         bidInfoUseCase.executeQuerySafeMode(
                 {
@@ -141,15 +126,12 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    @GqlQuery("CategoryList", QUERY_PRODUCT)
-    fun getSingleAdInfo(adId: Int, onSuccess: ((List<SingleAd>) -> Unit)) {
-        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId,
-                ParamObject.AD_ID to adId.toString())
-        singleAdInfoUseCase.setTypeClass(SingleAdInFo::class.java)
-        singleAdInfoUseCase.setRequestParams(params)
-        singleAdInfoUseCase.setGraphqlQuery(CategoryList.GQL_QUERY)
-        singleAdInfoUseCase.execute(
-                onSuccessGroup(onSuccess),
+    fun getSingleAdInfo(adId: String, onSuccess: ((List<SingleAd>) -> Unit)) {
+        getAdInfoUseCase.setParams(adId, userSession.shopId)
+        getAdInfoUseCase.execute(
+                {
+                    onSuccessGroup(onSuccess)
+                },
                 {
                     it.printStackTrace()
                 }
@@ -171,7 +153,7 @@ class EditFormDefaultViewModel @Inject constructor(
         groupInfoUseCase.cancelJobs()
         topAdsCreateUseCase.cancelJobs()
         editSingleAdUseCase.cancelJobs()
-        singleAdInfoUseCase.cancelJobs()
+        getAdInfoUseCase.cancelJobs()
     }
 }
 

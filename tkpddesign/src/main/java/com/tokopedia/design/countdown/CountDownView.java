@@ -77,9 +77,9 @@ public class CountDownView extends FrameLayout {
         col2 = rootView.findViewById(R.id.col2);
         TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.CountDownView, 0, 0);
         try {
-            hourView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, Color.WHITE));
-            minuteView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, Color.WHITE));
-            secondView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, Color.WHITE));
+            hourView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White)));
+            minuteView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White)));
+            secondView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Static_White)));
             col1.setTextColor(a.getColor(R.styleable.CountDownView_countDownSparatorColor, ContextCompat.getColor(context, R.color.tkpd_main_orange)));
             col2.setTextColor(a.getColor(R.styleable.CountDownView_countDownSparatorColor, ContextCompat.getColor(context, R.color.tkpd_main_orange)));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

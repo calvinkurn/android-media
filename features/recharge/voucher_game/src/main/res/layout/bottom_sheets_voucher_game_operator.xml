@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:paddingBottom="@dimen/spacing_lvl4">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/image_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_120"
-        android:layout_marginBottom="@dimen/dp_16"
-        app:cardCornerRadius="@dimen/dp_5"
-        app:cardElevation="@dimen/dp_2" >
+        android:layout_height="@dimen/voucher_game_dp_120"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:cardCornerRadius="@dimen/voucher_game_dp_5"
+        app:cardElevation="@dimen/unify_space_2">
 
         <ImageView
             android:id="@+id/info_image"
@@ -27,8 +27,8 @@
         android:id="@+id/info_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:textColor="@color/black_70"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_2"
         tools:text="@string/vg_operator_info_title" />
 
@@ -36,7 +36,7 @@
         android:id="@+id/info_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_1"
         tools:text="@string/vg_operator_info_desc" />
 

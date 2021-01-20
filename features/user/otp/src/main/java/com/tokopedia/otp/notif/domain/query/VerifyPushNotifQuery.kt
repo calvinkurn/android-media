@@ -20,6 +20,7 @@ object VerifyPushNotifQuery {
                 MessageTitle
                 MessageBody
                 CtaType
+                Status
             }
         }
     """.trimIndent()

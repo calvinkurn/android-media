@@ -17,8 +17,9 @@ import kotlinx.android.synthetic.main.topads_dash_item_keyword_card.view.*
  */
 
 class KeywordItemViewHolder(val view: View,
-                            private var onSwitchAction: ((pos: Int, isChecked: Boolean) -> Unit),
-                            private var onSelectMode: ((select: Boolean) -> Unit)) : KeywordViewHolder<KeywordItemViewModel>(view) {
+                            private var onSwitchAction: (pos: Int, isChecked: Boolean) -> Unit,
+                            private var onSelectMode: (select: Boolean) -> Unit,
+                            var headline: Boolean = false) : KeywordViewHolder<KeywordItemViewModel>(view) {
 
     companion object {
         @LayoutRes
@@ -27,6 +28,8 @@ class KeywordItemViewHolder(val view: View,
 
     override fun bind(item: KeywordItemViewModel, selectMode: Boolean, fromSearch: Boolean) {
         item.let {
+            if (headline)
+                view.per_click.text = view.context.getString(com.tokopedia.topads.common.R.string.topads_common_headline_klik)
             if (selectMode) {
                 view.btn_switch.visibility = View.INVISIBLE
                 view.check_box.visibility = View.VISIBLE

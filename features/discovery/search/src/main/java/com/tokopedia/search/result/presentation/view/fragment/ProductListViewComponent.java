@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.presentation.view.fragment;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.search.di.module.AdvertisingLocalCacheHandlerModule;
 import com.tokopedia.search.di.module.GraphqlRepositoryModule;
 import com.tokopedia.search.di.module.RecommendationModule;
 import com.tokopedia.search.di.module.RemoteConfigModule;
@@ -32,7 +31,6 @@ import dagger.Component;
         GetLocalSearchRecommendationUseCaseModule.class,
         ResourcesModule.class,
         GraphqlRepositoryModule.class,
-        AdvertisingLocalCacheHandlerModule.class,
         SearchOnBoardingLocalCacheModule.class,
         TopAdsUrlHitterModule.class,
         ProductionSchedulersProviderModule.class,

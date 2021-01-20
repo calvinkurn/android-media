@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierAdapterListener
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ArmyViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.NotifierViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener
@@ -17,7 +16,7 @@ class ShippingCourierOccAdapter(val list: List<RatesViewModelType>, val shipping
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            ShippingCourierViewHolder.ITEM_VIEW_SHIPMENT_COURIER -> ShippingCourierViewHolder(view, 0)
+            ShippingCourierViewHolderOcc.ITEM_VIEW_SHIPMENT_COURIER -> ShippingCourierViewHolderOcc(view, 0)
             ArmyViewHolder.LAYOUT -> ArmyViewHolder(view)
             else -> NotifierViewHolder(view)
         }
@@ -29,7 +28,7 @@ class ShippingCourierOccAdapter(val list: List<RatesViewModelType>, val shipping
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ShippingCourierViewHolder -> holder.bindData(list[position] as ShippingCourierUiModel, shippingCourierAdapterListener, position == itemCount - 1)
+            is ShippingCourierViewHolderOcc -> holder.bindData(list[position] as ShippingCourierUiModel, shippingCourierAdapterListener, position == itemCount - 1)
             is ArmyViewHolder -> holder.bindData(list[position] as LogisticPromoUiModel, shippingDurationAdapterListener)
             is NotifierViewHolder -> holder.bindData()
         }
@@ -37,7 +36,7 @@ class ShippingCourierOccAdapter(val list: List<RatesViewModelType>, val shipping
 
     override fun getItemViewType(position: Int): Int {
         return when (list[position]) {
-            is ShippingCourierUiModel -> ShippingCourierViewHolder.ITEM_VIEW_SHIPMENT_COURIER
+            is ShippingCourierUiModel -> ShippingCourierViewHolderOcc.ITEM_VIEW_SHIPMENT_COURIER
             is LogisticPromoUiModel -> ArmyViewHolder.LAYOUT
             else -> NotifierViewHolder.LAYOUT
         }

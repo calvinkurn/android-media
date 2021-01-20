@@ -29,12 +29,8 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewPro
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
-import kotlinx.coroutines.CoroutineDispatcher;
-import kotlinx.coroutines.Dispatchers;
 
 /**
  * @author by nisie on 8/11/17.
@@ -46,14 +42,6 @@ public class ReputationModule {
     @ReputationScope
     @Provides
     GraphqlRepository provideGraphqlRepository() { return GraphqlInteractor.getInstance().getGraphqlRepository(); }
-
-    @ReputationScope
-    @Provides
-    @Named("Main")
-    CoroutineDispatcher provideMainDispatcher() {
-        return Dispatchers.getMain();
-    }
-
 
     @ReputationScope
     @Provides

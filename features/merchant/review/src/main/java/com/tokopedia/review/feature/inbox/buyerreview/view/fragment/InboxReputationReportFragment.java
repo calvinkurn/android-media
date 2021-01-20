@@ -152,14 +152,14 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
                 && !TextUtils.isEmpty(otherReason.getText().toString().trim()))
         ) {
             sendButton.setEnabled(true);
-            sendButton.setTextColor(getResources().getColor(R.color.white));
+            sendButton.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
             MethodChecker.setBackground(sendButton,
-                    getResources().getDrawable(R.drawable.green_button_rounded));
+                    getResources().getDrawable(com.tokopedia.design.R.drawable.green_button_rounded));
         } else {
             sendButton.setEnabled(false);
-            sendButton.setTextColor(getResources().getColor(R.color.grey_700));
+            sendButton.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N500));
             MethodChecker.setBackground(sendButton,
-                    getResources().getDrawable(R.drawable.bg_button_disabled));
+                    getResources().getDrawable(com.tokopedia.design.R.drawable.bg_button_disabled));
         }
     }
 

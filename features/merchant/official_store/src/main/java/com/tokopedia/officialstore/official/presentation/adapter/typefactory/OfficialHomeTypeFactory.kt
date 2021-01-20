@@ -2,24 +2,24 @@ package com.tokopedia.officialstore.official.presentation.adapter.typefactory
 
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.officialstore.base.diffutil.OfficialTypeFactory
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
-import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
 
 interface OfficialHomeTypeFactory : OfficialTypeFactory, HomeComponentTypeFactory {
 
-    fun type(officialLoadingViewModel: OfficialLoadingViewModel): Int
+    fun type(officialLoadingDataModel: OfficialLoadingDataModel): Int
 
-    fun type(officialLoadingMoreViewModel: OfficialLoadingMoreViewModel): Int
+    fun type(officialLoadingMoreDataModel: OfficialLoadingMoreDataModel): Int
 
-    fun type(officialBannerViewModel: OfficialBannerViewModel): Int
+    fun type(officialBannerDataModel: OfficialBannerDataModel): Int
 
-    fun type(officialBenefitViewModel: OfficialBenefitViewModel): Int
+    fun type(officialBenefitDataModel: OfficialBenefitDataModel): Int
 
-    fun type(officialFeaturedShopViewModel: OfficialFeaturedShopViewModel): Int
+    fun type(officialFeaturedShopDataModel: OfficialFeaturedShopDataModel): Int
 
-    fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int
+    fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int
 
-    fun type(productRecommendationTitleViewModel: ProductRecommendationTitleViewModel): Int
+    fun type(productRecommendationTitleDataModel: ProductRecommendationTitleDataModel): Int
 
-    fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int
+    fun type(productRecommendationDataModel: ProductRecommendationDataModel): Int
 }

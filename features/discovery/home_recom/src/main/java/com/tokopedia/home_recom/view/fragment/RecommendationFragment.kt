@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -107,11 +108,12 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         private const val REQUEST_FROM_PDP = 394
         private const val REQUEST_CODE_LOGIN = 283
 
-        fun newInstance(productId: String = "", queryParam: String = "", ref: String = "null", internalRef: String = "") = RecommendationFragment().apply {
+        fun newInstance(productId: String = "", queryParam: String = "", ref: String = "null", internalRef: String = "",@FragmentInflater fragmentInflater: String = FragmentInflater.DEFAULT) = RecommendationFragment().apply {
             this.productId = productId
             this.queryParam = queryParam
             this.ref = ref
             this.internalRef = internalRef
+            this.fragmentInflater = fragmentInflater
         }
     }
 
@@ -157,6 +159,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
     }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.home_recom.R.id.swipe_refresh_layout
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -221,7 +225,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                if(position >= 0 && adapter.data.size > position) {
+                if(position >= 0 && adapter.data.size > position && adapter.data[position] is RecommendationItemDataModel) {
                     (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = wishlistStatusFromPdp
                     adapter.notifyItemChanged(position, wishlistStatusFromPdp)
                 }
@@ -371,8 +375,16 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
      * This void from Callback [RecommendationErrorListener]
      * it handle global error click from [RecommendationErrorViewHolder]
      */
-    override fun refresh() {
+    override fun onRefreshRecommendation() {
         loadInitialData()
+    }
+
+    /**
+     * This void from Callback [RecommendationErrorListener]
+     * it handle global error click from [RecommendationErrorViewHolder]
+     */
+    override fun onCloseRecommendation() {
+        this.activity?.finish()
     }
 
     /**
@@ -421,13 +433,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     override fun onProductAnchorClick(productInfoDataModel: ProductInfoDataModel) {
         RecommendationPageTracking.eventClickPrimaryProductWithProductId(productInfoDataModel.mapToRecommendationTracking(), "0", ref, internalRef)
-        RouteManager.getIntent(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productId)?.run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, 0)
-            startActivityForResult(this, REQUEST_FROM_PDP)
-        }
+        goToPDP(productId, 0)
     }
 
     override fun onProductAnchorAddToCart(productInfoDataModel: ProductInfoDataModel) {
@@ -519,9 +525,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         lastClickLayoutType = layoutType
         if(position.size > 1){
             lastParentPosition = position[0]
-            goToPDP(item, position[1])
+            goToPDP(item.productId.toString(), position[1])
         }else {
-            goToPDP(item, position[0])
+            goToPDP(item.productId.toString(), position[0])
         }
     }
 
@@ -571,13 +577,17 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     /**
      * Void [goToPDP]
      * It handling routing to PDP
-     * @param item the recommendation item
+     * @param productId the recommendation item
      * @param position the position of the item at adapter
      */
-    private fun goToPDP(item: RecommendationItem, position: Int){
-        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, position)
-            startActivityForResult(this, REQUEST_FROM_PDP)
+    private fun goToPDP(productId: String, position: Int){
+        try {
+            RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId).run {
+                putExtra(PDP_EXTRA_UPDATED_POSITION, position)
+                startActivityForResult(this, REQUEST_FROM_PDP)
+            }
+        }catch (e: Exception){
+
         }
     }
 

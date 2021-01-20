@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/black">
+    android:background="@color/Unify_N700">
 
     <com.tokopedia.design.component.ticker.TouchViewPager
         android:id="@+id/viewPager"
@@ -18,7 +18,7 @@
         android:paddingRight="@dimen/dp_20"
         android:paddingTop="@dimen/dp_20"
         android:paddingBottom="@dimen/dp_20"
-        android:background="#66000000">
+        android:background="@color/Unify_N700_44">
         <ImageView
             android:id="@+id/ivClose"
             android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
             android:layout_toRightOf="@+id/ivClose"
@@ -55,7 +55,7 @@
             android:id="@+id/tvDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/sp_12"
             android:layout_below="@+id/tvTitle"
             android:layout_toRightOf="@+id/ivClose"

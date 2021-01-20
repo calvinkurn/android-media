@@ -1,22 +1,20 @@
 package com.tokopedia.checkout.view.converter;
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 
-import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticdata.data.entity.address.LocationDataModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
-import com.tokopedia.checkout.domain.model.cartshipmentform.PurchaseProtectionPlanData;
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
-import com.tokopedia.checkout.domain.model.cartshipmentform.UserAddress;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +39,7 @@ public class ShipmentDataConverter {
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
             UserAddress defaultAddress = null;
-            UserAddress tradeInAddress = null;
+            UserAddress tradeInDropOffAddress = null;
             if (cartShipmentAddressFormData.getAddressesData() != null && cartShipmentAddressFormData.getAddressesData().getData() != null) {
                 if (cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress() != null &&
                         cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress().getAddressId() != 0) {
@@ -49,11 +47,10 @@ public class ShipmentDataConverter {
                 }
                 if (cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress() != null &&
                         cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress().getAddressId() != 0) {
-                    tradeInAddress = cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress();
+                    tradeInDropOffAddress = cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress();
                 }
             }
             boolean isTradeIn = false;
-            boolean isTradeInDropOffEnable = false;
             if (cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop() != null &&
                     cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop().size() > 0) {
                 for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
@@ -62,7 +59,6 @@ public class ShipmentDataConverter {
                         for (Product product : groupShop.getProducts()) {
                             if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
                                 isTradeIn = true;
-                                isTradeInDropOffEnable = product.getTradeInInfoData().isDropOffEnable();
                                 foundData = true;
                                 break;
                             }
@@ -71,14 +67,10 @@ public class ShipmentDataConverter {
                     }
                 }
             }
-            RecipientAddressModel recipientAddressModel = createRecipientAddressModel(defaultAddress, tradeInAddress, isTradeIn, isTradeInDropOffEnable);
-            String disableMultipleAddressMessage = "";
-            if (cartShipmentAddressFormData.getDisabledFeaturesDetailData() != null) {
-                disableMultipleAddressMessage = cartShipmentAddressFormData.getDisabledFeaturesDetailData().getDisabledMultiAddressMessage();
-            }
-            recipientAddressModel.setDisabledMultiAddressMessage(disableMultipleAddressMessage);
+            RecipientAddressModel recipientAddressModel = createRecipientAddressModel(defaultAddress, tradeInDropOffAddress, isTradeIn);
             recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
             if (cartShipmentAddressFormData.getAddressesData() != null) {
+                recipientAddressModel.setDisabledAddress(cartShipmentAddressFormData.getAddressesData().getDisableTabs());
                 if (cartShipmentAddressFormData.getAddressesData().getActive().equalsIgnoreCase(AddressesData.DEFAULT_ADDRESS)) {
                     recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
                 } else if (cartShipmentAddressFormData.getAddressesData().getActive().equalsIgnoreCase(AddressesData.TRADE_IN_ADDRESS)) {
@@ -101,8 +93,7 @@ public class ShipmentDataConverter {
     @NonNull
     private RecipientAddressModel createRecipientAddressModel(UserAddress defaultAddress,
                                                               UserAddress tradeInAddress,
-                                                              boolean isTradeIn,
-                                                              boolean isTradeInDropOffEnable) {
+                                                              boolean isTradeIn) {
         RecipientAddressModel recipientAddress = new RecipientAddressModel();
 
         if (defaultAddress != null) {
@@ -121,15 +112,14 @@ public class ShipmentDataConverter {
 
             recipientAddress.setRecipientName(defaultAddress.getReceiverName());
             recipientAddress.setRecipientPhoneNumber(defaultAddress.getPhone());
-            recipientAddress.setLatitude(!TextUtils.isEmpty(defaultAddress.getLatitude()) ?
+            recipientAddress.setLatitude(!UtilsKt.isNullOrEmpty(defaultAddress.getLatitude()) ?
                     defaultAddress.getLatitude() : null);
-            recipientAddress.setLongitude(!TextUtils.isEmpty(defaultAddress.getLongitude()) ?
+            recipientAddress.setLongitude(!UtilsKt.isNullOrEmpty(defaultAddress.getLongitude()) ?
                     defaultAddress.getLongitude() : null);
 
             recipientAddress.setSelected(defaultAddress.getStatus() == PRIME_ADDRESS);
             recipientAddress.setCornerId(String.valueOf(defaultAddress.getCornerId()));
             recipientAddress.setTradeIn(isTradeIn);
-            recipientAddress.setTradeInDropOffEnable(isTradeInDropOffEnable);
             recipientAddress.setCornerAddress(defaultAddress.isCorner());
         }
 
@@ -176,7 +166,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
             shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
             shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
-            shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
+            shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.isBlackbox());
             shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
             shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                     .get(0).getUserAddress().getAddressId());
@@ -299,7 +289,7 @@ public class ShipmentDataConverter {
         cartItemModel.setPreOrderDurationDay(product.getPreOrderDurationDay());
         cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
         cartItemModel.setCashback(product.getProductCashback());
-        cartItemModel.setCashback(!TextUtils.isEmpty(product.getProductCashback()));
+        cartItemModel.setCashback(!UtilsKt.isNullOrEmpty(product.getProductCashback()));
         cartItemModel.setFreeReturnLogo(product.getFreeReturnLogo());
         cartItemModel.setfInsurance(product.isProductFcancelPartial());
         cartItemModel.setfCancelPartial(product.isProductFinsurance());
@@ -318,6 +308,8 @@ public class ShipmentDataConverter {
             cartItemModel.setValidTradeIn(true);
             cartItemModel.setOldDevicePrice(product.getTradeInInfoData().getOldDevicePrice());
             cartItemModel.setNewDevicePrice(product.getTradeInInfoData().getNewDevicePrice());
+            cartItemModel.setDeviceModel(product.getTradeInInfoData().getDeviceModel());
+            cartItemModel.setDiagnosticId(product.getTradeInInfoData().getDiagnosticId());
         }
 
         if (product.getPurchaseProtectionPlanData() != null) {

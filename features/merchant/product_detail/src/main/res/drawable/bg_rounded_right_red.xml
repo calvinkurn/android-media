@@ -8,7 +8,7 @@
         android:topLeftRadius="@dimen/dp_0"
         android:topRightRadius="@dimen/dp_24" />
 
-    <solid android:color="@color/red_ribbon" />
+    <solid android:color="@color/Unify_R500" />
 
 
 </shape>

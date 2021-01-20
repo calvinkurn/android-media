@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/home_account_member_layout_member_icon"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"/>
+
+
+    <com.tokopedia.iconunify.IconUnify
+        app:icon_name="CHEVRON_RIGHT"
+        app:icon_color_night_enable="@color/home_account_icon_dark"
+        android:id="@+id/home_account_member_layout_member_forward"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        app:layout_constraintBottom_toBottomOf="@+id/home_account_member_layout_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/home_account_member_layout_title"
+        app:srcCompat="@drawable/ic_arrow_forward_24" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginLeft="@dimen/home_account_dp_6"
+        android:id="@+id/home_account_member_layout_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/home_account_member_layout_member_icon"
+        app:layout_constraintStart_toEndOf="@+id/home_account_member_layout_member_icon"
+        app:layout_constraintTop_toTopOf="@+id/home_account_member_layout_member_icon"
+        android:textSize="@dimen/fontSize_lvl4"
+        app:typographyWeight="bold"
+        tools:text="Title" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:layout_marginLeft="@dimen/card_view_padding_normalizer"
+        android:layout_marginStart="@dimen/card_view_padding_normalizer"
+        android:layout_marginTop="@dimen/home_account_dp_8"
+        android:id="@+id/home_account_member_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:card_type="shadow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_account_member_layout_title">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/home_account_member_layout_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

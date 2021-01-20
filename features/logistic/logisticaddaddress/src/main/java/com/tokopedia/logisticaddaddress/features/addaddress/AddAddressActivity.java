@@ -13,9 +13,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.logisticaddaddress.R;
-import com.tokopedia.logisticdata.data.entity.address.AddressModel;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.logisticCommon.data.entity.address.AddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.Token;
 
 import java.util.List;
 
