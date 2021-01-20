@@ -52,24 +52,30 @@ class PromoCheckoutListDealsPresenter(
                             }
 
                             override fun onError(e: Throwable) {
-                                val body = (e as HttpException).response()?.errorBody()?.string()
-                                if (!body.isNullOrEmpty()) {
-                                    val gson = Gson()
-                                    val testModel = gson.fromJson(body, DealsErrorResponse::class.java)
-                                    if (isViewAttached) {
-                                        view.hideProgressLoading()
-                                        if (testModel.data.message.isNotEmpty()) {
-                                            view.onErrorCheckPromo(MessageErrorException(testModel.data.message))
+                                if (e is HttpException) {
+                                    try {
+                                        val body = (e as HttpException).response()?.errorBody()?.string()
+                                        if (!body.isNullOrEmpty()) {
+                                            val gson = Gson()
+                                            val testModel = gson.fromJson(body, DealsErrorResponse::class.java)
+                                            if (isViewAttached) {
+                                                view.hideProgressLoading()
+                                                if (testModel.data.message.isNotEmpty()) {
+                                                    view.onErrorCheckPromo(MessageErrorException(testModel.data.message))
+                                                } else {
+                                                    view.onErrorCheckPromo(e)
+                                                }
+                                            }
                                         } else {
+                                            view.hideProgressLoading()
                                             view.onErrorCheckPromo(e)
                                         }
+                                    } catch (exception: Exception) {
+                                        view.hideProgressLoading()
+                                        view.onErrorCheckPromo(e)
                                     }
-                                } else {
-                                    view.hideProgressLoading()
-                                    view.onErrorCheckPromo(e)
                                 }
                             }
-
                         })
         )
     }
