@@ -31,9 +31,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DecodeFormat
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.location.LocationServices
@@ -42,6 +39,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
@@ -107,9 +105,7 @@ import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
-import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
-import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -1075,7 +1071,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else {
             BACKGROUND_LIGHT_1
         }
-        backgroundViewImage.loadImageWithoutPlaceholder(backgroundUrl)
+        ImageHandler.loadImageWithoutPlaceholder(backgroundViewImage, backgroundUrl)
     }
 
     private fun observeSendLocation() {
@@ -1277,7 +1273,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 CategoryNavigationCallback(context, this),
                 RechargeBUWidgetCallback(context, this),
                 BannerComponentCallback(context, this),
-                DynamicIconComponentCallback(this)
+                DynamicIconComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

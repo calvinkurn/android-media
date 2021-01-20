@@ -25,18 +25,12 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_header_ovo
-        val BASE_URL = "https://ecs7.tokopedia.net/img/android/"
-        val BACKGROUND_LIGHT_1 = BASE_URL + "home/header/xxhdpi/home_header_light_1.png"
-        val BACKGROUND_LIGHT_2 = BASE_URL + "home/header/xxhdpi/home_header_light_2.png"
-        val BACKGROUND_DARK_1 = BASE_URL + "home/header/xxhdpi/home_header_dark_1.png"
-        val BACKGROUND_DARK_2 = BASE_URL + "home/header/xxhdpi/home_header_dark_2.png"
     }
 
     override fun bind(element: HomeHeaderOvoDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
         renderEmptySpace(element.headerDataModel?.isUserLogin?:false)
         renderOvoLayout(element.headerDataModel)
-        renderBackgroundHeight()
         BenchmarkHelper.endSystraceSection()
     }
 
@@ -80,30 +74,5 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
                 ovoView.gone()
             }
         }
-        renderBackgroundHeight()
-    }
-
-    private fun renderBackgroundHeight() {
-//        val ovoView = itemView.findViewById<OvoWidgetView>(R.id.view_ovo)
-//        if (ovoView.visibility == View.VISIBLE) {
-//            val backgroundView = itemView.findViewById<FrameLayout>(R.id.view_background)
-//            ovoView.viewTreeObserver.addOnGlobalLayoutListener(
-//                    object : ViewTreeObserver.OnGlobalLayoutListener {
-//                        override fun onGlobalLayout() {
-//                            val viewTreeObserver = ovoView.viewTreeObserver
-//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                                viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                            } else {
-//                                @Suppress("DEPRECATION")
-//                                viewTreeObserver.removeGlobalOnLayoutListener(this)
-//                            }
-//                            val ovoHeight = ovoView.measuredHeight
-//                            val backgroundParam = backgroundView.layoutParams as ViewGroup.MarginLayoutParams
-//                            backgroundParam.setMargins(0, 0, 0, ovoHeight / 2)
-//                            backgroundView.layoutParams = backgroundParam
-//                            backgroundView.invalidate()
-//                        }
-//                    })
-//        }
     }
 }
