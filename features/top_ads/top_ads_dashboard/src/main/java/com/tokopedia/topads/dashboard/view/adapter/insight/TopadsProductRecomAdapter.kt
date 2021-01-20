@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendation
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_dash_recon_product_item.view.*
 
 class TopadsProductRecomAdapter(var itemSelected: () -> Unit) : RecyclerView.Adapter<TopadsProductRecomAdapter.ViewHolder>() {

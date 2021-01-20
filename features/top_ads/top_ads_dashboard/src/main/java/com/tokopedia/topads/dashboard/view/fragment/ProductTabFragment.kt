@@ -18,7 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import com.tokopedia.topads.common.data.response.groupitem.DataItem
+import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.R
@@ -238,7 +238,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         viewModel.getGroupList(search, ::onSuccessGroupList)
     }
 
-    private fun onSuccessGroupList(list: List<DataItem>) {
+    private fun onSuccessGroupList(list: List<GroupListDataItem>) {
         val groupList: MutableList<MovetoGroupViewModel> = mutableListOf()
         val groupIds: MutableList<String> = mutableListOf()
 

@@ -21,19 +21,17 @@ import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.response.DepositAmount
-import com.tokopedia.topads.common.data.response.groupitem.DataItem
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.model.GroupListDataItem
+import com.tokopedia.topads.common.data.model.ResponseCreateGroup
+import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.common.data.response.groupitem.GroupStatisticsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupDataUseCase
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
-import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupListUseCase
+import com.tokopedia.topads.common.domain.interactor.*
+import com.tokopedia.topads.common.domain.usecase.*
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -557,9 +555,9 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
 
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)) {
         validGroupUseCase.setParams(groupName)
-        validGroupUseCase.executeQuerySafeMode(
+        validGroupUseCase.execute(
                 {
-                    onSuccess(it)
+                    onSuccess(it.topAdsGroupValidateName)
                 },
                 { throwable ->
                     throwable.printStackTrace()

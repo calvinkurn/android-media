@@ -30,14 +30,11 @@ class TopAdsGroupValidateNameUseCase @Inject constructor(graphqlRepository: Grap
                                                          , val userSession: UserSessionInterface)
     : GraphqlUseCase<ResponseGroupValidateName>(graphqlRepository) {
 
-    fun executeQuerySafeMode(onSuccess: (ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit, onError: (Throwable) -> Unit) {
+    init {
         setTypeClass(ResponseGroupValidateName::class.java)
-        setGraphqlQuery(GroupValidateNameQuery.GQL_QUERY)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
-        execute({
-            onSuccess(it.topAdsGroupValidateName)
+        setGraphqlQuery(GroupValidateNameQuery.GQL_QUERY)
 
-        }, onError)
     }
     fun setParams(groupName: String) {
         val params = mutableMapOf(

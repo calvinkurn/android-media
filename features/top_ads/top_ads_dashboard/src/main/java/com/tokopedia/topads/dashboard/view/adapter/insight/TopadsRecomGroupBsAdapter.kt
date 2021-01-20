@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import kotlinx.android.synthetic.main.topads_dash_item_moveto_group_recom.view.*
 

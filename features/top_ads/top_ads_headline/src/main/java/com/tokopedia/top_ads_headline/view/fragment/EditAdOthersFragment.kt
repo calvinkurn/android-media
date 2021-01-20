@@ -360,7 +360,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     private fun validateGroup(s: String?) {
         s?.let {
-            editAdOthersViewModel.validateGroup(it, userSession.shopId.toIntOrZero(), this::onSuccess, this::onError)
+            editAdOthersViewModel.validateGroup(it, this::onSuccess, this::onError)
         }
     }
 

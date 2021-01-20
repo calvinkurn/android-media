@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.DataBudget
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_dash_recon_daily_budget_item.view.*
 
 class TopadsDailyBudgetRecomAdapter(private val onBudgetClicked: ((pos: Int) -> Unit)) : RecyclerView.Adapter<TopadsDailyBudgetRecomAdapter.ViewHolder>() {

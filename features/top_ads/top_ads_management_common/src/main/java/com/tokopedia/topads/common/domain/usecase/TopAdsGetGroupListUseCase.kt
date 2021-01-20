@@ -11,18 +11,37 @@ import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
 import com.tokopedia.topads.common.data.internal.ParamObject.QUERY_INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.SINGLE_ROW
-import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
-import com.tokopedia.topads.common.domain.interactor.TOP_ADS_GET_GROUP_LIST_QUERY
+import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * Created by Pika on 29/5/20.
  */
+const val GROUP_LIST_QUERY = """
+    query GetTopadsDashboardGroups(${'$'}queryInput: GetTopadsDashboardGroupsInputType!) {
+  GetTopadsDashboardGroups(queryInput: ${'$'}queryInput) {
+       meta {
+          page {
+            per_page
+            current
+            total
+          }
+        }
+    data {
+      group_id
+      total_item
+      total_keyword
+      group_status_desc
+      group_name
 
+    }
+  }
+}
+"""
 
-@GqlQuery("GetTopadsGroupListQuery", TOP_ADS_GET_GROUP_LIST_QUERY)
-class TopAdsGetGroupListUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<GroupItemResponse>(graphqlRepository) {
+@GqlQuery("GetTopadsGroupListQuery", GROUP_LIST_QUERY)
+class TopAdsGetGroupListUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<DashGroupListResponse>(graphqlRepository) {
 
     init {
         setGraphqlQuery(GetTopadsGroupListQuery.GQL_QUERY)
@@ -41,8 +60,8 @@ class TopAdsGetGroupListUseCase @Inject constructor(graphqlRepository: GraphqlRe
     private val cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy
             .Builder(CacheType.CLOUD_THEN_CACHE).build()
 
-    fun executeQuerySafeMode(onSuccess: (GroupItemResponse) -> Unit, onError: (Throwable) -> Unit) {
-        setTypeClass(GroupItemResponse::class.java)
+    fun executeQuerySafeMode(onSuccess: (DashGroupListResponse) -> Unit, onError: (Throwable) -> Unit) {
+        setTypeClass(DashGroupListResponse::class.java)
         setCacheStrategy(cacheStrategy)
         execute({
             onSuccess(it)
