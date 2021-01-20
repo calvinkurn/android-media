@@ -316,6 +316,9 @@ class ShopPageFragment :
         swipeToRefresh.setOnRefreshListener {
             refreshData()
             updateStickyContent()
+            if (shopPageFragmentHeaderViewHolder.isCoachMarkDismissed() == false) {
+                shopPageFragmentHeaderViewHolder.dismissCoachMark()
+            }
         }
         mainLayout.requestFocus()
         initStickyLogin(view)
