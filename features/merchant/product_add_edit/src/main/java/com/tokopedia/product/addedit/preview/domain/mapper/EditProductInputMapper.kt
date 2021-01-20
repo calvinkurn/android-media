@@ -48,14 +48,23 @@ class EditProductInputMapper @Inject constructor() {
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
                         shipmentInputModel: ShipmentInputModel,
-                        variantInputModel: VariantInputModel): ProductEditParam {
+                        variantInputModel: VariantInputModel,
+                        shouldPutStockOnParam: Boolean = true): ProductEditParam {
+
+        val stock: Int? =
+                if (shouldPutStockOnParam) {
+                    detailInputModel.stock
+                } else {
+                    // Put null to stock param as we will update product stock separately (related to multilocation)
+                    null
+                }
 
         return ProductEditParam(
                 productId,
                 detailInputModel.productName,
                 detailInputModel.price,
                 PRICE_CURRENCY,
-                detailInputModel.stock,
+                stock,
                 getActiveStatus(detailInputModel.status),
                 descriptionInputModel.productDescription,
                 detailInputModel.minOrder,
