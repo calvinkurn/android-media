@@ -554,7 +554,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingFinishOrder() {
-        uohListViewModel.finishOrderResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.finishOrderResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     responseFinishOrder = it.data
@@ -577,7 +577,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingAtcMulti() {
-        uohListViewModel.atcMultiResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.atcMultiResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val msg = StringUtils.convertListToStringDelimiter(it.data.atcMulti.buyAgainData.message, ",")
@@ -595,7 +595,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingLsFinishOrder() {
-        uohListViewModel.lsPrintFinishOrderResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.lsPrintFinishOrderResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     responseLsPrintFinishOrder = it.data.oiaction
@@ -620,7 +620,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingFlightResendEmail() {
-        uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val flightEmailResponse = it.data.flightResendEmailV2
@@ -644,7 +644,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingTrainResendEmail() {
-        uohListViewModel.trainResendEmailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.trainResendEmailResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val trainEmailResponse = it.data.trainResendBookingEmail
@@ -668,7 +668,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingRechargeSetFail() {
-        uohListViewModel.rechargeSetFailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.rechargeSetFailResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
@@ -686,7 +686,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingAtc() {
-        uohListViewModel.atcResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.atcResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     if (it.data.isDataError()) {
@@ -1104,6 +1104,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
                     }
                     UohConsts.TYPE_FILTER_CATEGORY -> {
+                        filterStatus = ""
                         val labelTrackingCategory: String
                         currFilterCategoryKey = tempFilterCategoryKey
                         currFilterCategoryLabel = tempFilterCategoryLabel
