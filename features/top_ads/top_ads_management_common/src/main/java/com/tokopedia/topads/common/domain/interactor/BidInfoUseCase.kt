@@ -17,7 +17,7 @@ import javax.inject.Inject
  * Created by Pika on 9/10/20.
  */
 
-private const val BID_INFO :String = """
+private const val BID_INFO: String = """
 query BidInfo(
   ${'$'}dataSuggestions: [BidInfoDataSuggestions]!,
   ${'$'}shopId: Int!,
@@ -54,7 +54,7 @@ query BidInfo(
 class BidInfoUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<ResponseBidInfo.Result>(graphqlRepository) {
 
 
-    fun setParams(suggestion: List<DataSuggestions>, requestType: String, sourceValue:String = SOURCE_VALUE) {
+    fun setParams(suggestion: List<DataSuggestions>, requestType: String, sourceValue: String = SOURCE_VALUE) {
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.SHOP_Id] = userSession.shopId.toIntOrZero()
         queryMap[ParamObject.SOURCE] = sourceValue
