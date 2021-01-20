@@ -652,7 +652,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onFinishBindNewOrder(view: View, itemIndex: Int) {
-        stopLoadTimeMonitoring()
         context?.let { context ->
             if (!CoachMarkPreference.hasShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK) &&
                     Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -816,6 +815,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun observeOrderList() {
         viewModel.orderListResult.observe(viewLifecycleOwner, Observer { result ->
             somListLoadTimeMonitoring?.startRenderPerformanceMonitoring()
+            rvSomList.addOneTimeGlobalLayoutListener {
+                stopLoadTimeMonitoring()
+            }
             when (result) {
                 is Success -> renderOrderList(result.data)
                 is Fail -> showGlobalError(result.throwable)
