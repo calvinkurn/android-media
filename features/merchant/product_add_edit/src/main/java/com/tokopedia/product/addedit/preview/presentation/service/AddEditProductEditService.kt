@@ -147,7 +147,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 productEditUseCase.params = ProductEditUseCase.createRequestParams(param)
                 val productEditDeferred = async { productEditUseCase.executeOnBackground() }
                 val updateHqStockDeferred = async {
-                    if (shouldEditStockDirectly) {
+                    if (!shouldEditStockDirectly) {
                         productInputModel.run {
                             updateHqStockThroughIms(shopId, productId.toString(), detailInputModel.stock)
                     }
