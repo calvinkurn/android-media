@@ -48,6 +48,8 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.mvcwidget.setMargin
+import com.tokopedia.mvcwidget.views.MvcDetailView
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -119,6 +121,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import io.hansel.core.utils.HSLUtils.dpToPx
 import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.*
 import kotlinx.android.synthetic.main.shop_page_main.*
 import java.io.File
@@ -447,7 +450,7 @@ class ShopPageFragment :
                     }
                 }
                 is Fail -> {
-                    onErrorToggleFavourite(it.throwable)
+                    onErrorUpdateFollowStatus(it.throwable)
                 }
             }
         }
@@ -1197,11 +1200,48 @@ class ShopPageFragment :
         if (success) {
             shopPageFragmentHeaderViewHolder.updateFollowStatus(followShop)
             updateFavouriteResult(shopPageFragmentHeaderViewHolder.isShopFavourited())
+            showSuccessFollowToaster(followShop)
         } else {
             activity?.run {
                 NetworkErrorHelper.showCloseSnackbar(this, followShop.message)
             }
             logExceptionToCrashlytics(ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, Throwable(followShop.message))
+        }
+    }
+
+    private fun showSuccessFollowToaster(followShop: FollowShop) {
+        followShop.toaster?.apply {
+            if (!toasterText.isNullOrBlank()) {
+                view?.let {
+                    Toaster.build(
+                            it,
+                            this.toasterText,
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_NORMAL,
+                            buttonLabel ?: ""
+                    )
+                    {
+                        if (!shopId.isNullOrBlank()) {
+                            showMerchantVoucherCouponBottomSheet(shopId.toInt())
+                        }
+                    }.show()
+                }
+            }
+        }
+    }
+
+    private fun showMerchantVoucherCouponBottomSheet(shopId: Int) {
+        val bottomSheet = BottomSheetUnify()
+        bottomSheet.setTitle("Daftar Kupon Toko")
+        val childView = MvcDetailView(requireContext())
+        bottomSheet.setChild(childView)
+        bottomSheet.show((context as AppCompatActivity).supportFragmentManager, "BottomSheet Tag")
+        childView.show(shopId.toString())
+        bottomSheet.setShowListener {
+            val margin = dpToPx(context, 20)
+            bottomSheet.bottomSheetWrapper.setPadding(0,  margin, 0, 0)
+            bottomSheet.bottomSheetClose.setImageResource(com.tokopedia.mvcwidget.R.drawable.mvc_dialog_close)
+            bottomSheet.bottomSheetClose.setMargin(margin, 0, margin, 0)
         }
     }
 
@@ -1221,7 +1261,7 @@ class ShopPageFragment :
         }
     }
 
-    private fun onErrorToggleFavourite(e: Throwable) {
+    private fun onErrorUpdateFollowStatus(e: Throwable) {
         context?.let {
             if (e is UserNotLoginException) {
                 val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
