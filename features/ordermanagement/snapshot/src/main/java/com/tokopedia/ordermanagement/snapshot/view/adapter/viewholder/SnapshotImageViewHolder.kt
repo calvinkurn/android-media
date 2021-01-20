@@ -7,17 +7,17 @@ import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.ordermanagement.snapshot.R
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
-import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotAdapter
+import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotImageHeaderAdapter
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 
 /**
- * Created by fwidjaja on 1/15/21.
+ * Created by fwidjaja on 1/19/21.
  */
-class SnapshotHeaderViewHolder(itemView: View) : SnapshotAdapter.BaseViewHolder<SnapshotTypeData>(itemView) {
+class SnapshotImageViewHolder(itemView: View) : SnapshotImageHeaderAdapter.BaseViewHolder<SnapshotTypeData>(itemView) {
     override fun bind(item: SnapshotTypeData, position: Int) {
         // TODO("Not yet implemented")
-        if (item.dataObject is Int) {
+        /*if (item.dataObject is Int) {
             if (item.dataObject == 1) {
                 val ivHeader = itemView.findViewById<ImageUnify>(R.id.snapshot_main_img)
                 ivHeader.visible()
@@ -25,6 +25,6 @@ class SnapshotHeaderViewHolder(itemView: View) : SnapshotAdapter.BaseViewHolder<
                 itemView.findViewById<ViewPager2>(R.id.snapshot_header_view_pager).gone()
                 itemView.findViewById<PageControl>(R.id.snapshot_page_indicator).gone()
             }
-        }
+        }*/
     }
 }

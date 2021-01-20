@@ -4,12 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.ordermanagement.snapshot.R
+import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
 import com.tokopedia.ordermanagement.snapshot.ui.main.SnapshotViewModel
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts
+import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotAdapter
 
 class SnapshotFragment : Fragment() {
+
+    private lateinit var snapshotAdapter: SnapshotAdapter
+    private var rv: RecyclerView? = null
 
     companion object {
         fun newInstance() = SnapshotFragment()
@@ -19,7 +28,9 @@ class SnapshotFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.snapshot_fragment, container, false)
+        val contentView = inflater.inflate(R.layout.snapshot_fragment, container, false)
+        rv = contentView.findViewById(R.id.rv_snapshot)
+        return contentView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -28,4 +39,24 @@ class SnapshotFragment : Fragment() {
         // TODO: Use the ViewModel
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        prepareLayout()
+    }
+
+    private fun prepareLayout() {
+        snapshotAdapter = SnapshotAdapter()
+        rv?.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = snapshotAdapter
+        }
+    }
+
+    private fun renderPage() {
+        val listPage = arrayListOf<SnapshotTypeData>()
+        listPage.add(SnapshotTypeData(1, SnapshotConsts.TYPE_HEADER))
+        listPage.add(SnapshotTypeData("", SnapshotConsts.TYPE_INFO))
+        listPage.add(SnapshotTypeData("", SnapshotConsts.TYPE_SHOP))
+        snapshotAdapter.addList(listPage)
+    }
 }
