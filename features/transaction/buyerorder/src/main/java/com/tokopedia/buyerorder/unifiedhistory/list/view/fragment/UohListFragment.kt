@@ -559,20 +559,18 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 is Success -> {
                     responseFinishOrder = it.data
                     if (responseFinishOrder.success == 1) {
-                        if (responseFinishOrder.message.isNotEmpty()) {
-                            showToaster(responseFinishOrder.message.first(), Toaster.TYPE_NORMAL)
-                        }
+                        responseFinishOrder.message.firstOrNull()?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
                         loadOrderHistoryList(orderIdNeedUpdated)
                     } else {
                         if (responseFinishOrder.message.isNotEmpty()) {
-                            showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
+                            responseFinishOrder.message.firstOrNull()?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         } else {
                             context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
                 }
                 is Fail -> {
-                    showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
+                    responseFinishOrder.message.firstOrNull()?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                 }
             }
         })
@@ -775,7 +773,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         || filterStatus.equals(PARAM_UOH_PROCESSED, true)
                         || filterStatus.equals(PARAM_UOH_SENT, true)
                         || filterStatus.equals(PARAM_UOH_DELIVERED, true)) && !isReset) {
-            filter3?.title = orderList.categories.first().label
+            filter3?.title = orderList.categories.firstOrNull()?.label.toString()
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
             filter3?.title = orderList.categories[1].label
@@ -1013,12 +1011,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
             emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.TYPE_EMPTY) }?.let { uohTypeData -> listRecomm.add(uohTypeData) }
             listRecomm.add(UohTypeData(getString(R.string.uoh_recommendation_title), UohConsts.TYPE_RECOMMENDATION_TITLE))
-            recommendationList.first().recommendationItemList.forEach {
+            recommendationList.firstOrNull()?.recommendationItemList?.forEach {
                 listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
             }
             uohItemAdapter.addList(listRecomm)
         } else {
-            recommendationList.first().recommendationItemList.forEach {
+            recommendationList.firstOrNull()?.recommendationItemList?.forEach {
                 listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
             }
             uohItemAdapter.appendList(listRecomm)
@@ -1546,41 +1544,42 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
-        val button = order.metadata.buttons.first()
-        if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-            RouteManager.route(context, URLDecoder.decode(button.appURL, UohConsts.UTF_8))
-        } else {
-            when {
-                button.actionType.equals(GQL_FINISH_ORDER, true) -> {
-                    orderIdNeedUpdated = order.orderUUID
-                    showBottomSheetFinishOrder(index, order.verticalID, false, order.verticalStatus)
-                }
-                button.actionType.equals(GQL_ATC, true) -> {
-                    atc(order)
-                }
-                button.actionType.equals(GQL_TRACK, true) -> {
-                    val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
-                    RouteManager.route(context, applinkTrack)
-                }
-                button.actionType.equals(GQL_LS_FINISH, true) -> {
-                    orderIdNeedUpdated = order.orderUUID
-                    showBottomSheetLsFinishOrder(index, order.verticalID)
-                }
-                button.actionType.equals(GQL_LS_LACAK, true) -> {
-                    val linkUrl = button.appURL
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
-                }
-                button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
-                    currIndexNeedUpdate = index
-                    orderIdNeedUpdated = order.orderUUID
-                    if (order.verticalID.isNotEmpty()) {
-                        uohListViewModel.doRechargeSetFail(order.verticalID.toInt())
+        order.metadata.buttons.firstOrNull()?.let { button ->
+            if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
+                RouteManager.route(context, URLDecoder.decode(button.appURL, UohConsts.UTF_8))
+            } else {
+                when {
+                    button.actionType.equals(GQL_FINISH_ORDER, true) -> {
+                        orderIdNeedUpdated = order.orderUUID
+                        showBottomSheetFinishOrder(index, order.verticalID, false, order.verticalStatus)
+                    }
+                    button.actionType.equals(GQL_ATC, true) -> {
+                        atc(order)
+                    }
+                    button.actionType.equals(GQL_TRACK, true) -> {
+                        val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
+                        RouteManager.route(context, applinkTrack)
+                    }
+                    button.actionType.equals(GQL_LS_FINISH, true) -> {
+                        orderIdNeedUpdated = order.orderUUID
+                        showBottomSheetLsFinishOrder(index, order.verticalID)
+                    }
+                    button.actionType.equals(GQL_LS_LACAK, true) -> {
+                        val linkUrl = button.appURL
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+                    }
+                    button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
+                        currIndexNeedUpdate = index
+                        orderIdNeedUpdated = order.orderUUID
+                        if (order.verticalID.isNotEmpty()) {
+                            uohListViewModel.doRechargeSetFail(order.verticalID.toInt())
+                        }
                     }
                 }
             }
-        }
 
-        userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+            userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+        }
     }
 
     override fun onEmptyResultResetBtnClicked() {
@@ -1745,8 +1744,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         intent.putExtra(ApplinkConst.Chat.INVOICE_ID, order.verticalID)
         intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode)
         if (order.metadata.products.isNotEmpty()) {
-            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, order.metadata.products.first().title)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, order.metadata.products.first().imageURL)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, order.metadata.products.firstOrNull()?.title)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, order.metadata.products.firstOrNull()?.imageURL)
         }
         intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, order.metadata.paymentDateStr)
         intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl)
