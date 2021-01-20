@@ -25,11 +25,6 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_header_ovo
-        val BASE_URL = "https://ecs7.tokopedia.net/img/android/"
-        val BACKGROUND_LIGHT_1 = BASE_URL + "home/header/xxhdpi/home_header_light_1.png"
-        val BACKGROUND_LIGHT_2 = BASE_URL + "home/header/xxhdpi/home_header_light_2.png"
-        val BACKGROUND_DARK_1 = BASE_URL + "home/header/xxhdpi/home_header_dark_1.png"
-        val BACKGROUND_DARK_2 = BASE_URL + "home/header/xxhdpi/home_header_dark_2.png"
     }
 
     override fun bind(element: HomeHeaderOvoDataModel) {

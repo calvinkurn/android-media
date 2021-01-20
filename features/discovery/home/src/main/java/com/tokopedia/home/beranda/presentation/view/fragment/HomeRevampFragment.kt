@@ -39,6 +39,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
@@ -104,7 +105,6 @@ import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
-import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
@@ -1063,7 +1063,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else {
             BACKGROUND_LIGHT_1
         }
-        ImageHandler.LoadImage(backgroundViewImage, backgroundUrl)
+        ImageHandler.loadImageWithoutPlaceholder(backgroundViewImage, backgroundUrl)
     }
 
     private fun observeSendLocation() {
