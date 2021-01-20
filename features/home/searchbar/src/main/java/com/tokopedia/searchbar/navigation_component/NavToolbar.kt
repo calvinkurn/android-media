@@ -130,10 +130,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
         userSessionInterface = UserSession(context)
         configureInvertedSearchBar()
+        configureInitialFillBasedOnAttribute()
         configureThemeBasedOnAttribute()
         configureBackButtonBasedOnAttribute()
         configureShadowBasedOnAttribute()
-        configureInitialFillBasedOnAttribute()
         configureToolbarContentTypeBasedOnAttribute()
     }
 
@@ -426,7 +426,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     private fun configureShadowBasedOnAttribute() {
-        if (toolbarAlwaysShowShadow) {
+        if (toolbarAlwaysShowShadow && toolbarInitialFillColor != TOOLBAR_TRANSPARENT) {
             showShadow()
         } else {
             hideShadow()
