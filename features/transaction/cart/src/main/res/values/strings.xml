@@ -24,8 +24,6 @@
     <string name="checkout_module_title_wishlist">Wujudkan Wishlist kamu!</string>
     <string name="checkout_module_wishlist_add_to_cart">Tambah ke Keranjang</string>
     <string name="checkout_module_title_recent_view">Kamu sempat lihat-lihat ini</string>
-    <string name="text_heading_produk_asuransi">Hapus Produk Asuransi</string>
-    <string name="text_desc_asuransi">Kamu akan menghapus asuransi demam berdarah. Apa kamu yakin?</string>
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="message_payment_success">Pembayaran Berhasil</string>
     <string name="checkout_module_keranjang_belanja_kosong_new">Wah, keranjang belanjamu kosong</string>
