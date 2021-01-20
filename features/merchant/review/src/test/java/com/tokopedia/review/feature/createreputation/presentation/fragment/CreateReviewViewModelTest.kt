@@ -38,6 +38,12 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `when no images should return false`() {
+        viewModel.clearImageData()
+        assertFalse(viewModel.isImageNotEmpty())
+    }
+
+    @Test
     fun `when removeImage should return expected list ofUrl`() {
         val images = viewModel.getImageList(images)
 
@@ -51,14 +57,15 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when removeImage in editMode should return expected list ofUrl`() {
-        val images = viewModel.getImageList(images)
+        fillInImages()
+        viewModel.getImageList(images)
 
-        viewModel.removeImage(images.first(), true)
+        viewModel.removeImage(ImageReviewUiModel(images.first().thumbnail, images.first().fullSize), true)
 
         val actualData = viewModel.getSelectedImagesUrl()
         val expectedData = arrayListOf("ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
 
-        Assert.assertEquals(actualData, expectedData)
+        Assert.assertEquals(expectedData, actualData)
     }
 
     @Test
@@ -220,6 +227,21 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `when submitReview with images results in upload error should return failure`() {
+        val expectedResponse = Throwable()
+        val expectedUploadResponse = UploadResult.Error("Network error")
+
+        onUploadImage_thenReturn(expectedUploadResponse)
+        onSubmitReviewError_thenReturn(expectedResponse)
+
+        viewModel.clearImageData()
+        viewModel.getImageList(images)
+        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
+
+        verifySubmitReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
+    }
+
+    @Test
     fun `when submitReview with no images should execute expected usecases`() {
         val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = true, feedbackID = "feedbackId"))
 
@@ -265,7 +287,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         onEditReview_thenReturn(expectedResponse)
 
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
 
         verifyEditreviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -279,7 +301,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         onEditReview_thenReturn(expectedResponse)
 
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
 
         verifyEditreviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -293,7 +315,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         onEditReviewError_thenReturn(expectedResponse)
 
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
 
         verifyEditreviewUseCaseCalled()
         verifyEditReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
@@ -332,11 +354,14 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     @Test
     fun `when editReview with images should execute expected usecases`() {
         val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
+        val expectedUploadResponse = UploadResult.Success("success")
 
+        onUploadImage_thenReturn(expectedUploadResponse)
         onEditReview_thenReturn(expectedResponse)
 
         fillInImages()
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+        viewModel.removeImage(ImageReviewUiModel(images.first().thumbnail, images.first().fullSize), true)
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
 
         verifyEditreviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -347,11 +372,14 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     @Test
     fun `when editReview with images results in back end error should return failure`() {
         val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = false))
+        val expectedUploadResponse = UploadResult.Success("success")
 
+        onUploadImage_thenReturn(expectedUploadResponse)
         onEditReview_thenReturn(expectedResponse)
 
         fillInImages()
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+        viewModel.removeImage(ImageReviewUiModel(images.first().thumbnail, images.first().fullSize), true)
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
 
         verifyEditreviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -366,7 +394,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onEditReviewError_thenReturn(expectedResponse)
 
         fillInImages()
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
 
         verifyEditreviewUseCaseCalled()
         verifyEditReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
@@ -400,10 +428,6 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     private fun verifyEditreviewUseCaseCalled() {
         coVerify { editReviewUseCase.executeOnBackground() }
-    }
-
-    private fun verifyImageUploaderUseCaseCalledBasedOnSizeOfList(size: Int) {
-        coVerify(exactly = size) { uploaderUseCase(any()) }
     }
 
     private fun onGetReviewDetails_thenReturn(response: ProductrevGetReviewDetailResponseWrapper) {

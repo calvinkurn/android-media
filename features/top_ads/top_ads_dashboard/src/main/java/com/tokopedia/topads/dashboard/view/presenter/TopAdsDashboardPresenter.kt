@@ -21,19 +21,19 @@ import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.model.DataSuggestions
-import com.tokopedia.topads.common.data.model.ResponseCreateGroup
-import com.tokopedia.topads.common.data.raw.GROUP_LIST_QUERY
-import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.common.data.response.DepositAmount
+import com.tokopedia.topads.common.data.response.groupitem.DataItem
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.common.data.response.groupitem.GroupStatisticsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
-import com.tokopedia.topads.common.domain.interactor.*
-import com.tokopedia.topads.common.domain.usecase.CreateGroupUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsEditUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupDataUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupListUseCase
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -59,7 +59,7 @@ import javax.inject.Inject
  */
 
 class TopAdsDashboardPresenter @Inject
-constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Deposit>,
+constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             private val shopAdInfoUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ShopAdInfo>,
             private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
             private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
@@ -145,15 +145,7 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
     }
   }
 }"""
-        const val DEPOSIT = """query topadsDashboardDeposits(${'$'}shop_id: Int!) {
-  topadsDashboardDeposits(shop_id: ${'$'}shop_id) {
-    data {
-      amount
-      amount_fmt
-    }
-  }
-}
-"""
+
         const val SHOP_AD_INFO = """
             query topadsGetShopInfoV2(${'$'}shopID: Int!) {
   topadsGetShopInfoV2(shopID: ${'$'}shopID) {
@@ -172,13 +164,7 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
 }"""
     }
 
-    @GqlQuery("DepositQuery", DEPOSIT)
     fun getShopDeposit(onSuccess: ((dataDeposit: DepositAmount) -> Unit)) {
-        val params = mapOf(ParamObject.SHOP_id to userSession.shopId.toIntOrZero(),
-                ParamObject.SOURCE to TopAdsDashboardConstant.SOURCE_DASH)
-        topAdsGetShopDepositUseCase.setTypeClass(Deposit::class.java)
-        topAdsGetShopDepositUseCase.setRequestParams(params)
-        topAdsGetShopDepositUseCase.setGraphqlQuery(DepositQuery.GQL_QUERY)
         topAdsGetShopDepositUseCase.execute({
             onSuccess(it.topadsDashboardDeposits.data)
         }
@@ -188,10 +174,8 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
     }
 
 
-    fun getGroupData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
-                     startDate: String, endDate: String, groupType: Int, onSuccess: ((GroupItemResponse.GetTopadsDashboardGroups) -> Unit)) {
-        topAdsGetGroupDataUseCase.setQuery(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.topads.common.R.raw.query_get_groups_dashboard))
+    fun getGroupData(page: Int, search: String, sort: String, status: Int?, startDate: String,
+                     endDate: String, groupType: Int, onSuccess: (GroupItemResponse.GetTopadsDashboardGroups) -> Unit) {
         val requestParams = topAdsGetGroupDataUseCase.setParams(search, page, sort, status, startDate, endDate, groupType)
         topAdsGetGroupDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
@@ -232,10 +216,8 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
         })
     }
 
-    fun getGroupStatisticsData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
-                               startDate: String, endDate: String, groupIds: List<String>, onSuccess: ((GetTopadsDashboardGroupStatistics) -> Unit)) {
-        topAdsGetGroupStatisticsUseCase.setQueryString(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_group_statistics))
+    fun getGroupStatisticsData(page: Int, search: String, sort: String, status: Int?, startDate: String,
+                               endDate: String, groupIds: List<String>, onSuccess: (GetTopadsDashboardGroupStatistics) -> Unit) {
         val params = topAdsGetGroupStatisticsUseCase.setParams(search, page, sort, status, startDate, endDate, groupIds)
         topAdsGetGroupStatisticsUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
@@ -250,7 +232,7 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
                 val token = object : TypeToken<DataResponse<GroupStatisticsResponse?>>() {}.type
                 val restResponse: RestResponse? = typeResponse[token]
                 val response = restResponse?.getData() as DataResponse<GroupStatisticsResponse>
-                response?.data?.getTopadsDashboardGroupStatistics?.let { onSuccess(it) }
+                response.data?.getTopadsDashboardGroupStatistics?.let { onSuccess(it) }
             }
         })
     }
@@ -281,13 +263,10 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
                 })
     }
 
-    @GqlQuery("GroupList", GROUP_LIST_QUERY)
-    fun getGroupList(search: String, onSuccess: ((List<GroupListDataItem>) -> Unit)) {
-        topAdsGetGroupListUseCase.setGraphqlQuery(GroupList.GQL_QUERY)
-        topAdsGetGroupListUseCase.setParams(search)
+    fun getGroupList(search: String, onSuccess: (List<GroupListDataItem>) -> Unit) {
+        topAdsGetGroupListUseCase.setParamsForKeyWord(search)
         topAdsGetGroupListUseCase.executeQuerySafeMode(
                 {
-
                     onSuccess(it.getTopadsDashboardGroups.data)
                 },
                 {
@@ -331,10 +310,8 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
     }
 
 
-    fun getGroupProductData(resources: Resources, page: Int, groupId: Int?,
-                            search: String, sort: String, status: Int?, startDate: String, endDate: String, onSuccess: ((NonGroupResponse.TopadsDashboardGroupProducts) -> Unit), onEmpty: (() -> Unit)) {
-        topAdsGetGroupProductDataUseCase.setQueryString(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.topads.common.R.raw.query_get_group_products_dashboard))
+    fun getGroupProductData(page: Int, groupId: Int?, search: String,
+                            sort: String, status: Int?, startDate: String, endDate: String, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
         val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate)
         topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
@@ -359,35 +336,31 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
     }
 
     fun getInsight(resources: Resources, onSuccess: ((InsightKeyData) -> Unit)) {
-        try {
-            topAdsInsightUseCase.setQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword))
-            val requestParams = topAdsInsightUseCase.setParams()
-            topAdsInsightUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-                override fun onCompleted() {
+        topAdsInsightUseCase.setQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword))
+        val requestParams = topAdsInsightUseCase.setParams()
+        topAdsInsightUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
 
-                }
+            }
 
 
-                override fun onError(e: Throwable?) {
+            override fun onError(e: Throwable?) {
 
-                }
+            }
 
-                override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                    val token = object : TypeToken<DataResponse<JsonObject?>>() {}.type
-                    val restResponse: RestResponse? = typeResponse[token]
-                    val response = restResponse?.getData() as DataResponse<JsonObject>
-                    val responseData = response.data.getAsJsonObject("topAdsGetKeywordInsights").getAsJsonPrimitive(TopAdsDashboardConstant.DATA)
-                    val type = object : TypeToken<InsightKeyData>() {}.type
-                    val data: InsightKeyData = Gson().fromJson(responseData.asString, type)
-                    onSuccess(data)
-                }
-            })
-        } catch (e: Exception) {
-
-        }
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<JsonObject?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<JsonObject>
+                val responseData = response.data.getAsJsonObject("topAdsGetKeywordInsights").getAsJsonPrimitive(TopAdsDashboardConstant.DATA)
+                val type = object : TypeToken<InsightKeyData>() {}.type
+                val data: InsightKeyData = Gson().fromJson(responseData.asString, type)
+                onSuccess(data)
+            }
+        })
     }
 
-    @GqlQuery("ShopInfo", TopAdsDashboardPresenter.SHOP_AD_INFO)
+    @GqlQuery("ShopInfo", SHOP_AD_INFO)
     fun getShopAdsInfo(onSuccess: ((ShopAdInfo)) -> Unit) {
         val params = mapOf(ParamObject.SHOP_ID to userSession.shopId.toIntOrZero())
         shopAdInfoUseCase.setTypeClass(ShopAdInfo::class.java)
@@ -632,8 +605,6 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
         super.detachView()
         topAdsGetShopDepositUseCase.cancelJobs()
         gqlGetShopInfoUseCase.cancelJobs()
-        topAdsGetGroupDataUseCase.unsubscribe()
-        topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsGetGroupDataUseCase.unsubscribe()
         topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsGetGroupStatisticsUseCase.unsubscribe()

@@ -1,9 +1,7 @@
 package com.tokopedia.buyerorder
 
-import android.app.Application
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.idling.CountingIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
 import com.tokopedia.buyerorder.test.R
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -32,36 +30,31 @@ class UohListTrackingTest {
     var activityRule = ActivityTestRule(UohListActivity::class.java, false, false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val idlingResourceLogin: CountingIdlingResource = CountingIdlingResource(IDLING_RESOURCE)
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
 
-        IdlingRegistry.getInstance().register(idlingResourceLogin)
-        IdlingRegistry.getInstance().register(UohIdlingResource.countingIdlingResource)
-
         setupGraphqlMockResponse {
             addMockResponse(KEY_UOH_ORDERS, InstrumentationMockHelper.getRawString(context, R.raw.response_mock_uoh_orders_succeed_manual), MockModelConfig.FIND_BY_CONTAINS)
         }
 
-        InstrumentationAuthHelper.loginToAnUser(context.applicationContext as Application, idlingResourceLogin)
-        onIdle()
-
-        activityRule.launchActivity(null)
-        onIdle()
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
     }
 
     @After
     fun cleanup() {
         IdlingRegistry.getInstance().unregister(UohIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().unregister(idlingResourceLogin)
         activityRule.finishActivity()
     }
 
     @Test
     fun test_uoh_summary() {
+        IdlingRegistry.getInstance().register(UohIdlingResource.countingIdlingResource)
+        activityRule.launchActivity(null)
+        onIdle()
+
         val query = getJsonDataFromAsset(context, QUERY_SUMMARY_UOH)
                 ?: throw AssertionError("Validator Query not found")
 

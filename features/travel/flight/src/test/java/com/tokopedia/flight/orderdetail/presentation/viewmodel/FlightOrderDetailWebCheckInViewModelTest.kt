@@ -468,7 +468,7 @@ class FlightOrderDetailWebCheckInViewModelTest {
                 cancel.statusType shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.passengers[passengerIndex].cancelStatus[cancelIndex].statusType
             }
         }
-        data.data.actionButtons.size shouldBe DUMMY_ORDER_DETAIL_DATA.actionButtons.size
+        data.data.actionButtons.size shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.actionButtons.size
         for ((actionIndex, action) in data.data.actionButtons.withIndex()) {
             action.id shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.actionButtons[actionIndex].id
             action.label shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.actionButtons[actionIndex].label
@@ -479,7 +479,7 @@ class FlightOrderDetailWebCheckInViewModelTest {
             action.method shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.actionButtons[actionIndex].method
             action.weight shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.actionButtons[actionIndex].weight
         }
-        data.data.conditionalInfos.size shouldBe DUMMY_ORDER_DETAIL_DATA.conditionalInfos.size
+        data.data.conditionalInfos.size shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.conditionalInfos.size
         for ((infoIndex, info) in data.data.conditionalInfos.withIndex()) {
             info.type shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.conditionalInfos[infoIndex].type
             info.title shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.conditionalInfos[infoIndex].title
@@ -487,7 +487,7 @@ class FlightOrderDetailWebCheckInViewModelTest {
             info.border shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.conditionalInfos[infoIndex].border
             info.background shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.conditionalInfos[infoIndex].background
         }
-        data.data.insurances.size shouldBe DUMMY_ORDER_DETAIL_DATA.insurances.size
+        data.data.insurances.size shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.insurances.size
         for ((insuranceIndex, insurance) in data.data.insurances.withIndex()) {
             insurance.id shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.insurances[insuranceIndex].id
             insurance.title shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.insurances[insuranceIndex].title
@@ -495,7 +495,7 @@ class FlightOrderDetailWebCheckInViewModelTest {
             insurance.paidAmount shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.insurances[insuranceIndex].paidAmount
             insurance.paidAmountNumeric shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.insurances[insuranceIndex].paidAmountNumeric
         }
-        data.data.cancellations.size shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations.size
+        data.data.cancellations.size shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.cancellations.size
         for ((cancelIndex, cancel) in data.data.cancellations.withIndex()) {
             cancel.cancelId shouldBe DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE.cancellations[cancelIndex].cancelId
             for ((cancelDetailIndex, cancelDetail) in cancel.cancelDetails.withIndex()) {

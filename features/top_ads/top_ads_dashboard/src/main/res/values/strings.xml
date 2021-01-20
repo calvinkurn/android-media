@@ -352,6 +352,8 @@
     <string name="topads_headlin_Search_empty_title">Headline tidak ditemukan</string>
     <string name="topads_headline_group_schedule">"Berakhir %s"</string>
     <string name="topads_headline_info_ticker">Edit Iklan Toko untuk saat ini hanya bisa dilakukan melalui Tokopedia Seller desktop, ya!</string>
+
+    <string name="sampai_dengan">Sampai dengan</string>
     <string name="topads_headline_recom_grp_bs_title">Iklankan Produk Dengan Grup</string>
 </resources>
 

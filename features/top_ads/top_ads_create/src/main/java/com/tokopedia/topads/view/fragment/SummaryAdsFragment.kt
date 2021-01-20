@@ -16,11 +16,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
-import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
@@ -31,11 +31,11 @@ import com.tokopedia.topads.common.data.model.Group
 import com.tokopedia.topads.common.data.model.InputCreateGroup
 import com.tokopedia.topads.common.data.model.KeywordsItem
 import com.tokopedia.topads.common.data.model.ResponseCreateGroup
-import com.tokopedia.topads.data.response.TopAdsDepositResponse
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.SummaryViewModel
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_create_fragment_summary.*
 import javax.inject.Inject
 
@@ -69,6 +69,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     companion object {
         private const val MORE_INFO = " Info Selengkapnya"
         private const val MULTIPLIER = 40
+        private const val MAXIMUM_LIMIT = 10000000
         private const val UNLIMITED_BUDGET = "0"
         private const val DEFINED_BUDGET = "1"
         private const val INPUT = "input"
@@ -113,8 +114,8 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         return inflater.inflate(R.layout.topads_create_fragment_summary, container, false)
     }
 
-    private fun onSuccess(data: TopAdsDepositResponse.Data) {
-        isEnoughDeposit = data.topadsDashboardDeposits.data.amount > 0
+    private fun onSuccess(data: DepositAmount) {
+        isEnoughDeposit = data.amount > 0
         val intent: Intent = if (isEnoughDeposit) {
             Intent(context, SuccessActivity::class.java).apply {
                 if (isFromPdpSellerMigration(activity?.intent?.extras)) {
@@ -229,6 +230,10 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                         && daily_budget.isVisible) {
                     daily_budget.setError(true)
                     daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
+                    btn_submit.isEnabled = false
+                } else if(input > MAXIMUM_LIMIT && daily_budget.isVisible) {
+                    daily_budget.setError(true)
+                    daily_budget.setMessage(String.format(getString(R.string.topads_common_maximum_daily_budget), MAXIMUM_LIMIT))
                     btn_submit.isEnabled = false
                 } else {
                     stepperModel?.dailyBudget = input

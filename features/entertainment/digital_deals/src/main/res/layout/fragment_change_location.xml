@@ -11,7 +11,7 @@
         android:id="@+id/mainContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/clr_ae31353b">
+        android:background="@color/Unify_N700_68">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,7 +44,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:text="@string/select_location_bottomsheet_title"
-                    android:textColor="@color/clr_f531353b"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold" />
 
@@ -65,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/grey_300" />
+                android:background="@color/Unify_N100" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_detect_current_location"
@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
                     android:textSize="@dimen/sp_14"
-                    android:textColor="@color/deal_product_text_color"
+                    android:textColor="@color/Unify_N700_96"
                     android:gravity="center"
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
@@ -100,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/grey_300" />
+                android:background="@color/Unify_N100" />
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/nested_scroll_view"
@@ -123,7 +123,7 @@
                         android:text="Kota Populer"
                         android:textStyle="bold"
                         android:textAllCaps="true"
-                        android:textColor="#313531"
+                        android:textColor="@color/Unify_N700"
                         android:textSize="@dimen/sp_12"
                         tools:visibility="visible" />
 
@@ -155,7 +155,7 @@
                         android:text="Lokasi populer"
                         android:textStyle="bold"
                         android:textAllCaps="true"
-                        android:textColor="#313531"
+                        android:textColor="@color/Unify_N700"
                         android:textSize="@dimen/sp_12" />
 
                     <androidx.recyclerview.widget.RecyclerView

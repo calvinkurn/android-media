@@ -1,32 +1,39 @@
 package com.tokopedia.topads.view.model
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
-import kotlinx.coroutines.CoroutineDispatcher
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Author errysuprayogi on 06,November,2019
  */
 class CreateGroupAdsViewModel @Inject constructor(
-        @Named("Main")
-        private val dispatcher: CoroutineDispatcher,
-        private val validGroupUseCase: TopAdsGroupValidateNameUseCase) : BaseViewModel(dispatcher) {
-
+        dispatcher: CoroutineDispatchers,
+        private val topAdsGroupValidateNameUseCase: TopAdsGroupValidateNameUseCase) : BaseViewModel(dispatcher.main) {
 
     fun validateGroup(groupName: String, onSuccess: (() -> Unit),
                       onError: ((error: String) -> Unit)) {
-        validGroupUseCase.setParams(groupName)
-        validGroupUseCase.executeQuerySafeMode(
-                {
-                    if (it.errors.isEmpty())
-                        onSuccess()
-                    else
-                        onError(it.errors.firstOrNull()?.detail ?: "")
-                },
-                { throwable ->
-                    throwable.printStackTrace()
-                })
+        launchCatchError( block = {
+            topAdsGroupValidateNameUseCase.setParams(groupName)
+            topAdsGroupValidateNameUseCase.execute(
+                    {
+                        if (it.topAdsGroupValidateName.errors.isEmpty()) {
+                            onSuccess()
+                        } else {
+                            onError(Exception(it.topAdsGroupValidateName.errors.first().detail))
+                        }
+                    },
+                    {
+                        onError(it)
+                    }
+            )
+        }, onError = {
+            onError(it)
+        })
     }
 }

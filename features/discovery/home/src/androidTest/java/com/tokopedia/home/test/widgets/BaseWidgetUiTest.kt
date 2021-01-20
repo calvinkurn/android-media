@@ -69,7 +69,6 @@ abstract class BaseWidgetUiTest{
             getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
             getBusinessWidgetTab = getBusinessWidgetTab,
             getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
-            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getKeywordSearchUseCase = getKeywordSearchUseCase,
             getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
             getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
@@ -96,7 +95,8 @@ abstract class BaseWidgetUiTest{
             getRecommendationUseCase = getRecommendationUseCase,
             getRecommendationFilterChips = getRecommendationFilterChips,
             getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
-            bestSellerMapper = bestSellerMapper
+            bestSellerMapper = bestSellerMapper,
+            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
     )
 
     fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
