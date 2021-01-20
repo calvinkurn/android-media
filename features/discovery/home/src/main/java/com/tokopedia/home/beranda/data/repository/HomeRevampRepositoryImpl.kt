@@ -102,6 +102,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
              */
             var homeData = HomeData()
             cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                homeData.isProcessingDynamicChannel = true
                 homeCachedDataSource.saveToDatabase(homeData)
             })
 
@@ -201,7 +202,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 jobList.forEach {
                     it.await()
                 }
-                homeCachedDataSource.saveToDatabase(homeData)
             })
 
             homeData.atfData?.dataList?.forEach error@{
@@ -245,6 +245,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                     currentToken = it.token
                 }
 
+                homeData.isProcessingDynamicChannel = false
                 homeCachedDataSource.saveToDatabase(homeData)
             } else if (dynamicChannelResponseValue == null) {
                 emit(Result.error(Throwable()))
@@ -269,6 +270,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         /**
                          * 7. Submit current data to database, to trigger HomeViewModel flow
                          */
+                        homeData.isProcessingDynamicChannel = false
                         homeCachedDataSource.saveToDatabase(it)
                     }
                 } catch (e: Exception) {

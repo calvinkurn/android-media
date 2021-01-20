@@ -18,5 +18,6 @@ data class HomeData(
     @SerializedName("homeFlag")
     var homeFlag: HomeFlag = HomeFlag(),
     var token: String = "",
-    var atfData: HomeAtfData? = HomeAtfData()
+    var atfData: HomeAtfData? = HomeAtfData(),
+    var isProcessingDynamicChannel: Boolean = false
 )

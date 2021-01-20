@@ -40,6 +40,7 @@ class HomeDataMapper(
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP)
         if (homeData == null) return HomeDataModel(isCache = isCache)
         val processingAtf = homeData.atfData?.isProcessingAtf?: false
+        val processingDynamicChannel = homeData.isProcessingDynamicChannel
         val firstPage = homeData.token.isNotEmpty()
         val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
                 homeData, isCache, trackingQueue, context, homeDynamicChannelDataMapper)
@@ -51,6 +52,6 @@ class HomeDataMapper(
                 .build()
 
         BenchmarkHelper.endSystraceSection()
-        return HomeDataModel(homeData.homeFlag, factory.build(), isCache, firstPage, processingAtf)
+        return HomeDataModel(homeData.homeFlag, factory.build(), isCache, firstPage, processingAtf, processingDynamicChannel)
     }
 }

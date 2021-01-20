@@ -77,6 +77,7 @@
         app:toolbarPageName="/"
         app:toolbarInitialFillColor="transparent"
         app:toolbarInvertSearchBarColor="true"
+        app:toolbarInitialTheme="light"
         />
 
     <com.tokopedia.searchbar.HomeMainToolbar

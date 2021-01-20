@@ -902,7 +902,7 @@ open class HomeRevampViewModel @Inject constructor(
                     onRefreshState = false
                     _isRequestNetworkLiveData.postValue(Event(false))
                     var homeData = takeHomeTicker(homeDataModel)
-                    if (homeData?.isProcessingAtf == false) {
+                    if (homeData?.isProcessingDynamicChannle == false) {
                         homeData = evaluateAvailableComponent(homeData)
                     }
 

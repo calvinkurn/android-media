@@ -520,7 +520,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
         homeRecyclerView?.setHasFixedSize(true)
         homeRecyclerView?.itemAnimator?.moveDuration = 150
-        homeRecyclerView?.itemAnimator?.addDuration = 70
 
         navAbTestCondition(
                 ifNavOld = {
@@ -552,11 +551,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                     }
 
                                     override fun onSwitchToLightToolbar() {
-                                        navAbTestCondition(
-                                                ifNavRevamp = {
-                                                    navToolbar?.showShadow()
-                                                }
-                                        )
+
                                     }
 
                                     override fun onYposChanged(yOffset: Int) {
@@ -718,7 +713,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.showShadow()
                         }
-                    })
+                    }, ifNavRevamp = {
+                        navToolbar?.showShadow(lineShadow = true)
+            })
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView?.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
@@ -727,7 +724,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.hideShadow()
                         }
-                    }
+                    } , ifNavRevamp = {
+                navToolbar?.hideShadow(lineShadow = true)
+            }
             )
             showFeedSectionViewHolderShadow(true)
             homeRecyclerView?.setNestedCanScroll(true)

@@ -441,11 +441,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     private fun configureInitialFillBasedOnAttribute() {
         if (toolbarInitialFillColor == TOOLBAR_TRANSPARENT) {
-            toolbarFillColor = ContextCompat.getColor(context, android.R.color.transparent)
+            toolbarFillColor = getLightIconColor()
             dividerUnify?.visibility = View.INVISIBLE
+            navToolbar?.background = ColorDrawable(toolbarFillColor)
+            setBackgroundAlpha(0f)
         }
-
-        navToolbar?.background = ColorDrawable(toolbarFillColor)
     }
 
     private fun configureThemeBasedOnAttribute() {
