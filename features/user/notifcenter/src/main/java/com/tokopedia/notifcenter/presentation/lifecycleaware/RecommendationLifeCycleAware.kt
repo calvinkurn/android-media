@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -93,12 +92,12 @@ class RecommendationLifeCycleAware constructor(
     private fun showSuccessAddWishlist() {
         val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
         val message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist)
-        Toaster.showNormalWithAction(view, message, Snackbar.LENGTH_LONG,
+        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
                 getString(R.string.recom_go_to_wishlist),
                 View.OnClickListener { v: View? ->
                     RouteManager.route(context, ApplinkConst.WISHLIST)
                 }
-        )
+        ).show()
     }
 
     private fun getString(@StringRes stringRes: Int): String {
@@ -109,14 +108,14 @@ class RecommendationLifeCycleAware constructor(
         val view: View? = fragment?.activity?.findViewById(android.R.id.content)
         val message = getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist)
         if (view == null) return
-        Toaster.showNormal(view, message, Snackbar.LENGTH_LONG)
+        Toaster.build(view, message, Toaster.LENGTH_LONG).show()
     }
 
     private fun handleWishlistActionFailed() {
         val rootView = fragment?.view?.rootView
         rootView?.let {
-            Toaster.showError(rootView,
-                    ErrorHandler.getErrorMessage(rootView.context, null), Snackbar.LENGTH_LONG)
+            Toaster.build(it, ErrorHandler.getErrorMessage(rootView.context, null),
+                    Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 

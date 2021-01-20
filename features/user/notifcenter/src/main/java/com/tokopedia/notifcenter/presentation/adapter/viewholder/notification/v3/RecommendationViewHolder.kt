@@ -73,6 +73,14 @@ class RecommendationViewHolder constructor(
         }
     }
 
+    override fun bind(element: RecommendationUiModel, payloads: MutableList<Any>) {
+        val isWishlisted = payloads.getOrNull(0) as? Boolean ?: return
+        element.recommendationItem.isWishlist = isWishlisted
+        productCard?.setThreeDotsOnClickListener {
+            recommendationListener?.onThreeDotsClick(element.recommendationItem, adapterPosition)
+        }
+    }
+
     companion object {
         val LAYOUT = R.layout.item_notifcenter_recommendation
     }
