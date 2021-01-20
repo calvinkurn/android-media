@@ -47,6 +47,8 @@ class LineGraphViewHolder(
     private var hideAnimation: ValueAnimator? = null
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
+        showAnimation?.end()
+        hideAnimation?.end()
         observeState(element)
 
         val data = element.data

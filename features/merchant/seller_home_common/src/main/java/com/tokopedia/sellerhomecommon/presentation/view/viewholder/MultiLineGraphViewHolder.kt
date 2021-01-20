@@ -56,6 +56,8 @@ class MultiLineGraphViewHolder(
     private var hideAnimation: ValueAnimator? = null
 
     override fun bind(element: MultiLineGraphWidgetUiModel) {
+        showAnimation?.end()
+        hideAnimation?.end()
         this.element = element
 
         val data = element.data
