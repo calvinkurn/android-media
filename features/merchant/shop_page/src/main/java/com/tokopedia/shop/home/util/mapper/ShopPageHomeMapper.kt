@@ -170,15 +170,15 @@ object ShopPageHomeMapper {
             isMyOwnProduct: Boolean,
             isLoggedIn: Boolean
     ): BaseShopHomeWidgetUiModel? {
+        if (widgetResponse.name == VOUCHER_STATIC) {
+            return mapToVoucherUiModel(widgetResponse)
+        }
         return when (widgetResponse.type.toLowerCase()) {
             DISPLAY.toLowerCase() -> {
                 mapToDisplayWidget(widgetResponse)
             }
             PRODUCT.toLowerCase() -> {
                 mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct)
-            }
-            VOUCHER.toLowerCase() -> {
-                mapToVoucherUiModel(widgetResponse)
             }
             CAMPAIGN.toLowerCase() -> {
                 mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
