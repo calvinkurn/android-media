@@ -104,13 +104,15 @@ class HomeRevampRepositoryImpl @Inject constructor(
             cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
                 homeData.isProcessingDynamicChannel = true
                 homeCachedDataSource.saveToDatabase(homeData)
+            }, isCacheExistAction = {
+                homeData.isProcessingDynamicChannel = false
             })
 
             /**
              * 2. Get above the fold skeleton
              */
             try {
-                val homeAtfResponse = async { homeRemoteDataSource.getAtfDataUseCase() }.await()
+                val homeAtfResponse = homeRemoteDataSource.getAtfDataUseCase()
                 if (homeAtfResponse?.dataList == null) {
                     isAtfSuccess = false
                     homeData.atfData = null
@@ -164,8 +166,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     atfData.content = null
                                     cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
                                         homeCachedDataSource.saveToDatabase(homeData)
-                                    }, isCacheExistAction = {
-                                        homeCachedDataSource.saveToDatabase(homeData)
                                     })
                                 }
                             }
@@ -205,7 +205,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
             })
 
             homeData.atfData?.dataList?.forEach error@{
-                if (it.status == AtfKey.STATUS_ERROR) {
+                if (it.status == AtfKey.STATUS_ERROR && !it.isOptional && it.component != TYPE_TICKER) {
                     emit(Result.errorAtf(Throwable(),null))
                     return@error
                 }
@@ -215,12 +215,12 @@ class HomeRevampRepositoryImpl @Inject constructor(
             /**
              * 6. Get dynamic channel data
              */
-            val dynamicChannelResponse = async { homeRemoteDataSource.getDynamicChannelData(numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION) }
             val dynamicChannelResponseValue = try {
+                val dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION)
                 if (!isAtfSuccess) {
                     homeData.atfData = null
                 }
-                dynamicChannelResponse.await()
+                dynamicChannelResponse
             } catch (e: Exception) {
                 if (!isAtfSuccess && !isCacheExistForProcess) {
                     null
@@ -249,7 +249,14 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 homeCachedDataSource.saveToDatabase(homeData)
             } else if (dynamicChannelResponseValue == null) {
                 emit(Result.error(Throwable()))
-                return@coroutineScope
+                /**
+                 * 7.1 Emit error pagination only when atf is empty
+                 * Because there is no content that we can show, we showing error page
+                 */
+                if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
+                    emit(Result.errorGeneral(Throwable(),null))
+                }
+                homeCachedDataSource.saveToDatabase(homeData)
             }
 
             /**
@@ -279,9 +286,9 @@ class HomeRevampRepositoryImpl @Inject constructor(
                      * Because there is no content that we can show, we showing error page
                      */
                     if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
-                        emit(Result.errorPagination(e,null))
+                        emit(Result.errorPagination(Throwable(),null))
                     }
-                    return@coroutineScope
+                    homeCachedDataSource.saveToDatabase(homeData)
                 }
             }
         }

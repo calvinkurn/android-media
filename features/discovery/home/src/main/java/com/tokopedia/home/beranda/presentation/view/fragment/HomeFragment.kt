@@ -535,11 +535,7 @@ open class HomeFragment : BaseDaggerFragment(),
                                     }
 
                                     override fun onSwitchToLightToolbar() {
-                                        navAbTestCondition(
-                                                ifNavRevamp = {
-                                                    navToolbar?.showShadow()
-                                                }
-                                        )
+
                                     }
 
                                     override fun onYposChanged(yOffset: Int) {
@@ -701,6 +697,8 @@ open class HomeFragment : BaseDaggerFragment(),
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.showShadow()
                         }
+                    }, ifNavRevamp = {
+                navToolbar?.showShadow(lineShadow = true)
             })
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView?.setNestedCanScroll(false)
@@ -710,7 +708,9 @@ open class HomeFragment : BaseDaggerFragment(),
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.hideShadow()
                         }
-                    }
+                    } , ifNavRevamp = {
+                navToolbar?.hideShadow(lineShadow = true)
+            }
             )
             showFeedSectionViewHolderShadow(true)
             homeRecyclerView?.setNestedCanScroll(true)

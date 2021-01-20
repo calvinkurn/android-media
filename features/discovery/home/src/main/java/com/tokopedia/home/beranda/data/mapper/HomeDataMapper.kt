@@ -48,7 +48,7 @@ class HomeDataMapper(
                 .addAtfComponentVisitable(processingAtf)
 
 
-        factory.addDynamicChannelVisitable(firstPage, false)
+        factory.addDynamicChannelVisitable(firstPage, true)
                 .build()
 
         BenchmarkHelper.endSystraceSection()

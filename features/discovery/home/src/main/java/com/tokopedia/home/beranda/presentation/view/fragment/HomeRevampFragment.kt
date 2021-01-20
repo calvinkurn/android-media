@@ -31,6 +31,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.location.LocationServices
@@ -106,6 +109,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
+import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -156,6 +160,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -253,6 +258,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private var errorToaster: Snackbar? = null
     override val eggListener: HomeEggListener
         get() = this
     override val childsFragmentManager: FragmentManager
@@ -994,6 +1000,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 showNetworkError(getString(R.string.home_error_connection))
                 adapter?.resetChannelErrorState()
                 adapter?.resetAtfErrorState()
+            } else if(status == Result.Status.ERROR_GENERAL) {
+                NetworkErrorHelper.showEmptyState(activity, root, getString(R.string.home_error_connection)) { onRefresh() }
             } else {
                 showLoading()
             }
@@ -1067,7 +1075,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else {
             BACKGROUND_LIGHT_1
         }
-        ImageHandler.LoadImage(backgroundViewImage, backgroundUrl)
+        backgroundViewImage.loadImageWithoutPlaceholder(backgroundUrl)
     }
 
     private fun observeSendLocation() {
@@ -2398,7 +2406,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterWithAction(message: String, typeToaster: Int, actionText: String, clickListener: View.OnClickListener) {
-        make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
+        Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
+        errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
+        if (errorToaster?.isShown == false) {
+            errorToaster?.show()
+        }
     }
 
     private fun addRecyclerViewScrollImpressionListener(dynamicChannelDataModel: DynamicChannelDataModel, adapterPosition: Int) {

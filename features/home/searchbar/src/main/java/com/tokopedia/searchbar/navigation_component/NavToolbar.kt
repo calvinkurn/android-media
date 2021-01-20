@@ -445,6 +445,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             dividerUnify?.visibility = View.INVISIBLE
             navToolbar?.background = ColorDrawable(toolbarFillColor)
             setBackgroundAlpha(0f)
+        } else {
+            navToolbar?.background = ColorDrawable(toolbarFillColor)
         }
     }
 

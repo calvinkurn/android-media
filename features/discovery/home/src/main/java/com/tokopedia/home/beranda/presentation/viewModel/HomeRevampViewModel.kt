@@ -952,7 +952,7 @@ open class HomeRevampViewModel @Inject constructor(
                     removeDynamicChannelLoadingModel()
                 }
 
-                if (it.status === Result.Status.ERROR_ATF) {
+                if (it.status === Result.Status.ERROR_ATF || it.status === Result.Status.ERROR_GENERAL ) {
                     _updateNetworkLiveData.postValue(it)
                 }
             }
