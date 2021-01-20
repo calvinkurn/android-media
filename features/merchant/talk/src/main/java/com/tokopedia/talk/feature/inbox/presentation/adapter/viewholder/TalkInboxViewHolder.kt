@@ -32,7 +32,7 @@ class TalkInboxViewHolder(
             setNotification(if(element.isSellerView) state.isUnresponded else isUnread)
             setCountAndDate(totalAnswer, lastReplyTime)
             setAlertState(state.hasProblem, element.isSellerView)
-            itemView.addOnImpressionListener(ImpressHolder()) {
+            itemView.addOnImpressionListener(element.impressHolder) {
                 talkInboxViewHolderListener.onInboxItemImpressed(questionID, adapterPosition, isUnread)
             }
             itemView.setOnClickListener {

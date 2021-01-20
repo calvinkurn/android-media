@@ -23,7 +23,7 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
                 setOnClickListener {
                     talkReplyProductHeaderListener.onProductCardClicked(productName, adapterPosition)
                 }
-                addOnImpressionListener(ImpressHolder()) {
+                addOnImpressionListener(element.impressHolder) {
                     talkReplyProductHeaderListener.onProductCardImpressed(productName, adapterPosition)
                 }
             }
