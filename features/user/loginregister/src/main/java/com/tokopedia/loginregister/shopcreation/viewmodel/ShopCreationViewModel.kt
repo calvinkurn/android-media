@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationQueryConstant
 import com.tokopedia.loginregister.shopcreation.domain.param.RegisterCheckParam
 import com.tokopedia.loginregister.shopcreation.domain.param.ShopInfoParam
@@ -51,8 +50,9 @@ open class ShopCreationViewModel @Inject constructor(
         private val getProfileUseCase: GetProfileUseCase,
         private val shopInfoUseCase: ShopInfoUseCase,
         private val userSession: UserSessionInterface,
-        dispatcherProvider: DispatcherProvider
-) : BaseViewModel(dispatcherProvider.ui()) {
+        @Named(ShopCreationQueryConstant.DISPATCHERS_MAIN)
+        dispatcher: CoroutineDispatcher
+) : BaseViewModel(dispatcher) {
 
     private val _addNameResponse = MutableLiveData<Result<UserProfileUpdate>>()
     val addNameResponse: LiveData<Result<UserProfileUpdate>>

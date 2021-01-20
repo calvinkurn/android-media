@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationQueryConstant
 import com.tokopedia.loginregister.shopcreation.domain.param.ShopInfoParam
 import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
@@ -29,10 +28,11 @@ class ShopInfoUseCase @Inject constructor(
         @Named(ShopCreationQueryConstant.QUERY_SHOP_INFO)
         private val query: String,
         private val graphqlRepository: GraphqlRepository,
-        private val dispatcherProvider: DispatcherProvider
+        @Named(ShopCreationQueryConstant.DISPATCHERS_IO)
+        private val dispatcher: CoroutineDispatcher
 ) : BaseUseCaseWithParam<ShopInfoParam, Result<ShopInfoByID>>() {
     override suspend fun getData(parameter: ShopInfoParam): Result<ShopInfoByID> {
-        val response = withContext(dispatcherProvider.io()) {
+        val response = withContext(dispatcher) {
             val cacheStrategy =
                     GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 

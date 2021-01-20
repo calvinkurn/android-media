@@ -6,7 +6,6 @@ import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
-import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.user.session.UserSession
@@ -15,6 +14,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-12-09.
@@ -27,11 +27,13 @@ class ShopCreationModule {
 
     @ShopCreationScope
     @Provides
-    fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
-        override fun ui(): CoroutineDispatcher = Dispatchers.Main
+    @Named(ShopCreationQueryConstant.DISPATCHERS_MAIN)
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
-        override fun io(): CoroutineDispatcher = Dispatchers.IO
-    }
+    @ShopCreationScope
+    @Provides
+    @Named(ShopCreationQueryConstant.DISPATCHERS_IO)
+    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
