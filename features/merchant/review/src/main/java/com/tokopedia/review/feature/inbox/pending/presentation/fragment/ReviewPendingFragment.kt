@@ -338,6 +338,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                     startRenderPerformanceMonitoring()
                     hideFullPageLoading()
                     hideError()
+                    hideLoading()
                     if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         showEmptyState()
                     } else {

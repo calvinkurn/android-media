@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_3">
+    android:paddingBottom="@dimen/dp_8">
 
     <View
         android:id="@+id/v_separator_multiple_product_same_store"
@@ -19,7 +19,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@color/grey_300"
+        android:background="@color/Unify_N100"
         android:visibility="gone" />
 
     <LinearLayout
@@ -50,7 +50,7 @@
             android:layout_marginTop="@dimen/dp_5"
             android:fontFamily="sans-serif"
             android:text="@string/checkout_module_message_cart_error"
-            android:textColor="@color/black_54"
+            android:textColor="@color/Unify_N700_44"
             android:textSize="@dimen/sp_10"
             android:visibility="gone"
             tools:visibility="visible" />
@@ -69,7 +69,6 @@
             android:layout_height="@dimen/dp_52"
             android:layout_margin="5dp"
             android:layout_marginEnd="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_20"
             app:cardCornerRadius="6dp"
             app:cardElevation="@dimen/dp_0">
 
@@ -77,7 +76,7 @@
                 android:id="@+id/iv_product_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@color/green_200"
+                android:src="@color/Unify_G400"
                 tools:ignore="ContentDescription" />
 
         </androidx.cardview.widget.CardView>
@@ -87,12 +86,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10"
             android:layout_toEndOf="@id/iv_product_card"
-            android:layout_toRightOf="@id/iv_product_card"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Kaos Adidas Camo Tongue Tee... White  gsf fsu gfsah hjsfj gsfugshj sjbfj hsjfh hsfjh vhsfh bjsf bjsfbjRed, XS" />
@@ -103,13 +100,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_product_name"
             android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
             android:layout_toEndOf="@id/iv_product_card"
-            android:layout_toRightOf="@id/iv_product_card"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Biru, XXL" />
@@ -120,13 +114,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_variant"
             android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
             android:layout_toEndOf="@id/iv_product_card"
-            android:layout_toRightOf="@id/iv_product_card"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="small"
             app:typographyWeight="reguler"
             tools:text="10000 barang (1000 kg)" />
@@ -137,12 +128,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_item_count_and_weight"
             android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_toEndOf="@id/iv_product_card"
-            android:layout_toRightOf="@id/iv_product_card"
             android:gravity="center_vertical"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Rp500.000" />
@@ -153,12 +142,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_item_count_and_weight"
             android:layout_toEndOf="@+id/tv_product_original_price"
-            android:layout_toRightOf="@+id/tv_product_original_price"
             android:gravity="center_vertical"
             android:paddingStart="@dimen/dp_4"
-            android:paddingLeft="@dimen/dp_4"
             android:paddingTop="@dimen/dp_4"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rp200.000" />
@@ -169,11 +156,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_product_price"
             android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_4"
-            android:layout_toRightOf="@+id/iv_product_card"
+            android:layout_toEndOf="@+id/iv_product_card"
             android:foregroundGravity="center_vertical"
-            app:flexWrap="wrap"/>
+            android:paddingTop="@dimen/dp_4"
+            app:flexWrap="wrap" />
 
     </RelativeLayout>
 
@@ -183,7 +169,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_3"
         tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
 
@@ -206,20 +192,10 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true">
 
-            <CheckBox
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/checkbox_ppp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_4"
-                android:button="@drawable/ic_cart_check_box" />
-
-            <CheckBox
-                android:id="@+id/checkbox_ppp_disabled"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_4"
-                android:button="@drawable/ic_cart_check_box"
-                android:enabled="false" />
+                android:layout_height="wrap_content" />
 
         </RelativeLayout>
 
@@ -228,48 +204,86 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_9"
-            android:layout_marginLeft="@dimen/dp_9"
-            android:layout_toStartOf="@+id/text_ppp_more"
-            android:layout_toLeftOf="@+id/text_ppp_more"
+            android:layout_toStartOf="@+id/container_ppp_more"
             android:layout_toEndOf="@+id/checkbox_rl"
-            android:layout_toRightOf="@+id/checkbox_rl"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/text_link_text"
-                style="@style/TextMidMedium"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:textColor="@color/black_39"
-                tools:text="Proteksi Produk" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/text_price_per_product"
-                style="@style/TextVerySmall"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_link_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintEnd_toStartOf="@id/icon_tooltip"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_3"
+                    tools:text="Proteksi Produk" />
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/icon_tooltip"
+                    android:layout_width="@dimen/layout_lvl2"
+                    android:layout_height="@dimen/layout_lvl2"
+                    android:layout_marginStart="@dimen/spacing_lvl2"
+                    android:layout_marginEnd="@dimen/spacing_lvl2"
+                    android:padding="@dimen/spacing_lvl1"
+                    app:icon_name="INFORMATION"
+                    app:layout_constraintBottom_toBottomOf="@id/text_link_text"
+                    app:layout_constraintStart_toEndOf="@id/text_link_text"
+                    app:layout_constraintTop_toTopOf="@id/text_link_text" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_protection_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_16"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textColor="@color/grey_500"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
                 tools:text="Rp 50.000 / barang" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_ppp_more"
-            style="@style/TextSmallMedium"
+        <LinearLayout
+            android:id="@+id/container_ppp_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:foreground="?selectableItemBackgroundBorderless"
-            android:padding="@dimen/dp_16"
-            android:text="@string/ppp_more"
-            android:textColor="@color/medium_green" />
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_alignParentRight="true">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_item_per_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="heading_6"
+                app:typographyWeight="bold"
+                android:layout_gravity="end"
+                android:text="@string/ppp_more"
+                android:textColor="@color/Unify_N700_96" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_ppp_per_insurance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                app:typographyType="small"
+                android:text="@string/checkout_label_per_insurance_price"
+                android:layout_gravity="end"
+                android:textColor="@color/Unify_N700_68" />
+
+        </LinearLayout>
     </RelativeLayout>
 
 </LinearLayout>

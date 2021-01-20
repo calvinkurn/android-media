@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
@@ -13,13 +14,17 @@ import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.type.OutOfStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
+import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
+import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import java.util.*
 
 /**
  * Created by jegul on 02/06/20
@@ -160,7 +165,12 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
                 coverConfig = CoverConfigUiModel(
                         maxChars = config.maxTitleLength
                 ),
-                countDown = config.countdownSec
+                countDown = config.countdownSec,
+                scheduleConfig = BroadcastScheduleConfigUiModel(
+                        minimum = config.scheduledTime.minimum.toDateWithFormat(DATE_FORMAT_RFC3339),
+                        maximum = config.scheduledTime.maximum.toDateWithFormat(DATE_FORMAT_RFC3339),
+                        default = config.scheduledTime.default.toDateWithFormat(DATE_FORMAT_RFC3339)
+                )
         )
     }
 
@@ -181,6 +191,17 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
                 originalImageUrl = it.imageUrl,
                 stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock
         )
+    }
+
+    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
+        return if (timestamp.publishedAt.isBlank()) BroadcastScheduleUiModel.NoSchedule
+        else {
+            val scheduleDate = timestamp.publishedAt.toDateWithFormat(DATE_FORMAT_RFC3339)
+            BroadcastScheduleUiModel.Scheduled(
+                    time = scheduleDate,
+                    formattedTime = scheduleDate.toFormattedString(DATE_FORMAT_BROADCAST_SCHEDULE, Locale("id", "ID"))
+            )
+        }
     }
 
     override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel {
@@ -210,10 +231,8 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
             shortenUrl = channel.share.useShortURL
     )
 
-    override fun mapLiveDuration(duration: LiveDuration): DurationUiModel = DurationUiModel(
-            duration = duration.duration,
-            remaining = duration.remaining * 1000,
-            maxDuration = duration.maxDuration
+    override fun mapLiveDuration(duration: String): LiveDurationUiModel = LiveDurationUiModel(
+            duration = duration
     )
 
     override fun mapIncomingChat(chat: Chat): PlayChatUiModel = PlayChatUiModel(

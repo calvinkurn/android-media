@@ -56,7 +56,7 @@ data class ShopProduct(
 
 data class ProductData(
         @SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: Long = 0,
         @SerializedName("product_quantity")
         val productQuantity: Int = 0,
         @SerializedName("product_notes")

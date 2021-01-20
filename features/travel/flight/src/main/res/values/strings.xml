@@ -76,7 +76,6 @@
     <string name="flight_there_has_x_flights">Lihat %1$d Penerbangan</string>
     <string name="flight_save">Simpan</string>
     <string name="flight_label_choose_button">Pilih</string>
-    <string name="flight_label_price_total">Total Harga</string>
     <string name="flight_label_detail">Detail</string>
     <string name="flight_booking_contact_information">Data pemesan</string>
     <string name="flight_booking_contact_sublabel">(untuk e-tiket)</string>
@@ -97,7 +96,6 @@
     <string name="flight_label_infant">Bayi (x%1$d)</string>
     <string name="flight_label_departure_flight">Penerbangan Pergi</string>
     <string name="flight_label_passenger_data">Data Penumpang</string>
-    <string name="flight_label_detail_price">Rincian Harga</string>
     <string name="flight_label_continued_payment">Lanjut Pembayaran</string>
     <string name="flight_booking_toolbar_title">Isi Data Penumpang</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
@@ -150,11 +148,8 @@
     <string name="flight_booking_passenger_luggage_label">Bagasi</string>
     <string name="flight_booking_passenger_meal_label">Makanan</string>
     <string name="flight_booking_passenger_submit_button">Simpan</string>
-    <string name="flight_price_detail_prefixl_meal_label">Makanan </string>
-    <string name="flight_price_detail_prefix_luggage_label">Bagasi </string>
     <string name="flight_booking_trip_info_airport_format" formatted="false"> | %s - %s</string>
     <string name="flight_booking_id_empotency_format" formatted="false">%s_%s</string>
-    <string name="flight_booking_loading_title">Memperbarui Data</string>
     <string name="flight_label_adult_review">(Dewasa)</string>
     <string name="flight_label_child_review">(Anak)</string>
     <string name="flight_label_infant_review">(Bayi)</string>
@@ -169,22 +164,15 @@
     <string name="flight_booking_passenger_choose_label">Pilih</string>
     <string name="flight_booking_reprice_ticker_warning_title">Promo tidak bisa dipakai</string>
     <string name="flight_label_detail_order">Detail Penerbangan</string>
-    <string name="flight_label_invoice">INVOICE</string>
     <string name="flight_label_status">Status</string>
-    <string name="flight_label_transaction_date">Tanggal Transaksi</string>
-    <string name="flight_label_order_id_detail">Invoice :</string>
-    <string name="flight_label_show_invoice">KIRIM E-TIKET</string>
-    <string name="flight_label_reschedule_ticket">Atur Ulang Jadwal</string>
     <string name="flight_label_cek_t_and_c">* Harap diingat bahwa terminal dapat berubah sewaktu-waktu</string>
     <string name="flight_label_detail_counter">Detail Penerbangan %d</string>
     <string name="flight_label_order_id">Invoice</string>
     <string name="flight_label_booking_code_pnr">Kode Booking (PNR) :</string>
     <string name="flight_luggage_detail_order">Bagasi %1$s - %2$s</string>
     <string name="flight_meal_detail_order">Makanan %1$s - %2$s</string>
-    <string name="flight_label_reorder">Pesan Ulang</string>
     <string name="flight_label_copy_clipboard">Copy To Clipboard</string>
     <string name="flight_label_detail_format">%1$s(%2$s) - %3$s(%4$s)</string>
-    <string name="di_sini">di sini</string>
     <string name="flight_booking_passenger_last_name_empty_error">Nama belakang minimal 2 karakter</string>
     <string name="flight_search_return_departure_should_greater_message">Disarankan untuk memilih jadwal penerbangan pulang minimal 6 jam setelah jadwal kedatangan sebelumnya.</string>
     <string name="flight_dashboard_analytic_one_way">One Way</string>
@@ -206,7 +194,6 @@
     <string name="activity_label_flight_cancellation">Isi Data Pembatalan</string>
     <string name="flight_cancellation_subtitle_order_id" formatted="false">Order ID Tokopedia: %s</string>
     <string name="flight_cancellation_next_button">Selanjutnya</string>
-    <string name="flight_cancellation_step_3_header_title" formatted="false">%d. Detail Total Refund</string>
     <string name="flight_cancellation_reason_label">Alasan Pembatalan</string>
     <string name="flight_cancellation_support_docs_label">Unggah Identitas Penumpang</string>
     <string name="flight_cancellation_reason_hint_label">Pilih Alasan Pembatalan</string>
@@ -214,7 +201,6 @@
     <string name="flight_cancellation_attachment_required_error_message">Lampiran gambar belum diisi</string>
     <string name="flight_cancellation_attachment_more_than_max_error_message">Maksimal lampiran gambar %1$d</string>
     <string name="activity_label_flight_review_cancellation">Rincian Pembatalan Pesanan</string>
-    <string name="flight_cancellation_refund_detail_toolbar_title">Pembatalan Pesanan</string>
     <string name="flight_cancellation_review_description"><![CDATA[Saya telah menyetujui <b>Syarat dan Ketentuan Pembatalan Pesanan</b> untuk tiket dengan nama di atas dan mengerti bahwa tiket yang telah diterbitkan oleh Tokopedia akan dibatalkan atas kehendak saya dan saya menyetujui bahwa pengajuan pembatalan pesanan tidak dapat dibatalkan.]]></string>
     <string name="flight_cancellation_review_button">Ajukan Pembatalan</string>
     <string name="flight_cancellation_dialog_title">Batalkan Pesanan</string>
@@ -239,7 +225,6 @@
         <item>pengembalian dana akan dikirim ke Saldo Tokopedia atau OVO Points Anda.</item>
         <item>pengembalian dana akan dikembalikan ke limit kartu kredit Anda dalam kurun waktu maksimum 14 hari kerja.</item>
     </string-array>
-    <string name="flight_order_detail_cancellation_label">Detail Pembatalan</string>
     <string name="flight_cancellation_list_title">Detail Pembatalan</string>
     <string name="flight_cancellation_list_id" formatted="false">Cancellation ID: %s</string>
     <string name="flight_cancellation_list_created_time" formatted="false">Tanggal Pembatalan: %s</string>
@@ -391,7 +376,6 @@ di tempatmu.</string>
     <string name="flight_order_detail_check_in_title_label">Tentang pesananmu</string>
     <string name="flight_order_detail_check_in_label">Web Check-in</string>
     <string name="flight_order_detail_web_check_in_button">Check-in</string>
-    <string name="flight_order_detail_check_in_description">Check-in lebih awal lewat website.</string>
 
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
     <string name="flight_order_detail_cancel_description">Cek ketentuan pembatalan di sini.</string>
@@ -410,4 +394,5 @@ di tempatmu.</string>
     <string name="flight_order_detail_web_checkin_available">Bisa Check-in</string>
 
     <string name="flight_order_detail_success_copy_message">%1$s berhasil di salin.</string>
+    <string name="reset">Reset</string>
 </resources>

@@ -6,7 +6,7 @@
         android:topRightRadius="@dimen/play_bottom_sheet_top_radius"
         />
     <solid
-        android:color="@color/Neutral_N0"
+        android:color="@color/Unify_N0"
         />
 
 </shape>

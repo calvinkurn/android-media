@@ -3,6 +3,24 @@
   "mode": "exact",
   "query": [
     {
+      "eventAction": "view widget broadcast",
+      "event": "clickShopPage",
+      "eventCategory": "shop page - seller",
+      "eventLabel": "{{\\d+}}",
+      "shopId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "pageType": "/shoppage"
+    },
+    {
+      "eventAction": "click widget broadcast",
+      "event": "clickShopPage",
+      "eventCategory": "shop page - seller",
+      "eventLabel": "{{\\d+}}",
+      "shopId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "pageType": "/shoppage"
+    },
+    {
       "event": "openScreen",
       "networkSpeed": "{{.*}}",
       "clientId": "{{.*}}",
@@ -30,6 +48,28 @@
     },
     {
       "eventAction": "click camera onboarding",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view syarat dan ketentuan",
+      "event": "viewSellerBroadcastIris",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click syarat dan ketentuan",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
       "eventLabel": "{{\\d+}}",
@@ -274,6 +314,17 @@
     },
     {
       "eventAction": "click capture",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click switch camera on add cover",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
       "eventLabel": "{{\\d+}}",
@@ -668,6 +719,94 @@
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
       "eventLabel": "{{\\d+ - \\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click add schedule",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click edit schedule",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click simpan jadwal",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view bottom sheet schedule",
+      "event": "viewSellerBroadcastIris",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click icon delete schedule",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click delete on pop up message",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view pop up delete confirmation",
+      "event": "viewSellerBroadcastIris",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view pop up message before start live",
+      "event": "viewSellerBroadcastIris",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
       "sessionIris": "{{.*}}",
       "currentSite": "{{.*}}",
       "shopId": "{{.*}}",

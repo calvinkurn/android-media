@@ -91,12 +91,16 @@ class ShopHomeAdapter(
     }
 
     fun setEtalaseTitleData() {
-        val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
-        visitables.add(etalaseTitleUiModel)
+        if(visitables.filterIsInstance(ShopHomeProductEtalaseTitleUiModel::class.java).isEmpty()) {
+            val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
+            visitables.add(etalaseTitleUiModel)
+        }
     }
 
     fun setSortFilterData(shopProductSortFilterUiModel: ShopProductSortFilterUiModel) {
-        visitables.add(shopProductSortFilterUiModel)
+        if(visitables.filterIsInstance(ShopProductSortFilterUiModel::class.java).isEmpty()) {
+            visitables.add(shopProductSortFilterUiModel)
+        }
     }
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
@@ -406,11 +410,11 @@ class ShopHomeAdapter(
         recyclerView?.requestLayout()
     }
 
-    fun updateShopPageProductChangeGridSection(totalProductData: Int) {
+    fun updateShopPageProductChangeGridSectionIcon(totalProductData: Int, gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID) {
         val gridSectionModel = visitables.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()
         if (gridSectionModel == null) {
             if(totalProductData != 0) {
-                visitables.add(ShopHomeProductChangeGridSectionUiModel(totalProductData))
+                visitables.add(ShopHomeProductChangeGridSectionUiModel(totalProductData, gridType))
                 notifyChangedDataSet()
             }
         } else {
@@ -427,7 +431,7 @@ class ShopHomeAdapter(
         }
     }
 
-    fun updateShopPageProductChangeGridSection(gridType: ShopProductViewGridType) {
+    fun updateShopPageProductChangeGridSectionIcon(gridType: ShopProductViewGridType) {
         visitables.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()?.apply {
             this.gridType = gridType
             notifyChangedItem(visitables.indexOf(this))

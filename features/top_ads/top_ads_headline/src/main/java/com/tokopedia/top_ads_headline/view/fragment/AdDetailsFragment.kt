@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
-import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.viewmodel.AdDetailsViewModel
@@ -24,7 +24,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_ad_details.*
 import javax.inject.Inject
 
-class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>() {
+class AdDetailsFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -61,7 +61,7 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     override fun gotoNextPage() {
-        stepperModel?.groupName = headlineAdNameInput.textFieldInput.text.toString()
+        stepperModel?.groupName = headlineAdNameInput?.textFieldInput?.text.toString()
         stepperListener?.goToNextPage(stepperModel)
     }
 
@@ -85,12 +85,12 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                headlineAdNameInput.setError(false)
+                headlineAdNameInput?.setError(false)
                 btnSubmit?.isEnabled = s.toString().trim().isNotEmpty()
                 if (s.toString().isBlank()) {
-                    headlineAdNameInput.getFirstIcon().hide()
+                    headlineAdNameInput?.getFirstIcon()?.hide()
                 } else {
-                    headlineAdNameInput.getFirstIcon().show()
+                    headlineAdNameInput?.getFirstIcon()?.show()
                 }
             }
         })
@@ -101,18 +101,18 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
             Utils.dismissKeyboard(context, v)
             true
         }
-        headlineAdNameInput.getFirstIcon().setOnClickListener {
-            headlineAdNameInput.textFieldInput.setText("")
+        headlineAdNameInput?.getFirstIcon()?.setOnClickListener {
+            headlineAdNameInput?.textFieldInput?.setText("")
             it.hide()
         }
     }
 
     private fun setUpSubmitButtonClick() {
         btnSubmit.setOnClickListener {
-            if (headlineAdNameInput.textFieldInput.text.toString().isBlank()) {
+            if (headlineAdNameInput?.textFieldInput?.text.toString().isBlank()) {
                 onError(getString(R.string.topads_headline_ad_name_required))
             } else {
-                validateGroup(headlineAdNameInput.textFieldInput.text.toString())
+                validateGroup(headlineAdNameInput?.textFieldInput?.text.toString())
             }
         }
     }
@@ -125,7 +125,7 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
 
     private fun onError(errorMsg: String) {
         errorTextVisibility(true)
-        headlineAdNameInput.setMessage(errorMsg)
+        headlineAdNameInput?.setMessage(errorMsg)
     }
 
     private fun onSuccess() {
@@ -134,7 +134,7 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     private fun errorTextVisibility(visible: Boolean) {
-        headlineAdNameInput.setError(visible)
+        headlineAdNameInput?.setError(visible)
         btnSubmit?.isEnabled = !visible
     }
 

@@ -4,8 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.TextView
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -19,6 +20,7 @@ import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
+import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
 
 fun orderSummaryPage(func: OrderSummaryPageRobot.() -> Unit) = OrderSummaryPageRobot().apply(func)
@@ -184,12 +186,10 @@ class OrderSummaryPageRobot {
 
     fun assertProfileAddress(headerMessage: String,
                              addressName: String,
-                             addressReceiver: String,
                              addressDetail: String,
                              isMainPreference: Boolean) {
         onView(withId(R.id.tv_card_header)).perform(scrollTo()).check(matches(withText(headerMessage)))
         onView(withId(R.id.tv_address_name)).check(matches(withText(addressName)))
-        onView(withId(R.id.tv_address_receiver)).check(matches(withText(addressReceiver)))
         onView(withId(R.id.tv_address_detail)).check(matches(withText(addressDetail)))
         onView(withId(R.id.lbl_main_preference)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
@@ -422,7 +422,17 @@ class OrderPriceSummaryBottomSheetRobot {
     }
 
     fun closeBottomSheet() {
-        Espresso.pressBack()
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> = isClickable()
+
+            override fun getDescription(): String = "Force click close bottom sheet"
+
+            override fun perform(uiController: UiController?, view: View?) {
+                view?.callOnClick()
+                // Wait for bottom sheet to close
+                Thread.sleep(1000)
+            }
+        })
     }
 }
 
@@ -435,6 +445,8 @@ class InstallmentDetailBottomSheetRobot {
             val parent = view.parent as ViewGroup
             val radioButtonUnify = parent.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
             radioButtonUnify.performClick()
+            // Wait for bottom sheet to close
+            Thread.sleep(1000)
         }
     }
 }

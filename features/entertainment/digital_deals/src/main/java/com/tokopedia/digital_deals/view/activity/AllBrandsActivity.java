@@ -116,9 +116,9 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
         overFlowIcon = findViewById(com.tokopedia.digital_deals.R.id.overFlow_icon);
         toolbarTitle = findViewById(com.tokopedia.digital_deals.R.id.tv_location_name);
         searchInputView.setSearchHint(getResources().getString(com.tokopedia.digital_deals.R.string.search_input_hint_brand));
-        searchInputView.setSearchTextSize(getResources().getDimension(com.tokopedia.design.R.dimen.sp_17));
-        searchInputView.setSearchTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.clr_ae31353b));
-        searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_24), getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_24));
+        searchInputView.setSearchTextSize(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4));
+        searchInputView.setSearchTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5), getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5));
         searchInputView.setListener(this);
         searchInputView.setFocusChangeListener(this);
         categoryViewPager = findViewById(com.tokopedia.digital_deals.R.id.container);

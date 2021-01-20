@@ -214,6 +214,10 @@
 
 -keep public class com.android.installreferrer.** { *; }
 
+#keep for security purposes. This library has already been obfuscated.
+-keep class com.tkpd.util.Base64.** { *; }
+
+
 # Keep Class com.tokopedia
 
 -keep public class com.tokopedia.design.component.BottomNavigation { *; }
@@ -223,6 +227,9 @@
 -keep class com.tokopedia.discovery2.data.ComponentsItem { *; }
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
+
+#Please refer to the link before manipulating this line https://help.branch.io/developers-hub/docs/android-basic-integration#proguard-settings
+-keep class com.google.android.gms.** { *; }
 
 #dontwarn com.tokopedia
 -dontwarn com.tokopedia.topads.dashboard.view.sheet.**

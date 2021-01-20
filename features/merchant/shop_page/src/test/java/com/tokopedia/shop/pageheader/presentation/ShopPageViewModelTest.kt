@@ -6,8 +6,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopOperationalHourStatusUseCase
@@ -22,13 +23,15 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
 import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -65,6 +68,10 @@ class ShopPageViewModelTest {
     @RelaxedMockK
     lateinit var getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>
     @RelaxedMockK
+    lateinit var getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>
+    @RelaxedMockK
+    lateinit var firebaseRemoteConfig: RemoteConfig
+    @RelaxedMockK
     lateinit var context: Context
 
     private val testCoroutineDispatcherProvider by lazy {
@@ -89,6 +96,8 @@ class ShopPageViewModelTest {
                 stickyLoginUseCase,
                 gqlGetShopOperationalHourStatusUseCase,
                 getShopPageP1DataUseCase,
+                getShopProductListUseCase,
+                firebaseRemoteConfig,
                 testCoroutineDispatcherProvider
         )
     }
@@ -114,10 +123,9 @@ class ShopPageViewModelTest {
 
     @Test
     fun `check whether shopPageP1Data value is Success`() {
-        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
-                productList = ShopProduct.GetShopProduct(
-                        data = listOf(ShopProduct(),ShopProduct())
-                )
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1()
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
+                data = listOf(ShopProduct(),ShopProduct())
         )
         shopPageViewModel.getShopPageTabData(
                 SAMPLE_SHOP_ID.toIntOrZero(),
@@ -130,9 +138,35 @@ class ShopPageViewModelTest {
                 false
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
-
         assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
-        assert(shopPageViewModel.productListData.listShopProductUiModel.size == 2)
+        assert(shopPageViewModel.productListData.data.size == 2)
+
+
+    }
+
+    @Test
+    fun `check whether shopPageP1Data value is Success if isRefresh and cache remote config true`() {
+        coEvery { firebaseRemoteConfig.getBoolean(
+                DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST,
+                any()
+        ) } returns true
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1()
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
+                data = listOf(ShopProduct(),ShopProduct())
+        )
+        shopPageViewModel.getShopPageTabData(
+                SAMPLE_SHOP_ID.toIntOrZero(),
+                "shop domain",
+                1,
+                10,
+                ShopProductFilterParameter(),
+                "",
+                "",
+                true
+        )
+        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
+        assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
+        assert(shopPageViewModel.productListData.data.size == 2)
     }
 
     @Test
@@ -150,21 +184,6 @@ class ShopPageViewModelTest {
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
-    }
-
-    @Test
-    fun `check whether shopPageP1Data value is null when shopId and shopDomain value is empty`() {
-        shopPageViewModel.getShopPageTabData(
-                0,
-                "",
-                1,
-                10,
-                ShopProductFilterParameter(),
-                "",
-                "",
-                true
-        )
-        assertTrue(shopPageViewModel.shopPageP1Data.value == null)
     }
 
     @Test
@@ -307,16 +326,6 @@ class ShopPageViewModelTest {
     }
 
     @Test
-    fun `check whether getShopPageHeaderContentData value is null when shopId and shopDomain is empty`() {
-        shopPageViewModel.getShopPageHeaderContentData(
-                "",
-                "",
-                true
-        )
-        assert(shopPageViewModel.shopPageHeaderContentData.value == null)
-    }
-
-    @Test
     fun `check whether required function is called when flush`() {
         every { toggleFavouriteShopUseCase.get().unsubscribe() } returns mockk(relaxed = true)
         every { stickyLoginUseCase.get().cancelJobs() } returns mockk(relaxed = true)
@@ -338,12 +347,11 @@ class ShopPageViewModelTest {
             (thirdArg() as CustomTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
 
-        mockkStatic(ImageUtils::class)
+        mockkStatic(ImageProcessingUtil::class)
         every {
-            ImageUtils.writeImageToTkpdPath(
-                    ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
+            ImageProcessingUtil.writeImageToTkpdPath(
                     mockBitmap,
-                    true)
+                    Bitmap.CompressFormat.PNG)
         } returns File("path")
         shopPageViewModel.saveShopImageToPhoneStorage(context, "")
         assert(shopPageViewModel.shopImagePath.value.orEmpty().isNotEmpty())

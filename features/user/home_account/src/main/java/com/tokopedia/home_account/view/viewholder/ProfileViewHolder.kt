@@ -1,8 +1,11 @@
 package com.tokopedia.home_account.view.viewholder
 
+import android.content.Context
 import android.content.res.Configuration
+import android.graphics.PorterDuff
 import android.view.View
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +21,7 @@ import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.home_account_financial.view.*
 import kotlinx.android.synthetic.main.home_account_item_profile.view.*
 import kotlinx.android.synthetic.main.home_account_member.view.*
@@ -28,7 +32,7 @@ import kotlinx.android.synthetic.main.home_account_member.view.*
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): BaseViewHolder(itemView) {
+class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener, val financialAdapter: HomeAccountFinancialAdapter?, val memberAdapter: HomeAccountMemberAdapter?): BaseViewHolder(itemView) {
 
     fun bind(profile: ProfileDataView) {
         with(itemView) {
@@ -49,18 +53,23 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
             setupMemberAdapter(itemView, profile)
             setupFinancialAdapter(itemView, profile)
 
-            val mode = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
-            when (mode) {
-                Configuration.UI_MODE_NIGHT_YES -> {
-                    account_user_item_profile_container?.setBackgroundResource(R.drawable.ic_account_backdrop_dark)
-                }
-                Configuration.UI_MODE_NIGHT_NO -> {
-                    account_user_item_profile_container?.setBackgroundResource(R.drawable.ic_account_backdrop)
-                }
-                Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
-            }
+            setBackground(context, account_user_item_profile_container)
+            listener.onItemViewBinded(adapterPosition, itemView, profile)
+            listener.onProfileAdapterReady(financialAdapter!!, memberAdapter!!)
+        }
+    }
 
-            listener.onItemViewBinded(adapterPosition, itemView)
+    private fun setBackground(context: Context?, accountUserItemProfileContainer: ConstraintLayout?) {
+        val mode = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+        when (mode) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                accountUserItemProfileContainer?.setBackgroundResource(R.drawable.ic_account_backdrop_dark)
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                accountUserItemProfileContainer?.setBackgroundResource(R.drawable.ic_account_backdrop)
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+            else -> {}
         }
     }
 
@@ -69,23 +78,26 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
     }
 
     private fun setupFinancialAdapter(itemView: View, profile: ProfileDataView) {
-        itemView?.home_account_financial_layout_title?.text = profile.financial.title
-        val adapter = HomeAccountFinancialAdapter(listener)
-        adapter.list = profile.financial.items
-        itemView.home_account_financial_layout_rv?.adapter = adapter
-        itemView.home_account_financial_layout_rv?.layoutManager = LinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
+        itemView?.home_account_financial_layout_title?.text = profile.financial?.title
+        financialAdapter?.list = profile.financial?.items ?: mutableListOf()
+        itemView.home_account_financial_layout_rv?.adapter = financialAdapter
+        itemView.home_account_financial_layout_rv?.layoutManager = SpanningLinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false, minWidth = 180)
     }
 
     private fun setupMemberAdapter(itemView: View, profile: ProfileDataView) {
-        itemView.home_account_member_layout_title?.text = profile.members.title
-        ImageUtils.loadImageWithoutPlaceholderAndError(itemView.home_account_member_layout_member_icon, profile.members.icon)
+        itemView.home_account_member_layout_title?.text = profile.members?.title
+        ImageUtils.loadImageWithoutPlaceholderAndError(itemView.home_account_member_layout_member_icon, profile.members?.icon ?: "")
 
-        val adapter = HomeAccountMemberAdapter(listener)
-        adapter.list = profile.members.items
-        itemView.home_account_member_layout_rv?.adapter = adapter
+        memberAdapter?.list = profile.members?.items?: arrayListOf()
+        itemView.home_account_member_layout_rv?.adapter = memberAdapter
         itemView.home_account_member_layout_rv?.setHasFixedSize(true)
         val layoutManager = SpanningLinearLayoutManager(itemView.home_account_member_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
         val verticalDivider = ContextCompat.getDrawable(itemView.context, R.drawable.vertical_divider)
+        if(itemView.context?.isDarkMode() == true) {
+            verticalDivider?.mutate()?.setColorFilter(itemView.resources.getColor(R.color.vertical_divider_dark), PorterDuff.Mode.SRC_IN)
+        } else {
+            verticalDivider?.mutate()?.setColorFilter(itemView.resources.getColor(R.color.vertical_divider_light), PorterDuff.Mode.SRC_IN)
+        }
         val dividerItemDecoration = DividerItemDecoration(itemView.home_account_member_layout_rv.context,
                 layoutManager.orientation)
 
@@ -93,7 +105,9 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
             dividerItemDecoration.setDrawable(this)
         }
 
-        itemView.home_account_member_layout_rv.addItemDecoration(dividerItemDecoration)
+        if(itemView.home_account_member_layout_rv.itemDecorationCount < 1) {
+            itemView.home_account_member_layout_rv.addItemDecoration(dividerItemDecoration)
+        }
         itemView.home_account_member_layout_rv?.layoutManager = layoutManager
 
         itemView.home_account_member_layout_rv?.isLayoutFrozen = true

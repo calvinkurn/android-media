@@ -21,7 +21,6 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -37,17 +36,25 @@ class TargetPromotionsDialogVM @Inject constructor(@Named(MAIN)
 
     val autoApplyLiveData: SingleLiveEvent<LiveDataResult<AutoApplyResponse>> = SingleLiveEvent()
     val claimApiLiveData = MutableLiveData<LiveDataResult<Pair<ClaimPopGratificationResponse, GetCouponDetailResponse>>>()
-    var gratificationData:GratificationData?=null
+    var gratificationData: GratificationData? = null
 
     fun claimGratification(campaignSlug: String, page: String, benefitIds: List<Int?>?) {
         claimApiLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
-            val response = withContext(workerDispatcher) {
+            withContext(workerDispatcher){
+
+                if (!benefitIds.isNullOrEmpty()) {
+                    if (benefitIds[0] == 0) {
+                        delay(300L) // to show loader for 300ms
+                        claimApiLiveData.postValue(LiveDataResult.error(Exception("No benefits")))
+                        return@withContext
+                    }
+                }
                 val claimResponse = claimPopGratificationUseCase.getResponse(claimPopGratificationUseCase.getQueryParams(ClaimPayload(campaignSlug, page)))
                 val couponDetail = composeApi(benefitIds)
-                return@withContext Pair(claimResponse, couponDetail)
+                val response =  Pair(claimResponse, couponDetail)
+                claimApiLiveData.postValue(LiveDataResult.success(response))
             }
-            claimApiLiveData.postValue(LiveDataResult.success(response))
         }, onError = {
             claimApiLiveData.postValue(LiveDataResult.error(it))
         })
@@ -74,7 +81,7 @@ class TargetPromotionsDialogVM @Inject constructor(@Named(MAIN)
         }
     }
 
-    fun performShowToast(it:LiveDataResult<AutoApplyResponse>){
+    fun performShowToast(it: LiveDataResult<AutoApplyResponse>) {
         val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
         if (messageList != null && messageList.isNotEmpty()) {
             CustomToast.show(app, messageList[0].toString())

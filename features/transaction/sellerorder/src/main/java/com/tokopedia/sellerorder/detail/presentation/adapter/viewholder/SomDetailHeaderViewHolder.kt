@@ -28,6 +28,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_REJECTED
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.toStringFormatted
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
@@ -75,7 +76,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     ticker_detail_buyer_request_cancel?.gone()
                 }
 
-                header_buyer_value?.text = item.dataObject.custName
+                header_buyer_value?.text = item.dataObject.custName.toStringFormatted(MAX_BUYER_NAME)
                 header_date_value?.text = item.dataObject.paymentDate
 
                 if (item.dataObject.deadlineText.isNotEmpty()) {
@@ -106,7 +107,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 }
 
                 header_see_invoice?.setOnClickListener {
-                    actionListener?.onSeeInvoice(item.dataObject.invoiceUrl)
+                    actionListener?.onSeeInvoice(item.dataObject.invoiceUrl, item.dataObject.invoice)
                 }
 
                 // labels
@@ -171,5 +172,9 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         }
 
         return spannedMessage.toString()
+    }
+
+    companion object {
+        const val MAX_BUYER_NAME = 35
     }
 }
