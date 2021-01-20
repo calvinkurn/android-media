@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -122,15 +123,15 @@ class TalkReplyHeaderViewHolder(view: View,
         itemView.replyHeaderMessage.apply {
             if (isMasked) {
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-                if (!allowUnmask && !isSeller) {
-                    setType(Typography.BODY_2)
-                    setWeight(Typography.REGULAR)
-                    text = maskedContent
+                if (allowUnmask && isSeller) {
+                    text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
+                    setType(Typography.HEADING_4)
+                    setWeight(Typography.BOLD)
                     return
                 }
-                text = HtmlLinkHelper(context, question).spannedString
-                setType(Typography.HEADING_4)
-                setWeight(Typography.BOLD)
+                setType(Typography.BODY_2)
+                setWeight(Typography.REGULAR)
+                text = maskedContent
                 return
             }
             text = HtmlLinkHelper(context, question).spannedString
