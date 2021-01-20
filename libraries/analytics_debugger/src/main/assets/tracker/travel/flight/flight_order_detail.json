@@ -1,0 +1,45 @@
+{
+  "readme": "Flight Order Detail Tracking",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickFlight",
+      "eventAction": "click send eticket",
+      "eventCategory": "digital - flight",
+      "eventLabel": "{{flight - .* - .*}}",
+      "sessionIris": "{{.*}}",
+      "screenName" : "/flight/orderdetail",
+      "currentSite" : "tokopediadigitalflight",
+      "clientId" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit" : "travel & entertainment",
+      "category" : "flight"
+    },
+    {
+      "event": "clickFlight",
+      "eventAction": "click web checkin",
+      "eventCategory": "digital - flight",
+      "eventLabel": "{{flight - .* - .*}}",
+      "sessionIris": "{{.*}}",
+      "screenName" : "/flight/orderdetail",
+      "currentSite" : "tokopediadigitalflight",
+      "clientId" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit" : "travel & entertainment",
+      "category" : "flight"
+    },
+    {
+      "event": "clickFlight",
+      "eventAction": "click cancel ticket",
+      "eventCategory": "digital - flight",
+      "eventLabel": "{{flight - .* - .*}}",
+      "sessionIris": "{{.*}}",
+      "screenName" : "/flight/orderdetail",
+      "currentSite" : "tokopediadigitalflight",
+      "clientId" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "businessUnit" : "travel & entertainment",
+      "category" : "flight"
+    }
+  ]
+}

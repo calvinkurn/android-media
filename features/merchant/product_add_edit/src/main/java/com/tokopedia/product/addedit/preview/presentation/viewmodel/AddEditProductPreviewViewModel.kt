@@ -223,27 +223,37 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {
-        val pictureList = productInputModel.value?.detailInputModel?.pictureList?.filter {
-            originalImageUrl.contains(it.urlOriginal)
-        }?.filterIndexed { index, _ -> !editted[index] }.orEmpty()
+        productInputModel.value?.let {
+            val pictureList = it.detailInputModel.pictureList.filter { pictureInputModel ->
+                originalImageUrl.contains(pictureInputModel.urlOriginal)
+            }.filterIndexed { index, _ -> !editted[index] }
 
-        val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
-            if (editted[index]) urlOrPath else pictureList.find { it.urlOriginal == originalImageUrl[index] }?.urlThumbnail ?: urlOrPath
-        }.toMutableList()
+            val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
+                if (!editted[index]) {
+                    val picture = pictureList.find { pict -> pict.urlOriginal == originalImageUrl[index] }?.urlThumbnail.toString()
+                    if(picture != "null" && picture.isNotBlank()) {
+                        return@mapIndexed picture
+                    }
+                }
+                urlOrPath
+            }.toMutableList()
 
-        this.detailInputModel.value = productInputModel.value?.detailInputModel?.apply {
-            this.pictureList = pictureList
-            this.imageUrlOrPathList = imageUrlOrPathList
-        } ?: DetailInputModel(pictureList = pictureList, imageUrlOrPathList = imageUrlOrPathList)
+            this.detailInputModel.value = it.detailInputModel.apply {
+                this.pictureList = pictureList
+                this.imageUrlOrPathList = imageUrlOrPathList
+            }
 
-        this.mImageUrlOrPathList.value = imageUrlOrPathList
+            this.mImageUrlOrPathList.value = imageUrlOrPathList
+        }
     }
 
     fun updateProductStatus(isActive: Boolean) {
-        val newStatus = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
-        productInputModel.value?.detailInputModel?.status = newStatus
-        productInputModel.value?.variantInputModel?.products?.forEach {
-            it.status = if (isActive) ProductStatus.STATUS_ACTIVE_STRING else ProductStatus.STATUS_INACTIVE_STRING
+        productInputModel.value?.let {
+            val newStatus = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
+            it.detailInputModel.status = newStatus
+            it.variantInputModel.products.forEach { variant ->
+                variant.status = if (isActive) ProductStatus.STATUS_ACTIVE_STRING else ProductStatus.STATUS_INACTIVE_STRING
+            }
         }
     }
 
@@ -337,15 +347,22 @@ class AddEditProductPreviewViewModel @Inject constructor(
         productInputModel.value?.isDataChanged = isChanged
     }
 
-    fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
+    fun getIsDataChanged(): Boolean {
+        productInputModel.value?.let {
+            return it.isDataChanged
+        }
+        return false
+    }
 
     fun validateProductNameInput(productName: String) {
         mIsLoading.value = true
-        productInputModel.value?.detailInputModel?.apply {
-            if (productName == currentProductName) {
-                mValidationResult.value = ValidationResultModel(VALIDATION_SUCCESS)
-                mIsLoading.value = false
-                return
+        productInputModel.value?.let {
+            it.detailInputModel.apply {
+                if (productName == currentProductName) {
+                    mValidationResult.value = ValidationResultModel(VALIDATION_SUCCESS)
+                    mIsLoading.value = false
+                    return
+                }
             }
         }
         launchCatchError(block = {

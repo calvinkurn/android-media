@@ -6,10 +6,12 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
+import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.shop.common.constant.AccessId
@@ -232,17 +234,18 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         var pictureInputModel = PictureInputModel().apply {
             urlOriginal = "www.blank.com"
             fileName = "apa"
+            urlThumbnail = "www.gmail.com"
         }
         var product = ProductInputModel().apply {
-            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel)
-            detailInputModel.imageUrlOrPathList = listOf("ada", "apa")
+            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel, pictureInputModel)
+            detailInputModel.imageUrlOrPathList = listOf("ada", "apa", "ada")
         }
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
         var imagePickerResult = arrayListOf("pict1","pict2","pict3")
-        var originalImageUrl = arrayListOf("www.blank.com","num2","num3")
-        var editted = arrayListOf(true,false,true)
+        var originalImageUrl = arrayListOf("www.blank.com","num2","www.blank.com")
+        var editted = arrayListOf(false,false,true)
 
         viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
         viewModel.productInputModel.getOrAwaitValue()
@@ -268,6 +271,34 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.getOrAwaitValue()
 
         assertTrue(viewModel.imageUrlOrPathList.value != null)
+
+        val pictureInputModel2 = PictureInputModel().apply {
+            urlOriginal = "www.blank.com"
+            fileName = "apa"
+            urlThumbnail = ""
+        }
+        product = ProductInputModel().apply {
+            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel2)
+            detailInputModel.imageUrlOrPathList = listOf("ada", "apa")
+        }
+        viewModel.productInputModel.value = product
+        viewModel.productInputModel.getOrAwaitValue()
+
+        imagePickerResult = arrayListOf("pict1","pict2","pict3")
+        originalImageUrl = arrayListOf("www.blank.com","num2","num3")
+        editted = arrayListOf(false,false,false)
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
+        viewModel.productInputModel.getOrAwaitValue()
+
+        assertTrue(viewModel.imageUrlOrPathList.value != null)
+
+        viewModel.productInputModel.value = null
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
+        viewModel.productInputModel.getOrAwaitValue()
+
+        assertEquals(null, viewModel.productInputModel.value)
     }
 
     @Test
@@ -309,6 +340,12 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.setIsDataChanged(false)
         assertFalse(viewModel.getIsDataChanged())
+
+        viewModel.productInputModel.value = null
+        viewModel.productInputModel.getOrAwaitValue()
+
+        viewModel.setIsDataChanged(true)
+        assertFalse(viewModel.getIsDataChanged())
     }
 
     @Test
@@ -329,6 +366,59 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.saveShopShipmentLocationResponse.getOrAwaitValue()
         verifyGetShopInfoLocation()
+    }
+
+    @Test
+    fun  `When validate product name is success Expect get the result`() = runBlocking {
+        viewModel.resetValidateResult()
+
+        val response = ValidateProductNameResponse().apply {
+            productValidateV3.isSuccess = true
+            productValidateV3.data.validationResults = listOf("test", "test", "hello")
+        }
+
+        onValidateProductName_thenReturn(response)
+        viewModel.validateProductNameInput("testing")
+
+        coVerify { validateProductNameUseCase.executeOnBackground() }
+
+        viewModel.validationResult.getOrAwaitValue()
+
+        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.VALIDATION_SUCCESS,  response.productValidateV3.data.validationResults.joinToString("\n")))
+
+        viewModel.resetValidateResult()
+        viewModel.validationResult.getOrAwaitValue()
+
+        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.UNVALIDATED))
+    }
+
+    @Test
+    fun  `When validate product name if product name equals to current product name Expect get the result`() = runBlocking {
+        viewModel.resetValidateResult()
+
+        val response = ValidateProductNameResponse().apply {
+            productValidateV3.isSuccess = true
+            productValidateV3.data.validationResults = listOf("test", "test", "hello")
+        }
+
+        viewModel.productInputModel.value = ProductInputModel(
+                detailInputModel = DetailInputModel(currentProductName = "testing")
+        )
+
+        onValidateProductName_thenReturn(response)
+        viewModel.validateProductNameInput("testing")
+
+        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.VALIDATION_SUCCESS))
+
+        viewModel.validateProductNameInput("another test")
+        viewModel.validationResult.getOrAwaitValue()
+
+        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.VALIDATION_SUCCESS,  response.productValidateV3.data.validationResults.joinToString("\n")))
+
+        viewModel.resetValidateResult()
+        viewModel.validationResult.getOrAwaitValue()
+
+        assertTrue(viewModel.validationResult.value == ValidationResultModel(ValidationResultModel.Result.UNVALIDATED))
     }
 
     @Test
@@ -504,6 +594,10 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun onGetProduct_thenReturn(product: Product) {
         coEvery { getProductUseCase.executeOnBackground() } returns product
+    }
+
+    private fun onValidateProductName_thenReturn(response: ValidateProductNameResponse) {
+        coEvery { validateProductNameUseCase.executeOnBackground() } returns response
     }
 
     private fun onGetShopInfoLocation_thenReturn() {

@@ -54,7 +54,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.imagePreviewSlider)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)

@@ -46,7 +46,7 @@ Bonus 1GB Kuota Midnight (00:01-6:59) + 1GB Kuota Midnight RAFI + 3GB Videomax" 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lines="1"
-            android:textColor="@color/Yellow_Y500"
+            android:textColor="@color/Unify_Y500"
             app:typographyType="heading_5"
             tools:text="Rp 40.000" />
 
@@ -59,7 +59,7 @@ Bonus 1GB Kuota Midnight (00:01-6:59) + 1GB Kuota Midnight RAFI + 3GB Videomax" 
             android:gravity="center_vertical"
             android:visibility="gone"
             android:lines="1"
-            android:textColor="@color/Neutral_N700_44"
+            android:textColor="@color/Unify_N700_44"
             tools:text="40.000"
             app:typographyType="small"/>
     </LinearLayout>
