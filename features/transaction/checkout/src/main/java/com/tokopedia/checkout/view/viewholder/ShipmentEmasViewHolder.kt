@@ -1,11 +1,11 @@
 package com.tokopedia.checkout.view.viewholder
 
-import android.text.Html
 import android.view.View
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
@@ -23,14 +23,17 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
     private val llContainer: LinearLayout = itemView.findViewById(R.id.ll_container)
 
     fun bindViewHolder(egoldAttributeModel: EgoldAttributeModel) {
-        llContainer.setOnClickListener { v: View? -> buyEmas.isChecked = !buyEmas.isChecked }
+        llContainer.setOnClickListener { buyEmas.isChecked = !buyEmas.isChecked }
         buyEmas.isChecked = egoldAttributeModel.isChecked
         tvEmasTitle.text = egoldAttributeModel.titleText
-        imgEmasInfo.setOnClickListener { v: View? -> showBottomSheet(egoldAttributeModel) }
-        tvEmasDesc.text = Html.fromHtml(String.format(llContainer.context
-                .getString(R.string.emas_checkout_desc), egoldAttributeModel.subText,
-                removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.buyEgoldValue, false))))
-        buyEmas.setOnCheckedChangeListener { buttonView: CompoundButton?, isChecked: Boolean -> shipmentAdapterActionListener.onEgoldChecked(isChecked) }
+        imgEmasInfo.setOnClickListener { showBottomSheet(egoldAttributeModel) }
+        tvEmasDesc.text = MethodChecker.fromHtml(
+                String.format(llContainer.context.getString(R.string.emas_checkout_desc),
+                        egoldAttributeModel.subText,
+                        removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.buyEgoldValue, false))
+                )
+        )
+        buyEmas.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean -> shipmentAdapterActionListener.onEgoldChecked(isChecked) }
     }
 
     private fun showBottomSheet(egoldAttributeModel: EgoldAttributeModel) {
