@@ -190,6 +190,7 @@ class TalkReplyHeaderViewHolder(view: View,
             }
         } else {
             itemView.replyQuestionTicker.hide()
+            itemView.replyUnmaskCard.hide()
         }
     }
 }
