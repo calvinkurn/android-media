@@ -38,12 +38,6 @@ class GetFollowStatusUseCase @Inject constructor(
                       voucherIconURL
                       coachmarkText
                     }
-                    toaster {
-                      toasterText
-                      buttonLabel
-                      url
-                      appLink
-                    }
                     error {
                       message
                     }

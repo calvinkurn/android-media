@@ -16,9 +16,6 @@ data class FollowStatus(
         @SerializedName("followButton")
         @Expose
         val followButton: FollowButton?,
-        @SerializedName("toaster")
-        @Expose
-        val toaster: Toaster?,
         @SerializedName("error")
         @Expose
         val error: Error?,
@@ -46,21 +43,6 @@ data class FollowButton(
         @SerializedName("coachmarkText")
         @Expose
         val coachmarkText: String?,
-)
-
-data class Toaster(
-        @SerializedName("toasterText")
-        @Expose
-        val toasterText: String?,
-        @SerializedName("buttonLabel")
-        @Expose
-        val buttonLabel: String?,
-        @SerializedName("url")
-        @Expose
-        val url: String?,
-        @SerializedName("appLink")
-        @Expose
-        val appLink: String?,
 )
 
 data class Error(
