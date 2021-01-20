@@ -74,6 +74,9 @@ class PromoCheckoutListDealsPresenter(
                                         view.hideProgressLoading()
                                         view.onErrorCheckPromo(e)
                                     }
+                                } else {
+                                    view.hideProgressLoading()
+                                    view.onErrorCheckPromo(e)
                                 }
                             }
                         })
