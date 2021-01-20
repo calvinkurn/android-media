@@ -159,6 +159,12 @@ class PlayFragment @Inject constructor(
 
     override fun onPause() {
         unregisterKeyboardListener(requireView())
+        playViewModel.latestCompleteChannelData?.let {
+            playParentViewModel.setLatestChannelStorageData(
+                    channelId,
+                    it
+            )
+        }
         playViewModel.stopJob()
         super.onPause()
         if (::orientationManager.isInitialized) orientationManager.disable()
@@ -284,7 +290,7 @@ class PlayFragment @Inject constructor(
     }
 
     private fun getChannelInfo() {
-        playViewModel.getChannelInfo(playParentViewModel.getLatestChannelStorageData(channelId))
+        playViewModel.getChannelInfo(channelId, playParentViewModel.getLatestChannelStorageData(channelId))
     }
 
     private fun invalidateVideoTopBounds(

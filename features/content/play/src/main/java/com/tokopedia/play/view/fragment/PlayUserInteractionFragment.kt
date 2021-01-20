@@ -547,7 +547,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeChannelInfo() {
-        playViewModel.observableCompleteChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableLatestChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
             triggerStartMonitoring()
             toolbarView.setShareInfo(it.channelInfo.shareInfo)
         })

@@ -23,8 +23,7 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
-import com.tokopedia.play.view.storage.PlayChannelStateStorage
-import com.tokopedia.play.view.storage.PlayChannelStorageData
+import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
@@ -44,7 +43,6 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayViewModel @Inject constructor(
-        private val playChannelStateStorage: PlayChannelStateStorage,
         private val playVideoManager: PlayVideoManager,
         videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
         channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
@@ -72,8 +70,8 @@ class PlayViewModel @Inject constructor(
 
     val observableChannelErrorEvent: LiveData<Event<Boolean>>
         get() = _observableChannelErrorEvent
-    val observableCompleteChannelInfo: LiveData<PlayCompleteInfoUiModel>
-        get() = _observableCompleteInfo
+    val observableLatestChannelInfo: LiveData<PlayCompleteInfoUiModel>
+        get() = _observableLatestChannelInfo
     val observableVideoMeta: LiveData<VideoMetaUiModel>
         get() = _observableVideoMeta
     val observableSocketInfo: LiveData<PlaySocketInfo>
@@ -109,12 +107,12 @@ class PlayViewModel @Inject constructor(
 
     val videoOrientation: VideoOrientation
         get() {
-            val videoStream = _observableCompleteInfo.value?.videoStream
+            val videoStream = _observableLatestChannelInfo.value?.videoStream
             return videoStream?.orientation ?: VideoOrientation.Unknown
         }
     val channelType: PlayChannelType
         get() {
-            val videoStream = _observableCompleteInfo.value?.videoStream
+            val videoStream = _observableLatestChannelInfo.value?.videoStream
             return videoStream?.channelType ?: PlayChannelType.Unknown
         }
     val videoPlayer: VideoPlayerUiModel
@@ -129,7 +127,7 @@ class PlayViewModel @Inject constructor(
         }
     val feedInfoUiModel: FeedInfoUiModel?
         get() {
-            val channelInfo = _observableCompleteInfo.value?.channelInfo
+            val channelInfo = _observableLatestChannelInfo.value?.channelInfo
             return channelInfo?.feedInfo
         }
     val bottomInsets: Map<BottomInsetsType, BottomInsetsState>
@@ -147,6 +145,17 @@ class PlayViewModel @Inject constructor(
     val totalView: String?
         get() = _observableTotalViews.value?.totalView
 
+    val latestCompleteChannelData: PlayChannelData.Complete?
+        get() {
+            if (_observableLatestChannelInfo.value == null) return null
+            val pinnedMessage = _observablePinnedMessage.value
+            val pinnedProduct = _observablePinnedProduct.value
+
+            return PlayChannelData.Complete(
+                    pinnedMessage = pinnedMessage,
+                    pinnedProduct = pinnedProduct
+            )
+        }
 
     val pipMode: PiPMode
         get() = _observableEventPiP.value?.peekContent() ?: PiPMode.StopPip
@@ -168,7 +177,7 @@ class PlayViewModel @Inject constructor(
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
 
-    private val _observableCompleteInfo = MutableLiveData<PlayCompleteInfoUiModel>()
+    private val _observableLatestChannelInfo = MutableLiveData<PlayCompleteInfoUiModel>()
     private val _observableChannelErrorEvent = MutableLiveData<Event<Boolean>>()
     private val _observableGetChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
@@ -444,22 +453,22 @@ class PlayViewModel @Inject constructor(
     }
     //endregion
 
-    fun getChannelInfo(channelStorageData: PlayChannelStorageData) {
-        when (channelStorageData) {
-            is PlayChannelStorageData.Empty -> {
+    fun getChannelInfo(channelId: String, channelData: PlayChannelData) {
+        when (channelData) {
+            is PlayChannelData.Empty -> {
 
             }
-            is PlayChannelStorageData.Placeholder -> {
-                _observablePinnedMessage.value = channelStorageData.pinnedMessage
-                _observablePinnedProduct.value = channelStorageData.pinnedProduct
+            is PlayChannelData.Placeholder -> {
+                _observablePinnedMessage.value = channelData.pinnedMessage
+                _observablePinnedProduct.value = channelData.pinnedProduct
             }
-            is PlayChannelStorageData.Complete -> {
-                _observablePinnedMessage.value = channelStorageData.pinnedMessage
-                _observablePinnedProduct.value = channelStorageData.pinnedProduct
+            is PlayChannelData.Complete -> {
+                _observablePinnedMessage.value = channelData.pinnedMessage
+                _observablePinnedProduct.value = channelData.pinnedProduct
             }
         }
 
-        getChannelInfo(channelStorageData.channelId)
+        getChannelInfo(channelId)
     }
 
     fun getChannelInfo(channelId: String) {
@@ -479,7 +488,7 @@ class PlayViewModel @Inject constructor(
                         isBanned = _observableEvent.value?.isBanned ?: false,
                         exoPlayer = playVideoManager.videoPlayer
                 )
-                _observableCompleteInfo.value = completeInfoUiModel
+                _observableLatestChannelInfo.value = completeInfoUiModel
 
                 _observableGetChannelInfo.value = NetworkResult.Success(completeInfoUiModel.channelInfo)
                 _observablePartnerInfo.value = completeInfoUiModel.channelInfo.partnerInfo
@@ -510,7 +519,7 @@ class PlayViewModel @Inject constructor(
                 if (retryCount == 0) _observableChannelErrorEvent.value = Event(false)
                 if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
                 else if (it !is CancellationException) {
-                    if (_observableCompleteInfo.value == null) doOnForbidden()
+                    if (_observableLatestChannelInfo.value == null) doOnForbidden()
                     _observableGetChannelInfo.value = NetworkResult.Fail(it)
                 }
             }

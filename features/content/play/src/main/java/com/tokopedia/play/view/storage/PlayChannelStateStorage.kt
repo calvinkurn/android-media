@@ -2,22 +2,20 @@ package com.tokopedia.play.view.storage
 
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.PinnedProductUiModel
-import com.tokopedia.play.view.uimodel.PinnedRemoveUiModel
-import com.tokopedia.play.view.uimodel.PinnedUiModel
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created by jegul on 19/01/21
  */
 class PlayChannelStateStorage {
 
-    private val playPageMap: MutableMap<String, PlayChannelStorageData> = mutableMapOf()
+    private val playPageMap: ConcurrentHashMap<String, PlayChannelData> = ConcurrentHashMap()
 
     init {
         playPageMap.putAll(
                 listOf("12665", "12668", "12669", "12670", "12672")
                         .mapIndexed { index, cid ->
-                            cid to PlayChannelStorageData.Placeholder(
-                                    cid,
+                            cid to PlayChannelData.Placeholder(
                                     if (index % 2 == 0) PinnedMessageUiModel(null, "alola", "alolan pokemon") else null,
                                     if (index % 3 == 0) PinnedProductUiModel("alola", "Beli", false) else null
                             )
@@ -25,25 +23,25 @@ class PlayChannelStateStorage {
         )
     }
 
-    fun getData(channelId: String): PlayChannelStorageData = playPageMap[channelId] ?: PlayChannelStorageData.Empty(channelId)
+    fun getData(channelId: String): PlayChannelData = playPageMap[channelId] ?: PlayChannelData.Empty
+
+    fun setData(channelId: String, channelData: PlayChannelData) {
+        playPageMap[channelId] = channelData
+    }
 
 }
 
-sealed class PlayChannelStorageData {
+sealed class PlayChannelData {
 
-    abstract val channelId: String
-
-    data class Empty(override val channelId: String) : PlayChannelStorageData()
+    object Empty : PlayChannelData()
 
     data class Placeholder(
-            override val channelId: String,
             val pinnedMessage: PinnedMessageUiModel?,
             val pinnedProduct: PinnedProductUiModel?,
-    ) : PlayChannelStorageData()
+    ) : PlayChannelData()
 
     data class Complete(
-            override val channelId: String,
             val pinnedMessage: PinnedMessageUiModel?,
             val pinnedProduct: PinnedProductUiModel?,
-    ) : PlayChannelStorageData()
+    ) : PlayChannelData()
 }
