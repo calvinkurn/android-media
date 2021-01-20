@@ -8,6 +8,7 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:contentDescription="@null"
         android:id="@+id/imgMenuIcon"
         android:layout_width="@dimen/notif_dp_40"
         android:layout_height="@dimen/notif_dp_40"

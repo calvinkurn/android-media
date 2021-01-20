@@ -19,6 +19,7 @@
         android:textStyle="bold"/>
 
     <ImageView
+        android:contentDescription="@null"
         android:id="@+id/circle"
         android:layout_width="@dimen/notif_dp_8"
         android:layout_height="@dimen/notif_dp_8"

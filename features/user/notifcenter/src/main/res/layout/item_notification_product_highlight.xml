@@ -14,6 +14,7 @@
         android:layout_height="match_parent">
 
         <ImageView
+            android:contentDescription="@null"
             android:id="@+id/imgProduct"
             android:layout_width="match_parent"
             android:layout_height="@dimen/notif_dp_128"
@@ -69,6 +70,7 @@
             tools:text="Rp 100.000.000" />
 
         <ImageView
+            android:contentDescription="@null"
             android:id="@+id/imgCampaign"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/notif_dp_20"

@@ -47,11 +47,12 @@
                     android:id="@+id/content_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
                     android:layout_gravity="center"
                     android:layout_marginBottom="@dimen/notif_dp_16"
-                    tools:src="@tools:sample/avatars"/>
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@null"
+                    android:scaleType="fitCenter"
+                    tools:src="@tools:sample/avatars" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/content_text"
@@ -89,6 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/Unify_N0">
+
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/cta_button"
             android:layout_width="match_parent"
