@@ -5,13 +5,19 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.network.TextApiUtils
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -23,6 +29,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.extension.formatToSimpleNumber
+import com.tokopedia.shop.pageheader.data.model.FollowStatus
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -118,7 +125,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         } else {
             showFollowButton()
             view.play_seller_widget_container.visibility = View.GONE
-            updateFavoriteButton()
+            followButton.isLoading = true
         }
     }
 
@@ -126,8 +133,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         followButton.visibility = View.GONE
     }
 
-    fun showFollowButton(){
+    private fun showFollowButton(){
         followButton.visibility = View.VISIBLE
+        followButton.setOnClickListener {
+            if (!followButton.isLoading) {
+                followButton.isLoading = true
+                listener.toggleFavorite(!isShopFavorite)
+            }
+        }
     }
 
     private fun setupTextContentSgcWidget(){
@@ -165,7 +178,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     fun updateFavoriteData(favoriteData: ShopInfo.FavoriteData) {
-        isShopFavorite = TextApiUtils.isValueTrue(favoriteData.alreadyFavorited.toString())
         view.shop_page_main_profile_follower_icon.setImageResource(followerImageIcon)
         view.shop_page_main_profile_follower_icon.show()
         view.shop_page_main_profile_follower.show()
@@ -176,7 +188,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_follower, MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_follower,
                     favoriteData.totalFavorite.toDouble().formatToSimpleNumber())).toString(), view.context.getString(R.string.content_desc_shop_page_main_profile_follower))
         }
-        updateFavoriteButton()
     }
 
     fun updateShopTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel?, shopOperationalHourStatus: ShopOperationalHourStatus, isMyShop: Boolean) {
@@ -251,24 +262,62 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     fun isShopFavourited() = isShopFavorite
 
-    fun updateFavoriteButton() {
+    fun setFollowStatus(followStatus: FollowStatus?) {
         followButton.isLoading = false
-        followButton.setOnClickListener {
-            if (!followButton.isLoading) {
-                followButton.isLoading = true
-                listener.toggleFavorite(!isShopFavorite)
-            }
-        }
+        isShopFavorite = followStatus?.status?.userIsFollowing == true
         if (isShopFavorite) {
             followButton.buttonVariant = UnifyButton.Variant.GHOST
             followButton.buttonType = UnifyButton.Type.ALTERNATE
-            followButton.text = context.getString(R.string.shop_header_action_following)
-
         } else {
             followButton.buttonVariant = UnifyButton.Variant.FILLED
             followButton.buttonType = UnifyButton.Type.MAIN
-            followButton.text = context.getString(R.string.shop_header_action_follow)
         }
+        followStatus?.let {
+            followButton.text = it.followButton?.buttonLabel
+            val voucherUrl = it.followButton?.voucherIconURL
+            val coachMarkText = it.followButton?.coachmarkText
+            if (!voucherUrl.isNullOrBlank()) {
+                loadLeftDrawable(voucherUrl)
+            }
+            if (!coachMarkText.isNullOrBlank()) {
+                setCoachMark(coachMarkText)
+            }
+        }
+    }
+
+    private fun setCoachMark(description: String) {
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        coachMarkItem.add(
+                CoachMark2Item(
+                        anchorView = followButton,
+                        title = "",
+                        description = description
+                )
+        )
+        coachMark?.showCoachMark(coachMarkItem)
+    }
+
+    private fun loadLeftDrawable(url: String?) {
+        convertUrlToBitmapAndLoadImage(url) {
+            followButton.setCompoundDrawablesWithIntrinsicBounds(
+                    BitmapDrawable(followButton.resources, it),
+                    null,
+                    null,
+                    null
+            )
+        }
+    }
+
+    private fun convertUrlToBitmapAndLoadImage(url: String?, loadImage: (resource: Bitmap) -> Unit) {
+        Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        loadImage(resource)
+                    }
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
     }
 
     fun showShopReputationBadges(shopBadge: ShopBadge) {

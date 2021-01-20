@@ -256,7 +256,6 @@ class ShopPageViewModel @Inject constructor(
         })
     }
 
-
     fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
         if (!userSessionInterface.isLoggedIn) {
             onError(UserNotLoginException())

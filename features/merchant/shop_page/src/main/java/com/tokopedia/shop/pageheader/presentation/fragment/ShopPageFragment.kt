@@ -415,7 +415,9 @@ class ShopPageFragment :
         shopViewModel.followStatusData.observe(owner) {
             when(it) {
                 is Success -> {
-                    it.data.followStatus.apply {}
+                    it.data.followStatus.apply {
+                        shopPageFragmentHeaderViewHolder.setFollowStatus(this)
+                    }
                 }
                 is Fail -> { }
             }
@@ -521,7 +523,6 @@ class ShopPageFragment :
     private fun observeShopPageFollowingStatusSharedViewModel() {
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.observe(viewLifecycleOwner, Observer {
             shopPageFragmentHeaderViewHolder.setFavoriteValue(it)
-            shopPageFragmentHeaderViewHolder.updateFavoriteButton()
         })
     }
 
@@ -601,7 +602,6 @@ class ShopPageFragment :
             shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
         } else {
             getShopPageP1Data()
-            shopViewModel.getFollowStatus(shopId)
         }
     }
 
@@ -947,6 +947,7 @@ class ShopPageFragment :
             shopPageFragmentHeaderViewHolder.bind(shopPageHeaderDataModel, isMyShop, remoteConfig)
             shopPageFragmentHeaderViewHolder.updateFavoriteData(shopPageHeaderContentData.favoriteData)
             shopPageFragmentHeaderViewHolder.setupFollowButton(isMyShop)
+            shopViewModel.getFollowStatus(shopId)
             if (!shopPageHeaderDataModel.isOfficial) {
                 shopPageFragmentHeaderViewHolder.showShopReputationBadges(shopPageHeaderContentData.shopBadge)
             }
@@ -1164,7 +1165,6 @@ class ShopPageFragment :
             shopPageFragmentHeaderViewHolder.toggleFavourite()
             updateFavouriteResult(shopPageFragmentHeaderViewHolder.isShopFavourited())
         }
-        shopPageFragmentHeaderViewHolder.updateFavoriteButton()
     }
 
     private fun updateFavouriteResult(isFavorite: Boolean) {
@@ -1184,7 +1184,6 @@ class ShopPageFragment :
     }
 
     private fun onErrorToggleFavourite(e: Throwable) {
-        shopPageFragmentHeaderViewHolder.updateFavoriteButton()
         context?.let {
             if (e is UserNotLoginException) {
                 val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
