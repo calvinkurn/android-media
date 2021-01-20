@@ -15,7 +15,6 @@ object GqlQueryConstant {
 object WidgetType {
     const val DISPLAY = "display"
     const val PRODUCT = "product"
-    const val VOUCHER = "promo"
     const val DYNAMIC = "dynamic"
     const val CAMPAIGN = "campaign"
 }
@@ -29,7 +28,6 @@ object WidgetName {
     const val PLAY_CAROUSEL_WIDGET = "play"
     const val VIDEO = "video"
     const val PRODUCT = "product"
-    const val VOUCHER = "voucher"
     const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
     const val VOUCHER_STATIC = "voucher_static"
 }
