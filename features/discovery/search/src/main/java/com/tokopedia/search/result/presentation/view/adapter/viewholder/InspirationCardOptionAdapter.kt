@@ -5,11 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCardOptionChipViewHolder
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCardOptionRelatedViewHolder
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 
 class InspirationCardOptionAdapter(
         private val inspirationCardListener: InspirationCardListener
-) : RecyclerView.Adapter<InspirationCardOptionChipViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val itemList = mutableListOf<InspirationCardOptionViewModel>()
 
@@ -20,17 +21,43 @@ class InspirationCardOptionAdapter(
         notifyItemRangeInserted(0, itemList.size)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InspirationCardOptionChipViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(InspirationCardOptionChipViewHolder.LAYOUT, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
 
-        return InspirationCardOptionChipViewHolder(view, inspirationCardListener)
+        return viewType.doWhenViewType({
+            InspirationCardOptionChipViewHolder(view, inspirationCardListener)
+        }, {
+            InspirationCardOptionRelatedViewHolder(view, inspirationCardListener)
+        })
     }
 
-    override fun onBindViewHolder(holder: InspirationCardOptionChipViewHolder, position: Int) {
-        holder.bind(itemList[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val inspirationCarouselOptionViewModel = itemList[position]
+
+        holder.itemViewType.doWhenViewType({
+            if (holder is InspirationCardOptionChipViewHolder)
+                holder.bind(inspirationCarouselOptionViewModel)
+        }, {
+            if (holder is InspirationCardOptionRelatedViewHolder)
+                holder.bind(inspirationCarouselOptionViewModel)
+        })
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (itemList.getOrNull(position)?.isRelated() == true)
+            InspirationCardOptionRelatedViewHolder.LAYOUT
+        else
+            InspirationCardOptionChipViewHolder.LAYOUT
     }
 
     override fun getItemCount(): Int {
         return itemList.size
+    }
+
+    private fun <T> Int.doWhenViewType(actionChip: () -> T, actionRelated: () -> T): T {
+        return when (this) {
+            InspirationCardOptionRelatedViewHolder.LAYOUT -> actionRelated()
+            else -> actionChip()
+        }
     }
 }

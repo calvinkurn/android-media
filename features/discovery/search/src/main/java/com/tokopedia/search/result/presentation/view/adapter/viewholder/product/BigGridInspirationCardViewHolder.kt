@@ -119,7 +119,7 @@ class BigGridInspirationCardViewHolder(
 
     private fun createAdapter(
             inspirationCarouselProductList: List<InspirationCardOptionViewModel>
-    ): RecyclerView.Adapter<InspirationCardOptionChipViewHolder> {
+    ): RecyclerView.Adapter<RecyclerView.ViewHolder> {
         val inspirationCardOptionAdapter = InspirationCardOptionAdapter(inspirationCardListener)
         inspirationCardOptionAdapter.setItemList(inspirationCarouselProductList)
 

@@ -182,5 +182,6 @@ public interface SearchConstant {
         String TYPE_CATEGORY = "category";
         String TYPE_GUIDED = "guided";
         String TYPE_CURATED = "curated";
+        String TYPE_RELATED = "related";
     }
 }
