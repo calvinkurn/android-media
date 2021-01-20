@@ -1,7 +1,9 @@
 package com.tokopedia.profilecompletion.addphone.view.activity
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -34,6 +36,11 @@ class AddPhoneActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSet
                     .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                     .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
                     .build()
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 
     companion object {

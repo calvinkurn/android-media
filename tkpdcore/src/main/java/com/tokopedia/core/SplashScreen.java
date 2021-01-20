@@ -15,7 +15,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.util.PasswordGenerator;
@@ -46,10 +45,10 @@ import timber.log.Timber;
  */
 public class SplashScreen extends AppCompatActivity {
 
+    public static final int DATABASE_VERSION = 7;
     public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
 
     private PasswordGenerator Pgenerator;
-    String id = null;
     protected View decorView;
 
     protected RemoteConfig remoteConfig;
@@ -148,7 +147,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void resetAllDatabaseFlag() {
-        LocalCacheHandler flagDB = new LocalCacheHandler(this, "DATABASE_VERSION" + MainApplication.DATABASE_VERSION);
+        LocalCacheHandler flagDB = new LocalCacheHandler(this, "DATABASE_VERSION" + DATABASE_VERSION);
         if (!flagDB.getBoolean("reset_db_flag", false)) {
             LocalCacheHandler.clearCache(this, SHIPPING_CITY_DURATION_STORAGE);
         }

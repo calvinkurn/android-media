@@ -24,7 +24,7 @@ ext {
             analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.2",
             gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.21",
             gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.21",
-            lint                    : "com.tokopedia.library:lint:0.0.5"
+            lint                    : "com.tokopedia.library:lint:0.0.7"
     ]
 
     // Sort and categorize alphabetically by folder name
