@@ -1,7 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
+apply from: "../../../compile-unit-test.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 
 android{
     sourceSets.each {
@@ -19,27 +20,6 @@ android{
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
-    }
-
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-            jacocoOptions {
-                html.enabled = true
-                xml.enabled = false
-                csv.enabled = false
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
-        }
     }
 }
 repositories {
@@ -61,6 +41,7 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
@@ -135,7 +116,10 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
@@ -169,3 +153,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
