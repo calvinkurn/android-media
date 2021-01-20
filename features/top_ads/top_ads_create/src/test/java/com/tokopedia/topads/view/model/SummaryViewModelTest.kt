@@ -5,8 +5,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.topads.common.data.model.ResponseCreateGroup
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
-import com.tokopedia.topads.data.response.ResponseCreateGroup
 import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
@@ -70,19 +70,14 @@ class SummaryViewModelTest {
     fun `test result in topAdsCreated`() {
         val expected = 1000
         var actual = 0
-        val data = ResponseCreateGroup(ResponseCreateGroup.TopadsCreateGroupAds(ResponseCreateGroup.TopadsCreateGroupAds.Data(listOf(ResponseCreateGroup.KeywordsItem(priceBid = expected)))))
         val response: GraphqlResponse = mockk(relaxed = true)
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
         coEvery { repository.getReseponse(any(), any()) } returns response
         every { response.getError(ResponseCreateGroup::class.java) } returns listOf()
-        every { response.getData<ResponseCreateGroup>(ResponseCreateGroup::class.java) } returns data
-
         viewModel.topAdsCreated(
                 hashMapOf(),
-                onSuccessGetDeposit = {
-                    actual = it.topadsCreateGroupAds.data.keywords[0].priceBid
-                },
+                {actual = 1000},
                 onErrorGetAds = {}
         )
 

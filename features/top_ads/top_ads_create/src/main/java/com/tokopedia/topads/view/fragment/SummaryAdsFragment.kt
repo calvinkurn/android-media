@@ -306,7 +306,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         keywordsList.add(key)
     }
 
-    private fun onSuccessActivation(data: ResponseCreateGroup) {
+    private fun onSuccessActivation() {
         viewModel.getTopAdsDeposit(this::onSuccess, this::errorResponse)
     }
 
