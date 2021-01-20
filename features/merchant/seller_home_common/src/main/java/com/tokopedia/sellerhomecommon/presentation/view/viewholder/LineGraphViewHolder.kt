@@ -47,8 +47,8 @@ class LineGraphViewHolder(
     private var hideAnimation: ValueAnimator? = null
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
-        showAnimation?.cancel()
-        hideAnimation?.cancel()
+        showAnimation?.end()
+        hideAnimation?.end()
         observeState(element)
 
         val data = element.data
@@ -248,13 +248,13 @@ class LineGraphViewHolder(
     }
 
     private fun animateShowEmptyState() {
-        if (hideAnimation?.isRunning == true) hideAnimation?.cancel()
+        if (hideAnimation?.isRunning == true) hideAnimation?.end()
         itemView.multiLineEmptyState.show()
         showAnimation = itemView.multiLineEmptyState.animatePop(0f, 1f)
     }
 
     private fun animateHideEmptyState() {
-        if (showAnimation?.isRunning == true) showAnimation?.cancel()
+        if (showAnimation?.isRunning == true) showAnimation?.end()
         hideAnimation = itemView.multiLineEmptyState.animatePop(1f, 0f)
         hideAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
