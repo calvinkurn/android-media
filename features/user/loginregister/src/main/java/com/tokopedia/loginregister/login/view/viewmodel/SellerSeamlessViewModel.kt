@@ -58,13 +58,13 @@ class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_M
     private fun onFailedLoginToken(): (Throwable) -> Unit {
         return {
             userSession.clearToken()
-            mutableLoginTokenResponse.value = Fail(it)
+            mutableLoginTokenResponse.postValue(Fail(it))
         }
     }
     private fun onGoToSecurityQuestion(): () -> Unit {
         return {
             userSession.loginMethod = SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS
-            mutableGoToSecurityQuestion.value = true
+            mutableGoToSecurityQuestion.postValue(true)
         }
     }
 
@@ -73,14 +73,13 @@ class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_M
             if (it.loginToken.accessToken.isNotEmpty() &&
                     it.loginToken.refreshToken.isNotEmpty() &&
                     it.loginToken.tokenType.isNotEmpty()) {
-                mutableLoginTokenResponse.value = Success(it.loginToken)
+                mutableLoginTokenResponse.postValue(Success(it.loginToken))
             } else if (it.loginToken.errors.isNotEmpty() &&
                     it.loginToken.errors[0].message.isNotEmpty()) {
-                mutableLoginTokenResponse.value = Fail(MessageErrorException(it.loginToken.errors[0].message))
+                mutableLoginTokenResponse.postValue(Fail(MessageErrorException(it.loginToken.errors[0].message)))
             } else {
-                mutableLoginTokenResponse.value = Fail(RuntimeException())
+                mutableLoginTokenResponse.postValue(Fail(RuntimeException()))
             }
         }
     }
-
 }
