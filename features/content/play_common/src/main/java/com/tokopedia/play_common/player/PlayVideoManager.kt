@@ -235,7 +235,6 @@ class PlayVideoManager private constructor(
     }
 
     fun reset() {
-
         videoPlayer.seekTo(0)
     }
 
