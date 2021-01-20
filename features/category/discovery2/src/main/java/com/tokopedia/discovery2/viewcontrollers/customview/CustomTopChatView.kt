@@ -10,7 +10,6 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -26,7 +26,7 @@ class CustomTopChatView @JvmOverloads constructor(context: Context, attrs: Attri
 
     private var topChatBackground: CardView
     private var topChatTextView: Typography
-    private var topChatFabButton: ImageView
+    private var topChatFabButton: ImageUnify
     private var topChatFabButtonParent: CardView
 
     init {
@@ -120,7 +120,7 @@ class CustomTopChatView @JvmOverloads constructor(context: Context, attrs: Attri
         }
     }
 
-    fun getFabButton(): ImageView {
+    fun getFabButton(): ImageUnify {
         return topChatFabButton
     }
 
