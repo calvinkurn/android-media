@@ -251,6 +251,7 @@
 -dontwarn com.google.j2objc.annotations.**
 -dontwarn com.google.errorprone.annotations.**
 -dontwarn com.tokopedia.empty_state.**
+-dontwarn com.tokopedia.searchbar.**
 
 -dontwarn io.hansel.**
 -keep class io.hansel.**{*;}
