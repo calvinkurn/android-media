@@ -70,6 +70,8 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isAddingValidationWholeSale = false
 
+    private var isMultiLocationShop = false
+
     private var minimumStockCount = MIN_PRODUCT_STOCK_LIMIT
 
     private var stockAllocationDefaultMessage = ""
@@ -354,6 +356,10 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (!hasVariants && productStockInput.isNotEmpty()) {
             val productStock = productStockInput.toBigIntegerOrNull().orZero()
             if (productMinOrder > productStock) {
+                // It is possible for admin in multi location shop to edit product stock to 0
+                if (productStock == 0.toBigInteger() && isMultiLocationShop && isEditing) {
+                    return
+                }
                 val errorMessage = provider.getMinOrderExceedStockErrorMessage()
                 errorMessage?.let { orderQuantityMessage = it }
                 mIsOrderQuantityInputError.value = true
@@ -480,17 +486,14 @@ class AddEditProductDetailViewModel @Inject constructor(
      * Modify stock related values if admin/owner has multi location shops
      */
     fun setupMultiLocationShopValues() {
-        userSession.run {
-            (isMultiLocationShop && (isShopAdmin || isShopOwner)).let { isMultiLoc ->
-                if (isMultiLoc) {
-                    setupMultiLocationStockAllocationMessage()
-                    setupMultiLocationDefaultMinimumStock()
-                } else {
-                    stockAllocationDefaultMessage = ""
-                    productStockMessage = ""
-                    minimumStockCount = MIN_PRODUCT_STOCK_LIMIT
-                }
-            }
+        isMultiLocationShop = getIsMultiLocation()
+        if (isMultiLocationShop) {
+            setupMultiLocationStockAllocationMessage()
+            setupMultiLocationDefaultMinimumStock()
+        } else {
+            stockAllocationDefaultMessage = ""
+            productStockMessage = ""
+            minimumStockCount = MIN_PRODUCT_STOCK_LIMIT
         }
     }
 
@@ -502,7 +505,9 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     private fun setupMultiLocationDefaultMinimumStock() {
-        minimumStockCount = 0
+        if (isEditing) {
+            minimumStockCount = 0
+        }
     }
 
     private fun getMultiLocationStockAllocationMessage(): String =
@@ -510,6 +515,11 @@ class AddEditProductDetailViewModel @Inject constructor(
                 isEditing -> provider.getEditProductMultiLocationMessage().orEmpty()
                 isAdding -> provider.getAddProductMultiLocationMessage().orEmpty()
                 else -> ""
+            }
+
+    private fun getIsMultiLocation(): Boolean =
+            userSession.run {
+                isMultiLocationShop && (isShopAdmin || isShopOwner)
             }
 
 }
