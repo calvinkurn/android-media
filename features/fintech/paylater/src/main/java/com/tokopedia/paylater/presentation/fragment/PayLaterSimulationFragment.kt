@@ -26,6 +26,7 @@ import com.tokopedia.paylater.helper.PayLaterHelper
 import com.tokopedia.paylater.helper.PdpSimulationException
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.paylater.presentation.widget.*
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_paylater_simulation.*
@@ -119,21 +120,30 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             is UnknownHostException, is SocketTimeoutException -> {
                 payLaterSimulationCallback?.noInternetCallback()
                 shimmerGroup.visible()
+                tickerSimulation.gone()
                 return
             }
             is IllegalStateException -> {
                 simulationGlobalError.setType(GlobalError.PAGE_FULL)
+                tickerSimulation.gone()
             }
             is PdpSimulationException.PayLaterNotApplicableException -> {
                 payLaterTermsEmptyView.visible()
                 dividerVertical.visible()
                 paylaterDaftarWidget.visible()
-                tickerSimulation.visible()
-                tickerSimulation.setHtmlDescription(context?.getString(R.string.pay_later_not_applicable_ticker_text)
-                        ?: "")
+                tickerSimulation.setHtmlDescription("Tenang, kamu bisa coba pakai kartu credit. Ada  bunga 0% juga! <a href='https://google.com'>Lihat Simulasi Kartu Credit</a>")
+                tickerSimulation.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        payLaterSimulationCallback?.switchPaymentMode()
+                    }
+
+                    override fun onDismiss() {
+                    }
+                })
                 return
             }
             else -> {
+                tickerSimulation.gone()
                 simulationGlobalError.setType(GlobalError.SERVER_ERROR)
             }
         }
@@ -147,16 +157,19 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun onApplicationStatusLoadingFail(throwable: Throwable) {
+        registerShimmer.gone()
         btnDaftarPayLater.visible()
         paylaterDaftarWidget.gone()
+        payLaterSimulationCallback?.showRegisterWidget()
     }
 
     private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
         supervisorWidget.visible()
-        if (PayLaterHelper.isKredivoApplicationStatusEmpty(data.applicationDetailList
+        registerShimmer.gone()
+        if (PayLaterHelper.isPayLaterProductActive(data.applicationDetailList
                         ?: arrayListOf())) {
-            btnDaftarPayLater.visible()
-            paylaterDaftarWidget.gone()
+            btnDaftarPayLater.gone()
+            paylaterDaftarWidget.visible()
         } else if (payLaterViewModel.isPayLaterNotApplicable()) {
             btnDaftarPayLater.gone()
             dividerVertical.visible()
@@ -166,8 +179,9 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             btnDaftarPayLater.gone()
             paylaterDaftarWidget.gone()
         } else {
-            btnDaftarPayLater.gone()
-            paylaterDaftarWidget.visible()
+            btnDaftarPayLater.visible()
+            paylaterDaftarWidget.gone()
+            payLaterSimulationCallback?.showRegisterWidget()
         }
     }
 
@@ -261,7 +275,8 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         fun onRegisterPayLaterClicked()
         fun noInternetCallback()
         fun getPayLaterProductInfo()
-        fun payLaterNotApplicable()
+        fun switchPaymentMode()
         fun getSimulationProductInfo()
+        fun showRegisterWidget()
     }
 }

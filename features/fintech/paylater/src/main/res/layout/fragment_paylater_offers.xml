@@ -6,23 +6,6 @@
     android:paddingTop="@dimen/unify_space_16"
     android:orientation="vertical">
 
-
-    <com.tokopedia.unifycomponents.EmptyState
-        android:id="@+id/payLaterTermsEmptyView"
-        android:layout_width="@dimen/unify_space_0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unifyEmptyStateDescription="@string/pay_later_simulation_empty_view_description"
-        app:unifyEmptyStateImageDrawable="@drawable/ic_paylater_terms_not_matched"
-        app:unifyEmptyStateOrientation="vertical"
-        app:unifyEmptyStatePrimaryCTAText=""
-        app:unifyEmptyStateSecondaryCTAText=""
-        app:unifyEmptyStateTitle="@string/pay_later_simulation_empty_view_title" />
-
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/payLaterOffersGlobalError"
         android:layout_width="match_parent"

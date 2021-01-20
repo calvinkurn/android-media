@@ -60,6 +60,7 @@
             app:labelTitle="Aktif"
             android:textSize="@dimen/unify_font_10"
             app:labelType="general_light_blue"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tvSubTitlePaylaterPartner"
             app:layout_constraintEnd_toEndOf="@+id/rvPaymentDesciption"
             app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"

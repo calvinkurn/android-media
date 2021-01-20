@@ -45,9 +45,9 @@ object PayLaterHelper {
         }
     }
 
-    fun isKredivoApplicationStatusEmpty(payLaterApplicationStatus: ArrayList<PayLaterApplicationDetail>): Boolean {
+    fun isPayLaterProductActive(payLaterApplicationStatus: ArrayList<PayLaterApplicationDetail>): Boolean {
         for (payLaterItem in payLaterApplicationStatus) {
-            if (payLaterItem.payLaterGatewayCode == "KREDIVO" && payLaterItem.payLaterApplicationStatus.isEmpty()) return true
+            if (PayLaterApplicationStatusMapper.getApplicationStatusType(payLaterItem) is PayLaterStatusActive) return true
         }
         return false
     }

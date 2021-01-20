@@ -14,7 +14,6 @@ import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.domain.model.PayLaterProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
-import com.tokopedia.paylater.helper.PdpSimulationException
 import com.tokopedia.paylater.presentation.adapter.PayLaterOfferPagerAdapter
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -89,18 +88,15 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     }
 
     private fun onPayLaterDataLoaded(data: PayLaterProductData) {
-        payLaterOfferCallback?.getApplicationStatusInfo()
+        payLaterOfferCallback?.getApplicationStatusInfo(true)
     }
 
     private fun onPayLaterDataLoadingFail(throwable: Throwable) {
+        payLaterOfferCallback?.getApplicationStatusInfo(false)
         payLaterOffersShimmerGroup.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
                 payLaterOfferCallback?.noInternetCallback()
-                return
-            }
-            is PdpSimulationException.PayLaterNotApplicableException -> {
-                payLaterTermsEmptyView.visible()
                 return
             }
             is IllegalStateException -> {
@@ -113,7 +109,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         payLaterOffersGlobalError.show()
         payLaterOffersGlobalError.setActionClickListener {
             payLaterOffersGlobalError.hide()
-            // notify payLater fragment to invoke again
+            // notify pdp simulation fragment to invoke again
             payLaterOffersShimmerGroup.visible()
             payLaterOfferCallback?.getPayLaterProductInfo()
         }
@@ -134,10 +130,11 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     private fun onPayLaterApplicationLoadingFail(throwable: Throwable) {
         // set payLater data in view pager
         paymentOptionViewPager.post {
-            if (payLaterViewModel.getPayLaterOptions().isEmpty()) {
-                onPayLaterDataLoadingFail(throwable)
-            } else
+            if (payLaterViewModel.getPayLaterOptions().isNotEmpty()) {
+                payLaterOffersShimmerGroup.gone()
+                payLaterDataGroup.visible()
                 pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
+            }
         }
     }
 
@@ -155,7 +152,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     interface PayLaterOfferCallback {
         fun getPayLaterProductInfo()
-        fun getApplicationStatusInfo()
+        fun getApplicationStatusInfo(shouldFetch: Boolean)
         fun noInternetCallback()
     }
 }

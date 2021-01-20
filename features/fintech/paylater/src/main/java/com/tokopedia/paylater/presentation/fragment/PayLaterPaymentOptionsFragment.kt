@@ -90,6 +90,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             payLaterApplicationDetail.payLaterApplicationStatusLabelStringId.also { resId ->
                 if (resId != 0) {
                     tvPaylaterPartnerStatus.text = it.getString(resId)
+                    tvPaylaterPartnerStatus.visible()
                     tvPaylaterPartnerStatus.setLabelType(payLaterApplicationDetail.payLaterApplicationStatusLabelType)
                 } else {
                     tvPaylaterPartnerStatus.gone()

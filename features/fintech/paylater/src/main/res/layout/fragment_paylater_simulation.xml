@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
+        android:paddingBottom="@dimen/unify_space_32"
         android:orientation="vertical">
 
         <com.tokopedia.unifycomponents.EmptyState
@@ -231,28 +232,35 @@
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled" />
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/registerBarrier"
+            app:constraint_referenced_ids="registerShimmer, paylaterDaftarWidget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom" />
+
         <include
             android:id="@+id/supervisorWidget"
             layout="@layout/paylater_supervisor_widget"
             android:layout_width="@dimen/unify_space_0"
+            android:layout_marginTop="@dimen/unify_space_24"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/paylaterDaftarWidget" />
+            app:layout_constraintTop_toBottomOf="@+id/registerBarrier" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/simulationDataGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="tvTitleSimulation,tvSubtitleSimulation, offerLabel, llPayLaterPartner,hsvInstallment,ivShadow,tvRepaymentDescription, tickerSimulation, supervisorWidget " />
+            app:constraint_referenced_ids="tvTitleSimulation,tvSubtitleSimulation, offerLabel, llPayLaterPartner,hsvInstallment,ivShadow,tvRepaymentDescription, supervisorWidget " />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/shimmerGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="titleShimmer, subTitleShimmer, registerShimmer, simulationShimmerView" />
+            app:constraint_referenced_ids="titleShimmer, subTitleShimmer, simulationShimmerView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

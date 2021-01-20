@@ -22,7 +22,7 @@
     <string name="pay_later_simulation_empty_view_description">Untuk menggunakan PayLater, min. total transaksi adalah Rp10 Ribu dan maks. total transaksi adalah Rp30 Juta</string>
     <string name="pay_later_simulation_ticker_text">Sudah termasuk biaya layanan. Belum termasuk biaya asuransi &amp; ongkir. Harga final dapat dilihat di halaman Pembayaran.</string>
 
-    <string name="pay_later_not_applicable_ticker_text">Tenang, kamu bisa coba pakai kartu kredit. Ada cicilan bunga 0% juga! <font fgcolor='#03AC0E'>Lihat Simulasi Kartu Kredit</font> </string>
+    <string name="pay_later_not_applicable_ticker_text">Tenang, kamu bisa coba pakai kartu credit. Ada cicilan bunga 0% juga! <a href='https://google.com'>Lihat Simulasi Kartu Credit</a> </string>
     <string name="pay_later_repayment_text">*Pelunasan untuk pilihan durasi pembayaran dengan bunga 0%</string>
     <string name="pay_later_simulation_supervised_text">Semua mitra penyedia terdaftar dan diawasi oleh</string>
     <string name="pay_later_column_header_one_month">30 hari</string>

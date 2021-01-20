@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/unify_space_32">
 
         <com.tokopedia.unifycomponents.EmptyState
             android:id="@+id/creditCardTermsEmptyView"
@@ -98,16 +99,16 @@
             android:id="@+id/tvAllInstallments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/unify_space_8"
-            android:paddingBottom="@dimen/unify_space_8"
-            android:paddingEnd="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/unify_space_16"
+            android:paddingTop="@dimen/unify_space_8"
+            android:paddingEnd="@dimen/unify_space_16"
+            android:paddingBottom="@dimen/unify_space_8"
             android:text="Bunga 0% berlaku di semua cicilan"
             android:textColor="@color/Unify_N0"
             app:layout_constraintStart_toStartOf="@+id/tvTitleSimulation"
             app:layout_constraintTop_toBottomOf="@+id/rvCreditCardSimulation"
             app:typographyType="body_3"
-            app:typographyWeight="bold"/>
+            app:typographyWeight="bold" />
 
 
         <com.tokopedia.unifyprinciples.Typography
@@ -204,7 +205,7 @@
             layout="@layout/paylater_supervisor_widget"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="@dimen/unify_space_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/creditCardRegisterWidget" />

@@ -2,7 +2,6 @@ package com.tokopedia.paylater.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
@@ -27,11 +26,9 @@ import com.tokopedia.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
 import com.tokopedia.paylater.helper.PayLaterHelper
-import com.tokopedia.paylater.helper.PdpSimulationException
 import com.tokopedia.paylater.presentation.adapter.PayLaterPagerAdapter
 import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
-import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel.Companion.PAY_LATER_NOT_APPLICABLE
 import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardRegistrationBottomSheet
 import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardsListBottomSheet
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterSignupBottomSheet
@@ -48,7 +45,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         CreditCardRegistrationBottomSheet.Listener,
         TabLayout.OnTabSelectedListener,
         ViewPager.OnPageChangeListener,
-        CompoundButton.OnCheckedChangeListener, View.OnTouchListener {
+        CompoundButton.OnCheckedChangeListener {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -105,19 +102,11 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun getPayLaterProductInfo() {
-        if (!(payLaterViewModel.payLaterActivityResultLiveData.value is Success ||
-                        payLaterViewModel.payLaterActivityResultLiveData.value is Fail))
-            payLaterViewModel.getPayLaterProductData()
+        payLaterViewModel.getPayLaterProductData()
     }
 
-    override fun payLaterNotApplicable() {
-        payLaterViewModel.payLaterActivityResultLiveData.value = Fail(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
-    }
-
-    override fun getApplicationStatusInfo() {
-        if (!(payLaterViewModel.payLaterApplicationStatusResultLiveData.value is Success ||
-                        payLaterViewModel.payLaterApplicationStatusResultLiveData.value is Fail))
-            payLaterViewModel.getPayLaterApplicationStatus()
+    override fun getApplicationStatusInfo(shouldFetch: Boolean) {
+        payLaterViewModel.getPayLaterApplicationStatus(shouldFetch)
     }
 
     private fun observeViewModel() {
@@ -134,28 +123,28 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     private fun onApplicationStatusLoadingFail(throwable: Throwable) {
         payLaterDataList = payLaterViewModel.getPayLaterOptions()
-        setPayLaterUI()
     }
 
     private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
         payLaterDataList = payLaterViewModel.getPayLaterOptions()
         applicationStatusList = data.applicationDetailList ?: arrayListOf()
-        setPayLaterUI()
     }
 
-    private fun setPayLaterUI() {
-        // if Kredivo status is empty then show
-        if (applicationStatusList.getOrNull(0)?.payLaterApplicationStatus?.isEmpty() == true
-                && payLaterViewPager.currentItem == SIMULATION_TAB_INDEX) {
+    override fun showRegisterWidget() {
+        if (isPayLaterSimulationPage())
             daftarGroup.visible()
-        }
+        else daftarGroup.gone()
+    }
+
+    private fun isPayLaterSimulationPage(): Boolean {
+        return (payLaterViewPager.currentItem == SIMULATION_TAB_INDEX && (payLaterViewPager.adapter as PayLaterPagerAdapter).getList().getOrNull(0) is PayLaterSimulationFragment)
     }
 
     private fun initListeners() {
         paylaterDaftarWidget.setOnClickListener {
             onRegisterPayLaterClicked()
         }
-        modeSwitcher.setOnTouchListener(this)
+        //modeSwitcher.setOnTouchListener(this)
         modeSwitcher.setOnCheckedChangeListener(this)
         paylaterTabLayout.tabLayout.addOnTabSelectedListener(this)
         payLaterViewPager.addOnPageChangeListener(this)
@@ -265,8 +254,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun onPageSelected(position: Int) {
-        if (position == 0 && PayLaterHelper.isKredivoApplicationStatusEmpty(applicationStatusList))
-            daftarGroup.visible()
+        if (position == SIMULATION_TAB_INDEX && !PayLaterHelper.isPayLaterProductActive(applicationStatusList)) showRegisterWidget()
         else daftarGroup.gone()
     }
 
@@ -284,8 +272,11 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             paymentMode = PayLater
 
         }
-
         renderTabAndViewPager()
+    }
+
+    override fun switchPaymentMode() {
+        modeSwitcher.isChecked = !modeSwitcher.isChecked
     }
 
     companion object {
@@ -299,17 +290,4 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             return fragment
         }
     }
-
-    override fun onTouch(view: View, event: MotionEvent): Boolean {
-        return when (event.action) {
-            MotionEvent.ACTION_UP -> {
-                val xPosition = event.x.toInt()
-                val isModeChanged = xPosition >= modeSwitcher.width / 2
-                modeSwitcher.isChecked = isModeChanged
-                true
-            }
-            else -> false
-        }
-    }
-
 }

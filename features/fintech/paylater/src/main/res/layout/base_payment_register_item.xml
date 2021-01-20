@@ -55,7 +55,7 @@
         android:paddingEnd="@dimen/unify_space_4"
         android:paddingBottom="@dimen/unify_space_2"
         tools:text="Aktif"
-        android:visibility="visible"
+        android:visibility="gone"
         app:labelType="general_dark_blue"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitlePaymentPartner"
         app:layout_constraintEnd_toStartOf="@+id/ivActionArrow"
