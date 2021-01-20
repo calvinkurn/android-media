@@ -1,15 +1,14 @@
-package com.tokopedia.devicefingerprint.usecase
+package com.tokopedia.devicefingerprint.submitdevice.usecase
 
-import com.tokopedia.devicefingerprint.payload.InsertDeviceInfoPayload
-import com.tokopedia.devicefingerprint.response.SubmitDeviceInfoResponse
-import com.tokopedia.devicefingerprint.utils.InsertDeviceInfoPayloadCreator
+import com.tokopedia.devicefingerprint.submitdevice.payload.InsertDeviceInfoPayload
+import com.tokopedia.devicefingerprint.submitdevice.response.SubmitDeviceInfoResponse
+import com.tokopedia.devicefingerprint.submitdevice.utils.InsertDeviceInfoPayloadCreator
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
 class SubmitDeviceInfoUseCase @Inject constructor(
-    repository: GraphqlRepository,
-    private val  insertDeviceInfoPayloadCreator: InsertDeviceInfoPayloadCreator
+    repository: GraphqlRepository
 ): GraphqlUseCase<SubmitDeviceInfoResponse>(repository) {
 
     companion object {
@@ -28,16 +27,11 @@ class SubmitDeviceInfoUseCase @Inject constructor(
         setTypeClass(SubmitDeviceInfoResponse::class.java)
     }
 
-    private fun setParams(payload: InsertDeviceInfoPayload) {
+    fun setParams(payload: InsertDeviceInfoPayload) {
         val params: Map<String, Any?> = mutableMapOf(
                 PARAM_INPUT to payload
         )
         setRequestParams(params)
-    }
-
-    override suspend fun executeOnBackground(): SubmitDeviceInfoResponse {
-        setParams(insertDeviceInfoPayloadCreator.create())
-        return super.executeOnBackground()
     }
 
 }

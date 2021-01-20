@@ -1,8 +1,8 @@
-package com.tokopedia.devicefingerprint.utils
+package com.tokopedia.devicefingerprint.submitdevice.utils
 
 import android.util.Base64
 import com.google.gson.Gson
-import com.tokopedia.devicefingerprint.payload.DeviceInfoPayload
+import com.tokopedia.devicefingerprint.submitdevice.payload.DeviceInfoPayload
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.encryption.security.RSA
 import com.tokopedia.url.Env

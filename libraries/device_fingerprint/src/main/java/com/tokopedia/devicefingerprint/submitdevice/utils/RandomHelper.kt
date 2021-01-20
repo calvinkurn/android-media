@@ -1,4 +1,4 @@
-package com.tokopedia.devicefingerprint.utils
+package com.tokopedia.devicefingerprint.submitdevice.utils
 
 object RandomHelper {
 

@@ -1,4 +1,4 @@
-package com.tokopedia.devicefingerprint.model
+package com.tokopedia.devicefingerprint.submitdevice.model
 
 class Screen {
     var realWidth = 0

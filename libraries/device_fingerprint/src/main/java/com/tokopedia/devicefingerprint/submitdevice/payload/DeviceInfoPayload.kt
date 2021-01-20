@@ -1,4 +1,4 @@
-package com.tokopedia.devicefingerprint.payload
+package com.tokopedia.devicefingerprint.submitdevice.payload
 
 import com.google.gson.annotations.SerializedName
 
@@ -42,5 +42,6 @@ data class DeviceInfoPayload(
         @SerializedName("mcc") val mcc: String,
         @SerializedName("mnc") val mnc: String,
         @SerializedName("bootcount") val bootCount: Int,
-        @SerializedName("permissionapp") val permissions: List<String>
+        @SerializedName("permissionapp") val permissions: List<String>,
+        @SerializedName("app_list") val appList: String
 )
