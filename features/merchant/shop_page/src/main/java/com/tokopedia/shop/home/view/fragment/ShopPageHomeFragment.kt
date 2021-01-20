@@ -557,7 +557,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     )?.firstOrNull()?.let { uiModel ->
                         shopHomeAdapter.setHomeMerchantVoucherData(uiModel.copy(isError = true))
                     }
-                    logExceptionToCrashlytics(ERROR_WHEN_GET_MERCHANT_VOUCHER_DATA, it.throwable)
                 }
             }
         })

@@ -33,6 +33,8 @@ import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -211,11 +213,13 @@ class ShopHomeViewModel @Inject constructor(
                         isError = false
                 )
                 val code = response.data?.resultStatus?.code
-                if (code == CODE_STATUS_SUCCESS) {
-                    _shopHomeMerchantVoucherLayoutData.postValue(Success(uiModel as ShopHomeVoucherUiModel))
-                } else {
-                    _shopHomeMerchantVoucherLayoutData.postValue(Fail(MessageErrorException(response.data?.resultStatus?.message.toString())))
+                if (code != CODE_STATUS_SUCCESS) {
+                    logExceptionToCrashlytics(
+                            ShopPageExceptionHandler.ERROR_WHEN_GET_MERCHANT_VOUCHER_DATA,
+                            Throwable(response.data?.resultStatus?.message.toString())
+                    )
                 }
+                _shopHomeMerchantVoucherLayoutData.postValue(Success(uiModel as ShopHomeVoucherUiModel))
             }) {
                 _shopHomeMerchantVoucherLayoutData.postValue(Fail(it))
             }
