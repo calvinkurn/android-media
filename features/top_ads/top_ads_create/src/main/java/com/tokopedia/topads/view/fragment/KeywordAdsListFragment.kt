@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -35,15 +34,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.topads_create_keyword_search_layout.*
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.*
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.btn_next
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.emptyLayout
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.headlineList
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.keyword_list
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.selected_info
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.tip_btn
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.txtRecommendation
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_empty_tip.view.*
 import javax.inject.Inject
 
@@ -107,8 +98,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         if (!keywordSelectedAdapter.items[pos].fromSearch) {
             keywordListAdapter.items.add(KeywordItemViewModel(
                     KeywordDataItem(keywordSelectedAdapter.items[pos].bidSuggest, keywordSelectedAdapter.items[pos].totalSearch,
-                            keywordSelectedAdapter.items[pos].keyword, keywordSelectedAdapter.items[pos].competition,
-                            keywordSelectedAdapter.items[pos].source)))
+                            keywordSelectedAdapter.items[pos].keyword, keywordSelectedAdapter.items[pos].source, keywordSelectedAdapter.items[pos].competition)))
 
         } else {
             removeSearchedItem(pos)
@@ -150,10 +140,11 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         if (STAGE == 0) {
             keywordSelectedAdapter.items.clear()
         }
-        val list:MutableList<Int>? = stepperModel?.selectedProductIds
+        val list: MutableList<Int>? = stepperModel?.selectedProductIds
         val productId = list?.joinToString(",")
         keywordListAdapter.items.clear()
-        viewModel.getSuggestionKeyword(productId?:"", 0, this::onSuccessSuggestion, this::onEmptySuggestion)
+        viewModel.getSuggestionKeyword(productId
+                ?: "", 0, this::onSuccessSuggestion, this::onEmptySuggestion)
     }
 
     private fun restorePrevState() {
@@ -240,22 +231,22 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         STAGE = 1
         setBtnText()
         if (stepperModel?.STAGE == 1) {
-            if(stepperModel?.selectedKeywordStage?.isNotEmpty() != false)
+            if (stepperModel?.selectedKeywordStage?.isNotEmpty() != false)
                 restorePrevState()
         }
-        if(keywordSelectedAdapter.items.isEmpty() && selectedKeyFromSearch?.isEmpty()!= false) {
+        if (keywordSelectedAdapter.items.isEmpty() && selectedKeyFromSearch?.isEmpty() != false) {
             setEmptyView(true)
         }
         showSelectMessage()
     }
 
     private fun setEmptyView(empty: Boolean) {
-        if(empty){
+        if (empty) {
             tip_btn.visibility = View.GONE
             headlineList.visibility = View.GONE
             emptyLayout.visibility = View.VISIBLE
 
-        }else{
+        } else {
             tip_btn.visibility = View.VISIBLE
             headlineList.visibility = View.VISIBLE
             emptyLayout.visibility = View.GONE
@@ -345,7 +336,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         setAdapters()
         val searchBar = view.findViewById<SearchBarUnify>(R.id.searchBar)
         searchBar?.searchBarTextField?.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus) {
+            if (hasFocus) {
                 val eventLabel = "$shopID - $EVENT_CLICK_ON_SEARCH"
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ON_SEARCH, eventLabel, userID)
             }
@@ -432,7 +423,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
                 dataFromSearch?.forEach {
                     selectedKeyFromSearch?.add(it)
                 }
-                if(selectedKeyFromSearch?.isNotEmpty()!=false)
+                if (selectedKeyFromSearch?.isNotEmpty() != false)
                     setEmptyView(false)
                 if (STAGE == 0)
                     gotoNextStage()
@@ -472,7 +463,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         selectedKeyFromSearch?.forEach { item ->
             if (keywordSelectedAdapter.items.find { selected -> selected.keyword == item.keyword } == null) {
                 list.add(KeywordDataItem(item.bidSuggest, item.totalSearch.toString(), item.keyword
-                        ?: "", item.competition ?: "", item.source ?: "", true, fromSearch = true))
+                        ?: "", item.source ?: "", item.competition ?: "", true, fromSearch = true))
             }
         }
         return list
