@@ -349,7 +349,7 @@ class ShopCreationViewModelTest {
         assert(viewmodel.getUserInfoResponse.value is Fail)
 
         val result = viewmodel.getUserInfoResponse.value as Fail
-        kotlin.test.assertEquals(throwable, result.throwable)
+        assertEquals(throwable, result.throwable)
     }
 
     companion object {
