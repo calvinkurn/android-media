@@ -45,6 +45,7 @@ class PlayVideoManager private constructor(
      */
     private var isMuted: Boolean = false
     private var isRepeated: Boolean = false
+    private var previousUri: Uri? = null
 
     private val exoPlaybackExceptionParser = ExoPlaybackExceptionParser()
     private var currentPrepareState: PlayVideoPrepareState = getDefaultPrepareState()
@@ -226,16 +227,20 @@ class PlayVideoManager private constructor(
 
     fun resumeOrPlayPreviousVideo(autoPlay: Boolean) {
         val prepareState = currentPrepareState
-        if (prepareState is PlayVideoPrepareState.Unprepared && prepareState.previousUri != null) {
-            playUri(prepareState.previousUri, autoPlay)
+        if (prepareState is PlayVideoPrepareState.Unprepared) {
+            previousUri?.let {
+                playUri(it, autoPlay)
+            }
         } else if (prepareState is PlayVideoPrepareState.Prepared) resume()
     }
 
     fun reset() {
+
         videoPlayer.seekTo(0)
     }
 
     fun release() {
+        previousUri = currentUri
         currentPrepareState = getDefaultPrepareState()
         videoPlayer.release()
     }
