@@ -122,8 +122,8 @@ class CreditCardTncFragment : BaseDaggerFragment() {
     }
 
     interface CreditCardTnCCallback {
-        fun getPayLaterProductInfo()
-        fun getApplicationStatusInfo()
+       // fun getPayLaterProductInfo()
+       // fun getApplicationStatusInfo()
         fun noInternetCallback()
     }
 }

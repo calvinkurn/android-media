@@ -7,14 +7,12 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/pay_later_benefit_margin_dp_6"
     android:layout_marginBottom="@dimen/pay_later_benefit_margin_dp_6"
-    android:background="@color/Unify_N0"
-    >
+    app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clCreditCard"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/Unify_N0">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivRecommendationBadge"
@@ -83,7 +81,7 @@
             android:layout_marginStart="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginEnd="@dimen/unify_space_8"
-            android:text="Kartu Kredit Citi PremierMiles"
+            tools:text="Kartu Kredit Citi PremierMiles"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageGuideLine"
             app:layout_constraintTop_toBottomOf="@+id/ivRecommendationBadge"
@@ -95,7 +93,7 @@
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_4"
-            android:text="Citibank"
+            tools:text="Citibank"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="@+id/tvCreditCardName"
             app:layout_constraintStart_toStartOf="@+id/tvCreditCardName"
@@ -126,7 +124,8 @@
             android:id="@+id/tvBenefitsMore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+2 Lainnya"
+            tools:text="+2 Lainnya"
+            android:layout_marginStart="@dimen/unify_space_4"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintBottom_toBottomOf="@id/benefitLabel2"
             app:layout_constraintStart_toEndOf="@id/benefitLabel2"

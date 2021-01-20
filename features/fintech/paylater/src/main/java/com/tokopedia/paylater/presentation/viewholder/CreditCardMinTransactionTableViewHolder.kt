@@ -21,8 +21,8 @@ class CreditCardMinTransactionTableViewHolder(val view: View) : RecyclerView.Vie
                 setTypography(tvColumnData2, Typography.BODY_3)
             }
             if (position % 2 == 0)
-                clTransaction.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N50))
-            else clTransaction.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+                clTransaction.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+            else clTransaction.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
             tvColumnData1.text = data.getOrNull(0) ?: "-"
             tvColumnData2.text = data.getOrNull(1) ?: "-"

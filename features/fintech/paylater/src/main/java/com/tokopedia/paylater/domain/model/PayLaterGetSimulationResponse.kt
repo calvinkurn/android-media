@@ -6,12 +6,12 @@ import com.tokopedia.paylater.data.mapper.PayLaterSimulationTenureType
 
 data class PayLaterGetSimulationResponse(
         @SerializedName("paylater_getSimulation")
-        val payLaterGetSimulationGateway: PayLaterGetSimulationGateway?
+        val payLaterGetSimulationGateway: PayLaterGetSimulationGateway?,
 )
 
 data class PayLaterGetSimulationGateway(
         @SerializedName("gateways")
-        val payLaterGatewayList: ArrayList<PayLaterSimulationGatewayItem>?
+        val payLaterGatewayList: ArrayList<PayLaterSimulationGatewayItem>?,
 )
 
 data class PayLaterSimulationGatewayItem(
@@ -26,7 +26,8 @@ data class PayLaterSimulationGatewayItem(
         @SerializedName("simulation_detail")
         val simulationDetailList: ArrayList<SimulationItemDetail>,
         // To have a map of tenure to installment item aiding in setting in table
-        var installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>
+        var installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>,
+        var isRecommended: Boolean,
 )
 
 data class SimulationItemDetail(
@@ -37,5 +38,5 @@ data class SimulationItemDetail(
         @SerializedName("tenure")
         val tenure: Int?,
         @SerializedName("interest_pct")
-        val interestPercent: Float?
+        val interestPercent: Float?,
 )

@@ -29,10 +29,13 @@ object PayLaterSimulationResponseMapper {
                 } else {
                     for (gatewayItem in gatewayResponse.payLaterGatewayList) {
                         val tenureMap = HashMap<PayLaterSimulationTenureType, SimulationItemDetail>()
+                        var isRecommended = false
                         for (itemDetail in gatewayItem.simulationDetailList) {
                             val tenureType = getSimulationTenureType(itemDetail.tenure)
+                            if (itemDetail.isRecommended == true) isRecommended = true
                             tenureMap[tenureType] = itemDetail
                         }
+                        gatewayItem.isRecommended = isRecommended
                         gatewayItem.installmentMap = tenureMap
                     }
                     return gatewayResponse.payLaterGatewayList

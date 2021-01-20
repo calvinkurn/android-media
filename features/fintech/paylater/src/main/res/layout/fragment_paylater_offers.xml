@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/unify_space_16"
-    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
 

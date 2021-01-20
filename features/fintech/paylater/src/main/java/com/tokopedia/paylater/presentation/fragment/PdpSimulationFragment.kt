@@ -44,6 +44,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         PayLaterSimulationFragment.PayLaterSimulationCallback,
         PayLaterOffersFragment.PayLaterOfferCallback,
         CreditCardSimulationFragment.CreditCardSimulationCallback,
+        CreditCardTncFragment.CreditCardTnCCallback,
         CreditCardRegistrationBottomSheet.Listener,
         TabLayout.OnTabSelectedListener,
         ViewPager.OnPageChangeListener,
@@ -183,10 +184,10 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         val fragmentList = mutableListOf<Fragment>()
         when (paymentMode) {
             is CreditCard -> {
-                val simulationFragment = CreditCardSimulationFragment.newInstance().also {
-                    it.setCreditCardSimulationCallback(this)
-                }
+                val simulationFragment = CreditCardSimulationFragment.newInstance()
                 val tncFragment = CreditCardTncFragment.newInstance()
+                simulationFragment.setCreditCardSimulationCallback(this)
+                tncFragment.setCreditCardTncCallback(this)
                 fragmentList.add(simulationFragment)
                 fragmentList.add(tncFragment)
             }

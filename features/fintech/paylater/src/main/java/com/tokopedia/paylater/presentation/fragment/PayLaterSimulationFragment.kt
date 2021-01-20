@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.fragment_paylater_simulation.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.math.max
 
 class PayLaterSimulationFragment : BaseDaggerFragment() {
 
@@ -105,6 +106,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         payLaterSimulationCallback?.getPayLaterProductInfo()
         shimmerGroup.gone()
         simulationDataGroup.visible()
+        clearAllViews()
         populateSimulationTable(data)
     }
 
@@ -169,40 +171,45 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun populateRowHeaders(context: Context, simulationDataItem: ArrayList<PayLaterSimulationGatewayItem>, position: Int) {
-        val layoutParam = ViewGroup.LayoutParams(context.dpToPx(ROW_HEADER_WIDTH).toInt(), context.dpToPx(TABLE_ITEM_HEIGHT).toInt())
-        llPayLaterPartner.apply {
-            when (position) {
-                0 -> addView(getBlankView(layoutParam))
-                1 -> addView(getRecomView(layoutParam, simulationDataItem[position - 1]))
-                else -> addView(getNoRecomView(layoutParam, simulationDataItem[position - 1], position % 2 == 0))
-            }
-        }
-    }
-
+    /**
+     * max(0, rowIdx - 1) -> prevent index out of bound when rowIdx = 0
+     */
     private fun populateSimulationTable(simulationDataList: ArrayList<PayLaterSimulationGatewayItem>) {
         context?.let {
-            tlInstallmentTable.removeAllViews()
-            llPayLaterPartner.removeAllViews()
             val tenureList = arrayOf(1, 3, 6, 9, 12)
             val rowCount = simulationDataList.size + 1
             val colCount = 5
             val contentLayoutParam = TableRow.LayoutParams(it.dpToPx(CONTENT_WIDTH).toInt(), it.dpToPx(TABLE_ITEM_HEIGHT).toInt())
             val tableLayoutParams = TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT)
-            for (i in 0 until rowCount) {
+            for (rowIdx in 0 until rowCount) {
                 val contentRow = TableRow(it)
-                populateRowHeaders(it, simulationDataList, i)
-                for (j in 0 until colCount) {
-                    when (i) {
-                        0 -> contentRow.addView(getColumnHeader(contentLayoutParam, j), contentLayoutParam)
-                        1 -> {
-                            contentRow.background = ContextCompat.getDrawable(it, R.drawable.ic_paylater_installment_green_border)
-                            contentRow.addView(getInstallmentView(contentLayoutParam, simulationDataList[i - 1].installmentMap, tenureList, i, j), contentLayoutParam)
+                populateRowHeaders(it, simulationDataList[max(0, rowIdx - 1)], rowIdx)
+                for (columnIdx in 0 until colCount) {
+                    when (rowIdx) {
+                        0 -> contentRow.addView(getColumnHeader(contentLayoutParam, columnIdx), contentLayoutParam)
+                        else -> {
+                            if (simulationDataList[rowIdx - 1].isRecommended)
+                                contentRow.background = ContextCompat.getDrawable(it, R.drawable.ic_paylater_installment_green_border)
+                            contentRow.addView(getInstallmentView(contentLayoutParam, simulationDataList[rowIdx - 1].installmentMap, tenureList, rowIdx, columnIdx), contentLayoutParam)
                         }
-                        else -> contentRow.addView(getInstallmentView(contentLayoutParam, simulationDataList[i - 1].installmentMap, tenureList, i, j), contentLayoutParam)
                     }
                 }
                 tlInstallmentTable.addView(contentRow, tableLayoutParams)
+            }
+        }
+    }
+
+    private fun populateRowHeaders(context: Context, simulationDataItem: PayLaterSimulationGatewayItem, position: Int) {
+        val layoutParam = ViewGroup.LayoutParams(context.dpToPx(ROW_HEADER_WIDTH).toInt(), context.dpToPx(TABLE_ITEM_HEIGHT).toInt())
+        llPayLaterPartner.apply {
+            when (position) {
+                0 -> addView(getBlankView(layoutParam))
+                else -> {
+                    if (simulationDataItem.isRecommended)
+                        addView(getRecommendedPayLaterOption(layoutParam, simulationDataItem, position % 2 == 0))
+                    else
+                        addView(getPayLaterOption(layoutParam, simulationDataItem, position % 2 == 0))
+                }
             }
         }
     }
@@ -212,14 +219,14 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         return blankSimulationTableHeading.initUI()
     }
 
-    private fun getNoRecomView(layoutParam: ViewGroup.LayoutParams, simulationDataItem: PayLaterSimulationGatewayItem, showBackGround: Boolean): View? {
+    private fun getPayLaterOption(layoutParam: ViewGroup.LayoutParams, simulationDataItem: PayLaterSimulationGatewayItem, showBackGround: Boolean): View? {
         val noRecommendationViewSimulationTable = simulationViewFactory.create(NoRecommendationViewTableRowHeader::class.java, layoutParam)
         return noRecommendationViewSimulationTable.initUI(simulationDataItem, showBackGround)
     }
 
-    private fun getRecomView(layoutParam: ViewGroup.LayoutParams, simulationDataItem: PayLaterSimulationGatewayItem): View {
+    private fun getRecommendedPayLaterOption(layoutParam: ViewGroup.LayoutParams, simulationDataItem: PayLaterSimulationGatewayItem, showBackGround: Boolean): View {
         val recommendationView = simulationViewFactory.create(RecommendationViewTableRowHeader::class.java, layoutParam)
-        return recommendationView.initUI(simulationDataItem)
+        return recommendationView.initUI(simulationDataItem, showBackGround)
     }
 
     private fun getInstallmentView(contentLayoutParam: ViewGroup.LayoutParams, installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>, tenureList: Array<Int>, row: Int, col: Int): View {
@@ -230,6 +237,11 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     private fun getColumnHeader(contentLayoutParam: ViewGroup.LayoutParams, position: Int): View {
         val installmentColumnHeader = simulationViewFactory.create(InstallmentViewTableColumnHeader::class.java, contentLayoutParam)
         return installmentColumnHeader.initUI(position)
+    }
+
+    private fun clearAllViews() {
+        tlInstallmentTable.removeAllViews()
+        llPayLaterPartner.removeAllViews()
     }
 
     fun setSimulationListener(payLaterSimulationCallback: PayLaterSimulationCallback) {

@@ -13,9 +13,9 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class RecommendationViewTableRowHeader(val context: Context, val layoutParams: ViewGroup.LayoutParams) {
 
-    fun getLayout() = R.layout.paylater_simulation_table_row_header
+    private fun getLayout() = R.layout.paylater_simulation_table_row_header
 
-    fun initUI(simulationDataItem: PayLaterSimulationGatewayItem): View {
+    fun initUI(simulationDataItem: PayLaterSimulationGatewayItem, showBackGround: Boolean): View {
         val recommendationView = LayoutInflater.from(context).inflate(getLayout(), null)
         recommendationView.layoutParams = layoutParams
         recommendationView.background = ContextCompat.getDrawable(context, R.drawable.ic_paylater_green_border)
@@ -29,6 +29,8 @@ class RecommendationViewTableRowHeader(val context: Context, val layoutParams: V
                     ivPayLaterPartner,
                     imageUrl,
                     R.drawable.ic_loading_image)
+        if (showBackGround)
+            recommendationView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
         return recommendationView
     }
 }

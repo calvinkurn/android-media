@@ -14,8 +14,8 @@ class CreditCardServiceFeeTableContentViewHolder(val view: View) : RecyclerView.
     fun bindData(data: ArrayList<String>, position: Int) {
         view.apply {
             if (position % 2 == 0)
-                clTransaction.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N50))
-            else clTransaction.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+                clTransaction.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+            else clTransaction.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             if (position == 0) {
                 setTypography(tvColumnData1, Typography.HEADING_6)
                 setTypography(tvColumnSubHeader1, Typography.HEADING_6)
