@@ -6,6 +6,7 @@ import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.END_DATE
