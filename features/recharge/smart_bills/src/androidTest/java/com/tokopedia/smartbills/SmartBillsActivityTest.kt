@@ -56,7 +56,7 @@ class SmartBillsActivityTest {
 
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
-        LocalCacheHandler(context, SmartBillsFragment.SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK).also {
+        LocalCacheHandler(context, SmartBillsFragment.SMART_BILLS_PREF).also {
             it.putBoolean(SmartBillsFragment.SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK, true)
             it.applyEditor()
         }
