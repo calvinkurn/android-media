@@ -25,7 +25,6 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
-import com.tokopedia.sellerhomecommon.presentation.adapter.CarouselBannerAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import io.mockk.every
 import io.mockk.mockkStatic
@@ -33,8 +32,6 @@ import junit.framework.Assert.assertTrue
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
 import org.json.JSONObject
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.jvm.isAccessible
 
 class SellerHomeRobot {
 
