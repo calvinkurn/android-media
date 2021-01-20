@@ -22,7 +22,8 @@ data class OnDemandModel(
         var textPromo: String = "",
         var image: String = "",
         var featureInfo: List<FeatureInfoModel> = listOf(),
-        var shipperProduct: List<ShipperProductModel> = listOf()
+        var shipperProduct: List<ShipperProductModel> = listOf(),
+        var tickerState: Int = 0
 ) : ShippingEditorVisitable()
 
 data class ConventionalModel(
@@ -32,7 +33,8 @@ data class ConventionalModel(
         var textPromo: String = "",
         var image: String = "",
         var featureInfo: List<FeatureInfoModel> = listOf(),
-        var shipperProduct: List<ShipperProductModel> = listOf()
+        var shipperProduct: List<ShipperProductModel> = listOf(),
+        var tickerState: Int = 0
 ) : ShippingEditorVisitable()
 
 @Parcelize

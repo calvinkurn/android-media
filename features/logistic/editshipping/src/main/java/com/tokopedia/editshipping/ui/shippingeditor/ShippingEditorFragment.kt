@@ -44,7 +44,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAdapter.ShippingEditorItemAdapterListener {
+class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAdapter.ShippingEditorItemAdapterListener, ShippingEditorConventionalAdapter.ShippingEditorConventionalListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -72,7 +72,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private var globalErrorLayout: GlobalError? = null
 
     private var shippingEditorOnDemandAdapter = ShippingEditorOnDemandItemAdapter(this)
-    private var shippingEditorConventionalAdapter = ShippingEditorConventionalAdapter()
+    private var shippingEditorConventionalAdapter = ShippingEditorConventionalAdapter(this)
 //    private var shippingEditorAdapter = ShippingEditorAdapter()
 
     override fun getScreenName(): String = ""
@@ -109,7 +109,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         val textDetailCourier = MethodChecker.fromHtml(getString(R.string.tv_detail_kurir))
         val selengkapnyaButton = "Selengkapnya"
         val spannableString = SpannableString(textDetailCourier)
-        val color = getColor(context, com.tokopedia.unifyprinciples.R.color.light_B500)
+        val color = getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)
         spannableString.setSpan(ForegroundColorSpan(color), spannableString.length - selengkapnyaButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(StyleSpan(Typeface.BOLD), spannableString.length - selengkapnyaButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
         tvDetailCourier?.text = spannableString
@@ -169,13 +169,14 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
     private fun updateTickerData(data: List<CourierTickerModel>) {
         shippingEditorOnDemandAdapter.setTickerData(data)
+        shippingEditorConventionalAdapter.setTickerData(data)
     }
 
     /*ToDO: put ticker*/
     private fun updateList() {
         for (x in shippingEditorOnDemandAdapter.shipperOnDemandModel.indices) {
-            val indesh = listOf<Int>()
-            if (shippingEditorOnDemandAdapter.shipperOnDemandModel[x].shipperId in indesh) {
+            val index = listOf<Int>()
+            if (shippingEditorOnDemandAdapter.shipperOnDemandModel[x].shipperId in index) {
                 //do something
             }
         }
@@ -196,6 +197,10 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
     override fun onShipperInfoClicked() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onShipperTickerOnDemandClicked() {
+        openBottomSheetShipperInfo()
     }
 
     private fun openBottomSheetShipperInfo() {
@@ -267,11 +272,15 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private fun showGlobalError(type: Int) {
         globalErrorLayout?.setType(type)
         globalErrorLayout?.setActionClickListener {
-            viewModel.getShipperList(userSession.shopId.toInt())
+            fetchData()
         }
         /*satu layout gone*/
         shipperListOnDemand?.gone()
         globalErrorLayout?.visible()
+    }
+
+    override fun onShipperTickerConventionalClicked() {
+        openBottomSheetShipperInfo()
     }
 
 

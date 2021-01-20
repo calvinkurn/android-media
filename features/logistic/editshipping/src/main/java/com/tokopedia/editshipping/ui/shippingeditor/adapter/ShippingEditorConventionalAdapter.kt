@@ -8,18 +8,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.ConventionalModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.CourierTickerModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 
-class ShippingEditorConventionalAdapter : RecyclerView.Adapter<ShippingEditorConventionalAdapter.ShippingEditorConventionalViewHolder>(){
+class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConventionalListener) : RecyclerView.Adapter<ShippingEditorConventionalAdapter.ShippingEditorConventionalViewHolder>(){
 
     private var shipperConventionalModel = mutableListOf<ConventionalModel>()
-
     private var shipperProductConventionalChild: ShipperProductItemAdapter? = null
 
+    interface ShippingEditorConventionalListener {
+        fun onShipperTickerConventionalClicked()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShippingEditorConventionalViewHolder {
-        return ShippingEditorConventionalViewHolder(parent.inflateLayout(R.layout.item_shipping_editor_card))
+        return ShippingEditorConventionalViewHolder(parent.inflateLayout(R.layout.item_shipping_editor_card), listener)
     }
 
     override fun getItemCount(): Int {
@@ -35,17 +41,28 @@ class ShippingEditorConventionalAdapter : RecyclerView.Adapter<ShippingEditorCon
         notifyDataSetChanged()
     }
 
+    fun setTickerData(data: List<CourierTickerModel>) {
+        data.forEach {
+            shipperConventionalModel.find { conventional ->
+                conventional.shipperId == it.shipperId
+            }?.tickerState = it.tickerState
+
+        }
+        notifyDataSetChanged()
+    }
+
     fun clearData() {
         shipperConventionalModel.clear()
         notifyDataSetChanged()
     }
 
-    inner class ShippingEditorConventionalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), ShipperProductItemAdapter.ShipperProductOnDemandItemListener {
+    inner class ShippingEditorConventionalViewHolder(itemView: View, private val listener: ShippingEditorConventionalListener) : RecyclerView.ViewHolder(itemView), ShipperProductItemAdapter.ShipperProductOnDemandItemListener {
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)
         private val shipmentItemCb = itemView.findViewById<CheckboxUnify>(R.id.cb_shipment_item)
         private val shipmentCategory = itemView.findViewById<Typography>(R.id.shipment_category)
         private val shipmentProductRv = itemView.findViewById<RecyclerView>(R.id.shipment_item_list)
+        private val tickerShipper = itemView.findViewById<Ticker>(R.id.ticker_shipper)
 
         fun binData(data: ConventionalModel) {
             setItemData(data)
@@ -75,6 +92,41 @@ class ShippingEditorConventionalAdapter : RecyclerView.Adapter<ShippingEditorCon
 
             shipperProductConventionalChild?.addData(data.shipperProduct)
 
+            when (data.tickerState) {
+                1 -> {
+                    tickerShipper.visibility = View.VISIBLE
+                    tickerShipper.tickerType = Ticker.TYPE_ERROR
+                    tickerShipper.setHtmlDescription(itemView.context.getString(R.string.charge_bo_ticker_content))
+                    tickerShipper.setDescriptionClickEvent(object: TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            listener.onShipperTickerConventionalClicked()
+                        }
+
+                        override fun onDismiss() {
+                            //no-op
+                        }
+
+                    })
+                }
+                2 -> {
+                    tickerShipper.visibility = View.VISIBLE
+                    tickerShipper.tickerType = Ticker.TYPE_WARNING
+                    tickerShipper.setHtmlDescription(itemView.context.getString(R.string.charge_bo_ticker_content))
+                    tickerShipper.setDescriptionClickEvent(object: TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            listener.onShipperTickerConventionalClicked()
+                        }
+
+                        override fun onDismiss() {
+                            //no-op
+                        }
+
+                    })
+                }
+                else -> {
+                    tickerShipper.visibility = View.GONE
+                }
+            }
         }
 
         override fun onShipperProductItemClicked() {

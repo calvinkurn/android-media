@@ -9,7 +9,7 @@ data class GetShipperTickerResponse (
 
 data class OngkirShippingEditorGetShipperTicker(
         @SerializedName("status")
-        var status: String = "",
+        var status: Int = 0,
         @SerializedName("message")
         var message: String = "",
         @SerializedName("data")
@@ -42,7 +42,7 @@ data class CourierTicker(
         @SerializedName("shipper_id")
         var shipperId: Int = -1,
         @SerializedName("warehouse_ids")
-        var warehouseIds: List<Int> = listOf(),
+        var warehouseIds: List<Int>? = emptyList(),
         @SerializedName("ticker_state")
         var tickerState: Int = -1,
         @SerializedName("is_available")
@@ -83,16 +83,20 @@ data class Warehouses(
         var isDefault: Int = 0,
         @SerializedName("latlon")
         var latLon: String = "",
+        @SerializedName("latitude")
+        var latitude: String = "",
+        @SerializedName("longitude")
+        var longitude: String = "",
         @SerializedName("address_detail")
         var addressDetail: String = "",
         @SerializedName("country")
         var country: String = "",
-        @SerializedName("is_fulfilment")
+        @SerializedName("is_fulfillment")
         var isFulfillment: Boolean = false,
         @SerializedName("warehouse_type")
         var warehouseType: Int = 0,
         @SerializedName("email")
-        var email: String = "false",
+        var email: String = "",
         @SerializedName("shop_id")
         var shopId: ShopId = ShopId(),
         @SerializedName("partner_id")
