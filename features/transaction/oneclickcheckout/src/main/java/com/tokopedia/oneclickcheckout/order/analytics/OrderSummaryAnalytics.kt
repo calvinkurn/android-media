@@ -661,7 +661,7 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
-    fun eventPpImpressionOnInsuranceSection(userId: String, categoryLvl3Id: String, insuranceBrand: String, protectionName: String, ee: Map<String, Any>) {
+    fun eventPPImpressionOnInsuranceSection(userId: String, categoryLvl3Id: String, insuranceBrand: String, protectionName: String) {
         val gtmData = getGtmData(
                 EventName.PROMO_VIEW,
                 EventCategory.ORDER_SUMMARY,
@@ -672,20 +672,9 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         sendGeneralEvent(gtmData)
-//        val dataLayer = DataLayer.mapOf(
-//                Key.EVENT, EventName.PROMO_VIEW,
-//                Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
-//                Key.EVENT_ACTION, EventAction.PP_IMPRESSION_ON_INSURANCE_SECTION,
-//                Key.EVENT_LABEL, "$categoryLvl3Id - $insuranceBrand - $protectionName",
-//                Key.E_COMMERCE, ee,
-//                ExtraKey.USER_ID, userId,
-//                ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
-//                ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-//        )
-//        sendEnhancedEcommerce(dataLayer)
     }
 
-    fun eventPpClickTooltip(userId: String, categoryLvl3Id: String, insuranceBrand: String, protectionName: String, ee: Map<String, Any>) {
+    fun eventPPClickTooltip(userId: String, categoryLvl3Id: String, insuranceBrand: String, protectionName: String) {
         val gtmData = getGtmData(
                 EventName.PROMO_CLICK,
                 EventCategory.ORDER_SUMMARY,
@@ -696,20 +685,9 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         sendGeneralEvent(gtmData)
-//        val dataLayer = DataLayer.mapOf(
-//                Key.EVENT, EventName.PROMO_CLICK,
-//                Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
-//                Key.EVENT_ACTION, EventAction.PP_CLICK_TOOLTIP,
-//                Key.EVENT_LABEL, "$categoryLvl3Id - $insuranceBrand - $protectionName",
-//                Key.E_COMMERCE, ee,
-//                ExtraKey.USER_ID, userId,
-//                ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
-//                ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-//        )
-//        sendEnhancedEcommerce(dataLayer)
     }
 
-    fun eventPpClickBayar(userId: String, categoryLvl3Id: String, insuranceBrand: String, protectionName: String, isChecked: Boolean, ee: Map<String, Any>) {
+    fun eventPPClickBayar(userId: String, categoryLvl3Id: String, insuranceBrand: String, protectionName: String, isChecked: Boolean, ee: Map<String, Any>) {
         val dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,

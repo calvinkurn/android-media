@@ -97,7 +97,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                             paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
                         }
                         if (product.purchaseProtectionPlanData.isProtectionAvailable) {
-                            orderSummaryAnalytics.eventPpClickBayar(userId,
+                            orderSummaryAnalytics.eventPPClickBayar(userId,
                                     product.categoryId.toString(),
                                     "",
                                     product.purchaseProtectionPlanData.protectionTitle,
