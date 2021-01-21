@@ -26,10 +26,11 @@ class CartTrackingTest {
 
     @Before
     fun setup() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser2()
+        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
         gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_happy_flow_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_tracking_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, R.raw.update_cart_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -38,7 +39,7 @@ class CartTrackingTest {
         activityRule.launchActivity(null)
 
         cartPage {
-            assertMainContent()
+            Thread.sleep(1000)
         } buy {
             hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
@@ -53,6 +54,7 @@ class CartTrackingTest {
 
     companion object {
         private const val GET_CART_LIST_KEY = "cart_revamp"
+        private const val UPDATE_CART_KEY = "update_cart_v2"
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/cart.json"
     }
