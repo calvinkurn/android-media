@@ -149,9 +149,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
-                                    cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                                        homeCachedDataSource.saveToDatabase(homeData)
-                                    })
                                 }
                             }
                             jobList.add(job)
@@ -168,9 +165,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
                                     atfData.content = null
-                                    cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                                        homeCachedDataSource.saveToDatabase(homeData)
-                                    })
                                 }
                             }
                             jobList.add(job)
@@ -185,9 +179,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
-                                    cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                                        homeCachedDataSource.saveToDatabase(homeData)
-                                    })
                                 }
                             }
                             jobList.add(job)
