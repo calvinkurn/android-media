@@ -50,7 +50,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
 
     private val topAdsInsightTabAdapter: TopAdsInsightTabAdapter? by lazy {
-        context?.run { TopAdsInsightTabAdapter(this) }
+        context?.run { TopAdsInsightTabAdapter() }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

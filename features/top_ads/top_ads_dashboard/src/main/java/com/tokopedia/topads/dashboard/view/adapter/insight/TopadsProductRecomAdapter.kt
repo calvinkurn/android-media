@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.RECOMMENDATION_PRODUCT_MAX_BID
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendation
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_dash_recon_product_item.view.*
@@ -66,11 +67,15 @@ class TopadsProductRecomAdapter(var itemSelected: () -> Unit) : RecyclerView.Ada
                     when {
                         number < recomBid.toDouble() && number > minBid -> {
                             holder.view.editBudget?.setError(false)
-                            holder.view.editBudget?.setMessage(Html.fromHtml(String.format(holder.view.context.getString(R.string.topads_dash_budget_recom_error), recomBid)))
+                            holder.view.editBudget?.setMessage(String.format(holder.view.context.getString(R.string.topads_dash_budget_recom_error), recomBid))
                         }
                         number < minBid -> {
                             holder.view.editBudget?.setError(true)
                             holder.view.editBudget?.setMessage(holder.view.context.getString(R.string.topads_dash_product_recomm_min_budget_error))
+                        }
+                        number > RECOMMENDATION_PRODUCT_MAX_BID ->{
+                            holder.view.editBudget?.setError(true)
+                            holder.view.editBudget?.setMessage(holder.view.context.getString(R.string.topads_dash_product_recomm_max_budget_error))
                         }
                         else -> {
                             holder.view.editBudget?.setError(false)

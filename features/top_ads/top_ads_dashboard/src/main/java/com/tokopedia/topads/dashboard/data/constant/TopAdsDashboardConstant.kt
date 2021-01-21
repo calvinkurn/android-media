@@ -21,6 +21,9 @@ object TopAdsDashboardConstant {
     const val ACTIVE = "Aktif"
     const val TIDAK_TAMPIL = "Tidak Tampil"
     const val TIDAK_AKTIF = "Tidak Aktif"
+    const val RECOMMENDATION_PRODUCT_MAX_BID = 5000
+    const val RECOMMENDATION_DAILY_MAX_BUDGET = 100000
+    const val BUDGET_MULTIPLE_FACTOR = 50
 
     const val ACTION = "action"
     const val GROUPS = "groups"

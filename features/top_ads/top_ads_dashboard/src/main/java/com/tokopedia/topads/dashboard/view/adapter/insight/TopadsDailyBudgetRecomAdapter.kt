@@ -1,12 +1,14 @@
 package com.tokopedia.topads.dashboard.view.adapter.insight
 
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.BUDGET_MULTIPLE_FACTOR
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.RECOMMENDATION_DAILY_MAX_BUDGET
 import com.tokopedia.topads.dashboard.data.model.DataBudget
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_dash_recon_daily_budget_item.view.*
@@ -48,7 +50,7 @@ class TopadsDailyBudgetRecomAdapter(private val onBudgetClicked: ((pos: Int) -> 
             holder.view.recom_budget.text = recommendationBid
             holder.view.editBudget?.textFieldInput?.setText(convertToCurrency(suggestedPriceDaily.toLong()))
             setCurrentBid = suggestedPriceDaily
-            holder.view.potentialClick.text = String.format(holder.view.context.getString(R.string.topads_dash_potential_click_text), calculatePotentialClick(holder))
+            holder.view.potentialClick.text = String.format(holder.view.context.getString(R.string.topads_dash_potential_click_text), calculatePotentialClick(holder).thousandFormatted())
             holder.view.buttonSubmitEdit.setOnClickListener {
                 holder.view.buttonSubmitEdit.isLoading = true
                 onBudgetClicked(holder.adapterPosition)
@@ -57,15 +59,26 @@ class TopadsDailyBudgetRecomAdapter(private val onBudgetClicked: ((pos: Int) -> 
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     setCurrentBid = number.toInt()
-                    holder.view.potentialClick.text = calculatePotentialClick(holder).toString()
+                    holder.view.potentialClick.text = String.format(holder.view.context.getString(R.string.topads_dash_potential_click_text), calculatePotentialClick(holder).thousandFormatted())
                     when {
                         number < suggestedPriceDaily.toDouble() && number > priceDaily -> {
                             holder.view.buttonSubmitEdit.isEnabled = true
-                            holder.view.editBudget?.setMessage(Html.fromHtml(String.format(holder.view.context.getString(R.string.topads_dash_budget_recom_error), suggestedPriceDaily)))
+                            holder.view.editBudget?.setError(false)
+                            holder.view.editBudget?.setMessage(String.format(holder.view.context.getString(R.string.topads_dash_budget_recom_error), suggestedPriceDaily))
                         }
                         number < priceDaily -> {
                             holder.view.editBudget?.setError(true)
-                            holder.view.editBudget?.setMessage(holder.view.context.getString(R.string.topads_dash_budget_recom_min_bid_error))
+                            holder.view.editBudget?.setMessage(holder.view.context.getString(R.string.topads_dash_product_recomm_min_budget_error))
+                            holder.view.buttonSubmitEdit.isEnabled = false
+                        }
+                        number > RECOMMENDATION_DAILY_MAX_BUDGET -> {
+                            holder.view.editBudget?.setError(true)
+                            holder.view.editBudget?.setMessage(holder.view.context.getString(R.string.topads_dash_product_recomm_max_budget_error))
+                            holder.view.buttonSubmitEdit.isEnabled = false
+                        }
+                        number.toInt() % BUDGET_MULTIPLE_FACTOR != 0 -> {
+                            holder.view.editBudget?.setError(true)
+                            holder.view.editBudget?.setMessage(String.format(holder.view.context.getString(R.string.topads_common_error_multiple_50), BUDGET_MULTIPLE_FACTOR))
                             holder.view.buttonSubmitEdit.isEnabled = false
                         }
                         else -> {

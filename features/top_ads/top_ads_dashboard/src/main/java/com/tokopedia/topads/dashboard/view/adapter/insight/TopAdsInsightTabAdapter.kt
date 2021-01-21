@@ -1,6 +1,5 @@
 package com.tokopedia.topads.dashboard.view.adapter.insight
 
-import android.content.Context
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
 
 
-class TopAdsInsightTabAdapter(private val context: Context) : RecyclerView.Adapter<TopAdsTabInsightViewHolder>() {
+class TopAdsInsightTabAdapter : RecyclerView.Adapter<TopAdsTabInsightViewHolder>() {
 
     @LayoutRes
     private var itemLayout = R.layout.topads_dash_item_insight_tab_layout

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_marginBottom="@dimen/dp_16"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/img_folder"
@@ -126,9 +127,8 @@
         android:id="@+id/buttonSubmitEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
         android:text="@string/topads_dash_terapkan"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editBudget"
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"

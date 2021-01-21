@@ -104,7 +104,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     }
 
     private val topAdsInsightTabAdapter: TopAdsInsightTabAdapter? by lazy {
-        context?.run { TopAdsInsightTabAdapter(this) }
+        context?.run { TopAdsInsightTabAdapter() }
     }
 
     protected val currentStatisticsFragment: TopAdsDashboardStatisticFragment?

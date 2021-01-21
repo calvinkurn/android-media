@@ -50,7 +50,6 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
 
     private fun initialState() {
         group_name_input?.textFieldInput?.text?.clear()
-        submit_butt?.isEnabled = false
         group_name_input?.setError(false)
         group_name_input?.setMessage("")
         if (groupList.isEmpty()) {
@@ -93,10 +92,12 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
         contentSwitch?.setOnCheckedChangeListener { _, isChecked ->
             group_name_input?.textFieldInput?.text?.clear()
             if (!isChecked) {
+                submit_butt?.isEnabled = adapter.isChecked() != -1
                 group_name_input.gone()
                 search.visible()
                 recyclerView.visible()
             } else {
+                submit_butt?.isEnabled = group_name_input?.textFieldInput?.text?.isEmpty() == false
                 group_name_input?.requestFocus()
                 group_name_input.visible()
                 search.gone()
@@ -175,7 +176,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
             }
             topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
         }
-            adapter.setItems(groupList)
+        adapter.setItems(groupList)
     }
 
     private fun onSuccessCount(list: List<CountDataItem>) {

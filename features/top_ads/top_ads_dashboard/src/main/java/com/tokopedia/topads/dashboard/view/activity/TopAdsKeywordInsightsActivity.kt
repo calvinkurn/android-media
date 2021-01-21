@@ -74,7 +74,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
         initInjector()
         setContentView(R.layout.topads_dash_insight_key_activity_base_layout)
         topAdsInsightPresenter.attachView(this)
-        topAdsInsightPresenter.getInsight(resources)
+        fetchData()
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         tabUnify.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -194,6 +194,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     override fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean) {
+        fetchData()
         currentGroupId = groupId
         val query = data?.header?.btnAction?.insight ?: ""
         this.countToAdd = countToAdd
@@ -237,12 +238,18 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     override fun onButtonClickedNeg(data: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean) {
+        fetchData()
         requestFrom = REQUEST_FROM_NEG
         onButtonClicked(data, groupId, countToAdd, forAllButton)
     }
 
     override fun onButtonClickedBid(data: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean) {
+        fetchData()
         requestFrom = REQUEST_FROM_BID
         onButtonClicked(data, groupId, countToAdd, forAllButton)
+    }
+
+    private fun fetchData() {
+        topAdsInsightPresenter.getInsight(resources)
     }
 }

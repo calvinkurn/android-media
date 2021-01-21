@@ -74,6 +74,10 @@ class TopadsRecomGroupBsAdapter(val onGroupSelect: ((pos: Int) -> Unit)) : Recyc
         return items[selectedPosition].groupId
     }
 
+    fun isChecked():Int{
+        return selectedPosition
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as? GroupViewHolder)?.let {
             it.name.text = items[holder.adapterPosition].groupName
