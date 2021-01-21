@@ -1813,6 +1813,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
             )
         }
+        if (channelUiModel.performanceSummaryLink.isNotBlank() || channelUiModel.performanceSummaryLink.isNotEmpty()) {
+            bottomSheetActionList.add(
+                    PlayWidgetSellerActionBottomSheet.Action(
+                            R.drawable.ic_play_widget_sgc_performance,
+                            MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                            context?.getString(R.string.shop_page_play_widget_sgc_performance).orEmpty()) {
+                        RouteManager.getIntent(requireContext(), channelUiModel.performanceSummaryLink)
+                        playWidgetActionBottomSheet.dismiss()
+                    }
+            )
+        }
         bottomSheetActionList.add(
                 PlayWidgetSellerActionBottomSheet.Action(
                 com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
