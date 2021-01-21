@@ -12,7 +12,6 @@ import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.TkpdWebView
 
-@SuppressLint("LogNotTimber")
 class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
 
     companion object {
