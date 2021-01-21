@@ -32,7 +32,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_C
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.TERM_PRIVACY
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
@@ -457,17 +456,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     fun dismissLoadingProgress() {
         setActionsEnabled(true)
         progressBar?.visibility = View.GONE
-    }
-
-    fun goToActivationPage(email: String?, password: String?) {
-        if (activity != null) {
-            val intent = ActivationActivity.getCallingIntent(activity,
-                    email,
-                    password,
-                    source
-            )
-            startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT)
-        }
     }
 
     fun onErrorRegister(errorMessage: String?) {

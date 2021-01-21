@@ -93,6 +93,8 @@ dependencies {
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.workManagerUtil)
+    implementation project(rootProject.ext.libraries.deviceFingerprint)
+
     implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.basemvvm)
@@ -122,7 +124,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.videoRecorder)
     implementation project(rootProject.ext.libraries.travelCalendar)
@@ -274,6 +275,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
+    }
+    // Warning: removing imageCropper lib might cause youtube library crash
+    // when load recommendation at the end of video
+    // Need to recheck
+    implementation(rootProject.ext.miscDependencies.imagecropper) {
+        exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi

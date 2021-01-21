@@ -19,7 +19,8 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    implementation files('libs/java_util.jar')
+    implementation files('libs/tkpd_util_obs.jar')
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.playServicesDependencies.ads
@@ -29,10 +30,16 @@ dependencies {
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.encryption)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+    implementation rootProject.ext.miscDependencies.workManager
+    //for fingerprint model
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 }
 
 project.ext {

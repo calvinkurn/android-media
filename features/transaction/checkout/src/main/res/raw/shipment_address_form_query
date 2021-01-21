@@ -236,6 +236,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       egold_attributes {
         eligible
         is_tiering
+        is_opt_in
         range {
           min
           max
