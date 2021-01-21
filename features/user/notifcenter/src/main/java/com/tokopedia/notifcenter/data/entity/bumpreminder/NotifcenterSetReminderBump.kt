@@ -12,8 +12,6 @@ data class NotifcenterSetReminderBump(
         val messageError: List<String> = listOf(),
         @SerializedName("server")
         val server: String = "",
-        @SerializedName("server_proccess_time")
-        val serverProccessTime: Int = 0,
         @SerializedName("status")
         val status: String = ""
 )
