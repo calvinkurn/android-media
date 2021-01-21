@@ -298,7 +298,7 @@ object DigitalCheckoutMapper {
         attributes.clientId = getTrackClientId
         attributes.appsFlyer = DeviceUtil.getAppsFlyerIdentifierParam(
                 TrackApp.getInstance().appsFlyer.uniqueId,
-                "")
+                TrackApp.getInstance().appsFlyer.googleAdId)
         requestBodyCheckout.attributes = attributes
         requestBodyCheckout.relationships = CheckoutRelationships(
                 CheckoutRelationships.Cart(

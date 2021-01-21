@@ -223,7 +223,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
         showPromoTicker()
 
         btnCheckout.setOnClickListener {
-            viewModel.proceedToCheckout(getDigitalIdentifierParam())
+            viewModel.proceedToCheckout(promoData.promoCode, getDigitalIdentifierParam())
         }
     }
 

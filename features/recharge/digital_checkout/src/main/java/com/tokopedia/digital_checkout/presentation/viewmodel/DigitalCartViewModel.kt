@@ -299,10 +299,11 @@ class DigitalCartViewModel @Inject constructor(
         _totalPrice.postValue(totalPrice)
     }
 
-    fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier) {
+    fun proceedToCheckout(promoCode: String, digitalIdentifierParam: RequestBodyIdentifier) {
         val cartDigitalInfoData = _cartDigitalInfoData.value
         cartDigitalInfoData?.let {
             val checkoutData = DigitalCheckoutMapper.buildCheckoutData(it, userSession.accessToken)
+            checkoutData.voucherCode = promoCode
             _showLoading.postValue(true)
             if (checkoutData.isNeedOtp) {
                 _isNeedOtp.postValue(userSession.phoneNumber)
