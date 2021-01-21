@@ -24,6 +24,13 @@ class OfficialBannerViewHolder(view: View): AbstractViewHolder<OfficialBannerDat
 
     private var officialStoreTracking: OfficialStoreTracking? = null
 
+    init {
+        banner = view?.findViewById(R.id.banner_official)
+        itemView.context?.let {
+            officialStoreTracking = OfficialStoreTracking(it)
+        }
+    }
+
     override fun bind(element: OfficialBannerDataModel) {
         elementBanner = element
         itemView.banner_official.run {
