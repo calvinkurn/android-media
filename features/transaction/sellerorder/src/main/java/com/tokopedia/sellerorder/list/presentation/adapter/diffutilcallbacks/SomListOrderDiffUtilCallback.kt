@@ -53,6 +53,8 @@ class SomListOrderDiffUtilCallback(
                     }
                 }
             }
+        } else if (oldItem is SomListOrderUiModel && newItem is SomListOrderUiModel) {
+            oldItem to newItem
         } else super.getChangePayload(oldItemPosition, newItemPosition)
     }
 
