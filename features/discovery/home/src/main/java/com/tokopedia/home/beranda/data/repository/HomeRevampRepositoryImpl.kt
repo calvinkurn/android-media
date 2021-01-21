@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.data.model.AtfData
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
@@ -51,7 +52,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
     var isCacheExist = false
     val gson = Gson()
 
-    val jobList = mutableListOf<Deferred<Unit?>>()
+    val jobList = mutableListOf<Deferred<AtfData>>()
 
     override fun getHomeData(): Flow<HomeData?> = homeCachedDataSource.getCachedHomeData().map {
         isCacheExist = it != null
@@ -150,6 +151,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
                                 }
+                                atfData
                             }
                             jobList.add(job)
                         }
@@ -166,6 +168,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     atfData.status = AtfKey.STATUS_ERROR
                                     atfData.content = null
                                 }
+                                atfData
                             }
                             jobList.add(job)
                         }
@@ -180,6 +183,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
                                 }
+                                atfData
                             }
                             jobList.add(job)
                         }
@@ -190,21 +194,20 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 }
             }
 
-            jobList.forEach {
-                it.await()
-            }
-
-            homeData.atfData?.dataList?.forEach error@{
-                if (it.status == AtfKey.STATUS_ERROR && !it.isOptional && it.component != TYPE_TICKER) {
-                    emit(Result.errorAtf(Throwable(),null))
-                    return@error
+            jobList.awaitAll().let {
+                it.forEach error@{
+                    if (it.status == AtfKey.STATUS_ERROR && !it.isOptional && it.component != TYPE_TICKER) {
+                        emit(Result.errorAtf(Throwable(),null))
+                        return@error
+                    }
                 }
+
+                homeData.atfData?.isProcessingAtf = false
+                cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                    homeCachedDataSource.saveToDatabase(homeData)
+                })
             }
 
-            homeData.atfData?.isProcessingAtf = false
-            cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
-                homeCachedDataSource.saveToDatabase(homeData)
-            })
             /**
              * 6. Get dynamic channel data
              */
