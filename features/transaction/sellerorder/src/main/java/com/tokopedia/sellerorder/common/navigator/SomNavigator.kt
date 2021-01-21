@@ -87,7 +87,7 @@ object SomNavigator {
     fun goToPrintAwb(activity: FragmentActivity?, view: View?, orderIds: List<String>, markAsPrinted: Boolean) {
         activity?.run {
             if (GlobalConfig.isSellerApp()) {
-                val url = Uri.parse("${TokopediaUrl.getInstance().MOBILEWEB}/${SomConsts.PATH_PRINT_AWB}")
+                val url = Uri.parse("${TokopediaUrl.getInstance().MOBILEWEB}${SomConsts.PATH_PRINT_AWB}")
                         .buildUpon()
                         .appendQueryParameter(SomConsts.PRINT_AWB_ORDER_ID_QUERY_PARAM, orderIds.joinToString(","))
                         .appendQueryParameter(SomConsts.PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM, if (markAsPrinted) "1" else "0")
