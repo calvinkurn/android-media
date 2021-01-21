@@ -1819,7 +1819,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             R.drawable.ic_play_widget_sgc_performance,
                             MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
                             context?.getString(R.string.shop_page_play_widget_sgc_performance).orEmpty()) {
-                        RouteManager.getIntent(requireContext(), channelUiModel.performanceSummaryLink)
+                        RouteManager.route(requireContext(), channelUiModel.performanceSummaryLink)
                         playWidgetActionBottomSheet.dismiss()
                     }
             )
