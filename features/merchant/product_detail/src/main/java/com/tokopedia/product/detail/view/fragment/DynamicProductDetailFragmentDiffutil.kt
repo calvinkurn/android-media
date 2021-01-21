@@ -525,7 +525,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             videoTrackerData?.let {
                 DynamicProductDetailTracking.Click.eventVideoStateChange(
                         viewModel.getDynamicProductInfoP1, viewModel.userId, DynamicProductDetailTracking.generateComponentTrackModel(pdpUiUpdater?.mediaMap, 0),
-                        videoTrackerData.first,videoTrackerData.second, isAutoPlay
+                        videoTrackerData.first, videoTrackerData.second, isAutoPlay
                 )
                 alreadyHitVideoTracker = true
             }
@@ -548,7 +548,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         }
     }
 
-    private fun setNavToolBarCartCounter(){
+    private fun setNavToolBarCartCounter() {
         val localCacheHandler = LocalCacheHandler(context, CartConstant.CART)
         val cartCount = localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0)
         navToolbar?.setBadgeCounter(IconList.ID_CART, if (cartCount > ProductDetailConstant.CART_MAX_COUNT) {
@@ -989,7 +989,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 sharedViewModel?.updateVideoDetailData(ProductVideoDetailDataModel(it.getVideoDataModel(),
                         //Tracker Data
                         trackerData?.shopTypeString
-                        ?: "",
+                                ?: "",
                         trackerData?.basic?.shopID ?: "",
                         viewModel.userId, trackerData?.basic?.productID ?: ""))
 
@@ -1005,7 +1005,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 DynamicProductDetailTracking.generateComponentTrackModel(pdpUiUpdater?.mediaMap, 0), isMute)
     }
 
-    override fun onVideoStateChange(stopDuration: Long, videoDuration:Long) {
+    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
         viewModel.updateVideoTrackerData(stopDuration, videoDuration)
     }
 
@@ -1784,7 +1784,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         view?.let {
             Snackbar.make(it, string, Snackbar.LENGTH_LONG).apply {
                 setAction(getString(com.tokopedia.abstraction.R.string.close)) { dismiss() }
-                setActionTextColor(androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                setActionTextColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }.show()
         }
     }
@@ -1965,11 +1965,13 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun checkAndExecuteReferralAction(productData: ProductData) {
-        val fireBaseRemoteMsgGuest = remoteConfig()?.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "") ?: ""
+        val fireBaseRemoteMsgGuest = remoteConfig()?.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
+                ?: ""
         if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.productShareDescription = fireBaseRemoteMsgGuest
 
         if (viewModel.userSessionInterface.isLoggedIn && viewModel.userSessionInterface.isMsisdnVerified) {
-            val fireBaseRemoteMsg = remoteConfig()?.getString(RemoteConfigKey.fireBaseShareMsgKey, "") ?: ""
+            val fireBaseRemoteMsg = remoteConfig()?.getString(RemoteConfigKey.fireBaseShareMsgKey, "")
+                    ?: ""
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
                 doReferralShareAction(productData, fireBaseRemoteMsg)
                 return
@@ -2394,14 +2396,16 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             return
         }
 
-        var isCanShowing = remoteConfig()?.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true) ?: true
+        var isCanShowing = remoteConfig()?.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP, true)
+                ?: true
         if (stickyLoginView?.isLoginReminder() == true && isCanShowing) {
             stickyLoginView?.showLoginReminder(StickyLoginConstant.Page.PDP)
             if (stickyLoginView?.isShowing() == true) {
                 stickyLoginView?.trackerLoginReminder?.viewOnPage(StickyLoginConstant.Page.PDP)
             }
         } else {
-            isCanShowing = remoteConfig()?.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true) ?: true
+            isCanShowing = remoteConfig()?.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP, true)
+                    ?: true
             if (!isCanShowing) {
                 stickyLoginView?.visibility = View.GONE
                 return
@@ -3243,8 +3247,10 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun setupRemoteConfig() {
-        viewModel.enableCaching = remoteConfig()?.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true) ?: true
-        enableCheckImeiRemoteConfig = remoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false) ?: false
+        viewModel.enableCaching = remoteConfig()?.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
+                ?: true
+        enableCheckImeiRemoteConfig = remoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false)
+                ?: false
     }
 
     private fun getAbTestPlatform(): AbTestPlatform? {

@@ -197,17 +197,17 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
     }
 
     override fun getNewFragment(): Fragment {
-//        return if (remoteConfig?.getBoolean(ProductDetailConstant.ENABLE_NEW_PDP, true) == true) {
-            return DynamicProductDetailFragmentDiffutil.newInstance(productId, warehouseId, shopDomain,
+        return if (remoteConfig?.getBoolean(ProductDetailConstant.ENABLE_NEW_PDP, true) == true) {
+            DynamicProductDetailFragmentDiffutil.newInstance(productId, warehouseId, shopDomain,
                     productKey, isFromDeeplink,
                     isFromAffiliate ?: false, trackerAttribution,
                     trackerListName, affiliateString, deeplinkUrl, layoutId)
-//        } else {
-//            DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
-//                    productKey, isFromDeeplink,
-//                    isFromAffiliate ?: false, trackerAttribution,
-//                    trackerListName, affiliateString, deeplinkUrl, layoutId)
-//        }
+        } else {
+            DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
+                    productKey, isFromDeeplink,
+                    isFromAffiliate ?: false, trackerAttribution,
+                    trackerListName, affiliateString, deeplinkUrl, layoutId)
+        }
     }
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
