@@ -52,11 +52,10 @@ class RechargeHomepageViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response.sections
 
+            mutableRechargeHomepageSectionSkeleton.postValue(Success(data))
             // Add initial section data
             localRechargeHomepageSections = RechargeHomepageSectionMapper.mapInitialHomepageSections(data)
             mutableRechargeHomepageSections.postValue(localRechargeHomepageSections)
-
-            mutableRechargeHomepageSectionSkeleton.postValue(Success(data))
         }) {
             mutableRechargeHomepageSectionSkeleton.postValue(Fail(it))
         }

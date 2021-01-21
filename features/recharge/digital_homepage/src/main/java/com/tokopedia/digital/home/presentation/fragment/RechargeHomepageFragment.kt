@@ -97,7 +97,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         hideStatusBar()
         digital_homepage_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
-        digital_homepage_search_view.setFocusChangeListener(this)
+
+        initSearchView()
+
         calculateToolbarView(0)
 
         recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -132,6 +134,14 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         }
 
         loadData()
+    }
+
+    private fun initSearchView() {
+        digital_homepage_search_view.setFocusChangeListener(this)
+
+        when (platformId) {
+            PLATFORM_ID_TRAVEL_ENTERTAINMENT -> digital_homepage_search_view.setSearchHint(getString(R.string.travel_entertainment_home_search_view_hint))
+        }
     }
 
     private fun hideStatusBar() {
@@ -374,9 +384,12 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun redirectToTravelEntertainmentSearchPage() {
-        startActivity(DigitalHomePageSearchActivity.getCallingIntent(
-                requireContext(), platformId, enablePersonalize,
-                viewModel.getDynamicIconsSectionIds(), getString(R.string.travel_entertainment_home_search_view_hint)))
+        val sectionIds = viewModel.getDynamicIconsSectionIds()
+        if (sectionIds.isNotEmpty()) {
+            startActivity(DigitalHomePageSearchActivity.getCallingIntent(
+                    requireContext(), platformId, enablePersonalize,
+                    sectionIds, getString(R.string.travel_entertainment_home_search_view_hint)))
+        }
     }
 
     fun onBackPressed() {
