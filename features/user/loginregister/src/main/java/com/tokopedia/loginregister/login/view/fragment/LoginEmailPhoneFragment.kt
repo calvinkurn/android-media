@@ -22,7 +22,6 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
@@ -56,7 +55,6 @@ import com.tokopedia.devicefingerprint.service.SubmitDeviceInfoService
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
@@ -81,7 +79,7 @@ import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
@@ -546,7 +544,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
     }
 
-    override fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemViewModel>) {
+    override fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemDataModel>) {
 
         if (providers.isNotEmpty()) {
             val layoutParams = LinearLayout.LayoutParams(
@@ -589,12 +587,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     }
 
-    private fun setDiscoverListener(discoverItemViewModel: DiscoverItemViewModel,
+    private fun setDiscoverListener(discoverItemDataModel: DiscoverItemDataModel,
                                     tv: LoginTextView) {
 
-        if (discoverItemViewModel.id.equals(FACEBOOK, ignoreCase = true)) {
+        if (discoverItemDataModel.id.equals(FACEBOOK, ignoreCase = true)) {
             tv.setOnClickListener { onLoginFacebookClick() }
-        } else if (discoverItemViewModel.id.equals(GPLUS, ignoreCase = true)) {
+        } else if (discoverItemDataModel.id.equals(GPLUS, ignoreCase = true)) {
             tv.setOnClickListener { onLoginGoogleClick() }
         }
     }

@@ -1,7 +1,7 @@
 package com.tokopedia.loginregister.login.view.model;
 
 
-import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
+import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel;
 
 import java.util.ArrayList;
 
@@ -9,17 +9,17 @@ import java.util.ArrayList;
  * @author by nisie on 10/10/17.
  */
 
-public class DiscoverViewModel {
-    private ArrayList<DiscoverItemViewModel> providers;
+public class DiscoverDataModel {
+    private ArrayList<DiscoverItemDataModel> providers;
     private String urlBackground;
 
-    public DiscoverViewModel(ArrayList<DiscoverItemViewModel> providers,
+    public DiscoverDataModel(ArrayList<DiscoverItemDataModel> providers,
                              String urlBackground) {
         this.providers = providers;
         this.urlBackground = urlBackground;
     }
 
-    public ArrayList<DiscoverItemViewModel> getProviders() {
+    public ArrayList<DiscoverItemDataModel> getProviders() {
         return providers;
     }
 

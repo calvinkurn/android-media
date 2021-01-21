@@ -7,7 +7,7 @@ import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
-import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
@@ -47,7 +47,7 @@ interface LoginEmailPhoneContract {
 
         fun onErrorDiscoverLogin(throwable: Throwable)
 
-        fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemViewModel>)
+        fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemDataModel>)
 
         fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener
 

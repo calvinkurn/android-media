@@ -4,7 +4,7 @@ package com.tokopedia.loginregister.discover.data;
  * @author by nisie on 10/10/17.
  */
 
-public class DiscoverItemViewModel {
+public class DiscoverItemDataModel {
 
     private String id;
     private String name;
@@ -13,7 +13,7 @@ public class DiscoverItemViewModel {
     private String color;
     private int imageResource;
 
-    public DiscoverItemViewModel(String id, String name, String url,
+    public DiscoverItemDataModel(String id, String name, String url,
                                  String image, String color) {
         this.id = id;
         this.name = name;

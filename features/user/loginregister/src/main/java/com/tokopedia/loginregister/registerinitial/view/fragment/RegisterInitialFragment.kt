@@ -35,7 +35,6 @@ import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
@@ -48,7 +47,7 @@ import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.ProceedWithPhoneDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
-import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
@@ -476,7 +475,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         })
     }
 
-    private fun onSuccessGetProvider(discoverItems: ArrayList<DiscoverItemViewModel>) {
+    private fun onSuccessGetProvider(discoverItems: ArrayList<DiscoverItemDataModel>) {
         dismissLoadingDiscover()
 
         val layoutParams = LinearLayout.LayoutParams(
@@ -944,10 +943,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         }
     }
 
-    private fun setDiscoverOnClickListener(discoverItemViewModel: DiscoverItemViewModel,
+    private fun setDiscoverOnClickListener(discoverItemDataModel: DiscoverItemDataModel,
                                            loginTextView: LoginTextView) {
 
-        when (discoverItemViewModel.id.toLowerCase()) {
+        when (discoverItemDataModel.id.toLowerCase()) {
             FACEBOOK -> loginTextView.setOnClickListener { onRegisterFacebookClick() }
             GPLUS -> loginTextView.setOnClickListener { onRegisterGoogleClick() }
         }

@@ -19,7 +19,7 @@ import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
-import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
+import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
@@ -69,7 +69,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
 
     override fun discoverLogin(context: Context) {
         view?.let { view ->
-            discoverUseCase.execute(RequestParams.EMPTY, object : Subscriber<DiscoverViewModel>() {
+            discoverUseCase.execute(RequestParams.EMPTY, object : Subscriber<DiscoverDataModel>() {
                 override fun onCompleted() {
 
                 }
@@ -80,10 +80,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     view.onErrorDiscoverLogin(e)
                 }
 
-                override fun onNext(discoverViewModel: DiscoverViewModel) {
+                override fun onNext(discoverDataModel: DiscoverDataModel) {
                     view.stopTrace()
                     view.dismissLoadingDiscover()
-                    view.onSuccessDiscoverLogin(discoverViewModel.providers)
+                    view.onSuccessDiscoverLogin(discoverDataModel.providers)
                 }
             })
         }

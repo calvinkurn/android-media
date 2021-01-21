@@ -11,9 +11,9 @@ import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCo
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
-import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
-import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
+import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
@@ -63,8 +63,8 @@ class RegisterInitialViewModel @Inject constructor(
         private val rawQueries: Map<String, String>,
         dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    private val mutableGetProviderResponse = MutableLiveData<Result<ArrayList<DiscoverItemViewModel>>>()
-    val getProviderResponse: LiveData<Result<ArrayList<DiscoverItemViewModel>>>
+    private val mutableGetProviderResponse = MutableLiveData<Result<ArrayList<DiscoverItemDataModel>>>()
+    val getProviderResponse: LiveData<Result<ArrayList<DiscoverItemDataModel>>>
         get() = mutableGetProviderResponse
 
     private val mutableGetFacebookCredentialResponse = MutableLiveData<Result<FacebookCredentialData>>()
@@ -331,7 +331,7 @@ class RegisterInitialViewModel @Inject constructor(
         })
     }
 
-    private fun onSuccessGetProvider(): (DiscoverViewModel) -> Unit {
+    private fun onSuccessGetProvider(): (DiscoverDataModel) -> Unit {
         return {
             if (!it.providers.isEmpty()) {
                 mutableGetProviderResponse.value = Success(it.providers)
