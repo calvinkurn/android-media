@@ -1813,7 +1813,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
             )
         }
-        if (channelUiModel.performanceSummaryLink.isNotBlank() || channelUiModel.performanceSummaryLink.isNotEmpty()) {
+        if (channelUiModel.performanceSummaryLink.isNotBlank() && channelUiModel.performanceSummaryLink.isNotEmpty()) {
             bottomSheetActionList.add(
                     PlayWidgetSellerActionBottomSheet.Action(
                             R.drawable.ic_play_widget_sgc_performance,
