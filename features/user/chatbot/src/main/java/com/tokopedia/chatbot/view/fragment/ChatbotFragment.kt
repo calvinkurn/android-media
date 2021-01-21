@@ -99,7 +99,8 @@ private const val FIRST_PAGE = 1
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener,
-        TypingListener,ChatOptionListListener, CsatOptionListListener,
+        TypingListener, ChatOptionListListener, CsatOptionListListener,
+        StickyActionButtonClickListener,
         View.OnClickListener {
 
     override fun clearChatText() {
@@ -131,6 +132,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isBackAllowed = true
     private lateinit var ticker:Ticker
     private var csatOptionsViewModel: CsatOptionsViewModel? = null
+    private var invoiceRefNum = ""
+    private var replyText = ""
+    private var isStickyButtonClicked = false
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -220,6 +224,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return ChatbotTypeFactoryImpl(
+                this,
                 this,
                 this,
                 this,
@@ -803,6 +808,45 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             ChatBotCsatActivity
                     .getInstance(it, selected.value, model)
         }, REQUEST_SUBMIT_CSAT)
+    }
+
+    override fun onStickyActionButtonCLicked(invoiceRefNum: String, replyText: String) {
+        this.invoiceRefNum = invoiceRefNum
+        this.replyText = replyText
+        this.isStickyButtonClicked = true
+        presenter.checkLinkForRedirection(invoiceRefNum,
+                onGetSuccessResponse = {
+                    if (it.isNotEmpty()){
+                        onGoToWebView(it, it)}
+                },
+                checkForReplyText = {},
+                onError = {
+
+                })
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        sendReplyTextForResolutionComponent()
+    }
+
+    private fun sendReplyTextForResolutionComponent() {
+        if (isStickyButtonClicked) {
+            presenter.checkLinkForRedirection(invoiceRefNum,
+                    onGetSuccessResponse = {},
+                    checkForReplyText = {
+                        val startTime = SendableViewModel.generateStartTime()
+                        presenter.sendMessage(messageId, replyText, startTime, opponentId,
+                                onSendingMessage(replyText, startTime))
+                        this.isStickyButtonClicked = false
+
+                    },
+                    onError = {
+
+                    })
+        }
+
     }
 
     override fun onBackPressed(): Boolean {

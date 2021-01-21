@@ -52,12 +52,17 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TO
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -70,6 +75,7 @@ import java.util.Calendar
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by nisie on 05/12/18.
@@ -88,8 +94,9 @@ class ChatbotPresenter @Inject constructor(
         private val getTickerDataUseCase: GetTickerDataUseCase,
         private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
         private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
-        private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase
-) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
+        private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
+        private val getResolutionLinkUseCase: GetResolutionLinkUseCase
+) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
 
     object companion{
@@ -120,11 +127,15 @@ class ChatbotPresenter @Inject constructor(
     private var listInterceptor: ArrayList<Interceptor>
     private var isErrorOnLeaveQueue = false
     private lateinit var chatResponse:ChatSocketPojo
+    private val job= SupervisorJob()
 
     init {
         mSubscription = CompositeSubscription()
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun connectWebSocket(messageId: String) {
         val webSocketUrl = ChatbotUrl.getPathWebsocket(userSession.deviceId, userSession.userId)
@@ -519,6 +530,38 @@ class ChatbotPresenter @Inject constructor(
                 ChipSubmitChatCsatSubscriber(onsubmitingChatCsatSuccess, onError))
     }
 
+    override fun checkLinkForRedirection(invoiceRefNum: String,
+                                         onGetSuccessResponse: (String) -> Unit,
+                                         checkForReplyText: () -> Unit,
+                                         onError: (Throwable) -> Unit) {
+        val params = getResolutionLinkUseCase.createRequestParams(invoiceRefNum)
+        launchCatchError(
+                block = {
+                    val orderList =
+                            getResolutionLinkUseCase
+                                    .getResoLinkResponse(params)
+                                    .getResolutionLink?.resolutionLinkData?.orderList?.firstOrNull()
+                    if (orderList?.resoList?.isNotEmpty() == true) {
+                        checkForReplyText()
+                    }
+                    val link = orderList?.dynamicLink ?: ""
+                    onGetSuccessResponse(getEnvResoLink(link))
+                },
+                onError = {
+                    onError(it)
+                }
+        )
+
+    }
+
+    private fun getEnvResoLink(link: String): String {
+        var url = ""
+        if (link.isNotEmpty() && link[0] == '/') {
+            url = String.format(TokopediaUrl.getInstance().WEB + "%s", link.removeRange(0, 1))
+        }
+        return url
+    }
+
     override fun detachView() {
         destroyWebSocket()
         getExistingChatUseCase.unsubscribe()
@@ -530,6 +573,7 @@ class ChatbotPresenter @Inject constructor(
         chipGetChatRatingListUseCase.unsubscribe()
         chipSubmitHelpfulQuestionsUseCase.unsubscribe()
         chipSubmitChatCsatUseCase.unsubscribe()
+        job.cancel()
         super.detachView()
     }
 

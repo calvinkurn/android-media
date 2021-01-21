@@ -101,5 +101,10 @@ interface ChatbotContract {
                            onsubmitingChatCsatSuccess: (String) -> Unit,
                            onError: (Throwable) -> Unit)
 
+        fun checkLinkForRedirection(invoiceRefNum: String,
+                                    onGetSuccessResponse: (String) -> Unit,
+                                    checkForReplyText:() ->Unit,
+                                    onError: (Throwable) -> Unit)
+
     }
 }

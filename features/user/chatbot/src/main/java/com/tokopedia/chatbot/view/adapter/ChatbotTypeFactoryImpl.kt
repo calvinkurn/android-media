@@ -17,6 +17,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.*
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
 
@@ -33,10 +34,15 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
                                   private val chatRatingListener: ChatRatingListener,
                                   private val chatActionListBubbleListener: ChatActionListBubbleListener,
                                   private val chatOptionListListener: ChatOptionListListener,
-                                  private val csatOptionListListener: CsatOptionListListener) :
+                                  private val csatOptionListListener: CsatOptionListListener,
+                                  private val actionButtonClickListener: StickyActionButtonClickListener) :
         BaseChatTypeFactoryImpl(imageAnnouncementListener, chatLinkHandlerListener,
                 imageUploadListener, productAttachmentListener),
         ChatbotTypeFactory {
+
+    override fun type(stickyActionButtonViewModel: StickyActionButtonViewModel): Int {
+        return StickyActionButtonViewHolder.LAYOUT
+    }
 
     override fun type(chatSepratorViewModel: ChatSepratorViewModel): Int {
         return ChatbotLiveChatSeparatorViewHolder.LAYOUT
@@ -90,6 +96,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             ChatBotMessageViewHolder.LAYOUT -> ChatBotMessageViewHolder(parent, chatLinkHandlerListener)
             ChatHelpfullQuestionViewHolder.LAYOUT -> ChatHelpfullQuestionViewHolder(parent, chatOptionListListener)
             CsatOptionListViewHolder.LAYOUT -> CsatOptionListViewHolder(parent, csatOptionListListener)
+            StickyActionButtonViewHolder.LAYOUT -> StickyActionButtonViewHolder(parent, actionButtonClickListener)
             else -> super.createViewHolder(parent, type)
         }
     }
