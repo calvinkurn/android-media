@@ -174,7 +174,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     override fun onItemClicked(t: Visitable<*>?) {}
 
-    override fun loadData(page: Int) {}
+    override fun loadData(page: Int) {
+        loadNextPage(page)
+    }
 
     override fun loadInitialData() {
         isLoadingInitialData = true
@@ -195,19 +197,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         return reviewSellerDetailAdapter
     }
 
-    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : DataEndlessScrollListener(linearLayoutManager, reviewSellerDetailAdapter) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                reviewSellerDetailAdapter.showLoading()
-                loadNextPage(page)
-            }
-
-            override fun isDataEmpty(): Boolean {
-                return reviewSellerDetailAdapter.list.isEmpty()
-            }
-        }
-    }
-
     override fun onDestroy() {
         viewModelProductReviewDetail?.productFeedbackDetail?.removeObservers(this)
         viewModelProductReviewDetail?.reviewInitialData?.removeObservers(this)
@@ -219,7 +208,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         getRecyclerView(view).let {
             it.clearOnScrollListeners()
             it.layoutManager = linearLayoutManager
-            endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
             it.addOnScrollListener(endlessRecyclerViewScrollListener)
         }
     }
