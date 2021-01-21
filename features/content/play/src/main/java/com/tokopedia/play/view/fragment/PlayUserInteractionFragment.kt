@@ -696,7 +696,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeCartInfo() {
-        playViewModel.observableBadgeCart.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableCartInfo.observe(viewLifecycleOwner, DistinctObserver {
             toolbarView.setCartInfo(it)
         })
     }

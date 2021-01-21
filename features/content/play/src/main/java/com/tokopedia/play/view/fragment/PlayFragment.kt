@@ -127,7 +127,7 @@ class PlayFragment @Inject constructor(
         setOrientation()
         playParentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayParentViewModel::class.java)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        getChannelInfo()
+        processChannelInfo()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -151,7 +151,7 @@ class PlayFragment @Inject constructor(
         super.onResume()
         orientationManager.enable()
         stopPrepareMonitoring()
-        getChannelInfo()
+        updateChannelInfo()
         view?.postDelayed({
             view?.let { registerKeyboardListener(it) }
         }, 200)
@@ -159,12 +159,10 @@ class PlayFragment @Inject constructor(
 
     override fun onPause() {
         unregisterKeyboardListener(requireView())
-        playViewModel.latestCompleteChannelData?.let {
-            playParentViewModel.setLatestChannelStorageData(
-                    channelId,
-                    it
-            )
-        }
+        playParentViewModel.setLatestChannelStorageData(
+                channelId,
+                playViewModel.latestCompleteChannelData
+        )
         playViewModel.stopJob()
         super.onPause()
         if (::orientationManager.isInitialized) orientationManager.disable()
@@ -289,8 +287,12 @@ class PlayFragment @Inject constructor(
         }
     }
 
-    private fun getChannelInfo() {
-        playViewModel.getChannelInfo(channelId, playParentViewModel.getLatestChannelStorageData(channelId))
+    private fun processChannelInfo() {
+        playViewModel.processChannelInfo(playParentViewModel.getLatestChannelStorageData(channelId))
+    }
+
+    private fun updateChannelInfo() {
+        playViewModel.updateChannelInfo(playParentViewModel.getLatestChannelStorageData(channelId))
     }
 
     private fun invalidateVideoTopBounds(

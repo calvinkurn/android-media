@@ -24,6 +24,7 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
+import com.tokopedia.play.view.uimodel.recom.PlayCartInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.isFollowed
 import com.tokopedia.play.view.wrapper.PlayResult
@@ -85,7 +86,7 @@ class PlayViewModel @Inject constructor(
         get() = _observableLikeState
     val observableTotalViews: LiveData<TotalViewUiModel>
         get() = _observableTotalViews
-    val observablePartnerInfo: LiveData<PlayPartnerInfoUiModel> //Changed
+    val observablePartnerInfo: LiveData<PlayPartnerInfoUiModel> /**Changed**/
         get() = _observablePartnerInfo
     val observableQuickReply: LiveData<QuickReplyUiModel>
         get() = _observableQuickReply
@@ -99,8 +100,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableVideoProperty
     val observableProductSheetContent: LiveData<PlayResult<ProductSheetUiModel>>
         get() = _observableProductSheetContent
-    val observableBadgeCart: LiveData<CartUiModel>
-        get() = _observableBadgeCart
+    val observableCartInfo: LiveData<PlayCartInfoUiModel> /**Changed**/
+        get() = _observableCartInfo
     val observableEventPiP: LiveData<Event<PiPMode>>
         get() = _observableEventPiP
 
@@ -147,7 +148,8 @@ class PlayViewModel @Inject constructor(
     val latestCompleteChannelData: PlayChannelData.Complete
         get() {
             return PlayChannelData.Complete(
-                    partner = _observablePartnerInfo.value ?: error("Partner Info should not be null")
+                    partnerInfo = _observablePartnerInfo.value ?: error("Partner Info should not be null"),
+                    cartInfo = _observableCartInfo.value ?: error("Cart Info should not be null")
 //                    pinnedMessage = pinnedMessage,
 //                    pinnedProduct = pinnedProduct
             )
@@ -196,7 +198,7 @@ class PlayViewModel @Inject constructor(
         }
     }
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
-    private val _observableBadgeCart = MutableLiveData<CartUiModel>()
+    private val _observableCartInfo = MutableLiveData<PlayCartInfoUiModel>()
     private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
@@ -449,25 +451,32 @@ class PlayViewModel @Inject constructor(
     }
     //endregion
 
-    fun getChannelInfo(channelId: String, channelData: PlayChannelData) {
+    fun processChannelInfo(channelData: PlayChannelData) {
         when (channelData) {
-            is PlayChannelData.Empty -> {
-
-            }
+            PlayChannelData.Empty -> {}
             is PlayChannelData.Placeholder -> {
-                handlePartnerInfo(channelData.partner)
-//                _observablePartnerInfo.value = channelData.partner
-//                _observablePinnedMessage.value = channelData.pinnedMessage
-//                _observablePinnedProduct.value = channelData.pinnedProduct
+                handlePartnerInfo(channelData.partnerInfo)
+                handleCartInfo(channelData.cartInfo)
             }
             is PlayChannelData.Complete -> {
-                handlePartnerInfo(channelData.partner)
-//                _observablePinnedMessage.value = channelData.pinnedMessage
-//                _observablePinnedProduct.value = channelData.pinnedProduct
+                handlePartnerInfo(channelData.partnerInfo)
+                handleCartInfo(channelData.cartInfo)
             }
         }
+    }
 
-//        getChannelInfo(channelId)
+    fun updateChannelInfo(channelData: PlayChannelData) {
+        when (channelData) {
+            PlayChannelData.Empty -> {}
+            is PlayChannelData.Placeholder -> {
+                updatePartnerInfo(channelData.partnerInfo)
+                updateCartInfo(channelData.cartInfo)
+            }
+            is PlayChannelData.Complete -> {
+                updatePartnerInfo(channelData.partnerInfo)
+                updateCartInfo(channelData.cartInfo)
+            }
+        }
     }
 
     fun getChannelInfo(channelId: String) {
@@ -502,7 +511,7 @@ class PlayViewModel @Inject constructor(
 
                 launch { getTotalLikes(completeInfoUiModel.channelInfo.id) }
                 launch { getIsLike(completeInfoUiModel.channelInfo.feedInfo) }
-                launch { getBadgeCart(channel.configuration.showCart) }
+//                launch { getBadgeCart(channel.configuration.showCart) }
                 launch { if (completeInfoUiModel.channelInfo.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
 
                 startWebSocket(channelId)
@@ -575,9 +584,12 @@ class PlayViewModel @Inject constructor(
     }
 
     fun updateBadgeCart() {
-        val channelInfo = _observableGetChannelInfo.value
-        if (channelInfo != null && channelInfo is NetworkResult.Success) {
-            scope.launch { getBadgeCart(channelInfo.data.showCart) }
+        val cartInfo = _observableCartInfo.value
+        if (cartInfo?.shouldShow == true) {
+            viewModelScope.launch {
+                val newCount = getCartCount()
+                _observableCartInfo.value = cartInfo.copy(count = newCount)
+            }
         }
     }
 
@@ -682,11 +694,20 @@ class PlayViewModel @Inject constructor(
     }
 
     /**
-     * Private Method
+     * Handle existing channel data
      */
     private fun handlePartnerInfo(partnerInfo: PlayPartnerInfoUiModel) {
         _observablePartnerInfo.value = partnerInfo
+    }
 
+    private fun handleCartInfo(cartInfo: PlayCartInfoUiModel) {
+        _observableCartInfo.value = cartInfo
+    }
+
+    /**
+     * Update channel data
+     */
+    private fun updatePartnerInfo(partnerInfo: PlayPartnerInfoUiModel) {
         if (partnerInfo.type == PartnerType.Shop) {
             viewModelScope.launch {
                 val shopInfo = getShopInfo(partnerInfo)
@@ -699,6 +720,18 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private fun updateCartInfo(cartInfo: PlayCartInfoUiModel) {
+        if (cartInfo.shouldShow) {
+            viewModelScope.launch {
+                val cartCount = getCartCount()
+                _observableCartInfo.value = cartInfo.copy(count = cartCount)
+            }
+        }
+    }
+
+    /**
+     * Private Method
+     */
     private fun destroy() {
         playSocket.destroy()
     }
@@ -740,14 +773,11 @@ class PlayViewModel @Inject constructor(
             getPartnerInfoUseCase.executeOnBackground()
     }
 
-    private suspend fun getBadgeCart(showCart: Boolean) {
-        if (!showCart) return
+    private suspend fun getCartCount(): Int = withContext(dispatchers.io) {
         try {
-            val countCart = withContext(dispatchers.io) {
-                getCartCountUseCase.executeOnBackground()
-            }
-            _observableBadgeCart.value = CartUiModel(showCart, countCart)
+            getCartCountUseCase.executeOnBackground()
         } catch (e: Exception) {
+            0
         }
     }
 

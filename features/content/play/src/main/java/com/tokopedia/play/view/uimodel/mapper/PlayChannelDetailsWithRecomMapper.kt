@@ -5,9 +5,7 @@ import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PartnerFolowStatus
-import com.tokopedia.play.view.uimodel.recom.PlayLikeInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.*
 
 /**
  * Created by jegul on 21/01/21
@@ -20,9 +18,11 @@ class PlayChannelDetailsWithRecomMapper : PlayChannelResponseMapper {
         return input.channelDetails.dataList.map {
             PlayChannelData.Placeholder(
                     id = it.id,
-                    partner = mapPartnerInfo(it.partner),
+                    partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam),
-                    shareInfo = mapShareInfo(it.share, it.config.active, it.config.freezed)
+                    shareInfo = mapShareInfo(it.share, it.config.active, it.config.freezed),
+                    cartInfo = mapCartInfo(it.config),
+                    miscConfigInfo = mapMiscConfigInfo(it.config),
             )
         }
     }
@@ -56,4 +56,13 @@ class PlayChannelDetailsWithRecomMapper : PlayChannelResponseMapper {
                         && !isFreezed
         )
     }
+
+    private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
+            shouldShow = configResponse.showCart,
+            count = 0
+    )
+
+    private fun mapMiscConfigInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayMiscConfigUiModel(
+            shouldShowCart = configResponse.showCart
+    )
 }

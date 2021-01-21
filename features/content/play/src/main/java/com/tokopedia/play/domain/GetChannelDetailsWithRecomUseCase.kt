@@ -57,7 +57,9 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     redirect_url
                   }
                   quick_replies
-                  configurations{
+                  configurations {
+                    show_cart
+                    show_pinned_product
                     ping_interval
                     max_chars
                     max_retries
