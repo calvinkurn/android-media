@@ -2,7 +2,6 @@ package com.tokopedia.digital_checkout.usecase
 
 import com.tokopedia.digital_checkout.data.DigitalCheckoutQueries
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
-import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import javax.inject.Inject
 
