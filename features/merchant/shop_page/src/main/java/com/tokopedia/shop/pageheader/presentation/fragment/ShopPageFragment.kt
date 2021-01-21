@@ -1202,9 +1202,8 @@ class ShopPageFragment :
             updateFavouriteResult(shopPageFragmentHeaderViewHolder.isShopFavourited())
             showSuccessFollowToaster(followShop)
         } else {
-            activity?.run {
-                NetworkErrorHelper.showCloseSnackbar(this, followShop.message)
-            }
+            shopPageFragmentHeaderViewHolder.setLoadingFollowButton(false)
+            NetworkErrorHelper.showCloseSnackbar(requireActivity(), followShop.message)
             logExceptionToCrashlytics(ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, Throwable(followShop.message))
         }
     }
@@ -1215,7 +1214,7 @@ class ShopPageFragment :
                 view?.let {
                     Toaster.build(
                             it,
-                            this.toasterText,
+                            toasterText,
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_NORMAL,
                             buttonLabel ?: ""
@@ -1262,6 +1261,8 @@ class ShopPageFragment :
     }
 
     private fun onErrorUpdateFollowStatus(e: Throwable) {
+        shopPageFragmentHeaderViewHolder.setLoadingFollowButton(false)
+
         context?.let {
             if (e is UserNotLoginException) {
                 val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
@@ -1370,9 +1371,9 @@ class ShopPageFragment :
         }
     }
 
-    override fun toggleFavorite(isFavourite: Boolean) {
+    override fun setFollowStatus(isFollowing: Boolean) {
         shopPageTracking?.clickFollowUnfollowShop(
-                isFavourite,
+                isFollowing,
                 CustomDimensionShopPage.create(
                         shopId,
                         shopPageHeaderDataModel?.isOfficial ?: false,
@@ -1386,11 +1387,11 @@ class ShopPageFragment :
                 shopPageHeaderDataModel?.domain.orEmpty(),
                 shopPageHeaderDataModel?.location.orEmpty(),
                 shopPageHeaderDataModel?.isOfficial ?: false,
-                isFavourite
+                isFollowing
         )
 
         var action = ACTION_FOLLOW
-        if (!isFavourite) {
+        if (!isFollowing) {
             action = ACTION_UNFOLLOW
         }
         shopViewModel.updateFollowStatus(shopId, action)

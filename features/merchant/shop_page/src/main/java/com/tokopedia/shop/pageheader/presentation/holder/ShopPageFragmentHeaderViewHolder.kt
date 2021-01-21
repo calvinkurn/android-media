@@ -140,7 +140,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         followButton.setOnClickListener {
             if (!followButton.isLoading) {
                 followButton.isLoading = true
-                listener.toggleFavorite(!isShopFavorite)
+                listener.setFollowStatus(!isShopFavorite)
             }
         }
     }
@@ -377,9 +377,13 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         changeColorButton()
     }
 
+    fun setLoadingFollowButton(isLoading: Boolean) {
+        followButton.isLoading = isLoading
+    }
+
     interface ShopPageFragmentViewHolderListener {
         fun onFollowerTextClicked(shopFavourited: Boolean)
-        fun toggleFavorite(isFavourite: Boolean)
+        fun setFollowStatus(isFollowing: Boolean)
         fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean)
         fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
         fun openShopInfo()
