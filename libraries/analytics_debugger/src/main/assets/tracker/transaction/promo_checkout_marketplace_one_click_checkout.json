@@ -1,0 +1,55 @@
+{
+  "readme": "Promo Checkout Marketplace",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "order summary",
+      "event": "view_item",
+      "eventAction": "view available promo list",
+      "sessionIris": "YW5kcm9pZC10b2tvcGVkaWE=:0F39320D0D924F5A81CD4D8339171097:1611223439822",
+      "eventLabel": "eligible promo",
+      "promotions": [
+        {
+          "creative_name": "",
+          "creative_slot": "",
+          "item_id": "",
+          "item_name": "",
+          "promo_code": "",
+          "promo_id": "",
+          "category": "",
+          "creative_url": ""
+        },
+        {
+          "creative_name": "",
+          "creative_slot": "",
+          "item_id": "",
+          "item_name": "",
+          "promo_code": "",
+          "promo_id": "",
+          "category": "",
+          "creative_url": ""
+        },
+        {
+          "creative_name": "",
+          "creative_slot": "",
+          "item_id": "",
+          "item_name": "",
+          "promo_code": "",
+          "promo_id": "",
+          "category": "",
+          "creative_url": ""
+        },
+        {
+          "creative_name": "",
+          "creative_slot": "",
+          "item_id": "",
+          "item_name": "",
+          "promo_code": "",
+          "promo_id": "",
+          "category": "",
+          "creative_url": ""
+        }
+      ]
+    }
+  ]
+}
