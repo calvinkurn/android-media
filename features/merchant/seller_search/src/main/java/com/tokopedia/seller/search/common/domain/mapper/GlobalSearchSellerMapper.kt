@@ -196,27 +196,6 @@ object GlobalSearchSellerMapper {
         return itemHighlightSearchList
     }
 
-
-    fun mapToInitialSearchUiModel(sellerSearch: SellerSearchResponse.SellerSearch): InitialSearchUiModel {
-
-        return InitialSearchUiModel().apply {
-            val titleList = mapToTitleListSearch(sellerSearch)
-
-            val searchSellerList = mutableListOf<ItemInitialSearchUiModel>()
-            sellerSearch.data.sections.filter { it.id != HIGHLIGHTS }.map { section ->
-                section.items.map { itemSearch ->
-                    searchSellerList.add(
-                            ItemInitialSearchUiModel(id = itemSearch.id, title = itemSearch.title,
-                                    desc = itemSearch.description, imageUrl = itemSearch.image_url,
-                                    appUrl = itemSearch.app_url))
-                }
-
-                this.titleList = titleList
-                this.sellerSearchList = searchSellerList
-            }
-        }
-    }
-
     fun mapToDeleteHistorySearchUiModel(deleteHistory: DeleteHistoryResponse.DeleteHistory): DeleteHistorySearchUiModel {
         return DeleteHistorySearchUiModel(
                 message = deleteHistory.message,
