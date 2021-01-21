@@ -10,8 +10,9 @@ import com.tokopedia.cart.InstrumentTestCartActivity
 import com.tokopedia.cart.robot.CartPageRobot
 import com.tokopedia.cart.robot.cartPage
 import com.tokopedia.cart.test.R
-import com.tokopedia.cart.view.viewholder.*
-import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
+import com.tokopedia.cart.view.viewholder.CartSectionHeaderViewHolder
+import com.tokopedia.cart.view.viewholder.CartShopViewHolder
+import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -59,8 +60,6 @@ class CartHappyFlowTest {
                 val breakLoop = checkItemType(cartRecyclerView, i, this)
                 if (breakLoop) break
             }
-        } buy {
-
         }
     }
 
@@ -88,36 +87,7 @@ class CartHappyFlowTest {
                                 position = position
                         )
                     }
-                    POSITION_SECOND_CART_SHOP_VIEW_HOLDER -> {
-                        Log.d("CartHappyFlowTest", "CartShopViewHolder: 2")
-                        cartPageRobot.assertSecondCartShopViewHolder()
-                    }
-                    POSITION_THIRD_CART_SHOP_VIEW_HOLDER -> {
-                        Log.d("CartHappyFlowTest", "CartShopViewHolder: 3")
-                        cartPageRobot.assertThirdCartShopViewHolder()
-                    }
                 }
-            }
-            is ShipmentSellerCashbackViewHolder -> {
-                Log.d("CartHappyFlowTest", "ShipmentSellerCashbackViewHolder")
-            }
-            is CartEmptyViewHolder -> {
-                Log.d("CartHappyFlowTest", "CartEmptyViewHolder")
-            }
-            is DisabledItemHeaderViewHolder -> {
-                Log.d("CartHappyFlowTest", "DisabledItemHeaderViewHolder")
-            }
-            is DisabledReasonViewHolder -> {
-                Log.d("CartHappyFlowTest", "DisabledReasonViewHolder")
-            }
-            is DisabledShopViewHolder -> {
-                Log.d("CartHappyFlowTest", "DisabledShopViewHolder")
-            }
-            is DisabledCartItemViewHolder -> {
-                Log.d("CartHappyFlowTest", "DisabledCartItemViewHolder")
-            }
-            is DisabledAccordionViewHolder -> {
-                Log.d("CartHappyFlowTest", "DisabledAccordionViewHolder")
             }
         }
         return false

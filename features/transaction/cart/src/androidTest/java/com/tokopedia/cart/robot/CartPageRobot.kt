@@ -10,7 +10,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -54,12 +53,6 @@ class CartPageRobot {
         cartListData = CartSimplifiedMapper(context).convertToCartItemDataList(tmpData.shopGroupSimplifiedResponse.data)
     }
 
-    infix fun buy(func: ResultRobot.() -> Unit): ResultRobot {
-        Log.d("CartHappyFlowTest", "Do buy")
-        onView(withId(R.id.go_to_courier_page_button)).perform(click())
-        return ResultRobot().apply(func)
-    }
-
     fun assertMainContent() {
         onView(withId(R.id.ll_cart_container)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         onView(withId(R.id.rv_cart)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
@@ -100,8 +93,10 @@ class CartPageRobot {
 
             override fun perform(uiController: UiController?, view: View) {
                 Log.d("CartHappyFlowTest", "Start Assert First shop item")
-                Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.shopName ?: "", view.findViewById<Typography>(R.id.tv_shop_name).text)
-                Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.fulfillmentName ?: "", view.findViewById<Typography>(R.id.tv_fulfill_district).text)
+                Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.shopName
+                        ?: "", view.findViewById<Typography>(R.id.tv_shop_name).text)
+                Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.fulfillmentName
+                        ?: "", view.findViewById<Typography>(R.id.tv_fulfill_district).text)
                 Assert.assertEquals(View.VISIBLE, view.findViewById<ImageView>(R.id.img_shop_badge).visibility)
                 Assert.assertEquals(View.VISIBLE, view.findViewById<Label>(R.id.label_fulfillment).visibility)
                 Assert.assertEquals(View.VISIBLE, view.findViewById<ImageUnify>(R.id.img_free_shipping).visibility)
@@ -118,21 +113,13 @@ class CartPageRobot {
 
     }
 
-    fun assertSecondCartShopViewHolder() {
-
-    }
-
-    fun assertThirdCartShopViewHolder() {
-
-    }
-
     fun assertOnEachCartItem(view: View, recyclerViewId: Int, shopIndex: Int) {
         val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
 
         val tempStoreDesc = childRecyclerView.contentDescription
         childRecyclerView.contentDescription = CommonActions.UNDER_TEST_TAG
 
-        val childItemCount = childRecyclerView.adapter!!.itemCount
+        val childItemCount = childRecyclerView.adapter?.itemCount ?: 0
         for (i in 0 until childItemCount) {
             try {
                 onView(allOf(withId(recyclerViewId), withContentDescription(CommonActions.UNDER_TEST_TAG)))
@@ -153,14 +140,6 @@ class CartPageRobot {
             }
         }
         childRecyclerView.contentDescription = tempStoreDesc
-    }
-
-}
-
-class ResultRobot {
-
-    fun assertGoToShipment() {
-
     }
 
 }
