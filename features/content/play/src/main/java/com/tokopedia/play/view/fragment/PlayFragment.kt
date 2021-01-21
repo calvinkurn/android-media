@@ -125,7 +125,7 @@ class PlayFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setOrientation()
-        playParentViewModel = ViewModelProvider(this, viewModelFactory).get(PlayParentViewModel::class.java)
+        playParentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayParentViewModel::class.java)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         getChannelInfo()
     }

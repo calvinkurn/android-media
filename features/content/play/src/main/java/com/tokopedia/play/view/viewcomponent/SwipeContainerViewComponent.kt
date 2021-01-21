@@ -29,6 +29,10 @@ class SwipeContainerViewComponent(
         vpFragment.adapter = adapter
     }
 
+    fun setChannelIds(channelIds: List<String>) {
+        adapter.setChannelList(channelIds)
+    }
+
     interface DataSource {
 
         fun getFragment(channelId: String): Fragment

@@ -6,6 +6,11 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.Observer
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.analytics.performance.util.PltPerformanceData
@@ -22,6 +27,7 @@ import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
+import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import javax.inject.Inject
@@ -40,6 +46,11 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
 
     @Inject
     lateinit var pageMonitoring: PlayPltPerformanceCallback
+
+    @Inject
+    lateinit var playParentViewModelFactory: PlayParentViewModel.Factory
+
+    private lateinit var viewModel: PlayParentViewModel
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
@@ -62,10 +73,14 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
 
-        setupPage()
-
         val channelId = intent?.data?.lastPathSegment
-        setupView(channelId)
+        intent.putExtra(PLAY_KEY_CHANNEL_ID, channelId)
+
+        setupViewModel(channelId)
+        setupPage()
+        setupObserve()
+
+//        setupView(channelId)
     }
 
     override fun onResume() {
@@ -125,8 +140,28 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
 //        return getPlayFragment(channelId)
 //    }
 
+    private fun setupViewModel(channelId: String?) {
+        val viewModelFactory = object : AbstractSavedStateViewModelFactory(this, intent?.extras ?: Bundle()) {
+            override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+                return playParentViewModelFactory.create(handle) as T
+            }
+        }
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayParentViewModel::class.java)
+
+    }
+
     private fun setupPage() {
         lifecycle.addObserver(playLifecycleObserver)
+    }
+
+    private fun setupObserve() {
+        observeChannelList()
+    }
+
+    private fun observeChannelList() {
+        viewModel.observableChannelIdList.observe(this, Observer {
+            swipeContainerView.setChannelIds(it)
+        })
     }
 
     private fun setupView(channelId: String?) {

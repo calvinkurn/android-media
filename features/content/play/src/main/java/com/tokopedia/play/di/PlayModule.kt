@@ -9,6 +9,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
+import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
+import com.tokopedia.play.view.uimodel.mapper.PlayChannelResponseMapper
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
 import com.tokopedia.play_common.player.creator.ExoPlayerCreator
@@ -109,5 +111,11 @@ class PlayModule(val mContext: Context) {
     @Provides
     fun providePlayChannelStateStorage(): PlayChannelStateStorage {
         return PlayChannelStateStorage()
+    }
+
+    @PlayScope
+    @Provides
+    fun providePlayChannelResponseMapper(): PlayChannelResponseMapper {
+        return PlayChannelDetailsWithRecomMapper()
     }
 }

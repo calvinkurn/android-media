@@ -14,9 +14,12 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.view.type.PartnerFolowStatus
 import com.tokopedia.play.view.uimodel.CartUiModel
 import com.tokopedia.play.view.uimodel.PartnerInfoUiModel
 import com.tokopedia.play.view.uimodel.ShareInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.isFollowed
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -57,7 +60,7 @@ class ToolbarViewComponent(
         ivMore.hide()
     }
 
-    fun setPartnerInfo(partnerInfo: PartnerInfoUiModel) {
+    fun setPartnerInfo(partnerInfo: PlayPartnerInfoUiModel) {
         tvPartnerName.text = partnerInfo.name
         setFollowStatus(partnerInfo.isFollowed)
 

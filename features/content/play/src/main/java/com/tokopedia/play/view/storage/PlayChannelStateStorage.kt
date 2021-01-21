@@ -2,6 +2,9 @@ package com.tokopedia.play.view.storage
 
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.PinnedProductUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayLikeInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -12,15 +15,15 @@ class PlayChannelStateStorage {
     private val playPageMap: ConcurrentHashMap<String, PlayChannelData> = ConcurrentHashMap()
 
     init {
-        playPageMap.putAll(
-                listOf("12665", "12668", "12669", "12670", "12672")
-                        .mapIndexed { index, cid ->
-                            cid to PlayChannelData.Placeholder(
-                                    if (index % 2 == 0) PinnedMessageUiModel(null, "alola", "alolan pokemon") else null,
-                                    if (index % 3 == 0) PinnedProductUiModel("alola", "Beli", false) else null
-                            )
-                        }
-        )
+//        playPageMap.putAll(
+//                listOf("12665", "12668", "12669", "12670", "12672")
+//                        .mapIndexed { index, cid ->
+//                            cid to PlayChannelData.Placeholder(
+//                                    if (index % 2 == 0) PinnedMessageUiModel(null, "alola", "alolan pokemon") else null,
+//                                    if (index % 3 == 0) PinnedProductUiModel("alola", "Beli", false) else null
+//                            )
+//                        }
+//        )
     }
 
     fun getData(channelId: String): PlayChannelData = playPageMap[channelId] ?: PlayChannelData.Empty
@@ -29,6 +32,8 @@ class PlayChannelStateStorage {
         playPageMap[channelId] = channelData
     }
 
+    fun getChannelList() = playPageMap.keys().toList()
+
 }
 
 sealed class PlayChannelData {
@@ -36,12 +41,15 @@ sealed class PlayChannelData {
     object Empty : PlayChannelData()
 
     data class Placeholder(
-            val pinnedMessage: PinnedMessageUiModel?,
-            val pinnedProduct: PinnedProductUiModel?,
+            val id: String,
+            val partner: PlayPartnerInfoUiModel,
+            val likeInfo: PlayLikeInfoUiModel,
+            val shareInfo: PlayShareInfoUiModel,
     ) : PlayChannelData()
 
     data class Complete(
-            val pinnedMessage: PinnedMessageUiModel?,
-            val pinnedProduct: PinnedProductUiModel?,
+            val partner: PlayPartnerInfoUiModel
+//            val pinnedMessage: PinnedMessageUiModel?,
+//            val pinnedProduct: PinnedProductUiModel?,
     ) : PlayChannelData()
 }
