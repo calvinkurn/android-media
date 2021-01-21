@@ -22,7 +22,7 @@ data class ProductContentDataModel(
         var shouldShowTradein: Boolean = false,
 
         //Upcoming Data
-        var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel(),
+        var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
