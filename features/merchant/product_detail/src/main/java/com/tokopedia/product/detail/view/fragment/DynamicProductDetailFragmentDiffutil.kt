@@ -295,7 +295,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     override fun onSwipeRefresh() {
-        productVideoCoordinator?.onDestroy()
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         ticker_occ_layout.gone()

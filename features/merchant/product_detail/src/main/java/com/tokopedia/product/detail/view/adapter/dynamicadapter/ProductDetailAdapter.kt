@@ -52,7 +52,7 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
     override fun getItemViewType(position: Int): Int {
         return if (position < 0 || position >= currentList.size) {
             HideViewHolder.LAYOUT
-        } else currentList[position].type(adapterTypeFactory)
+        } else currentList[position]?.type(adapterTypeFactory) ?: HideViewHolder.LAYOUT
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {

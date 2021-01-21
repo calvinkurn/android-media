@@ -138,7 +138,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     }
 
     private fun setupRecyclerView(view: View) {
-        rvPdp = view.findViewById<View>(R.id.rv_pdp) as RecyclerView
+        rvPdp = view.findViewById(R.id.rv_pdp)
 
         rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvPdp?.itemAnimator = null
