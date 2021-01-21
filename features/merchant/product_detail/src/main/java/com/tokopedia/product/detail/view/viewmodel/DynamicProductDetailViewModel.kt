@@ -595,7 +595,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
                         if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
                             recomWidget = recomData.first().copy(
-                                    recommendationFilterChips = recomFilterList
+                                    recommendationFilterChips = recomFilterList,
+                                    pageName = pageName
                             )
                         }
 
