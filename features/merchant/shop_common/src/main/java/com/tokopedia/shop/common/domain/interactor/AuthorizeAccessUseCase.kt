@@ -17,10 +17,10 @@ class AuthorizeAccessUseCase @Inject constructor(
         private const val ERROR_MESSAGE = "Failed getting access"
 
         @JvmStatic
-        fun createRequestParams(shopId: Int, resourceId: Int): RequestParams =
+        fun createRequestParams(shopId: Int, accessId: Int): RequestParams =
                 RequestParams.create().apply {
-                    putInt(AuthorizeAccess.ACCESS_ID, resourceId)
                     putInt(AuthorizeAccess.RESOURCE_ID, shopId)
+                    putInt(AuthorizeAccess.ACCESS_ID, accessId)
                 }
     }
 

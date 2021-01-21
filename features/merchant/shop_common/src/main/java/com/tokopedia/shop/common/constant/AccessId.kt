@@ -9,18 +9,32 @@ import androidx.annotation.IntDef
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(
-        AccessId.SOM_LIST,
+        AccessId.SOM,
+        AccessId.SHOP_SETTING,
+        AccessId.STATISTIC,
+        AccessId.PRODUCT_LIST,
         AccessId.PRODUCT_ADD,
         AccessId.PRODUCT_EDIT,
         AccessId.PRODUCT_DUPLICATE,
-        AccessId.EDIT_STOCK
+        AccessId.EDIT_STOCK,
+        AccessId.COMPLAINT,
+        AccessId.DISCUSSION,
+        AccessId.REVIEW,
+        AccessId.SHOP_SCORE
 )
 annotation class AccessId {
     companion object {
-        const val SOM_LIST = 25
+        const val SOM = 25
+        const val SHOP_SETTING = 64
+        const val STATISTIC = 55
+        const val PRODUCT_LIST = 100
         const val PRODUCT_ADD = 101
         const val PRODUCT_EDIT = 121
         const val PRODUCT_DUPLICATE = 123
         const val EDIT_STOCK = 124
+        const val COMPLAINT = 14003
+        const val DISCUSSION = 14005
+        const val REVIEW = 14011
+        const val SHOP_SCORE = 14006
     }
 }

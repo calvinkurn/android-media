@@ -69,7 +69,7 @@ class SellerHomeActivityViewModel @Inject constructor(
                     }
                 }
                 val isRoleEligible = async {
-                    val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST)
+                    val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM)
                     authorizeAccessUseCase.execute(requestParams)
                 }
                 _isOrderShopAdmin.value = isRoleEligible.await()

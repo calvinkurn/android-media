@@ -1,7 +1,5 @@
 package com.tokopedia.shop.common.data.source.cloud.query
 
-import com.tokopedia.usecase.RequestParams
-
 object AuthorizeAccess {
 
     const val QUERY = "query AuthorizeAccess(\$accessID: Int, \$resourceID: Int) {\n" +

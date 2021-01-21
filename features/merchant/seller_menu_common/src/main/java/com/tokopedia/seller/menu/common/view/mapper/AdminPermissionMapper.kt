@@ -11,6 +11,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.PermissionId
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.shop.common.constant.AccessId
 import javax.inject.Inject
 
 class AdminPermissionMapper @Inject constructor(private val remoteConfig: RemoteConfig) {
@@ -34,6 +35,22 @@ class AdminPermissionMapper @Inject constructor(private val remoteConfig: Remote
             AdminFeature.COMPLAINT -> listOf(PermissionId.RESPOND_COMPLAINTS)
             AdminFeature.MANAGE_SHOP -> listOf(PermissionId.MANAGE_SHOP)
             else -> listOf()
+        }
+    }
+
+    fun mapFeatureToAccessId(@AdminFeature adminFeature: String): Int {
+        return when(adminFeature) {
+            AdminFeature.SALDO -> AccessId.EDIT_STOCK
+            AdminFeature.NEW_ORDER -> AccessId.SOM
+            AdminFeature.READY_TO_SHIP_ORDER -> AccessId.SOM
+            AdminFeature.ORDER_HISTORY -> AccessId.SOM
+            AdminFeature.MANAGE_PRODUCT -> AccessId.PRODUCT_LIST
+            AdminFeature.ADD_PRODUCT -> AccessId.PRODUCT_ADD
+            AdminFeature.REVIEW -> AccessId.REVIEW
+            AdminFeature.DISCUSSION -> AccessId.DISCUSSION
+            AdminFeature.COMPLAINT -> AccessId.COMPLAINT
+            AdminFeature.MANAGE_SHOP -> AccessId.SHOP_SETTING
+            else -> 0
         }
     }
 

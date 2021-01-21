@@ -702,7 +702,7 @@ class SomListViewModelTest {
     @Test
     fun getAdminPermission_shouldSuccess() {
         coEvery {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM)
         } returns true
         coEvery {
             userSession.isShopOwner
@@ -714,7 +714,7 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM)
         }
 
         assert(viewModel.isOrderManageEligible.observeAwaitValue() is Success)
@@ -723,7 +723,7 @@ class SomListViewModelTest {
     @Test
     fun getAdminPermission_shouldFail() {
         coEvery {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM)
         } throws Throwable()
         coEvery {
             userSession.isShopOwner
@@ -735,7 +735,7 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM)
         }
 
         assert(viewModel.isOrderManageEligible.observeAwaitValue() is Fail)
@@ -783,7 +783,7 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify(exactly = 0) {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM)
         }
         assert((viewModel.isAdminEligible.value as? Success)?.data == false)
     }
