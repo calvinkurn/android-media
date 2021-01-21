@@ -49,6 +49,7 @@ public class Product implements Parcelable {
     private static final String KEY_CATEGORY_BREADCRUMB = "category_breadcrumb";
     private static final String KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED = "product_item_sold_payment_verified";
     private static final String KEY_PRODUCT_MINIMUM_ORDER = "product_minimum_order";
+    private static final String KEY_HEADLINE_PRODUCT_RATING_AVERAGE = "rating_average";
 
     @SerializedName(KEY_ID)
     @Expose
@@ -170,6 +171,10 @@ public class Product implements Parcelable {
     @Expose
     private int productMinimumOrder = 0;
 
+    @SerializedName(KEY_HEADLINE_PRODUCT_RATING_AVERAGE)
+    @Expose
+    private String headlineProductRatingAverage = "";
+
     private boolean topAds = false;
 
     private String recommendationType = "";
@@ -285,6 +290,9 @@ public class Product implements Parcelable {
         if(!object.isNull(KEY_PRODUCT_MINIMUM_ORDER)) {
             setProductMinimumOrder(object.getInt(KEY_PRODUCT_MINIMUM_ORDER));
         }
+        if(!object.isNull(KEY_HEADLINE_PRODUCT_RATING_AVERAGE)) {
+            setHeadlineProductRatingAverage(object.getString(KEY_HEADLINE_PRODUCT_RATING_AVERAGE));
+        }
     }
 
     protected Product(Parcel in) {
@@ -320,6 +328,7 @@ public class Product implements Parcelable {
         categoryBreadcrumb = in.readString();
         countSold = in.readString();
         productMinimumOrder = in.readInt();
+        headlineProductRatingAverage = in.readString();
     }
 
     @Override
@@ -356,6 +365,7 @@ public class Product implements Parcelable {
         dest.writeString(categoryBreadcrumb);
         dest.writeString(countSold);
         dest.writeInt(productMinimumOrder);
+        dest.writeString(headlineProductRatingAverage);
     }
 
     @Override
@@ -653,5 +663,13 @@ public class Product implements Parcelable {
 
     public void setProductMinimumOrder(int productMinimumOrder) {
         this.productMinimumOrder = productMinimumOrder;
+    }
+
+    public void setHeadlineProductRatingAverage(String headlineProductRatingAverage) {
+        this.headlineProductRatingAverage = headlineProductRatingAverage;
+    }
+
+    public String getHeadlineProductRatingAverage() {
+        return this.headlineProductRatingAverage;
     }
 }
