@@ -116,9 +116,10 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun onSaldoClicked() {
         if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
-            RouteManager.getIntent(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
+            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
         else {
-            RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL)
+            context?.startActivity(intent)
         }
     }
 
