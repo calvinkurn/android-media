@@ -9,8 +9,6 @@ import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedback
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.utils.verifyCoroutineFailEquals
 import com.tokopedia.review.utils.verifyCoroutineSuccessEquals
-import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
-import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.review.utils.verifyErrorEquals
 import com.tokopedia.review.utils.verifySuccessEquals
 import io.mockk.coEvery
@@ -19,8 +17,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
-import java.lang.Exception
+import org.mockito.ArgumentMatchers.anyLong
+import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
+import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
 class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
@@ -113,7 +112,7 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
     @Test
     fun `when markAsSeen should execute expected usecase`() {
-        val inboxReviewId = anyInt()
+        val inboxReviewId = anyLong()
 
         viewModel.markAsSeen(inboxReviewId)
 
