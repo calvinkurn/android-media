@@ -17,6 +17,7 @@ import com.tokopedia.digital_checkout.data.request.Attributes
 import com.tokopedia.digital_checkout.data.request.RequestBodyAtcDigital
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
+import com.tokopedia.digital_checkout.di.DigitalCartScope
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.usecase.RequestParams
@@ -24,7 +25,7 @@ import okhttp3.Interceptor
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class DigitalAddToCartUseCase @Inject constructor(authInterceptor: ArrayList<Interceptor>,
+class DigitalAddToCartUseCase @Inject constructor(@DigitalCartScope authInterceptor: ArrayList<Interceptor>,
                                                   @ApplicationContext context: Context)
     : RestRequestSupportInterceptorUseCase(authInterceptor, context) {
 
