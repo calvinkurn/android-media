@@ -119,8 +119,8 @@ object SomConsts {
 
     const val NOT_YET_PRINTED_LABEL = "Belum Dicetak"
     const val ALREADY_PRINT_LABEL = "Sudah Dicetak"
-    const val NOT_YET_PRINTED = 0
-    const val ALREADY_PRINT = 1
+    const val NOT_YET_PRINTED = 1
+    const val ALREADY_PRINT = 2
 
     const val TODAY_LABEL = "Hari ini"
     const val TOMORROW_LABEL = "Besok"
