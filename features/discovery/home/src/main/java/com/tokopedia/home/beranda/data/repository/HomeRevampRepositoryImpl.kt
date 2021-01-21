@@ -70,6 +70,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
      *
      * 1. Provide initial HomeData
      * 2. Get above the fold skeleton
+     *    2.1 Get home flag response
      * 3. Save immediately to produce shimmering for ATF data
      * 4. Get above the fold content
      * 5. Submit current data to database, to trigger HomeViewModel flow
@@ -103,7 +104,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
             var homeData = HomeData()
             cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
                 homeData.isProcessingDynamicChannel = true
-                homeCachedDataSource.saveToDatabase(homeData)
             }, isCacheExistAction = {
                 homeData.isProcessingDynamicChannel = false
             })
@@ -127,6 +127,18 @@ class HomeRevampRepositoryImpl @Inject constructor(
             }
 
             /**
+             * 2.1 Get home flag response
+             */
+            try {
+                val homeFlagResponse = homeRemoteDataSource.getHomeFlagUseCase()
+                homeFlagResponse?.homeFlag?.let {
+                    homeData.homeFlag = homeFlagResponse.homeFlag
+                }
+            } catch (e: Exception) {
+
+            }
+
+            /**
              * 4. Get above the fold content
              */
             if (homeData.atfData?.dataList?.isNotEmpty() == true) {
@@ -138,9 +150,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 ticker?.let {
                                     atfData.content = gson.toJson(ticker.ticker)
                                     atfData.status = AtfKey.STATUS_SUCCESS
-                                    cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                                        homeCachedDataSource.saveToDatabase(homeData)
-                                    })
                                 }
                             } catch (e: Exception) {
                                 atfData.status = AtfKey.STATUS_ERROR
@@ -157,9 +166,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                         val channelFromResponse = it.dynamicHomeChannel
                                         atfData.content = gson.toJson(channelFromResponse)
                                         atfData.status = AtfKey.STATUS_SUCCESS
-                                        cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                                            homeCachedDataSource.saveToDatabase(homeData)
-                                        })
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
@@ -178,9 +184,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     dynamicIcon?.let {
                                         atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon)
                                         atfData.status = AtfKey.STATUS_SUCCESS
-                                        cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                                            homeCachedDataSource.saveToDatabase(homeData)
-                                        })
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
@@ -198,11 +201,9 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 }
             }
 
-            cacheCondition(isCache = isCacheExistForProcess, isCacheExistAction = {
-                jobList.forEach {
-                    it.await()
-                }
-            })
+            jobList.forEach {
+                it.await()
+            }
 
             homeData.atfData?.dataList?.forEach error@{
                 if (it.status == AtfKey.STATUS_ERROR && !it.isOptional && it.component != TYPE_TICKER) {
@@ -212,6 +213,9 @@ class HomeRevampRepositoryImpl @Inject constructor(
             }
 
             homeData.atfData?.isProcessingAtf = false
+            cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                homeCachedDataSource.saveToDatabase(homeData)
+            })
             /**
              * 6. Get dynamic channel data
              */

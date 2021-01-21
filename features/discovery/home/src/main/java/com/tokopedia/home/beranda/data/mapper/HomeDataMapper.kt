@@ -39,17 +39,23 @@ class HomeDataMapper(
     fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, showGeolocation: Boolean = true): HomeDataModel{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP)
         if (homeData == null) return HomeDataModel(isCache = isCache)
-        val processingAtf = homeData.atfData?.isProcessingAtf?: false
-        val processingDynamicChannel = homeData.isProcessingDynamicChannel
+        var processingAtf = homeData.atfData?.isProcessingAtf?: false
+        var processingDynamicChannel = homeData.isProcessingDynamicChannel
+
+        if (isCache) {
+            processingAtf = false
+            processingDynamicChannel = false
+        }
         val firstPage = homeData.token.isNotEmpty()
         val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
                 homeData, isCache, trackingQueue, context, homeDynamicChannelDataMapper)
                 .addHomeHeaderOvo()
                 .addAtfComponentVisitable(processingAtf)
 
-
-        factory.addDynamicChannelVisitable(firstPage, true)
-                .build()
+        if (!processingDynamicChannel) {
+            factory.addDynamicChannelVisitable(firstPage, true)
+                    .build()
+        }
 
         BenchmarkHelper.endSystraceSection()
         return HomeDataModel(homeData.homeFlag, factory.build(), isCache, firstPage, processingAtf, processingDynamicChannel)
