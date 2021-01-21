@@ -122,10 +122,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             }
         })
 
-        viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
-            setUpdateTokenStatus(newToken)
-            TroubleshooterTimber.token(newToken)
-            saveLastCheckedDate(requireContext())
+        viewModel.token.observe(viewLifecycleOwner, Observer {
+            getNewToken(it)
         })
 
         viewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
@@ -167,7 +165,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 adapter.removeTickers()
             }
 
-            if (token.isNotNull() && notification.isNotNull() && device.isNotNull() && ringtone.isNotNull()) {
+            if (notification.isNotNull() && device.isNotNull() && ringtone.isNotNull()) {
                 TroubleshooterTimber.combine(token, notification, device)
 
                 if (notification.isTrue() && device.isTrue() && !isSilent(ringtone)) {
@@ -177,6 +175,19 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 }
             }
         })
+    }
+
+    private fun getNewToken(result: Result<String>) {
+        when (result) {
+            is Success -> {
+                setUpdateTokenStatus(result.data)
+                TroubleshooterTimber.token(result.data)
+                saveLastCheckedDate(requireContext())
+            }
+            is Fail -> {
+                setUpdateTokenStatus("")
+            }
+        }
     }
 
     private fun notificationSetting(result: Result<UserSettingUIView>) {
@@ -274,11 +285,17 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         val newTrimToken = newToken.prefixToken().trim()
         txtToken?.showWithCondition(currentToken.isNotEmpty() || newTrimToken.isNotEmpty())
 
-        txtToken?.text = if (fcmManager.isNewToken(newToken)) {
-            viewModel.updateToken(newToken)
-            tokenUpdateMessage(currentToken, newTrimToken)
-        } else {
-            tokenCurrentMessage(currentToken, newTrimToken)
+        txtToken?.text = when {
+            newToken.isEmpty() && currentToken.isNotEmpty() -> {
+                getString(R.string.notif_token_current, currentToken)
+            }
+            fcmManager.isNewToken(newToken) -> {
+                viewModel.updateToken(newToken)
+                tokenUpdateMessage(currentToken, newTrimToken)
+            }
+            else -> {
+                tokenCurrentMessage(currentToken, newTrimToken)
+            }
         }
     }
 
@@ -286,7 +303,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         return if (currentToken != newToken) {
             getString(R.string.notif_token_current_different, currentToken, newToken)
         } else {
-            getString(R.string.notif_token_current, newToken)
+            getString(R.string.notif_token_current, currentToken)
         }
     }
 
