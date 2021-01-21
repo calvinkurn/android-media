@@ -21,6 +21,7 @@ class TalkInboxViewHolder(
 ) : AbstractViewHolder<TalkInboxUiModel>(view) {
 
     companion object {
+        const val DELETED_PRODUCT_PLACEHOLDER = "https://ecs7.tokopedia.net/img/android/others/talk_reply_deleted_product_placeholder.png"
         val LAYOUT = R.layout.item_talk_inbox
     }
 
@@ -44,7 +45,7 @@ class TalkInboxViewHolder(
     private fun setProductThumbnail(productThumbnail: String) {
         with(itemView) {
             if (productThumbnail.isEmpty()) {
-                itemView.talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_prouct))
+                itemView.talkInboxProductThumbnail.setImageUrl(DELETED_PRODUCT_PLACEHOLDER)
                 talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 return
             }
