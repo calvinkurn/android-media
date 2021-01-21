@@ -565,7 +565,7 @@ class TopChatViewStateImpl constructor(
         myAlertDialog.setOnOkClickListener {
             headerMenuListener.onDeleteConversation()
         }
-        myAlertDialog.setBtnCancel(view.context.getString(com.tokopedia.imagepicker.R.string.cancel))
+        myAlertDialog.setBtnCancel(view.context.getString(com.tokopedia.resources.common.R.string.general_label_cancel))
         myAlertDialog.setOnCancelClickListener { myAlertDialog.dismiss() }
         myAlertDialog.show()
     }

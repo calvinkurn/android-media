@@ -263,6 +263,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navIconAdapter?.triggerLottieAnimation(lottieIconId)
     }
 
+    fun triggerAnimatedVectorDrawableAnimation(animatedIconId: Int) {
+        navIconAdapter?.triggerAnimatedVectorDrawableAnimation(animatedIconId)
+    }
+
     fun setOnBackButtonClickListener(disableDefaultGtmTracker: Boolean = false, backButtonClickListener: () -> Unit) {
         nav_icon_back.setOnClickListener {
             if (!disableDefaultGtmTracker) {

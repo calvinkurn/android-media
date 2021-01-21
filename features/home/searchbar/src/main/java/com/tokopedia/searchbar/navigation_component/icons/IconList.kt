@@ -36,6 +36,7 @@ object IconList {
     const val NAME_SEARCH = "Search"
 
     const val ID_NAV_LOTTIE_WISHLIST = 91
+    const val ID_NAV_ANIMATED_WISHLIST = 92
 
     //Image icon
     internal object MessageIcon: IconConfigItem {
@@ -176,4 +177,24 @@ object IconList {
             }
         }
     }
+
+    // Animated Vector Drawable Icon
+    internal object AnimatedWishlistIcon: IconConfigItem {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
+            return IconToolbar(
+                    id = ID_WISHLIST,
+                    imageRes = R.drawable.unify_wishlist_avd_new,
+                    applink = "",
+                    iconType = IconToolbar.TYPE_ANIMATED,
+                    disableRouteManager = disableRouteManager,
+                    nonLoginApplink = ApplinkConst.LOGIN,
+                    name = NAME_WISHLIST,
+                    paddingEndRes = R.dimen.lottie_wishlist_padding_end,
+                    disableDefaultGtmTracker = disableDefaultGtmTracker
+            ) {
+                onClick.invoke()
+            }
+        }
+    }
+
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.atc_common.domain.model.response
 
-import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
@@ -14,9 +13,9 @@ data class DataModel(
         var productId: Long = 0,
         var quantity: Int = 0,
         var notes: String = "",
-        var shopId: Int = 0,
-        var customerId: Int = 0,
-        var warehouseId: Int = 0,
+        var shopId: Long = 0,
+        var customerId: Long = 0,
+        var warehouseId: Long = 0,
         var trackerAttribution: String = "",
         var trackerListName: String = "",
         var ucUtParam: String = "",
