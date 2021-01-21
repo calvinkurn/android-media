@@ -32,6 +32,7 @@ import org.junit.Test
  */
 class PltHomeDynamicChannelPerformanceTest {
     val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "test_case_page_load_time"
+    private var pltIdlingResource: IdlingResource? = PerformanceAnalyticsUtil.performanceIdlingResource
 
     @get:Rule
     var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
@@ -41,8 +42,13 @@ class PltHomeDynamicChannelPerformanceTest {
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
             setupTotalSizeInterceptor(listOf("homeData", "getDynamicChannel"))
             setupRemoteConfig()
+            setupIdlingResource()
             Thread.sleep(2000)
         }
+    }
+
+    private fun setupIdlingResource() {
+        IdlingRegistry.getInstance().register(pltIdlingResource)
     }
 
     private fun setupRemoteConfig() {
@@ -71,7 +77,7 @@ class PltHomeDynamicChannelPerformanceTest {
 
     @Test
     fun testPageLoadTimePerformance() {
-        Thread.sleep(8000)
+        onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
         activityRule.activity.deleteDatabase("HomeCache.db")
         activityRule.activity.finishAndRemoveTask()
