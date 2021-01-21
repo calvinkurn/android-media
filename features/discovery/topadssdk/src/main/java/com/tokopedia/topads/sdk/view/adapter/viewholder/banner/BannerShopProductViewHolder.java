@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.banner;
 import android.content.Context;
 
 import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 
 import android.graphics.Paint;
 import android.view.View;
@@ -112,7 +113,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         }
         setRating(element.getProduct().getProductRating(), !hasDiscount(element));
 
-        boolean isRatingAverageVisible = element.getProduct().getProductRating() != 0 && !hasDiscount(element);
+        boolean isRatingAverageVisible = element.getProduct().getProductRating() == 0 && !hasDiscount(element);
         setRatingAverageAndLabelIntegrity(product, isRatingAverageVisible);
 
         container.setOnClickListener(new View.OnClickListener() {
@@ -165,50 +166,56 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     }
 
     private void setRatingAverageAndLabelIntegrity(Product product, boolean isVisible) {
-        boolean hasRatingAverage = false;
-        boolean hasLabelIntegrity = false;
+        String ratingAverage = product.getHeadlineProductRatingAverage();
+        LabelGroup labelGroupIntegrity = getLabelGroupIntegrity(product);
 
-        if (imageRatingAverage != null && textRatingAverage != null) {
-            String ratingAverage = product.getHeadlineProductRatingAverage();
-            if (!ratingAverage.isEmpty()) {
-                imageRatingAverage.setVisibility(View.VISIBLE);
-                textRatingAverage.setVisibility(View.VISIBLE);
-                textRatingAverage.setText(ratingAverage);
-                hasRatingAverage = true;
-            }
-            else {
-                imageRatingAverage.setVisibility(View.GONE);
-                textRatingAverage.setVisibility(View.GONE);
-            }
-        }
+        boolean hasRatingAverage = !ratingAverage.isEmpty() && isVisible;
+        boolean hasLabelIntegrity = labelGroupIntegrity != null && !labelGroupIntegrity.getTitle().isEmpty() && isVisible;
 
-        if (labelIntegrity != null) {
-            List<LabelGroup> labelGroupIntegrityList = getLabelGroupIntegrity(product);
-            if (labelGroupIntegrityList.size() == 0) {
-                labelIntegrity.setVisibility(View.GONE);
-            }
-            else {
-                LabelGroup labelGroupIntegrity = labelGroupIntegrityList.get(0);
-                if (labelGroupIntegrity.getTitle().isEmpty()) {
-                    labelIntegrity.setText(MethodChecker.fromHtml(labelGroupIntegrity.getTitle()));
-                    labelIntegrity.setVisibility(View.VISIBLE);
-                    hasLabelIntegrity = true;
-                }
-            }
-        }
+        setRatingAverage(ratingAverage, hasRatingAverage);
+        setLabelIntegrity(labelGroupIntegrity, hasLabelIntegrity);
+        showRatingAverageAndIntegrityLine(hasRatingAverage, hasLabelIntegrity);
+    }
 
-        if (ratingAverageIntegrityLine != null) {
-            if (hasRatingAverage && hasLabelIntegrity) {
-                ratingAverageIntegrityLine.setVisibility(View.VISIBLE);
-            }
-            else {
-                ratingAverageIntegrityLine.setVisibility(View.GONE);
-            }
+    @Nullable
+    private LabelGroup getLabelGroupIntegrity(Product product) {
+        List<LabelGroup> labelGroupList =
+                CollectionsKt.filter(product.getLabelGroupList(), labelGroup -> labelGroup.getPosition().equals("integrity"));
+
+        return labelGroupList.size() > 0 ? labelGroupList.get(0) : null;
+    }
+
+    private void setRatingAverage(String ratingAverage, boolean hasRatingAverage) {
+        if (imageRatingAverage == null || textRatingAverage == null) return;
+
+        if (hasRatingAverage) {
+            imageRatingAverage.setVisibility(View.VISIBLE);
+            textRatingAverage.setVisibility(View.VISIBLE);
+            textRatingAverage.setText(ratingAverage);
+        } else {
+            imageRatingAverage.setVisibility(View.GONE);
+            textRatingAverage.setVisibility(View.GONE);
         }
     }
 
-    @NotNull
-    private List<LabelGroup> getLabelGroupIntegrity(Product product) {
-        return CollectionsKt.filter(product.getLabelGroupList(), labelGroup -> labelGroup.getPosition().equals("integrity"));
+    private void setLabelIntegrity(LabelGroup labelGroupIntegrity, boolean hasLabelIntegrity) {
+        if (labelIntegrity == null) return;
+
+        if (hasLabelIntegrity) {
+            labelIntegrity.setText(MethodChecker.fromHtml(labelGroupIntegrity.getTitle()));
+            labelIntegrity.setVisibility(View.VISIBLE);
+        } else {
+            labelIntegrity.setVisibility(View.GONE);
+        }
+    }
+
+    private void showRatingAverageAndIntegrityLine(boolean hasRatingAverage, boolean hasLabelIntegrity) {
+        if (ratingAverageIntegrityLine == null) return;
+
+        if (hasRatingAverage && hasLabelIntegrity) {
+            ratingAverageIntegrityLine.setVisibility(View.VISIBLE);
+        } else {
+            ratingAverageIntegrityLine.setVisibility(View.GONE);
+        }
     }
 }

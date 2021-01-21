@@ -204,7 +204,6 @@ class SearchProductFirstPageGqlUseCase(
                                     name
                                     price_format
                                     applinks
-                                    product_rating
                                     product_cashback
                                     product_cashback_rate
                                     product_new_label
