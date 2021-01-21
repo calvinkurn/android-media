@@ -104,7 +104,6 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
-import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -1072,6 +1071,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 .load(backgroundUrl)
                 .fitCenter()
                 .dontAnimate()
+                .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
+                .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                 .into(backgroundViewImage)
     }
 
