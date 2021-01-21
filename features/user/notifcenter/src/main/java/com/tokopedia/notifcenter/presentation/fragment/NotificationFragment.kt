@@ -335,7 +335,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     private fun setupFilter() {
         filter?.setFilterListener(
                 object : NotificationFilterView.FilterListener {
-                    override fun onFilterChanged(filterType: Int) {
+                    override fun onFilterChanged(filterType: Long) {
                         viewModel.filter = filterType
                         loadInitialData()
                     }

@@ -26,7 +26,7 @@ class NotifcenterDetailUseCase @Inject constructor(
     var pagingEarlier = Paging()
 
     fun getFirstPageNotification(
-            filter: Int,
+            filter: Long,
             @RoleType
             role: Int,
             onSuccess: (NotificationDetailResponseModel) -> Unit,
@@ -55,7 +55,7 @@ class NotifcenterDetailUseCase @Inject constructor(
     }
 
     fun getMoreNewNotifications(
-            filter: Int,
+            filter: Long,
             @RoleType
             role: Int,
             onSuccess: (NotificationDetailResponseModel) -> Unit,
@@ -77,7 +77,7 @@ class NotifcenterDetailUseCase @Inject constructor(
     }
 
     fun getMoreEarlierNotifications(
-            filter: Int,
+            filter: Long,
             @RoleType
             role: Int,
             onSuccess: (NotificationDetailResponseModel) -> Unit,
@@ -98,7 +98,7 @@ class NotifcenterDetailUseCase @Inject constructor(
         )
     }
 
-    private fun hasFilter(filter: Int): Boolean {
+    private fun hasFilter(filter: Long): Boolean {
         return filter != FILTER_NONE
     }
 
@@ -140,7 +140,7 @@ class NotifcenterDetailUseCase @Inject constructor(
     }
 
     private fun generateParam(
-            filter: Int,
+            filter: Long,
             @RoleType
             role: Int,
             lastNotifId: String,
@@ -166,7 +166,7 @@ class NotifcenterDetailUseCase @Inject constructor(
         private const val PARAM_LAST_NOTIF_ID = "last_notif_id"
         private const val PARAM_FIELDS = "fields"
 
-        const val FILTER_NONE = 0
+        const val FILTER_NONE: Long = 0
     }
 
     private val query = """

@@ -34,11 +34,11 @@ data class ProductData(
         @SerializedName("name")
         val name: String = "",
         @SerializedName("price")
-        val price: Int = 0,
+        val price: Double = 0.0,
         @SerializedName("price_fmt")
         val priceFmt: String = "",
         @SerializedName("price_idr")
-        val priceIdr: Long = 0,
+        val priceIdr: Double = 0.0,
         @SerializedName("product_id")
         val productId: Long = 0,
         @SerializedName("rating")

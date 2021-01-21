@@ -5,14 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationFilterTypeFactory
 
 data class FilterUiModel(
-        @SerializedName("create_by")
-        val createBy: Int = 0,
-        @SerializedName("create_time_unix")
-        val createTimeUnix: Int = 0,
         @SerializedName("status")
         val status: Int = 0,
         @SerializedName("tag_id")
-        val tagId: Int = 0,
+        val tagId: Long = 0,
         @SerializedName("tag_key")
         val tagKey: String = "",
         @SerializedName("tag_name")

@@ -25,7 +25,7 @@ class NotificationFilterView : LinearLayout {
     private var analytic: NotificationAnalytic? = null
 
     interface FilterListener {
-        fun onFilterChanged(filterType: Int)
+        fun onFilterChanged(filterType: Long)
     }
 
     constructor(context: Context?) : super(context) {
