@@ -1,4 +1,4 @@
-package tkpd.tokopedia.com.brandlist
+package com.tokopedia.brandlist
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
