@@ -30,7 +30,7 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
     override fun bind(element: HomeHeaderOvoDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
         renderEmptySpace(element.headerDataModel?.isUserLogin?:false)
-        renderOvoLayout(element.headerDataModel)
+        renderOvoLayout(element.headerDataModel, element.needToShowUserWallet)
         BenchmarkHelper.endSystraceSection()
     }
 
@@ -64,10 +64,10 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
         )
     }
 
-    private fun renderOvoLayout(data: HeaderDataModel?) {
+    private fun renderOvoLayout(data: HeaderDataModel?, needToShowUserWallet: Boolean ) {
         val ovoView = itemView.findViewById<OvoWidgetView>(R.id.view_ovo)
         data?.let {
-            if (it.isUserLogin) {
+            if (it.isUserLogin && needToShowUserWallet) {
                 ovoView.visible()
                 ovoView.bind(it, listener)
             } else {

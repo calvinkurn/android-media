@@ -88,7 +88,9 @@ class HomeVisitableFactoryImpl(
     }
 
     override fun addHomeHeaderOvo(): HomeVisitableFactory {
-        val homeHeader = HomeHeaderOvoDataModel()
+        val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
+
+        val homeHeader = HomeHeaderOvoDataModel(needToShowUserWallet)
         val headerViewModel = HeaderDataModel()
         headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
         homeHeader.headerDataModel = headerViewModel

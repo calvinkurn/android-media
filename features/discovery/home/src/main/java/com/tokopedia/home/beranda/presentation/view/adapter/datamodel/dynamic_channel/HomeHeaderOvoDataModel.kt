@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
-class HomeHeaderOvoDataModel : ImpressHolder(), HomeVisitable {
+class HomeHeaderOvoDataModel(var needToShowUserWallet: Boolean = false) : ImpressHolder(), HomeVisitable {
     var createdTimeMillis = ""
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null

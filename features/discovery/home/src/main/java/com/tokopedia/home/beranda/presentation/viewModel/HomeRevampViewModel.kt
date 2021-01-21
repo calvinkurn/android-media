@@ -435,47 +435,41 @@ open class HomeRevampViewModel @Inject constructor(
                                       isPendingTokocashChecked: Boolean? = null,
                                       isWalletDataError: Boolean? = null,
                                       isTokoPointDataError: Boolean? = null) {
-        var homeHeaderOvoDataModel: HomeHeaderOvoDataModel? = HomeHeaderOvoDataModel()
-
-        val currentPosition = -1
-        if(headerDataModel == null){
-            homeHeaderOvoDataModel = (homeVisitableListData.find { visitable-> visitable is HomeHeaderOvoDataModel } as HomeHeaderOvoDataModel?)
-            if (homeHeaderOvoDataModel !=null) {
+        val homeHeaderOvoDataModel = (homeVisitableListData.find { visitable-> visitable is HomeHeaderOvoDataModel } as HomeHeaderOvoDataModel?)
+        homeHeaderOvoDataModel?.let {
+            val currentPosition = -1
+            if(headerDataModel == null){
                 homeVisitableListData.withIndex().find { (_, model) ->  model is HomeHeaderOvoDataModel }?.index ?: -1
                 headerDataModel = homeHeaderOvoDataModel.headerDataModel
-            } else {
+            }
 
-                headerDataModel = HeaderDataModel()
+            headerDataModel?.let {
+                tokopointsDrawer?.let {
+                    headerDataModel = headerDataModel?.copy(tokopointsDrawerHomeData = it)
+                }
+                tokopointsBBODrawer?.let {
+                    headerDataModel = headerDataModel?.copy(tokopointsDrawerBBOHomeData = it)
+                }
+                homeHeaderWalletAction?.let {
+                    headerDataModel = headerDataModel?.copy(homeHeaderWalletActionData = it)
+                }
+                cashBackData?.let {
+                    headerDataModel = headerDataModel?.copy(cashBackData = it)
+                }
+                isPendingTokocashChecked?.let {
+                    headerDataModel = headerDataModel?.copy(isPendingTokocashChecked = it)
+                }
+                isWalletDataError?.let {
+                    headerDataModel = headerDataModel?.copy(isWalletDataError = it)
+                }
+                isTokoPointDataError?.let {
+                    headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
+                }
+                headerDataModel = headerDataModel?.copy(isUserLogin = userSession.get().isLoggedIn)
+                homeHeaderOvoDataModel?.headerDataModel = headerDataModel
+                homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
             }
         }
-
-        headerDataModel?.let {
-            tokopointsDrawer?.let {
-                headerDataModel = headerDataModel?.copy(tokopointsDrawerHomeData = it)
-            }
-            tokopointsBBODrawer?.let {
-                headerDataModel = headerDataModel?.copy(tokopointsDrawerBBOHomeData = it)
-            }
-            homeHeaderWalletAction?.let {
-                headerDataModel = headerDataModel?.copy(homeHeaderWalletActionData = it)
-            }
-            cashBackData?.let {
-                headerDataModel = headerDataModel?.copy(cashBackData = it)
-            }
-            isPendingTokocashChecked?.let {
-                headerDataModel = headerDataModel?.copy(isPendingTokocashChecked = it)
-            }
-            isWalletDataError?.let {
-                headerDataModel = headerDataModel?.copy(isWalletDataError = it)
-            }
-            isTokoPointDataError?.let {
-                headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
-            }
-            headerDataModel = headerDataModel?.copy(isUserLogin = userSession.get().isLoggedIn)
-            homeHeaderOvoDataModel?.headerDataModel = headerDataModel
-            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
-        }
-
     }
 
     private fun getReviewData() {
@@ -900,10 +894,11 @@ open class HomeRevampViewModel @Inject constructor(
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
                     onRefreshState = false
-                    _isRequestNetworkLiveData.postValue(Event(false))
                     var homeData = takeHomeTicker(homeDataModel)
                     if (homeData?.isProcessingDynamicChannle == false) {
                         homeData = evaluateAvailableComponent(homeData)
+                    } else {
+                        _isRequestNetworkLiveData.postValue(Event(false))
                     }
 
                     homeData?.let {
