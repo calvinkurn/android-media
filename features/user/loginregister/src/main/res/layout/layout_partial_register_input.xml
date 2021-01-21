@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.design.text.TkpdHintTextInputLayout
+            <com.tokopedia.loginregister.tkpddesign.TkpdHintTextInputLayout
                 android:id="@+id/input_layout"
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
@@ -41,7 +41,7 @@
                     android:imeOptions="actionDone"
                     android:singleLine="true"/>
 
-            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            </com.tokopedia.loginregister.tkpddesign.TkpdHintTextInputLayout>
 
             <TextView
                 android:id="@+id/change_button"

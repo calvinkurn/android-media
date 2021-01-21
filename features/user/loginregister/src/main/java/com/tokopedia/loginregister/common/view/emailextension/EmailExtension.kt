@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
+import com.tokopedia.unifycomponents.BaseCustomView
 
 class EmailExtension @JvmOverloads constructor(
         context: Context,

@@ -23,11 +23,6 @@ import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
  */
 open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
 
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        super.setupLayout(savedInstanceState)
-        if (toolbar != null) toolbar.setPadding(0, 0, 30, 0)
-    }
-
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         bundle.putAll(getBundleFromData())
@@ -44,7 +39,6 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterCompo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         setWhiteStatusBarIfSellerApp()
         removeBackButtonIfSellerApp()
     }
@@ -97,6 +91,14 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterCompo
         }
 
         return bundle
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.unifytoolbar
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_login_register
     }
 
     companion object {

@@ -30,7 +30,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.TERM_PRIVACY
-import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
@@ -390,18 +389,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     private fun setRegisterButtonDisabled() {
         if (activity != null) {
             registerButton?.isEnabled = false
-        }
-    }
-
-    private fun setWrapperError(wrapper: TkpdHintTextInputLayout, s: String?) {
-        wrapper.setHelperEnabled(false)
-        wrapper.setHelper(null)
-        if (s == null) {
-            wrapper.error = null
-            wrapper.setErrorEnabled(false)
-        } else {
-            wrapper.setErrorEnabled(true)
-            wrapper.error = s
         }
     }
 

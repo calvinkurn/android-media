@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
 import android.os.Bundle
@@ -50,9 +49,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LO
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_FACEBOOK
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_GOOGLE
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.LetUtil
@@ -212,13 +211,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.add(Menu.NONE, ID_ACTION_REGISTER, 0, "")
-
-        val menuItem = menu.findItem(ID_ACTION_REGISTER)
-        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-        if (getDraw() != null) {
-            menuItem.icon = getDraw()
-        }
         if (GlobalConfig.isAllowDebuggingTools()) {
             val devOpsText = SpannableString(getString(R.string.developer_options))
             context?.let {
@@ -232,23 +224,22 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun getDraw(): Drawable? {
-        var drawable: TextDrawable? = null
-        if (activity != null) {
-            drawable = TextDrawable(activity!!)
-            drawable.text = resources.getString(R.string.register)
-            drawable.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+    open fun setupToolbar() {
+        activity?.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
+            headerTitle = getString(R.string.login)
+            actionText = getString(R.string.register)
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
+            actionTextView?.setOnClickListener {
+                registerAnalytics.trackClickTopSignUpButton()
+                goToRegisterInitial(source)
+            }
         }
-        return drawable
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-        if (id == ID_ACTION_REGISTER) {
-            registerAnalytics.trackClickTopSignUpButton()
-            goToRegisterInitial(source)
-            return true
-        }
         if (id == ID_ACTION_DEVOPS) {
             if (GlobalConfig.isAllowDebuggingTools()) {
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
@@ -310,6 +301,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
+
+        setupToolbar()
     }
 
     private fun prepareArgData() {
