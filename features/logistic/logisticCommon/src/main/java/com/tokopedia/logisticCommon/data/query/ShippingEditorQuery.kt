@@ -111,4 +111,31 @@ object ShippingEditorQuery {
     """.trimIndent()
 
 
+    val getShipperDetails = """
+        query ongkirShippingEditorGetShipperDetail {
+          ongkirShippingEditorGetShipperDetail() {
+            status
+           	message
+            data {
+              shipper_details {
+                name
+                description
+                image
+                shipper_product {
+                  name
+                  description
+                }
+              }
+              feature_details {
+        		header
+                description
+              }
+              service_details {
+              	header
+                description
+              }
+            }
+          }
+        }
+    """.trimIndent()
 }

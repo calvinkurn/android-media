@@ -9,7 +9,7 @@ data class GetShipperTickerResponse (
 
 data class OngkirShippingEditorGetShipperTicker(
         @SerializedName("status")
-        var status: Int = 0,
+        var status: String = "",
         @SerializedName("message")
         var message: String = "",
         @SerializedName("data")
@@ -48,7 +48,7 @@ data class CourierTicker(
         @SerializedName("is_available")
         var isAvailable: Boolean = false,
         @SerializedName("shipper_product")
-        var shipperProduct: ShipperProductTicker = ShipperProductTicker()
+        var shipperProduct: List<ShipperProductTicker> = listOf()
 )
 
 data class ShipperProductTicker(

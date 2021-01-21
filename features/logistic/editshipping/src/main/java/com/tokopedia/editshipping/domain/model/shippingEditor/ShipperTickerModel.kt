@@ -19,7 +19,7 @@ data class CourierTickerModel(
         var warehouseIds: List<Int>? = emptyList(),
         var tickerState: Int = -1,
         var isAvailable: Boolean = false,
-        var shipperProduct: ShipperProductTickerModel = ShipperProductTickerModel()
+        var shipperProduct: List<ShipperProductTickerModel> = listOf()
 )
 
 data class ShipperProductTickerModel(

@@ -172,13 +172,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <com.tokopedia.globalerror.GlobalError
-                    android:id="@+id/global_error"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:visibility="gone" />
-
             </FrameLayout>
 
         </androidx.core.widget.NestedScrollView>
@@ -206,6 +199,12 @@
 
         </FrameLayout>
 
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/global_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -8,7 +8,7 @@ class ShippingEditorMapper @Inject constructor() {
 
     fun mapShipperList(response: GetShipperListResponse): ShipperListModel {
         return ShipperListModel().apply {
-             shippers = mapShipper(response)
+             shippers = mapShipper(response.ongkirShippingEditor.data)
              ticker = mapTickerShipperList(response)
         }
     }
@@ -22,18 +22,18 @@ class ShippingEditorMapper @Inject constructor() {
         }
     }
 
-    private fun mapShipper(response: GetShipperListResponse): ShippersModel {
-        val data = response.ongkirShippingEditor.data.shippers
+    private fun mapShipper(response: Data): ShippersModel {
+//        val data = response.ongkirShippingEditor.data.shippers
         return ShippersModel().apply {
-            onDemand = mapShipperOnDemand(response)
-            conventional = mapShipperConventional(data.conventional)
+            onDemand = mapShipperOnDemand(response.shippers.onDemand)
+            conventional = mapShipperConventional(response.shippers.conventional)
         }
     }
 
-    private fun mapShipperOnDemand(response: GetShipperListResponse): List<OnDemandModel> {
-        val data = response.ongkirShippingEditor.data.shippers.onDemand
+    private fun mapShipperOnDemand(response: List<OnDemand>): List<OnDemandModel> {
+//        val data = response.ongkirShippingEditor.data.shippers.onDemand
         val onDemandModelList =  ArrayList<OnDemandModel>()
-        data.forEach { data ->
+        response.forEach { data ->
             val onDemandUiModel = OnDemandModel().apply {
                 shipperId = data.shipperId
                 shipperName = data.shipperName
@@ -118,11 +118,16 @@ class ShippingEditorMapper @Inject constructor() {
         }
     }
 
-    private fun mapShipperProductTicker(response: ShipperProductTicker): ShipperProductTickerModel {
-        return ShipperProductTickerModel().apply {
-            shipperProductId = response.shipperProductId
-            isAvailable = response.isAvailable
+    private fun mapShipperProductTicker(response: List<ShipperProductTicker>): List<ShipperProductTickerModel> {
+        val shipperProductTickerList = ArrayList<ShipperProductTickerModel>()
+        response.forEach { data ->
+            val shipperProductTickerUiModel = ShipperProductTickerModel().apply {
+                shipperProductId = data.shipperProductId
+                isAvailable = data.isAvailable
+            }
+            shipperProductTickerList.add(shipperProductTickerUiModel)
         }
+        return shipperProductTickerList
     }
 
     private fun mapWarehousesTicker(response: List<Warehouses>) : List<WarehousesModel> {
