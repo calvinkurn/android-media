@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
@@ -13,16 +14,15 @@ import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDig
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
 import com.tokopedia.digital_checkout.data.request.RequestBodyOtpSuccess
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
+import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
-import com.tokopedia.digital_checkout.usecase.DigitalAddToCartUseCase
-import com.tokopedia.digital_checkout.usecase.DigitalCancelVoucherUseCase
-import com.tokopedia.digital_checkout.usecase.DigitalGetCartUseCase
-import com.tokopedia.digital_checkout.usecase.DigitalPatchOtpUseCase
+import com.tokopedia.digital_checkout.usecase.*
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
+import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper.getRequestBodyCheckout
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
@@ -52,6 +52,7 @@ class DigitalCartViewModel @Inject constructor(
         private val digitalAddToCartUseCase: DigitalAddToCartUseCase,
         private val cancelVoucherUseCase: DigitalCancelVoucherUseCase,
         private val digitalPatchOtpUseCase: DigitalPatchOtpUseCase,
+        private val digitalCheckoutUseCase: DigitalCheckoutUseCase,
         private val userSession: UserSessionInterface,
         dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
@@ -87,6 +88,10 @@ class DigitalCartViewModel @Inject constructor(
     private val _showLoading = MutableLiveData<Boolean>()
     val showLoading: LiveData<Boolean>
         get() = _showLoading
+
+    private val _checkoutData = MutableLiveData<PaymentPassData>()
+    val checkoutData: LiveData<PaymentPassData>
+        get() = _checkoutData
 
     fun getCart(digitalCheckoutPassData: DigitalCheckoutPassData,
                 errorNotLoginMessage: String = "") {
@@ -292,5 +297,39 @@ class DigitalCartViewModel @Inject constructor(
 
     fun setTotalPrice(totalPrice: Long) {
         _totalPrice.postValue(totalPrice)
+    }
+
+    fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier) {
+        val cartDigitalInfoData = _cartDigitalInfoData.value
+        cartDigitalInfoData?.let {
+            val checkoutData = DigitalCheckoutMapper.buildCheckoutData(it, userSession.accessToken)
+            _showLoading.postValue(true)
+            if (checkoutData.isNeedOtp) {
+                _isNeedOtp.postValue(userSession.phoneNumber)
+            }
+            val requestParams: RequestParams = digitalCheckoutUseCase.createRequestParams(getRequestBodyCheckout(checkoutData, digitalIdentifierParam))
+            digitalCheckoutUseCase.execute(requestParams, getSubscriberCheckout())
+        }
+    }
+
+    private fun getSubscriberCheckout(): Subscriber<Map<Type, RestResponse>> {
+        return object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {}
+            override fun onError(e: Throwable) {
+                e.printStackTrace()
+                _showLoading.postValue(false)
+            }
+
+            override fun onNext(checkoutDigitalData: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<ResponseCheckout>>() {}.type
+                val restResponse = checkoutDigitalData[token]
+                val data = restResponse!!.getData<DataResponse<*>>()
+                val responseCheckoutData = data.data as ResponseCheckout
+                val checkoutData = DigitalCheckoutMapper.mapToPaymentPassData(responseCheckoutData)
+
+                _showLoading.postValue(false)
+                _checkoutData.postValue(checkoutData)
+            }
+        }
     }
 }

@@ -13,7 +13,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.common.payment.PaymentConstant
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -22,6 +25,7 @@ import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
+import com.tokopedia.digital_checkout.data.model.CheckoutDigitalData
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
@@ -175,6 +179,10 @@ class DigitalCartFragment : BaseDaggerFragment() {
         viewModel.isNeedOtp.observe(viewLifecycleOwner, Observer {
             interruptRequestTokenVerification(it)
         })
+
+        viewModel.checkoutData.observe(viewLifecycleOwner, Observer {
+            redirectToTopPayActivity(it)
+        })
     }
 
     private fun renderCartDigitalInfoData(cartInfo: CartDigitalInfoData) {
@@ -214,6 +222,10 @@ class DigitalCartFragment : BaseDaggerFragment() {
         }
 
         showPromoTicker()
+
+        btnCheckout.setOnClickListener {
+            viewModel.proceedToCheckout(getDigitalIdentifierParam())
+        }
     }
 
     private fun showError(message: String) {
@@ -490,6 +502,12 @@ class DigitalCartFragment : BaseDaggerFragment() {
         bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
         intent.putExtras(bundle)
         startActivityForResult(intent, REQUEST_CODE_OTP)
+    }
+
+    private fun redirectToTopPayActivity(paymentPassData: PaymentPassData) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
     }
 
     private fun getCartDigitalInfoData(): CartDigitalInfoData = viewModel.cartDigitalInfoData.value

@@ -1,14 +1,20 @@
 package com.tokopedia.digital_checkout.utils
 
+import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData.PostPaidPopupAttribute
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
+import com.tokopedia.digital_checkout.data.request.CheckoutRelationships
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
+import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
+import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
+import com.tokopedia.track.TrackApp
 
 /**
  * @author by jessica on 11/01/21
@@ -250,6 +256,18 @@ object DigitalCheckoutMapper {
         }
     }
 
+    fun mapToPaymentPassData(responseCheckoutData: ResponseCheckout): PaymentPassData {
+        val paymentPassData = PaymentPassData()
+        responseCheckoutData.attributes?.run {
+            paymentPassData.callbackFailedUrl = callbackUrlFailed ?: ""
+            paymentPassData.callbackSuccessUrl = callbackUrlSuccess ?: ""
+            paymentPassData.redirectUrl = redirectUrl ?: ""
+            paymentPassData.queryString = queryString ?: ""
+            paymentPassData.transactionId = parameter?.transactionId ?: ""
+        }
+        return paymentPassData
+    }
+
     fun buildCheckoutData(cartDigitalInfoData: CartDigitalInfoData, accessToken: String?): DigitalCheckoutDataParameter {
         val digitalCheckoutDataParameter = DigitalCheckoutDataParameter()
         digitalCheckoutDataParameter.cartId = cartDigitalInfoData.id
@@ -258,9 +276,36 @@ object DigitalCheckoutMapper {
         digitalCheckoutDataParameter.ipAddress = DeviceUtil.localIpAddress
         digitalCheckoutDataParameter.relationId = cartDigitalInfoData.id
         digitalCheckoutDataParameter.relationType = cartDigitalInfoData.type
-        digitalCheckoutDataParameter.transactionAmount = cartDigitalInfoData.attributes?.pricePlain ?: 0
+        digitalCheckoutDataParameter.transactionAmount = cartDigitalInfoData.attributes?.pricePlain
+                ?: 0
         digitalCheckoutDataParameter.userAgent = DeviceUtil.userAgentForApiCall
         digitalCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
         return digitalCheckoutDataParameter
     }
+
+    fun getRequestBodyCheckout(checkoutData: DigitalCheckoutDataParameter,
+                               digitalIdentifierParam: RequestBodyIdentifier): RequestBodyCheckout {
+        val requestBodyCheckout = RequestBodyCheckout()
+        requestBodyCheckout.type = "checkout"
+
+        val attributes = RequestBodyCheckout.AttributesCheckout()
+        attributes.voucherCode = checkoutData.voucherCode
+        attributes.transactionAmount = checkoutData.transactionAmount
+        attributes.ipAddress = checkoutData.ipAddress
+        attributes.userAgent = checkoutData.userAgent
+        attributes.identifier = digitalIdentifierParam
+        val getTrackClientId: String = TrackApp.getInstance().gtm.clientIDString
+        attributes.clientId = getTrackClientId
+        attributes.appsFlyer = DeviceUtil.getAppsFlyerIdentifierParam(
+                TrackApp.getInstance().appsFlyer.uniqueId,
+                "")
+        requestBodyCheckout.attributes = attributes
+        requestBodyCheckout.relationships = CheckoutRelationships(
+                CheckoutRelationships.Cart(
+                        CheckoutRelationships.Cart.Data(
+                                checkoutData.relationType, checkoutData.relationId
+                        )))
+        return requestBodyCheckout
+    }
+
 }
