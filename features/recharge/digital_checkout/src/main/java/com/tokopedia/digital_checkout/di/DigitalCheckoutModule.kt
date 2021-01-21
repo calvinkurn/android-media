@@ -3,9 +3,9 @@ package com.tokopedia.digital_checkout.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
-import com.tokopedia.digital_checkout.usecase.DigitalAddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
@@ -16,14 +16,11 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * @author by jessica on 07/01/21
  */
 
-@DigitalCheckoutScope
 @Module
 class DigitalCheckoutModule {
 
@@ -40,11 +37,21 @@ class DigitalCheckoutModule {
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
-    @DigitalCheckoutScope
-    fun provideDigitalInterceptorNew(digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
+    @DigitalCartScope
+    fun provideDigitalInterceptor(digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
         val listInterceptor = arrayListOf<Interceptor>()
         listInterceptor.add(digitalInterceptor)
         listInterceptor.add(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
+        return listInterceptor
+    }
+
+    @Provides
+    @DigitalCheckoutScope
+    fun provideDigitalCheckoutInterceptor(@ApplicationContext context: Context, digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
+        val listInterceptor = arrayListOf<Interceptor>()
+        listInterceptor.add(digitalInterceptor)
+        listInterceptor.add(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
+        listInterceptor.add(AkamaiBotInterceptor(context))
         return listInterceptor
     }
 
