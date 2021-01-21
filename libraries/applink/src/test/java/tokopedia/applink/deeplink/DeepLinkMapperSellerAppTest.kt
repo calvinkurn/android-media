@@ -187,7 +187,7 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check shipping editor appLink then should return tokopedia internal seller shipping editor in sellerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://marketplace//shop-settings/shipping"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace//shop-settings/shipping"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SHIPPING_EDITOR, expectedDeepLink)
     }
 }
