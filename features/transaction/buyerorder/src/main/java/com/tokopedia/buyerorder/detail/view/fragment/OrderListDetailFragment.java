@@ -301,17 +301,26 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setInvoice(final Invoice invoice) {
+        String orderId = (getArguments().getString(KEY_ORDER_ID) != null) ?
+                getArguments().getString(KEY_ORDER_ID) : "";
         invoiceView.setText(invoice.invoiceRefNum());
         if (!BuyerUtils.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
-//            presenter.onLihatInvoiceButtonClick(invoice.invoiceUrl());
-//            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
-            startActivity(OrderDetailRechargeDownloadWebviewActivity.Companion.getIntent(getContext(),
-                    "Test",
-                    getArguments().getString(KEY_ORDER_ID),
-                    ""));
+            String orderCategory = getArguments().getString(KEY_ORDER_CATEGORY) != null ?
+                    getArguments().getString(KEY_ORDER_CATEGORY) : "";
+            presenter.onLihatInvoiceButtonClick(invoice.invoiceUrl());
+            if (orderCategory != null && orderCategory.equals(OrderCategory.DIGITAL)) {
+                startActivity(OrderDetailRechargeDownloadWebviewActivity.Companion.getIntent(getContext(),
+                        invoice.invoiceRefNum(),
+                        orderId,
+                        "",
+                        presenter.getOrderCategoryName(),
+                        presenter.getOrderProductName()));
+            } else {
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
+            }
         });
     }
 

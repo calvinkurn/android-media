@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
 import com.tokopedia.buyerorder.recharge_download.data.OrderDetailRechargeDownloadWebviewEntity
 import com.tokopedia.buyerorder.recharge_download.domain.OrderDetailRechargeGetInvoiceUseCase
+import com.tokopedia.buyerorder.recharge_download.presentation.analytics.OrderDetailRechargeDownloadWebviewAnalytics
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,6 +17,8 @@ import javax.inject.Inject
  */
 class OrderDetailRechargeDownloadWebviewViewModel @Inject constructor(
         private val useCase: OrderDetailRechargeGetInvoiceUseCase,
+        private val userSession: UserSessionInterface,
+        private val invoiceAnalytics: OrderDetailRechargeDownloadWebviewAnalytics,
         dispatcherProvider: BuyerDispatcherProvider)
     : BaseViewModel(dispatcherProvider.ui()) {
 
@@ -27,6 +31,23 @@ class OrderDetailRechargeDownloadWebviewViewModel @Inject constructor(
             val data = useCase.executeSuspend(orderId.toInt())
             mutableInvoiceData.postValue(data)
         }
+    }
+
+    fun sendOpenScreen(categoryName: String, productName: String) {
+        invoiceAnalytics.rechargeDownloadOpenScreen(
+                userSession.isLoggedIn,
+                categoryName,
+                productName,
+                userSession.userId
+        )
+    }
+
+    fun sendDownload(categoryName: String, productName: String) {
+        invoiceAnalytics.rechargeInvoiceClickDownload(
+                categoryName,
+                productName,
+                userSession.userId
+        )
     }
 
 }
