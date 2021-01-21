@@ -16,8 +16,6 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils.Companion.getType
@@ -28,6 +26,8 @@ import com.tokopedia.loginregister.common.utils.KeyboardHandler
 import com.tokopedia.loginregister.common.utils.KeyboardHandler.OnKeyBoardVisibilityChangeListener
 import com.tokopedia.loginregister.common.view.emailextension.EmailExtension
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
+import com.tokopedia.loginregister.tkpddesign.TkpdHintTextInputLayout
+import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -90,18 +90,18 @@ class PartialRegisterInputView : BaseCustomView {
         etInputEmailPhone?.setDropDownBackgroundDrawable(background)
         etInputEmailPhone?.onItemClickListener = OnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long -> registerAnalytics.trackClickPhoneNumberSuggestion() }
         etInputEmailPhone?.addTextChangedListener(watcher(wrapperEmailPhone))
-        etInputEmailPhone?.setOnEditorActionListener({ v: TextView, actionId: Int, event: KeyEvent? ->
-            var handled: Boolean = false
+        etInputEmailPhone?.setOnEditorActionListener { v: TextView, actionId: Int, event: KeyEvent? ->
+            var handled = false
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val imm: InputMethodManager = v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
-                if (isValidValue(v.getText().toString()) && isButtonValidatorActived) {
+                val imm: InputMethodManager = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+                if (isValidValue(v.text.toString()) && isButtonValidatorActived) {
                     btnAction?.performClick()
                 }
                 handled = true
             }
             handled
-        })
+        }
         wrapperPassword?.textFieldInput?.addTextChangedListener(watcherUnify(wrapperPassword))
         btnAction?.setOnClickListener(ClickRegister())
         btnChange?.setOnClickListener(OnClickListener {
@@ -249,13 +249,13 @@ class PartialRegisterInputView : BaseCustomView {
         emailExtensionList?.let {
             this.emailExtension?.setExtensions(it, object: EmailExtensionAdapter.ClickListener {
                 override fun onExtensionClick(extension: String, position: Int) {
-                    val charEmail: Array<String> = etInputEmailPhone?.getText().toString().split("@").toTypedArray()
+                    val charEmail: Array<String> = etInputEmailPhone?.text.toString().split("@").toTypedArray()
                     if (charEmail.size > 0) {
                         etInputEmailPhone?.setText(String.format("%s@%s", charEmail.get(0), extension))
                     } else {
-                        etInputEmailPhone?.setText(String.format("%s@%s", etInputEmailPhone?.getText().toString().replace("@", ""), extension))
+                        etInputEmailPhone?.setText(String.format("%s@%s", etInputEmailPhone?.text.toString().replace("@", ""), extension))
                     }
-                    etInputEmailPhone?.setSelection(etInputEmailPhone?.getText().toString().trim { it <= ' ' }.length)
+                    etInputEmailPhone?.setSelection(etInputEmailPhone?.text.toString().trim { it <= ' ' }.length)
                     isExtensionSelected = true
                     hideEmailExtension()
                 }
@@ -281,7 +281,7 @@ class PartialRegisterInputView : BaseCustomView {
         }
     }
 
-    private inner class ClickRegister() : OnClickListener {
+    private inner class ClickRegister : OnClickListener {
         override fun onClick(v: View) {
             val id = etInputEmailPhone?.text.toString()
             listener?.onActionPartialClick(id)
