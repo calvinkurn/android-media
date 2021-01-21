@@ -197,7 +197,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
             btn_switch?.isChecked = it?.status == STATUS_ACTIVE || it?.status == STATUS_TIDAK_TAMPIL
             txtBudget?.text = String.format(getString(R.string.topads_detail_budget), it?.priceBid)
         }
-        viewModel.getGroupProductData(userSession.shopId, groupId.toInt(), ::onSuccessProductInfo)
+        viewModel.getGroupProductData(groupId.toInt(), ::onSuccessProductInfo)
         if (groupId == SINGLE_AD && category != TYPE_AUTO) {
             singleAd.visibility = View.VISIBLE
             txtBudget.visibility = View.GONE

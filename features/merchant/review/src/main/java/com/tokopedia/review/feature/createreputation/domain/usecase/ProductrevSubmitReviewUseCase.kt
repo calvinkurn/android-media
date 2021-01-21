@@ -32,13 +32,13 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
     }
 
     @GqlQuery(SUBMIT_REVIEW_QUERY_CLASS_NAME, SUBMIT_REVIEW_MUTATION)
-    fun setParams(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, attachmentIds: List<String> = emptyList(), utmSource: String) {
+    fun setParams(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, attachmentIds: List<String> = emptyList(), utmSource: String) {
         setTypeClass(ProductrevSubmitReviewResponseWrapper::class.java)
         setGraphqlQuery(SubmitReview.GQL_QUERY)
         setRequestParams(RequestParams.create().apply {
-            putInt(PARAM_REPUTATION_ID, reputationId)
-            putInt(PARAM_PRODUCT_ID, productId)
-            putInt(PARAM_SHOP_ID, shopId)
+            putLong(PARAM_REPUTATION_ID, reputationId)
+            putLong(PARAM_PRODUCT_ID, productId)
+            putLong(PARAM_SHOP_ID, shopId)
             if(reputationScore != 0) {
                 putInt(PARAM_REPUTATION_SCORE, reputationScore)
             }
