@@ -26,7 +26,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -1200,15 +1199,15 @@ class ShopPageFragment :
         if (success) {
             shopPageFragmentHeaderViewHolder.updateFollowStatus(followShop)
             updateFavouriteResult(shopPageFragmentHeaderViewHolder.isShopFavourited())
-            showSuccessFollowToaster(followShop)
+            showSuccessUpdateFollowToaster(followShop)
         } else {
             shopPageFragmentHeaderViewHolder.setLoadingFollowButton(false)
-            NetworkErrorHelper.showCloseSnackbar(requireActivity(), followShop.message)
+            followShop.message?.let { showErrorUpdateFollowToaster(it) }
             logExceptionToCrashlytics(ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, Throwable(followShop.message))
         }
     }
 
-    private fun showSuccessFollowToaster(followShop: FollowShop) {
+    private fun showSuccessUpdateFollowToaster(followShop: FollowShop) {
         followShop.toaster?.apply {
             if (!toasterText.isNullOrBlank()) {
                 view?.let {
@@ -1229,12 +1228,27 @@ class ShopPageFragment :
         }
     }
 
+    private fun showErrorUpdateFollowToaster(message: String) {
+        view?.let {
+            Toaster.build(
+                    it,
+                    message,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(R.string.shop_follow_error_toaster_action_text)
+            )
+            {
+                setFollowStatus(shopPageFragmentHeaderViewHolder.isShopFavourited())
+            }.show()
+        }
+    }
+
     private fun showMerchantVoucherCouponBottomSheet(shopId: Int) {
         val bottomSheet = BottomSheetUnify()
-        bottomSheet.setTitle("Daftar Kupon Toko")
+        bottomSheet.setTitle(getString(R.string.shop_merchant_voucher_title_bottom_sheet))
         val childView = MvcDetailView(requireContext())
         bottomSheet.setChild(childView)
-        bottomSheet.show((context as AppCompatActivity).supportFragmentManager, "BottomSheet Tag")
+        bottomSheet.show((context as AppCompatActivity).supportFragmentManager, getString(R.string.shop_merchant_voucher_tag_bottom_sheet))
         childView.show(shopId.toString())
         bottomSheet.setShowListener {
             val margin = dpToPx(context, 20)
@@ -1272,7 +1286,7 @@ class ShopPageFragment :
         }
 
         activity?.run {
-            NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e))
+            showErrorUpdateFollowToaster(getString(R.string.shop_follow_error_toaster))
             logExceptionToCrashlytics(ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, e)
         }
     }

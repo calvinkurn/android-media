@@ -15,7 +15,7 @@ class UpdateFollowStatusUseCase @Inject constructor(
 ) : UseCase<FollowShopResponse>() {
     companion object {
         private const val PARAM_INPUT = "input"
-        private const val PARAM_SHOP_ID = "shopId"
+        private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_ACTION = "action"
 
         @JvmStatic

@@ -275,6 +275,12 @@
     <string name="shop_change_grid_section_total_product">%s Produk</string>
     <string name="shop_sort_filter_chips_name">Filter</string>
 
+    <!-- shop merchant voucher & follow status -->
+    <string name="shop_follow_error_toaster">Oops, ada sedikit gangguan. Coba follow lagi, ya.</string>
+    <string name="shop_follow_error_toaster_action_text">Coba Lagi</string>
+    <string name="shop_merchant_voucher_title_bottom_sheet">Daftar Kupon Toko</string>
+    <string name="shop_merchant_voucher_tag_bottom_sheet">BottomSheet Tag</string>
+
     <!-- shop share -->
     <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>
     <string name="shop_page_share_copy_link">Copy Link</string>
