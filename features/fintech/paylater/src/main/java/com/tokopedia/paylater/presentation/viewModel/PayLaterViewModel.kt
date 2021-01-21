@@ -32,24 +32,6 @@ class PayLaterViewModel @Inject constructor(
     val payLaterApplicationStatusResultLiveData = MutableLiveData<Result<UserCreditApplicationStatus>>()
     val payLaterSimulationResultLiveData = MutableLiveData<Result<ArrayList<PayLaterSimulationGatewayItem>>>()
 
-    fun getPayLaterProductData() {
-        payLaterProductDetailUseCase.cancelJobs()
-        payLaterProductDetailUseCase.getPayLaterData(
-                ::onPayLaterDataSuccess,
-                ::onPayLaterDataError
-        )
-    }
-
-    fun getPayLaterApplicationStatus(shouldFetch: Boolean = true) {
-        payLaterApplicationStatusUseCase.cancelJobs()
-        if (shouldFetch)
-            payLaterApplicationStatusUseCase.getPayLaterApplicationStatus(
-                    ::onPayLaterApplicationStatusSuccess,
-                    ::onPayLaterApplicationStatusError
-            )
-        else onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(PAY_LATER_DATA_FAILURE))
-    }
-
     // invoke only when amount in 10000..30000000
     fun getPayLaterSimulationData(amount: Int) {
         payLaterSimulationDataUseCase.cancelJobs()
@@ -62,9 +44,27 @@ class PayLaterViewModel @Inject constructor(
         else onPayLaterSimulationDataError(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
     }
 
+    fun getPayLaterProductData() {
+        payLaterProductDetailUseCase.cancelJobs()
+        if (payLaterActivityResultLiveData.value !is Success)
+            payLaterProductDetailUseCase.getPayLaterData(
+                    ::onPayLaterDataSuccess,
+                    ::onPayLaterDataError
+            )
+    }
+
+    fun getPayLaterApplicationStatus(shouldFetch: Boolean = true) {
+        payLaterApplicationStatusUseCase.cancelJobs()
+        if (shouldFetch && payLaterApplicationStatusResultLiveData.value !is Success)
+            payLaterApplicationStatusUseCase.getPayLaterApplicationStatus(
+                    ::onPayLaterApplicationStatusSuccess,
+                    ::onPayLaterApplicationStatusError
+            )
+        else onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(PAY_LATER_DATA_FAILURE))
+    }
 
     private fun onPayLaterSimulationDataSuccess(payLaterGetSimulationResponse: PayLaterGetSimulationResponse?) {
-        /*launchCatchError(block = {
+        launchCatchError(block = {
             val payLaterGatewayList = withContext(ioDispatcher) {
                 return@withContext PayLaterSimulationResponseMapper.handleSimulationResponse(payLaterGetSimulationResponse)
             }
@@ -73,8 +73,7 @@ class PayLaterViewModel @Inject constructor(
             else onPayLaterSimulationDataError(PdpSimulationException.PayLaterNullDataException(SIMULATION_DATA_FAILURE))
         }, onError = {
             onPayLaterSimulationDataError(it)
-        })*/
-        onPayLaterSimulationDataError(PdpSimulationException.PayLaterNullDataException(SIMULATION_DATA_FAILURE))
+        })
     }
 
     private fun onPayLaterSimulationDataError(throwable: Throwable) {

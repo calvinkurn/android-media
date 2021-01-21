@@ -68,6 +68,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     private var paymentMode: PaymentMode = PayLater
     private var payLaterDataList = arrayListOf<PayLaterItemProductData>()
     private var applicationStatusList = arrayListOf<PayLaterApplicationDetail>()
+    private var pagerAdapter: PayLaterPagerAdapter? = null
 
     override fun getScreenName(): String {
         return "PayLater & Cicilan"
@@ -137,7 +138,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun isPayLaterSimulationPage(): Boolean {
-        return (payLaterViewPager.currentItem == SIMULATION_TAB_INDEX && (payLaterViewPager.adapter as PayLaterPagerAdapter).getList().getOrNull(0) is PayLaterSimulationFragment)
+        return (payLaterViewPager.currentItem == SIMULATION_TAB_INDEX &&
+                paymentMode == PayLater)
     }
 
     private fun initListeners() {
@@ -152,8 +154,9 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     private fun renderTabAndViewPager() {
         setUpTabLayout()
-        val pagerAdapter = PayLaterPagerAdapter(context!!, childFragmentManager, 0)
-        pagerAdapter.setList(getFragments())
+        if (pagerAdapter == null)
+            pagerAdapter = PayLaterPagerAdapter(context!!, childFragmentManager, 0)
+        pagerAdapter?.setList(getFragments())
         payLaterViewPager.adapter = pagerAdapter
     }
 
@@ -270,7 +273,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             }
         } else {
             paymentMode = PayLater
-
         }
         renderTabAndViewPager()
     }

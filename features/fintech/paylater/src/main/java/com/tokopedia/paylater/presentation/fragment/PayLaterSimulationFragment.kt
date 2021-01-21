@@ -124,7 +124,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
                 return
             }
             is IllegalStateException -> {
-                simulationGlobalError.setType(GlobalError.PAGE_FULL)
+                setGlobalErrors(GlobalError.PAGE_FULL)
                 tickerSimulation.gone()
             }
             is PdpSimulationException.PayLaterNotApplicableException -> {
@@ -144,22 +144,30 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             }
             else -> {
                 tickerSimulation.gone()
-                simulationGlobalError.setType(GlobalError.SERVER_ERROR)
+                setGlobalErrors(GlobalError.SERVER_ERROR)
             }
         }
+    }
+
+    private fun setGlobalErrors(errorType: Int) {
+        simulationGlobalError.setType(errorType)
         simulationGlobalError.show()
         simulationGlobalError.setActionClickListener {
             simulationGlobalError.gone()
             shimmerGroup.visible()
             payLaterSimulationCallback?.getSimulationProductInfo()
         }
-
     }
 
     private fun onApplicationStatusLoadingFail(throwable: Throwable) {
         registerShimmer.gone()
-        btnDaftarPayLater.visible()
-        paylaterDaftarWidget.gone()
+        if (payLaterViewModel.payLaterSimulationResultLiveData.value is Fail) {
+            btnDaftarPayLater.gone()
+            paylaterDaftarWidget.gone()
+        } else {
+            btnDaftarPayLater.visible()
+            paylaterDaftarWidget.gone()
+        }
         payLaterSimulationCallback?.showRegisterWidget()
     }
 

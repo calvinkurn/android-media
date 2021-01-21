@@ -15,9 +15,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 class CreditCardViewModel @Inject constructor(
@@ -40,32 +38,34 @@ class CreditCardViewModel @Inject constructor(
         )
     }
 
-  /*  fun getCreditCardData() {
-        launchCatchError(block = {
-            val creditCardData = withContext(ioDispatcher) {
-                delay(250)
-                return@withContext CreditCardResponseMapper.populateDummyCreditCardData()
-            }
-            //creditCardSimulationResultLiveData.value = Success(creditCardData)
-        }, onError = {
-            creditCardSimulationResultLiveData.value = Fail(it)
-        })
-    }
-*/
+    /*  fun getCreditCardData() {
+          launchCatchError(block = {
+              val creditCardData = withContext(ioDispatcher) {
+                  delay(250)
+                  return@withContext CreditCardResponseMapper.populateDummyCreditCardData()
+              }
+              //creditCardSimulationResultLiveData.value = Success(creditCardData)
+          }, onError = {
+              creditCardSimulationResultLiveData.value = Fail(it)
+          })
+      }
+  */
     fun getCreditCardTncData() {
         creditCardPdpMetaInfoUseCase.cancelJobs()
-        creditCardPdpMetaInfoUseCase.getPdpMetaData(
-                ::onPdpInfoMetaDataSuccess,
-                ::onPdpInfoMetaDataError
-        )
+        if (creditCardPdpMetaInfoLiveData.value !is Success)
+            creditCardPdpMetaInfoUseCase.getPdpMetaData(
+                    ::onPdpInfoMetaDataSuccess,
+                    ::onPdpInfoMetaDataError
+            )
     }
 
     fun getBankCardList() {
         creditCardBankDataUseCase.cancelJobs()
-        creditCardBankDataUseCase.getBankCardList(
-                ::onBankCardListDataSuccess,
-                ::onBankCardListDataError
-        )
+        if (creditCardBankResultLiveData.value !is Success)
+            creditCardBankDataUseCase.getBankCardList(
+                    ::onBankCardListDataSuccess,
+                    ::onBankCardListDataError
+            )
     }
 
 
@@ -94,20 +94,14 @@ class CreditCardViewModel @Inject constructor(
     }
 
     private fun onPdpInfoMetaDataError(throwable: Throwable) {
-        //getCreditCardData()
-        //creditCardPdpMetaInfoLiveData.value = Fail(throwable)
         creditCardPdpMetaInfoLiveData.value = Fail(throwable)
     }
 
-
     private fun onBankCardListDataSuccess(creditCardBankData: CreditCardBankData?) {
-        Timber.d(creditCardBankData.toString())
         creditCardBankResultLiveData.value = Success(creditCardBankData?.bankCardList!!)
-        //getCreditCardData()
     }
 
     private fun onBankCardListDataError(throwable: Throwable) {
-        //getCreditCardData()
         creditCardBankResultLiveData.value = Fail(throwable)
     }
 
