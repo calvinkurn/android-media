@@ -138,4 +138,53 @@ object ShippingEditorQuery {
           }
         }
     """.trimIndent()
+
+    val ongkirShippingEditorPopup = """
+        query ongkirShippingEditorPoup (${'$'}input: OngkirShippingEditorPopupInput!) {
+          ongkirShippingEditorPopup (input:${'$'}input) {
+            data {
+              ui_content {
+                warehouses {
+                 	warehouse_id
+                  shop_id {
+                    int64
+                    valid
+                  }
+                  warehouse_name
+                  district_id
+                  district_name
+                  city_id
+                  city_name
+                  province_id
+                  province_name
+                  status
+                  postal_code
+                  is_default
+                  latlon
+                  latitude
+                  longitude
+                  address_detail
+                  country
+                  is_fulfillment
+                  warehouse_type
+                }
+                warehouse_ids
+                header
+                header_location
+                body
+                ticker {
+                  text_link
+                  body
+                  header
+                  url_link
+                }
+              }
+              state
+              feature_id
+            }
+            status
+            message
+          }
+        }
+    """.trimIndent()
 }

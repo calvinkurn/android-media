@@ -74,6 +74,10 @@ class ShippingEditorViewModel @Inject constructor(
         }
     }
 
+    fun validateShippingEditor() {
+
+    }
+
     private val onErrorGetWhitelistData = CoroutineExceptionHandler { _, e ->
         _shopWhitelist.value = ShippingEditorState.Fail(e, "")
     }
