@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -104,6 +105,23 @@ class OrderSummaryPageActivityTrackingTest {
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
             clickBboTicker()
 
+            clickButtonPromo()
+
+            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
+            pay()
+            closeBottomSheet()
+
+            checkoutInterceptor.customCheckoutResponsePath = null
+            pay()
+        }
+
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_OVO_LOW_WALLET_RESPONSE_PATH
+        Intents.release()
+        activityRule.launchActivity(null)
+
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
             clickButtonPromo()
 
             checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
