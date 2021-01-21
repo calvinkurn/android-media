@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.authentication.*
 import com.tokopedia.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.common.payment.PaymentConstant
@@ -482,6 +483,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     return true
                 }
 
+                if(isThankYouPageURL(url)){
+                    return redirectToNativeThankYouPage(url)
+                }
+
                 val urlFinal = getGeneratedOverrideRedirectUrlPayment(url)
                 if (urlFinal.isNotEmpty()) {
                     view?.loadUrl(urlFinal, getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal))
@@ -638,6 +643,25 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         }
     }
 
+    private fun isThankYouPageURL(url: String): Boolean {
+        return url.contains(THANK_YOU_PAGE_LINK)
+    }
+
+    private fun redirectToNativeThankYouPage(url: String): Boolean {
+        val uri = Uri.parse(url)
+        val pathSegments = uri.pathSegments
+        return if (pathSegments.size >= 2) {
+            val paymentId = pathSegments[pathSegments.size - 1]
+            val merchantID = pathSegments[pathSegments.size - 2]
+            val intent = RouteManager.getIntent(this,
+                    ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE
+                            + "?$PAYMENT_ID=$paymentId&$MERCHANT_CODE=$merchantID")
+            navigateToActivity(intent)
+            true
+        } else
+            false
+    }
+
     companion object {
         const val KEY_QUERY_PAYMENT_ID = "id"
         const val KEY_QUERY_LD = "ld"
@@ -647,6 +671,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         const val FORCE_TIMEOUT = 90000L
 
         private const val LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment"
+        private const val THANK_YOU_PAGE_LINK = "tokopedia.com/payment/thank-you/"
+        private const val PAYMENT_ID = "payment_id"
+        private const val MERCHANT_CODE = "merchant"
         private const val ACCOUNTS_URL = "accounts.tokopedia.com"
         private const val LOGIN_URL = "login.pl"
         private const val HCI_CAMERA_KTP = "android-js-call://ktp"
