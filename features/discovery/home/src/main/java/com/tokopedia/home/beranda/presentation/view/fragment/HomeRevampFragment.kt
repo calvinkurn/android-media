@@ -106,6 +106,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
+import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -1071,7 +1072,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else {
             BACKGROUND_LIGHT_1
         }
-        ImageHandler.loadImageWithoutPlaceholder(backgroundViewImage, backgroundUrl)
+        backgroundViewImage.loadImageWithoutPlaceholder(backgroundUrl)
     }
 
     private fun observeSendLocation() {
