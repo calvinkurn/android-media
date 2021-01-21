@@ -44,12 +44,7 @@ class PltHomeCacheDynamicChannelPerformanceTest {
             disableCoachMark()
             setupGraphqlMockResponse(HomeMockResponseConfig())
             setupRemoteConfig()
-            setupIdlingResource()
         }
-    }
-
-    private fun setupIdlingResource() {
-        IdlingRegistry.getInstance().register(pltIdlingResource)
     }
 
     private fun setupRemoteConfig() {
@@ -65,13 +60,14 @@ class PltHomeCacheDynamicChannelPerformanceTest {
 
     @Test
     fun testPageLoadTimePerformance() {
-        onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Thread.sleep(8000)
         val datasource = checkDataSource()
         if (isCacheDataSource(datasource)) {
             savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE, datasource)
         }
 
         activityRule.activity.finishAndRemoveTask()
+        Thread.sleep(1000)
     }
 
     private fun disableCoachMark(){
