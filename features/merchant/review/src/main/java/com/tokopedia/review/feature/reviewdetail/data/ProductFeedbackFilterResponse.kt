@@ -28,5 +28,5 @@ data class ProductFeedbackFilterData(
         @SerializedName("topics")
         val topics: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic> = listOf(),
         @SerializedName("reviewCount")
-        val reviewCount: Int = 0
+        val reviewCount: Long = 0
 )
