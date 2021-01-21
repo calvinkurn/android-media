@@ -396,6 +396,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onRoleChanged(@RoleType role: Int) {
+        if (!::viewModelFactory.isInitialized) return
         val previousRole = getOppositeRole(role)
         viewModel.cancelAllUseCase()
         viewModel.reset()

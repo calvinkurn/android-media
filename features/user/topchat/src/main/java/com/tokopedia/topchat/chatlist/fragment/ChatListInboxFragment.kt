@@ -130,6 +130,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun onRoleChanged(role: Int) {
+        if (!::viewModelFactory.isInitialized) return
         if (assignRole(role)) {
             viewModel.reset()
             chatFilter?.reset()

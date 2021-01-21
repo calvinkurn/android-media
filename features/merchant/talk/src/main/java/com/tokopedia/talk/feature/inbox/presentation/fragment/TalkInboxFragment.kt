@@ -192,6 +192,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     override fun onRoleChanged(role: Int) {
+        if (!::viewModel.isInitialized) return
         when (role) {
             RoleType.BUYER -> inboxType = TalkInboxTab.BUYER_TAB
             RoleType.SELLER -> inboxType = TalkInboxTab.SHOP_TAB
