@@ -3,7 +3,7 @@ package com.tokopedia.mvcwidget
 import androidx.annotation.StringDef
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.FIRST_FOLLOW
-import com.tokopedia.mvcwidget.FollowWidgetType.Companion.TOKOMEMBER
+import com.tokopedia.mvcwidget.FollowWidgetType.Companion.MEMBERSHIP_OPEN
 
 data class TokopointsCatalogMVCListResponse(
         @SerializedName("tokopointsCatalogMVCList") val data: TokopointsCatalogMVCList? = null
@@ -43,7 +43,8 @@ data class FollowWidget(
         @SerializedName("isShown") val isShown: Boolean?,
         @FollowWidgetType @SerializedName("type") val type: String?,
         @SerializedName("content") val content: String?,
-        @SerializedName("IconURL") val iconURL: String?,
+        @SerializedName("iconURL") val iconURL: String?,
+        @SerializedName("membershipCardID") val membershipCardID: String?,
         @SerializedName("membershipHowTo") val membershipHowTo: List<MembershipHowTo?>?,
 )
 
@@ -52,17 +53,22 @@ data class MembershipHowTo(
         @SerializedName("description") val description: String?
 )
 
-data class tokopointsCatalogMVCSummaryResponse(
+data class TokopointsCatalogMVCSummaryResponse(
         @SerializedName("tokopointsCatalogMVCSummary") val data: TokopointsCatalogMVCSummary? = null
 )
 
 data class TokopointsCatalogMVCSummary(
         @SerializedName("resultStatus") val resultStatus: ResultStatus?,
-        @SerializedName("titles") val titles: List<String?>?,
+        @SerializedName("titles") val titles: List<Titles?>?,
         @SerializedName("isShown") val isShown: Boolean?,
         @SerializedName("subTitle") val subTitle: String?,
         @SerializedName("imageURL") val imageURL: String?,
         @SerializedName("counterTotal") val counterTotal: Int?,
+)
+
+data class Titles(
+        @SerializedName("text") val text: String?,
+        @SerializedName("icon") val icon: String?
 )
 
 data class MembershipRegisterResponse(
@@ -87,12 +93,19 @@ data class Cta(
         @SerializedName("appLink") val appLink: String?
 )
 
+data class FollowShopResponse(
+        @SerializedName("followShop") val followShop: FollowShop? = null
+)
+data class FollowShop(
+        @SerializedName("success") val success: Boolean?
+)
+
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(FIRST_FOLLOW, TOKOMEMBER)
+@StringDef(FIRST_FOLLOW, MEMBERSHIP_OPEN)
 annotation class FollowWidgetType {
 
     companion object {
         const val FIRST_FOLLOW = "first_follow"
-        const val TOKOMEMBER = "tokomember"
+        const val MEMBERSHIP_OPEN = "membership_open"
     }
 }

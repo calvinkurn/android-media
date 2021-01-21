@@ -19,7 +19,6 @@ import com.tokopedia.mvcwidget.FollowWidgetType
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -30,8 +29,8 @@ class MvcFollowViewContainer @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     private val layout = R.layout.mvc_tokomember_follow_container
-    private var oneActionView: MvcTokomemberFollowOneActionView
-    private var twoActionView: MvcTokomemberFollowTwoActionsView
+    var oneActionView: MvcTokomemberFollowOneActionView
+    var twoActionView: MvcTokomemberFollowTwoActionsView
     private var divider: View
 
     init {
@@ -53,7 +52,7 @@ class MvcFollowViewContainer @JvmOverloads constructor(
                         oneActionView.setData(followWidget)
                         divider.visibility = View.VISIBLE
                     }
-                    FollowWidgetType.TOKOMEMBER -> {
+                    FollowWidgetType.MEMBERSHIP_OPEN -> {
                         twoActionView.visibility = View.VISIBLE
                         twoActionView.setData(followWidget)
                         divider.visibility = View.VISIBLE
@@ -71,7 +70,7 @@ class MvcTokomemberFollowOneActionView @kotlin.jvm.JvmOverloads constructor(
 
     private val layout = R.layout.mvc_tokomember_view
     private var tvTitle: TextView
-    private var btn: TextView
+    var btn: TextView
 
     init {
         View.inflate(context, layout, this)
@@ -102,7 +101,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
     private var tvTitle: Typography
     private var icon: AppCompatImageView
     private var btnFirst: UnifyButton
-    private var btnSecond: UnifyButton
+    var btnSecond: UnifyButton
 
     init {
         View.inflate(context, layout, this)
@@ -152,8 +151,6 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
                 showTokomemberBottomSheet(followWidget, context as AppCompatActivity)
             }
         }
-
-        btnSecond.setOnClickListener { }
     }
 
     fun showTokomemberBottomSheet(followWidget: FollowWidget, activity: AppCompatActivity) {
@@ -172,7 +169,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
                 val item = View.inflate(activity, R.layout.mvc_carousel_item, null)
                 val param = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 item.layoutParams = param
-                val image = item.findViewById<ImageUnify>(R.id.image)
+                val image = item.findViewById<AppCompatImageView>(R.id.image)
                 val tvMessage = item.findViewById<Typography>(R.id.tvMessage)
                 tvMessage.text = memberShipItem.description
                 if (!memberShipItem.imageURL.isNullOrEmpty()) {
@@ -184,6 +181,8 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
             }
         }
         val caroRef = child.findViewById<CarouselUnify>(R.id.carousel)
+        val cta = child.findViewById<View>(R.id.btn)
+        cta.setOnClickListener { bottomsheet.dismiss() }
         caroRef.apply {
             slideToShow = 1f
             indicatorPosition = CarouselUnify.INDICATOR_BC
@@ -197,5 +196,6 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         bottomsheet.setChild(child)
         bottomsheet.clearContentPadding = true
         bottomsheet.show(activity.supportFragmentManager, "btm_mvc_tokomember")
+
     }
 }

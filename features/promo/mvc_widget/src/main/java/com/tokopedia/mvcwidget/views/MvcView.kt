@@ -1,8 +1,11 @@
 package com.tokopedia.mvcwidget.views
 
 import android.content.Context
+import android.os.Build
+import android.text.Html
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
@@ -13,6 +16,7 @@ import com.tokopedia.mvcwidget.setMargin
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.htmltags.HtmlUtil
 
 /*
 * Pending
@@ -24,10 +28,15 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     lateinit var tvSubTitle: Typography
     lateinit var imageChevron: AppCompatImageView
     lateinit var imageCoupon: AppCompatImageView
-    var shopId: Int = 100 //TODO Rahul remove hardcode
+    var shopId: String = ""
 
     init {
         View.inflate(context, R.layout.mvc_entry_view, this)
+        val lp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(64).toInt())
+        this.layoutParams = lp
+        val startPadding = dpToPx(16).toInt()
+        val topPadding = dpToPx(8).toInt()
+        setPadding(startPadding, topPadding, startPadding, 0)
         initViews()
         setClicks()
     }
@@ -46,10 +55,10 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
             val childView = MvcDetailView(context)
             bottomSheet.setChild(childView)
             bottomSheet.show((context as AppCompatActivity).supportFragmentManager, "BottomSheet Tag")
-            childView.show(shopId)
+            childView.show(shopId, )
             bottomSheet.setShowListener {
                 val imageMargin = dpToPx(20).toInt()
-                bottomSheet.bottomSheetWrapper.setPadding(0,  dpToPx(20).toInt(), 0, 0)
+                bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(20).toInt(), 0, 0)
                 bottomSheet.bottomSheetClose.setImageResource(R.drawable.mvc_dialog_close)
                 bottomSheet.bottomSheetClose.setMargin(imageMargin, 0, dpToPx(20).toInt(), 0)
             }
@@ -57,12 +66,20 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         }
     }
 
-    fun setData(mvcData: MvcData) {
-        tvTitle.text = mvcData.title
+    fun setData(mvcData: MvcData, shopId: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            tvTitle.text = HtmlUtil.fromHtml(mvcData.title).trim()
+        } else {
+            tvTitle.text = Html.fromHtml(mvcData.title).trim()
+        }
+
         tvSubTitle.text = mvcData.subTitle
-        Glide.with(imageCoupon)
-                .load(mvcData.imageUrl)
-                .into(imageCoupon)
+        this.shopId = shopId
+
+//        Glide.with(imageCoupon)
+//                .load(mvcData.imageUrl)
+//                .dontAnimate()
+//                .into(imageCoupon)
     }
 
 }

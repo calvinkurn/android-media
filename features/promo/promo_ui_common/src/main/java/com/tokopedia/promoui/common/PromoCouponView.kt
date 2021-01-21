@@ -1,6 +1,7 @@
 package com.tokopedia.promoui.common
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.DisplayMetrics
@@ -139,17 +140,8 @@ class PromoCouponView @JvmOverloads constructor(
         val rectF = RectF(left.toFloat(), top, right, bottom.toFloat())
         shadowPath.addRoundRect(rectF, shadowRadius, shadowRadius, Path.Direction.CW)
     }
-
-    fun rectShadowPath() {
-        shadowPath.reset()
-        shadowPath.moveTo((width + (shadowEndOffset)), shadowStartY + shadowTopOffset)              //Top Right
-        shadowPath.lineTo((shadowStartOffset), shadowStartY + shadowTopOffset)                      // TR -> TL
-        shadowPath.lineTo((shadowStartOffset), (height + shadowBottomOffset))                         // TL -> BL
-        shadowPath.lineTo((width + shadowEndOffset), (height + shadowBottomOffset))                   // BL -> BR
-        shadowPath.lineTo((width + shadowEndOffset), shadowStartY + shadowTopOffset)               // BR -> TR
-    }
 }
 
 fun View.dpToPx(dp: Int): Float {
-    return dp * (context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT).toFloat()
+    return (dp * Resources.getSystem().displayMetrics.density)
 }

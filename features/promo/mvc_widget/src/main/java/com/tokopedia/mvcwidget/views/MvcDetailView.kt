@@ -9,9 +9,11 @@ import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
@@ -25,6 +27,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -44,7 +47,7 @@ class MvcDetailView @JvmOverloads constructor(
     private val CONTAINER_CONTENT = 0
     private val CONTAINER_SHIMMER = 1
     private val CONTAINER_ERROR = 2
-    var shopId = 0
+    var shopId = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -84,10 +87,45 @@ class MvcDetailView @JvmOverloads constructor(
                 }
             }
         })
-        viewModel.membershipLiveData.observe(context as AppCompatActivity, Observer {})
+        viewModel.membershipLiveData.observe(context as AppCompatActivity, Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
+                    toggleLoading(true)
+                }
+                LiveDataResult.STATUS.SUCCESS -> {
+                    handleMembershipRegistrationSuccess(it.data)
+                }
+                LiveDataResult.STATUS.ERROR -> {
+                    handleMembershipRegistrationError(it.error)
+                }
+            }
+        })
+
+        viewModel.followLiveData.observe(context as AppCompatActivity, Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
+                    toggleLoading(true)
+                }
+                LiveDataResult.STATUS.SUCCESS -> {
+                    handleFollowSuccess(it.data)
+                }
+                LiveDataResult.STATUS.ERROR -> {
+                    handleFollowFail(it.error)
+                }
+            }
+        })
+
 
         globalError.setActionClickListener {
             viewModel.getListData(shopId)
+        }
+
+        mvcFollowContainer.oneActionView.btn.setOnClickListener {
+            viewModel.followShop()
+        }
+
+        mvcFollowContainer.twoActionView.btnSecond.setOnClickListener {
+            viewModel.registerMembership()
         }
     }
 
@@ -111,7 +149,35 @@ class MvcDetailView @JvmOverloads constructor(
         }
     }
 
-    fun show(shopId: Int) {
+    private fun handleMembershipRegistrationSuccess(message: String?) {
+        if (!message.isNullOrEmpty())
+            Toaster.build(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun handleMembershipRegistrationError(th: Throwable?) {
+        toggleLoading(false)
+        if (!th?.message.isNullOrEmpty()) {
+            Toaster.build(this, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
+                mvcFollowContainer.twoActionView.performClick()
+            })
+        }
+    }
+
+    private fun handleFollowSuccess(message: String?) {
+        if (!message.isNullOrEmpty())
+            Toaster.build(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun handleFollowFail(th: Throwable?) {
+        toggleLoading(false)
+        if (!th?.message.isNullOrEmpty()) {
+            Toaster.build(this, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
+                mvcFollowContainer.oneActionView.performClick()
+            })
+        }
+    }
+
+    fun show(shopId: String) {
         this.shopId = shopId
         viewModel.getListData(shopId)
     }

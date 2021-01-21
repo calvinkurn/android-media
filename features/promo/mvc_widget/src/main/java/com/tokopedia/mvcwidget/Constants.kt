@@ -36,6 +36,7 @@ const val TP_CATALOG_MVC_LIST_QUERY = """
         imageURL
         description
       }
+      membershipCardID
     }
     shopName
     catalogList {
@@ -60,8 +61,8 @@ const val TP_CATALOG_MVC_LIST_QUERY = """
 """
 
 const val MEMBERSHIP_REGISTER ="""
-    mutation membershipRegister(${'$'}cardID: Int!, $${'$'}referenceID: String!, ${'$'}name: String!, ${'$'}source: Int!) {
-  membershipRegister(cardID: ${'$'}cardID, referenceID: ${'$'}referenceID, name: ${'$'}name, source: ${'$'}source) {
+    mutation membershipRegister(${'$'}cardID: Int!) {
+  membershipRegister(cardID: ${'$'}cardID) {
     resultStatus {
       code
       message
@@ -79,4 +80,14 @@ const val MEMBERSHIP_REGISTER ="""
     }
   }
 }
+"""
+
+const val FOLLOW_SHOP ="""
+    mutation followShop(${'$'}input: ParamFollowShop!) {
+      followShop(input: ${'$'}input) {
+        success
+        message
+        isFirstTime
+      }
+    }
 """

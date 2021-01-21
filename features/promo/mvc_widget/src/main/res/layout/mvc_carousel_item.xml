@@ -6,19 +6,23 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image"
+        android:scaleType="centerCrop"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_10" />
+        android:layout_height="164dp"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_16"
         android:gravity="center"
-        android:layout_gravity="center"
+        android:lines="3"
         android:textAlignment="center"
         app:typographyType="body_3"
         tools:text="TokoMember" />
