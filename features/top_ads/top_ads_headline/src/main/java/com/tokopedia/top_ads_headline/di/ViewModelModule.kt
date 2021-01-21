@@ -23,11 +23,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(AdContentViewModel::class)
-    internal abstract fun provideAdContentViewModel(viewModel: AdContentViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(TopAdsProductListViewModel::class)
     internal abstract fun provideTopAdsProductListViewModel(viewModel: TopAdsProductListViewModel): ViewModel
 
@@ -40,5 +35,25 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AdScheduleAndBudgetViewModel::class)
     internal abstract fun provideAdScheduleAndBudgetViewModel(viewModel: AdScheduleAndBudgetViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SharedEditHeadlineViewModel::class)
+    internal abstract fun provideSharedEditHeadlineViewModel(viewModel: SharedEditHeadlineViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EditFormHeadlineViewModel::class)
+    internal abstract fun provideEditFormHeadlineViewModel(viewModel: EditFormHeadlineViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HeadlineEditKeywordViewModel::class)
+    internal abstract fun provideHeadlineEditKeywordViewModel(viewModel: HeadlineEditKeywordViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EditAdOthersViewModel::class)
+    internal abstract fun provideEditAdOthersViewModel(viewModel: EditAdOthersViewModel): ViewModel
 
 }

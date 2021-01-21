@@ -1,7 +1,5 @@
 package com.tokopedia.analyticsdebugger.validator.core
 
-import com.tokopedia.analyticsdebugger.database.GtmLogDB
-
 data class Validator(
         val name: String,
         val data: Map<String, Any>,

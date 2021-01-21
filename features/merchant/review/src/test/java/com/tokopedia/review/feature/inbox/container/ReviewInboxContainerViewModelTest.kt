@@ -6,6 +6,7 @@ import com.tokopedia.reputation.common.data.source.cloud.model.ProductrevReviewT
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import org.junit.Assert
 import org.junit.Test
 
@@ -17,6 +18,7 @@ class ReviewInboxContainerViewModelTest : ReviewInboxContainerViewModelTestFixtu
         val response = ProductrevReviewTabCounterResponseWrapper(ProductrevReviewTabCount(count = count))
 
         onGetTabCounter_thenReturn(response)
+        onHasShop_returnTrue()
 
         viewModel.getTabCounter()
 
@@ -31,10 +33,11 @@ class ReviewInboxContainerViewModelTest : ReviewInboxContainerViewModelTestFixtu
         val exception = NetworkErrorException()
 
         onGetTabCounterFail_thenReturn(exception)
+        onHasShop_returnFalse()
 
         viewModel.getTabCounter()
 
-        val expectedError = listOf(ReviewInboxTabs.ReviewInboxPending(), ReviewInboxTabs.ReviewInboxHistory, ReviewInboxTabs.ReviewInboxSeller)
+        val expectedError = listOf(ReviewInboxTabs.ReviewInboxPending(), ReviewInboxTabs.ReviewInboxHistory)
 
         verifyGetTabCounterUseCaseExecuted()
         verifyTabCountersEquals(expectedError)
@@ -42,6 +45,13 @@ class ReviewInboxContainerViewModelTest : ReviewInboxContainerViewModelTestFixtu
 
     @Test
     fun `when getUserId should return valid userId`() {
+        val actualUserId = viewModel.getUserId()
+        Assert.assertTrue(actualUserId.isEmpty())
+    }
+
+    @Test
+    fun `when getUserId return null should return empty string`() {
+        onGetUserId_returnNull()
         val actualUserId = viewModel.getUserId()
         Assert.assertTrue(actualUserId.isEmpty())
     }
@@ -56,6 +66,18 @@ class ReviewInboxContainerViewModelTest : ReviewInboxContainerViewModelTestFixtu
 
     private fun onGetTabCounterFail_thenReturn(throwable: Throwable) {
         coEvery { productrevReviewTabCounterUseCase.executeOnBackground()} throws throwable
+    }
+
+    private fun onGetUserId_returnNull() {
+        every { userSession.userId } returns null
+    }
+
+    private fun onHasShop_returnFalse() {
+        every { userSession.hasShop() } returns false
+    }
+
+    private fun onHasShop_returnTrue() {
+        every { userSession.hasShop() } returns true
     }
 
     private fun verifyTabCountersEquals(tabs: List<ReviewInboxTabs>) {

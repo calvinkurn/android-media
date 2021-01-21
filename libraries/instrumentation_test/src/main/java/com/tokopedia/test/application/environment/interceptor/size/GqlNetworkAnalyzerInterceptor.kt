@@ -10,6 +10,7 @@ import okio.Buffer
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
+import kotlin.ConcurrentModificationException
 
 class GqlNetworkAnalyzerInterceptor : Interceptor {
 
@@ -63,7 +64,11 @@ class GqlNetworkAnalyzerInterceptor : Interceptor {
         }
 
         fun getNetworkData(): NetworkData {
-            processInterceptedNetworkData()
+            try {
+                processInterceptedNetworkData()
+            } catch (e: ConcurrentModificationException) {
+                e.printStackTrace()
+            }
 
             return NetworkData(
                     getTotalSize(),
