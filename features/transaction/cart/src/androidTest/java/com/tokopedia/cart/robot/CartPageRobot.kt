@@ -10,6 +10,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -17,13 +18,17 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.google.gson.Gson
 import com.google.gson.JsonArray
+import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.journey.simple.CartTrackingTest
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartShopViewHolder
 import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -33,6 +38,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
+import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.allOf
 import org.junit.Assert
 
@@ -140,6 +146,20 @@ class CartPageRobot {
             }
         }
         childRecyclerView.contentDescription = tempStoreDesc
+    }
+
+    infix fun buy(func: ResultRobot.() -> Unit): ResultRobot {
+        Log.d("CartHappyFlowTest", "Do buy")
+        onView(withId(R.id.go_to_courier_page_button)).perform(ViewActions.click())
+        return ResultRobot().apply(func)
+    }
+
+}
+
+class ResultRobot {
+
+    fun hasPassedAnalytics(gtmLogDBSource: GtmLogDBSource, context: Context, queryFileName: String) {
+        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, queryFileName), hasAllSuccess())
     }
 
 }

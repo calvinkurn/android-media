@@ -1,0 +1,74 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "cart",
+      "checkout_step": "0",
+      "currentSite": "tokopediamarketplace",
+      "event": "checkout_progress",
+      "eventAction": "view cart page",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "quantity": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "dimension81": "{{.*}}",
+          "dimension80": "{{.*}}",
+          "item_brand": "none/other",
+          "item_category": "{{.*}}",
+          "dimension104": "{{.*}}",
+          "dimension54": "{{.*}}",
+          "dimension53": "{{true|false}}",
+          "dimension45": "{{\\d+}}",
+          "dimension56": "{{\\d+}}",
+          "dimension83": "{{.*}}",
+          "dimension82": "{{\\d+}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "dimension79": "{{\\d+}}",
+          "item_variant": "none/other",
+          "dimension49": "",
+          "dimension48": "{{\\d+.\\d+}}",
+          "dimension59": "{{.*}}"
+        }
+      ],
+      "eventLabel": "",
+      "checkout_option": "view cart page"
+    },
+    {
+      "eventCategory": "cart",
+      "checkout_step": "1",
+      "currentSite": "tokopediamarketplace",
+      "event": "begin_checkout",
+      "eventAction": "click checkout",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "quantity": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "dimension81": "{{.*}}",
+          "dimension80": "{{.*}}",
+          "item_brand": "none/other",
+          "item_category": "{{.*}}",
+          "dimension104": "{{.*}}",
+          "dimension54": "{{.*}}",
+          "dimension53": "{{true|false}}",
+          "dimension45": "{{\\d+}}",
+          "dimension56": "{{\\d+}}",
+          "dimension83": "{{.*}}",
+          "dimension82": "{{\\d+}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "dimension79": "{{\\d+}}",
+          "item_variant": "none/other",
+          "dimension49": "",
+          "dimension48": "{{\\d+.\\d+}}",
+          "dimension59": "{{.*}}"
+        }
+      ],
+      "eventLabel": "{{success - (?:default|check all|partial shop|partial product|partial shop and product|default - cod|check all - cod|partial shop - cod|partial product - cod|partial shop and product - cod)}}",
+      "checkout_option": "click bayar success"
+    }
+  ],
+  "readme": "Cart Page Tracking"
+}
