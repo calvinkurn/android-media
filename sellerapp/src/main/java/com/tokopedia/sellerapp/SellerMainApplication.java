@@ -259,6 +259,17 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         );
     }
 
+    public int getCurrentVersion(Context context) {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     //Please do not delete this function to keep AppNotificationReceiver
     private void initAppNotificationReceiver() {
         AppNotificationReceiver appNotificationReceiver = new AppNotificationReceiver();
