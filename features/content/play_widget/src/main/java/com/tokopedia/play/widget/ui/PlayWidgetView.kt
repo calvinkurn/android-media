@@ -43,6 +43,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         mWidgetInternalListener = listener
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setWidgetInternalListener(listener)
+            is PlayWidgetMediumView -> child.setWidgetInternalListener(listener)
         }
     }
 
