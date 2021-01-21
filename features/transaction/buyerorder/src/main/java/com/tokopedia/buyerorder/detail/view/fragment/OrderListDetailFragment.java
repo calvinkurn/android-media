@@ -61,6 +61,7 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.PaymentData;
+import com.tokopedia.buyerorder.recharge_download.presentation.activity.OrderDetailRechargeDownloadWebviewActivity;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.utils.view.DoubleTextView;
 
@@ -305,8 +306,12 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
-            presenter.onLihatInvoiceButtonClick(invoice.invoiceUrl());
-            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
+//            presenter.onLihatInvoiceButtonClick(invoice.invoiceUrl());
+//            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
+            startActivity(OrderDetailRechargeDownloadWebviewActivity.Companion.getIntent(getContext(),
+                    "Test",
+                    getArguments().getString(KEY_ORDER_ID),
+                    ""));
         });
     }
 
@@ -522,7 +527,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW,contactUs.helpUrl());
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, contactUs.helpUrl());
             }
 
             @Override
