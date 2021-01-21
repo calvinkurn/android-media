@@ -37,6 +37,7 @@ import com.tokopedia.home_recom.view.viewholder.RecommendationEmptyViewHolder
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel.Companion.DEFAULT_VALUE_SORT
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.sortfilter.SortFilter
@@ -375,11 +376,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         }
     }
 
-    private fun onQuickFilterClick(item: SortFilterItem){
+    private fun onQuickFilterClick(item: SortFilterItem, recom: RecommendationFilterChipsEntity.RecommendationFilterChip){
         adapter.clearAllElements()
         recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), ref, source, productId)
         item.toggleSelected()
-        SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId())
+        SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId(), "${recom.options.firstOrNull()?.key ?: ""}=${recom.options.firstOrNull()?.value ?: ""}")
     }
 
     /**
@@ -472,8 +473,12 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         adapter.clearAllElements()
         recommendationViewModel.getRecommendationFromFullFilter(applySortFilterModel.selectedSortMapParameter, applySortFilterModel.selectedFilterMapParameter, ref, source, productId)
         filterSortBottomSheet = null
-        repeat(applySortFilterModel.mapParameter.count()) { SimilarProductRecommendationTracking.eventUserClickFullFilterChip(recommendationViewModel.userId()) }
-        SimilarProductRecommendationTracking.eventUserClickShowProduct(recommendationViewModel.userId())
+        val selectedFilterString = applySortFilterModel.selectedFilterMapParameter.map { "${it.key}=${it.value}" }.joinToString("&")
+        val selectedSortString = applySortFilterModel.selectedSortMapParameter.map { "${it.key}=${it.value}" }.joinToString("&")
+        applySortFilterModel.mapParameter.forEach {
+            SimilarProductRecommendationTracking.eventUserClickFullFilterChip(recommendationViewModel.userId(), "${it.key}=${it.value}")
+        }
+        SimilarProductRecommendationTracking.eventUserClickShowProduct(recommendationViewModel.userId(), "$selectedSortString&$selectedFilterString")
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
