@@ -214,6 +214,10 @@
 
 -keep public class com.android.installreferrer.** { *; }
 
+#keep for security purposes. This library has already been obfuscated.
+-keep class com.tkpd.util.Base64.** { *; }
+
+
 # Keep Class com.tokopedia
 -keep public class com.tokopedia.design.component.BottomNavigation { *; }
 #-keep public class com.tokopedia.design.text.SpinnerCounterInputView { *; }

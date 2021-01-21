@@ -198,6 +198,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.libraries.deviceFingerprint)
     implementation project(rootProject.ext.libraries.workManagerUtil)
     implementation project(rootProject.ext.libraries.utils)
     if (rootProject.ext.debugToolsEnabled) {
@@ -249,7 +250,6 @@ dependencies {
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
-    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.productManageCommon)
     implementation project(rootProject.ext.features.kolCommon)

@@ -243,12 +243,12 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     }
 
     private fun onErrorSetCashback(setCashbackResult: SetCashbackResult) {
-        Toaster.make(setCashbackCoordinatorLayout, getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_fail),
+        Toaster.build(setCashbackCoordinatorLayout, getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_fail),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry),
                 View.OnClickListener {
                     viewModel.setCashback(productId = setCashbackResult.productId,
                             productName = setCashbackResult.productName, cashback = setCashbackResult.cashback)
-                })
+                }).show()
     }
 
 }

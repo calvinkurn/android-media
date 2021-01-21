@@ -131,6 +131,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         super.onCreate(savedInstanceState)
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
         modeListData = arguments?.getParcelable(OtpConstant.OTP_MODE_EXTRA) ?: ModeListData()
+        viewModel.isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)?: false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -323,6 +324,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         return { otpValidateData ->
             when {
                 otpValidateData.success -> {
+                    viewModel.done = true
                     when (otpData.otpType) {
                         OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
                             analytics.trackSuccessClickVerificationRegisterPhoneButton()
@@ -585,6 +587,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
+                        viewModel.done = true
                         val data = otpData
                         data.otpType = OtpConstant.OtpType.RESET_PIN
                         data.otpMode = ""
@@ -606,6 +609,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
+                        viewModel.done = true
                         analytics.trackClickUseOtherMethod(otpData.otpType)
                         (activity as VerificationActivity).goToVerificationMethodPage()
                     }
@@ -625,6 +629,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
+                        viewModel.done = true
                         analytics.trackClickUseOtherMethod(otpData.otpType)
                         (activity as VerificationActivity).goToVerificationMethodPage()
                     }
