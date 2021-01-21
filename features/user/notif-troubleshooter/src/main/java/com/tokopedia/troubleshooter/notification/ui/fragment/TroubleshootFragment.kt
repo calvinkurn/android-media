@@ -15,7 +15,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.settingnotif.usersetting.util.CacheManager.saveLastCheckedDate
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackClearCacheClicked
@@ -168,7 +168,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             if (notification.isNotNull() && device.isNotNull() && ringtone.isNotNull()) {
                 TroubleshooterTimber.combine(token, notification, device)
 
-                if (notification.isTrue() && device.isTrue() && !isSilent(ringtone)) {
+                if (notification.isTrue() && device.isTrue() && !isSilent(ringtone) && token.isTrue()) {
                     adapter.status(StatusState.Success)
                 } else {
                     adapter.status(StatusState.Warning)
@@ -283,11 +283,11 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     private fun setUpdateTokenStatus(newToken: String) {
         val currentToken = fcmManager.currentToken().prefixToken().trim()
         val newTrimToken = newToken.prefixToken().trim()
-        txtToken?.showWithCondition(currentToken.isNotEmpty() || newTrimToken.isNotEmpty())
+        txtToken?.show()
 
         txtToken?.text = when {
-            newToken.isEmpty() && currentToken.isNotEmpty() -> {
-                getString(R.string.notif_token_current, currentToken)
+            newToken.isEmpty() || currentToken.isEmpty() -> {
+                getString(R.string.notif_error_update_token)
             }
             fcmManager.isNewToken(newToken) -> {
                 viewModel.updateToken(newToken)
