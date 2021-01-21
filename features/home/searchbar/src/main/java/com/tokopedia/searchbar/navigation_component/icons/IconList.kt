@@ -151,10 +151,6 @@ object IconList {
                     applink = ApplinkConstInternalMarketplace.CHAT_SEARCH,
                     disableRouteManager = disableRouteManager,
                     name = NAME_SEARCH,
-                    bundle = Bundle().run {
-                        this.putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, pageSource)
-                        this
-                    },
                     disableDefaultGtmTracker = disableDefaultGtmTracker
             ) {
                 onClick.invoke()
