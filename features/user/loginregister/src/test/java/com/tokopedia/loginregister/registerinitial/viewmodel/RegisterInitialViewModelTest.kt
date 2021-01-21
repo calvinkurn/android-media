@@ -7,6 +7,7 @@ import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.loginregister.common.DispatcherProvider
+import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
@@ -18,15 +19,20 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
+import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
+import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
@@ -86,6 +92,14 @@ class RegisterInitialViewModelTest {
     private var goToSecurityQuestionObserver = mockk<Observer<String>>(relaxed = true)
     private var loginTokenFacebookPhoneObserver = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
     private var loginTokenGoogleObserver = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
+    private var getUserInfoObserver = mockk<Observer<Result<ProfileInfoData>>>(relaxed = true)
+    private var getUserInfoAddPinObserver = mockk<Observer<Result<ProfileInfoData>>>(relaxed = true)
+    private var getTickerInfoObserver = mockk<Observer<Result<List<TickerInfoPojo>>>>(relaxed = true)
+    private var getDynamicBannerObserver = mockk<Observer<Result<DynamicBannerDataModel>>>(relaxed = true)
+    private var reloginAfterSqObserver = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
+    private var validateTokenObserver = mockk<Observer<String>>(relaxed = true)
+    private var goToActivationPageAfterReloginObserver = mockk<Observer<MessageErrorException>>(relaxed = true)
+    private var goToSecurityAfterReloginQuestionObserver = mockk<Observer<String>>(relaxed = true)
 
     lateinit var viewModel: RegisterInitialViewModel
 
@@ -123,6 +137,14 @@ class RegisterInitialViewModelTest {
         viewModel.goToSecurityQuestion.observeForever(goToSecurityQuestionObserver)
         viewModel.loginTokenFacebookPhoneResponse.observeForever(loginTokenFacebookPhoneObserver)
         viewModel.loginTokenGoogleResponse.observeForever(loginTokenGoogleObserver)
+        viewModel.getUserInfoResponse.observeForever(getUserInfoObserver)
+        viewModel.getUserInfoAfterAddPinResponse.observeForever(getUserInfoAddPinObserver)
+        viewModel.getTickerInfoResponse.observeForever(getTickerInfoObserver)
+        viewModel.dynamicBannerResponse.observeForever(getDynamicBannerObserver)
+        viewModel.loginTokenAfterSQResponse.observeForever(reloginAfterSqObserver)
+        viewModel.validateToken.observeForever(validateTokenObserver)
+        viewModel.goToActivationPageAfterRelogin.observeForever(goToActivationPageAfterReloginObserver)
+        viewModel.goToSecurityQuestionAfterRelogin.observeForever(goToSecurityAfterReloginQuestionObserver)
     }
 
     @Test
@@ -204,9 +226,7 @@ class RegisterInitialViewModelTest {
 
     @Test
     fun `on Exception Throw during Activate User`() {
-        coEvery { activateUserUseCase.getData(any()) } answers {
-            throw throwable
-        }
+        coEvery { activateUserUseCase.getData(any()) } throws throwable
 
         viewModel.activateUser("", "")
 
@@ -258,8 +278,6 @@ class RegisterInitialViewModelTest {
     @Test
     fun `on Providers Empty Error`() {
         /* When */
-        val discoverViewModel = DiscoverViewModel(arrayListOf(), "")
-
         every { discoverUseCase.execute(any(), any()) } answers {
             secondArg<Subscriber<DiscoverViewModel>>().onError(throwable)
         }
@@ -548,4 +566,220 @@ class RegisterInitialViewModelTest {
         }
     }
 
+    @Test
+    fun `on Success get user info`() {
+        /* When */
+        val profileInfo = ProfileInfo(firstName = "yoris")
+        val response = ProfilePojo(profileInfo = profileInfo)
+
+        every { getProfileUseCase.execute(any()) } answers {
+            firstArg<GetProfileSubscriber>().onSuccessGetProfile(response)
+        }
+
+        viewModel.getUserInfo()
+
+        /* Then */
+        verify {
+            getUserInfoObserver.onChanged(Success(ProfileInfoData(response.profileInfo)))
+        }
+    }
+
+    @Test
+    fun `on Failed get user info`() {
+        /* When */
+        every { getProfileUseCase.execute(any()) } answers {
+            firstArg<GetProfileSubscriber>().onErrorGetProfile(throwable)
+        }
+
+        viewModel.getUserInfo()
+
+        /* Then */
+        verify {
+            getUserInfoObserver.onChanged(Fail(throwable))
+        }
+    }
+
+    @Test
+    fun `on Success get user info after add pin`() {
+        /* When */
+        val profileInfo = ProfileInfo(firstName = "yoris")
+        val response = ProfilePojo(profileInfo = profileInfo)
+
+        every { getProfileUseCase.execute(any()) } answers {
+            firstArg<GetProfileSubscriber>().onSuccessGetProfile(response)
+        }
+
+        viewModel.getUserInfoAfterAddPin()
+
+        /* Then */
+        verify {
+            getUserInfoAddPinObserver.onChanged(Success(ProfileInfoData(response.profileInfo)))
+        }
+    }
+
+    @Test
+    fun `on Failed get user info after add pin`() {
+        /* When */
+        every { getProfileUseCase.execute(any()) } answers {
+            firstArg<GetProfileSubscriber>().onErrorGetProfile(throwable)
+        }
+
+        viewModel.getUserInfoAfterAddPin()
+
+        /* Then */
+        verify {
+            getUserInfoAddPinObserver.onChanged(Fail(throwable))
+        }
+    }
+
+    @Test
+    fun `on Success get ticker`() {
+        /* When */
+        val tickerInfo = TickerInfoPojo("test", "test message", "")
+        val tickerList = listOf(tickerInfo)
+
+        every { tickerInfoUseCase.execute(any(), any()) } answers {
+            secondArg<Subscriber<List<TickerInfoPojo>>>().onNext(tickerList)
+        }
+
+        viewModel.getTickerInfo()
+
+        /* Then */
+        verify {
+            getTickerInfoObserver.onChanged(Success(tickerList))
+        }
+    }
+
+    @Test
+    fun `on Failed get ticker`() {
+        /* When */
+        every { tickerInfoUseCase.execute(any(), any()) } answers {
+            secondArg<Subscriber<List<TickerInfoPojo>>>().onError(throwable)
+        }
+
+        viewModel.getTickerInfo()
+
+        /* Then */
+        verify {
+            getTickerInfoObserver.onChanged(Fail(throwable))
+        }
+    }
+
+    @Test
+    fun `on Success get dynamic banner`() {
+        /* When */
+        val banner = DynamicBannerDataModel.GetBanner(message = "test")
+        val response = DynamicBannerDataModel(banner = banner)
+
+        coEvery { dynamicBannerUseCase.executeOnBackground() } returns response
+
+        viewModel.getDynamicBannerData("1")
+
+        /* Then */
+        verify {
+            getDynamicBannerObserver.onChanged(Success(response))
+        }
+    }
+
+    @Test
+    fun `on Failed get dynamic banner`() {
+        /* When */
+        coEvery { dynamicBannerUseCase.executeOnBackground() } throws throwable
+
+        viewModel.getDynamicBannerData("1")
+
+        /* Then */
+        verify {
+            getDynamicBannerObserver.onChanged(Fail(throwable))
+        }
+    }
+
+    @Test
+    fun `on relogin after SQ success`() {
+        val loginToken = LoginToken("", "asd", "qqqq")
+        val responseToken = LoginTokenPojo(loginToken = loginToken)
+
+        /* When */
+        every { userSession.loginMethod } returns "facebook"
+        every { loginTokenUseCase.executeLoginAfterSQ(any(), any()) } answers {
+            secondArg<LoginTokenSubscriber>().onSuccessLoginToken(responseToken)
+        }
+
+        viewModel.reloginAfterSQ("asd")
+
+        /* Then */
+        verify {
+            reloginAfterSqObserver.onChanged(Success(responseToken))
+        }
+    }
+
+    @Test
+    fun `on relogin after SQ Fail`() {
+        val validateToken = "asdf123"
+
+        /* When */
+        every { userSession.loginMethod } returns "facebook"
+        every { loginTokenUseCase.executeLoginAfterSQ(any(), any()) } answers {
+            secondArg<LoginTokenSubscriber>().onErrorLoginToken(throwable)
+        }
+
+        viewModel.reloginAfterSQ(validateToken)
+
+        /* Then */
+        verify {
+            reloginAfterSqObserver.onChanged(Fail(throwable))
+            validateTokenObserver.onChanged(validateToken)
+        }
+    }
+
+    @Test
+    fun `on Show Popup after SQ`() {
+        val popupError = PopupError("header")
+
+        /* When */
+        val loginToken = LoginToken(popupError = popupError)
+        val responseToken = LoginTokenPojo(loginToken)
+
+        /* When */
+        every { loginTokenUseCase.executeLoginAfterSQ(any(), any()) } answers {
+            secondArg<LoginTokenSubscriber>().onShowPopupError(responseToken)
+        }
+
+        viewModel.reloginAfterSQ("")
+
+        /* Then */
+        verify {
+            showPopupErrorObserver.onChanged(popupError)
+        }
+    }
+
+    @Test
+    fun `on go to activation page after SQ`() {
+        /* When */
+        every { loginTokenUseCase.executeLoginAfterSQ(any(), any()) } answers {
+            secondArg<LoginTokenSubscriber>().onGoToActivationPage(messageException)
+        }
+
+        viewModel.reloginAfterSQ("")
+
+        /* Then */
+        verify {
+            goToActivationPageAfterReloginObserver.onChanged(messageException)
+        }
+    }
+
+    @Test
+    fun `on go to security questions after SQ`() {
+        /* When */
+        every { loginTokenUseCase.executeLoginAfterSQ(any(), any()) } answers {
+            secondArg<LoginTokenSubscriber>().onGoToSecurityQuestion()
+        }
+
+        viewModel.reloginAfterSQ("")
+
+        /* Then */
+        verify {
+            goToSecurityAfterReloginQuestionObserver.onChanged("")
+        }
+    }
 }
