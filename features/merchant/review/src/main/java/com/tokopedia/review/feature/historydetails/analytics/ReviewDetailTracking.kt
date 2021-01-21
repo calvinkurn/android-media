@@ -5,7 +5,7 @@ import com.tokopedia.track.TrackApp
 
 object ReviewDetailTracking {
 
-    fun eventClickBack(productId: Int, feedbackId: Int, userId: String) {
+    fun eventClickBack(productId: Long, feedbackId: Long, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
                         ReviewDetailTrackingConstants.CLICK_BACK_BUTTON_ACTION,
@@ -15,7 +15,7 @@ object ReviewDetailTracking {
         )
     }
 
-    fun eventClickShare(productId: Int, feedbackId: Int, userId: String) {
+    fun eventClickShare(productId: Long, feedbackId: Long, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
                         ReviewDetailTrackingConstants.CLICK_SHARE_BUTTON_ACTION,
@@ -25,7 +25,7 @@ object ReviewDetailTracking {
         )
     }
 
-    fun eventClickEdit(productId: Int, feedbackId: Int, userId: String) {
+    fun eventClickEdit(productId: Long, feedbackId: Long, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
                         ReviewDetailTrackingConstants.CLICK_EDIT_BUTTON_ACTION,
@@ -35,7 +35,7 @@ object ReviewDetailTracking {
         )
     }
 
-    fun eventClickProductCard(productId: Int, feedbackId: Int, userId: String) {
+    fun eventClickProductCard(productId: Long, feedbackId: Long, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
                         ReviewDetailTrackingConstants.CLICK_PRODUCT_CARD_ACTION,
@@ -45,7 +45,7 @@ object ReviewDetailTracking {
         )
     }
 
-    fun eventClickImageGallery(productId: Int, feedbackId: Int, userId: String) {
+    fun eventClickImageGallery(productId: Long, feedbackId: Long, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
                         ReviewDetailTrackingConstants.CLICK_REVIEW_IMAGE_GALLERY,
@@ -55,7 +55,7 @@ object ReviewDetailTracking {
         )
     }
 
-    fun eventClickSmiley(productId: Int, feedbackId: Int, userId: String) {
+    fun eventClickSmiley(productId: Long, feedbackId: Long, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
                         ReviewTrackingConstant.CLICK_SMILEY,
