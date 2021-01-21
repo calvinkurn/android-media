@@ -55,7 +55,8 @@ class HomeHeaderOvoViewHolder(itemView: View, private val listener: HomeCategory
                             layoutParams.height = listener.homeMainToolbarHeight -
                                     itemView.resources.getDimensionPixelOffset(R.dimen.dp_12)
                         } else {
-                            layoutParams.height = listener.homeMainToolbarHeight
+                            layoutParams.height = listener.homeMainToolbarHeight -
+                                    itemView.resources.getDimensionPixelOffset(R.dimen.dp_8)
                         }
                         emptySpace.layoutParams = layoutParams
                         emptySpace.invalidate()
