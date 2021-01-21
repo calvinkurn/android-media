@@ -15,7 +15,7 @@ class SellerReviewDetailAdapter(
         const val PAYLOAD_TOPIC_FILTER_REVIEW_COUNT = 103
     }
 
-    fun setFeedbackListData(feedbackListUiModel: List<FeedbackUiModel>, reviewCount: Int) {
+    fun setFeedbackListData(feedbackListUiModel: List<FeedbackUiModel>, reviewCount: Long) {
         val lastIndex = visitables.size
         updateReviewCount(reviewCount)
         visitables.addAll(feedbackListUiModel)
@@ -95,5 +95,4 @@ class SellerReviewDetailAdapter(
             notifyItemInserted(lastIndex)
         }
     }
-
 }
