@@ -278,8 +278,8 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun fetchNextPage(page: Int) {
-        topAdsDashboardPresenter.getGroupProductData(resources, page, null, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
+        topAdsDashboardPresenter.getGroupProductData(page, null, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
     }
 
     private fun showBottomSheet() {
@@ -377,8 +377,8 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         currentPageNum = 1
         autoAdsAdapter.items.clear()
         autoAdsAdapter.notifyDataSetChanged()
-        topAdsDashboardPresenter.getGroupProductData(resources, 1, null, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
+        topAdsDashboardPresenter.getGroupProductData(1, null, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
     }
 
     private fun autoAds() {

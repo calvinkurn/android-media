@@ -8,11 +8,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.topads.common.data.response.SingleAd
-import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.common.data.model.DataSuggestions
-import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.groupId
@@ -72,7 +71,7 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adId = arguments?.getInt(groupId) ?: 0
-        viewModel.getSingleAdInfo(arguments?.getInt(groupId) ?: 0, ::onSuccessAdInfo)
+        viewModel.getSingleAdInfo(adId.toString(), ::onSuccessAdInfo)
         radio_group.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked == radio1.id) {
                 daily_budget.visibility = View.GONE
