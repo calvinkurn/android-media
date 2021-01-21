@@ -405,11 +405,15 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      * @param position list of position of the item at Adapter, can be [1] or [1,2] for dynamic nested item
      */
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref, internalRef)
-        else SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref, internalRef)
-        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, position.first())
-            startActivityForResult(this, REQUEST_FROM_PDP)
+        try {
+            if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref, internalRef)
+            else SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref, internalRef)
+            RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
+                putExtra(PDP_EXTRA_UPDATED_POSITION, position.first())
+                startActivityForResult(this, REQUEST_FROM_PDP)
+            }
+        }catch (ex: Exception){
+
         }
     }
 
