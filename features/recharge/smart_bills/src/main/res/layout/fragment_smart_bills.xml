@@ -97,6 +97,7 @@
         android:id="@+id/smart_bills_checkout_view_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardElevation="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="parent">
 

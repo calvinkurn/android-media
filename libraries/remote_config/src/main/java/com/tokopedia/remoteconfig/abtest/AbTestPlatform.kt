@@ -198,7 +198,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         private const val CONSUMER_PRO_APPLICATION_PACKAGE = "com.tokopedia.intl"
 
         const val NAVIGATION_EXP_TOP_NAV = "Navigation P0.1"
-        const val NAVIGATION_VARIANT_OLD = "Navigation Revamp"
+        const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
         const val NAVIGATION_VARIANT_REVAMP = "Navigation Revamp"
     }
 

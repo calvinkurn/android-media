@@ -72,22 +72,6 @@ class InspirationCarouselViewHolder(
             }
         }
     }
-    private fun createGridProductList(option: InspirationCarouselViewModel.Option): List<Visitable<*>> {
-        val list = mutableListOf<Visitable<*>>()
-        list.add(createBannerOption(option))
-        list.addAll(option.product)
-        return list
-    }
-
-    private fun createBannerOption(option: InspirationCarouselViewModel.Option): InspirationCarouselViewModel.Option {
-        return InspirationCarouselViewModel.Option(
-                title = option.title,
-                layout = LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER,
-                bannerImageUrl = option.bannerImageUrl,
-                bannerLinkUrl = option.bannerLinkUrl,
-                bannerApplinkUrl = option.bannerApplinkUrl
-        )
-    }
 
     private fun RecyclerView.initRecyclerViewForGrid(option: InspirationCarouselViewModel.Option, productList: List<ProductCardModel>) {
         launch {
@@ -100,6 +84,26 @@ class InspirationCarouselViewHolder(
                 throwable.printStackTrace()
             }
         }
+    }
+
+    private fun createGridProductList(option: InspirationCarouselViewModel.Option): List<Visitable<*>> {
+        val list = mutableListOf<Visitable<*>>()
+        if(option.shouldAddBannerCard()) list.add(createBannerOption(option))
+        list.addAll(option.product)
+        return list
+    }
+
+    private fun createBannerOption(option: InspirationCarouselViewModel.Option): InspirationCarouselViewModel.Option {
+        return InspirationCarouselViewModel.Option(
+                title = option.title,
+                layout = LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER,
+                bannerImageUrl = option.bannerImageUrl,
+                bannerLinkUrl = option.bannerLinkUrl,
+                bannerApplinkUrl = option.bannerApplinkUrl,
+                inspirationCarouselType = option.inspirationCarouselType,
+                position = option.position,
+                carouselTitle = option.carouselTitle
+        )
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
@@ -162,17 +166,13 @@ class InspirationCarouselViewHolder(
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
         return InspirationCarouselItemDecoration(
                 itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
-                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12) ?: 0,
                 itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
-                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0
         )
     }
 
     private class InspirationCarouselItemDecoration(
             private val left: Int,
-            private val top: Int,
             private val right: Int,
-            private val bottom: Int
     ): RecyclerView.ItemDecoration() {
 
         private var cardViewHorizontalOffset = 0

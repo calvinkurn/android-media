@@ -33,7 +33,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/dp_2"
                 android:layout_marginLeft="@dimen/dp_2"
-                app:srcCompat="@drawable/ic_search_bar" />
+                app:srcCompat="@drawable/ic_product_detail_search_bar" />
 
             <TextView
                 android:id="@+id/et_search"

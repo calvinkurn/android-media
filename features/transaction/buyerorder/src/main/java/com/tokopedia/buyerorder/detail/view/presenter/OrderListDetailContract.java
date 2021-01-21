@@ -137,6 +137,12 @@ public interface OrderListDetailContract {
         void hitEventEmail(ActionButton actionButton, String metadata);
 
         void onBuyAgainItems(String query, List<Items> items, String eventActionLabel, String statusCode);
+
+        void onLihatInvoiceButtonClick(String invoiceUrl);
+
+        void onCopyButtonClick(String copiedValue);
+
+        void onActionButtonClick(String buttonId, String buttonName);
     }
 
     interface ActionInterface {
