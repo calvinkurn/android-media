@@ -2187,19 +2187,21 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override val homeMainToolbarHeight: Int
         get() {
             var height = 0
-            if (isNavOld()) {
-                if (oldToolbar != null) {
-                    height = oldToolbar?.height?:0
-                    oldToolbar?.let {
-                        if (!it.isShadowApplied()) {
-                            height += resources.getDimensionPixelSize(R.dimen.dp_8)
+            context?.let {
+                if (isNavOld()) {
+                    if (oldToolbar != null) {
+                        height = oldToolbar?.height ?: 0
+                        oldToolbar?.let {
+                            if (!it.isShadowApplied()) {
+                                height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                            }
                         }
                     }
-                }
-            } else if (isNavRevamp()) {
-                navToolbar?.let {
-                    height = navToolbar?.height?:0
-                    height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                } else if (isNavRevamp()) {
+                    navToolbar?.let {
+                        height = navToolbar?.height ?: 0
+                        height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                    }
                 }
             }
             return height
