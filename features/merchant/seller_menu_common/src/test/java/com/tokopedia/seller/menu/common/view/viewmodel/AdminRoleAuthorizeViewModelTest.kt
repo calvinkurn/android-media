@@ -21,7 +21,7 @@ class AdminRoleAuthorizeViewModelTest: AdminRoleAuthorizeViewModelTestFixture() 
     fun `success get admin permission when user is not shop owner`() {
         val isRoleAuthorized = true
         onGetUserSessionIsShopOwner_thenReturn(false)
-        onExecuteAdminPermissionUseCaseSuccess_thenReturn(isRoleAuthorized)
+        onExecuteAuthorizeAccessUseCaseSuccess_thenReturn(isRoleAuthorized)
 
         viewModel.checkAccess(AdminFeature.SALDO)
 
@@ -32,7 +32,7 @@ class AdminRoleAuthorizeViewModelTest: AdminRoleAuthorizeViewModelTestFixture() 
     fun `fail get admin permission when user is not shop owner`() {
         val throwable = MessageErrorException("")
         onGetUserSessionIsShopOwner_thenReturn(false)
-        onExecuteAdminPermissionUseCaseFail_thenThrow(throwable)
+        onExecuteAuthorizeAccessUseCaseFail_thenThrow(throwable)
 
         viewModel.checkAccess(AdminFeature.SALDO)
 

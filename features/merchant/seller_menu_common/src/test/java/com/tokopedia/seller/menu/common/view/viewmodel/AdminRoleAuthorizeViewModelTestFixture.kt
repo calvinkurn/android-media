@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.seller.menu.common.domain.usecase.AdminPermissionUseCase
 import com.tokopedia.seller.menu.common.view.mapper.AdminPermissionMapper
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,6 +24,9 @@ open class AdminRoleAuthorizeViewModelTestFixture {
     lateinit var adminPermissionUseCase: AdminPermissionUseCase
 
     @RelaxedMockK
+    lateinit var authorizeAccessUseCase: AuthorizeAccessUseCase
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
@@ -38,6 +42,7 @@ open class AdminRoleAuthorizeViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = AdminRoleAuthorizeViewModel(
                 adminPermissionUseCase,
+                authorizeAccessUseCase,
                 userSession,
                 mapper,
                 CoroutineTestDispatchersProvider
@@ -54,6 +59,18 @@ open class AdminRoleAuthorizeViewModelTestFixture {
         coEvery {
             userSession.isShopOwner
         } returns isShopOwner
+    }
+
+    protected fun onExecuteAuthorizeAccessUseCaseSuccess_thenReturn(result: Boolean) {
+        coEvery {
+            authorizeAccessUseCase.execute(any())
+        } returns result
+    }
+
+    protected fun onExecuteAuthorizeAccessUseCaseFail_thenThrow(throwable: Throwable) {
+        coEvery {
+            authorizeAccessUseCase.execute(any())
+        } throws throwable
     }
 
     protected fun onExecuteAdminPermissionUseCaseSuccess_thenReturn(result: Boolean) {
