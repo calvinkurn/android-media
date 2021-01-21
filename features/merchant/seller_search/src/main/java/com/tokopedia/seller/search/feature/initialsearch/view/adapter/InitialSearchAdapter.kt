@@ -1,6 +1,7 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialSearchSeller
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchMinCharUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoHistoryUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
@@ -8,7 +9,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearc
 class InitialSearchAdapter(initialSearchAdapterTypeFactory: InitialSearchAdapterTypeFactory):
         BaseAdapter<InitialSearchAdapterTypeFactory>(initialSearchAdapterTypeFactory) {
 
-    fun addAll(list: List<ItemInitialSearchUiModel>) {
+    fun addAll(list: List<BaseInitialSearchSeller>) {
         visitables.addAll(list)
         notifyDataSetChanged()
     }

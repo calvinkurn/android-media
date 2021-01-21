@@ -1,11 +1,13 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.viewholder
 
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemHighlightSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.*
 
 interface HistorySearchListener {
     fun onClearSearchItem(keyword: String, adapterPosition: Int)
     fun onClearAllSearch()
     fun onHistoryItemClicked(keyword: String)
+    fun onHighlightItemClicked(data: ItemHighlightSearchUiModel, position: Int)
 }
 
 interface FaqSearchListener {

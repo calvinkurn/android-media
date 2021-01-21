@@ -3,14 +3,8 @@ package com.tokopedia.seller.search.feature.initialsearch.view.model.initialsear
 import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialSearchSeller
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.TypeFactoryInitialSearchAdapter
 
-data class ItemHighLightSearchUiModel(
-        val id: String? = "",
-        val title: String? = "",
-        val desc: String? = "",
-        val imageUrl: String? = "",
-        val appUrl: String? = ""
-): BaseInitialSearchSeller {
-    override fun type(typeFactory: TypeFactoryInitialSearchAdapter?): Int {
+class ItemTitleInitialSearchUiModel: BaseInitialSearchSeller {
+    override fun type(typeFactory: TypeFactoryInitialSearchAdapter): Int {
         return typeFactory.type(this)
     }
 }
