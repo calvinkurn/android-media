@@ -1405,7 +1405,7 @@ class ShopPageFragment :
         )
 
         var action = ACTION_FOLLOW
-        if (!isFollowing) {
+        if (isFollowing) {
             action = ACTION_UNFOLLOW
         }
         shopViewModel.updateFollowStatus(shopId, action)

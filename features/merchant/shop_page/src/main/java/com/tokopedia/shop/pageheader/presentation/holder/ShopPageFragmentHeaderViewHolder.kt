@@ -140,7 +140,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         followButton.setOnClickListener {
             if (!followButton.isLoading) {
                 followButton.isLoading = true
-                listener.setFollowStatus(!isShopFavorite)
+                listener.setFollowStatus(isShopFavorite)
             }
         }
     }
