@@ -10,7 +10,6 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
-import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
@@ -29,7 +28,6 @@ import retrofit2.Retrofit;
 /**
  * @author sebastianuskh on 4/13/17.
  */
-@FlightScope
 @Component(modules = FlightModule.class, dependencies = BaseAppComponent.class)
 public interface FlightComponent {
     @ApplicationContext
