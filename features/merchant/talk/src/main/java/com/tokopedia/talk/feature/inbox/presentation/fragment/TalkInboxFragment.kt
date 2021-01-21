@@ -178,9 +178,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         talkInboxUiModel?.inboxDetail?.let {
             talkInboxTracking.eventClickThreadEcommerce(viewModel.getType(), it.questionID,  viewModel.getUserId(), position, !it.isUnread)
             goToReply(it.questionID)
-            if(it.isUnread || it.state.isUnresponded || it.state.hasProblem) {
-                containerListener?.decreaseDiscussionUnreadCounter()
-            }
         }
         talkInboxOldUiModel?.inboxDetail?.let {
             talkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,

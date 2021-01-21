@@ -147,14 +147,6 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         viewModel.getNotifications()
     }
 
-    override fun decreaseDiscussionUnreadCounter() {
-        val notificationRole = InboxConfig.inboxCounter.getByRole(
-                InboxConfig.role
-        ) ?: return
-        notificationRole.talkInt -= 1
-        bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole.talkInt)
-    }
-
     private fun setupToolbar() {
         toolbar?.switchToLightToolbar()
         val view = View.inflate(

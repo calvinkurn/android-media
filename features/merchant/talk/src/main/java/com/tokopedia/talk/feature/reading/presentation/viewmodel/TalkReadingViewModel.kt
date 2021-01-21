@@ -12,13 +12,11 @@ import com.tokopedia.talk.feature.reading.data.model.TalkLastAction
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionAggregateUseCase
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionDataUseCase
 import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
-import com.tokopedia.talk.feature.reading.presentation.fragment.TalkReadingFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -36,19 +34,19 @@ class TalkReadingViewModel @Inject constructor(
 
     private val _discussionAggregate = MutableLiveData<Result<DiscussionAggregateResponse>>()
     val discussionAggregate: LiveData<Result<DiscussionAggregateResponse>>
-        get() = _discussionAggregate
+    get() = _discussionAggregate
 
     private val _sortOptions = MutableLiveData<List<SortOption>>()
     val sortOptions: LiveData<List<SortOption>>
-        get() = _sortOptions
+    get() = _sortOptions
 
     private val _discussionData = MutableLiveData<Result<DiscussionDataResponseWrapper>>()
     val discussionData: LiveData<Result<DiscussionDataResponseWrapper>>
-        get() = _discussionData
+    get() = _discussionData
 
     private val _filterCategories = MutableLiveData<List<TalkReadingCategory>>()
     val filterCategories: LiveData<List<TalkReadingCategory>>
-        get() = _filterCategories
+    get() = _filterCategories
 
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState>
@@ -59,15 +57,11 @@ class TalkReadingViewModel @Inject constructor(
     fun getDiscussionAggregate(productId: String, shopId: String) {
         setLoading(isRefresh = true)
         launchCatchError(block = {
-            val response = async(dispatcher.io) {
+            val response = withContext(dispatcher.io) {
                 getDiscussionAggregateUseCase.setParams(productId, shopId)
                 getDiscussionAggregateUseCase.executeOnBackground()
             }
-            val list = async(dispatcher.io) {
-                getDiscussionDataUseCase.setParams(productId, shopId, TalkReadingFragment.DEFAULT_INITIAL_PAGE, TalkReadingFragment.DEFAULT_DISCUSSION_DATA_LIMIT, "", "")
-                getDiscussionDataUseCase.executeOnBackground()
-            }
-            _discussionAggregate.postValue(Success(response.await()))
+            _discussionAggregate.postValue(Success(response))
         }) {
             _discussionAggregate.postValue(Fail(it))
             setError(0)
@@ -78,9 +72,7 @@ class TalkReadingViewModel @Inject constructor(
         setLoading(isRefresh)
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
-                if (withDelay) {
-                    delay(REQUEST_DELAY)
-                }
+                if(withDelay) { delay(REQUEST_DELAY) }
                 getDiscussionDataUseCase.setParams(productId, shopId, page, limit, sortBy, category)
                 getDiscussionDataUseCase.executeOnBackground()
             }
@@ -98,9 +90,8 @@ class TalkReadingViewModel @Inject constructor(
 
     fun updateSelectedCategory(selectedCategory: String, isSelected: Boolean) {
         val filterCategories = _filterCategories.value?.toMutableList()
-        val categoryToModify = filterCategories?.filter { selectedCategory.contains(it.displayName) }
-                ?: emptyList()
-        if (categoryToModify.isNotEmpty()) {
+        val categoryToModify = filterCategories?.filter { selectedCategory.contains(it.displayName) } ?: emptyList()
+        if(categoryToModify.isNotEmpty()) {
             val modifiedCategory = categoryToModify.first().copy(isSelected = isSelected)
             val index = filterCategories?.indexOfFirst { selectedCategory.contains(it.displayName) }
             index?.let {

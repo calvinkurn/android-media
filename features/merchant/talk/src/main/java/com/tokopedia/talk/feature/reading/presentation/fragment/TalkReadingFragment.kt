@@ -91,6 +91,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     @Inject
     lateinit var viewModel: TalkReadingViewModel
 
+    private var remoteConfigInstance: RemoteConfigInstance? = null
+
     private var productId: String = ""
     private var shopId: String = ""
     private var isVariantSelected: Boolean = false
@@ -386,6 +388,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             if(!isLoadingInitialData) {
                 isLoadingInitialData = true
                 adapter.clearAllElements()
+                getDiscussionData()
             }
         })
     }
