@@ -1,13 +1,12 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
+import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.usecase.QuickFilterUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -15,84 +14,89 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.*
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import java.util.*
+import timber.log.Timber
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.isNotEmpty
-import kotlin.collections.isNullOrEmpty
-import kotlin.collections.mutableMapOf
-import kotlin.collections.set
 import kotlin.coroutines.CoroutineContext
 
+const val RPC_FILTER_KEY = "rpc_"
 class QuickFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     @Inject
-    lateinit var quickFilterRepository: QuickFilterRepository
+    lateinit var filterRepository: FilterRepository
 
     @Inject
+    lateinit var quickFilterRepository: QuickFilterRepository
+    @Inject
+    lateinit var quickFilterGQLRepository: IQuickFilterGqlRepository
+    @Inject
     lateinit var quickFilterUseCase: QuickFilterUseCase
-
     private var selectedSort: HashMap<String, String> = HashMap()
     private var sort: ArrayList<Sort> = ArrayList()
     private val quickFilterOptionList: ArrayList<Option> = ArrayList()
-
     private val dynamicFilterModel: MutableLiveData<DynamicFilterModel> = MutableLiveData()
+    private val quickFiltersLiveData: MutableLiveData<ArrayList<Option>> = MutableLiveData()
+
+    private val productCountMutableLiveData = MutableLiveData<String?>()
+    val productCountLiveData: LiveData<String?>
+        get() = productCountMutableLiveData
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
     init {
-        initDaggerInject()
-        for (item in components.data?.get(0)?.filter ?: ArrayList()) {
+        fetchQuickFilters()
+    }
+
+    fun fetchQuickFilters() {
+        launchCatchError(block = {
+            val filters = quickFilterRepository.getQuickFilterData(components.id, components.pageEndPoint)
+            addFilterOptions(components.data?.firstOrNull()?.filter ?: filters ?: arrayListOf())
+        }, onError = {
+            Timber.e(it)
+        })
+    }
+
+    private fun addFilterOptions(filters: ArrayList<Filter>) {
+        quickFilterOptionList.clear()
+        for (item in filters) {
             if (!item.options.isNullOrEmpty()) {
                 quickFilterOptionList.addAll(item.options)
             }
         }
-    }
-
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        quickFiltersLiveData.value = quickFilterOptionList
     }
 
     fun getTargetComponent(): ComponentsItem? {
         return getComponent(components.properties?.targetId ?: "", components.pageEndPoint)
     }
 
-    fun getQuickFiltersList(): ArrayList<Option> {
-        return quickFilterOptionList
-    }
-
     fun getDynamicFilterModelLiveData() = dynamicFilterModel
+    fun getQuickFilterLiveData() = quickFiltersLiveData
 
     private fun onFilterApplied(selectedFilter: HashMap<String, String>?, selectedSort: HashMap<String, String>?) {
         getTargetComponent()?.let { component ->
-            component.selectedFilters = selectedFilter
-            component.selectedSort = selectedSort
+            components.selectedFilters = selectedFilter
+            components.selectedSort = selectedSort
             launchCatchError(block = {
                 if (quickFilterUseCase.onFilterApplied(component, selectedFilter, selectedSort)) {
                     syncData.value = true
                 }
             }, onError = {
-                it.printStackTrace()
+                Timber.e(it)
             })
         }
     }
 
     fun fetchDynamicFilterModel() {
         launchCatchError(block = {
-            dynamicFilterModel.value = quickFilterRepository.getQuickFilterData(components.id, mutableMapOf(), components.pageEndPoint)
+            dynamicFilterModel.value = filterRepository.getFilterData(components.id, mutableMapOf(), components.pageEndPoint)
             renderDynamicFilter(dynamicFilterModel.value?.data)
         }, onError = {
-            it.printStackTrace()
+            Timber.e(it)
         })
     }
 
@@ -130,6 +134,13 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         return false
     }
 
+    fun clearQuickFilters(){
+        for (option in quickFilterOptionList)
+            components.filterController.setFilter(option, isFilterApplied = false, isCleanUpExistingFilterWithSameKey = false)
+        applyFilterToSearchParameter(components.filterController.getParameter())
+        reloadData()
+    }
+
     fun onQuickFilterSelected(option: Option) {
         if (!isQuickFilterSelected(option)) {
             components.filterController.setFilter(option, isFilterApplied = true, isCleanUpExistingFilterWithSameKey = false)
@@ -143,13 +154,6 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     private fun applyFilterToSearchParameter(filterParameter: Map<String, String>) {
         components.searchParameter.getSearchParameterHashMap().clear()
         components.searchParameter.getSearchParameterHashMap().putAll(filterParameter)
-    }
-
-    private fun refreshFilterController(queryParams: HashMap<String, String>) {
-        val params = HashMap(queryParams)
-        params[SearchApiConst.ORIGIN_FILTER] = SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
-        val initializedFilterList = FilterHelper.initializeFilterList(components.filters)
-        components.filterController.initFilterController(params, initializedFilterList)
     }
 
     private fun setSelectedSort(selectedSortMapParameter: Map<String, String>) {
@@ -177,5 +181,36 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         applyFilterToSearchParameter(applySortFilterModel.mapParameter)
         setSelectedFilter(HashMap(applySortFilterModel.mapParameter))
         reloadData()
+    }
+
+    private fun getUserId(): String? {
+        return UserSession(application).userId
+    }
+
+    fun filterProductsCount(selectedFilterMapParameter: Map<String, String>) {
+        components.properties?.targetId?.let { targetID ->
+            val targetList = targetID.split(",")
+            if (targetList.isNotEmpty()) {
+                launchCatchError(block = {
+                    productCountMutableLiveData.value = quickFilterGQLRepository
+                            .getQuickFilterProductCountData(targetList.first(),
+                                    components.pageEndPoint, appendRPCInKey(selectedFilterMapParameter),
+                                    getUserId()).component?.compAdditionalInfo?.totalProductData
+                            ?.productCountWording ?: ""
+                }, onError = {
+                    it.printStackTrace()
+                })
+            }
+        }
+    }
+
+    private fun appendRPCInKey(selectedFilterMapParameter: Map<String, String>): MutableMap<String, String> {
+        val filtersQueryParameterMap = mutableMapOf<String, String>()
+        selectedFilterMapParameter.forEach { (key, value) ->
+            if (value.isNotEmpty()) {
+                filtersQueryParameterMap[RPC_FILTER_KEY + key] = value
+            }
+        }
+        return filtersQueryParameterMap
     }
 }

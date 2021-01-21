@@ -13,7 +13,6 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             android:clipChildren="false"
             android:clipToPadding="false"
             android:descendantFocusability="blocksDescendants"
@@ -23,21 +22,14 @@
             android:paddingRight="@dimen/dp_12"
             android:paddingBottom="@dimen/dp_8" />
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollView_globalError_shopPage"
-            android:layout_width="match_parent"
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/globalError_shopPage"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginBottom="@dimen/spacing_lvl5"
+            android:visibility="gone" />
 
-            <com.tokopedia.globalerror.GlobalError
-                android:id="@+id/globalError_shopPage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/spacing_lvl5"
-                android:layout_marginBottom="@dimen/spacing_lvl5"
-                android:visibility="gone" />
-
-        </androidx.core.widget.NestedScrollView>
     </com.tokopedia.shop.product.view.widget.StickySingleHeaderView>
 </LinearLayout>

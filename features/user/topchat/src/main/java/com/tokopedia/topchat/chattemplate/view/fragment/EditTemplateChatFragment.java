@@ -142,7 +142,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                     }
 
                 })
-                .setNegativeButton(com.tokopedia.imagepicker.R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(com.tokopedia.resources.common.R.string.general_label_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
@@ -238,11 +238,11 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     public void canProceed(boolean can, TextView proceed) {
         proceed.setEnabled(can);
         if (can) {
-            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.medium_green), PorterDuff.Mode.SRC_IN);
-            proceed.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.white));
+            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN);
+            proceed.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
         } else {
-            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.grey_300), PorterDuff.Mode.SRC_IN);
-            proceed.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.grey_500));
+            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N100), PorterDuff.Mode.SRC_IN);
+            proceed.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N200));
         }
     }
 

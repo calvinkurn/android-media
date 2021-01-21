@@ -18,40 +18,38 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_BERANDA
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
+import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.data.utils.Utils
-import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
-import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniBidFragment
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment.Companion.MANUAL_AD
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniKeyFragment
-import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniProductFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
-import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.hari_ini
-import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.swipe_refresh_layout
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
 import java.util.*
@@ -73,7 +71,6 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
 
     companion object {
 
-        private const val REQUEST_CODE_ADD_CREDIT = 1
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
         private const val SEVEN_DAYS_RANGE_INDEX = 2
 
@@ -145,6 +142,9 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         goToInsights.setOnClickListener {
             insightCallBack?.gotToInsights()
         }
+        autoTopUp?.setOnClickListener {
+            startActivity(Intent(context, TopAdsEditAutoTopUpActivity::class.java))
+        }
 
         setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
         endDate = Utils.getEndDate()
@@ -157,6 +157,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         }
         swipe_refresh_layout.setOnRefreshListener {
             loadData()
+            loadStatisticsData()
         }
     }
 
@@ -214,7 +215,6 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
 
     private fun loadData() {
         swipe_refresh_layout.isEnabled = true
-        loadStatisticsData()
         getAutoTopUpStatus()
         topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
         topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
@@ -246,20 +246,12 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     }
 
     private fun startCustomDatePicker() {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, -1)
-        val selectDate: String = format.format(calendar.time)
-        calendar.add(Calendar.YEAR, -1)
-        val date = calendar.time
-        val minDate = format.format(date)
-        val maxDate: String = format.format(Date())
-        val sheet = CustomDatePicker.getInstance(minDate, maxDate, selectDate)
-        sheet.setTitle(resources.getString(R.string.topads_dash_choose_date))
+        val sheet = CustomDatePicker.getInstance()
         sheet.setListener(this)
-        sheet.show(childFragmentManager, "datepicker")
+        sheet.show(childFragmentManager, DATE_PICKER_SHEET)
     }
 
-    private fun onLoadTopAdsShopDepositSuccess(dataDeposit: DataDeposit) {
+    private fun onLoadTopAdsShopDepositSuccess(dataDeposit: DepositAmount) {
         swipe_refresh_layout.isRefreshing = false
         credits.text = dataDeposit.amountFmt
     }
@@ -267,7 +259,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
 
         this.dataStatistic = dataStatistic
-        if (this.dataStatistic != null) {
+        if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
             topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
         }
         val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment
@@ -279,8 +271,14 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     private fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
         val isAutoTopUpActive = (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
         if (isAutoTopUpActive) {
+            autoTopUp?.visibility = View.VISIBLE
+            addCredit?.visibility = View.GONE
             img_auto_debit.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_auto_debit))
             img_auto_debit.visibility = View.VISIBLE
+        } else {
+            autoTopUp?.visibility = View.GONE
+            addCredit?.visibility = View.VISIBLE
+            img_auto_debit.visibility = View.GONE
         }
     }
 
@@ -290,17 +288,16 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         topAdsInsightTabAdapter?.setListener(object : TopAdsInsightTabAdapter.OnRecyclerTabItemClick {
             override fun onTabItemClick(position: Int) {
                 viewPagerInsight.currentItem = position
-                if(position==1||position==2){
+                if (position == 1 || position == 2) {
                     goToInsights.visibility = View.GONE
                     arrow.visibility = View.GONE
-                }
-                else{
+                } else {
                     goToInsights.visibility = View.VISIBLE
                     arrow.visibility = View.VISIBLE
                 }
             }
         })
-        topAdsInsightTabAdapter?.setTabTitles(resources,  response.data.size, 0, 0)
+        topAdsInsightTabAdapter?.setTabTitles(resources, response.data.size, 0, 0)
         rvTabInsight.adapter = topAdsInsightTabAdapter
     }
 
@@ -385,9 +382,10 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         loadStatisticsData()
     }
 
-    private fun loadStatisticsData() {
+    fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
-        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo)
+        topAdsDashboardPresenter.getStatistic(startDate!!, endDate!!, selectedStatisticType, (activity as TopAdsDashboardActivity?)?.getAdInfo()
+                ?: MANUAL_AD, ::onSuccesGetStatisticsInfo)
     }
 
     override fun onDestroy() {

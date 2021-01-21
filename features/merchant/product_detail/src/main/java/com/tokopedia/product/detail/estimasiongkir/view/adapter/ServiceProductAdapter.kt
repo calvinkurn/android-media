@@ -1,9 +1,9 @@
 package com.tokopedia.product.detail.estimasiongkir.view.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.ServiceProduct
 import kotlinx.android.synthetic.main.item_service_product.view.*
@@ -31,8 +31,8 @@ class ServiceProductAdapter : RecyclerView.Adapter<ServiceProductAdapter.Service
     inner class ServiceProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(product: ServiceProduct) {
-            itemView.label_view.title = product.name
-            itemView.label_view.setContent(product.price.priceFmt)
+            itemView.rate_label_title.text = product.name
+            itemView.rate_label_value.text = product.price.priceFmt
         }
     }
 }

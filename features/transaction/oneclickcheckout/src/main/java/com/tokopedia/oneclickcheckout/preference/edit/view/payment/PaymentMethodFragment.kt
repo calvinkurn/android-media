@@ -1,7 +1,9 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.payment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
@@ -18,18 +20,22 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -39,6 +45,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import javax.inject.Named
 
 class PaymentMethodFragment : BaseDaggerFragment() {
 
@@ -48,6 +55,11 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
         private const val MERCHANT_CODE = "tokopedia"
         private const val PROFILE_CODE = "EXPRESS_SAVE"
+
+        private const val QUERY_PARAM_EXPRESS_CHECKOUT_PARAM = "express_checkout_param"
+        private const val QUERY_PARAM_USER_ID = "user_id"
+        private const val QUERY_PARAM_SUCCESS = "success"
+        private const val QUERY_PARAM_GATEWAY_CODE = "gateway_code"
 
         fun newInstance(isEdit: Boolean = false): PaymentMethodFragment {
             val paymentMethodFragment = PaymentMethodFragment()
@@ -68,7 +80,11 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
+    @field:Named(PAYMENT_LISTING_URL)
     lateinit var paymentListingUrl: String
+
+    private var paymentAmount = 0.0
+    private var shouldFormatMetadata = false
 
     private val viewModel: PaymentMethodViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PaymentMethodViewModel::class.java]
@@ -112,6 +128,8 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 parent.showStepper()
                 parent.setStepperValue(75)
             }
+            paymentAmount = parent.getPaymentAmount()
+            shouldFormatMetadata = parent.isDirectPaymentStep()
         }
     }
 
@@ -151,7 +169,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             }
         })
 
-        viewModel.getPaymentListingPayload(generatePaymentListingRequest())
+        viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
     }
 
     private fun loadWebView(param: String) {
@@ -208,7 +226,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     private fun showGlobalError(type: Int) {
         globalError?.setType(type)
         globalError?.setActionClickListener {
-            viewModel.getPaymentListingPayload(generatePaymentListingRequest())
+            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
         }
         globalError?.visible()
         webView?.gone()
@@ -236,9 +254,17 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         if (parent is PreferenceEditParent) {
             parent.setGatewayCode(gatewayCode)
             parent.setPaymentQuery(metadata)
-            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+            if (parent.isDirectPaymentStep()) {
+                parent.setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(PreferenceEditActivity.EXTRA_RESULT_GATEWAY, gatewayCode)
+                    putExtra(PreferenceEditActivity.EXTRA_RESULT_METADATA, metadata)
+                })
+                parent.finish()
+            } else if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+                preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
                 parent.goBack()
             } else {
+                preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
                 parent.addFragment(PreferenceSummaryFragment.newInstance())
             }
         }
@@ -271,11 +297,10 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
             val uri = Uri.parse(url)
-            val isSuccess = uri.getQueryParameter("success")
+            val isSuccess = uri.getQueryParameter(QUERY_PARAM_SUCCESS)
             if (isSuccess != null && isSuccess.equals("true", true)) {
-                val gatewayCode = uri.getQueryParameter("gateway_code")
+                val gatewayCode = uri.getQueryParameter(QUERY_PARAM_GATEWAY_CODE)
                 if (gatewayCode != null) {
-                    preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
                     goToNextStep(gatewayCode, generateMetadata(uri))
                 }
             }
@@ -283,9 +308,32 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         }
 
         private fun generateMetadata(uri: Uri): String {
-            val map: HashMap<String, String> = HashMap()
+            val map: HashMap<String, Any> = HashMap()
             for (key in uri.queryParameterNames) {
-                map[key] = uri.getQueryParameter(key) ?: ""
+                val value = uri.getQueryParameter(key) ?: ""
+                if (shouldFormatMetadata) {
+                    when (key) {
+                        QUERY_PARAM_EXPRESS_CHECKOUT_PARAM -> {
+                            try {
+                                map[key] = JsonParser().parse(value)
+                            } catch (e: Exception) {
+                                //failed parse json string
+                                map[key] = value
+                            }
+                        }
+                        QUERY_PARAM_USER_ID -> {
+                            map[key] = value.toLongOrZero()
+                        }
+                        QUERY_PARAM_SUCCESS -> {
+                            map[key] = value.toBoolean()
+                        }
+                        else -> {
+                            map[key] = value
+                        }
+                    }
+                } else {
+                    map[key] = value
+                }
             }
             return Gson().toJson(map)
         }

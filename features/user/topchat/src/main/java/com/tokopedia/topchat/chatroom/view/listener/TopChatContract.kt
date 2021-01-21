@@ -1,18 +1,15 @@
 package com.tokopedia.topchat.chatroom.view.listener
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
@@ -45,18 +42,11 @@ interface TopChatContract {
 
         fun onErrorUploadImage(errorMessage: String, it: ImageUploadViewModel)
 
-
-        fun getStringArgument(key: String, savedInstanceState: Bundle?): String
-
-        fun getBooleanArgument(key: String, savedInstanceState: Bundle?): Boolean
-
         fun focusOnReply()
 
         fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>)
 
         fun clearAttachmentPreviews()
-
-        fun getShopName(): String
 
         fun sendAnalyticAttachmentSent(attachment: SendablePreview)
 
@@ -121,15 +111,18 @@ interface TopChatContract {
                        onError: (Throwable) -> Unit,
                        onSuccessDeleteConversation: () -> Unit)
 
-        fun getShopFollowingStatus(shopId: Int,
+        fun getShopFollowingStatus(shopId: Long,
                                    onError: (Throwable) -> Unit,
                                    onSuccessGetShopFollowingStatus: (Boolean) -> Unit)
 
         fun copyVoucherCode(fromUid: String?, replyId: String, blastId: String, attachmentId: String, replyTime: String?)
 
-        fun followUnfollowShop(shopId: String,
-                               onError: (Throwable) -> Unit,
-                               onSuccess: (Boolean) -> Unit)
+        fun followUnfollowShop(
+                shopId: String,
+                onError: (Throwable) -> Unit,
+                onSuccess: (Boolean) -> Unit,
+                action: ToggleFavouriteShopUseCase.Action? = null
+        )
 
         fun sendAttachmentsAndMessage(messageId: String, sendMessage: String,
                                       startTime: String, opponentId: String,
@@ -139,31 +132,13 @@ interface TopChatContract {
                                       startTime: String, opponentId: String,
                                       onSendingMessage: () -> Unit)
 
-        fun initProductPreview(savedInstanceState: Bundle?)
-
         fun initAttachmentPreview()
 
         fun clearAttachmentPreview()
 
-        fun initInvoicePreview(savedInstanceState: Bundle?)
-
-        fun getAtcPageIntent(
-                context: Context?,
-                element: ProductAttachmentViewModel,
-                sourcePage: String
-        ): Intent
-
         fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
 
         fun onClickBannedProduct(liteUrl: String)
-
-        fun getBuyPageIntent(
-                context: Context?,
-                element: ProductAttachmentViewModel,
-                sourcePage: String
-        ): Intent
-
-        fun initVoucherPreview(extras: Bundle?)
 
         fun loadChatRoomSettings(messageId: String, onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit)
 
@@ -183,7 +158,7 @@ interface TopChatContract {
 
         fun getStickerGroupList(chatRoom: ChatroomViewModel)
 
-        fun loadAttachmentData(msgId: Int, chatRoom: ChatroomViewModel)
+        fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel)
 
         fun isStickerTooltipAlreadyShow(): Boolean
 
@@ -196,8 +171,6 @@ interface TopChatContract {
         fun resetChatUseCase()
 
         fun resetUnreadMessage()
-
-        fun requestFollowShop(shopId: Int, onSuccess: () -> Unit, onErrorFollowShop: (Throwable) -> Unit)
 
         fun requestBlockPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
 
@@ -214,5 +187,9 @@ interface TopChatContract {
         )
 
         fun getBackground()
+
+        fun addAttachmentPreview(sendablePreview: SendablePreview)
+
+        fun hasEmptyAttachmentPreview(): Boolean
     }
 }

@@ -19,11 +19,10 @@ import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
 import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCase
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
-import com.tokopedia.vote.domain.usecase.SendVoteUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.spekframework.spek2.dsl.TestBody
@@ -41,11 +40,11 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val doFavoriteShopUseCase by memoized<ToggleFavouriteShopUseCase>()
     val followKolPostGqlUseCase by memoized<FollowKolPostGqlUseCase>()
     val likeKolPostUseCase by memoized<LikeKolPostUseCase>()
-    val sendVoteUseCase by memoized<SendVoteUseCase>()
     val atcUseCase by memoized<AddToCartUseCase>()
     val trackAffiliateClickUseCase by memoized<TrackAffiliateClickUseCase>()
     val deletePostUseCase by memoized<DeletePostUseCase>()
     val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
+    val playWidgetTools by memoized<PlayWidgetTools>()
 
     return FeedViewModel(
             FeedTestDispatcherProvider(),
@@ -57,11 +56,11 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
             doFavoriteShopUseCase,
             followKolPostGqlUseCase,
             likeKolPostUseCase,
-            sendVoteUseCase,
             atcUseCase,
             trackAffiliateClickUseCase,
             deletePostUseCase,
-            sendTopAdsUseCase
+            sendTopAdsUseCase,
+            playWidgetTools
     )
 }
 
@@ -104,10 +103,6 @@ fun FeatureBody.createFeedTestInstance() {
         mockk<LikeKolPostUseCase>(relaxed = true)
     }
 
-    val sendVoteUseCase by memoized {
-        mockk<SendVoteUseCase>(relaxed = true)
-    }
-
     val trackAffiliateClickUseCase by memoized {
         mockk<TrackAffiliateClickUseCase>(relaxed = true)
     }
@@ -118,6 +113,10 @@ fun FeatureBody.createFeedTestInstance() {
 
     val sendTopAdsUseCase by memoized {
         mockk<SendTopAdsUseCase>(relaxed = true)
+    }
+
+    val playWidgetTools by memoized {
+        mockk<PlayWidgetTools>(relaxed = true)
     }
 }
 
@@ -157,12 +156,6 @@ fun LikeKolPostUseCase.doLikeKolWithSample(isSuccess: Boolean) {
     coEvery {
         createObservable(any()).toBlocking().first()
     } returns isSuccess
-}
-
-fun SendVoteUseCase.doVoteWithSample(model: VoteStatisticDomainModel) {
-    coEvery {
-        createObservable(any()).toBlocking().single()
-    } returns model
 }
 
 fun AddToCartUseCase.doAtcWithSample(success: Int) {

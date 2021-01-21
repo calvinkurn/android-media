@@ -4,10 +4,10 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
@@ -44,7 +44,7 @@ public interface KolComponent {
 
     HttpLoggingInterceptor httpLoggingInterceptor();
 
-    CacheManager globalCacheManager();
+    CacheManager provideCacheManager();
 
     FollowKolPostGqlUseCase getFollowKolPostGqlUseCase();
 

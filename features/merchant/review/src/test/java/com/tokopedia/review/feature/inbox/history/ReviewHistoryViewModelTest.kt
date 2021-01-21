@@ -15,7 +15,7 @@ class ReviewHistoryViewModelTest : ReviewHistoryViewModelTestFixture() {
 
     @Test
     fun `when updatePage should get data with expected page`() {
-        val page = 1
+        val page = 2
         val expectedSearchQuery = ""
         val expectedNetworkResponse = ProductrevFeedbackHistoryResponseWrapper()
         val expectedViewState = Success(expectedNetworkResponse.productrevFeedbackHistoryResponse, page, expectedSearchQuery)

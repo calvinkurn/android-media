@@ -1,16 +1,14 @@
 package com.tokopedia.logisticaddaddress.domain.usecase;
 
 import com.tokopedia.logisticaddaddress.data.DataSource;
-import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
-import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
+import com.tokopedia.logisticCommon.data.module.qualifier.AddressScope;
+import com.tokopedia.logisticCommon.data.entity.address.GetPeopleAddress;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Fajar Ulin Nuha on 13/11/18.

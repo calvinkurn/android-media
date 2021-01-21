@@ -8,7 +8,7 @@ class QuickFilterUseCase @Inject constructor() {
 
     fun onFilterApplied(component: ComponentsItem?, selectedFilter: HashMap<String, String>?, selectedSort: HashMap<String, String>?): Boolean {
         component?.apply {
-            setComponentsItem(null)
+            setComponentsItem(null, component.tabName)
             noOfPagesLoaded = 0
             this.selectedSort = selectedSort
             this.selectedFilters = selectedFilter

@@ -285,7 +285,7 @@ open class DynamicPostViewHolder(v: View,
     }
 
     private val colorLinkHashtag: Int
-        get() = ContextCompat.getColor(itemView.context, R.color.tkpd_main_green)
+        get() = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
     private fun onHashtagClicked(hashtag: String, trackingPostModel: TrackingPostModel){
         val encodeHashtag = URLEncoder.encode(hashtag)
@@ -403,14 +403,14 @@ open class DynamicPostViewHolder(v: View,
                 val likeCount = if (like.fmt.isEmpty()) like.value.toString() else like.fmt
                 itemView.likeText.text = likeCount
                 itemView.likeText.setTextColor(
-                        MethodChecker.getColor(itemView.likeText.context, R.color.tkpd_main_green)
+                        MethodChecker.getColor(itemView.likeText.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
                 )
             }
             like.value > 0 -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
                 itemView.likeText.text = like.fmt
                 itemView.likeText.setTextColor(
-                        MethodChecker.getColor(itemView.likeText.context, R.color.black_54)
+                        MethodChecker.getColor(itemView.likeText.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
                 )
             }
             else -> {
@@ -418,7 +418,7 @@ open class DynamicPostViewHolder(v: View,
                 val text : String  = if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt else getString(R.string.kol_action_like)
                 itemView.likeText.text = text
                 itemView.likeText.setTextColor(
-                        MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)
+                        MethodChecker.getColor(itemView.likeIcon.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
                 )
             }
         }

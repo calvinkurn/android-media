@@ -6,10 +6,14 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.devicefingerprint.usecase.SubmitDeviceInfoUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.TkpdIdlingResourceProvider
+import com.tokopedia.loginregister.common.DispatcherProvider
+import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
@@ -22,9 +26,9 @@ import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
-import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
@@ -35,18 +39,20 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import rx.Subscriber
+import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 /**
  * @author by nisie on 18/01/19.
  */
 class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseCase: RegisterCheckUseCase,
                                                    private val discoverUseCase: DiscoverUseCase,
+                                                   private val activateUserUseCase: ActivateUserUseCase,
                                                    private val getFacebookCredentialUseCase:
                                                    GetFacebookCredentialUseCase,
-                                                   private val registerValidationUseCase:
-                                                   RegisterValidationUseCase,
                                                    private val loginTokenUseCase:
                                                    LoginTokenUseCase,
                                                    private val getProfileUseCase: GetProfileUseCase,
@@ -57,11 +63,19 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    private var cryptographyUtils: Cryptography?,
                                                    @Named(SESSION_MODULE)
-                                                   private val userSession: UserSessionInterface)
+                                                   private val userSession: UserSessionInterface,
+                                                   private val dispatcherProvider: DispatcherProvider
+)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
-        LoginEmailPhoneContract.Presenter {
+        LoginEmailPhoneContract.Presenter, CoroutineScope {
+
+    private var job: Job = SupervisorJob()
+
+    override val coroutineContext: CoroutineContext
+        get() = dispatcherProvider.io() + job
 
     private lateinit var viewEmailPhone: LoginEmailPhoneContract.View
+    var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("LOGIN")
 
     fun attachView(view: LoginEmailPhoneContract.View, viewEmailPhone: LoginEmailPhoneContract.View) {
         super.attachView(view)
@@ -121,6 +135,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     LoginTokenSubscriber(userSession,
                             { getUserInfo() },
                             view.onErrorLoginFacebook(email),
+                            { view.showPopup().invoke(it.loginToken.popupError) },
                             view.onGoToActivationPage(email),
                             view.onGoToSecurityQuestion(email)))
         }
@@ -134,6 +149,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 LoginTokenFacebookSubscriber(userSession,
                         view.onSuccessLoginFacebookPhone(),
                         view.onErrorLoginFacebookPhone(),
+                        { view.showPopup().invoke(it.loginToken.popupError) },
                         view.onGoToSecurityQuestion(""))
         )
     }
@@ -158,6 +174,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     LoginTokenSubscriber(userSession,
                             { getUserInfo() },
                             view.onErrorLoginGoogle(email),
+                            { view.showPopup().invoke(it.loginToken.popupError) },
                             view.onGoToActivationPage(email),
                             view.onGoToSecurityQuestion(email)))
         }
@@ -179,18 +196,23 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             } else {
                 userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
             }
-
+            idlingResourceProvider?.increment()
             view.resetError()
             if (isValid(email, password)) {
                 view.showLoadingLogin()
                 loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
                         email, password), LoginTokenSubscriber(userSession,
-                        { view.onSuccessLoginEmail() },
+                        { view.onSuccessLoginEmail(it) },
                         view.onErrorLoginEmail(email),
+                        { view.showPopup().invoke(it.loginToken.popupError) },
                         view.onGoToActivationPage(email),
-                        view.onGoToSecurityQuestion(email)))
+                        view.onGoToSecurityQuestion(email),
+                        onFinished = {
+                            idlingResourceProvider?.decrement()
+                        }))
             } else {
                 viewEmailPhone.stopTrace()
+                idlingResourceProvider?.decrement()
             }
         }
     }
@@ -199,8 +221,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         view?.let { view ->
             loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                     userSession, validateToken), LoginTokenSubscriber(userSession,
-                    { getUserInfo() },
+                    { view.onSuccessReloginAfterSQ(it) },
                     view.onErrorReloginAfterSQ(validateToken),
+                    { view.showPopup().invoke(it.loginToken.popupError) },
                     view.onGoToActivationPageAfterRelogin(),
                     view.onGoToSecurityQuestionAfterRelogin()))
         }
@@ -233,21 +256,27 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
 
     override fun getUserInfo() {
         view?.let { view ->
+            idlingResourceProvider?.increment()
             getProfileUseCase.execute(GetProfileSubscriber(userSession,
                     view.onSuccessGetUserInfo(),
-                    view.onErrorGetUserInfo()))
+                    view.onErrorGetUserInfo()
+                    , onFinished = {
+                idlingResourceProvider?.decrement()
+            }))
         }
     }
 
     override fun getUserInfoFingerprint() {
-        if(cryptographyUtils?.isInitialized() == true && view.getFingerprintConfig()) {
+        if (cryptographyUtils?.isInitialized() == true && view.getFingerprintConfig()) {
             view?.let { view ->
+                idlingResourceProvider?.increment()
                 getProfileUseCase.execute(GetProfileSubscriber(userSession,
                         { checkStatusFingerprint() },
-                        view.onErrorGetUserInfo())
+                        view.onErrorGetUserInfo(),
+                        onFinished = { idlingResourceProvider?.decrement() })
                 )
             }
-        }else {
+        } else {
             getUserInfo()
         }
     }
@@ -262,49 +291,57 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     }
 
     override fun checkStatusFingerprint() {
-        if(cryptographyUtils?.isInitialized() == true) {
+        if (cryptographyUtils?.isInitialized() == true) {
             val signature = cryptographyUtils?.generateFingerprintSignature(userId = userSession.userId, deviceId = userSession.deviceId)
             signature?.run {
+                idlingResourceProvider?.increment()
                 statusFingerprintUseCase.executeCoroutines({
                     onCheckStatusFingerprintSuccess(it)
+                    idlingResourceProvider?.decrement()
                 }, {
                     view.onSuccessLogin()
+                    idlingResourceProvider?.decrement()
                 }, this)
             }
-        }else {
+        } else {
             view.onSuccessLogin()
         }
     }
 
-    private fun saveFingerprintStatus(data: StatusFingerprint){
-        if(data.isValid) {
+    private fun saveFingerprintStatus(data: StatusFingerprint) {
+        if (data.isValid) {
             fingerprintPreferenceHelper.saveUserId(userSession.userId)
             fingerprintPreferenceHelper.registerFingerprint()
-        }else {
+        } else {
             removeFingerprintData()
         }
     }
 
-    override fun removeFingerprintData(){
+    override fun removeFingerprintData() {
         fingerprintPreferenceHelper.removeUserId()
         fingerprintPreferenceHelper.unregisterFingerprint()
     }
 
-    private fun onCheckStatusFingerprintSuccess(data: StatusFingerprint){
+    private fun onCheckStatusFingerprintSuccess(data: StatusFingerprint) {
         saveFingerprintStatus(data)
         view.onSuccessCheckStatusFingerprint(data)
     }
 
     override fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit) {
+        idlingResourceProvider?.increment()
         registerCheckUseCase.apply {
             setRequestParams(this.getRequestParams(id))
             execute({
                 if (it.data.errors.isEmpty())
                     onSuccess(it.data)
-                else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty())
+                else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty()) {
                     onError(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0]))
-                else onError(RuntimeException())
-            }, onError)
+                } else onError(RuntimeException())
+                idlingResourceProvider?.decrement()
+            }, {
+                onError(it)
+                idlingResourceProvider?.decrement()
+            })
         }
     }
 
@@ -318,15 +355,36 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         })
     }
 
-    override fun detachView() {
-        super.detachView()
-        registerCheckUseCase.cancelJobs()
-        statusPinUseCase.cancelJobs()
-        discoverUseCase.unsubscribe()
-        registerValidationUseCase.unsubscribe()
-        loginTokenUseCase.unsubscribe()
-        getProfileUseCase.unsubscribe()
-        tickerInfoUseCase.unsubscribe()
+    fun activateUser(
+            email: String,
+            validateToken: String
+    ) {
+        launchCatchError(coroutineContext, {
+            val params = activateUserUseCase.getParams(email, validateToken)
+            val data: ActivateUserData? = activateUserUseCase.getData(params).data
+            if (data != null) {
+                when {
+                    data.isSuccess == 1 -> {
+                        view.onSuccessActivateUser(data)
+                    }
+                    data.message.isNotEmpty() -> {
+                        view.onFailedActivateUser(MessageErrorException(data.message))
+                    }
+                    else -> {
+                        view.onFailedActivateUser(Throwable())
+                    }
+                }
+            } else {
+                view.onFailedActivateUser(Throwable())
+            }
+        }, {
+            view.onFailedActivateUser(it)
+        })
     }
 
+    override fun cancelJobs() {
+        job.children.map {
+            it.cancel()
+        }
+    }
 }

@@ -15,9 +15,8 @@ import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
-import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.lang.ref.WeakReference
 
@@ -52,17 +51,41 @@ internal class ShopPageFragmentPagerAdapter(
     }
 
     private fun getTabIconDrawable(position: Int, isActive: Boolean = false): Drawable? = ctxRef.get()?.run {
-        MethodChecker.getDrawable(
-                this,
-                listShopPageTabModel[position].tabIcon
-        )?.let { iconDrawable ->
-            DrawableCompat.wrap(iconDrawable)
-        }?.also { iconDrawable ->
-            DrawableCompat.setTint(iconDrawable, ContextCompat.getColor(
+        if (ShopUtil.isUsingNewNavigation()) {
+            val tabIconActiveSrc = listShopPageTabModel[position].tabIconActive
+            val tabIconInactiveSrc = listShopPageTabModel[position].tabIconInactive
+            if (isActive) {
+                MethodChecker.getDrawable(this, tabIconActiveSrc.takeIf { it != -1 }?:tabIconInactiveSrc)
+            } else {
+                MethodChecker.getDrawable(this, tabIconInactiveSrc)
+            }
+        } else {
+            MethodChecker.getDrawable(
                     this,
-                    if (isActive) R.color.color_green_shop_tab else R.color.color_gray_shop_tab
-            ))
+                    listShopPageTabModel[position].tabIconInactive
+            )?.let { iconDrawable ->
+                DrawableCompat.wrap(iconDrawable)
+            }?.also { iconDrawable ->
+                DrawableCompat.setTint(iconDrawable, ContextCompat.getColor(
+                        this,
+                        if (isActive) getTabActivateColor() else getTabInactiveColor()
+                ))
+            }
         }
+    }
+
+    private fun getTabInactiveColor(): Int {
+        return if (ShopUtil.isUsingNewNavigation())
+            R.color.color_gray_shop_tab_new
+        else
+            com.tokopedia.unifyprinciples.R.color.Unify_N200
+    }
+
+    private fun getTabActivateColor(): Int {
+        return if (ShopUtil.isUsingNewNavigation())
+            R.color.color_green_shop_tab_new
+        else
+            com.tokopedia.unifyprinciples.R.color.Unify_G500
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {

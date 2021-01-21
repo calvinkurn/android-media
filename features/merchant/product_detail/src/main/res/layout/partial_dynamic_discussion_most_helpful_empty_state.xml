@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:padding="@dimen/layout_lvl2"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -27,7 +27,7 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         app:layout_constraintTop_toBottomOf="@id/product_detail_discussion_empty_subtitle"

@@ -20,6 +20,7 @@ import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactoryImpl
 import com.tokopedia.topchat.chatsetting.view.adapter.decoration.ChatSettingDividerItemDecoration
 import com.tokopedia.topchat.chatsetting.view.adapter.viewholder.ChatSettingViewHolder
 import com.tokopedia.topchat.chatsetting.viewmodel.ChatSettingViewModel
+import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity.PARAM_IS_SELLER
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -41,11 +42,20 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
         getComponent(ChatSettingComponent::class.java).inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.getChatSetting()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.initArguments(arguments)
+        initArguments()
         setupObserver()
         setupRecyclerView(view)
+    }
+
+    private fun initArguments() {
+        viewModel.isSeller = arguments?.getBoolean(PARAM_IS_SELLER, false) ?: false
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ChatSettingTypeFactory> {

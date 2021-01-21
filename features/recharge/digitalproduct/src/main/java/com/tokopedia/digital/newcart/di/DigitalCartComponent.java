@@ -1,5 +1,8 @@
 package com.tokopedia.digital.newcart.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.di.DigitalComponent;
@@ -24,6 +27,9 @@ public interface DigitalCartComponent {
     RechargeAnalytics rechargeAnalytics();
 
     HttpLoggingInterceptor httpLoggingInterceptor();
+
+    @ApplicationContext
+    Context context();
 
     void inject(DigitalCartActivity digitalCartActivity);
 

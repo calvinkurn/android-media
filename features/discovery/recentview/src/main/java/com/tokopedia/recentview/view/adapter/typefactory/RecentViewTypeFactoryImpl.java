@@ -6,7 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.recentview.view.listener.RecentView;
 import com.tokopedia.recentview.view.adapter.viewholder.RecentViewDetailProductViewHolder;
-import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel;
+import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductDataModel;
+import com.tokopedia.recentview.view.viewmodel.RecentViewProductDataModel;
 
 /**
  * @author by nisie on 7/4/17.
@@ -22,8 +23,13 @@ public class RecentViewTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(RecentViewDetailProductViewModel viewModel) {
+    public int type(RecentViewDetailProductDataModel viewModel) {
         return RecentViewDetailProductViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(RecentViewProductDataModel viewModel) {
+        return -1;
     }
 
     @Override

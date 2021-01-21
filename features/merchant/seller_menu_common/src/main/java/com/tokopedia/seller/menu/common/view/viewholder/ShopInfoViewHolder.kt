@@ -46,10 +46,10 @@ class ShopInfoViewHolder(
         val LAYOUT = R.layout.layout_seller_menu_shop_info
 
         private val GREEN_TIP = R.drawable.setting_tip_bar_enabled
-        private val GREEN_TEXT_COLOR = R.color.setting_green
+        private val GREEN_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_G500
         private val GREY_TIP = R.drawable.setting_tip_bar_disabled
-        private val GREY_TEXT_COLOR = R.color.setting_grey_text
-        private val RED_TEXT_COLOR = R.color.setting_red_text
+        private val GREY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        private val RED_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_R500
         private val GREY_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant_inactive
         private val GREEN_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant
 
@@ -122,7 +122,7 @@ class ShopInfoViewHolder(
 
     private fun showShopScore(uiModel: ShopInfoUiModel) {
         itemView.shopScore.text = uiModel.shopScore.toString()
-        itemView.shopScoreChevronRight.setOnClickListener {
+        itemView.shopScoreLayout.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession?.shopId)
             sellerMenuTracker?.sendEventClickShopScore()
         }

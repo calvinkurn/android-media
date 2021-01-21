@@ -11,7 +11,7 @@
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:text="@string/label_variant_photo"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -23,7 +23,7 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/label_optional"
-        android:textColor="@color/light_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/body_3"
         app:layout_constraintBaseline_toBaselineOf="@id/textViewVariantPhoto"
         app:layout_constraintLeft_toRightOf="@id/textViewVariantPhoto" />

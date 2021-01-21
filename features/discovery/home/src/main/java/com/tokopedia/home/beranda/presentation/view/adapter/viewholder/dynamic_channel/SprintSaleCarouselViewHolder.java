@@ -259,10 +259,10 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
                 ViewCompat.setBackgroundTintList(stockProgress,
                         ColorStateList.valueOf(ContextCompat.getColor(itemView.getContext(),
-                                R.color.grey_hint_full)));
+                                com.tokopedia.unifyprinciples.R.color.Unify_N100)));
             } else {
                 stockProgress.setBackgroundTintList(ColorStateList.valueOf(ContextCompat
-                        .getColor(itemView.getContext(), R.color.grey_hint_full)));
+                        .getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N100)));
             }
         }
 

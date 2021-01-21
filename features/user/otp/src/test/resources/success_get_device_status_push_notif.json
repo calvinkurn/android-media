@@ -1,0 +1,13 @@
+{
+  "DeviceStatusPushnotif": {
+    "success": true,
+    "errorMessage": "",
+    "isTrusted": true,
+    "isActive": true,
+    "listDevices": [
+      {
+        "deviceName": "OPPO"
+      }
+    ]
+  }
+}

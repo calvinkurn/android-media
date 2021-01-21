@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckout.list.view.presenter
 
 import android.content.res.Resources
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -11,11 +12,13 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
 import com.tokopedia.promocheckout.common.domain.mapper.DealsCheckoutMapper
+import com.tokopedia.promocheckout.common.domain.model.deals.DealsErrorResponse
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.model.listtravelcollectivebanner.PromoChekoutDealsBannerModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDealsPresenter.Mapper.mapToLastSeen
 import com.tokopedia.usecase.RequestParams
+import retrofit2.HttpException
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -49,7 +52,19 @@ class PromoCheckoutListDealsPresenter(
                             }
 
                             override fun onError(e: Throwable) {
-                                if (isViewAttached) {
+                                val body = (e as HttpException).response()?.errorBody()?.string()
+                                if (!body.isNullOrEmpty()) {
+                                    val gson = Gson()
+                                    val testModel = gson.fromJson(body, DealsErrorResponse::class.java)
+                                    if (isViewAttached) {
+                                        view.hideProgressLoading()
+                                        if (testModel.data.message.isNotEmpty()) {
+                                            view.onErrorCheckPromo(MessageErrorException(testModel.data.message))
+                                        } else {
+                                            view.onErrorCheckPromo(e)
+                                        }
+                                    }
+                                } else {
                                     view.hideProgressLoading()
                                     view.onErrorCheckPromo(e)
                                 }
@@ -62,7 +77,7 @@ class PromoCheckoutListDealsPresenter(
     override fun getListTravelCollectiveBanner(resources: Resources) {
         val variables = HashMap<String, Any>()
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_deals), PromoChekoutDealsBannerModel.Response::class.java, variables, false)
+                com.tokopedia.promocheckout.common.R.raw.promo_checkout_deals), PromoChekoutDealsBannerModel.Response::class.java, variables, false)
         dealsPromoUseCase.clearRequest()
         dealsPromoUseCase.addRequest(graphqlRequest)
         dealsPromoUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {

@@ -82,7 +82,7 @@ class PlayViewerChannelStateProcessor constructor(
                 }
                 else false
             }
-            else -> false
+            else -> mIsFreeze
         }
     }
 

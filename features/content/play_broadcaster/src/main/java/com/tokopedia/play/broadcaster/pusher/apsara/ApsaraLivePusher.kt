@@ -41,7 +41,7 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         setFps(AlivcFpsEnum.FPS_30)
 
         // configure mirroring
-        setPushMirror(true)
+        setPushMirror(this.getCameraTypeEnum() == AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT)
 
         // the custom mode in which the stream ingest SDK sets the bitrate based on the custom bitrate settings
         qualityMode = AlivcQualityModeEnum.QM_CUSTOM
@@ -111,9 +111,9 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         if (this.mIngestUrl.isEmpty()) {
             throw IllegalArgumentException("ingestUrl must not be empty")
         }
-        if (!validUrl(ingestUrl)) {
-            throw IllegalArgumentException("ingestUrl must valid url")
-        }
+//        if (!validUrl(ingestUrl)) {
+//            throw IllegalArgumentException("ingestUrl must valid url")
+//        }
         mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
     }
 
@@ -159,6 +159,14 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         }
     }
 
+    private fun reconnectPushAsync() {
+        try {
+            mAliVcLivePusher?.reconnectPushAsync(mIngestUrl)
+        } catch (e: Exception) {
+            sendCrashlyticsLog(e)
+        }
+    }
+
     private val mAliVcLivePushErrorListener = object : AlivcLivePushErrorListener {
         override fun onSystemError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.SystemError)
@@ -182,19 +190,25 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         override fun onReconnectFail(pusher: AlivcLivePusher?) {
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.ReconnectFailed)
             mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.ReconnectFailed)
-            mAliVcLivePusher?.reconnectPushAsync(mIngestUrl)
+            reconnectPushAsync()
+        }
+
+        override fun onConnectionLost(p0: AlivcLivePusher?) {
         }
 
         override fun onSendDataTimeout(pusher: AlivcLivePusher?) {
             // Indicates that data transmission times out.
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.NetworkLoss)
             mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.NetworkLoss)
-            mAliVcLivePusher?.reconnectPushAsync(mIngestUrl)
+            reconnectPushAsync()
         }
 
         override fun onConnectFail(pusher: AlivcLivePusher?) {
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.ConnectFailed)
             mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.ConnectFailed)
+        }
+
+        override fun onPacketsLost(p0: AlivcLivePusher?) {
         }
 
         override fun onReconnectStart(pusher: AlivcLivePusher?) {

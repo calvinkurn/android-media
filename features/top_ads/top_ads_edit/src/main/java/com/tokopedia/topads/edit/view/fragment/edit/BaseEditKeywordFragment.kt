@@ -7,24 +7,33 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
+import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapter
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
+import com.tokopedia.topads.edit.data.response.KeywordDataModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_DELETED
+import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.utils.Constants.POSITION0
 import com.tokopedia.topads.edit.utils.Constants.POSITION1
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
-import com.tokopedia.topads.edit.view.adapter.KeywordEditPagerAdapter
+import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.topads_edit_keyword_base_layout.*
 
+private const val CLICK_KATA_KUNCI_POSITIF = "click - kata kunci positif"
+private const val CLICK_KATA_KUNCI_NEGATIF = "click - kata kunci negatif"
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
-   private var buttonStateCallback: SaveButtonStateCallBack? = null
+    private var buttonStateCallback: SaveButtonStateCallBack? = null
     private var btnState = true
+    var positivekeywordsAll: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+    var negativekeywordsAll: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
 
     companion object {
         fun newInstance(bundle: Bundle?): BaseEditKeywordFragment {
@@ -41,14 +50,18 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderViewPager()
-        keyword.isChecked = true
-        keyword_grp.setOnCheckedChangeListener { _, checkedId ->
-            if (checkedId == R.id.keyword) {
-                view_pager.currentItem = POSITION0
-
-            } else {
-                view_pager.currentItem = POSITION1
-            }
+        keyword.chipType = ChipsUnify.TYPE_SELECTED
+        keyword.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_KATA_KUNCI_POSITIF, "")
+            keyword.chipType = ChipsUnify.TYPE_SELECTED
+            neg_keyword.chipType = ChipsUnify.TYPE_NORMAL
+            view_pager.currentItem = POSITION0
+        }
+        neg_keyword.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_KATA_KUNCI_NEGATIF, "")
+            neg_keyword.chipType = ChipsUnify.TYPE_SELECTED
+            keyword.chipType = ChipsUnify.TYPE_NORMAL
+            view_pager.currentItem = POSITION1
         }
     }
 
@@ -109,12 +122,13 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             addedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_CREATE)
             deletedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_DELETE)
             editedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_EDIT)
-
+            positivekeywordsAll = bundle.getParcelableArrayList(POSITIVE_KEYWORD_ALL)
         }
         if (fragments?.get(1) is EditNegativeKeywordsFragment) {
             val bundle: Bundle = (fragments[1] as EditNegativeKeywordsFragment).sendData()
             dataNegativeAdded = bundle.getParcelableArrayList(NEGATIVE_KEYWORDS_ADDED)
             dataNegativeDeleted = bundle.getParcelableArrayList(NEGATIVE_KEYWORDS_DELETED)
+            negativekeywordsAll = bundle.getParcelableArrayList(NEGATIVE_KEYWORD_ALL)
 
         }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos
@@ -123,6 +137,30 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         dataMap[NEGATIVE_KEYWORDS_ADDED] = dataNegativeAdded
         dataMap[NEGATIVE_KEYWORDS_DELETED] = dataNegativeDeleted
         return dataMap
+    }
+
+    fun getKeywordNameItems(): ArrayList<KeywordDataModel>? {
+        var items: ArrayList<KeywordDataModel>? = arrayListOf()
+        val fragments = (view_pager?.adapter as KeywordEditPagerAdapter?)?.list
+        if(fragments?.get(0) is EditKeywordsFragment) {
+            positivekeywordsAll?.forEach {
+                var model = KeywordDataModel()
+                model.keywordName = it.tag
+                model.keywordId = it.keywordId
+                model.keywordType = "positif"
+                items?.add(model)
+            }
+        }
+        if(fragments?.get(1) is EditNegativeKeywordsFragment) {
+            negativekeywordsAll?.forEach {
+                var model = KeywordDataModel()
+                model.keywordName = it.tag
+                model.keywordId = it.keywordId
+                model.keywordType = "negatif"
+                items?.add(model)
+            }
+        }
+        return items
     }
 
 }

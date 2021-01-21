@@ -93,7 +93,8 @@ class PlayBottomSheetViewModel @Inject constructor(
                         price = when (product.price) {
                             is OriginalPrice -> product.price.priceNumber.toString()
                             is DiscountedPrice -> product.price.discountedPriceNumber.toString()
-                        }
+                        },
+                        userId = userSession.userId
                 )
                 postAddToCartUseCase.executeOnBackground()
             }

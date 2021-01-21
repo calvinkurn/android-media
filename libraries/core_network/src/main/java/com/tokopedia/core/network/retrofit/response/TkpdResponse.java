@@ -147,10 +147,6 @@ public class TkpdResponse {
         this.status = status;
     }
 
-    public String getStringData() {
-        return stringData;
-    }
-
     public JSONObject getJsonData() {
         return jsonData;
     }
@@ -245,16 +241,6 @@ public class TkpdResponse {
             }
         } else {
             return (T) objData;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T convertToObj(Class<T> clazz) {
-        try {
-            return gson.fromJson(stringData, clazz);
-        } catch (ClassCastException | JsonSyntaxException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 }

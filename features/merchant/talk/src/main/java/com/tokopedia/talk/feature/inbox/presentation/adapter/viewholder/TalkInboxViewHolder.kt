@@ -4,17 +4,21 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_talk_inbox.view.*
 
 class TalkInboxViewHolder(
         view: View,
-        private val isSellerView: Boolean
+        private val isSellerView: Boolean,
+        private val talkInboxViewHolderListener: TalkInboxViewHolderListener
 ) : AbstractViewHolder<TalkInboxUiModel>(view) {
 
     companion object {
@@ -28,6 +32,9 @@ class TalkInboxViewHolder(
             setQuestion(content, isMasked)
             setNotification(isUnread)
             setCountAndDate(totalAnswer, lastReplyTime)
+            itemView.addOnImpressionListener(ImpressHolder()) {
+                talkInboxViewHolderListener.onInboxItemImpressed(questionID, adapterPosition, isUnread)
+            }
         }
     }
 
@@ -35,11 +42,11 @@ class TalkInboxViewHolder(
         with(itemView) {
             if(productThumbnail.isEmpty()) {
             itemView.talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_placeholder))
-                talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+                talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 return
             }
             talkInboxProductThumbnail.setImageUrl(productThumbnail)
-            talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+            talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         }
     }
 
@@ -51,10 +58,10 @@ class TalkInboxViewHolder(
         itemView.talkInboxMessage.apply {
             text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().replace("\n", " ")
             if(isMasked) {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 setWeight(Typography.REGULAR)
             } else {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 setWeight(Typography.BOLD)
             }
         }
@@ -74,21 +81,21 @@ class TalkInboxViewHolder(
                 totalAnswer == 0 && isSellerView -> {
                     talkInboxAnswerCount.apply {
                         text = context.getString(R.string.inbox_total_count_empty_seller)
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                         setWeight(Typography.BOLD)
                     }
                 }
                 totalAnswer == 0 && !isSellerView -> {
                     talkInboxAnswerCount.apply {
                         text = context.getString(R.string.inbox_total_count_empty_buyer)
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                         setWeight(Typography.REGULAR)
                     }
                 }
                 else -> {
                     talkInboxAnswerCount.apply {
                         text = context.getString(R.string.inbox_total_count, totalAnswer.toString())
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                         setWeight(Typography.REGULAR)
                     }
                 }

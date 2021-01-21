@@ -1,6 +1,5 @@
 package com.tokopedia.shop.settings.etalase.view.viewholder
 
-import android.graphics.Color
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -12,13 +11,13 @@ import android.widget.TextView
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.etalase.data.TickerReadMoreViewModel
+import com.tokopedia.shop.settings.etalase.data.TickerReadMoreUiModel
 
 
 class TickerReadMoreEtalaseViewHolder(
         itemView: View,
         private val tickerReadMoreListener: TickerReadMoreListener?
-) : AbstractViewHolder<TickerReadMoreViewModel>(itemView) {
+) : AbstractViewHolder<TickerReadMoreUiModel>(itemView) {
 
     private val textViewTitle: TextView
     private val textViewDescription: TextView
@@ -32,12 +31,12 @@ class TickerReadMoreEtalaseViewHolder(
         fun onReadMoreClicked()
     }
 
-    override fun bind(tickerReadMoreViewModel: TickerReadMoreViewModel) {
-        textViewTitle.text = tickerReadMoreViewModel.tickerTitle
+    override fun bind(tickerReadMoreUiModel: TickerReadMoreUiModel) {
+        textViewTitle.text = tickerReadMoreUiModel.tickerTitle
         textViewDescription.movementMethod = LinkMovementMethod.getInstance()
         textViewDescription.text = createDescriptionWithSpannable(
-                tickerReadMoreViewModel.tickerDescription,
-                tickerReadMoreViewModel.readMoreString
+                tickerReadMoreUiModel.tickerDescription,
+                tickerReadMoreUiModel.readMoreString
         )
     }
 
@@ -45,7 +44,7 @@ class TickerReadMoreEtalaseViewHolder(
         val spannableText = SpannableString(readMoreText)
         val startIndex = 0
         val endIndex = spannableText.length
-        val color = itemView.resources.getColor(R.color.merchant_green)
+        val color = itemView.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
         spannableText.setSpan(color, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(p0: View) {

@@ -1,8 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="ErrorTextAppearance">
-        <item name="android:textColor">@color/red_pink</item>
+    <style name="Theme.White.TravelPassenger">
+        <item name="popupTheme">@style/TravelPassengerPopupTheme</item>
+        <item name="toolbarTheme">@style/TravelPassengerToolbarTheme</item>
+        <item name="titleTextAppearance">@style/TravelPassengerTitleTextAppearance</item>
     </style>
 
+    <style name="TravelPassengerTitleTextAppearance" parent="TitleTextAppearance.White">
+        <item name="android:textColor">@color/Unify_N700_96</item>
+    </style>
+
+    <style name="TravelPassengerToolbarTheme" parent="Base.Toolbar.Theme">
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/Unify_G600</item>
+        <item name="android:background">@color/Unify_N0</item>
+        <item name="actionModeBackground">@color/Unify_N0</item>
+        <item name="android:actionModeBackground">@color/Unify_N0</item>
+        <item name="android:textColor">@color/Unify_N700_96</item>
+        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
+        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
+        <item name="android:textColorSecondary">@color/Unify_N700_96</item>
+    </style>
+
+    <style name="TravelPassengerPopupTheme">
+        <item name="android:background">@color/Unify_N0</item>
+    </style>
+
+    <style name="ErrorTextAppearance">
+        <item name="android:textColor">@color/Unify_R500</item>
+    </style>
+
+    <style name="TravelHintTextInputLayout">
+        <item name="defaultTextColorLabel">@color/Unify_N700_68</item>
+        <item name="focusedTextColorLabel">@color/Unify_N700_68</item>
+        <item name="disabledTextColorLabel">@color/Unify_N700_68</item>
+        <item name="android:theme">@style/TravelHintTextInputLayoutColorLine</item>
+    </style>
+
+    <style name="TravelHintTextInputLayoutColorLine" parent="Theme.AppCompat.Light">
+        <item name="android:textColorHint">@color/Unify_N700_20</item>
+        <item name="colorControlNormal">@color/Unify_N700_20</item>
+        <item name="colorControlActivated">@color/Unify_G500</item>
+        <item name="colorControlHighlight">@color/Unify_G500</item>
+    </style>
 </resources>

@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -35,14 +36,12 @@ import com.tokopedia.purchase_platform.common.feature.insurance.response.Insuran
 import com.tokopedia.purchase_platform.common.feature.insurance.INSURANCE_RECOMMENDATION_PARAM_GQL
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Named
 
 class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                   private val userSessionInterface: UserSessionInterface,
@@ -50,8 +49,7 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                                                   private val addToCartUseCase: AddToCartUseCase,
                                                   private val addToCartOcsUseCase: AddToCartOcsUseCase,
                                                   private val addToInsuranceCartUseCase: AddInsuranceProductUsecase,
-                                                  @Named("Main")
-                                                  val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+                                                  dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
 
     val productInfoResp = MutableLiveData<InsuranceRecommendationState>()
     var insuranceRecommendationResponse = InsuranceRecommendationGqlResponse()

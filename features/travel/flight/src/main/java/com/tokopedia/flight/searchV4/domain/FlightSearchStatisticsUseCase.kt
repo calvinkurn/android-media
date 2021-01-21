@@ -44,6 +44,8 @@ class FlightSearchStatisticsUseCase @Inject constructor(
         var isHaveSpecialPrice = false
         var isHaveBaggage = false
         var isHaveInFlightMeal = false
+        var isHasFreeRapidTest = false
+        var isSeatDistancing = false
 
         for (journeyAndRoutes in journeyAndRoutesList) {
             val price = journeyAndRoutes.flightJourneyTable.sortPriceNumeric
@@ -170,6 +172,14 @@ class FlightSearchStatisticsUseCase @Inject constructor(
                     if (isHaveBaggage && isHaveInFlightMeal) break
                 }
             }
+
+            if (!isHasFreeRapidTest && journeyAndRoutes.flightJourneyTable.hasFreeRapidTest) {
+                isHasFreeRapidTest = true
+            }
+
+            if (!isSeatDistancing && journeyAndRoutes.flightJourneyTable.isSeatDistancing) {
+                isSeatDistancing = true
+            }
         }
 
         //sort array
@@ -181,7 +191,7 @@ class FlightSearchStatisticsUseCase @Inject constructor(
 
         return FlightSearchStatisticModel(minPrice, maxPrice, minDuration, maxDuration, transitTypeStatList,
                 airlineStatList, departureTimeStatList, arrivalTimeStatList, refundableTypeStatList,
-                isHaveSpecialPrice, isHaveBaggage, isHaveInFlightMeal)
+                isHaveSpecialPrice, isHaveBaggage, isHaveInFlightMeal, isHasFreeRapidTest, isSeatDistancing)
     }
 
 }

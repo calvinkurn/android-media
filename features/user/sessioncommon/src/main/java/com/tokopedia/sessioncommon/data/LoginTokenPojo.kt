@@ -11,7 +11,7 @@ data class LoginTokenPojo(
         @SerializedName("login_token")
         @Expose
         var loginToken: LoginToken = LoginToken()
-){}
+)
 
 
 data class LoginToken(
@@ -41,6 +41,21 @@ data class LoginToken(
         var action: Int = 0,
         @SerializedName("errors")
         @Expose
-        var errors: ArrayList<Error> = arrayListOf()
-){}
+        var errors: ArrayList<Error> = arrayListOf(),
+        @SerializedName("popup_error")
+        @Expose
+        var popupError: PopupError = PopupError()
+)
+
+data class PopupError (
+        @SerializedName("header")
+        @Expose
+        var header: String = "",
+        @SerializedName("body")
+        @Expose
+        var body: String = "",
+        @SerializedName("action")
+        @Expose
+        var action: String = ""
+)
 

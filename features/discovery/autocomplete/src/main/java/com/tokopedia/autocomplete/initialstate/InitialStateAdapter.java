@@ -84,4 +84,10 @@ public class InitialStateAdapter extends RecyclerView.Adapter<AbstractViewHolder
             notifyItemChanged(index);
         }
     }
+
+    public void refreshPopularSection(int position) {
+        if (position >= 0 && position < (list.size() - 1)) {
+            notifyItemRangeChanged(position, 2);
+        }
+    }
 }

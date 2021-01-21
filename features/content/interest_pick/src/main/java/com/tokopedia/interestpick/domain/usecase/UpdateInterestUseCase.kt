@@ -1,28 +1,38 @@
 package com.tokopedia.interestpick.domain.usecase
 
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.interestpick.data.pojo.UpdateInterestData
 import com.tokopedia.interestpick.data.raw.GQL_MUTATION_UPDATE_INTEREST
-import rx.Subscriber
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 10/09/18.
  */
-@Deprecated("use SubmitInterestPickUseCase instead", ReplaceWith("SubmitInterestPickUseCase"))
-class UpdateInterestUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase) {
-    fun execute(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>?) {
-        val query = GQL_MUTATION_UPDATE_INTEREST
-        val graphqlRequest = GraphqlRequest(query, UpdateInterestData::class.java, variables)
 
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
+@GqlQuery("UpdateInterest", GQL_MUTATION_UPDATE_INTEREST)
+class UpdateInterestUseCase @Inject constructor(
+        private val graphqlUseCase: GraphqlUseCase<UpdateInterestData>
+) : UseCase<UpdateInterestData>() {
+
+    init {
+        graphqlUseCase.setTypeClass(UpdateInterestData::class.java)
+        graphqlUseCase.setGraphqlQuery(UpdateInterest.GQL_QUERY)
     }
 
-    fun unsubscribe() = graphqlUseCase.unsubscribe()
+    override suspend fun executeOnBackground(): UpdateInterestData {
+        graphqlUseCase.clearCache()
+        return graphqlUseCase.executeOnBackground()
+    }
+
+    fun setRequestParams(interestIds: List<Int>) {
+        graphqlUseCase.setRequestParams(getRequestParams(interestIds))
+    }
+
+    fun setRequestParamsSkip() {
+        graphqlUseCase.setRequestParams(getRequestParamsSkip())
+    }
 
     companion object {
         private const val PARAM_INTERESTS_ID = "interestID"
@@ -31,15 +41,15 @@ class UpdateInterestUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCa
 
         fun getRequestParams(interestIds: List<Int>): HashMap<String, Any> {
             val variables: HashMap<String, Any> = HashMap()
-            variables.put(PARAM_INTERESTS_ID, interestIds)
+            variables[PARAM_INTERESTS_ID] = interestIds
             return variables
         }
 
         fun getRequestParamsSkip(): HashMap<String, Any> {
             val variables: HashMap<String, Any> = HashMap()
             val emptyArray: Array<Int> = emptyArray()
-            variables.put(PARAM_INTERESTS_ID, emptyArray)
-            variables.put(PARAM_ACTION, ACTION_SKIP)
+            variables[PARAM_INTERESTS_ID] = emptyArray
+            variables[PARAM_ACTION] = ACTION_SKIP
             return variables
         }
     }

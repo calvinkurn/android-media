@@ -38,16 +38,16 @@ public class Dialog extends BaseDialog {
     @Override
     public int layoutResId() {
         if (type == Type.LONG_PROMINANCE)
-            return R.layout.dialog_longprominance;
-        return R.layout.dialog_base;
+            return com.tokopedia.design.R.layout.dialog_longprominance;
+        return com.tokopedia.design.R.layout.dialog_base;
     }
 
     @Override
     public void initView(View dialogView) {
-        title = dialogView.findViewById(R.id.tv_title_dialog);
-        desc = dialogView.findViewById(R.id.tv_desc_dialog);
-        btnOk = dialogView.findViewById(R.id.btn_ok_dialog);
-        btnCancel = dialogView.findViewById(R.id.btn_cancel_dialog);
+        title = dialogView.findViewById(com.tokopedia.design.R.id.tv_title_dialog);
+        desc = dialogView.findViewById(com.tokopedia.design.R.id.tv_desc_dialog);
+        btnOk = dialogView.findViewById(com.tokopedia.design.R.id.btn_ok_dialog);
+        btnCancel = dialogView.findViewById(com.tokopedia.design.R.id.btn_cancel_dialog);
 
         if (type == Type.RETORIC)
             btnCancel.setVisibility(View.GONE);

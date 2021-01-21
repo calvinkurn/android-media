@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.domain.GetWishlistParameter
@@ -37,6 +38,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -65,7 +68,8 @@ open class WishlistViewModel @Inject constructor(
         private val bulkRemoveWishlistUseCase: BulkRemoveWishlistUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val getSingleRecommendationUseCase: GetSingleRecommendationUseCase,
-        private val topAdsImageViewUseCase: TopAdsImageViewUseCase
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+        private val updateCartCounterUseCase: UpdateCartCounterUseCase
 ) : ViewModel(), CoroutineScope{
 
     private val masterJob = SupervisorJob()
@@ -96,6 +100,7 @@ open class WishlistViewModel @Inject constructor(
     val isWishlistErrorInFirstPageState: LiveData<Boolean> get() = isWishlistErrorInFirstPage
 
     val addToCartActionData = SingleObserverLiveEvent<Event<AddToCartActionData>>()
+    val updateCartCounterActionData = SingleObserverLiveEvent<Event<Int>>()
     val productClickActionData = SingleObserverLiveEvent<Event<ProductClickActionData>>()
     val removeWishlistActionData = SingleObserverLiveEvent<Event<RemoveWishlistActionData>>()
     val bulkRemoveWishlistActionData = SingleObserverLiveEvent<Event<BulkRemoveWishlistActionData>>()
@@ -234,82 +239,100 @@ open class WishlistViewModel @Inject constructor(
      * Send request to add to cart, result will be notified to addToCartActionData
      */
     fun addToCartProduct(productPosition: Int) {
-        val visitableItem = wishlistData.value[productPosition]
-        if (visitableItem is WishlistItemDataModel) {
-            val wishlistItemCandidateToAddToCart = visitableItem.productItem
-            val tempWishlist = visitableItem.copy(isOnAddToCartProgress = true)
-            val tempListVisitable = wishlistData.value.copy().toMutableList()
+        if(productPosition < wishlistData.value.size && productPosition != -1) {
+            val visitableItem = wishlistData.value.getOrNull(productPosition)
+            if (visitableItem is WishlistItemDataModel) {
+                val wishlistItemCandidateToAddToCart = visitableItem.productItem
+                val tempWishlist = visitableItem.copy(isOnAddToCartProgress = true)
+                val tempListVisitable = wishlistData.value.copy().toMutableList()
 
-            tempListVisitable[productPosition] = tempWishlist
-            wishlistData.value = tempListVisitable.copy()
+                tempListVisitable[productPosition] = tempWishlist
+                wishlistData.value = tempListVisitable.copy()
 
-            wishlistItemCandidateToAddToCart.let {
-                val addToCartRequestParams = AddToCartRequestParams()
-                addToCartRequestParams.productId = it.id.toLong()
-                addToCartRequestParams.shopId = it.shop.id.toInt()
-                addToCartRequestParams.quantity = it.minimumOrder
-                addToCartRequestParams.notes = ""
-                addToCartRequestParams.atcFromExternalSource = AddToCartRequestParams.ATC_FROM_WISHLIST
-                addToCartRequestParams.productName = it.name
-                addToCartRequestParams.category = it.categoryBreadcrumb
-                addToCartRequestParams.price = it.price
+                wishlistItemCandidateToAddToCart.let {
+                    val addToCartRequestParams = AddToCartRequestParams()
+                    addToCartRequestParams.productId = it.id.toLong()
+                    addToCartRequestParams.shopId = it.shop.id.toInt()
+                    addToCartRequestParams.quantity = it.minimumOrder
+                    addToCartRequestParams.notes = ""
+                    addToCartRequestParams.atcFromExternalSource = AddToCartRequestParams.ATC_FROM_WISHLIST
+                    addToCartRequestParams.productName = it.name
+                    addToCartRequestParams.category = it.categoryBreadcrumb
+                    addToCartRequestParams.price = it.price
+                    addToCartRequestParams.userId = userSessionInterface.userId
 
-                val requestParams = RequestParams.create()
-                requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
+                    val requestParams = RequestParams.create()
+                    requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
 
-                addToCartUseCase.execute(requestParams, object: Subscriber<AddToCartDataModel>() {
-                    override fun onNext(addToCartResult: AddToCartDataModel?) {
-                        val productId: Int
-                        val isSuccess: Boolean
-                        val cartId: String
-                        val message: String
+                    addToCartUseCase.execute(requestParams, object : Subscriber<AddToCartDataModel>() {
+                        override fun onNext(addToCartResult: AddToCartDataModel?) {
+                            val productId: Long
+                            val isSuccess: Boolean
+                            val cartId: String
+                            val message: String
 
-                        if (addToCartResult?.status.equals(AddToCartDataModel.STATUS_OK, true)
-                                && addToCartResult?.data?.success == 1) {
-                            isSuccess = true
-                            cartId = addToCartResult.data.cartId
-                            message = addToCartResult.data.message[0]
-                            productId = addToCartResult.data.productId
-                        } else {
-                            isSuccess = false
-                            message = addToCartResult?.errorMessage?.get(0)?:""
-                            productId = addToCartResult?.data?.productId?:0
-                            cartId = addToCartResult?.data?.cartId?:""
+                            if (addToCartResult?.status.equals(AddToCartDataModel.STATUS_OK, true)
+                                    && addToCartResult?.data?.success == 1) {
+                                isSuccess = true
+                                cartId = addToCartResult.data.cartId
+                                message = addToCartResult.data.message[0]
+                                productId = addToCartResult.data.productId
+                                updateCartCounter()
+                            } else {
+                                isSuccess = false
+                                message = addToCartResult?.errorMessage?.get(0) ?: ""
+                                productId = addToCartResult?.data?.productId ?: 0
+                                cartId = addToCartResult?.data?.cartId ?: ""
+                            }
+                            addToCartActionData.value = Event(
+                                    AddToCartActionData(
+                                            position = productPosition,
+                                            productId = productId,
+                                            cartId = cartId,
+                                            isSuccess = isSuccess,
+                                            message = message,
+                                            item = visitableItem.productItem
+                                    )
+                            )
+                            tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
+                            wishlistData.value = tempListVisitable.copy()
                         }
-                        addToCartActionData.value = Event(
-                                AddToCartActionData(
-                                        position = productPosition,
-                                        productId = productId,
-                                        cartId = cartId,
-                                        isSuccess = isSuccess,
-                                        message = message,
-                                        item = visitableItem.productItem
-                                )
-                        )
-                        tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
-                        wishlistData.value = tempListVisitable.copy()
-                    }
 
-                    override fun onCompleted() {
-                        tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
-                        wishlistData.value = tempListVisitable.copy()
-                    }
+                        override fun onCompleted() {
+                            tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
+                            wishlistData.value = tempListVisitable.copy()
+                        }
 
-                    override fun onError(e: Throwable) {
-                        tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
-                        wishlistData.value = tempListVisitable.copy()
-                        addToCartActionData.value = Event(
-                                AddToCartActionData(
-                                        position = productPosition,
-                                        isSuccess = false,
-                                        message = e.message ?: ""
-                                )
-                        )
-                    }
+                        override fun onError(e: Throwable) {
+                            tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
+                            wishlistData.value = tempListVisitable.copy()
+                            addToCartActionData.value = Event(
+                                    AddToCartActionData(
+                                            position = productPosition,
+                                            isSuccess = false,
+                                            message = e.message ?: ""
+                                    )
+                            )
+                        }
 
-                })
+                    })
+                }
             }
         }
+    }
+
+    private fun updateCartCounter(){
+        updateCartCounterUseCase.createObservable(RequestParams.create())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Int>() {
+                    override fun onCompleted() {}
+                    override fun onError(e: Throwable) {}
+                    override fun onNext(count: Int) {
+                        updateCartCounterActionData.value = Event(count)
+                    }
+                })
     }
 
     /**
@@ -350,7 +373,7 @@ open class WishlistViewModel @Inject constructor(
                 if(wishlistVisitable.isNotEmpty()) {
                     val recommendationPositionInPreviousPage = ((currentPage - 3) * maxItemInPage) + recommendationPositionInPage
                     var pageToken = ""
-                    if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable[recommendationPositionInPreviousPage] is BannerTopAdsDataModel){
+                    if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(recommendationPositionInPreviousPage) is BannerTopAdsDataModel){
                         pageToken = (wishlistVisitable[recommendationPositionInPreviousPage] as BannerTopAdsDataModel).topAdsDataModel.nextPageToken ?: ""
                     }
                     val results = topAdsImageViewUseCase.getImageData(
@@ -396,7 +419,7 @@ open class WishlistViewModel @Inject constructor(
         val newWishlistData: MutableList<WishlistDataModel> = wishlistData.value.copy()
 
         if (parentPosition == DEFAULT_PARENT_POSITION_EMPTY_RECOM) {
-            val newWishlistDataModel = newWishlistData[childPosition]
+            val newWishlistDataModel = newWishlistData.getOrNull(childPosition)
             if (newWishlistDataModel is RecommendationItemDataModel &&
                     newWishlistDataModel.recommendationItem.productId == productId) {
                 val newRecomItem = newWishlistDataModel.recommendationItem.copy(isWishlist = newWishlistState)
@@ -404,11 +427,11 @@ open class WishlistViewModel @Inject constructor(
                 wishlistData.value = newWishlistData
             }
         } else {
-            val newCarouselDataModel = newWishlistData[parentPosition]
+            val newCarouselDataModel = newWishlistData.getOrNull(parentPosition)
             if (newCarouselDataModel is RecommendationCarouselDataModel) {
-                val oldRecomItemDataModel = newCarouselDataModel.list[childPosition]
+                val oldRecomItemDataModel = newCarouselDataModel.list.getOrNull(childPosition)
 
-                if (oldRecomItemDataModel.recommendationItem.productId != productId) return
+                if (oldRecomItemDataModel?.recommendationItem?.productId != productId) return
 
                 val oldRecomItem = oldRecomItemDataModel.recommendationItem
 
@@ -438,7 +461,7 @@ open class WishlistViewModel @Inject constructor(
     fun setRecommendationItemWishlist(parentPosition: Int, childPosition: Int, currentWishlistState: Boolean){
         val newWishlistData: MutableList<SmartVisitable<*>> = wishlistData.value.toMutableList()
         if(parentPosition != -1) {
-            val parentVisitable = newWishlistData[parentPosition]
+            val parentVisitable = newWishlistData.getOrNull(parentPosition)
 
             if (parentVisitable is RecommendationCarouselDataModel
                     && parentVisitable.list.size >= childPosition
@@ -489,7 +512,7 @@ open class WishlistViewModel @Inject constructor(
     fun setEmptyWishlistRecommendationItemWishlist(recommendationPosition: Int,
                                                    currentWishlistState: Boolean){
         val newWishlistData: MutableList<SmartVisitable<*>> = wishlistData.value.toMutableList()
-        val recommendationVisitable = newWishlistData[recommendationPosition]
+        val recommendationVisitable = newWishlistData.getOrNull(recommendationPosition)
 
         if(recommendationVisitable is RecommendationItemDataModel
                 && !currentWishlistState) {
@@ -628,7 +651,7 @@ open class WishlistViewModel @Inject constructor(
             val wishlistDataModel = listForBulkRemoveCandidate[it]
             listForBulkRemoveCandidate.remove(it)
 
-            wishlistDataModel?.let {wishlistDataModel->
+            wishlistDataModel?.let { wishlistDataModel->
                 newWishlistDataValue.remove(wishlistDataModel)
                 deletedIds.add(it)
             }
@@ -641,7 +664,7 @@ open class WishlistViewModel @Inject constructor(
             recomIndex+=maxItemInPage
         }
 
-        val isPartiallyFailed = !listForBulkRemoveCandidate.isEmpty()
+        val isPartiallyFailed = listForBulkRemoveCandidate.isNotEmpty()
 
         updatedList.addAll(newWishlistDataValue)
         return Triple(updatedList, deletedIds, isPartiallyFailed)
@@ -655,8 +678,8 @@ open class WishlistViewModel @Inject constructor(
      */
     fun removeWishlistedProduct(position: Int) {
         if(position != -1 && position < wishlistData.value.size && wishlistData.value.isNotEmpty()) {
-            val selectedVisitable = wishlistData.value[position]
-            selectedVisitable.let {
+            val selectedVisitable = wishlistData.value.getOrNull(position)
+            selectedVisitable?.let {
                 if (it is WishlistItemDataModel) {
                     val productId = it.productItem.id
                     removeWishListUseCase.createObservable(

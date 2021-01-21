@@ -3,7 +3,7 @@ package com.tokopedia.attachproduct.view.resultmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
 
 /**
  * Created by Hendri on 19/02/18.
@@ -23,7 +23,7 @@ public class ResultProduct implements Parcelable {
         this.name = name;
     }
 
-    public ResultProduct(AttachProductItemViewModel viewModel){
+    public ResultProduct(AttachProductItemUiModel viewModel){
         this.productId = viewModel.getProductId();
         this.productUrl = viewModel.getProductUrl();
         this.productImageThumbnail = viewModel.getProductImage();

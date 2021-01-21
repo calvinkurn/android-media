@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="menu_home" type="id"/>
+    <item name="menu_product" type="id"/>
+    <item name="menu_chat" type="id"/>
+    <item name="menu_order" type="id"/>
+    <item name="menu_other" type="id"/>
+
+    <item name="menu_sah_search" type="id"/>
+    <item name="menu_sah_notification" type="id"/>
+</resources>

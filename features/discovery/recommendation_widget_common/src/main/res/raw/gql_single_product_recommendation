@@ -48,6 +48,11 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $queryParam:
                   title
                   imageUrl
               }
+              labelgroup{
+                position
+                title
+                type
+              }
               wholesalePrice {
                   price
                   quantityMax
@@ -59,6 +64,7 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $queryParam:
                 imageUrl
               }
               rating
+              ratingAverage
               countReview
               recommendationType
               stock

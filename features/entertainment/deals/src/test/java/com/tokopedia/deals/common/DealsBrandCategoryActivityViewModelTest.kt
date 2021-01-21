@@ -37,7 +37,12 @@ class DealsBrandCategoryActivityViewModelTest {
     @Test
     fun getCategoryCombindedData_fetchFailed_shouldShowErrorMessage() {
         // given
-        coEvery { useCase.executeOnBackground() } coAnswers {throw  Throwable("Error failed") }
+        val mockThrowable = Throwable("Error failed")
+        coEvery {
+            useCase.execute(any(), any())
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
 
         // when
         viewModel.getCategoryCombindedData()
@@ -51,7 +56,11 @@ class DealsBrandCategoryActivityViewModelTest {
     fun getCategoryCombindedData_fetchSuccess_shouldShowCuratedData() {
         // given
         val mockCuratedData = Gson().fromJson(DealsJsonMapper.getJson("curateddata.json"), CuratedData::class.java)
-        coEvery { useCase.executeOnBackground() } returns mockCuratedData
+        coEvery {
+            useCase.execute(any(), any())
+        } coAnswers {
+            firstArg<(CuratedData) -> Unit>().invoke(mockCuratedData)
+        }
 
         // when
         viewModel.getCategoryCombindedData()

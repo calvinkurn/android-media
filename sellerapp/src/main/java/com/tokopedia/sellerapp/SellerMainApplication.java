@@ -20,6 +20,7 @@ import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
+import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
@@ -32,10 +33,12 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -48,12 +51,15 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.utils.permission.SlicePermission;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.Pair;
 import timber.log.Timber;
+
+import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHORITY;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -138,18 +144,19 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
         setVersionName();
+        initFileDirConfig();
         FpmLogger.init(this);
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
         initRemoteConfig();
+        initCacheManager();
+
         TrackApp.initTrackApp(this);
 
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
-
-        PersistentCacheManager.init(this);
 
         TimberWrapper.init(this);
         super.onCreate();
@@ -165,6 +172,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         registerActivityLifecycleCallbacks();
         initBlockCanary();
         TokoPatch.init(this);
+        initSlicePermission();
+    }
+
+    private void initCacheManager(){
+        PersistentCacheManager.init(this);
+        cacheManager = PersistentCacheManager.instance;
     }
 
     private void setVersionName(){
@@ -195,7 +208,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     private void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+            registerActivityLifecycleCallbacks(new DevOptsSubscriber());
+        }
+        registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
     }
 
     @Override
@@ -243,12 +260,37 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         );
     }
 
+    public int getCurrentVersion(Context context) {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     //Please do not delete this function to keep AppNotificationReceiver
     private void initAppNotificationReceiver() {
         AppNotificationReceiver appNotificationReceiver = new AppNotificationReceiver();
         String tag = appNotificationReceiver.getClass().getSimpleName();
         Log.d("Init %s", tag);
     }
+
+    private void initSlicePermission() {
+        if (getSliceRemoteConfig()) {
+            SlicePermission slicePermission = new SlicePermission();
+            slicePermission.initPermission(this, SELLER_ORDER_AUTHORITY);
+        }
+    }
+
+    private Boolean getSliceRemoteConfig() {
+        return remoteConfig != null
+                && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
+    }
+
+
 
     @Override
     public Class<?> getDeeplinkClass() {

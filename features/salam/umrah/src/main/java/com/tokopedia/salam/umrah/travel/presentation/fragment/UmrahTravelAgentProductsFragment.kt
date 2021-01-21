@@ -19,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelProduct
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
@@ -125,7 +126,7 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
     private fun requestData(page:Int){
         slugName?.let {
             umrahTravelProductViewModel.getDataProductTravel(page,it,
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_search_product))
+                    UmrahQuery.UMRAH_SEARCH_PRODUCT_QUERY)
         }
     }
 

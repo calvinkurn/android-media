@@ -69,8 +69,8 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setImage() {
-        long width = mMedia.getWidth();
-        long height = mMedia.getHeight();
+        long width = mMedia.getWidth(getContext());
+        long height = mMedia.getHeight(getContext());
         long min, max;
         if (width > height) {
             min = height;

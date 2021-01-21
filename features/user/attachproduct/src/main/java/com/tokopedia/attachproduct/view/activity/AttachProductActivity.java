@@ -1,39 +1,33 @@
 package com.tokopedia.attachproduct.view.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.attachproduct.R;
-import com.tokopedia.attachproduct.resultmodel.ResultProduct;
+import com.tokopedia.attachcommon.data.ResultProduct;
 import com.tokopedia.attachproduct.view.fragment.AttachProductFragment;
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
 
 import java.util.ArrayList;
 
+import static com.tokopedia.applink.ApplinkConst.AttachProduct.*;
+
 /**
- * Created by Hendri on 13/02/18.
+ * For navigating to this class
+ * [com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_PRODUCT]
+ * Please pass com.tokopedia.applink.ApplinkConst.AttachProduct
  */
 
 public class AttachProductActivity extends BaseSimpleActivity implements AttachProductContract
         .Activity {
-    public static final int TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 113;
     public static final int TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324;
-    public static final String TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY = "TKPD_ATTACH_PRODUCT_RESULTS";
-    public static final String TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY = "TKPD_ATTACH_PRODUCT_SHOP_ID";
-    public static final String TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY = "TKPD_ATTACH_PRODUCT_SHOP_NAME";
-    public static final String TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY = "TKPD_ATTACH_PRODUCT_IS_SELLER";
-    public static final String TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED = "TKPD_ATTACH_PRODUCT_MAX_CHECKED";
-    private static final String TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY = "TKPD_ATTACH_PRODUCT_SOURCE";
-    private static final String TOKOPEDIA_ATTACH_PRODUCT_HIDDEN = "TKPD_ATTACH_PRODUCT_HIDDEN";
 
-    public static final String SOURCE_TOPCHAT = "topchat";
     public static final String SOURCE_TALK = "talk";
     public static final Integer MAX_CHECKED_DEFAULT = 3;
 
@@ -51,7 +45,6 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
             shopId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY);
         }
-        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
     }
 
     @Override
@@ -60,53 +53,17 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         super.setupLayout(savedInstanceState);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setBackgroundDrawable(
-                    getResources().getDrawable(R.drawable.bg_white_toolbar_drop_shadow));
+                    getResources().getDrawable(R.drawable.bg_attach_product_white_toolbar_drop_shadow));
             getSupportActionBar().setHomeAsUpIndicator(
-                    MethodChecker.getDrawable(this,R.drawable.ic_close_default));
+                    MethodChecker.getDrawable(this, R.drawable.ic_attach_product_close_default));
         }
         if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) != null) {
             shopName = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY);
         } else {
             shopName = "";
         }
-        toolbar.setSubtitleTextAppearance(this, R.style.AttachProductToolbarSubTitle_SansSerif);
-        toolbar.setTitleTextAppearance(this, R.style.AttachProductToolbarTitle_SansSerif);
+        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         toolbar.setSubtitle(shopName);
-    }
-
-    /**
-     * @param context   Context
-     * @param shopId    Target shop id
-     * @param shopName  Target shop name
-     * @param isSeller  is user the owner of the shop
-     * @param maxChecked the maximal number of product that can be attached
-     * @param source    use Key Source from this activity
-     * @return
-     */
-    public static Intent createInstance(Context context, String shopId, String shopName,
-                                        boolean isSeller, String source, int maxChecked,
-                                        ArrayList<String> hiddenProducts) {
-        Intent intent = new Intent(context, AttachProductActivity.class);
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId);
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, isSeller);
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, shopName);
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, source);
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED, maxChecked);
-        intent.putStringArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_HIDDEN, hiddenProducts);
-        return intent;
-    }
-
-    /**
-     * @param context   Context
-     * @param shopId    Target shop id
-     * @param shopName  Target shop name
-     * @param isSeller  is user the owner of the shop
-     * @param source    use Key Source from this activity
-     * @return
-     */
-    public static Intent createInstance(Context context, String shopId, String shopName,
-                                        boolean isSeller, String source) {
-        return createInstance(context, shopId, shopName, isSeller, source, MAX_CHECKED_DEFAULT, null);
     }
 
     @Override

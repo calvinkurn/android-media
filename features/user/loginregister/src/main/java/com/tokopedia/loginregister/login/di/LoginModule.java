@@ -12,6 +12,10 @@ import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelpe
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting;
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography;
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils;
+import com.tokopedia.loginregister.common.DispatcherProvider;
+import com.tokopedia.loginregister.registerinitial.di.RegisterInitialScope;
+
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Named;
 
@@ -25,6 +29,7 @@ import kotlinx.coroutines.Dispatchers;
  */
 @Module
 public class LoginModule {
+
     public static final String LOGIN_CACHE = "LOGIN_CACHE";
 
     @LoginScope
@@ -57,4 +62,21 @@ public class LoginModule {
         return new FingerprintPreferenceHelper(context);
     }
 
+    @LoginScope
+    @Provides
+    DispatcherProvider provideDispatcherProvider() {
+        return new DispatcherProvider() {
+            @NotNull
+            @Override
+            public CoroutineDispatcher io() {
+                return Dispatchers.getIO();
+            }
+
+            @NotNull
+            @Override
+            public CoroutineDispatcher ui() {
+                return Dispatchers.getMain();
+            }
+        };
+    }
 }

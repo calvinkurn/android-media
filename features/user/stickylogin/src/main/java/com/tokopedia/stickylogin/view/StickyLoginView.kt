@@ -99,12 +99,13 @@ class StickyLoginView : FrameLayout, CoroutineScope {
                 }
             }
         } finally {
-            setContent(content, highlight)
             styleable.recycle()
         }
     }
 
     private fun initView() {
+        setContent(content, highlight)
+
         if (leftImage != null) {
             imageViewLeft.setImageDrawable(leftImage)
         }
@@ -218,7 +219,7 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         val profilePicture = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_PROFILE_PICTURE, "")
 
         textContent.setContent(TEXT_RE_LOGIN + name)
-        textContent.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
+        textContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
 
         profilePicture?.let {
             imageViewLeft.loadImageCircle(it)

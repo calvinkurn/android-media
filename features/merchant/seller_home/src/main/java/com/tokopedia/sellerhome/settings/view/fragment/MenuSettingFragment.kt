@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.seller.menu.common.analytics.*
@@ -125,7 +126,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun setupView() {
         recycler_view.layoutManager = LinearLayoutManager(context)
         val settingList = mutableListOf(
-                SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_shop_setting), R.drawable.ic_pengaturan_toko),
+                SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_shop_setting), IconUnify.SHOP_SETTING),
                 IndentedSettingTitleUiModel(resources.getString(R.string.setting_menu_shop_profile)),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_basic_info),
@@ -156,7 +157,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                         clickApplink = ApplinkConst.SELLER_COD_ACTIVATION,
                         settingTypeInfix = SettingTrackingConstant.COD_ACTIVATION_SETTING),
                 DividerUiModel(DividerType.THICK),
-                SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_account_setting), R.drawable.ic_account),
+                SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_account_setting), IconUnify.USER),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_self_profile),
                         clickApplink = ApplinkConst.SETTING_PROFILE,
@@ -170,7 +171,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                         settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING,
                         trackingAlias = trackingAliasHashMap[resources.getString(R.string.setting_menu_password)]) { addOrChangePassword() },
                 DividerUiModel(DividerType.THICK),
-                SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_app_setting), R.drawable.ic_app_setting),
+                SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_app_setting), IconUnify.PHONE_SETTING),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_chat_and_notification),
                         clickApplink = ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING,

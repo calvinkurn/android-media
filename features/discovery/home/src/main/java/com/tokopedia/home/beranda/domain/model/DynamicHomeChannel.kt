@@ -300,6 +300,8 @@ data class DynamicHomeChannel(
             this.position = position
         }
 
+        fun getPosition() = position
+
         companion object {
             const val LAYOUT_HERO: String = "hero_4_image"
             const val LAYOUT_3_IMAGE: String = "3_image"
@@ -328,9 +330,12 @@ data class DynamicHomeChannel(
             const val LAYOUT_PRODUCT_HIGHLIGHT: String = "product_highlight"
             const val LAYOUT_RECHARGE_RECOMMENDATION: String = "dg_bills"
             const val LAYOUT_SALAM_WIDGET: String = "salam_todo"
+            const val LAYOUT_RECHARGE_BU_WIDGET: String = "home_widget_2"
             const val LAYOUT_CATEGORY_WIDGET: String = "category_widget"
             const val LAYOUT_FEATURED_SHOP: String = "shop_widget"
             const val LAYOUT_BANNER_ADS: String = "banner_ads"
+            const val LAYOUT_BEST_SELLING: String = "best_selling"
+            const val LAYOUT_CATEGORY_ICON: String = "category_icon"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
         }
@@ -434,6 +439,8 @@ data class DynamicHomeChannel(
             val hasBuyButton: Boolean = false,
             @SerializedName("rating")
             var rating: Int = 0,
+            @SerializedName("ratingAverage")
+            var ratingFloat: String = "",
             @SerializedName("count_review")
             val countReview: Int = 0,
             @Expose
@@ -444,7 +451,10 @@ data class DynamicHomeChannel(
             val textColor: String = "",
             @Expose
             @SerializedName("recommendationType")
-            val recommendationType: String = ""
+            val recommendationType: String = "",
+            @Expose
+            @SerializedName("campaignCode")
+            val campaignCode: String = ""
     )
 
     data class Benefit(

@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:text="@string/check_imei_title"
         android:textAlignment="center"
-        android:textColor="@color/gray_text_color"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
         android:gravity="center_horizontal" />

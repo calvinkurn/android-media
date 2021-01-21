@@ -60,11 +60,9 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
 
         initInjector()
 
-        activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            holidayCalendarViewModel = viewModelProvider.get(FlightHolidayCalendarViewModel::class.java)
-            fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
-        }
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        holidayCalendarViewModel = viewModelProvider.get(FlightHolidayCalendarViewModel::class.java)
+        fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
 
         arguments?.run {
             this.getString(ARG_MIN_DATE)?.let {
@@ -127,8 +125,6 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
             }
         })
 
-
-
         btnClose.setOnClickListener { dismissAllowingStateLoss() }
     }
 
@@ -149,12 +145,10 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
             mapFareParam[PARAM_ARRIVAL_CODE] = arrivalCode
             mapFareParam[PARAM_YEAR] = minDate.dateToString(TRAVEL_CAL_YYYY)
             mapFareParam[PARAM_CLASS] = classFlight.toString()
-            activity?.run {
-                fareCalendarViewModel.getFareFlightCalendar(
-                        FlightCalendarQuery.QUERY_CALENDAR_FARE,
-                        mapFareParam, minDate, maxDate)
-            }
 
+            activity?.run {
+                fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minDate, maxDate)
+            }
 
             fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                 it?.let {

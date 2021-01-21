@@ -198,8 +198,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         progressBar = view.findViewById(setProgressBar());
         swipeRefreshLayout = view.findViewById(R.id.general_web_view_lib_swipe_refresh_layout);
 
-        swipeRefreshLayout.setEnabled(pullToRefresh);
-        swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setEnabled(pullToRefresh);
+            swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
+        }
 
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");

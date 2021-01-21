@@ -1,5 +1,6 @@
 package com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
@@ -44,48 +45,52 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
     fun loadImage(url: String, fpmItemLabel: String = ""){
         loaderImageView?.visibility = View.VISIBLE
         imageView?.let {
-            val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-            Glide.with(context)
-                    .load(url)
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
-                    .listener(object : RequestListener<Drawable>{
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            return false
-                        }
+            if (context.isValidGlideContext()) {
+                val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
+                Glide.with(context)
+                        .load(url)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                return false
+                            }
 
-                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            loaderImageView?.visibility = View.GONE
-                            stopTraceOnResourceReady(dataSource, performanceMonitoring)
-                            return false
-                        }
-                    })
-                    .into(it)
+                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                loaderImageView?.visibility = View.GONE
+                                stopTraceOnResourceReady(dataSource, performanceMonitoring)
+                                return false
+                            }
+                        })
+                        .into(it)
+            }
         }
     }
 
     fun loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
         loaderImageView?.visibility = View.VISIBLE
         imageView?.let {
-            val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-            Glide.with(context)
-                    .load(url)
-                    .transform(CenterCrop(), RoundedCorners(roundedRadius))
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            return false
-                        }
+            if (context.isValidGlideContext()) {
+                val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
+                Glide.with(context)
+                        .load(url)
+                        .transform(CenterCrop(), RoundedCorners(roundedRadius))
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .transition(DrawableTransitionOptions.with(CrossFadeFactory()))
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                return false
+                            }
 
-                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            loaderImageView?.visibility = View.GONE
-                            stopTraceOnResourceReady(dataSource, performanceMonitoring)
-                            return false
-                        }
-                    })
-                    .into(it)
+                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                loaderImageView?.visibility = View.GONE
+                                stopTraceOnResourceReady(dataSource, performanceMonitoring)
+                                return false
+                            }
+                        })
+                        .into(it)
+            }
         }
     }
 
@@ -104,6 +109,14 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
     fun stopTraceOnResourceReady(dataSource: DataSource?, performanceMonitoring: PerformanceMonitoring?) {
         if (dataSource == DataSource.REMOTE) {
             performanceMonitoring?.stopTrace()
+        }
+    }
+
+    fun Context?.isValidGlideContext(): Boolean {
+        return when {
+            this == null -> false
+            this is Activity -> !(this.isDestroyed || this.isFinishing)
+            else -> true
         }
     }
 }

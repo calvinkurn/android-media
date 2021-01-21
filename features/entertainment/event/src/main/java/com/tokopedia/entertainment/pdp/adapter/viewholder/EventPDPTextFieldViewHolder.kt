@@ -46,7 +46,7 @@ class EventPDPTextFieldViewHolder(val view: View,
             positionActiveForm = position
             if (position > 0) txtValue.setMargin(0, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toPx().toInt(), 0, 0)
 
-            if (element.elementType.equals(ELEMENT_TEXT)) {
+            if (element.elementType.equals(ELEMENT_TEXT) || !element.elementType.equals(ELEMENT_LIST)) {
                 txtValue.textFieldWrapper.hint = element.title
                 txtValue.setMessage(element.helpText)
                 txtValue.textFieldInput.addTextChangedListener(object : TextWatcher {
@@ -80,10 +80,10 @@ class EventPDPTextFieldViewHolder(val view: View,
 
 
             if (element.value.isNotBlank() && !element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
-                if (element.elementType.equals(ELEMENT_TEXT)) txtValue.textFieldInput.setText(element.value)
+                if (element.elementType.equals(ELEMENT_TEXT) || !element.elementType.equals(ELEMENT_LIST)) txtValue.textFieldInput.setText(element.value)
                 if (element.elementType.equals(ELEMENT_LIST)) {
                     txtValue.setMessage(element.title)
-                    val list = getList(element.value)
+                    val list = getList(element.options)
                     if (list.isNotEmpty()) {
 
                         val value = if (keyActiveBottomSheet.isNullOrEmpty()) {
@@ -164,11 +164,13 @@ class EventPDPTextFieldViewHolder(val view: View,
 
     fun getList(value: String): LinkedHashMap<String, String> {
         val listValue: LinkedHashMap<String, String> = LinkedHashMap()
-        val jsonArray = JSONArray(value)
-        for (i in 0..jsonArray.length() - 1) {
-            val key = (jsonArray.getJSONObject(i) as JSONObject).names()?.get(0)?.toString()
-            key?.let {
-                listValue.put(key, jsonArray.getJSONObject(i).getString(key))
+        if(value.isNotEmpty()) {
+            val jsonArray = JSONArray(value)
+            for (i in 0..jsonArray.length() - 1) {
+                val key = (jsonArray.getJSONObject(i) as JSONObject).names()?.get(0)?.toString()
+                key?.let {
+                    listValue.put(key, jsonArray.getJSONObject(i).getString(key))
+                }
             }
         }
         return listValue

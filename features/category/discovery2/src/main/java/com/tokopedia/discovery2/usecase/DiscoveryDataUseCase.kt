@@ -8,12 +8,17 @@ import javax.inject.Inject
 
 class DiscoveryDataUseCase @Inject constructor(private val discoveryPageRepository: DiscoveryPageRepository) {
 
-    suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String, queryParameterMap: Map<String, String?>): DiscoveryPageData {
+    suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String, queryParameterMap: MutableMap<String, String?>): DiscoveryPageData {
         return mapDiscoveryResponseToPageData(discoveryPageData[pageIdentifier]?.let {
             it
         } ?: discoveryPageRepository.getDiscoveryPageData(pageIdentifier).apply {
             discoveryPageData[pageIdentifier] = this
             componentMap = HashMap()
+
+            /***Chip Filter Require parent ID to function. Need to check on this later.***/
+//            component = ComponentsItem(id = "PARENT_ID",pageEndPoint = pageInfo.identifier?:"").apply {
+//                componentMap[id] = this
+//            }
         }, queryParameterMap)
     }
 

@@ -5,18 +5,28 @@ import android.text.TextUtils;
 
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
-import com.tokopedia.logisticdata.data.entity.address.Destination;
-import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
-import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
-import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
+import com.tokopedia.logisticCommon.data.entity.address.Destination;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill;
+import com.tokopedia.logisticCommon.data.module.qualifier.AddressScope;
+import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by nisie on 9/6/16.
@@ -86,7 +96,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.showErrorSnackbar(e.getMessage());
+                        mView.showErrorToaster(e.getMessage());
                     }
 
                     @Override
@@ -116,7 +126,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onTimeout() {
                 mView.finishLoading();
                 mView.errorSaveAddress();
-                mView.showErrorSnackbar("");
+                mView.showErrorToaster("");
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
@@ -124,7 +134,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onError(String error) {
                 mView.finishLoading();
                 mView.errorSaveAddress();
-                mView.showErrorSnackbar(error);
+                mView.showErrorToaster(error);
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
@@ -132,7 +142,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onNullData() {
                 mView.finishLoading();
                 mView.errorSaveAddress();
-                mView.showErrorSnackbar("");
+                mView.showErrorToaster("");
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
@@ -140,7 +150,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onNoNetworkConnection() {
                 mView.finishLoading();
                 mView.errorSaveAddress();
-                mView.showErrorSnackbar("");
+                mView.showErrorToaster("");
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
         };

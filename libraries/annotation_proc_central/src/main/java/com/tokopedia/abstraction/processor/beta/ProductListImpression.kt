@@ -10,7 +10,7 @@ import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
 import com.tokopedia.checkers.ProductListImpressionChecker
 import com.tokopedia.checkers.ProductListImpressionProductChecker
-import com.tokopedia.firebase.analytic.rules.ProductImpressionsRules
+import com.tokopedia.firebase.analytic.rules.ProductListImpressionsRules
 import com.tokopedia.util.GTMErrorHandlerImpl
 import com.tokopedia.util.logger.GTMLoggerImpl
 
@@ -19,7 +19,7 @@ import com.tokopedia.util.logger.GTMLoggerImpl
  */
 @ErrorHandler(GTMErrorHandlerImpl::class)
 @Logger(GTMLoggerImpl::class)
-@AnalyticEvent(true, Event.VIEW_ITEM_LIST, ProductImpressionsRules::class)
+@AnalyticEvent(true, Event.VIEW_ITEM_LIST, ProductListImpressionsRules::class)
 data class ProductListImpression(
         val item_list: String,
         @CustomChecker(ProductListImpressionChecker::class, Level.IGNORE, functionName = ["isSizeBiggerThanOne"])
@@ -37,7 +37,10 @@ data class ProductListImpression(
         @DefaultValueString("")
         val businessUnit: String?,
         @DefaultValueString("")
-        val screenName: String?
+        val screenName: String?,
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["checkMap"])
+        @DefinedInCollections
+        val stringCollection: Map<String, String>
 
 )
 
@@ -80,5 +83,8 @@ data class ProductListImpressionProduct(
         val dimension87: String?,
         @DefaultValueString("")
         @Key("dimension88")
-        val dimension88: String?
+        val dimension88: String?,
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["checkMap"])
+        @DefinedInCollections
+        val stringCollection: Map<String, String>
 )

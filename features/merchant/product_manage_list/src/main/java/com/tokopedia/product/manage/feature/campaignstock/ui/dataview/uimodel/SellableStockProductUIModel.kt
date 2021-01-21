@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 data class SellableStockProductUIModel(
         val productId: String,
         val productName: String,
-        val stock: String,
+        var stock: String,
         var isActive: Boolean): Parcelable, Visitable<CampaignStockTypeFactory> {
 
     override fun type(typeFactory: CampaignStockTypeFactory): Int =

@@ -16,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.CardUnify
+            android:id="@+id/containerNewOrder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -33,35 +34,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/containerNewOrder"
             app:layout_constraintTop_toTopOf="parent"
             app:notificationColor="color_primary"
             app:notificationTitle="3"
             app:notificationType="counter_type"
             tools:visibility="visible" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/labelNewOrder"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:text="@string/seller_menu_new_order"
-        android:textColor="@color/light_N700_96"
-        app:layout_constraintBottom_toBottomOf="@id/cardNewOrder"
-        app:layout_constraintLeft_toRightOf="@id/cardNewOrder"
-        app:layout_constraintTop_toTopOf="@id/cardNewOrder" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelNewOrder"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:text="@string/seller_menu_new_order"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="@id/containerNewOrder"
+            app:layout_constraintLeft_toRightOf="@id/containerNewOrder"
+            app:layout_constraintTop_toTopOf="@id/containerNewOrder" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cardReadyToShip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/labelNewOrder"
+        app:layout_constraintLeft_toRightOf="@id/cardNewOrder"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.CardUnify
+            android:id="@+id/containerReadyToShip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -79,22 +81,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/containerReadyToShip"
             app:layout_constraintTop_toTopOf="parent"
             app:notificationColor="color_primary"
             app:notificationTitle="2"
             app:notificationType="counter_type"
             tools:visibility="visible" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/labelDelivery"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:text="@string/seller_menu_delivery"
-        android:textColor="@color/light_N700_96"
-        app:layout_constraintBottom_toBottomOf="@id/cardReadyToShip"
-        app:layout_constraintLeft_toRightOf="@id/cardReadyToShip"
-        app:layout_constraintTop_toTopOf="@id/cardReadyToShip" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelDelivery"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:text="@string/seller_menu_delivery"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="@id/containerReadyToShip"
+            app:layout_constraintLeft_toRightOf="@id/containerReadyToShip"
+            app:layout_constraintTop_toTopOf="@id/containerReadyToShip" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

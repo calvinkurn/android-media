@@ -17,7 +17,7 @@
         android:paddingTop="@dimen/spacing_lvl2"
         android:paddingEnd="@dimen/spacing_lvl3"
         android:paddingBottom="@dimen/spacing_lvl2"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         app:typographyType="body_3"
         tools:text="134134"
         />

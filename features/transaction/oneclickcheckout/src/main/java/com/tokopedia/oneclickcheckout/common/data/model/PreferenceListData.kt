@@ -12,5 +12,7 @@ data class PreferenceListData(
         @SerializedName("max_profile")
         val maxProfile: Int = 0,
         @SerializedName("tickers")
-        val tickers: List<String> = emptyList()
+        val tickers: List<String> = emptyList(),
+        @SerializedName("enable_occ_revamp")
+        val enableOccRevamp: Boolean = false
 )

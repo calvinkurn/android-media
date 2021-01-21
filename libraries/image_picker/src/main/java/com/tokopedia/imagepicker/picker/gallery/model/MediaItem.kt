@@ -1,10 +1,12 @@
 package com.tokopedia.imagepicker.picker.gallery.model
 
 import android.content.ContentUris
+import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import com.tokopedia.utils.image.ImageProcessingUtil
 
 class MediaItem(val id: Long,
                 @Deprecated("should use content Uri instead")
@@ -13,9 +15,27 @@ class MediaItem(val id: Long,
                 val size: Long,
                 val duration: Long,
                 val videoResolution: String?,
-                var width: Long = 0,
-                var height: Long = 0) {
+                var _width: Long = 0,
+                var _height: Long = 0) {
     val contentUri: Uri
+
+    fun getWidth(context: Context):Long{
+        calculateWidthAndHeight(context);
+        return _width;
+    }
+
+    fun getHeight(context: Context):Long{
+        calculateWidthAndHeight(context);
+        return _height;
+    }
+
+    private fun calculateWidthAndHeight(context: Context) {
+        if (_width == 0L || _height == 0L) {
+            val widthHeight: Pair<Int, Int> = ImageProcessingUtil.getWidthAndHeight(context, contentUri)
+            _width = widthHeight.first.toLong()
+            _height = widthHeight.second.toLong()
+        }
+    }
 
     val minimumVideoResolution: Int
         get() {
@@ -48,13 +68,14 @@ class MediaItem(val id: Long,
         @JvmStatic
         fun valueOf(cursor: Cursor): MediaItem {
             val resolution = cursor.getColumnIndex(MediaStore.Video.VideoColumns.RESOLUTION)
+            val mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE))
             var videoDuration: Long = 0
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 videoDuration = cursor.getLong(cursor.getColumnIndex(MediaStore.Video.VideoColumns.DURATION))
             }
             return MediaItem(cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID)),
                     cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)),
-                    cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE)),
+                    mimeType ?: "",
                     cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)),
                     videoDuration,
                     if (resolution > 0) cursor.getString(resolution) else "",

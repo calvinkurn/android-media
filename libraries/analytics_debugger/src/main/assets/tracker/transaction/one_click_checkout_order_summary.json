@@ -18,6 +18,7 @@
           "dimension53": "{{true|false}}",
           "dimension56": "{{\\d+}}",
           "dimension11": "{{\\d+}}",
+          "dimension12": "{{\\d*}}",
           "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "dimension14": "{{\\d+}}",
           "dimension58": "{{true|false}}",

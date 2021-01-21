@@ -36,6 +36,10 @@
     <string name="shop_page_bottom_sheet_product_quality_review_info">dari %1$s ulasan</string>
     <string name="shop_page_bottom_sheet_speed_shop_info_last_12_months">(dihitung dalam 12 bulan terakhir)</string>
 
+    <string name="shop_page_reload">Muat Ulang</string>
+    <string name="shop_page_reload_beginning_of_description">Data tidak berhasil ditampilkan, klik</string>
+    <string name="shop_page_reload_end_of_description">untuk coba lagi</string>
+
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
@@ -185,6 +189,7 @@
     <string name="text_shop_no_product">Toko belum memiliki produk</string>
     <string name="text_shop_no_product_seller">Belum ada produk terjual nih</string>
     <string name="text_shop_no_product_follow">Mulai follow untuk mendapatkan update dari toko ini</string>
+    <string name="text_success_follow_shop">Kamu berhasil follow toko. Jangan lupa beli sebelum barang incaranmu habis!</string>
     <string name="text_shop_no_product_description_seller">Mulai detik ini, tekadkan semangatmu untuk cetak penjualan pertama</string>
     <string name="shop_menu_action_cart">Cart</string>
     <string name="shop_menu_action_share">Share</string>
@@ -236,11 +241,16 @@
     <string name="video_not_found">Video tidak ditemukan</string>
 
     <string name="message_share_shop">Klik link ini untuk menemukan toko dari Tokopedia. </string>
-    <string name="shop_page_play_card_success_add_reminder">Berhasil pasang pengingat</string>
-    <string name="shop_page_play_card_success_remove_reminder">Berhasil menghapus pengingat</string>
-    <string name="shop_page_play_card_error_reminder">Oops, internet terputus. Cek ulang koneksimu.</string>
     <string name="shop_page_play_widget_title"><![CDATA[Ayo cobain <b>live streaming</b>]]></string>
     <string name="shop_page_play_widget_sgc_content">dan bikin tokomu makin terkenal!</string>
+    <string name="shop_page_play_widget_sgc_save_video">Sedang menyimpan video. Kami akan infokan jika berhasil disimpan.</string>
+    <string name="shop_page_play_widget_sgc_video_deleted">Video telah dihapus.</string>
+    <string name="shop_page_play_widget_sgc_video_saved_success">Yay, video berhasil disimpan!</string>
+    <string name="shop_page_play_widget_sgc_video_saved_fail">Ada sedikit kendala pada sistem.</string>
+    <string name="shop_page_play_widget_sgc_delete_video">Hapus video</string>
+    <string name="shop_page_play_widget_sgc_try_again">Coba Lagi</string>
+    <string name="shop_page_play_widget_sgc_copy_link">Salin link</string>
+    <string name="shop_page_play_widget_sgc_link_copied">Link disalin!</string>
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
     <string name="shop_page_retry">Ulangi</string>
@@ -260,6 +270,7 @@
     <string name="menu_report">Laporkan</string>
 
     <string name="shop_home_npl_remind_me">Ingatkan</string>
+    <string name="shop_home_npl_campaign_follow">Follow Toko</string>
     <string name="shop_string_ok">OK</string>
     <string name="shop_change_grid_section_total_product">%s Produk</string>
     <string name="shop_sort_filter_chips_name">Filter</string>

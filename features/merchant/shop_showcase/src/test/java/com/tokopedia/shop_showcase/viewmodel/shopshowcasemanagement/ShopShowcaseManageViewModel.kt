@@ -1,34 +1,36 @@
 package com.tokopedia.shop_showcase.viewmodel.shopshowcasemanagement
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
-import com.tokopedia.shop_showcase.coroutines.TestCoroutineDispatchers
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.DeleteShopShowcaseResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ReorderShopShowcaseResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListBuyer.ShopShowcaseListBuyerResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListSeller.ShopShowcaseListSellerResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.*
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcaseListViewModel
+import com.tokopedia.shop_showcase.shop_showcase_product_add.data.model.Product
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.mapper.ProductMapper
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.usecase.GetProductListUseCase
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import rx.Observable
-
 
 @ExperimentalCoroutinesApi
 class ShopShowcaseManageViewModel {
 
     @RelaxedMockK
-    lateinit var getSellerShowcaseList: GetShopShowcaseListSellerUseCase
+    lateinit var getShopEtalaseUseCase: GetShopEtalaseUseCase
 
     @RelaxedMockK
     lateinit var getBuyerShowcaseList: GetShopEtalaseByShopUseCase // GetShopShowcaseListBuyerUseCase
@@ -40,11 +42,10 @@ class ShopShowcaseManageViewModel {
     lateinit var reorderShowcase: ReorderShopShowcaseListUseCase
 
     @RelaxedMockK
-    lateinit var getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase
+    lateinit var getProductListUseCase: GetProductListUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-
 
     private lateinit var viewModel: ShopShowcaseListViewModel
 
@@ -53,11 +54,11 @@ class ShopShowcaseManageViewModel {
         MockKAnnotations.init(this)
         viewModel = ShopShowcaseListViewModel(
                 getBuyerShowcaseList,
-                getSellerShowcaseList,
+                getShopEtalaseUseCase,
                 deleteShowcase,
                 reorderShowcase,
-                getShopShowcaseTotalProductUseCase,
-                TestCoroutineDispatchers()
+                getProductListUseCase,
+                CoroutineTestDispatchersProvider
         )
     }
 
@@ -65,13 +66,13 @@ class ShopShowcaseManageViewModel {
     fun `given showcase list as a seller`() {
         runBlocking {
             coEvery {
-                getSellerShowcaseList.executeOnBackground()
+                getShopEtalaseUseCase.executeOnBackground()
             } returns ShopShowcaseListSellerResponse()
 
             viewModel.getShopShowcaseListAsSeller()
 
             coVerify {
-                getSellerShowcaseList.executeOnBackground()
+                getShopEtalaseUseCase.executeOnBackground()
             }
 
             val expectedResponse = Success(ShopShowcaseListSellerResponse())
@@ -150,32 +151,22 @@ class ShopShowcaseManageViewModel {
     @Test
     fun `when get total product should return success`() {
         runBlocking {
-            val shopId = "123456"
-            val page = 1
-            val perPage = 15
-            val fkeyword = ""
-            val sort = 0
-            val fmenu = "etalase"
 
-            coEvery {
-                getShopShowcaseTotalProductUseCase.executeOnBackground()
-            } returns GetShopProductsResponse()
+            val productList = listOf<Product>()
+            val productMapper = ProductMapper()
+            val showCaseProductList = productMapper.mapToUIModel(productList)
+            coEvery { getProductListUseCase.executeOnBackground() } returns showCaseProductList
 
+            val productListFilter = GetProductListFilter(perPage = 1)
             viewModel.getTotalProduct(
-                    shopId = shopId,
-                    page = page,
-                    perPage = perPage,
-                    sortId = sort,
-                    etalase = fmenu,
-                    search = fkeyword
+                    shopId = "123",
+                    filter = productListFilter
             )
 
-            coVerify {
-                getShopShowcaseTotalProductUseCase.executeOnBackground()
-            }
+            coVerify { getProductListUseCase.executeOnBackground() }
 
-            val expectedResponse = Success(GetShopProductsResponse())
-            val actualResponse = viewModel.getShopProductResponse.value as Success<GetShopProductsResponse>
+            val expectedResponse = Success(ArgumentMatchers.anyInt())
+            val actualResponse = viewModel.shopTotalProduct.value as Success<Int>
             assertEquals(expectedResponse, actualResponse)
         }
     }

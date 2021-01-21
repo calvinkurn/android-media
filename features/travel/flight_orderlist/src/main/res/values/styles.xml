@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.White.Flight">
         <item name="popupTheme">@style/FlightPopupTheme</item>
+        <item name="toolbarTheme">@style/FlightToolbarTheme</item>
+        <item name="titleTextAppearance">@style/FlightTitleTextAppearance</item>
+        <item name="itemTextAppearance">@style/FlightTitleTextAppearance</item>
+    </style>
+
+    <style name="FlightTitleTextAppearance" parent="TitleTextAppearance.White">
+        <item name="android:textColor">@color/Unify_N700_96</item>
+    </style>
+
+    <style name="FlightToolbarTheme" parent="Base.Toolbar.Theme">
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/Unify_G600</item>
+        <item name="android:background">@color/Unify_N0</item>
+        <item name="actionModeBackground">@color/Unify_N0</item>
+        <item name="android:actionModeBackground">@color/Unify_N0</item>
+        <item name="android:textColor">@color/Unify_N700_96</item>
+        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
+        <item name="actionMenuTextAppearance">@style/FlightTitleTextAppearance</item>
+        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
+        <item name="android:textColorSecondary">@color/Unify_N700_96</item>
     </style>
 
     <style name="FlightPopupTheme">
-        <item name="android:background">@android:color/transparent</item>
+        <item name="android:background">@color/Unify_N0</item>
+        <item name="android:textColor">@color/Unify_N700_96</item>
     </style>
 </resources>

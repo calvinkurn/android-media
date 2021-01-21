@@ -19,10 +19,12 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPo
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
@@ -172,6 +174,11 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(@NotNull TopadsHeadlineUiModel topadsHeadlineUiModel) {
+        return 0;
+    }
+
+    @Override
     public int type(@NotNull RelatedPostViewModel relatedPostViewModel) {
         return RelatedPostViewHolder.LAYOUT;
     }
@@ -179,6 +186,11 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(@NotNull TopAdsBannerViewModel topAdsBannerViewmodel) {
         return TopAdsBannerViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
+    public int type(@NotNull CarouselPlayCardViewModel carouselPlayCardViewModel) {
+        return 0;
     }
 
     @Override

@@ -19,6 +19,7 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
     private val elapsedTime: Long = 1000
     private val needPageRefresh: MutableLiveData<Boolean> = MutableLiveData()
     private val mutableTimeDiffModel: MutableLiveData<TimerDataModel> = MutableLiveData()
+    private var isTimerStopped = false
 
     init {
         TimeZone.setDefault(TimeZone.getTimeZone(Utils.TIME_ZONE))
@@ -66,7 +67,7 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
 
     private fun checkForTimerComponent(componentItem: ComponentsItem) {
         if (componentItem.name == ComponentNames.TimerSprintSale.componentName && !componentItem.data.isNullOrEmpty()) {
-            componentItem.data?.get(0)?.startDate?.let { startDate ->
+            componentItem.data?.firstOrNull()?.startDate?.let { startDate ->
                 when {
                     Utils.isFutureSale(startDate) -> {
                         val currentSystemTime = Calendar.getInstance().time
@@ -118,6 +119,10 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
         }
     }
 
+    override fun onDetachToViewHolder() {
+        stopTimer()
+    }
+
     fun stopTimer() {
         timerWithBannerCounter?.cancel()
         timerWithBannerCounter = null
@@ -125,20 +130,35 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
 
     fun getStartDate(): String {
         if (!components.data.isNullOrEmpty()) {
-            return components.data?.get(0)?.startDate ?: ""
+            return components.data?.firstOrNull()?.startDate ?: ""
         }
         return ""
     }
 
     fun getEndDate(): String {
         if (!components.data.isNullOrEmpty()) {
-            return components.data?.get(0)?.endDate ?: ""
+            return components.data?.firstOrNull()?.endDate ?: ""
         }
         return ""
     }
 
     override fun onStop() {
         stopTimer()
+        isTimerStopped = true
         super.onStop()
     }
+
+    override fun onDestroy() {
+        stopTimer()
+        super.onDestroy()
+    }
+
+    override fun onResume() {
+        if (isTimerStopped) {
+            startTimer()
+            isTimerStopped = false
+        }
+        super.onResume()
+    }
+
 }

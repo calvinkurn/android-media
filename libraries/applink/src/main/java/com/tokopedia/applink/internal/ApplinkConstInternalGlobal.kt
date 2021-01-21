@@ -8,82 +8,45 @@ import com.tokopedia.applink.constant.DeeplinkConstant
  */
 object ApplinkConstInternalGlobal {
 
-    @JvmField
-    val HOST_GLOBAL = "global"
+    const val HOST_GLOBAL = "global"
+    const val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
 
     //Extras
-    @JvmField
-    val PARAM_UUID = "uuid"
-    @JvmField
-    val PARAM_MSISDN = "msisdn"
-    @JvmField
-    val PARAM_PHONE = "phone"
-    @JvmField
-    val PARAM_BOD = "bod"
-    @JvmField
-    val PARAM_BOD_TITLE = "bodTitle"
-    @JvmField
-    val PARAM_CIPF_USER_ID = "userId"
-    @JvmField
-    val PARAM_CIPF_OLD_PHONE = "oldPhone"
-    @JvmField
-    val PARAM_EMAIL = "email"
-    @JvmField
-    val PARAM_SOURCE = "source"
-    @JvmField
-    val PARAM_NAME = "name"
-    @JvmField
-    val PARAM_PASS = "pass"
-    @JvmField
-    val PARAM_TOKEN = "token"
-    @JvmField
-    val PARAM_ACTION = "action"
-    @JvmField
-    val PARAM_IS_SMART_LOGIN = "isSmartLogin"
-    @JvmField
-    val PARAM_IS_PENDING = "isPending"
-    @JvmField
-    val PARAM_LOGIN_TYPE = "loginType"
-    @JvmField
-    val PARAM_IS_SQ_CHECK = "isSqCheck"
-    @JvmField
-    val PARAM_KTP_PATH = "ktpPath"
-    @JvmField
-    val PARAM_FACE_PATH = "facePath"
-
-    @JvmField
-    val PARAM_IS_FROM_2FA = "isFromTwoFactor"
-
-    @JvmField
-    val PARAM_USER_ID_ENC = "userIdEncrypted"
-    @JvmField
-    val PARAM_USER_ACCESS_TOKEN = "accessToken"
-    @JvmField
-    val PARAM_USER_ID = "userId"
-
-    //VerificationActivity Param
-    @JvmField
-    val PARAM_CAN_USE_OTHER_METHOD = "can_use_other_method"
-    @JvmField
-    val PARAM_IS_SHOW_CHOOSE_METHOD = "is_show_choose_method"
-    @JvmField
-    val PARAM_OTP_TYPE = "otp_type"
-    @JvmField
-    val PARAM_REQUEST_OTP_MODE = "request_otp_mode"
-    @JvmField
-    val PARAM_OTP_CODE = "otp_code"
-    @JvmField
-    val PARAM_IS_SKIP_OTP = "is_skip_otp"
-    @JvmField
-    val PARAM_TWO_FACTOR_TYPE = "two_factor_type"
-
-    @JvmField
-    val PARAM_ENABLE_2FA = "enable_2fa"
-    @JvmField
-    val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
-
-    @JvmField
-    val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
+    const val PARAM_UUID = "uuid"
+    const val PARAM_MSISDN = "msisdn"
+    const val PARAM_PHONE = "phone"
+    const val PARAM_BOD = "bod"
+    const val PARAM_BOD_TITLE = "bodTitle"
+    const val PARAM_EMAIL = "email"
+    const val PARAM_SOURCE = "source"
+    const val PARAM_NAME = "name"
+    const val PARAM_TOKEN = "token"
+    const val PARAM_ACTION = "action"
+    const val PARAM_IS_SMART_LOGIN = "isSmartLogin"
+    const val PARAM_IS_PENDING = "isPending"
+    const val PARAM_LOGIN_TYPE = "loginType"
+    const val PARAM_IS_SQ_CHECK = "isSqCheck"
+    const val PARAM_KTP_PATH = "ktpPath"
+    const val PARAM_FACE_PATH = "facePath"
+    const val PARAM_CTA_TYPE = "ctaType"
+    const val PARAM_IMG_LINK = "imglink"
+    const val PARAM_MESSAGE_TITLE = "messageTitle"
+    const val PARAM_MESSAGE_BODY = "messageBody"
+    const val PARAM_STATUS = "status"
+    const val PARAM_IS_FROM_2FA = "isFromTwoFactor"
+    const val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
+    const val PARAM_USER_ID_ENC = "userIdEncrypted"
+    const val PARAM_USER_ACCESS_TOKEN = "accessToken"
+    const val PARAM_USER_ID = "userId"
+    const val PARAM_CAN_USE_OTHER_METHOD = "can_use_other_method"
+    const val PARAM_IS_SHOW_CHOOSE_METHOD = "is_show_choose_method"
+    const val PARAM_OTP_TYPE = "otp_type"
+    const val PARAM_REQUEST_OTP_MODE = "request_otp_mode"
+    const val PARAM_OTP_CODE = "otp_code"
+    const val PARAM_IS_SKIP_OTP = "is_skip_otp"
+    const val PARAM_ENABLE_2FA = "enable_2fa"
+    const val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
+    const val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
 
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
@@ -94,10 +57,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
-    // ChangeInactiveFormRequestActivity
-    // tokopedia-android-internal://global/change-inactive-phone-form
+    // InactivePhoneOnboardingActivity
+    // tokopedia-android-internal://global/change-inactive-phone
     @JvmField
-    val CHANGE_INACTIVE_PHONE_FORM = "$INTERNAL_GLOBAL/change-inactive-phone-form"
+    val CHANGE_INACTIVE_PHONE = "$INTERNAL_GLOBAL/change-inactive-phone"
+
+    // TkpdPaySettingActivity
+    // tokopedia-android-internal://global/payment-setting
+    @JvmField
+    val PAYMENT_SETTING = "$INTERNAL_GLOBAL/payment-setting"
 
     //ChooseTokocashAccountActivity
     // tokopedia-android-internal://global/choose-account
@@ -249,10 +217,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_EMAIL = "$INTERNAL_GLOBAL/add-email"
 
-    // AddEmailActivity
+    // AddPhoneActivity
     // tokopedia-android-internal://global/add-phone
     @JvmField
     val ADD_PHONE = "$INTERNAL_GLOBAL/add-phone"
+
+    // AddPhoneActivity
+    // tokopedia-android-internal://global/add-phone
+    @JvmField
+    val ADD_PHONE_WITH = "$INTERNAL_GLOBAL/add-phone?phone={phone-number}"
 
     // AddBodActivity
     // tokopedia-android-internal://global/add-bod
@@ -284,6 +257,16 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
 
+    // ReceiverNotifActivity
+    // tokopedia-android-internal://global/otp-push-notif-receiver
+    @JvmField
+    val OTP_PUSH_NOTIF_RECEIVER = "$INTERNAL_GLOBAL/otp-push-notif-receiver"
+
+    // SettingNotifActivity
+    // tokopedia-android-internal://global/otp-push-notif-setting
+    @JvmField
+    val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
+
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     @JvmField
@@ -310,6 +293,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
 
+    @JvmField
+    val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
+
+    @JvmField
+    val IMAGE_EDITOR = "$INTERNAL_GLOBAL/image-editor"
 
     @JvmField
     val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?title={title}&url={url}"
@@ -323,7 +311,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/setting-bank
     @JvmField
     val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
-
 
     @JvmField
     val GLOBAL_INTERNAL_DIGITAL_DEAL = "$INTERNAL_GLOBAL/deals"
@@ -363,11 +350,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/saldo-intro
     @JvmField
     val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
-
-    // ChangeEmailActivity
-    // tokopedia-android-internal://global/change-email-register
-    @JvmField
-    val CHANGE_EMAIL_REGISTER = "$INTERNAL_GLOBAL/change-email-register"
 
     // RegisterInitialActivity
     // tokopedia-android-internal://global/init-register
@@ -474,10 +456,11 @@ object ApplinkConstInternalGlobal {
     val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
 
 
-    // Phone Number Verification Activity
+    //ReferralPhoneNumberVerificationActivity
     // tokopedia-android-internal://global/setting-referral-phone-verification
     @JvmField
     val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
+
     @JvmField
     val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
 
@@ -507,8 +490,21 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val TWO_FACTOR_REGISTER = "$INTERNAL_GLOBAL/two-factor-register"
 
+    // AccountHomeActivity
+    // tokopedia-android-internal://global/account-home-old
+    @JvmField
+    val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/old-home-account"
+
+    // HomeAccountUserActivity
+    // tokopedia-android-internal://global/new-home-account
+    @JvmField
+    val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
 
     //SeamlessActivity
     @JvmField
     val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
+
+    //FeedbackPageActivity
+    @JvmField
+    val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
 }

@@ -194,6 +194,8 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               old_device_price
               old_device_price_fmt
               drop_off_enable
+              device_model
+              diagnostic_id
             }
             free_shipping {
               eligible
@@ -234,6 +236,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       egold_attributes {
         eligible
         is_tiering
+        is_opt_in
         range {
           min
           max
@@ -273,6 +276,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       }
       addresses {
         active
+        disable_tabs
         data {
           key
           value {
@@ -396,6 +400,13 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
                 image_url
                 detail
                 message
+              }
+              promo_sp_ids {
+                unique_id
+                mvc_shipping_benefits {
+                  benefit_amount
+                  sp_id
+                }
               }
             }
             benefit_summary_info {

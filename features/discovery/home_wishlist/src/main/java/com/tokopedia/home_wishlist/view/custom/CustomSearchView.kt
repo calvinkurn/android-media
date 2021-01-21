@@ -18,10 +18,11 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView.OnEditorActionListener
 import com.tokopedia.home_wishlist.R
+import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class CustomSearchView : FrameLayout{
+class CustomSearchView : FrameLayout {
     private fun getLayout(): Int {
         return R.layout.custom_search_view
     }
@@ -31,6 +32,8 @@ class CustomSearchView : FrameLayout{
     interface Listener {
         fun onSearchSubmitted(text: String?)
         fun onSearchTextChanged(text: String?)
+        fun onManageDeleteWishlistClicked()
+        fun onCancelDeleteWishlistClicked()
     }
 
     interface FocusChangeListener {
@@ -44,6 +47,7 @@ class CustomSearchView : FrameLayout{
     var searchImageView: ImageView? = null
     var searchTextView: EditText? = null
     var closeImageButton: ImageButton? = null
+    var textManage: Typography? = null
     private var searchDrawable: Drawable? = null
     private var searchText: String? = null
     private var searchHint: String? = null
@@ -62,6 +66,12 @@ class CustomSearchView : FrameLayout{
 
     fun setFocusChangeListener(focusChangeListener: FocusChangeListener?) {
         this.focusChangeListener = focusChangeListener
+    }
+
+    fun setTextManageWording(text: String) {
+        if (text.isNotBlank()) {
+            textManage?.text = text
+        }
     }
 
     constructor(context: Context) : super(context) {
@@ -93,6 +103,7 @@ class CustomSearchView : FrameLayout{
         searchImageView = view?.findViewById<View>(searchImageViewResourceId) as ImageView
         searchTextView = view?.findViewById<View>(searchTextViewResourceId) as EditText
         closeImageButton = view?.findViewById<View>(closeImageButtonResourceId) as ImageButton
+        textManage = view?.findViewById<Typography>(textManageResourceId) as Typography
         delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED
         if (searchDrawable != null) {
             searchImageView?.setImageDrawable(searchDrawable)
@@ -124,6 +135,19 @@ class CustomSearchView : FrameLayout{
                 reset?.onSearchReset()
             }
         }
+        textManage?.setOnClickListener {
+            (it as? Typography)?.text?.let { text ->
+                val labelManage = context.resources.getString(R.string.label_delete_wishlist_manage)
+                val labelCancel = context.resources.getString(R.string.label_delete_wishlist_cancel)
+                if (text == labelManage) {
+                    setTextManageWording(labelCancel)
+                    listener?.onManageDeleteWishlistClicked()
+                } else {
+                    setTextManageWording(labelManage)
+                    listener?.onCancelDeleteWishlistClicked()
+                }
+            }
+        }
     }
 
     private val searchImageViewResourceId: Int
@@ -134,6 +158,9 @@ class CustomSearchView : FrameLayout{
 
     private val closeImageButtonResourceId: Int
         get() = R.id.image_button_close
+
+    private val textManageResourceId: Int
+        get() = R.id.text_manage
 
     fun hideKeyboard() {
         searchTextView?.clearFocus()

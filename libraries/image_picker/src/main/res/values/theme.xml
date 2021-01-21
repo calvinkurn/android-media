@@ -2,6 +2,6 @@
 <resources>
     <style name="ImagePickerTitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">@dimen/sp_20</item>
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 </resources>

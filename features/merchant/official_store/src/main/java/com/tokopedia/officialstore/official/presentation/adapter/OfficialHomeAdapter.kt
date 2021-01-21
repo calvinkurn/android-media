@@ -2,45 +2,38 @@ package com.tokopedia.officialstore.official.presentation.adapter
 
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.officialstore.common.listener.FeaturedShopListener
-import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBenefitViewModel
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
+import com.tokopedia.home_component.visitable.HomeComponentVisitable
+import com.tokopedia.officialstore.base.diffutil.OfficialAdapter
+import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeTypeFactory
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialHomeVisitable
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
 
-class OfficialHomeAdapter(adapterTypeFactory: OfficialHomeAdapterTypeFactory):
-        BaseAdapter<OfficialHomeAdapterTypeFactory>(adapterTypeFactory) {
+class OfficialHomeAdapter(private val adapterTypeFactory: OfficialHomeTypeFactory):
+        OfficialAdapter<Visitable<*>, OfficialHomeTypeFactory>(adapterTypeFactory, OfficialDiffCallback) {
 
-    /**
-     * preparing space for banner, benefit, and featuredshop
-     */
-    fun resetState(shopListener: FeaturedShopListener) {
-        visitables.add(OfficialHomeMapper.BANNER_POSITION, loadingModel)
-        visitables.add(OfficialHomeMapper.BANNER_POSITION, OfficialBannerViewModel(mutableListOf(), ""))
-        visitables.add(OfficialHomeMapper.BENEFIT_POSITION, OfficialBenefitViewModel(arrayListOf()))
-        visitables.add(OfficialHomeMapper.FEATURE_SHOP_POSITION, OfficialFeaturedShopViewModel(arrayListOf(), null, "", shopListener))
+    override fun bind(holder: AbstractViewHolder<Visitable<*>>, item: Visitable<*>) {
+        val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+        layoutParams.isFullSpan = item !is ProductRecommendationDataModel
+        holder.bind(item)
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
-        val layoutParams = holder.itemView.getLayoutParams() as StaggeredGridLayoutManager.LayoutParams
-        layoutParams.isFullSpan = getItemViewType(position) !in twoSpanLayout
-        super.onBindViewHolder(holder, position)
+    override fun bind(holder: AbstractViewHolder<Visitable<*>>, item: Visitable<*>, payloads: MutableList<Any>) {
+        val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+        layoutParams.isFullSpan = item !is ProductRecommendationDataModel
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int, payloads: MutableList<Any>) {
-        val layoutParams = holder.itemView.getLayoutParams() as StaggeredGridLayoutManager.LayoutParams
-        layoutParams.isFullSpan = getItemViewType(position) !in twoSpanLayout
-        super.onBindViewHolder(holder, position, payloads)
+    override fun getItemViewType(position: Int): Int{
+        return when {
+            getItem(position) is HomeComponentVisitable -> {
+                (getItem(position) as HomeComponentVisitable).type(adapterTypeFactory)
+            }
+            getItem(position) is OfficialHomeVisitable -> {
+                (getItem(position) as OfficialHomeVisitable).type(adapterTypeFactory)
+            }
+            else -> {
+                -1
+            }
+        }
     }
-
-    fun getVisitables(): MutableList<Visitable<*>> {
-        return visitables
-    }
-
-    var twoSpanLayout = listOf(
-            OfficialProductRecommendationViewHolder.LAYOUT
-    )
 }

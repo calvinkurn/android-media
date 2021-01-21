@@ -7,7 +7,7 @@
     <corners
         android:radius="@dimen/dp_20" />
 
-    <solid android:color="@color/bg_contdown_white" />
+    <solid android:color="@color/Unify_N50" />
 
 
 </shape>

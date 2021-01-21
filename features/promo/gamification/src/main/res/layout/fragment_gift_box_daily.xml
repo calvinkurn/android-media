@@ -22,18 +22,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:alpha="0"
-                android:visibility="gone"
-                android:id="@+id/imageSound"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right|end"
+                android:layout_gravity="end"
                 android:layout_marginTop="@dimen/dp_56"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
-                app:srcCompat="@drawable/gf_ic_sound_on" />
+                android:layout_marginEnd="@dimen/dp_12">
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:visibility="gone"
+                    android:id="@+id/imageSound"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/gf_ic_sound_on" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imageInfo"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/gf_ic_info" />
+
+            </LinearLayout>
             <com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
                 android:id="@+id/starsContainer"
                 android:layout_width="match_parent"

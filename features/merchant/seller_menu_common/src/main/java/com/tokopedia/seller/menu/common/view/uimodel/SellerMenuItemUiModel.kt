@@ -13,4 +13,4 @@ data class SellerMenuItemUiModel(
         override val trackingAlias: String? = null,
         val type: String,
         override val clickAction: () -> Unit = {}
-) : MenuItemUiModel(title, drawableReference, clickApplink, eventActionSuffix, settingTypeInfix, trackingAlias, clickAction)
+) : MenuItemUiModel(title, drawableReference, clickApplink, eventActionSuffix, settingTypeInfix, trackingAlias, null, clickAction)

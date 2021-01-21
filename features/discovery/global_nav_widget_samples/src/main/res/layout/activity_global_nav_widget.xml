@@ -141,6 +141,42 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
+        <com.tokopedia.globalnavwidget.GlobalNavWidget
+            android:id="@+id/singleGlobalNavWidgetPill"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/globalNavWidgetCard2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <com.tokopedia.globalnavwidget.GlobalNavWidget
+            android:id="@+id/singleGlobalNavWidgetCardIconWithNoSubtitleInfo"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/singleGlobalNavWidgetPill"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <com.tokopedia.globalnavwidget.GlobalNavWidget
+            android:id="@+id/singleGlobalNavWidgetCardIcon"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/singleGlobalNavWidgetCardIconWithNoSubtitleInfo"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <com.tokopedia.globalnavwidget.GlobalNavWidget
+            android:id="@+id/singleGlobalNavWidgetCardImage"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/singleGlobalNavWidgetCardIcon"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

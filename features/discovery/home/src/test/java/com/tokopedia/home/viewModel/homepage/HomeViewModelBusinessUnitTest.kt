@@ -10,9 +10,16 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
+import io.mockk.coEvery
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 
@@ -86,6 +93,62 @@ class HomeViewModelBusinessUnitTest{
             })
         }
         confirmVerified(observerHome)
+    }
+
+    @Test
+    fun `Update BU Data success`(){
+        runBlocking {
+            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+            val businessUnitDataModel = NewBusinessUnitWidgetDataModel()
+            val homeDataModel = HomeDataModel(
+                    list = listOf(businessUnitDataModel)
+            )
+
+            val channel = Channel<HomeDataModel>()
+            // dynamic banner
+            coEvery { getHomeUseCase.getHomeData() } returns flow{
+                channel.consumeAsFlow().collect{
+                    emit(it)
+                }
+            }
+            launch{
+                channel.send(homeDataModel.copy())
+            }
+            homeViewModel = createHomeViewModel(
+                    getHomeUseCase = getHomeUseCase,
+                    getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
+                    getBusinessWidgetTab = getBusinessWidgetTab
+            )
+            homeViewModel.homeLiveData.observeForever(observerHome)
+
+            // load tab data return success
+            val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
+            getBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
+
+            // load data bu return success
+            getBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(listOf(
+                    BusinessUnitItemDataModel(
+                            content = HomeWidget.ContentItemTab(),
+                            itemPosition = 0,
+                            tabPosition = 0,
+                            tabName = "Keuangan"
+                    )
+            ))
+
+            // viewModel load business tab
+            homeViewModel.getBusinessUnitTabData(0)
+
+            // viewModel load business data
+            homeViewModel.getBusinessUnitData(1, 0, "Keuangan")
+
+            // Expect tabs data on live data available
+            homeViewModel.homeLiveData.value?.let{
+                assert(it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
+                        (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
+                        (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null &&
+                        (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList?.first()?.list != null)
+            }
+        }
     }
 
     @Test

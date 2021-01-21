@@ -35,3 +35,5 @@ const val CHECKOUT_QUERY = "one_click_checkout"
 
 const val CHECKOUT_DEFAULT_RESPONSE_PATH = "checkout/one_click_checkout_default_response.json"
 const val CHECKOUT_EMPTY_STOCK_RESPONSE_PATH = "checkout/one_click_checkout_empty_stock_error_response.json"
+const val CHECKOUT_BOTTOM_SHEET_PROMPT_RESPONSE_PATH = "checkout/one_click_checkout_bottom_sheet_prompt_response.json"
+const val CHECKOUT_DIALOG_PROMPT_RESPONSE_PATH = "checkout/one_click_checkout_dialog_prompt_response.json"

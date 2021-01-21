@@ -6,9 +6,9 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
-import androidx.core.content.ContextCompat
 import android.view.View
 import android.view.View.LAYER_TYPE_SOFTWARE
+import androidx.core.content.ContextCompat
 import com.tokopedia.promocheckout.common.R
 
 
@@ -19,8 +19,8 @@ object ViewUtils {
     fun generateBackgroundWithShadow(view: View): Drawable {
         val cornerRadiusValue = view.context.resources.getDimension(R.dimen.layout_lvl1)
         val elevationValue = view.context.resources.getDimension(R.dimen.spacing_lvl1).toInt()
-        val shadowColorValue = ContextCompat.getColor(view.context, R.color.Neutral_N700_20)
-        val backgroundColorValue = ContextCompat.getColor(view.context, R.color.white)
+        val shadowColorValue = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+        val backgroundColorValue = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
 
         val outerRadius = floatArrayOf(cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue)
 
@@ -55,8 +55,8 @@ object ViewUtils {
     fun generateBackgroundWithoutShadow(view: View): Drawable {
         val cornerRadiusValue = view.context.resources.getDimension(R.dimen.layout_lvl1)
         val elevationValue = view.context.resources.getDimension(R.dimen.spacing_lvl1).toInt()
-        val backgroundColorValue = ContextCompat.getColor(view.context, R.color.white)
-        val borderColorValue = ContextCompat.getColor(view.context, R.color.light_N100)
+        val backgroundColorValue = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val borderColorValue = ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N100)
 
         val outerRadius = floatArrayOf(cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue)
 

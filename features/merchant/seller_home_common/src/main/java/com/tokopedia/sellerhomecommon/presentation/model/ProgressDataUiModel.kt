@@ -14,5 +14,10 @@ data class ProgressDataUiModel(
         val colorState: ShopScorePMWidget.State = ShopScorePMWidget.State.GOOD,
         val subtitle: String = "",
         override val dataKey: String = "",
-        override var error: String = ""
-) : BaseDataUiModel
+        override var error: String = "",
+        override var isFromCache: Boolean = false
+) : BaseDataUiModel {
+    override fun shouldRemove(): Boolean {
+        return !isFromCache && value == 0
+    }
+}

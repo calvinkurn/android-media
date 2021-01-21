@@ -7,11 +7,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.show
 
 
 class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -21,6 +23,7 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductRevampComponentViewModel = discoveryBaseViewModel as ProductCardRevampViewModel
+        getSubComponent().inject(mProductRevampComponentViewModel)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -29,7 +32,6 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
                 if (needResync) {
                     (fragment as DiscoveryFragment).reSync()
                 }
-
             })
             mProductRevampComponentViewModel.getProductCarouselHeaderData().observe(it, Observer { component ->
                 addCardHeader(component)
@@ -38,6 +40,8 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
     }
 
     private fun addCardHeader(componentsItem: ComponentsItem) {
+        mHeaderView.show()
+        mHeaderView.removeAllViews()
         mHeaderView.addView(CustomViewCreator.getCustomViewObject(itemView.context, ComponentsList.LihatSemua, componentsItem, fragment))
     }
 
@@ -47,5 +51,4 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
             mProductRevampComponentViewModel.getSyncPageLiveData().removeObservers(it)
         }
     }
-
 }

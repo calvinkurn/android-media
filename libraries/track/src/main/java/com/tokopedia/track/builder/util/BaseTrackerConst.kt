@@ -15,6 +15,7 @@ abstract class BaseTrackerConst {
         const val CLICK = "click"
         const val IMPRESSION = "impression"
         const val PROMO_VIEW = "promoView"
+        const val OPEN_SCREEN = "openScreen"
         const val PRODUCT_VIEW = "productView"
         const val PRODUCT_VIEW_IRIS = "productViewIris"
         const val PROMO_CLICK = "promoClick"
@@ -108,12 +109,12 @@ abstract class BaseTrackerConst {
             val isFreeOngkir: Boolean,
             val channelId: String = "",
             val persoType: String = "",
-            val isTopAds: Boolean = false,
+            val isTopAds: Boolean? = false,
             val cartId: String = "",
             val categoryId: String = "",
             val clusterId: Int = -1,
             val quantity: String = "",
-            val headerName: String = "",
+            val headerName: String? = null,
             val isCarousel: Boolean? = null,
             val recommendationType: String = "",
             val shopId:String = "",
@@ -263,7 +264,7 @@ abstract class BaseTrackerConst {
             map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
             map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
-            map[KEY_DIMENSION_40] = list + if(product.isTopAds) " - topads" else ""
+            map[KEY_DIMENSION_40] = setNewList(product, list)
             if(product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
@@ -279,11 +280,11 @@ abstract class BaseTrackerConst {
 
         private fun setNewList(product: Product?, list: String): String{
             if(product == null) return list
-            var newList = list + if(product.isTopAds) " - topads" else " - nontopads"
+            var newList = list + if(product.isTopAds == true) " - topads" else if(product.isTopAds == false) " - non topads" else ""
             if(product.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else "- non carousel"
             if(product.recommendationType.isNotEmpty()) newList += " - ${product.recommendationType}"
             if(product.pageName.isNotEmpty()) newList += " - ${product.pageName}"
-            if(product.headerName.isNotEmpty()) newList += " - ${product.headerName}"
+            if(product.headerName != null) newList += " - ${product.headerName}"
             return newList
         }
     }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
 
@@ -13,7 +13,7 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bottomnav_bg">
+        android:background="@color/Unify_N0">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -28,7 +28,7 @@
             android:id="@+id/divider1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_height_thinv"
-            android:background="@color/divider_color" />
+            android:background="@color/Unify_N75" />
 
 
     </com.google.android.material.appbar.AppBarLayout>

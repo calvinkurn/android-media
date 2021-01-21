@@ -60,4 +60,5 @@ class GetCartListSimplifiedUseCase @Inject constructor(private val graphqlUseCas
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
     }
+
 }

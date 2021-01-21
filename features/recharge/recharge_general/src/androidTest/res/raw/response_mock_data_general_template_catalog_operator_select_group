@@ -1,0 +1,62 @@
+[
+  {
+    "data": {
+      "rechargeCatalogOperatorSelectGroup": {
+        "text": "Kota/Kabupaten",
+        "style": "select_dropdown",
+        "operatorGroup": [
+          {
+            "name": "Banten",
+            "operators": [
+              {
+                "type": "",
+                "id": 1403,
+                "attributes": {
+                  "name": "PBB Kota Cilegon",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/new-pbb.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1063,
+                "attributes": {
+                  "name": "PBB Kab. Tangerang",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/new-pbb.png",
+                  "description": ""
+                }
+              }
+            ]
+          },
+          {
+            "name": "Daerah Istimewa Yogyakarta",
+            "operators": [
+              {
+                "type": "",
+                "id": 1547,
+                "attributes": {
+                  "name": "PBB Kab. Gunungkidul",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/new-pbb.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1542,
+                "attributes": {
+                  "name": "PBB Kab. Bantul",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/new-pbb.png",
+                  "description": ""
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

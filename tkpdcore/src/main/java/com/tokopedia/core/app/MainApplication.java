@@ -1,22 +1,19 @@
 package com.tokopedia.core.app;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
-
-import androidx.multidex.MultiDex;
 
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -30,14 +27,10 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 
-public abstract class MainApplication extends MainRouterApplication{
+public abstract class MainApplication extends CoreNetworkApplication {
 
-    public static final int DATABASE_VERSION = 7;
-    public static String PACKAGE_NAME;
-    public static MainApplication instance;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
@@ -48,37 +41,15 @@ public abstract class MainApplication extends MainRouterApplication{
     private final String ENABLE_ASYNC_CRASHLYTICS_USER_INFO = "android_async_crashlytics_user_info";
     private final String ENABLE_ASYNC_BRANCH_USER_INFO = "android_async_branch_user_info";
 
-
-    public static MainApplication getInstance() {
-        return instance;
-    }
-
     protected void initRemoteConfig() {
-        WeaveInterface remoteConfigWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT, MainApplication.this);
+        remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(MainApplication.this);
-    }
-
-    public static int getCurrentVersion(Context context) {
-        PackageInfo pInfo = null;
-        try {
-            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return pInfo.versionCode;
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return 0;
+    public void initFileDirConfig(){
+        GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
+        GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
+        GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir().getAbsolutePath();
+        GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null).getAbsolutePath();
     }
 
     public static boolean isDebug() {
@@ -88,10 +59,8 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
         userSession = new UserSession(this);
         initCrashlytics();
-        PACKAGE_NAME = getPackageName();
 
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this));
@@ -173,10 +142,6 @@ public abstract class MainApplication extends MainRouterApplication{
         return appComponent;
     }
 
-    public void setAppComponent(AppComponent appComponent) {
-        this.appComponent = appComponent;
-    }
-
     //this method needs to be called from here in case of migration get it tested from CM team
     @NotNull
     private Boolean initBranch(){
@@ -199,15 +164,5 @@ public abstract class MainApplication extends MainRouterApplication{
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchUserIdentityWeave, ENABLE_ASYNC_BRANCH_USER_INFO, getApplicationContext());
         return true;
-    }
-
-    @Override
-    public Class<?> getInboxMessageActivityClass() {
-        return InboxRouter.getInboxMessageActivityClass();
-    }
-
-    @Override
-    public Class<?> getInboxResCenterActivityClassReal() {
-        return InboxRouter.getInboxResCenterActivityClass();
     }
 }

@@ -25,6 +25,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_DYNAMIC_CHANNEL
+import com.tokopedia.home_component.util.invertIfDarkMode
 
 abstract class DynamicChannelViewHolder(itemView: View,
                                         private val listener: HomeCategoryListener?) : AbstractViewHolder<DynamicChannelDataModel>(itemView) {
@@ -151,8 +152,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
             channelTitle?.text = channelHeaderName
             channelTitle?.visibility = View.VISIBLE
             channelTitle?.setTextColor(
-                    if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
-                    else ContextCompat.getColor(context, R.color.Neutral_N700)
+                    if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
+                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
             )
         } else {
             channelTitleContainer.visibility = View.GONE
@@ -175,8 +176,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
             channelSubtitle?.text = channelSubtitleName
             channelSubtitle?.visibility = View.VISIBLE
             channelSubtitle?.setTextColor(
-                    if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
-                    else ContextCompat.getColor(context, R.color.Neutral_N700)
+                    if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
+                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
             )
         } else {
             channelSubtitle?.visibility = View.GONE
