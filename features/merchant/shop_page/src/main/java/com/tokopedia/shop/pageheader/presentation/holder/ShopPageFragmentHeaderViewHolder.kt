@@ -279,8 +279,8 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         isShopFavorite = followStatus?.status?.userIsFollowing == true
         followStatus?.let {
             followButton.text = it.followButton?.buttonLabel
-            val voucherUrl = it.followButton?.voucherIconURL
-            val coachMarkText = it.followButton?.coachmarkText
+            val voucherUrl = MethodChecker.fromHtml(it.followButton?.voucherIconURL).toString()
+            val coachMarkText = MethodChecker.fromHtml(it.followButton?.coachmarkText).toString()
             if (!voucherUrl.isNullOrBlank()) {
                 loadLeftDrawable(voucherUrl)
             }
@@ -324,10 +324,11 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     private fun convertUrlToBitmapAndLoadImage(url: String?, loadImage: (resource: Bitmap) -> Unit) {
+        val imageSize = 50
         Glide.with(context)
                 .asBitmap()
                 .load(url)
-                .into(object : CustomTarget<Bitmap>() {
+                .into(object : CustomTarget<Bitmap>(imageSize, imageSize) {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                         loadImage(resource)
                     }
