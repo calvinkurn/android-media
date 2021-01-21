@@ -1,37 +1,30 @@
 package com.tokopedia.home.beranda.data.repository
 
 import android.content.Context
-import com.google.android.exoplayer2.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
-import com.tokopedia.home.beranda.data.datasource.remote.*
+import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
+import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
-import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.constant.AtfKey
-import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import dagger.Lazy
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.selects.select
 import retrofit2.Response
 import rx.Observable
-import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 /**
@@ -130,9 +123,11 @@ class HomeRevampRepositoryImpl @Inject constructor(
              * 2.1 Get home flag response
              */
             try {
-                val homeFlagResponse = homeRemoteDataSource.getHomeFlagUseCase()
-                homeFlagResponse?.homeFlag?.let {
-                    homeData.homeFlag = homeFlagResponse.homeFlag
+                launch {
+                    val homeFlagResponse = homeRemoteDataSource.getHomeFlagUseCase()
+                    homeFlagResponse?.homeFlag?.let {
+                        homeData.homeFlag = homeFlagResponse.homeFlag
+                    }
                 }
             } catch (e: Exception) {
 
@@ -145,18 +140,21 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 homeData.atfData?.dataList?.map { atfData ->
                     when(atfData.component) {
                         TYPE_TICKER -> {
-                            try {
-                                val ticker = homeRemoteDataSource.getHomeTickerUseCase()
-                                ticker?.let {
-                                    atfData.content = gson.toJson(ticker.ticker)
-                                    atfData.status = AtfKey.STATUS_SUCCESS
+                            val job = async {
+                                try {
+                                    val ticker = homeRemoteDataSource.getHomeTickerUseCase()
+                                    ticker?.let {
+                                        atfData.content = gson.toJson(ticker.ticker)
+                                        atfData.status = AtfKey.STATUS_SUCCESS
+                                    }
+                                } catch (e: Exception) {
+                                    atfData.status = AtfKey.STATUS_ERROR
+                                    cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
+                                        homeCachedDataSource.saveToDatabase(homeData)
+                                    })
                                 }
-                            } catch (e: Exception) {
-                                atfData.status = AtfKey.STATUS_ERROR
-                                cacheCondition(isCache = isCacheExistForProcess, isCacheEmptyAction = {
-                                    homeCachedDataSource.saveToDatabase(homeData)
-                                })
                             }
+                            jobList.add(job)
                         }
                         TYPE_CHANNEL -> {
                             val job = async {

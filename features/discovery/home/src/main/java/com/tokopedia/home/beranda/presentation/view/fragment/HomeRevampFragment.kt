@@ -994,6 +994,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 adapter?.resetAtfErrorState()
             } else if(status == Result.Status.ERROR_GENERAL) {
                 NetworkErrorHelper.showEmptyState(activity, root, getString(R.string.home_error_connection)) { onRefresh() }
+                pageLoadTimeCallback?.invalidate()
             } else {
                 showLoading()
             }
@@ -1826,6 +1827,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 showToaster(message, TYPE_ERROR)
             } else {
                 NetworkErrorHelper.showEmptyState(activity, root, message) { onRefresh() }
+                pageLoadTimeCallback?.invalidate()
             }
         }
     }
