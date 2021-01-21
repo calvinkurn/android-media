@@ -6,6 +6,7 @@ import com.tokopedia.digital_checkout.data.model.AttributesDigitalData.PostPaidP
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
+import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 
@@ -247,5 +248,19 @@ object DigitalCheckoutMapper {
         } catch (e: Exception) {
             throw Throwable(e.message, e)
         }
+    }
+
+    fun buildCheckoutData(cartDigitalInfoData: CartDigitalInfoData, accessToken: String?): DigitalCheckoutDataParameter {
+        val digitalCheckoutDataParameter = DigitalCheckoutDataParameter()
+        digitalCheckoutDataParameter.cartId = cartDigitalInfoData.id
+        digitalCheckoutDataParameter.accessToken = accessToken
+        digitalCheckoutDataParameter.walletRefreshToken = ""
+        digitalCheckoutDataParameter.ipAddress = DeviceUtil.localIpAddress
+        digitalCheckoutDataParameter.relationId = cartDigitalInfoData.id
+        digitalCheckoutDataParameter.relationType = cartDigitalInfoData.type
+        digitalCheckoutDataParameter.transactionAmount = cartDigitalInfoData.attributes?.pricePlain ?: 0
+        digitalCheckoutDataParameter.userAgent = DeviceUtil.userAgentForApiCall
+        digitalCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
+        return digitalCheckoutDataParameter
     }
 }

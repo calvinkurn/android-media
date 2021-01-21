@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -170,6 +171,10 @@ class DigitalCartFragment : BaseDaggerFragment() {
             if (showLoader) loaderCheckout.visibility = View.VISIBLE
             else loaderCheckout.visibility = View.GONE
         })
+
+        viewModel.isNeedOtp.observe(viewLifecycleOwner, Observer {
+            interruptRequestTokenVerification(it)
+        })
     }
 
     private fun renderCartDigitalInfoData(cartInfo: CartDigitalInfoData) {
@@ -277,9 +282,11 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private fun getPromoDigitalModel(): PromoDigitalModel? {
         var price: Long = getCartDigitalInfoData().attributes?.pricePlain ?: 0
-//        if (inputPriceContainer.getVisibility() == View.VISIBLE) {
-//            price = inputPriceHolderView.getPriceInput()
-//        }
+
+        if (inputPriceContainer.visibility == View.VISIBLE) {
+            price = inputPriceHolderView.getPriceInput()
+        }
+
         return PromoDigitalModel(cartPassData?.categoryId?.toIntOrNull() ?: 0,
                 getCategoryName(),
                 getOperatorName(),
@@ -339,6 +346,14 @@ class DigitalCartFragment : BaseDaggerFragment() {
                         }
                     }
                 }
+            }
+        } else if (requestCode == REQUEST_CODE_OTP) {
+            if (resultCode == Activity.RESULT_OK) {
+                cartPassData?.let {
+                    viewModel.processPatchOtpCart(getDigitalIdentifierParam(), it, getString(R.string.digital_cart_login_message))
+                }
+            } else {
+                activity?.finish()
             }
         }
         //need to check others behaviour
@@ -449,19 +464,32 @@ class DigitalCartFragment : BaseDaggerFragment() {
                 userInputPriceDigital.maxPayment ?: "")
         inputPriceHolderView.setMinMaxPayment(total ?: "", userInputPriceDigital.minPaymentPlain,
                 userInputPriceDigital.maxPaymentPlain)
-        inputPriceHolderView.actionListener = object: DigitalCartInputPriceWidget.ActionListener {
+        inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
             override fun onInputPriceByUserFilled(paymentAmount: Long) {
-
+                viewModel.setTotalPrice(paymentAmount)
+//                checkoutDataParameterBuilder.transactionAmount(paymentAmount)
             }
 
             override fun enableCheckoutButton() {
-
+                btnCheckout.isEnabled = true
             }
 
             override fun disableCheckoutButton() {
-
+                btnCheckout.isEnabled = false
             }
         }
+    }
+
+    private fun interruptRequestTokenVerification(phoneNumber: String?) {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val bundle = Bundle()
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_CHECKOUT_DIGITAL)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_CODE_OTP)
     }
 
     private fun getCartDigitalInfoData(): CartDigitalInfoData = viewModel.cartDigitalInfoData.value
@@ -474,6 +502,9 @@ class DigitalCartFragment : BaseDaggerFragment() {
     companion object {
         private const val ARG_PASS_DATA = "ARG_PASS_DATA"
         private const val ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS"
+
+        private const val REQUEST_CODE_OTP = 1001
+        const val OTP_TYPE_CHECKOUT_DIGITAL = 16
 
         fun newInstance(passData: DigitalCheckoutPassData?,
                         subParams: DigitalSubscriptionParams?): DigitalCartFragment {

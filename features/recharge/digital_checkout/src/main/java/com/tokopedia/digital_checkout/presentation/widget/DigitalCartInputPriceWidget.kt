@@ -28,6 +28,9 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
     fun setLabelText(minPayment: String, maxPayment: String) {
         tvDigitalCheckoutInputPriceLabel.text = resources.getString(R.string.digital_cart_user_price_info, minPayment, maxPayment)
     }
+
+    fun getPriceInput(): Long = priceInput
+
     fun setMinMaxPayment(totalPayment: String, minPayment: Long, maxPayment: Long) {
         etDigitalCheckoutInputPrice.textFieldInput.setText(totalPayment)
         etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(object: TextWatcher{
