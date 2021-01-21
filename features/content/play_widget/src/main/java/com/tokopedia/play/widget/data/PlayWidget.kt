@@ -28,7 +28,8 @@ data class PlayWidgetItem(
         @SerializedName("video") val video: PlayWidgetItemVideo = PlayWidgetItemVideo(),
         @SerializedName("stats") val stats: PlayWidgetItemStat = PlayWidgetItemStat(),
         @SerializedName("share") val share: PlayWidgetItemShare = PlayWidgetItemShare(),
-        @SerializedName("backgroundURL") val backgroundUrl : String = ""
+        @SerializedName("backgroundURL") val backgroundUrl : String = "",
+        @SerializedName("performanceSummaryPageLink") val performanceSummaryPageLink : String = ""
 )
 
 data class PlayWidgetItemConfig(
