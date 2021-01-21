@@ -5,19 +5,26 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.paylater.domain.model.BankCardListItem
 import com.tokopedia.paylater.domain.model.CreditCardItem
+import com.tokopedia.paylater.presentation.viewholder.CreditCardBankShimmerViewHolder
 import com.tokopedia.paylater.presentation.viewholder.CreditCardRegistrationViewHolder
 import kotlinx.android.synthetic.main.base_payment_register_item.view.*
 
 class CreditCardRegistrationAdapter(
-        private val bankList: ArrayList<BankCardListItem>,
+        var bankList: ArrayList<BankCardListItem>,
         val clickListener: (ArrayList<CreditCardItem>, String?, String?) -> Unit,
-) : RecyclerView.Adapter<CreditCardRegistrationViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CreditCardRegistrationViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val viewHolder = CreditCardRegistrationViewHolder.getViewHolder(inflater, parent)
-        initListeners(viewHolder)
-        return viewHolder
+        return when (viewType) {
+            SHIMMER_VIEW -> CreditCardBankShimmerViewHolder.getViewHolder(inflater, parent)
+            BANK_VIEW -> {
+                val viewHolder = CreditCardRegistrationViewHolder.getViewHolder(inflater, parent)
+                initListeners(viewHolder)
+                viewHolder
+            }
+            else -> throw IllegalStateException("Unsupported type: $viewType")
+        }
     }
 
     private fun initListeners(viewHolder: CreditCardRegistrationViewHolder) {
@@ -30,11 +37,22 @@ class CreditCardRegistrationAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: CreditCardRegistrationViewHolder, position: Int) {
-        holder.bindData(bankList[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is CreditCardRegistrationViewHolder)
+            holder.bindData(bankList[position])
     }
 
     override fun getItemCount(): Int {
-        return bankList.size
+        return if (bankList.isEmpty()) 4 else bankList.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (bankList.isEmpty()) SHIMMER_VIEW
+        else BANK_VIEW
+    }
+
+    companion object {
+        const val SHIMMER_VIEW = 1
+        const val BANK_VIEW = 2
     }
 }

@@ -267,10 +267,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     override fun onCheckedChanged(modeButton: CompoundButton, isChecked: Boolean) {
         if (isChecked) {
             paymentMode = CreditCard
-            if (!(creditCardViewModel.creditCardSimulationResultLiveData.value is Success ||
-                            creditCardViewModel.creditCardSimulationResultLiveData.value is Fail)) {
-                creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
-            }
+            creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
         } else {
             paymentMode = PayLater
         }

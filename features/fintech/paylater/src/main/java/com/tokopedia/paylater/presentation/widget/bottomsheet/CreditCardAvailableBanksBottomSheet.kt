@@ -61,9 +61,8 @@ class CreditCardAvailableBanksBottomSheet : BottomSheetUnify() {
             v.onTouchEvent(event)
             true
         }
-        baseList.adapter = CreditCardAvailableBanksAdapter()
+        baseList.adapter = CreditCardAvailableBanksAdapter(bankList)
         baseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        (baseList.adapter as CreditCardAvailableBanksAdapter).setBankList(bankList)
     }
 
 

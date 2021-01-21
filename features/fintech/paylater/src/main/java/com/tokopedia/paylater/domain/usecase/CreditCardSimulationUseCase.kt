@@ -34,7 +34,7 @@ class CreditCardSimulationUseCase @Inject constructor(
     }
 
     private fun getRequestParams(amount: Float): Map<String, Float> {
-        return mapOf(PARAM_PRODUCT_AMOUNT to 100000.0f)
+        return mapOf(PARAM_PRODUCT_AMOUNT to 10000000.0f)
     }
 
     companion object {

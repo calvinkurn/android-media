@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PdpSimulationComponent
@@ -63,9 +64,8 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun initAdapter() {
-        rvAvailableBanks.adapter = CreditCardAvailableBanksAdapter()
+        rvAvailableBanks.adapter = CreditCardAvailableBanksAdapter(arrayListOf())
         rvAvailableBanks.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        //(rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).setBankList(bankList)
     }
 
     private fun initRegisterWidget() {
@@ -89,8 +89,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun fetchBankCardList() {
-        if (creditCardViewModel.creditCardBankResultLiveData.value !is Success<*>)
-            creditCardViewModel.getBankCardList()
+        creditCardViewModel.getBankCardList()
     }
 
     private fun observeViewModel() {
@@ -103,8 +102,6 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun onSimulationDataLoaded(data: CreditCardSimulationResult) {
-        /*shimmerGroup.gone()
-        simulationDataGroup.visible()*/
         populateFields(data)
         data.creditCardInstallmentList?.let {
             if (it.isNotEmpty()) {
@@ -136,10 +133,15 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
             val smallBankListSize = it.size.coerceAtMost(4)
             smallBankList.clear()
             smallBankList.addAll(it.slice(0 until smallBankListSize))
-            tvValidCreditCardBanks.text = "Berlaku kartu kredit dari: ${it.size} bank"
-            tvSeeAll.text = "Lihat Semua (${it.size - smallBankListSize})"
-            if (it.size > MAX_BANK_LIST_VIEW_SIZE) tvSeeAll.visible()
-            (rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).setBankList(smallBankList)
+            tvValidCreditCardBanks.text = context?.getString(R.string.credit_card_simulation_available_banks, it.size)?.parseAsHtml()
+            if (it.size > MAX_BANK_LIST_VIEW_SIZE) {
+                tvSeeAll.visible()
+                tvSeeAll.text = context?.getString(R.string.credit_card_simulation_see_all_banks, it.size - smallBankListSize)
+            }
+            (rvAvailableBanks.adapter as CreditCardAvailableBanksAdapter).run {
+                this.bankList = smallBankList
+                notifyDataSetChanged()
+            }
         }
 
     }

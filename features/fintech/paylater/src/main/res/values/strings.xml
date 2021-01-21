@@ -33,6 +33,8 @@
     <string name="credit_card_simulation_installment_sub_header">Durasi cicilan</string>
     <string name="credit_card_simulation_all_installment">Semua cicilan</string>
     <string name="credit_card_simulation_card_header">Cicilan 12 bulan</string>
+    <string name="credit_card_simulation_available_banks"><![CDATA[Berlaku kartu kredit dari: <b>%1$d bank</b>]]></string>
+    <string name="credit_card_simulation_see_all_banks">Lihat Semua (%1$d)</string>
 
     <!-- PayLater Products Detail Page -->
     <string name="pay_later_title_detail">Ketahui lebih banyak soal PayLater</string>

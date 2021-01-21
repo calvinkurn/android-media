@@ -34,7 +34,7 @@ data class CreditCardInstallmentItem(
         @SerializedName("tenure_desc")
         val tenureDescription: String?,
         @SerializedName("min_amount")
-        val minAmount: Float?,
+        val minAmount: Long?,
         @SerializedName("installment_amount")
         val installmentAmount: Float?,
         @SerializedName("total_bank")

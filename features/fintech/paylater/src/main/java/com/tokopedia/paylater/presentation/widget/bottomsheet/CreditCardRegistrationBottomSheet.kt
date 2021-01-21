@@ -68,14 +68,18 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         component?.inject(this) ?: dismiss()
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    private fun observeViewModel() {
         credCardViewModel.creditCardBankResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onBankListLoaded(it.data)
                 is Fail -> onBankListLoadingFail(it.throwable)
             }
         })
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        observeViewModel()
+        initAdapter()
         fbViewAllCards.apply {
             visible()
             addItem(arrayListOf(FloatingButtonItem(
@@ -87,11 +91,14 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
     }
 
     private fun onBankListLoaded(data: ArrayList<BankCardListItem>) {
-        initAdapter(data)
+        (baseList.adapter as CreditCardRegistrationAdapter).run {
+            bankList = data
+            notifyDataSetChanged()
+        }
     }
 
     private fun onBankListLoadingFail(throwable: Throwable) {
-
+        dismiss()
     }
 
     private fun initBottomSheet() {
@@ -100,13 +107,13 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         setChild(childView)
     }
 
-    private fun initAdapter(data: ArrayList<BankCardListItem>) {
-        baseList.setOnTouchListener { v, event ->
+    private fun initAdapter() {
+        /*baseList.setOnTouchListener { v, event ->
             v.parent.requestDisallowInterceptTouchEvent(true)
             v.onTouchEvent(event)
             true
-        }
-        baseList.adapter = CreditCardRegistrationAdapter(data) { creditCardList, bankName, bankSlug ->
+        }*/
+        baseList.adapter = CreditCardRegistrationAdapter(arrayListOf()) { creditCardList, bankName, bankSlug ->
             listener?.showCreditCardList(creditCardList, bankName, bankSlug)
             dismiss()
         }

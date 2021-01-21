@@ -7,8 +7,9 @@ import com.tokopedia.paylater.domain.model.SimulationBank
 import com.tokopedia.paylater.presentation.viewholder.CreditCardBankInfoViewHolder
 import com.tokopedia.paylater.presentation.viewholder.CreditCardBankShimmerViewHolder
 
-class CreditCardAvailableBanksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var bankList = arrayListOf<SimulationBank>()
+class CreditCardAvailableBanksAdapter(
+        var bankList: ArrayList<SimulationBank>
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -32,12 +33,6 @@ class CreditCardAvailableBanksAdapter : RecyclerView.Adapter<RecyclerView.ViewHo
     override fun getItemViewType(position: Int): Int {
         return if (bankList.isEmpty()) SHIMMER_VIEW
         else BANK_VIEW
-    }
-
-
-    fun setBankList(bankList: ArrayList<SimulationBank>) {
-        this.bankList = bankList
-        notifyDataSetChanged()
     }
 
     companion object {

@@ -31,11 +31,12 @@ class CreditCardViewModel @Inject constructor(
 
     fun getCreditCardSimulationData(amount: Float) {
         creditCardSimulationUseCase.cancelJobs()
-        creditCardSimulationUseCase.getCreditCardSimulationData(
-                ::onCreditCardSimulationSuccess,
-                ::onCreditCardSimulationError,
-                amount
-        )
+        if (creditCardSimulationResultLiveData.value !is Success)
+            creditCardSimulationUseCase.getCreditCardSimulationData(
+                    ::onCreditCardSimulationSuccess,
+                    ::onCreditCardSimulationError,
+                    amount
+            )
     }
 
     /*  fun getCreditCardData() {
@@ -98,7 +99,10 @@ class CreditCardViewModel @Inject constructor(
     }
 
     private fun onBankCardListDataSuccess(creditCardBankData: CreditCardBankData?) {
-        creditCardBankResultLiveData.value = Success(creditCardBankData?.bankCardList!!)
+        if (creditCardBankData == null || creditCardBankData.bankCardList.isNullOrEmpty())
+            onBankCardListDataError(PdpSimulationException.PayLaterNullDataException(BANK_CARD_DATA_FAILURE))
+        else
+            creditCardBankResultLiveData.value = Success(creditCardBankData.bankCardList)
     }
 
     private fun onBankCardListDataError(throwable: Throwable) {
@@ -119,7 +123,7 @@ class CreditCardViewModel @Inject constructor(
     companion object {
         const val SIMULATION_DATA_FAILURE = "NULL DATA"
         const val CREDIT_CARD_TNC_DATA_FAILURE = "NULL DATA"
-        const val APPLICATION_STATE_DATA_FAILURE = "NULL_DATA"
+        const val BANK_CARD_DATA_FAILURE = "NULL_DATA"
         const val PAY_LATER_NOT_APPLICABLE = "PayLater Not Applicable"
     }
 }
