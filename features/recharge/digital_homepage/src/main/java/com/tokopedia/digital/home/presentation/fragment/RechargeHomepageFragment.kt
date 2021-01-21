@@ -126,7 +126,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         // Recharge Branch Event
         rechargeHomepageAnalytics.eventHomepageLaunched(userSession.userId)
 
-        if(sliceOpenApp){
+        if (sliceOpenApp) {
             rechargeHomepageAnalytics.sliceOpenApp(userSession.userId)
             rechargeHomepageAnalytics.onOpenPageFromSlice()
         }
@@ -365,8 +365,18 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         if (hasFocus) {
             digital_homepage_search_view.getSearchTextView()?.let { it.clearFocus() }
             rechargeHomepageAnalytics.eventClickSearchBox(userSession.userId)
-            context?.let { context -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(context)) }
+
+            when (platformId) {
+                PLATFORM_ID_TRAVEL_ENTERTAINMENT -> redirectToTravelEntertainmentSearchPage()
+                else -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(requireContext()))
+            }
         }
+    }
+
+    private fun redirectToTravelEntertainmentSearchPage() {
+        startActivity(DigitalHomePageSearchActivity.getCallingIntent(
+                requireContext(), platformId, enablePersonalize,
+                viewModel.getDynamicIconsSectionIds(), getString(R.string.travel_entertainment_home_search_view_hint)))
     }
 
     fun onBackPressed() {
@@ -386,6 +396,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16
+
+        const val PLATFORM_ID_TRAVEL_ENTERTAINMENT = 34
 
         fun newInstance(platformId: Int, enablePersonalize: Boolean = false, sliceOpenApp: Boolean = false): RechargeHomepageFragment {
             val fragment = RechargeHomepageFragment()

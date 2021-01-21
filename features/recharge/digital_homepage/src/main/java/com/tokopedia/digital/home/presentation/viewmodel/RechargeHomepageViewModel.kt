@@ -29,10 +29,13 @@ class RechargeHomepageViewModel @Inject constructor(
     private val mutableRechargeHomepageSectionSkeleton = MutableLiveData<Result<List<RechargeHomepageSectionSkeleton.Item>>>()
     val rechargeHomepageSectionSkeleton: LiveData<Result<List<RechargeHomepageSectionSkeleton.Item>>>
         get() = mutableRechargeHomepageSectionSkeleton
+    
     var localRechargeHomepageSections: List<RechargeHomepageSections.Section> = listOf()
+    
     private val mutableRechargeHomepageSections = MutableLiveData<List<RechargeHomepageSections.Section>>()
     val rechargeHomepageSections: LiveData<List<RechargeHomepageSections.Section>>
         get() = mutableRechargeHomepageSections
+    
     private val mutableRechargeHomepageSectionAction = MutableLiveData<Result<RechargeHomepageSectionAction>>()
     val rechargeHomepageSectionAction: LiveData<Result<RechargeHomepageSectionAction>>
         get() = mutableRechargeHomepageSectionAction
@@ -52,6 +55,8 @@ class RechargeHomepageViewModel @Inject constructor(
             // Add initial section data
             localRechargeHomepageSections = RechargeHomepageSectionMapper.mapInitialHomepageSections(data)
             mutableRechargeHomepageSections.postValue(localRechargeHomepageSections)
+
+            mutableRechargeHomepageSectionSkeleton.postValue(Success(data))
         }) {
             mutableRechargeHomepageSectionSkeleton.postValue(Fail(it))
         }
@@ -134,6 +139,16 @@ class RechargeHomepageViewModel @Inject constructor(
         )
     }
 
+    fun getDynamicIconsSectionIds(): ArrayList<Int> {
+        return if (rechargeHomepageSectionSkeleton.value is Success) {
+            val dynamicIconSectionsIds = arrayListOf<Int>()
+            (rechargeHomepageSectionSkeleton.value as Success).data.filter { it.template == SECTION_DYNAMIC_ICONS }.forEach {
+                dynamicIconSectionsIds.add(it.id)
+            }
+            dynamicIconSectionsIds
+        } else arrayListOf()
+    }
+    
     companion object {
         const val PARAM_RECHARGE_HOMEPAGE_SECTION_ID = "sectionID"
         const val PARAM_RECHARGE_HOMEPAGE_SECTION_ACTION = "action"

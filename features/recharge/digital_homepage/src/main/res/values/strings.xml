@@ -8,6 +8,7 @@
     <string name="digital_home_empty_list_label">Sedang ada kendala, mohon coba kembali sesaat lagi</string>
 
     <string name="digital_home_search_view_hint"><![CDATA[Cari di Topup & Tagihan]]></string>
+    <string name="travel_entertainment_home_search_view_hint"><![CDATA[Cari di Travel & Entertainment]]></string>
 
     <string name="recharge_home_banner_see_all_label">Lihat Semua</string>
     <string name="recharge_home_empty_banner_title">Beli produk digital di Tokopedia</string>

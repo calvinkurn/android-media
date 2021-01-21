@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.util
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.model.*
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
@@ -157,6 +158,22 @@ object RechargeHomepageSectionMapper {
             )
         }
         return null
+    }
+
+    fun mapItemsToSearchCategoryModels(sections: RechargeHomepageSections): List<DigitalHomePageSearchCategoryModel> {
+        val searchCategoryModels = mutableListOf<DigitalHomePageSearchCategoryModel>()
+        sections.sections.forEach {
+            searchCategoryModels.addAll(it.items.map{ item ->
+                DigitalHomePageSearchCategoryModel(
+                        item.id.toString(),
+                        item.title,
+                        item.title,
+                        item.applink,
+                        item.mediaUrl
+                )
+            })
+        }
+        return searchCategoryModels
     }
 
     private fun getServerTime(serverTimeString: String): Date {

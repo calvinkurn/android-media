@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
+import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchLocalUseCase
 import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -40,6 +41,11 @@ class RechargeHomepageModule {
     @Provides
     fun provideSearchCategoryUseCase(graphqlRepository: GraphqlRepository): SearchCategoryHomePageUseCase =
             SearchCategoryHomePageUseCase(graphqlRepository)
+
+    @RechargeHomepageScope
+    @Provides
+    fun provideSearchLocalUseCase(graphqlRepository: GraphqlRepository): DigitalHomepageSearchLocalUseCase =
+            DigitalHomepageSearchLocalUseCase(graphqlRepository)
 
     @RechargeHomepageScope
     @Provides

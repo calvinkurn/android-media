@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.di.RechargeHomepageComponentInstance
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageSearchFragment
+import com.tokopedia.digital.home.presentation.fragment.TravelEntertainmentSearchFragment
 import com.tokopedia.graphql.data.GraphqlClient
 
 class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<RechargeHomepageComponent> {
@@ -22,7 +23,19 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Recharg
         GraphqlClient.init(this)
     }
 
-    override fun getNewFragment(): Fragment = DigitalHomePageSearchFragment.getInstance()
+    override fun getNewFragment(): Fragment {
+        val bundle = intent.extras
+        val platformId = bundle?.getInt(PARAM_PLATFORM_ID)
+        val enablePersonalize = (bundle?.getString(PARAM_ENABLE_PERSONALIZE) ?: "true").toBoolean()
+        val sectionId = bundle?.getIntegerArrayList(PARAM_SECTION_ID) ?: arrayListOf()
+        val searchBarPlaceHolder = bundle?.getString(PARAM_SEARCHBAR_PLACEHOLDER) ?: ""
+
+        return if (platformId != null && sectionId.isNotEmpty()) {
+            TravelEntertainmentSearchFragment.newInstance(platformId, enablePersonalize, sectionId, searchBarPlaceHolder)
+        } else {
+            DigitalHomePageSearchFragment.getInstance()
+        }
+    }
 
     override fun getComponent(): RechargeHomepageComponent {
         if (!::rechargeHomepageComponent.isInitialized) {
@@ -32,6 +45,22 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Recharg
     }
 
     companion object {
+        private const val PARAM_PLATFORM_ID = "platform_id"
+        private const val PARAM_ENABLE_PERSONALIZE = "personalize"
+        private const val PARAM_SECTION_ID = "section_id"
+        private const val PARAM_SEARCHBAR_PLACEHOLDER = "searchbar_placeholder"
+
         fun getCallingIntent(context: Context): Intent = Intent(context, DigitalHomePageSearchActivity::class.java)
+
+        fun getCallingIntent(context: Context, platformID: Int,
+                             enablePersonalize: Boolean = true, sectionId: ArrayList<Int>,
+                             searchBarPlaceHolder: String): Intent {
+            val intent = Intent(context, DigitalHomePageSearchActivity::class.java)
+            intent.putExtra(PARAM_PLATFORM_ID, platformID)
+            intent.putExtra(PARAM_ENABLE_PERSONALIZE, enablePersonalize)
+            intent.putIntegerArrayListExtra(PARAM_SECTION_ID, sectionId)
+            intent.putExtra(PARAM_SEARCHBAR_PLACEHOLDER, searchBarPlaceHolder)
+            return intent
+        }
     }
 }
