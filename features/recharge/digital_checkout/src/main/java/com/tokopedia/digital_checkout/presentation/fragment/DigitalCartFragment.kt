@@ -25,7 +25,6 @@ import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
-import com.tokopedia.digital_checkout.data.model.CheckoutDigitalData
 import com.tokopedia.digital_checkout.data.response.atc.DigitalSubscriptionParams
 import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
