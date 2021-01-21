@@ -10,6 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.CreditCardPdpMetaData
@@ -18,6 +22,8 @@ import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_credit_card_tnc.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CreditCardTncFragment : BaseDaggerFragment() {
@@ -55,9 +61,6 @@ class CreditCardTncFragment : BaseDaggerFragment() {
             openUrlWebView(creditCardViewModel.getRedirectionUrl())
         }
         rvPdpInfo.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        btnMoreInfo.setOnClickListener {
-
-        }
     }
 
     private fun observeViewModel() {
@@ -73,33 +76,35 @@ class CreditCardTncFragment : BaseDaggerFragment() {
         return "Detail Penawaran"
     }
 
-
     private fun onPdpInfoMetaDataLoaded(data: CreditCardPdpMetaData) {
+        rvPdpInfo.visible()
         // pdpInfoContentList is non nullable here in case of Success
         (rvPdpInfo.adapter as CreditCardTncAdapter).setData(data.pdpInfoContentList!!)
     }
 
     private fun onPdpInfoMetaDataLoadingFailed(throwable: Throwable) {
-        /*  payLaterOffersShimmerGroup.gone()
-          when (throwable) {
-              is UnknownHostException, is SocketTimeoutException -> {
-                  creditCardTnCCallback?.noInternetCallback()
-                  return
-              }
-              is IllegalStateException -> {
-                  payLaterOffersGlobalError.setType(GlobalError.PAGE_FULL)
-              }
-              else -> {
-                  payLaterOffersGlobalError.setType(GlobalError.SERVER_ERROR)
-              }
-          }
-          payLaterOffersGlobalError.show()
-          payLaterOffersGlobalError.setActionClickListener {
-              payLaterOffersGlobalError.hide()
-              // notify payLater fragment to invoke again
-              payLaterOffersShimmerGroup.visible()
-              creditCardTnCCallback?.getPayLaterProductInfo()
-          }*/
+        rvPdpInfo.gone()
+        when (throwable) {
+            is UnknownHostException, is SocketTimeoutException -> {
+                creditCardTnCCallback?.noInternetCallback()
+                return
+            }
+            is IllegalStateException -> {
+                setGlobalErrors(GlobalError.PAGE_FULL)
+            }
+            else -> {
+                setGlobalErrors(GlobalError.SERVER_ERROR)
+            }
+        }
+    }
+
+    private fun setGlobalErrors(errorType: Int) {
+        tncGlobalError.setType(errorType)
+        tncGlobalError.show()
+        tncGlobalError.setActionClickListener {
+            tncGlobalError.gone()
+            creditCardViewModel.getCreditCardTncData()
+        }
     }
 
     fun setCreditCardTncCallback(creditCardTnCCallback: CreditCardTnCCallback) {
@@ -122,8 +127,6 @@ class CreditCardTncFragment : BaseDaggerFragment() {
     }
 
     interface CreditCardTnCCallback {
-       // fun getPayLaterProductInfo()
-       // fun getApplicationStatusInfo()
         fun noInternetCallback()
     }
 }

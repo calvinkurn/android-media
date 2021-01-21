@@ -9,21 +9,29 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
+import com.tokopedia.paylater.data.mapper.CreditCard
+import com.tokopedia.paylater.data.mapper.PaymentMode
 import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.CreditCardSimulationResult
 import com.tokopedia.paylater.domain.model.SimulationBank
+import com.tokopedia.paylater.helper.PdpSimulationException
 import com.tokopedia.paylater.presentation.adapter.CreditCardAvailableBanksAdapter
 import com.tokopedia.paylater.presentation.adapter.CreditCardSimulationAdapter
 import com.tokopedia.paylater.presentation.viewModel.CreditCardViewModel
 import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardAvailableBanksBottomSheet
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_credit_card_simulation.*
 import kotlinx.android.synthetic.main.paylater_daftar_widget.view.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CreditCardSimulationFragment : BaseDaggerFragment() {
@@ -102,6 +110,9 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun onSimulationDataLoaded(data: CreditCardSimulationResult) {
+        creditSimulationShimmerGroup.gone()
+        simulationDataGroup.visible()
+        rvAvailableBanks.visible()
         populateFields(data)
         data.creditCardInstallmentList?.let {
             if (it.isNotEmpty()) {
@@ -118,10 +129,12 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun populateFields(data: CreditCardSimulationResult) {
-        if (!data.tickerInformation.isNullOrEmpty())
+        if (!data.tickerInformation.isNullOrEmpty()) {
+            tickerSimulation.visible()
             tickerSimulation.setHtmlDescription(data.tickerInformation)
-        else tickerSimulation.gone()
+        } else tickerSimulation.gone()
         if (!data.ctaDescriptionText.isNullOrEmpty() && !data.ctaMainLabelText.isNullOrEmpty()) {
+            creditCardRegisterWidget.visible()
             creditCardRegisterWidget.tvTitle.text = data.ctaMainLabelText
             creditCardRegisterWidget.tvDescription.text = data.ctaDescriptionText
         }
@@ -147,32 +160,48 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun onSimulationLoadingFail(throwable: Throwable) {
-        /*shimmerGroup.gone()
+        creditSimulationShimmerGroup.gone()
+        rvAvailableBanks.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
                 creditCardSimulationCallback?.noInternetCallback()
+                creditSimulationShimmerGroup.visible()
                 return
             }
             is IllegalStateException -> {
-                simulationGlobalError.setType(GlobalError.PAGE_FULL)
+                setGlobalErrors(GlobalError.PAGE_FULL)
             }
-            is PayLaterException.PayLaterNotApplicableException -> {
-                payLaterTermsEmptyView.visible()
-                tickerSimulation.setHtmlDescription(context?.getString(R.string.paylater_not_applicable_ticker_text)
-                        ?: "")
+            is PdpSimulationException.CreditCardSimulationNotAvailableException -> {
+                creditCardTermsEmptyView.visible()
+                dividerVertical.visible()
+                tickerSimulation.visible()
+                creditCardRegisterWidget.visible()
+                tickerSimulation.setHtmlDescription("Tenang, kamu bisa coba pakai PayLater. Ada  bunga 0% juga! <a href='https://google.com'>Lihat Simulasi PayLater</a>")
+                tickerSimulation.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        creditCardSimulationCallback?.switchPaymentMode()
+                    }
+
+                    override fun onDismiss() {
+                    }
+                })
                 return
             }
             else -> {
-                simulationGlobalError.setType(GlobalError.SERVER_ERROR)
+                setGlobalErrors(GlobalError.SERVER_ERROR)
             }
         }
+    }
+
+    private fun setGlobalErrors(errorType: Int) {
+        simulationGlobalError.setType(errorType)
         simulationGlobalError.show()
         simulationGlobalError.setActionClickListener {
             simulationGlobalError.gone()
-            shimmerGroup.visible()
-            creditCardSimulationCallback?.getSimulationProductInfo()
+            creditSimulationShimmerGroup.visible()
+            rvAvailableBanks.visible()
+            creditCardSimulationCallback?.getSimulationProductInfo(CreditCard)
         }
-*/
     }
 
     private fun showAllBanksBottomSheet() {
@@ -199,6 +228,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
     interface CreditCardSimulationCallback {
         fun onRegisterCreditCardClicked()
         fun noInternetCallback()
-        fun getSimulationProductInfo()
+        fun getSimulationProductInfo(paymentMode: PaymentMode)
+        fun switchPaymentMode()
     }
 }

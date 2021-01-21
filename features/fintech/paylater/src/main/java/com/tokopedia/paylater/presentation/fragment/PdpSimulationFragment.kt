@@ -92,14 +92,18 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getSimulationProductInfo()
+        getSimulationProductInfo(PayLater)
         renderTabAndViewPager()
         initListeners()
     }
 
-    override fun getSimulationProductInfo() {
+    override fun getSimulationProductInfo(paymentMode: PaymentMode) {
         parentDataGroup.visible()
-        payLaterViewModel.getPayLaterSimulationData(productPrice)
+        when (this.paymentMode) {
+            is PayLater -> payLaterViewModel.getPayLaterSimulationData(productPrice)
+            is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
+
+        }
     }
 
     override fun getPayLaterProductInfo() {
@@ -233,7 +237,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         payLaterParentGlobalError.show()
         payLaterParentGlobalError.setActionClickListener {
             payLaterParentGlobalError.gone()
-            getSimulationProductInfo()
+            getSimulationProductInfo(PayLater)
         }
     }
 

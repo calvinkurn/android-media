@@ -43,6 +43,7 @@
             android:id="@+id/simulationGlobalError"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_64"
             android:gravity="center"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -54,11 +55,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_16"
             android:text="@string/pay_later_simulation_header_title"
-            android:textSize="@dimen/unify_font_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dividerVertical"
             app:typographyType="heading_4"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:textSize="@dimen/unify_font_16" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSubtitleSimulationInstallment"
@@ -103,12 +104,12 @@
             android:paddingTop="@dimen/unify_space_8"
             android:paddingEnd="@dimen/unify_space_16"
             android:paddingBottom="@dimen/unify_space_8"
-            android:text="Bunga 0% berlaku di semua cicilan"
-            android:textColor="@color/Unify_N0"
+            android:text="@string/credit_card_simulation_offer"
             app:layout_constraintStart_toStartOf="@+id/tvTitleSimulation"
             app:layout_constraintTop_toBottomOf="@+id/rvCreditCardSimulation"
             app:typographyType="body_3"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_N0" />
 
 
         <com.tokopedia.unifyprinciples.Typography
@@ -121,6 +122,13 @@
             app:typographyType="body_2"
             tools:text="Berlaku kartu kredit dari: 16 bank" />
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/bankBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tvValidCreditCardBanks, subTitleShimmer" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvAvailableBanks"
             android:layout_width="@dimen/unify_space_0"
@@ -130,7 +138,7 @@
             android:layout_marginEnd="@dimen/credit_card_dp_10"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvValidCreditCardBanks"
+            app:layout_constraintTop_toBottomOf="@id/bankBarrier"
             tools:listitem="@layout/credit_card_available_bank_item" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -139,14 +147,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_16"
             android:gravity="center"
-            android:textColor="@color/Unify_G500"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvAvailableBanks"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            tools:text="Lihat Semua (10)" />
+            tools:text="Lihat Semua (10)"
+            android:textColor="@color/Unify_G500" />
 
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -154,11 +162,26 @@
             android:layout_width="@dimen/pay_later_shimmer_width_dp_256"
             android:layout_height="@dimen/unify_space_16"
             android:layout_marginStart="@dimen/unify_space_16"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dividerVertical"
             app:loader_type="rect" />
 
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/subTitleShimmer"
+            android:layout_width="@dimen/unify_space_128"
+            android:layout_height="@dimen/unify_space_16"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleShimmer"
+            app:loader_type="rect" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/tickerBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tvSeeAll, dividerVertical, simulationGlobalError" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/tickerSimulation"
@@ -167,11 +190,12 @@
             android:layout_marginStart="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/unify_space_16"
             android:layout_marginEnd="@dimen/unify_space_16"
+            android:visibility="gone"
             app:closeButtonVisibility="gone"
             app:descriptionText="@string/pay_later_simulation_ticker_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSeeAll"
+            app:layout_constraintTop_toBottomOf="@+id/tickerBarrier"
             app:tickerType="information" />
 
         <include
@@ -182,23 +206,10 @@
             android:layout_marginStart="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_16"
             android:layout_marginEnd="@dimen/unify_space_12"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tickerSimulation" />
-
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/registerShimmer"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/unify_space_64"
-            android:layout_marginStart="@dimen/unify_space_8"
-            android:layout_marginTop="@dimen/unify_space_16"
-            android:layout_marginEnd="@dimen/unify_space_12"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tickerSimulation"
-            app:loader_type="rect" />
-
+            app:layout_constraintTop_toBottomOf="@+id/tickerSimulation" />
 
         <include
             android:id="@+id/supervisorWidget"
@@ -210,18 +221,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/creditCardRegisterWidget" />
 
-        <!-- <androidx.constraintlayout.widget.Group
-             android:id="@+id/simulationDataGroup"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:visibility="gone"
-             app:constraint_referenced_ids="tvTitleSimulation,tickerSimulation, supervisorWidget " />
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/simulationDataGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="tvTitleSimulation, tvSubtitleSimulationInstallment, rvCreditCardSimulation, tvAllInstallments, tvValidCreditCardBanks, supervisorWidget " />
 
-         <androidx.constraintlayout.widget.Group
-             android:id="@+id/shimmerGroup"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             app:constraint_referenced_ids="titleShimmer, registerShimmer" />-->
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/creditSimulationShimmerGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="titleShimmer, subTitleShimmer" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

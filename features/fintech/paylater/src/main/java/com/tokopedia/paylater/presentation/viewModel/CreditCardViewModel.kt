@@ -31,26 +31,18 @@ class CreditCardViewModel @Inject constructor(
 
     fun getCreditCardSimulationData(amount: Float) {
         creditCardSimulationUseCase.cancelJobs()
-        if (creditCardSimulationResultLiveData.value !is Success)
-            creditCardSimulationUseCase.getCreditCardSimulationData(
-                    ::onCreditCardSimulationSuccess,
-                    ::onCreditCardSimulationError,
-                    amount
-            )
+        if (creditCardSimulationResultLiveData.value !is Success) {
+            if (isCreditCardSimulationApplicable())
+                creditCardSimulationUseCase.getCreditCardSimulationData(
+                        ::onCreditCardSimulationSuccess,
+                        ::onCreditCardSimulationError,
+                        amount
+                ) else onCreditCardSimulationError(PdpSimulationException.CreditCardSimulationNotAvailableException(CREDIT_CARD_NOT_AVAILABLE))
+        }
     }
 
-    /*  fun getCreditCardData() {
-          launchCatchError(block = {
-              val creditCardData = withContext(ioDispatcher) {
-                  delay(250)
-                  return@withContext CreditCardResponseMapper.populateDummyCreditCardData()
-              }
-              //creditCardSimulationResultLiveData.value = Success(creditCardData)
-          }, onError = {
-              creditCardSimulationResultLiveData.value = Fail(it)
-          })
-      }
-  */
+    private fun isCreditCardSimulationApplicable() = true
+
     fun getCreditCardTncData() {
         creditCardPdpMetaInfoUseCase.cancelJobs()
         if (creditCardPdpMetaInfoLiveData.value !is Success)
@@ -75,11 +67,9 @@ class CreditCardViewModel @Inject constructor(
             pdpCreditCardSimulationData.creditCardGetSimulationResult.creditCardInstallmentList?.getOrNull(0)?.isSelected = true
             creditCardSimulationResultLiveData.value = Success(pdpCreditCardSimulationData.creditCardGetSimulationResult)
         } else onCreditCardSimulationError(PdpSimulationException.CreditCardNullDataException(SIMULATION_DATA_FAILURE))
-        //getCreditCardData()
     }
 
     private fun onCreditCardSimulationError(throwable: Throwable) {
-        //getCreditCardData()
         creditCardSimulationResultLiveData.value = Fail(throwable)
     }
 
@@ -124,6 +114,6 @@ class CreditCardViewModel @Inject constructor(
         const val SIMULATION_DATA_FAILURE = "NULL DATA"
         const val CREDIT_CARD_TNC_DATA_FAILURE = "NULL DATA"
         const val BANK_CARD_DATA_FAILURE = "NULL_DATA"
-        const val PAY_LATER_NOT_APPLICABLE = "PayLater Not Applicable"
+        const val CREDIT_CARD_NOT_AVAILABLE = "Credit Card Not Applicable"
     }
 }

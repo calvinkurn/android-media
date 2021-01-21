@@ -20,7 +20,7 @@ data class CreditCardSimulationResult(
         val creditCardInstallmentList: ArrayList<CreditCardInstallmentItem>?,
         @SerializedName("principal_amount")
         val principalAmount: Float?,
-        @SerializedName("ticket_info")
+        @SerializedName("ticker_info")
         val tickerInformation: String?,
         @SerializedName("cta_main_label")
         val ctaMainLabelText: String?,

@@ -17,7 +17,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.paylater.R
+import com.tokopedia.paylater.data.mapper.PayLater
 import com.tokopedia.paylater.data.mapper.PayLaterSimulationTenureType
+import com.tokopedia.paylater.data.mapper.PaymentMode
 import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.PayLaterSimulationGatewayItem
 import com.tokopedia.paylater.domain.model.SimulationItemDetail
@@ -109,6 +111,9 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         simulationDataGroup.visible()
         clearAllViews()
         populateSimulationTable(data)
+        tickerSimulation.visible()
+        tickerSimulation.setTextDescription(context?.getString(R.string.pay_later_simulation_ticker_text)
+                ?: "")
     }
 
     private fun onSimulationLoadingFail(throwable: Throwable) {
@@ -120,12 +125,10 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             is UnknownHostException, is SocketTimeoutException -> {
                 payLaterSimulationCallback?.noInternetCallback()
                 shimmerGroup.visible()
-                tickerSimulation.gone()
                 return
             }
             is IllegalStateException -> {
                 setGlobalErrors(GlobalError.PAGE_FULL)
-                tickerSimulation.gone()
             }
             is PdpSimulationException.PayLaterNotApplicableException -> {
                 payLaterTermsEmptyView.visible()
@@ -143,7 +146,6 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
                 return
             }
             else -> {
-                tickerSimulation.gone()
                 setGlobalErrors(GlobalError.SERVER_ERROR)
             }
         }
@@ -155,7 +157,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         simulationGlobalError.setActionClickListener {
             simulationGlobalError.gone()
             shimmerGroup.visible()
-            payLaterSimulationCallback?.getSimulationProductInfo()
+            payLaterSimulationCallback?.getSimulationProductInfo(PayLater)
         }
     }
 
@@ -284,7 +286,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         fun noInternetCallback()
         fun getPayLaterProductInfo()
         fun switchPaymentMode()
-        fun getSimulationProductInfo()
+        fun getSimulationProductInfo(paymentMode: PaymentMode)
         fun showRegisterWidget()
     }
 }
