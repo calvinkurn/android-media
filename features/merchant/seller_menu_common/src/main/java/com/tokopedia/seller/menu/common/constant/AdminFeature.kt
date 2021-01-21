@@ -14,7 +14,9 @@ import androidx.annotation.StringDef
         AdminFeature.REVIEW,
         AdminFeature.DISCUSSION,
         AdminFeature.COMPLAINT,
-        AdminFeature.MANAGE_SHOP
+        AdminFeature.MANAGE_SHOP,
+        AdminFeature.STATISTIC,
+        AdminFeature.ADS_AND_PROMOTION
 )
 annotation class AdminFeature {
     companion object {
@@ -28,5 +30,7 @@ annotation class AdminFeature {
         const val DISCUSSION = "TALK"
         const val COMPLAINT = "COMPLAINT"
         const val MANAGE_SHOP = "SHOP"
+        const val STATISTIC = "STATISTIC"
+        const val ADS_AND_PROMOTION = "PROMO"
     }
 }

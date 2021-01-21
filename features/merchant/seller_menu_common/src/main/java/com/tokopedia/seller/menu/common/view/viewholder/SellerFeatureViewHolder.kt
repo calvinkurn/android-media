@@ -10,6 +10,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
+import com.tokopedia.seller.menu.common.constant.AdminFeature
+import com.tokopedia.seller.menu.common.view.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import kotlinx.android.synthetic.main.item_seller_menu_feature_section.view.*
@@ -28,20 +30,12 @@ class SellerFeatureViewHolder(
 
     override fun bind(feature: SellerFeatureUiModel) {
         itemView.cardStatistics.setOnClickListener {
-            val appLinks = ArrayList<String>().apply {
-                add(ApplinkConstInternalSellerapp.SELLER_HOME)
-                add(ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD)
-            }
-            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT, appLinks)
+            goToToAdminAuthorizationPage(AdminFeature.STATISTIC)
             sellerMenuTracker?.sendEventClickShopStatistic()
         }
 
         itemView.cardPromo.setOnClickListener {
-            val appLinks = ArrayList<String>().apply {
-                add(ApplinkConstInternalSellerapp.SELLER_HOME)
-                add(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
-            }
-            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO, appLinks)
+            goToToAdminAuthorizationPage(AdminFeature.ADS_AND_PROMOTION)
             sellerMenuTracker?.sendEventClickCentralizePromo()
         }
 
@@ -69,6 +63,12 @@ class SellerFeatureViewHolder(
         itemView.context?.run {
             val intent = SellerMigrationActivity.createIntent(this, featureName, SCREEN_NAME, appLinks)
             startActivity(intent)
+        }
+    }
+
+    private fun goToToAdminAuthorizationPage(@AdminFeature featureName: String) {
+        itemView.context?.run {
+            startActivity(AdminRoleAuthorizeActivity.createIntent(this, featureName))
         }
     }
 }
