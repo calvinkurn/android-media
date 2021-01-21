@@ -49,11 +49,9 @@ class UpdateFollowStatusUseCase @Inject constructor(
         """
 
     var params: HashMap<String, Any> = HashMap()
-    val request by lazy{
-        GraphqlRequest(query, FollowShopResponse::class.java, params)
-    }
 
     override suspend fun executeOnBackground(): FollowShopResponse {
+        val request = GraphqlRequest(query, FollowShopResponse::class.java, params)
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(request)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
