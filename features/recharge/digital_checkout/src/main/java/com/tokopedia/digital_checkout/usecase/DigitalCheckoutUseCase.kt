@@ -9,12 +9,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_IDEM_POTENCY_KEY
 import com.tokopedia.common_digital.common.constant.DigitalUrl
-import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
-import com.tokopedia.digital_checkout.data.request.RequestBodyAtcDigital
 import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
-import com.tokopedia.digital_checkout.data.request.RequestBodyOtpSuccess
 import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.usecase.RequestParams
@@ -36,9 +32,7 @@ class DigitalCheckoutUseCase @Inject constructor(authInterceptor: ArrayList<Inte
         val requestBody = JsonObject()
         requestBody.add("data", jsonElement)
 
-        val idemPotencyKeyHeader = requestParams.getString(PARAM_IDEM_POTENCY_KEY, "")
         val mapHeader = mutableMapOf<String, String>()
-        mapHeader[KEY_IDEM_POTENCY_KEY] = idemPotencyKeyHeader
         mapHeader[KEY_CONTENT_TYPE] = VALUE_CONTENT_TYPE
 
         val restRequest = RestRequest.Builder(url, token)
@@ -59,7 +53,6 @@ class DigitalCheckoutUseCase @Inject constructor(authInterceptor: ArrayList<Inte
     companion object {
         const val PARAM_REQUEST_CHECKOUT = "PARAM_REQUEST_CHECKOUT"
 
-        private const val KEY_IDEM_POTENCY_KEY = "Idempotency-Key"
         private const val KEY_CONTENT_TYPE = "Content-Type"
         private const val VALUE_CONTENT_TYPE = "application/json"
     }
