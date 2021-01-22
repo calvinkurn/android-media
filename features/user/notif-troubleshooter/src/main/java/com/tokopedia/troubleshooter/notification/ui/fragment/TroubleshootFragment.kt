@@ -165,7 +165,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 adapter.removeTickers()
             }
 
-            if (notification.isNotNull() && device.isNotNull() && ringtone.isNotNull()) {
+            if (notification.isNotNull() && device.isNotNull() && ringtone.isNotNull() && token.isNotNull()) {
                 TroubleshooterTimber.combine(token, notification, device)
 
                 if (notification.isTrue() && device.isTrue() && !isSilent(ringtone) && token.isTrue()) {
