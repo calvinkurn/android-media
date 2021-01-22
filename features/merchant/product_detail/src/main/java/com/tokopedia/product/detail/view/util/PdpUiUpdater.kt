@@ -361,7 +361,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                     isShimmering = true
                 } else {
                     it.discussionMostHelpful?.let {
-                        questions = it.questions?.toMutableList()
+                        questions = it.questions
                         totalQuestion = it.totalQuestion
                         isShimmering = false
                     }
