@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
-import okhttp3.Interceptor
 
 /**
  * @author by jessica on 07/01/21
@@ -22,8 +21,6 @@ interface DigitalCheckoutComponent {
     fun userSessionInterface(): UserSessionInterface
 
     fun graphQlRepository(): GraphqlRepository
-
-    fun digitalInterceptors(): ArrayList<Interceptor>
 
     fun coroutineDispatcher(): CoroutineDispatcher
 }
