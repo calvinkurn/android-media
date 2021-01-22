@@ -325,6 +325,7 @@
     <string name="label_refresh_specification">Data tidak berhasil ditampilkan,\nklik <b>Muat Ulang</b> untuk coba lagi</string>
     <string name="action_specification_save">Simpan</string>
     <string name="action_specification_add">Tambah</string>
+    <string name="action_specification_change">Ubah</string>
     <string name="action_specification_refresh">Muat Ulang</string>
     <string name="action_specification_counter">, +%1$d lainnya</string>
 
