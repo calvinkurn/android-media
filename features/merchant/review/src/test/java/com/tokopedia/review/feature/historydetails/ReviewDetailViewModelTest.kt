@@ -61,7 +61,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
         onGetReviewDetailsFails_thenReturn(expectedNetworkResponse)
 
-        viewModel.getReviewDetails(feedbackId, false)
+        viewModel.getReviewDetails(feedbackId)
 
         verifyProductrevGetReviewDetailUseCaseCalled()
         verifyReviewDetailsError(Fail(expectedNetworkResponse))

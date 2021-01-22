@@ -13,6 +13,7 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.gson.Gson;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
@@ -79,6 +80,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     @Override
     public void onCreate() {
+        SplashScreenPerformanceTracker.isColdStart = true;
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.66";
         SplitCompat.install(this);
@@ -325,6 +327,11 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     }
 
     @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
+
+    }
+
+    @Override
     public void showForceLogoutTokenDialog(String response) {
 
     }
@@ -458,11 +465,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     @Override
     public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
-
-    }
-
-    @Override
-    public void sendRefreshTokenAnalytics(String errorMessage) {
 
     }
 }

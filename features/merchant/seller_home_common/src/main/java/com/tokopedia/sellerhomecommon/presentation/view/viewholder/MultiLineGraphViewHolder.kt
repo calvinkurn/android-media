@@ -56,8 +56,8 @@ class MultiLineGraphViewHolder(
     private var hideAnimation: ValueAnimator? = null
 
     override fun bind(element: MultiLineGraphWidgetUiModel) {
-        showAnimation?.cancel()
-        hideAnimation?.cancel()
+        showAnimation?.end()
+        hideAnimation?.end()
         this.element = element
 
         val data = element.data
@@ -599,14 +599,14 @@ class MultiLineGraphViewHolder(
     }
 
     private fun animateShowEmptyState() {
-        if (hideAnimation?.isRunning == true) hideAnimation?.cancel()
+        if (hideAnimation?.isRunning == true) hideAnimation?.end()
         if (itemView.multiLineEmptyState?.isVisible == true) return
         itemView.multiLineEmptyState.show()
         showAnimation = itemView.multiLineEmptyState.animatePop(0f, 1f)
     }
 
     private fun animateHideEmptyState() {
-        if (showAnimation?.isRunning == true) showAnimation?.cancel()
+        if (showAnimation?.isRunning == true) showAnimation?.end()
         if (itemView.multiLineEmptyState?.isVisible != true) return
         hideAnimation = itemView.multiLineEmptyState.animatePop(1f, 0f)
         hideAnimation?.addListener(object : Animator.AnimatorListener {

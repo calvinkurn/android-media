@@ -1197,14 +1197,17 @@
       },
       {
         "title": "Cek kategori berikut",
-        "type": "category",
+        "type": "campaign",
         "position": 16,
-        "layout": "list",
+        "layout": "grid",
         "options": [
           {
-            "title": "Android OS",
+            "title": "",
             "url": "tokopedia://search?q=samsung",
             "applink": "tokopedia://search?q=samsung",
+            "banner_image_url": "",
+            "banner_link_url": "https://staging.tokopedia.com/discovery/test-data-search",
+            "banner_applink_url": "tokopedia://discovery/test-data-search",
             "product": [
               {
                 "id": "12345",
@@ -1216,14 +1219,7 @@
                 "count_review": 100,
                 "url": "",
                 "applink": "tokopedia://product/12345"
-              }
-            ]
-          },
-          {
-            "title": "Handphone",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
-            "product": [
+              },
               {
                 "id": "12345",
                 "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
@@ -1234,14 +1230,7 @@
                 "count_review": 100,
                 "url": "",
                 "applink": "tokopedia://product/12345"
-              }
-            ]
-          },
-          {
-            "title": "Handphone 2",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
-            "product": [
+              },
               {
                 "id": "12345",
                 "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
