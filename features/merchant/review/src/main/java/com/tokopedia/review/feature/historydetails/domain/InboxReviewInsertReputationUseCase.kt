@@ -27,12 +27,12 @@ class InboxReviewInsertReputationUseCase @Inject constructor(graphqlRepository: 
     }
 
     @GqlQuery(INSERT_REPUTATION_QUERY_CLASS_NAME, INSERT_REPUTATION_MUTATION)
-    fun setParams(reputationId: Int, reputationScore: Int, userId: Int) {
+    fun setParams(reputationId: Long, reputationScore: Int, userId: Int) {
         setGraphqlQuery(InsertReputation.GQL_QUERY)
         setTypeClass(InboxReviewInsertReputationResponseWrapper::class.java)
         setRequestParams(
                 RequestParams.create().apply {
-                    putInt(PARAM_REPUTATION_ID, reputationId)
+                    putLong(PARAM_REPUTATION_ID, reputationId)
                     putInt(PARAM_REPUTATION_SCORE, reputationScore)
                     putInt(PARAM_USERID, userId)
                     putInt(PARAM_BUYER_SELLER, BUYER_SELLER_VALUE)

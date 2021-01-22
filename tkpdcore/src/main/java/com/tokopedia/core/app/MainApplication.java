@@ -6,6 +6,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -42,6 +43,13 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
     protected void initRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
+    }
+
+    public void initFileDirConfig(){
+        GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
+        GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
+        GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir().getAbsolutePath();
+        GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null).getAbsolutePath();
     }
 
     public static boolean isDebug() {

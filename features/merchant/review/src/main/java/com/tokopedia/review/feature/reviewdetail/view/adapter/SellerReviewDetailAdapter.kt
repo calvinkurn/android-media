@@ -17,7 +17,7 @@ class SellerReviewDetailAdapter(
 
     private var productReviewDetailFeedback: MutableList<FeedbackUiModel> = mutableListOf()
 
-    fun setFeedbackListData(feedbackListUiModel: List<FeedbackUiModel>, reviewCount: Int) {
+    fun setFeedbackListData(feedbackListUiModel: List<FeedbackUiModel>, reviewCount: Long) {
         val lastIndex = visitables.size
         updateReviewCount(reviewCount)
         productReviewDetailFeedback.addAll(feedbackListUiModel)
@@ -25,7 +25,7 @@ class SellerReviewDetailAdapter(
         notifyItemRangeInserted(lastIndex, feedbackListUiModel.size)
     }
 
-    private fun updateReviewCount(reviewCount: Int) {
+    private fun updateReviewCount(reviewCount: Long) {
         val topicIndex = visitables.indexOfFirst { it is TopicUiModel }
         visitables.find { it is TopicUiModel }?.also {
             (it as TopicUiModel).countFeedback = reviewCount
