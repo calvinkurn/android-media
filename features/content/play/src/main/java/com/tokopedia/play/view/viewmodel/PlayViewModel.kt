@@ -60,6 +60,9 @@ class PlayViewModel @Inject constructor(
         private val remoteConfig: RemoteConfig
 ) : PlayBaseViewModel(dispatchers.main) {
 
+    private val _observableLikeInfo = MutableLiveData<PlayLikeInfoUiModel>() /**Added**/
+    val observableLikeStatusInfo: LiveData<PlayLikeStatusInfoUiModel> = Transformations.map(_observableLikeInfo) { it.status } /**Added**/
+
     /**
      * Not Used for Event to component
      */
@@ -145,10 +148,14 @@ class PlayViewModel @Inject constructor(
     val totalView: String?
         get() = _observableTotalViews.value?.totalView
 
+    private var channelId: String = ""
+
     val latestCompleteChannelData: PlayChannelData.Complete
         get() {
             return PlayChannelData.Complete(
+                    id = channelId,
                     partnerInfo = _observablePartnerInfo.value ?: error("Partner Info should not be null"),
+                    likeInfo = _observableLikeInfo.value ?: error("Like Info should not be null"),
                     shareInfo = _observableShareInfo.value ?: error("Share Info should not be null"),
                     cartInfo = _observableCartInfo.value ?: error("Cart Info should not be null"),
                     pinnedInfo = PlayPinnedInfoUiModel(
@@ -460,6 +467,7 @@ class PlayViewModel @Inject constructor(
         when (channelData) {
             PlayChannelData.Empty -> {}
             is PlayChannelData.Placeholder -> {
+                channelId = channelData.id
                 handlePartnerInfo(channelData.partnerInfo)
                 handleShareInfo(channelData.shareInfo)
                 handleCartInfo(channelData.cartInfo)
@@ -467,7 +475,9 @@ class PlayViewModel @Inject constructor(
                 handleQuickReplyInfo(channelData.quickReplyInfo)
             }
             is PlayChannelData.Complete -> {
+                channelId = channelData.id
                 handlePartnerInfo(channelData.partnerInfo)
+                handleLikeInfo(channelData.likeInfo)
                 handleShareInfo(channelData.shareInfo)
                 handleCartInfo(channelData.cartInfo)
                 handlePinnedInfo(channelData.pinnedInfo)
@@ -481,10 +491,12 @@ class PlayViewModel @Inject constructor(
             PlayChannelData.Empty -> {}
             is PlayChannelData.Placeholder -> {
                 updatePartnerInfo(channelData.partnerInfo)
+                updateLikeInfo(channelData.likeParamInfo, channelData.id)
                 updateCartInfo(channelData.cartInfo)
             }
             is PlayChannelData.Complete -> {
                 updatePartnerInfo(channelData.partnerInfo)
+                updateLikeInfo(channelData.likeInfo.param, channelData.id)
                 updateCartInfo(channelData.cartInfo)
             }
         }
@@ -712,6 +724,10 @@ class PlayViewModel @Inject constructor(
         _observablePartnerInfo.value = partnerInfo
     }
 
+    private fun handleLikeInfo(likeInfoUiModel: PlayLikeInfoUiModel) {
+        _observableLikeInfo.value = likeInfoUiModel
+    }
+
     private fun handleShareInfo(shareInfo: PlayShareInfoUiModel) {
         _observableShareInfo.value = shareInfo
     }
@@ -745,6 +761,19 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private fun updateLikeInfo(likeParamInfo: PlayLikeParamInfoUiModel, channelId: String) {
+        viewModelScope.launch {
+            val deferredTotalLike = async { getTotalLikes(channelId) }
+            val deferredIsLiked = async { getIsLiked(likeParamInfo) }
+            val newLikeStatus = PlayLikeStatusInfoUiModel(
+                    totalLike = deferredTotalLike.await().totalLike,
+                    totalLikeFormatted = deferredTotalLike.await().totalLikeFormatted,
+                    isLiked = deferredIsLiked.await()
+            )
+            _observableLikeInfo.value = likeParamInfo + newLikeStatus
+        }
+    }
+
     private fun updateCartInfo(cartInfo: PlayCartInfoUiModel) {
         if (cartInfo.shouldShow) {
             viewModelScope.launch {
@@ -767,15 +796,17 @@ class PlayViewModel @Inject constructor(
         _observableChatList.value = currentChatList
     }
 
-    private suspend fun getTotalLikes(channelId: String) {
-        try {
-            val totalLike = withContext(dispatchers.io) {
-                getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(channelId)
-                getTotalLikeUseCase.executeOnBackground()
-            }
-            _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(totalLike)
-        } catch (e: Exception) {
-        }
+    private suspend fun getTotalLikes(channelId: String): TotalLike = withContext(dispatchers.io) {
+        getTotalLikeUseCase.params = GetTotalLikeUseCase.createParam(channelId)
+        getTotalLikeUseCase.executeOnBackground()
+    }
+
+    private suspend fun getIsLiked(likeParamInfo: PlayLikeParamInfoUiModel) = withContext(dispatchers.io) {
+        getIsLikeUseCase.params = GetIsLikeUseCase.createParam(
+                contentId = likeParamInfo.contentId.toIntOrZero(),
+                contentType = likeParamInfo.contentType
+        )
+        getIsLikeUseCase.executeOnBackground()
     }
 
     private suspend fun getIsLike(feedInfoUiModel: FeedInfoUiModel) {

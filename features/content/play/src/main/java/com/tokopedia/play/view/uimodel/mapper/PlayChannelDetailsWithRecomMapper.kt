@@ -30,7 +30,7 @@ class PlayChannelDetailsWithRecomMapper(
             PlayChannelData.Placeholder(
                     id = it.id,
                     partnerInfo = mapPartnerInfo(it.partner),
-                    likeInfo = mapLikeInfo(it.config.feedLikeParam),
+                    likeParamInfo = mapLikeParamInfo(it.config.feedLikeParam),
                     shareInfo = mapShareInfo(it.share, it.config.active, it.config.freezed),
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
@@ -49,7 +49,7 @@ class PlayChannelDetailsWithRecomMapper(
             isFollowable = false
     )
 
-    private fun mapLikeInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeInfoUiModel(
+    private fun mapLikeParamInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeParamInfoUiModel(
             contentId = feedLikeParamResponse.contentId,
             contentType = feedLikeParamResponse.contentType,
             likeType = feedLikeParamResponse.likeType

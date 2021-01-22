@@ -472,6 +472,7 @@ class PlayUserInteractionFragment @Inject constructor(
         observeChannelInfo()
         observeQuickReply()
         observeToolbarInfo()
+        observeLikeStatus()
         observeTotalLikes()
         observeTotalViews()
         observeNewChat()
@@ -562,6 +563,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeToolbarInfo() {
         playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, DistinctObserver {
             toolbarView.setPartnerInfo(it)
+        })
+    }
+
+    private fun observeLikeStatus() {
+        playViewModel.observableLikeStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
+            likeView.setTotalLikes(it)
         })
     }
 

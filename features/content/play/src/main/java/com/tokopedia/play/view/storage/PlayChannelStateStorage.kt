@@ -1,7 +1,5 @@
 package com.tokopedia.play.view.storage
 
-import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
-import com.tokopedia.play.view.uimodel.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -41,7 +39,7 @@ sealed class PlayChannelData {
     data class Placeholder(
             val id: String,
             val partnerInfo: PlayPartnerInfoUiModel,
-            val likeInfo: PlayLikeInfoUiModel,
+            val likeParamInfo: PlayLikeParamInfoUiModel,
             val shareInfo: PlayShareInfoUiModel,
             val cartInfo: PlayCartInfoUiModel,
             val pinnedInfo: PlayPinnedInfoUiModel,
@@ -51,7 +49,9 @@ sealed class PlayChannelData {
     ) : PlayChannelData()
 
     data class Complete(
+            val id: String,
             val partnerInfo: PlayPartnerInfoUiModel,
+            val likeInfo: PlayLikeInfoUiModel,
             val shareInfo: PlayShareInfoUiModel,
             val cartInfo: PlayCartInfoUiModel,
             val pinnedInfo: PlayPinnedInfoUiModel,
