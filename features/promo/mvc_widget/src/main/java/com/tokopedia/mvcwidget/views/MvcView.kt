@@ -58,7 +58,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
             val childView = MvcDetailView(context)
             bottomSheet.setChild(childView)
             bottomSheet.show((context as AppCompatActivity).supportFragmentManager, "BottomSheet Tag")
-            childView.show(shopId, )
+            childView.show(shopId)
             bottomSheet.setShowListener {
                 val imageMargin = dpToPx(20).toInt()
                 bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(20).toInt(), 0, 0)

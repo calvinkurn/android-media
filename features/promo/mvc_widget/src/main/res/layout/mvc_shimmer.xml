@@ -8,8 +8,4 @@
     <include layout="@layout/mvc_shimmer_box"/>
     <include layout="@layout/mvc_shimmer_box"/>
     <include layout="@layout/mvc_shimmer_box"/>
-    <include layout="@layout/mvc_shimmer_box"/>
-<!--    <include layout="@layout/mvc_shimmer_box"/>-->
-<!--    <include layout="@layout/mvc_shimmer_box"/>-->
-<!--    <include layout="@layout/mvc_shimmer_box"/>-->
 </LinearLayout>

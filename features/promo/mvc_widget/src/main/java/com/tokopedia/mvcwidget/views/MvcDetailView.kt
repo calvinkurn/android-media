@@ -158,8 +158,8 @@ class MvcDetailView @JvmOverloads constructor(
         toggleLoading(false)
         if (!th?.message.isNullOrEmpty()) {
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
-                mvcFollowContainer.twoActionView.performClick()
-            })
+                mvcFollowContainer.twoActionView.btnSecond.performClick()
+            }).show()
         }
     }
 
@@ -172,8 +172,8 @@ class MvcDetailView @JvmOverloads constructor(
         toggleLoading(false)
         if (!th?.message.isNullOrEmpty()) {
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
-                mvcFollowContainer.oneActionView.performClick()
-            })
+                mvcFollowContainer.oneActionView.btn.performClick()
+            }).show()
         }
     }
 

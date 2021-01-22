@@ -116,6 +116,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
     }
 
     fun setData(followWidget: FollowWidget) {
+        //todo Rahul remove this hardcoded text
         val t = "<b>Jadi member toko untuk dapat kupon:</b>" +
                 "<ul>" +
                 "  <li>Cashback 10% hingga Rp500.000</li>" +
@@ -124,18 +125,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
                 "</ul>"
         followWidget.content?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                spannable.setSpan(
-//                        new StyleSpan(Typeface.BOLD),
-//                        startPosition,
-//                        endPosition,
-//                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-//                );
-//                tvTitle.text = Html.fromHtml(t, Html.FROM_HTML_MODE_LEGACY).trim()
-//                tvTitle.text = HtmlLinkHelper(context,t).spannedString
                 tvTitle.text = HtmlUtil.fromHtml(t).trim()
-                val spannableString = SpannableString(HtmlUtil.fromHtml(t))
-//                spannableString.setSpan(StyleSpan(Typeface.NORMAL),0,10, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//                tvTitle.text = spannableString.trim()
             } else {
                 tvTitle.text = Html.fromHtml(t).trim()
             }
