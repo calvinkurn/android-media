@@ -303,7 +303,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     override fun createAdapterInstance(): ProductDetailAdapter {
         val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtil())
-                .setBackgroundThreadExecutor(Executors.newCachedThreadPool())
                 .build()
         return ProductDetailAdapter(asyncDifferConfig, this, adapterFactory)
     }
