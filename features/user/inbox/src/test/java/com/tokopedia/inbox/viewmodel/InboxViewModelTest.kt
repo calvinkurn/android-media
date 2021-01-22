@@ -25,11 +25,10 @@ class InboxViewModelTest {
     private val useCase: InboxNotificationUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val cacheManager: InboxCacheManager = mockk(relaxed = true)
-    private val dispatcher = TestInboxCoroutineDispatcher()
 
     private val notificationObserver: Observer<Result<Notifications>> = mockk(relaxed = true)
 
-    private val viewModel = InboxViewModel(useCase, userSession, cacheManager, dispatcher)
+    private val viewModel = InboxViewModel(useCase, userSession, cacheManager)
 
     @Before fun setUp() {
         viewModel.notifications.observeForever(notificationObserver)
