@@ -68,10 +68,8 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
                     } else {
                         builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
                     }
-                    try {
+                    if (!isFinishing) {
                         printManager?.print(PRINT_JOB_NAME, printAdapter, builder.build())
-                    } catch (e: Throwable) {
-                        e.printStackTrace()
                     }
                 }
             }
