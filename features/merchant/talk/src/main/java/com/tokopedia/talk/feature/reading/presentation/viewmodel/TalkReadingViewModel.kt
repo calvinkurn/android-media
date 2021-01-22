@@ -12,11 +12,13 @@ import com.tokopedia.talk.feature.reading.data.model.TalkLastAction
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionAggregateUseCase
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionDataUseCase
 import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
+import com.tokopedia.talk.feature.reading.presentation.fragment.TalkReadingFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -57,11 +59,17 @@ class TalkReadingViewModel @Inject constructor(
     fun getDiscussionAggregate(productId: String, shopId: String) {
         setLoading(isRefresh = true)
         launchCatchError(block = {
-            val response = withContext(dispatcher.io) {
+            val response = async(dispatcher.io) {
                 getDiscussionAggregateUseCase.setParams(productId, shopId)
                 getDiscussionAggregateUseCase.executeOnBackground()
             }
-            _discussionAggregate.postValue(Success(response))
+            val discussionList = async(dispatcher.io) {
+                getDiscussionDataUseCase.setParams(productId, shopId, TalkReadingFragment.DEFAULT_INITIAL_PAGE, TalkReadingFragment.DEFAULT_DISCUSSION_DATA_LIMIT, "", "")
+                getDiscussionDataUseCase.executeOnBackground()
+            }
+            _discussionAggregate.postValue(Success(response.await()))
+            _discussionData.postValue(Success(discussionList.await()))
+            setSuccess(discussionList.await().discussionData.totalQuestion == 0, TalkReadingFragment.DEFAULT_INITIAL_PAGE)
         }) {
             _discussionAggregate.postValue(Fail(it))
             setError(0)
