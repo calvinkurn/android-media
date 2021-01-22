@@ -12,7 +12,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
 
-class DigitalHomepageSearchLocalUseCase(graphqlRepository: GraphqlRepository) : GraphqlUseCase<RechargeHomepageSections.Response>(graphqlRepository) {
+class DigitalHomepageSearchByDynamicIconUseCase(graphqlRepository: GraphqlRepository) : GraphqlUseCase<RechargeHomepageSections.Response>(graphqlRepository) {
     suspend fun searchCategoryList(mapParams: Map<String, Any>, searchQuery: String): List<DigitalHomePageSearchCategoryModel> {
         setGraphqlQuery(RechargeHomepageQueries.SECTION_QUERY)
         setTypeClass(RechargeHomepageSections.Response::class.java)

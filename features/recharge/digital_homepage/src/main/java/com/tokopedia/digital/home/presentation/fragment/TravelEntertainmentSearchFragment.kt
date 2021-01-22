@@ -26,7 +26,7 @@ class TravelEntertainmentSearchFragment: DigitalHomePageSearchFragment() {
     }
 
     override fun searchCategory(searchQuery: String) {
-        viewModel.searchCategoryListFromLocal(searchQuery, platformId, sectionId, enablePersonalized)
+        viewModel.searchByDynamicIconsCategory(searchQuery, platformId, sectionId, enablePersonalized)
     }
 
     companion object {

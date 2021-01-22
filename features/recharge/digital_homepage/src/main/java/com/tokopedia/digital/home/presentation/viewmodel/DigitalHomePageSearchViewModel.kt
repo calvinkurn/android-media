@@ -3,17 +3,10 @@ package com.tokopedia.digital.home.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.digital.home.model.RechargeHomepageSections
-import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchLocalUseCase
+import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchByDynamicIconUseCase
 import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageDispatchersProvider
-import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
-import com.tokopedia.graphql.GraphqlConstant
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -26,7 +19,7 @@ import javax.inject.Inject
  */
 class DigitalHomePageSearchViewModel @Inject constructor(
         private val searchCategoryHomePageUseCase: SearchCategoryHomePageUseCase,
-        private val searchLocalUseCase: DigitalHomepageSearchLocalUseCase,
+        private val searchByDynamicIconUseCase: DigitalHomepageSearchByDynamicIconUseCase,
         private val dispatcher: RechargeHomepageDispatchersProvider
 ): BaseViewModel(dispatcher.Main) {
 
@@ -45,11 +38,11 @@ class DigitalHomePageSearchViewModel @Inject constructor(
         }
     }
 
-    fun searchCategoryListFromLocal(query: String, platformId: Int, sectionIDs: List<Int>, enablePersonalize: Boolean = false) {
+    fun searchByDynamicIconsCategory(query: String, platformId: Int, sectionIDs: List<Int>, enablePersonalize: Boolean = false) {
         launchCatchError(block = {
             val data = withContext(dispatcher.IO) {
-                searchLocalUseCase.searchCategoryList(
-                        DigitalHomepageSearchLocalUseCase.createRechargeHomepageSectionsParams(platformId,
+                searchByDynamicIconUseCase.searchCategoryList(
+                        DigitalHomepageSearchByDynamicIconUseCase.createRechargeHomepageSectionsParams(platformId,
                                 sectionIDs, enablePersonalize), query)
             }
             mutableSearchCategoryList.postValue(Success(data))
