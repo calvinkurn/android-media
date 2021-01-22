@@ -14,7 +14,6 @@
             android:id="@+id/fm_image"
             android:layout_width="74dp"
             android:layout_height="match_parent">
-            <!--            mvc_ic_squircle_new-->
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_52"
                 android:layout_height="@dimen/dp_52"
@@ -45,6 +44,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
+                android:textColor="@color/mvcw_31353B"
                 tools:text="Jadi member toko untuk dapat kupon:
                 \n•  Cashback 10% hingga Rp500.000
                 \n•  Cashback 10% hingga Rp500.000

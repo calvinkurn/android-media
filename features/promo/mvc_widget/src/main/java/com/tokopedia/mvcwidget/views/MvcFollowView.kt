@@ -3,7 +3,6 @@ package com.tokopedia.mvcwidget.views
 import android.content.Context
 import android.os.Build
 import android.text.Html
-import android.text.SpannableString
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -70,12 +69,14 @@ class MvcTokomemberFollowOneActionView @kotlin.jvm.JvmOverloads constructor(
 
     private val layout = R.layout.mvc_tokomember_view
     private var tvTitle: TextView
-    var btn: TextView
+    var tvBtn: TextView
+    var ll_btn: View
 
     init {
         View.inflate(context, layout, this)
         tvTitle = findViewById(R.id.tvTitle)
-        btn = findViewById(R.id.btn_action_mvc_view)
+        tvBtn = findViewById(R.id.btn_action_mvc_view)
+        ll_btn = findViewById(R.id.ll_btn)
         radius = dpToPx(8)
         type = TYPE_SMALL
     }
@@ -88,8 +89,6 @@ class MvcTokomemberFollowOneActionView @kotlin.jvm.JvmOverloads constructor(
                 tvTitle.text = Html.fromHtml(it)
             }
         }
-
-        btn.setOnClickListener { }
     }
 }
 
@@ -117,12 +116,13 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
 
     fun setData(followWidget: FollowWidget) {
         //todo Rahul remove this hardcoded text
-        val t = "<b>Jadi member toko untuk dapat kupon:</b>" +
-                "<ul>" +
-                "  <li>Cashback 10% hingga Rp500.000</li>" +
-                "  <li>Cashback 10% hingga Rp500.000</li>" +
-                "  <li>Cashback 10% hingga Rp500.000</li>" +
-                "</ul>"
+        val t = followWidget.content ?: ""
+//        val t = "<b>Jadi member toko untuk dapat kupon:</b>" +
+//                "<ul>" +
+//                "  <li>Cashback 10% hingga Rp500.000</li>" +
+//                "  <li>Cashback 10% hingga Rp500.000</li>" +
+//                "  <li>Cashback 10% hingga Rp500.000</li>" +
+//                "</ul>"
         followWidget.content?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 tvTitle.text = HtmlUtil.fromHtml(t).trim()

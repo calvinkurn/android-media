@@ -46,7 +46,7 @@ data class FollowWidget(
         @SerializedName("iconURL") val iconURL: String?,
         @SerializedName("membershipCardID") val membershipCardID: String?,
         @SerializedName("membershipHowTo") val membershipHowTo: List<MembershipHowTo?>?,
-)
+) : MvcListItem
 
 data class MembershipHowTo(
         @SerializedName("imageURL") val imageURL: String?,
@@ -96,6 +96,7 @@ data class Cta(
 data class FollowShopResponse(
         @SerializedName("followShop") val followShop: FollowShop? = null
 )
+
 data class FollowShop(
         @SerializedName("success") val success: Boolean?
 )

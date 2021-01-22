@@ -65,6 +65,7 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
             val success = response?.followShop?.success
             if (success != null) {
                 followLiveData.postValue(LiveDataResult.success(membershipRegistrationSuccessMessage))
+                getListData(shopId)
             } else {
                 followLiveData.postValue(LiveDataResult.error(Exception("Oops, ada sedikit gangguan. Coba daftar lagi, ya.")))
             }
