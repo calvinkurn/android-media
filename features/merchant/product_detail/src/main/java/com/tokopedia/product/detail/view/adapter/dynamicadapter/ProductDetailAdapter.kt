@@ -60,8 +60,7 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
         super.onViewAttachedToWindow(holder)
         if (holder is ProductRecommendationViewHolder &&
                 holder.adapterPosition < currentList.size &&
-                currentList[holder.adapterPosition] is ProductRecommendationDataModel &&
-                (currentList[holder.adapterPosition] as ProductRecommendationDataModel).recomWidgetData == null) {
+                (currentList[holder.adapterPosition] as? ProductRecommendationDataModel)?.recomWidgetData == null) {
             listener?.loadTopads((currentList[holder.adapterPosition] as ProductRecommendationDataModel).name)
         }
     }
@@ -78,7 +77,7 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
     }
 
     fun bind(holder: AbstractViewHolder<DynamicPdpDataModel>, item: DynamicPdpDataModel, payloads: MutableList<Any>) {
-        val payloadInt = (payloads.first() as? Bundle)?.getInt(ProductDetailConstant.DIFFUTIL_PAYLOAD)
+        val payloadInt = (payloads.firstOrNull() as? Bundle)?.getInt(ProductDetailConstant.DIFFUTIL_PAYLOAD)
         if (payloads.isNotEmpty() && payloads.firstOrNull() != null && payloadInt != null) {
             holder.bind(item, listOf(payloadInt))
         } else {

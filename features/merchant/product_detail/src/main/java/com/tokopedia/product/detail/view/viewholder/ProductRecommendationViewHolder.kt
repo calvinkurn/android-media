@@ -88,7 +88,7 @@ class ProductRecommendationViewHolder(
     }
 
     override fun bind(element: ProductRecommendationDataModel?, payloads: MutableList<Any>) {
-        if (payloads.isNotEmpty() && payloads.first() is Int && (payloads.first() as Int) == ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM) {
+        if ((payloads.firstOrNull() as? Int) == ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM) {
             element?.recomWidgetData?.let {
                 initAdapter(element, it, element.cardModel, getComponentTrackData(element))
                 annotationChipAdapter?.submitList(element.filterData ?: listOf())
