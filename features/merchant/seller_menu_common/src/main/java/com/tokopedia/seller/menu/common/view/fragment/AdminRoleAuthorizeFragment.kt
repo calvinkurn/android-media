@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.constant.AdminFeature
@@ -30,6 +31,7 @@ import com.tokopedia.seller.menu.common.view.mapper.AdminPermissionMapper
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -98,15 +100,29 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
 
     private fun observeAdminAuthorize() {
         viewModel.isRoleAuthorizedLiveData.observe(viewLifecycleOwner) { result ->
-            adminLoadingView?.visibility = View.GONE
-            if ((result as? Success)?.data == true) {
-                adminErrorView?.visibility = View.GONE
-                adminHelpText?.visibility = View.GONE
-                goToDestination()
-            } else {
-                setToolbarTitle(adminPermissionMapper.mapFeatureToToolbarTitle(context, adminFeature))
-                adminErrorView?.showAdminError()
+            when(result) {
+                is Success -> {
+                    result.data.let { isEligible ->
+                        if (isEligible) {
+                            adminErrorView?.visibility = View.GONE
+                            goToDestination()
+                        } else {
+                            adminErrorView?.show(true)
+                        }
+                    }
+                }
+                is Fail -> {
+                    setToolbarTitle(adminPermissionMapper.mapFeatureToToolbarTitle(context, adminFeature))
+                    adminErrorView?.show(false)
+                }
             }
+        }
+    }
+
+    private fun observeIsLoading() {
+        viewModel.isLoadingLiveData.observe(viewLifecycleOwner) { isLoading ->
+            adminLoadingView?.showWithCondition(isLoading)
+            adminErrorView?.showWithCondition(!isLoading)
         }
     }
 
@@ -123,7 +139,17 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         (activity as? AppCompatActivity)?.supportActionBar?.title = toolbarTitle
     }
 
-    private fun GlobalError.showAdminError() {
+    private fun GlobalError.show(isEligibilityError: Boolean) {
+        if (isEligibilityError) {
+            showAdminIneligible()
+        } else {
+            showAdminError()
+        }
+        visibility = View.VISIBLE
+    }
+
+    private fun GlobalError.showAdminIneligible() {
+        setType(GlobalError.PAGE_NOT_FOUND)
         ImageHandler.loadImageAndCache(errorIllustration, SellerBaseUrl.ADMIN_ERROR_ILLUSTRATION)
         getNoPermissionText(adminFeature).let { (title, desc) ->
             errorTitle.text = title
@@ -136,7 +162,16 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         setActionClickListener {
             activity?.finish()
         }
-        visibility = View.VISIBLE
+    }
+
+    private fun GlobalError.showAdminError() {
+        setType(GlobalError.NO_CONNECTION)
+        errorSecondaryAction.visibility = View.GONE
+        setButtonFull(true)
+
+        setActionClickListener {
+            viewModel.checkAccess(adminFeature)
+        }
     }
 
     private fun getNoPermissionText(@AdminFeature featureName: String): Pair<String, String> {

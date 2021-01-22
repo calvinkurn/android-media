@@ -1,11 +1,8 @@
 package com.tokopedia.seller.menu.common.view.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.domain.usecase.AdminPermissionUseCase
@@ -54,6 +51,14 @@ class AdminRoleAuthorizeViewModel @Inject constructor(
     val isRoleAuthorizedLiveData: LiveData<Result<Boolean>>
         get() = _isRoleAuthorizedLiveData
 
+    private val _isLoadingLiveData = MediatorLiveData<Boolean>().apply {
+        addSource(_isRoleAuthorizedLiveData) {
+            value = false
+        }
+    }
+    val isLoadingLiveData: LiveData<Boolean>
+        get() = _isLoadingLiveData
+
     fun checkAccess(@AdminFeature adminFeature: String) {
         accessIdsLiveData.value = mapper.mapFeatureToAccessId(adminFeature)
     }
@@ -74,6 +79,7 @@ class AdminRoleAuthorizeViewModel @Inject constructor(
     }
 
     private suspend fun authorizeAccess(accessId: Int): Result<Boolean>{
+        _isLoadingLiveData.value = true
         return Success(
                 withContext(dispatchers.io) {
                     if (userSession.isShopOwner) {
