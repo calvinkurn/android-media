@@ -107,7 +107,6 @@ class YouTubeViewComponent(
     }
 
     fun release() {
-        mVideoId = null
         pause()
         youTubePlayer?.doSafe { release() }
         youTubePlayer = null
@@ -184,7 +183,11 @@ class YouTubeViewComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        mVideoId?.let { setYouTubeId(it, mStartMillis, mShouldPlayOnReady) }
+        val videoId = mVideoId
+        if (videoId != null) {
+            mVideoId = null
+            setYouTubeId(videoId, mStartMillis, mShouldPlayOnReady)
+        }
     }
 
     companion object {
