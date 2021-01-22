@@ -6,18 +6,18 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderProductUiModel
-import kotlinx.android.synthetic.main.item_som_list_bulk_accept_order.view.*
+import com.tokopedia.sellerorder.list.presentation.models.SomListBulkProcessOrderProductUiModel
+import kotlinx.android.synthetic.main.item_som_list_bulk_process_order_product.view.*
 
-class SomListBulkAcceptOrderProductViewHolder(itemView: View?) : AbstractViewHolder<SomListBulkAcceptOrderProductUiModel>(itemView) {
+class SomListBulkProcessOrderProductViewHolder(itemView: View?) : AbstractViewHolder<SomListBulkProcessOrderProductUiModel>(itemView) {
 
     companion object {
-        val LAYOUT = R.layout.item_som_list_bulk_accept_order
+        val LAYOUT = R.layout.item_som_list_bulk_process_order_product
     }
 
     @SuppressLint("SetTextI18n")
     @Suppress("NAME_SHADOWING")
-    override fun bind(element: SomListBulkAcceptOrderProductUiModel?) {
+    override fun bind(element: SomListBulkProcessOrderProductUiModel?) {
         element?.let { element ->
             with(itemView) {
                 ivProduct.loadImageRounded(element.picture)
