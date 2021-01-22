@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  * Created By @ilhamsuaib on 09/06/20
  */
 
-@StatisticScope
 @Module
 abstract class StatisticViewModelModule {
 

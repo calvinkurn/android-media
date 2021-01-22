@@ -18,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
  */
 
 @Module
-@SomConfirmShippingScope
 class SomConfirmShippingModule {
     @SomConfirmShippingScope
     @Provides

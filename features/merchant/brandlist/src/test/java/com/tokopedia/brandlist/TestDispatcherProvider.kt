@@ -1,4 +1,4 @@
-package tkpd.tokopedia.com.brandlist
+package com.tokopedia.brandlist
 
 import com.tokopedia.brandlist.common.BrandlistDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher

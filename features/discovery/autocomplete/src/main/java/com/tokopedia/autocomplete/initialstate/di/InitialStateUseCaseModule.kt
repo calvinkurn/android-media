@@ -16,7 +16,6 @@ import dagger.Provides
 import rx.functions.Func1
 import javax.inject.Named
 
-@InitialStateScope
 @Module
 class InitialStateUseCaseModule {
 

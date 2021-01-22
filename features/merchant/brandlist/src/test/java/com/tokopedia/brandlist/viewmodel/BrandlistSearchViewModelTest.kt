@@ -1,6 +1,7 @@
-package tkpd.tokopedia.com.brandlist.viewmodel
+package com.tokopedia.brandlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.brandlist.TestDispatcherProvider
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreAllBrands
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsRecommendation
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistAllBrandUseCase
@@ -17,7 +18,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import tkpd.tokopedia.com.brandlist.TestDispatcherProvider
 
 @ExperimentalCoroutinesApi
 class BrandlistSearchViewModelTest {
