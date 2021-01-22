@@ -5,20 +5,24 @@ import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.PermissionId
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.viewholder.SellerFeatureViewHolder
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AdminPermissionMapper @Inject constructor(private val remoteConfig: RemoteConfig) {
+class AdminPermissionMapper @Inject constructor(private val remoteConfig: RemoteConfig,
+                                                private val userSession: UserSessionInterface) {
 
     companion object {
         private const val GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW"
@@ -31,7 +35,6 @@ class AdminPermissionMapper @Inject constructor(private val remoteConfig: Remote
     // TODO: Delete soon, check first with product to make sure these are unused
     fun mapFeatureToPermissionList(@AdminFeature adminFeature: String): List<String> {
         return when(adminFeature) {
-            AdminFeature.SALDO -> listOf(PermissionId.MANAGE_FINANCE)
             AdminFeature.NEW_ORDER -> listOf(PermissionId.MANAGE_ORDER)
             AdminFeature.READY_TO_SHIP_ORDER -> listOf(PermissionId.MANAGE_ORDER)
             AdminFeature.ORDER_HISTORY -> listOf(PermissionId.MANAGE_ORDER)
@@ -47,10 +50,8 @@ class AdminPermissionMapper @Inject constructor(private val remoteConfig: Remote
 
     fun mapFeatureToAccessId(@AdminFeature adminFeature: String): Int {
         return when(adminFeature) {
-            AdminFeature.SALDO -> AccessId.EDIT_STOCK
-            AdminFeature.NEW_ORDER -> AccessId.SOM
-            AdminFeature.READY_TO_SHIP_ORDER -> AccessId.SOM
-            AdminFeature.ORDER_HISTORY -> AccessId.SOM
+            AdminFeature.SHOP_SCORE -> AccessId.SHOP_SCORE
+            AdminFeature.NEW_ORDER, AdminFeature.READY_TO_SHIP_ORDER, AdminFeature.ORDER_HISTORY -> AccessId.SOM
             AdminFeature.MANAGE_PRODUCT -> AccessId.PRODUCT_LIST
             AdminFeature.ADD_PRODUCT -> AccessId.PRODUCT_ADD
             AdminFeature.REVIEW -> AccessId.REVIEW
@@ -65,12 +66,8 @@ class AdminPermissionMapper @Inject constructor(private val remoteConfig: Remote
 
     fun mapFeatureToDestination(context: Context, @AdminFeature adminFeature: String): Intent? {
         return when (adminFeature) {
-            AdminFeature.SALDO -> {
-                if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
-                    RouteManager.getIntent(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
-                else {
-                    RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL)
-                }
+            AdminFeature.SHOP_SCORE -> {
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession.shopId)
             }
             AdminFeature.NEW_ORDER -> {
                 RouteManager.getIntent(context, ApplinkConst.SELLER_NEW_ORDER)
@@ -121,6 +118,25 @@ class AdminPermissionMapper @Inject constructor(private val remoteConfig: Remote
                 getSellerMigrationIntent(context, SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO, appLinks)
             }
             else -> null
+        }
+    }
+
+    fun mapFeatureToToolbarTitle(context: Context?, @AdminFeature adminFeature: String): String {
+        when(adminFeature) {
+            AdminFeature.SALDO -> R.string.admin_title_balance
+            AdminFeature.SHOP_SCORE -> R.string.admin_title_shop_score
+            AdminFeature.NEW_ORDER, AdminFeature.READY_TO_SHIP_ORDER, AdminFeature.ORDER_HISTORY -> R.string.admin_title_order
+            AdminFeature.MANAGE_PRODUCT -> R.string.admin_title_product_list
+            AdminFeature.ADD_PRODUCT -> R.string.admin_title_product_add
+            AdminFeature.REVIEW -> R.string.admin_title_review
+            AdminFeature.DISCUSSION -> R.string.admin_title_discussion
+            AdminFeature.COMPLAINT -> R.string.admin_title_complaint
+            AdminFeature.MANAGE_SHOP -> R.string.admin_title_shop_setting
+            AdminFeature.STATISTIC -> R.string.admin_title_statistic
+            AdminFeature.ADS_AND_PROMOTION -> R.string.admin_title_ads_and_promotion
+            else -> return ""
+        }.let { stringResId ->
+            return context?.getString(stringResId).orEmpty()
         }
     }
 

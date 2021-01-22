@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -20,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.di.DaggerSellerMenuCommonComponent
 import com.tokopedia.seller.menu.common.view.viewmodel.AdminRoleAuthorizeViewModel
@@ -102,8 +104,8 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
                 adminHelpText?.visibility = View.GONE
                 goToDestination()
             } else {
+                setToolbarTitle(adminPermissionMapper.mapFeatureToToolbarTitle(context, adminFeature))
                 adminErrorView?.showAdminError()
-                adminHelpText?.showHelpMessage()
             }
         }
     }
@@ -117,12 +119,19 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun setToolbarTitle(toolbarTitle: String) {
+        (activity as? AppCompatActivity)?.supportActionBar?.title = toolbarTitle
+    }
+
     private fun GlobalError.showAdminError() {
         ImageHandler.loadImageAndCache(errorIllustration, SellerBaseUrl.ADMIN_ERROR_ILLUSTRATION)
-        errorTitle.text = context?.getString(R.string.admin_no_permission_oops)
-        errorDescription.text = context?.getString(R.string.admin_no_permission_contact_shop_owner)
-        errorAction.text = context?.getString(R.string.admin_no_permission_general_next)
+        getNoPermissionText(adminFeature).let { (title, desc) ->
+            errorTitle.text = title
+            errorDescription.text = desc
+        }
+        errorAction.text = context?.getString(R.string.admin_no_permission_back_to_seller_account)
         errorSecondaryAction.visibility = View.GONE
+        setButtonFull(true)
 
         setActionClickListener {
             activity?.finish()
@@ -130,6 +139,31 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         visibility = View.VISIBLE
     }
 
+    private fun getNoPermissionText(@AdminFeature featureName: String): Pair<String, String> {
+        val title: String
+        val desc: String
+        when(featureName) {
+            AdminFeature.ADD_PRODUCT -> {
+                title = context?.getString(R.string.admin_no_permission_product_add_title).orEmpty()
+                desc = context?.getString(R.string.admin_no_permission_product_add_desc).orEmpty()
+            }
+            AdminFeature.MANAGE_PRODUCT -> {
+                title = context?.getString(R.string.admin_no_permission_product_list_title).orEmpty()
+                desc = context?.getString(R.string.admin_no_permission_contact_shop_owner).orEmpty()
+            }
+            AdminFeature.ORDER_HISTORY, AdminFeature.READY_TO_SHIP_ORDER, AdminFeature.NEW_ORDER -> {
+                title = context?.getString(R.string.admin_no_permission_order_title).orEmpty()
+                desc = context?.getString(R.string.admin_no_permission_contact_shop_owner).orEmpty()
+            }
+            else -> {
+                title = context?.getString(R.string.admin_no_permission_oops).orEmpty()
+                desc = context?.getString(R.string.admin_no_permission_contact_shop_owner).orEmpty()
+            }
+        }
+        return Pair(title, desc)
+    }
+
+    // TODO: Delete later if unused
     private fun Typography.showHelpMessage() {
         context?.getString(R.string.admin_no_permission_need_help)?.let { helpMessage ->
             context?.getString(R.string.admin_no_permission_contact_tocare)?.let { clickableMessage ->
