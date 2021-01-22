@@ -80,12 +80,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
         launch {
-            try {
-                _orderHistoryListResult.value = uohListUseCase.executeSuspend(paramOrder)
-            } catch (e: Exception) {
-                Timber.d(e)
-                _orderHistoryListResult.value = Fail(e.fillInStackTrace())
-            }
+            _orderHistoryListResult.value = uohListUseCase.executeSuspend(paramOrder)
             UohIdlingResource.decrement()
         }
     }
@@ -110,12 +105,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doFinishOrder(paramFinishOrder: UohFinishOrderParam) {
         UohIdlingResource.increment()
         launch {
-            try {
-                _finishOrderResult.value = (uohFinishOrderUseCase.executeSuspend(paramFinishOrder))
-            } catch (e: Exception) {
-                Timber.d(e)
-                _finishOrderResult.value = Fail(e.fillInStackTrace())
-            }
+            _finishOrderResult.value = (uohFinishOrderUseCase.executeSuspend(paramFinishOrder))
             UohIdlingResource.decrement()
         }
     }
@@ -123,12 +113,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doAtcMulti(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>) {
         UohIdlingResource.increment()
         launch {
-            try {
-                _atcMultiResult.value = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
-            } catch (e: Exception) {
-                Timber.d(e)
-                _atcMultiResult.value = Fail(e.fillInStackTrace())
-            }
+            _atcMultiResult.value = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
             UohIdlingResource.decrement()
         }
     }
@@ -136,12 +121,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doLsPrintFinishOrder(verticalId: String) {
         UohIdlingResource.increment()
         launch {
-            try {
-                _lsPrintFinishOrderResult.value = (lsPrintFinishOrderUseCase.executeSuspend(verticalId))
-            } catch (e: Exception) {
-                Timber.d(e)
-                _lsPrintFinishOrderResult.value = Fail(e.fillInStackTrace())
-            }
+            _lsPrintFinishOrderResult.value = (lsPrintFinishOrderUseCase.executeSuspend(verticalId))
             UohIdlingResource.decrement()
         }
     }
@@ -149,12 +129,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doFlightResendEmail(invoiceId: String, email: String) {
         UohIdlingResource.increment()
         launch {
-            try {
-                _flightResendEmailResult.value = (flightResendEmailUseCase.executeSuspend(invoiceId, email))
-            } catch (e: Exception) {
-                Timber.d(e)
-                _flightResendEmailResult.value = Fail(e.fillInStackTrace())
-            }
+            _flightResendEmailResult.value = (flightResendEmailUseCase.executeSuspend(invoiceId, email))
             UohIdlingResource.decrement()
         }
     }
@@ -162,26 +137,15 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doTrainResendEmail(param: TrainResendEmailParam) {
         UohIdlingResource.increment()
         launch {
-            try {
-                _trainResendEmailResult.value = (trainResendEmailUseCase.executeSuspend(param))
-            } catch (e: Exception) {
-                Timber.d(e)
-                _trainResendEmailResult.value = Fail(e.fillInStackTrace())
-            }
+            _trainResendEmailResult.value = (trainResendEmailUseCase.executeSuspend(param))
             UohIdlingResource.decrement()
         }
     }
 
     fun doRechargeSetFail(orderId: Int) {
         UohIdlingResource.increment()
-
         launch {
-            try {
-                _rechargeSetFailResult.value = (rechargeSetFailUseCase.executeSuspend(orderId))
-            } catch (e: Exception) {
-                Timber.d(e)
-                _rechargeSetFailResult.value = Fail(e.fillInStackTrace())
-            }
+            _rechargeSetFailResult.value = (rechargeSetFailUseCase.executeSuspend(orderId))
             UohIdlingResource.decrement()
         }
     }
