@@ -57,7 +57,7 @@ class PlayParentViewModel constructor(
 
     fun setLatestChannelStorageData(
             channelId: String,
-            data: PlayChannelData.Complete
+            data: PlayChannelData
     ) {
         playChannelStateStorage.setData(channelId, data)
     }

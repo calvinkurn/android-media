@@ -6,7 +6,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
-import com.tokopedia.play.view.type.PartnerFolowStatus
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.*
@@ -16,7 +15,7 @@ import com.tokopedia.play_common.player.PlayVideoManager
 /**
  * Created by jegul on 21/01/21
  */
-typealias PlayChannelResponseMapper = PlayViewerMapper<ChannelDetailsWithRecomResponse, List<PlayChannelData.Placeholder>>
+typealias PlayChannelResponseMapper = PlayViewerMapper<ChannelDetailsWithRecomResponse, List<PlayChannelData>>
 
 class PlayChannelDetailsWithRecomMapper(
         private val context: Context
@@ -25,34 +24,36 @@ class PlayChannelDetailsWithRecomMapper(
     private val exoPlayer: ExoPlayer
         get() = PlayVideoManager.getInstance(context).videoPlayer
 
-    override fun map(input: ChannelDetailsWithRecomResponse): List<PlayChannelData.Placeholder> {
+    override fun map(input: ChannelDetailsWithRecomResponse): List<PlayChannelData> {
         return input.channelDetails.dataList.map {
-            PlayChannelData.Placeholder(
+            PlayChannelData(
                     id = it.id,
                     partnerInfo = mapPartnerInfo(it.partner),
-                    likeParamInfo = mapLikeParamInfo(it.config.feedLikeParam),
+                    likeInfo = mapLikeInfo(it.config.feedLikeParam),
                     shareInfo = mapShareInfo(it.share, it.config.active, it.config.freezed),
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
 //                    videoMetaInfo = mapVideoMeta(it.video, it.config, it.isLive),
-                    miscConfigInfo = mapMiscConfigInfo(it.config),
+//                    miscConfigInfo = mapMiscConfigInfo(it.config),
             )
         }
     }
 
-    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfoUiModel(
-            id = partnerResponse.id.toLongOrZero(),
-            name = partnerResponse.name,
-            type = PartnerType.getTypeByValue(partnerResponse.type),
-            followStatus = PartnerFolowStatus.Unknown,
-            isFollowable = false
+    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfoUiModel.Incomplete(
+            basicInfo = PlayPartnerBasicInfoUiModel(
+                    id = partnerResponse.id.toLongOrZero(),
+                    name = partnerResponse.name,
+                    type = PartnerType.getTypeByValue(partnerResponse.type),
+            )
     )
 
-    private fun mapLikeParamInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeParamInfoUiModel(
-            contentId = feedLikeParamResponse.contentId,
-            contentType = feedLikeParamResponse.contentType,
-            likeType = feedLikeParamResponse.likeType
+    private fun mapLikeInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeInfoUiModel.Incomplete(
+            param = PlayLikeParamInfoUiModel(
+                    contentId = feedLikeParamResponse.contentId,
+                    contentType = feedLikeParamResponse.contentType,
+                    likeType = feedLikeParamResponse.likeType
+            )
     )
 
     private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share, isActive: Boolean, isFreezed: Boolean): PlayShareInfoUiModel {
@@ -71,9 +72,8 @@ class PlayChannelDetailsWithRecomMapper(
         )
     }
 
-    private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
-            shouldShow = configResponse.showCart,
-            count = 0
+    private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel.Incomplete(
+            shouldShow = configResponse.showCart
     )
 
     private fun mapPinnedInfo(

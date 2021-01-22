@@ -15,10 +15,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.ShareInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayCartInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.isFollowed
+import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -60,7 +57,7 @@ class ToolbarViewComponent(
     }
 
     fun setPartnerInfo(partnerInfo: PlayPartnerInfoUiModel) {
-        tvPartnerName.text = partnerInfo.name
+        tvPartnerName.text = partnerInfo.basicInfo.name
         setFollowStatus(partnerInfo.isFollowed)
 
         if (!partnerInfo.isFollowable) {
@@ -68,22 +65,22 @@ class ToolbarViewComponent(
         } else {
             tvFollow.setOnClickListener {
                 if (partnerInfo.isFollowed) {
-                    listener.onFollowButtonClicked(this, partnerInfo.id, PartnerFollowAction.UnFollow)
+                    listener.onFollowButtonClicked(this, partnerInfo.basicInfo.id, PartnerFollowAction.UnFollow)
                 } else {
-                    listener.onFollowButtonClicked(this, partnerInfo.id, PartnerFollowAction.Follow)
+                    listener.onFollowButtonClicked(this, partnerInfo.basicInfo.id, PartnerFollowAction.Follow)
                 }
                 partnerInfo.isFollowed = !partnerInfo.isFollowed
             }
         }
 
-        if (partnerInfo.name.isEmpty() || partnerInfo.name.isBlank()) clPartner.hide()
+        if (partnerInfo.basicInfo.name.isEmpty() || partnerInfo.basicInfo.name.isBlank()) clPartner.hide()
         else {
             clPartner.show()
             if (!partnerInfo.isFollowable) groupFollowable.hide()
             else groupFollowable.show()
 
             tvPartnerName.setOnClickListener {
-                listener.onPartnerNameClicked(this, partnerInfo.id, partnerInfo.type)
+                listener.onPartnerNameClicked(this, partnerInfo.basicInfo.id, partnerInfo.basicInfo.type)
             }
         }
     }

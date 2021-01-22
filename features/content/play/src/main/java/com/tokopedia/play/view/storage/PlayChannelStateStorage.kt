@@ -22,7 +22,7 @@ class PlayChannelStateStorage {
 //        )
     }
 
-    fun getData(channelId: String): PlayChannelData = playPageMap[channelId] ?: PlayChannelData.Empty
+    fun getData(channelId: String): PlayChannelData = playPageMap[channelId] ?: error("Channel not found")
 
     fun setData(channelId: String, channelData: PlayChannelData) {
         playPageMap[channelId] = channelData
@@ -32,32 +32,42 @@ class PlayChannelStateStorage {
 
 }
 
-sealed class PlayChannelData {
+data class PlayChannelData(
+        val id: String,
+        val partnerInfo: PlayPartnerInfoUiModel,
+        val likeInfo: PlayLikeInfoUiModel,
+        val shareInfo: PlayShareInfoUiModel,
+        val cartInfo: PlayCartInfoUiModel,
+        val pinnedInfo: PlayPinnedInfoUiModel,
+        val quickReplyInfo: PlayQuickReplyInfoUiModel,
+)
 
-    object Empty : PlayChannelData()
-
-    data class Placeholder(
-            val id: String,
-            val partnerInfo: PlayPartnerInfoUiModel,
-            val likeParamInfo: PlayLikeParamInfoUiModel,
-            val shareInfo: PlayShareInfoUiModel,
-            val cartInfo: PlayCartInfoUiModel,
-            val pinnedInfo: PlayPinnedInfoUiModel,
-            val quickReplyInfo: PlayQuickReplyInfoUiModel,
-//            val videoMetaInfo: PlayVideoMetaInfoUiModel,
-            val miscConfigInfo: PlayMiscConfigUiModel,
-    ) : PlayChannelData()
-
-    data class Complete(
-            val id: String,
-            val partnerInfo: PlayPartnerInfoUiModel,
-            val likeInfo: PlayLikeInfoUiModel,
-            val shareInfo: PlayShareInfoUiModel,
-            val cartInfo: PlayCartInfoUiModel,
-            val pinnedInfo: PlayPinnedInfoUiModel,
-            val quickReplyInfo: PlayQuickReplyInfoUiModel,
-
-//            val pinnedMessage: PinnedMessageUiModel?,
-//            val pinnedProduct: PinnedProductUiModel?,
-    ) : PlayChannelData()
-}
+//sealed class PlayChannelData {
+//
+//    object Empty : PlayChannelData()
+//
+//    data class Placeholder(
+//            val id: String,
+//            val partnerInfo: PlayPartnerInfoUiModel,
+//            val likeParamInfo: PlayLikeParamInfoUiModel,
+//            val shareInfo: PlayShareInfoUiModel,
+//            val cartInfo: PlayCartInfoUiModel,
+//            val pinnedInfo: PlayPinnedInfoUiModel,
+//            val quickReplyInfo: PlayQuickReplyInfoUiModel,
+////            val videoMetaInfo: PlayVideoMetaInfoUiModel,
+//            val miscConfigInfo: PlayMiscConfigUiModel,
+//    ) : PlayChannelData()
+//
+//    data class Complete(
+//            val id: String,
+//            val partnerInfo: PlayPartnerInfoUiModel,
+//            val likeInfo: PlayLikeInfoUiModel,
+//            val shareInfo: PlayShareInfoUiModel,
+//            val cartInfo: PlayCartInfoUiModel,
+//            val pinnedInfo: PlayPinnedInfoUiModel,
+//            val quickReplyInfo: PlayQuickReplyInfoUiModel,
+//
+////            val pinnedMessage: PinnedMessageUiModel?,
+////            val pinnedProduct: PinnedProductUiModel?,
+//    ) : PlayChannelData()
+//}
