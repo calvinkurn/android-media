@@ -59,6 +59,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private var shopID = ""
     private var tvToolTipText: Typography? = null
     private var imgTooltipIcon: ImageUnify? = null
+
     companion object {
         private const val MAX_BID = "max"
         private const val MIN_BID = "min"
@@ -95,15 +96,17 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(childFragmentManager, "")
         sheet.onSaved = { bid, type, position ->
-            bidInfoAdapter.typeList[position] = type
+            if (bidInfoAdapter.typeList.isNotEmpty() && bidInfoAdapter.typeList.size > position)
+                bidInfoAdapter.typeList[position] = type
             (bidInfoAdapter.items[position] as BidInfoItemViewModel).data.suggestionBid = bid.toInt()
             bidInfoAdapter.notifyDataSetChanged()
             stepperModel?.selectedSuggestBid?.set(position, bid.toInt())
         }
         sheet.onDelete = { position ->
+            if (bidInfoAdapter.typeList.isNotEmpty() && bidInfoAdapter.typeList.size > position)
+                bidInfoAdapter.typeList.removeAt(position)
             stepperModel?.selectedKeywords?.removeAt(position)
             stepperModel?.selectedSuggestBid?.removeAt(position)
-            bidInfoAdapter.typeList.removeAt(position)
             bidInfoAdapter.items.removeAt(position)
             bidInfoAdapter.notifyItemRemoved(position)
         }
@@ -260,7 +263,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         tip_btn?.setOnClickListener {
             val tipSheetBugList = TipSheetBudgetList.newInstance()
             tipSheetBugList.show(fragmentManager!!, "")
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID,userID)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID, userID)
         }
 
         budget?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
