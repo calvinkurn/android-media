@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import androidx.lifecycle.*
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
@@ -63,7 +64,7 @@ class PlayParentViewModel constructor(
     }
 
     private fun getChannelDetailsWithRecom(nextKey: ChannelDetailNextKey) {
-        viewModelScope.launch {
+        viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
                 val response = getChannelDetailsWithRecomUseCase.apply {
                     params = when (nextKey) {
@@ -80,8 +81,9 @@ class PlayParentViewModel constructor(
             }
 
             _observableChannelIdList.value = playChannelStateStorage.getChannelList()
-        }
+        }, onError = {
 
+        })
     }
 
     sealed class ChannelDetailNextKey {

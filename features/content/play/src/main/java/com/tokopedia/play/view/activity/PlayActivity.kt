@@ -18,6 +18,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.view.contract.*
 import com.tokopedia.play.view.fragment.PlayFragment
@@ -38,7 +39,8 @@ class PlayActivity : BaseActivity(),
         PlayNavigation,
         PlayPiPCoordinator,
         SwipeContainerViewComponent.DataSource,
-        PlayOrientationListener {
+        PlayOrientationListener,
+        PlayFullscreenManager {
 
     @Inject
     lateinit var playLifecycleObserver: PlayVideoPlayerObserver
@@ -55,6 +57,12 @@ class PlayActivity : BaseActivity(),
     private lateinit var orientationManager: PlaySensorOrientationManager
 
     private lateinit var viewModel: PlayParentViewModel
+
+    private var systemUiVisibility: Int
+        get() = window.decorView.systemUiVisibility
+        set(value) {
+            window.decorView.systemUiVisibility = value
+        }
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
@@ -132,6 +140,14 @@ class PlayActivity : BaseActivity(),
 
         //TODO("Tracker")
 //        sendTrackerWhenRotateScreen(screenOrientation, isTilting)
+    }
+
+    override fun onEnterFullscreen() {
+        systemUiVisibility = PlayFullScreenHelper.getHideSystemUiVisibility()
+    }
+
+    override fun onExitFullscreen() {
+        systemUiVisibility = PlayFullScreenHelper.getShowSystemUiVisibility()
     }
 
     /**

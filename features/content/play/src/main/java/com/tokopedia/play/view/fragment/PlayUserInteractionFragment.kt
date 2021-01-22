@@ -37,6 +37,7 @@ import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
@@ -138,11 +139,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playNavigation: PlayNavigation
         get() = requireActivity() as PlayNavigation
 
-    private var systemUiVisibility: Int
-        get() = requireActivity().window.decorView.systemUiVisibility
-        set(value) {
-            requireActivity().window.decorView.systemUiVisibility = value
-        }
+    private val playFullscreenManager: PlayFullscreenManager
+        get() = requireActivity() as PlayFullscreenManager
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
@@ -488,11 +486,11 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun invalidateSystemUiVisibility() {
-        systemUiVisibility = when {
-            playViewModel.isFreezeOrBanned -> PlayFullScreenHelper.getShowSystemUiVisibility()
-            orientation.isLandscape -> PlayFullScreenHelper.getHideSystemUiVisibility()
-            !playViewModel.videoOrientation.isHorizontal && container.isFullAlpha -> PlayFullScreenHelper.getHideSystemUiVisibility()
-            else -> PlayFullScreenHelper.getShowSystemUiVisibility()
+        when {
+            playViewModel.isFreezeOrBanned -> playFullscreenManager.onExitFullscreen()
+            orientation.isLandscape -> playFullscreenManager.onEnterFullscreen()
+            !playViewModel.videoOrientation.isHorizontal && container.isFullAlpha -> playFullscreenManager.onEnterFullscreen()
+            else -> playFullscreenManager.onExitFullscreen()
         }
     }
 
@@ -737,14 +735,17 @@ class PlayUserInteractionFragment @Inject constructor(
         when {
             playViewModel.isFreezeOrBanned || isBroadcasterLoading() -> {
                 container.alpha = VISIBLE_ALPHA
-                systemUiVisibility = PlayFullScreenHelper.getShowSystemUiVisibility()
+                playFullscreenManager.onExitFullscreen()
+//                systemUiVisibility = PlayFullScreenHelper.getShowSystemUiVisibility()
             }
             orientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
             playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
             playViewModel.videoOrientation.isVertical -> {
-                systemUiVisibility =
-                        if (shouldImmersive) PlayFullScreenHelper.getHideSystemUiVisibility()
-                        else PlayFullScreenHelper.getShowSystemUiVisibility()
+                if (shouldImmersive) playFullscreenManager.onEnterFullscreen()
+                else playFullscreenManager.onExitFullscreen()
+//                systemUiVisibility =
+//                        if (shouldImmersive) PlayFullScreenHelper.getHideSystemUiVisibility()
+//                        else PlayFullScreenHelper.getShowSystemUiVisibility()
                 triggerFullImmersive(shouldImmersive, false)
             }
         }

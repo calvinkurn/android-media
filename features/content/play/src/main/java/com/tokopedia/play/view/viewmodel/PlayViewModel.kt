@@ -736,7 +736,7 @@ class PlayViewModel @Inject constructor(
      */
     private fun updatePartnerInfo(partnerBasicInfo: PlayPartnerBasicInfoUiModel) {
         if (partnerBasicInfo.type == PartnerType.Shop) {
-            viewModelScope.launch {
+            viewModelScope.launchCatchError(block = {
                 val shopInfo = getShopInfo(partnerBasicInfo)
 
                 val newPartnerInfo = PlayPartnerInfoUiModel.Complete(
@@ -748,12 +748,14 @@ class PlayViewModel @Inject constructor(
                 )
 
                 _observablePartnerInfo.value = newPartnerInfo
-            }
+            }, onError = {
+
+            })
         }
     }
 
     private fun updateLikeInfo(likeParamInfo: PlayLikeParamInfoUiModel, channelId: String) {
-        viewModelScope.launch {
+        viewModelScope.launchCatchError(block = {
             val deferredTotalLike = async { getTotalLikes(channelId) }
             val deferredIsLiked = async { getIsLiked(likeParamInfo) }
             val newLikeStatus = PlayLikeStatusInfoUiModel(
@@ -762,7 +764,9 @@ class PlayViewModel @Inject constructor(
                     isLiked = deferredIsLiked.await()
             )
             _observableLikeInfo.value = likeParamInfo + newLikeStatus
-        }
+        }, onError = {
+
+        })
     }
 
     private fun updateCartInfo(shouldShowCart: Boolean) {
