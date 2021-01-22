@@ -17,7 +17,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@InitialStateScope
 @Module
 class InitialStateInterceptorModule {
     @InitialStateScope

@@ -253,6 +253,7 @@ class SomListOrderViewHolder(
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupCheckBox(element: SomListOrderUiModel) {
         with(itemView) {
             checkBoxSomListMultiSelect.showWithCondition(listener.isMultiSelectEnabled())

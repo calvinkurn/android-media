@@ -382,6 +382,7 @@
     <string name="som_list_response_before_label">Batas Respons</string>
     <string name="som_list_more_products">+%1$s produk lainnya</string>
     <string name="som_list_bulk_accept_order_button">Terima Pesanan Sekaligus</string>
+    <string name="som_list_bulk_confirm_shipping_order_button">Atur Sekaligus</string>
     <string name="som_list_multi_select">Pilih Sekaligus</string>
     <string name="som_list_multi_select_cancel">Batalkan</string>
     <string name="som_list_order_courier_label">Kurir:</string>
@@ -421,4 +422,13 @@
     <string name="som_list_empty_state_not_found_title">Oops, pesanan yang kamu cari nggak ditemukan.</string>
     <string name="som_list_button_ok">Ok</string>
     <string name="som_list_pre_order_flag">(PO)</string>
+    <string name="som_list_bulk_print_dialog_title">Cetak %1$d label pengiriman</string>
+    <string name="som_list_bulk_print_dialog_description">Pastikan HP kamu sudah terkoneksi ke printer dengan benar, ya.</string>
+    <string name="som_list_bulk_print_dialog_mark_as_printed">Tandai pesanan yang sudah dicetak</string>
+    <string name="som_list_bulk_print_dialog_print_button">Ya, Cetak Label</string>
+    <string name="som_list_bulk_print_dialog_cancel_print_button">Batal</string>
+    <string name="som_list_bulk_print_button">Cetak Label Sekaligus</string>
+
+    <string name="som_detail_som_print_not_available">Fitur ini hanya tersedia di aplikasi Tokopedia Seller</string>
+    <string name="som_print_awb_minimum_os_error_message">Maaf fitur cetak label hanya dapat dijalankan pada smartphone dengan minimal versi OS Kitkat</string>
 </resources>

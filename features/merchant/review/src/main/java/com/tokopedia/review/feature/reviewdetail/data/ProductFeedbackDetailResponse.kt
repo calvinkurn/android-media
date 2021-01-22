@@ -24,7 +24,7 @@ data class ProductFeedbackDetailResponse(
             @SerializedName("topics")
             val topics: List<Topic> = listOf(),
             @SerializedName("reviewCount")
-            val reviewCount: Int = 0
+            val reviewCount: Long = 0
     ) {
         data class FeedbackList(
                 @SerializedName("attachments")

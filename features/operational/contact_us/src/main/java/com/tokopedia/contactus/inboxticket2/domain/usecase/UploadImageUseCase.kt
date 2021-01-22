@@ -4,9 +4,9 @@ import android.content.Context
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import com.tokopedia.contactus.inboxticket2.data.UploadImageResponse
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.utils.image.ImageProcessingUtil
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.IOException
@@ -62,7 +62,7 @@ class ContactUsUploadImageUseCase @Inject constructor(private val context: Conte
     fun getFile(imageUpload: List<ImageUpload>?): List<String> {
         val list = ArrayList<String>()
         imageUpload?.forEach {
-            val s = ImageUtils.compressImageFile(it.fileLoc, IMAGE_QUALITY)
+            val s = ImageProcessingUtil.compressImageFile(it.fileLoc ?: "", IMAGE_QUALITY)
             list.add(try {
                 s.absolutePath
             } catch (e: IOException) {

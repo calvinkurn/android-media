@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.preview.presentation.service
 
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -101,8 +100,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        return object : AddEditProductNotificationManager(urlImageCount, manager, applicationContext) {
+        return object : AddEditProductNotificationManager(urlImageCount, applicationContext) {
             override fun getSuccessIntent(): PendingIntent {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
                 return PendingIntent.getActivity(context, 0, intent, 0)
