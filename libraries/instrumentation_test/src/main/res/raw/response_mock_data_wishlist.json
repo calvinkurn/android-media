@@ -1,0 +1,261 @@
+[
+    {
+        "data": {
+            "wishlist": {
+                "has_next_page": false,
+                "total_data": 6,
+                "items": [
+                    {
+                        "id": "384324030",
+                        "name": "K70 RGB MK.2 CHERRY MX Low Profile Speed Mechanical Gaming Keyboard",
+                        "url": "https://www.tokopedia.com/corsair-official/k70-rgb-mk-2-cherry-mx-low-profile-speed-mechanical-gaming-keyboard?whid\u003d0",
+                        "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/1/4/25364098/25364098_00373046-c498-4e5e-bc9e-f3abc31547ef_800_800.jpg",
+                        "raw_price": 2559000,
+                        "condition": "new",
+                        "available": true,
+                        "status": "active",
+                        "price": "Rp2.559.000",
+                        "rating": 5,
+                        "review_count": 13,
+                        "minimum_order": 1,
+                        "slash_price": "",
+                        "discount_percentage": 0,
+                        "wholesale_price": [],
+                        "shop": {
+                            "id": "2794779",
+                            "name": "Corsair Official Store",
+                            "url": "https://www.tokopedia.com/corsair-official",
+                            "gold_merchant": true,
+                            "official_store": true,
+                            "status": "active",
+                            "location": "Jakarta Pusat"
+                        },
+                        "preorder": false,
+                        "badges": [
+                            {
+                                "title": "Official Store",
+                                "image_url": "https://ecs7-p.tokopedia.net/img/official_store_badge.png"
+                            }
+                        ],
+                        "label_group": [
+                            {
+                                "title": "Terjual 22",
+                                "type": "textDarkGrey",
+                                "position": "integrity"
+                            }
+                        ],
+                        "free_ongkir": {
+                            "is_active": true,
+                            "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        }
+                    },
+                    {
+                        "id": "343178069",
+                        "name": "Kursi Gaming PEX |PEX Gaming Chair Ares Series",
+                        "url": "https://m.tokopedia.com/pexio/kursi-gaming-pex-pex-gaming-chair-ares-series",
+                        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/1/5/dd3722d3-9f40-4960-aa07-fb5f849df1fc.jpg",
+                        "raw_price": 2000000,
+                        "condition": "new",
+                        "available": false,
+                        "status": "active",
+                        "price": "Rp 2.000.000",
+                        "rating": 5,
+                        "review_count": 145,
+                        "minimum_order": 1,
+                        "slash_price": "",
+                        "discount_percentage": 0,
+                        "wholesale_price": [],
+                        "shop": {
+                            "id": "3167097",
+                            "name": "PEXIO Furniture",
+                            "url": "https://www.tokopedia.com/pexio",
+                            "gold_merchant": false,
+                            "official_store": true,
+                            "status": "open",
+                            "location": "Jakarta Barat"
+                        },
+                        "preorder": false,
+                        "badges": [],
+                        "label_group": [],
+                        "free_ongkir": {
+                            "is_active": false,
+                            "image_url": ""
+                        }
+                    },
+                    {
+                        "id": "808866384",
+                        "name": "Kursi kantor PEX | Office Chair PEX | Oslo",
+                        "url": "https://www.tokopedia.com/pexio/kursi-kantor-pex-office-chair-pex-oslo?whid\u003d0",
+                        "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2021/1/15/bc4d6d84-8a67-450f-923d-2473afc022d0.jpg",
+                        "raw_price": 2700000,
+                        "condition": "new",
+                        "available": true,
+                        "status": "active",
+                        "price": "Rp2.700.000",
+                        "rating": 5,
+                        "review_count": 66,
+                        "minimum_order": 1,
+                        "slash_price": "Rp3.500.000",
+                        "discount_percentage": 23,
+                        "wholesale_price": [],
+                        "shop": {
+                            "id": "3167097",
+                            "name": "PEXIO Furniture",
+                            "url": "https://www.tokopedia.com/pexio",
+                            "gold_merchant": true,
+                            "official_store": true,
+                            "status": "active",
+                            "location": "Jakarta Barat"
+                        },
+                        "preorder": true,
+                        "badges": [
+                            {
+                                "title": "Official Store",
+                                "image_url": "https://ecs7-p.tokopedia.net/img/official_store_badge.png"
+                            }
+                        ],
+                        "label_group": [
+                            {
+                                "title": "Cashback",
+                                "type": "lightGreen",
+                                "position": "promo"
+                            },
+                            {
+                                "title": "PO",
+                                "type": "lightGrey",
+                                "position": "offers"
+                            },
+                            {
+                                "title": "Preorder",
+                                "type": "transparentBlack",
+                                "position": "status"
+                            },
+                            {
+                                "title": "Terjual 117",
+                                "type": "textDarkGrey",
+                                "position": "integrity"
+                            }
+                        ],
+                        "free_ongkir": {
+                            "is_active": true,
+                            "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        }
+                    },
+                    {
+                        "id": "440011509",
+                        "name": "Buku Impor The Courage To Be Disliked - Ichiro Kishimi - Fumitake Koga",
+                        "url": "https://www.tokopedia.com/jm-online/buku-impor-the-courage-to-be-disliked-ichiro-kishimi-fumitake-koga?whid\u003d0",
+                        "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/4/3/22460168/22460168_b49097d3-5520-463a-8d81-7b4cd81ce632_326_500.jpg",
+                        "raw_price": 202000,
+                        "condition": "new",
+                        "available": true,
+                        "status": "active",
+                        "price": "Rp202.000",
+                        "rating": 5,
+                        "review_count": 1,
+                        "minimum_order": 1,
+                        "slash_price": "",
+                        "discount_percentage": 0,
+                        "wholesale_price": [],
+                        "shop": {
+                            "id": "2479161",
+                            "name": "JM Online Store",
+                            "url": "https://www.tokopedia.com/jm-online",
+                            "gold_merchant": true,
+                            "official_store": false,
+                            "status": "active",
+                            "location": "Jakarta Barat"
+                        },
+                        "preorder": false,
+                        "badges": [
+                            {
+                                "title": "Power Badge",
+                                "image_url": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                            }
+                        ],
+                        "label_group": [
+                            {
+                                "title": "Terjual 5",
+                                "type": "textDarkGrey",
+                                "position": "integrity"
+                            }
+                        ],
+                        "free_ongkir": {
+                            "is_active": true,
+                            "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        }
+                    },
+                    {
+                        "id": "199159289",
+                        "name": "speaker monitor active YAMAHA HS7 HS 7 (ORIGINAL)",
+                        "url": "https://m.tokopedia.com/firstaudio/speaker-monitor-active-yamaha-hs7-hs-7-original",
+                        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/8/3/0/0_55b8a91d-0a60-4d27-8b84-412906ed8197_2048_0.jpg",
+                        "raw_price": 4200000,
+                        "condition": "new",
+                        "available": false,
+                        "status": "warehouse",
+                        "price": "Rp 4.200.000",
+                        "rating": 5,
+                        "review_count": 3,
+                        "minimum_order": 1,
+                        "slash_price": "",
+                        "discount_percentage": 0,
+                        "wholesale_price": [],
+                        "shop": {
+                            "id": "1085833",
+                            "name": "Vln audio",
+                            "url": "https://www.tokopedia.com/firstaudio",
+                            "gold_merchant": false,
+                            "official_store": false,
+                            "status": "open",
+                            "location": "Jakarta Pusat"
+                        },
+                        "preorder": false,
+                        "badges": [],
+                        "label_group": [],
+                        "free_ongkir": {
+                            "is_active": false,
+                            "image_url": ""
+                        }
+                    },
+                    {
+                        "id": "469896041",
+                        "name": "KZ APTX HD Bluetooth 5.0 Module Earphone Upgrade Cable ZSN ZS10 Pro",
+                        "url": "https://m.tokopedia.com/techcube/kz-aptx-hd-bluetooth-5-0-module-earphone-upgrade-cable-zsn-zs10-pro",
+                        "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/6/20/18139363/18139363_bf6d66ac-c475-4cc3-9333-ff0e77ec3acd_1400_1400",
+                        "raw_price": 275000,
+                        "condition": "new",
+                        "available": false,
+                        "status": "active",
+                        "price": "Rp 275.000",
+                        "rating": 5,
+                        "review_count": 483,
+                        "minimum_order": 1,
+                        "slash_price": "",
+                        "discount_percentage": 0,
+                        "wholesale_price": [],
+                        "shop": {
+                            "id": "2060733",
+                            "name": "Tech Cube",
+                            "url": "https://www.tokopedia.com/techcube",
+                            "gold_merchant": false,
+                            "official_store": true,
+                            "status": "open",
+                            "location": "Jakarta Barat"
+                        },
+                        "preorder": false,
+                        "badges": [],
+                        "label_group": [],
+                        "free_ongkir": {
+                            "is_active": false,
+                            "image_url": ""
+                        }
+                    }
+                ],
+                "pagination": {
+                    "next_url": ""
+                }
+            }
+        }
+    }
+]

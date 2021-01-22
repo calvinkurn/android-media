@@ -1,0 +1,59 @@
+{
+    "status": {
+        "error_code": 0,
+        "message": "OK"
+    },
+    "header": {
+        "total_data": 1,
+        "process_time": 0.02092855,
+        "meta": {
+            "ab_test": "N",
+            "display": "banner"
+        },
+        "pagination": {
+            "kind": "scroll",
+            "next_page_token": "8a-pyR-5QchwPsJi6SDiQcVpPVYaQRri6sVYwe"
+        }
+    },
+    "data": [
+        {
+            "id": 86615744,
+            "banner": {
+                "name": "",
+                "position": 0,
+                "images": [
+                    {
+                        "image_dimension": {
+                            "dimen_id": 3,
+                            "height": 400,
+                            "width": 1200
+                        },
+                        "full_ecs": "https://ecs7.tokopedia.net/img/attachment/2021/1/18/50503046/50503046_8a9a4547-241d-490c-afbb-ca139c319600.jpg"
+                    }
+                ],
+                "shop": {
+                    "id": 9601261,
+                    "name": "Amazfit Official",
+                    "domain": "amazfitofficial-",
+                    "tagline": "The best smart watch brands",
+                    "city": "Kab. Tangerang",
+                    "shop_is_official": true,
+                    "power_merchant": true,
+                    "power_merchant_badge": true,
+                    "image_shop": {
+                        "cover": "",
+                        "s_url": "",
+                        "xs_url": "",
+                        "cover_ecs": "",
+                        "s_ecs": "",
+                        "xs_ecs": ""
+                    }
+                }
+            },
+            "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AyfH_1RoAeDUMVj9RzNrc1i6srDUSC5rfB7q3YXUsthbm-7q3OBUsthosJhHsrOoArFbm-xgVYpyfYagZUEHs17bseN6A1O6AnOHsrhH_1fbm-pHOYDQfri6i-B812OysUOqB2_Z_g-qB1h_7zDq7Y1qpVHu7g0_uPzPJNJgch61pnO3jzzH1h93MhquJOd_32SH7YJuM2oe7BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjh_jH7HJY1gpV6ucPR_Bz-H7O1z_V6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjh_3j781YJyp-vuJJh_uzsoJOEZ_Co81tNUiFiP9oBrBY2gmUEUsJOo_U7osKibm-pg9opq3YX9fBjUstigu2I8uo-PRuZoRVye7YWefgS6JzAHA2C1JJNH3-V9OxOPS2wPA-cu_xu3BrhgIoG1R-zoM2DzO-bg72B_j-S39zjru4dQ7BzqfYW1jNWouPx6Vxyu3VHeOVZefr7rVnpPjxwg1zcgZO5r1YaupooQ9BGe3x0uICy1fVRqBBg8_nWyiOI_ACe8sBCgcoFq9B6gpBR8mOjg_-a17x3H1ztqfOzoaUDUMVDgaUEUM-xQMNBrBYxgIHibm-XP3Oig9-wQfgwy3zpUsthbm-XP3Oig9-wy3zp9R-BrZUEHZFiQBYsy3Njq3zxPcuwy3zpUsthHmFiPMuarfB5QiUEUSyaUS7?src=wishlist&page=1&click_ad_type=1&t=android&sid=eZGySIwuR7qXCOmCfg8DC0%3AAPA91bE_Xuvz_t2FU8UZW1dsJSrQ6jlGRKgJeNBgYtdq_8oIQkomRNm5Wa8XXUaLCQRCg4pP3vH_eDFe-oqOrW3MmyJAhkTpXSawjYYy0-b-GL0Pz9AdcpiyNg9wx-de2rSHV1DhkmQ7&uid=1552468&r=https%3A%2F%2Fwww.tokopedia.com%2Famazfitofficial-",
+            "ad_view_url": "https://ta.tokopedia.com/promo/v1/views/8a-xgVY2gmUE6AyfH_1RoAeDUMVj9RzNrc1i6srDUSC5rfB7q3YXUsthbm-7q3OBUsthosJhHsrOoArFbm-Fy9ztUstig3opoaN7QfW5rcujq3JXQMu7bfBWgaYxPIzxyfxWg3N7bpUFHsJ5HZ4h6m4OHA1FHpn7oi4OHA1FHpn7oB47osBMosCxgmOjoM17b_ed6_yWy_oMHm7FgcVBHcHhy_eFHpJXqSCSUiFiyRCWUsthHiFiy3zwrfo5rM1i6sUOomd76_KOo_KFo_URH_JOoiFirpowQcYSUstig9BGP3Uao32q17jfZ32uH1YJQcWvucDh_VPcq7O919z6zczD_BHFou2J1_VHuO2D3Bzo8JOkgpovzVgk_1o-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H1NAoACvucrh_BzSP7N1Z_oouJ1h_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-H1O2oIBvzcHa_OzCH1O1ypzo8jjF_9BG6ZUDUSupg9-wq3ei6iUho_1aoAydUiFirfuprfB5QBY2gmUEUMuqzRB_Z9PO1sPh3JovQ1oMgpxJepnEeuCC6_VizuYyP9gE9ReazB1duu29H3zpZBoa1_gkQJPZZfPGg1NmgOB7gIVw6cY-13W5Qu-6Q_u9y_xy3Vux_Joz1joSoICeHRgU9fuJzM1WQRVvrBrp_3ONZjVtqOzF3VoxPf2g39jFb3UWz7FF1ItNe3zsrcBN_MrNPRKWgc1arBoUusVJqcWW1_ribm-xQcri6i-iy3NXg9-wy3zpUiFiQSuWyMua9fYM9fVjraUEHZFiQSuWyMua9fVjrOYag9Ji6sJDUMNwyfVXgcBjy9zB9fVjraUEH_nDUSgBrSo2Qfdi6i-fHi-Y?t=android&sid=eZGySIwuR7qXCOmCfg8DC0%3AAPA91bE_Xuvz_t2FU8UZW1dsJSrQ6jlGRKgJeNBgYtdq_8oIQkomRNm5Wa8XXUaLCQRCg4pP3vH_eDFe-oqOrW3MmyJAhkTpXSawjYYy0-b-GL0Pz9AdcpiyNg9wx-de2rSHV1DhkmQ7&uid=1552468&src=wishlist&page=1",
+            "redirect": "https://www.tokopedia.com/amazfitofficial-",
+            "applinks": "tokopedia://shop/9601261"
+        }
+    ]
+}
