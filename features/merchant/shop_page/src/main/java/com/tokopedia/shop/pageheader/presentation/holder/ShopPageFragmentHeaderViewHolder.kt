@@ -279,13 +279,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         isShopFavorite = followStatus?.status?.userIsFollowing == true
         followStatus?.let {
             followButton.text = it.followButton?.buttonLabel
-            val voucherUrl = MethodChecker.fromHtml(it.followButton?.voucherIconURL).toString()
-            val coachMarkText = MethodChecker.fromHtml(it.followButton?.coachmarkText).toString()
+            val voucherUrl = it.followButton?.voucherIconURL
+            val coachMarkText = it.followButton?.coachmarkText
             if (!voucherUrl.isNullOrBlank()) {
                 loadLeftDrawable(voucherUrl)
             }
-            if (!coachMarkText.isNullOrBlank()) {
+            if (!coachMarkText.isNullOrBlank() && listener.isFirstTimeVisit() == false) {
                 setCoachMark(coachMarkText)
+                listener.saveFirstTimeVisit()
             }
         }
         changeColorButton()
@@ -305,7 +306,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                 CoachMark2Item(
                         anchorView = followButton,
                         title = "",
-                        description = description
+                        description = MethodChecker.fromHtml(description)
                 )
         )
         coachMark = CoachMark2(context)
@@ -389,6 +390,8 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
         fun openShopInfo()
         fun onStartLiveStreamingClicked()
+        fun saveFirstTimeVisit()
+        fun isFirstTimeVisit(): Boolean?
     }
 
 

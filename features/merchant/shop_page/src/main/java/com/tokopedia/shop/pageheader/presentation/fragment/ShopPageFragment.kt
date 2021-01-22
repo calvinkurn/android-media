@@ -2,7 +2,9 @@ package com.tokopedia.shop.pageheader.presentation.fragment
 
 import android.app.Activity
 import android.content.ClipData
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -145,6 +147,7 @@ class ShopPageFragment :
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
         const val FORCE_NOT_SHOWING_HOME_TAB = "FORCE_NOT_SHOWING_HOME_TAB"
+        const val SHOP_PAGE_PREFERENCE = "SHOP_PAGE_PREFERENCE"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val REQUEST_CODE_USER_LOGIN_CART = 102
@@ -164,6 +167,7 @@ class ShopPageFragment :
         private const val START_PAGE = 1
         private const val ACTION_FOLLOW = "follow"
         private const val ACTION_UNFOLLOW = "unfollow"
+        private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
@@ -258,6 +262,7 @@ class ShopPageFragment :
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
+    private var sharedPreferences: SharedPreferences? = null
     var selectedPosition = -1
     val isMyShop: Boolean
         get() = if (::shopViewModel.isInitialized) {
@@ -485,6 +490,7 @@ class ShopPageFragment :
         super.onViewCreated(view, savedInstanceState)
         stopMonitoringPltPreparePage()
         stopMonitoringPltCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
+        sharedPreferences = activity?.getSharedPreferences(SHOP_PAGE_PREFERENCE, Context.MODE_PRIVATE)
         shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
         shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
@@ -1241,6 +1247,16 @@ class ShopPageFragment :
                 setFollowStatus(shopPageFragmentHeaderViewHolder.isShopFavourited())
             }.show()
         }
+    }
+
+    override fun isFirstTimeVisit(): Boolean? {
+        return sharedPreferences?.getBoolean(IS_FIRST_TIME_VISIT, false)
+    }
+
+    override fun saveFirstTimeVisit() {
+        sharedPreferences?.edit()?.run {
+            putBoolean(IS_FIRST_TIME_VISIT, true)
+        }?.apply()
     }
 
     private fun showMerchantVoucherCouponBottomSheet(shopId: Int) {
