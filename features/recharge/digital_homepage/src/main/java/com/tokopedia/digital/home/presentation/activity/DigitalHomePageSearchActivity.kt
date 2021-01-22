@@ -26,7 +26,7 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Recharg
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
         val platformId = bundle?.getInt(PARAM_PLATFORM_ID)
-        val enablePersonalize = (bundle?.getString(PARAM_ENABLE_PERSONALIZE) ?: "true").toBoolean()
+        val enablePersonalize = bundle?.getBoolean(PARAM_ENABLE_PERSONALIZE) ?: true
         val sectionId = bundle?.getIntegerArrayList(PARAM_SECTION_ID) ?: arrayListOf()
         val searchBarPlaceHolder = bundle?.getString(PARAM_SEARCHBAR_PLACEHOLDER) ?: ""
 
