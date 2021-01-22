@@ -3,15 +3,14 @@
     package="com.tokopedia.ordermanagement.snapshot">
 
     <application
-        android:allowBackup="true"
         android:label="@string/title_snapshot"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.Androidtokopediacore">
+        android:theme="@style/Theme.White">
         <activity android:name=".view.activity.SnapshotActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
     </application>

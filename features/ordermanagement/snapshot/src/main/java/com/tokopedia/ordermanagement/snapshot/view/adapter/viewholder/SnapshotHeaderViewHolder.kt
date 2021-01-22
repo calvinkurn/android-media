@@ -16,7 +16,6 @@ import com.tokopedia.unifycomponents.PageControl
  */
 class SnapshotHeaderViewHolder(itemView: View) : SnapshotAdapter.BaseViewHolder<SnapshotTypeData>(itemView) {
     override fun bind(item: SnapshotTypeData, position: Int) {
-        // TODO("Not yet implemented")
         if (item.dataObject is Int) {
             if (item.dataObject == 1) {
                 val ivHeader = itemView.findViewById<ImageUnify>(R.id.snapshot_main_img)

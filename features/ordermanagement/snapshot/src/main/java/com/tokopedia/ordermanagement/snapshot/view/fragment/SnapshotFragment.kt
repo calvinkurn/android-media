@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,6 +41,7 @@ class SnapshotFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
+        renderPage()
     }
 
     private fun prepareLayout() {
@@ -55,8 +55,9 @@ class SnapshotFragment : Fragment() {
     private fun renderPage() {
         val listPage = arrayListOf<SnapshotTypeData>()
         listPage.add(SnapshotTypeData(1, SnapshotConsts.TYPE_HEADER))
-        listPage.add(SnapshotTypeData("", SnapshotConsts.TYPE_INFO))
-        listPage.add(SnapshotTypeData("", SnapshotConsts.TYPE_SHOP))
+        listPage.add(SnapshotTypeData("a", SnapshotConsts.TYPE_INFO))
+        listPage.add(SnapshotTypeData("b", SnapshotConsts.TYPE_SHOP))
+        listPage.add(SnapshotTypeData("c", SnapshotConsts.TYPE_DETAILS))
         snapshotAdapter.addList(listPage)
     }
 }

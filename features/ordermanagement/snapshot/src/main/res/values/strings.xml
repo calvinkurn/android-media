@@ -1,4 +1,9 @@
 <resources>
     <string name="title_snapshot">snapshot</string>
     <string name="snapshot_img">image product</string>
+    <string name="detail_produk">Detail produk</string>
+    <string name="snapshot_kondisi_label">Kondisi</string>
+    <string name="snapshot_berat_label">Berat</string>
+    <string name="snapshot_po_label">Waktu PreOrder</string>
+    <string name="snapshot_min_order_label">Min. Pemesanan</string>
 </resources>

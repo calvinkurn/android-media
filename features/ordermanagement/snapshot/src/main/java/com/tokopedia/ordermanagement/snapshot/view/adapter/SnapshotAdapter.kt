@@ -6,6 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.ordermanagement.snapshot.R
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_DETAILS
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_HEADER
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_INFO
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_SHOP
 import com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder.SnapshotDetailsViewHolder
 import com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder.SnapshotHeaderViewHolder
 import com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder.SnapshotInfoViewHolder
@@ -38,10 +42,10 @@ class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>(
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.snapshot_shop_item, parent, false)
                 SnapshotShopViewHolder(view)
             }
-            /*LAYOUT_DETAILS -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_empty_state, parent, false)
-                SnapshotDetailsViewHolder(view, actionListener)
-            }*/
+            LAYOUT_DETAILS -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.snapshot_details_item, parent, false)
+                SnapshotDetailsViewHolder(view)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -62,14 +66,25 @@ class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>(
             is SnapshotShopViewHolder-> {
                 holder.bind(element, holder.adapterPosition)
             }
-            /*is SnapshotDetailsViewHolder-> {
+            is SnapshotDetailsViewHolder-> {
                 holder.bind(element, holder.adapterPosition)
-            }*/
+            }
         }
     }
 
     override fun getItemCount(): Int {
+        println("++ size = "+listTypeData.size)
         return listTypeData.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (listTypeData[position].typeLayout) {
+            TYPE_HEADER -> LAYOUT_HEADER
+            TYPE_INFO -> LAYOUT_INFO
+            TYPE_SHOP -> LAYOUT_SHOP
+            TYPE_DETAILS -> LAYOUT_DETAILS
+            else -> throw IllegalArgumentException("Invalid view type")
+        }
     }
 
     fun addList(list: List<SnapshotTypeData>) {
