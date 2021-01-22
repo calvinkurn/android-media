@@ -26,7 +26,6 @@ class CartTrackingTest {
 
     @Before
     fun setup() {
-        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
         gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_tracking_default_response), MockModelConfig.FIND_BY_CONTAINS)
@@ -49,7 +48,7 @@ class CartTrackingTest {
     @After
     fun cleanup() {
         gtmLogDBSource.deleteAll().subscribe()
-        activityRule.finishActivity()
+        if (!activityRule.activity.isDestroyed) activityRule.finishActivity()
     }
 
     companion object {

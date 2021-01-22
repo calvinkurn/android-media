@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.cart.test.R
 import com.tokopedia.cart.view.CartFragment
-import com.tokopedia.purchase_platform.common.constant.CartConstant.REFRESH_CART_AFTER_BACK_FROM_PDP
+import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 
 class InstrumentTestCartActivity : AppCompatActivity() {
 
@@ -13,7 +13,7 @@ class InstrumentTestCartActivity : AppCompatActivity() {
         setContentView(R.layout.activity_cart_test)
 
         val bundle = Bundle()
-        bundle.putBoolean(REFRESH_CART_AFTER_BACK_FROM_PDP, false)
+        bundle.putBoolean(IS_TESTING_FLOW, true)
         val cartFragment = CartFragment.newInstance(bundle, "")
         supportFragmentManager.beginTransaction()
                 .replace(R.id.parent_view_cart, cartFragment, "")

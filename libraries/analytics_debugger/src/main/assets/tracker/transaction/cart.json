@@ -2,6 +2,17 @@
   "mode": "exact",
   "query": [
     {
+      "networkSpeed" : "{{.*}}",
+      "clientId" : "{{.*}}",
+      "isLoggedInStatus" : "{{true|false}}",
+      "appsflyerId": "{{.*}}",
+      "shopId" : "{{\\d+}}",
+      "screenName" : "/cart",
+      "event": "openScreen",
+      "userId" : "{{\\d+}}",
+      "sessionIris" : "{{.*}}"
+    },
+    {
       "eventCategory": "cart",
       "checkout_step": "0",
       "currentSite": "tokopediamarketplace",

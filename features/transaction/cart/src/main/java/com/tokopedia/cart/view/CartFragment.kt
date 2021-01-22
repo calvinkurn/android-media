@@ -93,7 +93,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_W
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAULT
-import com.tokopedia.purchase_platform.common.constant.CartConstant.REFRESH_CART_AFTER_BACK_FROM_PDP
+import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
@@ -233,7 +233,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var initialPromoButtonPosition = 0f
     private var recommendationPage = 1
     private var accordionCollapseState = true
-    private var refreshCartAfterBackFromPdp = true
     private var hasCalledOnSaveInstanceState = false
     private var isCheckUncheckDirectAction = true
     private var toolbarType = ""
@@ -329,8 +328,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let {
             setHasOptionsMenu(true)
             it.title = it.getString(R.string.title_activity_cart)
-
-            setPdpRefreshResult()
 
             val productId = getAtcProductId()
             if (isAtcExternalFlow()) {
@@ -470,7 +467,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onResultFromPdp() {
-        if (refreshCartAfterBackFromPdp) {
+        if (!isTestingFlow()) {
             refreshCart()
         }
     }
@@ -1116,10 +1113,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.processUpdateCartData(false)
     }
 
-    private fun setPdpRefreshResult() {
-        if (arguments?.getBoolean(REFRESH_CART_AFTER_BACK_FROM_PDP, true) == false) {
-            refreshCartAfterBackFromPdp = false
-        }
+    private fun isTestingFlow(): Boolean {
+        return arguments?.getBoolean(IS_TESTING_FLOW, false) ?: false
     }
 
     private fun addToCartExternal(productId: Long) {
@@ -2669,7 +2664,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventViewErrorWhenCheckout(message)
         showToastMessageRed(message)
 
-        refreshCart()
+        if (!isTestingFlow()) {
+            refreshCart()
+        }
     }
 
     private fun renderGlobalErrorBottomsheet(message: String) {
