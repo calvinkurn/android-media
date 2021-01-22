@@ -21,7 +21,6 @@ import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 import timber.log.Timber
-import java.net.URI
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -196,10 +195,21 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     private fun logWebViewApplink() {
         val domain = getDomainName(url)
         if(domain.isNotEmpty()) {
-            if(!getBaseDomain(domain).equals(TOKOPEDIA_DOMAIN, ignoreCase = true)) {
+            if(!getBaseDomain(domain).equals(TOKOPEDIA_DOMAIN, ignoreCase = true) && !isDomainWhitelisted(domain)) {
                 Timber.w("P1#WEBVIEW_OPENED#webview;domain='$domain';url='$url'")
+                redirectToNativeBrowser()
             }
         }
+    }
+
+    private fun redirectToNativeBrowser() {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
+    }
+
+    private fun isDomainWhitelisted(domain: String): Boolean {
+        // TO DO
+        return false
     }
 
     private fun getBaseDomain(host: String): String {
