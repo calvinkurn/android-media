@@ -45,7 +45,7 @@ class CatalogMVCListUseCase @Inject constructor(var gqlWrapper: GqlUseCaseWrappe
 
     suspend fun getFakeResponse(): TokopointsCatalogMVCListResponse {
         delay(1000L)
-        return Gson().fromJson(FakeResponse.FakeTokopointsCatalogMVCListResponse, TokopointsCatalogMVCListResponse::class.java)
+        return Gson().fromJson(FakeResponse.FakeTokopointsCatalogMVCListFirstFollowResponse, TokopointsCatalogMVCListResponse::class.java)
     }
 }
 
