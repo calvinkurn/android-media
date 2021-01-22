@@ -127,6 +127,9 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
             is PdpSimulationException.PayLaterNotApplicableException -> {
                 payLaterTermsEmptyView.visible()
+                context?.let {
+                    ContextCompat.getDrawable(it, R.drawable.ic_paylater_terms_not_matched)?.let { it1 -> payLaterTermsEmptyView.setImageDrawable(it1) }
+                }
                 tickerSimulation.visible()
                 tickerSimulation.setHtmlDescription(context?.getString(R.string.pay_later_not_applicable_ticker_text)
                         ?: "")

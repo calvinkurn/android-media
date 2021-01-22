@@ -134,16 +134,14 @@
 
         <com.tokopedia.empty_state.EmptyStateUnify
             android:id="@+id/creditCardTermsEmptyView"
-            android:layout_width="@dimen/unify_space_0"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_16"
             android:visibility="gone"
-            android:gravity="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvSeeAll"
             app:unifyEmptyStateDescription="@string/credit_card_simulation_empty_view_description"
-            app:unifyEmptyStateImageDrawable="@drawable/ic_paylater_terms_not_matched"
             app:unifyEmptyStateOrientation="vertical"
             app:unifyEmptyStatePrimaryCTAText=""
             app:unifyEmptyStateSecondaryCTAText=""
