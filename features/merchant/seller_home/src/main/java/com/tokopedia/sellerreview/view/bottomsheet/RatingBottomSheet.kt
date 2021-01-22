@@ -1,26 +1,26 @@
 package com.tokopedia.sellerreview.view.bottomsheet
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerreview.common.Const
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.sir_rating_bottom_sheet.view.*
 
 /**
  * Created By @ilhamsuaib on 20/01/21
  */
 
-class RatingBottomSheet : BottomSheetUnify() {
+class RatingBottomSheet : BaseBottomSheet() {
 
     companion object {
         private const val TAG = "RatingBottomSheet"
+
         fun createInstance(): RatingBottomSheet {
             return RatingBottomSheet().apply {
                 overlayClickDismiss = false
@@ -28,30 +28,53 @@ class RatingBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private var childView: View? = null
     private var ratingStatus: Array<String>? = null
+    private var onSubmitted: (() -> Unit)? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-    }
+    override fun getResLayout(): Int = R.layout.sir_rating_bottom_sheet
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initRatingStatus()
-        setChild(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun dismiss() {
-        view?.post {
-            if (isVisible) {
-                super.dismiss()
+    override fun setupView() = childView?.run {
+        val defaultImageIndex = 3
+        setOnStarClicked(this, defaultImageIndex)
+        ratePickerSirRating.setDescriptionStatus("")
+        ratePickerSirRating.setListener(object : AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
+            override fun onClick(position: Int) {
+                setOnStarClicked(this@run, position)
+                showRatePickerStatus(position)
+                btnSirSubmit.isEnabled = true
             }
+        })
+        btnSirSubmit.setOnClickListener {
+            submitRating()
         }
     }
 
-    fun show(fm: FragmentManager) {
+    override fun show(fm: FragmentManager) {
         show(fm, TAG)
+    }
+
+    fun setOnSubmittedListener(action: () -> Unit): RatingBottomSheet {
+        onSubmitted = action
+        return this
+    }
+
+    private fun submitRating() {
+        childView?.run {
+            btnSirSubmit.isLoading = true
+
+            Handler().postDelayed({
+                btnSirSubmit.isLoading = false
+                this@RatingBottomSheet.dismiss()
+                Handler().postDelayed({
+                    onSubmitted?.invoke()
+                }, 500)
+            }, 2000)
+        }
     }
 
     private fun initRatingStatus() {
@@ -66,25 +89,6 @@ class RatingBottomSheet : BottomSheetUnify() {
                 )
             }
         }
-    }
-
-    private fun setChild(inflater: LayoutInflater, container: ViewGroup?) {
-        val child = inflater.inflate(R.layout.sir_rating_bottom_sheet, container, false)
-        childView = child
-        setChild(child)
-        setupView()
-    }
-
-    private fun setupView() = childView?.run {
-        val defaultImageIndex = 3
-        setOnStarClicked(this, defaultImageIndex)
-        ratePickerSirRating.setDescriptionStatus("")
-        ratePickerSirRating.setListener(object : AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
-            override fun onClick(position: Int) {
-                setOnStarClicked(this@run, position)
-                showRatePickerStatus(position)
-            }
-        })
     }
 
     private fun setOnStarClicked(child: View, starPosition: Int) {

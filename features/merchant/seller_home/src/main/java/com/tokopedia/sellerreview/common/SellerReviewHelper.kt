@@ -3,6 +3,7 @@ package com.tokopedia.sellerreview.common
 import android.content.Context
 import android.os.Handler
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.sellerreview.view.bottomsheet.FeedbackBottomSheet
 import com.tokopedia.sellerreview.view.bottomsheet.RatingBottomSheet
 
 /**
@@ -16,7 +17,15 @@ object SellerReviewHelper {
     fun checkForReview(context: Context, fm: FragmentManager) {
         Handler().postDelayed({
             RatingBottomSheet.createInstance()
+                    .setOnSubmittedListener {
+                        showFeedBackBottomSheet(fm)
+                    }
                     .show(fm)
         }, POPUP_DELAY)
+    }
+
+    private fun showFeedBackBottomSheet(fm: FragmentManager) {
+        FeedbackBottomSheet.createInstance()
+                .show(fm)
     }
 }
