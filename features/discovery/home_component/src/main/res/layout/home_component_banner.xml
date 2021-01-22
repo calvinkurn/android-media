@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:descendantFocusability="blocksDescendants"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingStart="@dimen/dp_16"
     android:layout_marginBottom="@dimen/dp_8"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">

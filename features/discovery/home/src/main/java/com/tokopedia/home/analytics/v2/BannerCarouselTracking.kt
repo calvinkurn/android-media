@@ -14,15 +14,15 @@ object BannerCarouselTracking : BaseTrackerConst() {
     private const val CLICK_ON_BANNER_CAROUSEL = "dynamic channel carousel click"
     private const val DEFAULT_VALUE_HEADER_NAME = "default"
 
-    fun sendBannerCarouselClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(getBannerCarouselClick(channelModel, channelGrid, position))
+    fun sendBannerCarouselClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, userId: String) {
+        getTracker().sendEnhanceEcommerceEvent(getBannerCarouselClick(channelModel, channelGrid, position, userId))
     }
 
     fun sendBannerCarouselImpression(trackingQueue: TrackingQueue, channel: ChannelModel, position: Int, isToIris: Boolean = false) {
         trackingQueue.putEETracking(getBannerCarouselImpression(channel, position, isToIris))
     }
 
-    private fun getBannerCarouselClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) : Map<String, Any> {
+    private fun getBannerCarouselClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, userId: String) : Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicPromotionClick(
                     event = Event.PROMO_CLICK,
@@ -43,10 +43,11 @@ object BannerCarouselTracking : BaseTrackerConst() {
                 .appendAffinity(channelModel.trackingAttributionModel.persona)
                 .appendCategoryId(channelModel.trackingAttributionModel.categoryPersona)
                 .appendShopId(channelModel.trackingAttributionModel.brandId)
+                .appendUserId(userId)
                 .build()
     }
 
-    fun getBannerCarouselItemImpression(channel: ChannelModel, grid: ChannelGrid, position: Int, isToIris: Boolean = false): HashMap<String, Any> {
+    fun getBannerCarouselItemImpression(channel: ChannelModel, grid: ChannelGrid, position: Int, isToIris: Boolean = false, userId: String): HashMap<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicPromotionView(
                 event = if (isToIris) Event.PROMO_VIEW_IRIS else PROMO_VIEW,
@@ -57,6 +58,7 @@ object BannerCarouselTracking : BaseTrackerConst() {
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendChannelId(channel.id)
                 .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(userId)
                 .build() as HashMap<String, Any>
     }
 

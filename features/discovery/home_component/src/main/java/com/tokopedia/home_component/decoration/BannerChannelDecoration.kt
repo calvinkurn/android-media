@@ -10,11 +10,10 @@ class BannerChannelDecoration : RecyclerView.ItemDecoration() {
                                 view: View,
                                 parent: RecyclerView,
                                 state: RecyclerView.State) {
-        when {
-            parent.getChildAdapterPosition(view) != parent.adapter?.itemCount -> {
-                outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_12)
-            }
+        if (parent.getChildAdapterPosition(view) == 0) {
+            outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
         }
 
+        outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
     }
 }

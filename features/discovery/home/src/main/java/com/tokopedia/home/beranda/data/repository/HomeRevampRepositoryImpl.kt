@@ -164,6 +164,10 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                         atfData.content = gson.toJson(channelFromResponse)
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }
+                                    homeData.atfData?.isProcessingAtf = false
+                                    cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                        homeCachedDataSource.saveToDatabase(homeData)
+                                    })
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
                                     atfData.content = null
@@ -180,6 +184,10 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                         atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon)
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }
+                                    homeData.atfData?.isProcessingAtf = false
+                                    cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                        homeCachedDataSource.saveToDatabase(homeData)
+                                    })
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
                                 }
@@ -201,11 +209,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         return@error
                     }
                 }
-
-                homeData.atfData?.isProcessingAtf = false
-                cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
-                    homeCachedDataSource.saveToDatabase(homeData)
-                })
             }
 
             /**

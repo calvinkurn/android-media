@@ -38,7 +38,7 @@ object DynamicIconTracking : BaseTracking(){
     }
 
     fun sendDynamicIconClick(userId: String, dynamicIcon: DynamicIconComponent.DynamicIcon, position: Int, iconPosition: Int){
-        val tracker = BaseTrackerBuilder().constructBasicPromotionView(
+        val tracker = BaseTrackerBuilder().constructBasicPromotionClick(
                 event = Event.PROMO_CLICK,
                 eventAction = Action.CLICK_ON.format(DYNAMIC_ICON),
                 eventCategory = Category.HOMEPAGE,
@@ -62,6 +62,6 @@ object DynamicIconTracking : BaseTracking(){
         .appendCategoryId(dynamicIcon.categoryPersona)
         .appendShopId(dynamicIcon.brandId)
         .build()
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracker)
+        getTracker().sendEnhanceEcommerceEvent(tracker)
     }
 }
