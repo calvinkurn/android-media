@@ -11,15 +11,14 @@ import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase
 import com.tokopedia.common_digital.common.constant.DigitalUrl
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
-import com.tokopedia.digital_checkout.data.request.RequestBodyAtcDigital
 import com.tokopedia.digital_checkout.data.request.RequestBodyOtpSuccess
-import com.tokopedia.digital_checkout.di.DigitalCartScope
+import com.tokopedia.digital_checkout.di.DigitalCartQualifier
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.usecase.RequestParams
 import okhttp3.Interceptor
 import javax.inject.Inject
 
-class DigitalPatchOtpUseCase @Inject constructor(@DigitalCartScope authInterceptor: ArrayList<Interceptor>,
+class DigitalPatchOtpUseCase @Inject constructor(@DigitalCartQualifier authInterceptor: ArrayList<Interceptor>,
                                                  @ApplicationContext context: Context)
     : RestRequestSupportInterceptorUseCase(authInterceptor, context) {
 
