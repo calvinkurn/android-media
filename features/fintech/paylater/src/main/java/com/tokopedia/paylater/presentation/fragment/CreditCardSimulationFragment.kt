@@ -176,7 +176,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
                 dividerVertical.visible()
                 tickerSimulation.visible()
                 creditCardRegisterWidget.visible()
-                tickerSimulation.setHtmlDescription("Tenang, kamu bisa coba pakai PayLater. Ada  bunga 0% juga! <a href='https://google.com'>Lihat Simulasi PayLater</a>")
+                tickerSimulation.setHtmlDescription(context?.getString(R.string.credit_card_not_applicable_ticker_text) ?: "")
                 tickerSimulation.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         creditCardSimulationCallback?.switchPaymentMode()

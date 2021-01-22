@@ -37,7 +37,7 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     }
 
     companion object {
-        const val SCREEN_NAME = "Pdp Simulation"
+        const val SCREEN_NAME = "PayLater & Cicilan"
     }
 
     override fun getComponent(): PdpSimulationComponent {

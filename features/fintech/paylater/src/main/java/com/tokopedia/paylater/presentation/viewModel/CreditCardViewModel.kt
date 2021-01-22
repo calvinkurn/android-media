@@ -63,11 +63,13 @@ class CreditCardViewModel @Inject constructor(
 
 
     private fun onCreditCardSimulationSuccess(pdpCreditCardSimulationData: PdpCreditCardSimulation?) {
-        if (pdpCreditCardSimulationData?.creditCardGetSimulationResult != null) {
+        onCreditCardSimulationError(PdpSimulationException.CreditCardSimulationNotAvailableException(CREDIT_CARD_NOT_AVAILABLE))
+
+        /*if (pdpCreditCardSimulationData?.creditCardGetSimulationResult != null) {
             pdpCreditCardSimulationData.creditCardGetSimulationResult.creditCardInstallmentList?.getOrNull(0)?.isSelected = true
             creditCardSimulationResultLiveData.value = Success(pdpCreditCardSimulationData.creditCardGetSimulationResult)
         } else onCreditCardSimulationError(PdpSimulationException.CreditCardNullDataException(SIMULATION_DATA_FAILURE))
-    }
+    */}
 
     private fun onCreditCardSimulationError(throwable: Throwable) {
         creditCardSimulationResultLiveData.value = Fail(throwable)
