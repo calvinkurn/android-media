@@ -79,7 +79,12 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
         launch {
-            _orderHistoryListResult.value = uohListUseCase.executeSuspend(paramOrder)
+            try {
+                _orderHistoryListResult.value = uohListUseCase.executeSuspend(paramOrder)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _orderHistoryListResult.value = Fail(e.fillInStackTrace())
+            }
             UohIdlingResource.decrement()
         }
     }
@@ -87,11 +92,16 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun loadRecommendationList(pageNumber: Int) {
         UohIdlingResource.increment()
         launch {
-            val recommendationData = getRecommendationUseCase.getData(
-                    GetRecommendationRequestParam(
-                            pageNumber = pageNumber,
-                            pageName = UohConsts.PAGE_NAME))
-            _recommendationListResult.value = (recommendationData.asSuccess())
+            try {
+                val recommendationData = getRecommendationUseCase.getData(
+                        GetRecommendationRequestParam(
+                                pageNumber = pageNumber,
+                                pageName = UohConsts.PAGE_NAME))
+                _recommendationListResult.value = (recommendationData.asSuccess())
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _recommendationListResult.value = Fail(e.fillInStackTrace())
+            }
             UohIdlingResource.decrement()
         }
     }
@@ -99,7 +109,12 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doFinishOrder(paramFinishOrder: UohFinishOrderParam) {
         UohIdlingResource.increment()
         launch {
-            _finishOrderResult.value = (uohFinishOrderUseCase.executeSuspend(paramFinishOrder))
+            try {
+                _finishOrderResult.value = (uohFinishOrderUseCase.executeSuspend(paramFinishOrder))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _finishOrderResult.value = Fail(e.fillInStackTrace())
+            }
             UohIdlingResource.decrement()
         }
     }
@@ -107,7 +122,12 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doAtcMulti(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>) {
         UohIdlingResource.increment()
         launch {
-            _atcMultiResult.value = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            try {
+                _atcMultiResult.value = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _atcMultiResult.value = Fail(e.fillInStackTrace())
+            }
             UohIdlingResource.decrement()
         }
     }
@@ -115,7 +135,11 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doLsPrintFinishOrder(verticalId: String) {
         UohIdlingResource.increment()
         launch {
-            _lsPrintFinishOrderResult.value = (lsPrintFinishOrderUseCase.executeSuspend(verticalId))
+            try {
+                _lsPrintFinishOrderResult.value = (lsPrintFinishOrderUseCase.executeSuspend(verticalId))
+            } catch (e: Exception) {
+                _lsPrintFinishOrderResult.value = Fail(e.fillInStackTrace())
+            }
             UohIdlingResource.decrement()
         }
     }
@@ -123,7 +147,11 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doFlightResendEmail(invoiceId: String, email: String) {
         UohIdlingResource.increment()
         launch {
-            _flightResendEmailResult.value = (flightResendEmailUseCase.executeSuspend(invoiceId, email))
+            try {
+                _flightResendEmailResult.value = (flightResendEmailUseCase.executeSuspend(invoiceId, email))
+            } catch (e: Exception) {
+                _flightResendEmailResult.value = Fail(e.fillInStackTrace())
+            }
             UohIdlingResource.decrement()
         }
     }
@@ -131,7 +159,11 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun doTrainResendEmail(param: TrainResendEmailParam) {
         UohIdlingResource.increment()
         launch {
-            _trainResendEmailResult.value = (trainResendEmailUseCase.executeSuspend(param))
+            try {
+                _trainResendEmailResult.value = (trainResendEmailUseCase.executeSuspend(param))
+            } catch (e: Exception) {
+                _trainResendEmailResult.value = Fail(e.fillInStackTrace())
+            }
             UohIdlingResource.decrement()
         }
     }
@@ -140,7 +172,11 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         UohIdlingResource.increment()
 
         launch {
-            _rechargeSetFailResult.value = (rechargeSetFailUseCase.executeSuspend(orderId))
+            try {
+                _rechargeSetFailResult.value = (rechargeSetFailUseCase.executeSuspend(orderId))
+            } catch (e: Exception) {
+                _rechargeSetFailResult.value = Fail(e.fillInStackTrace())
+            }
             UohIdlingResource.decrement()
         }
     }
@@ -150,20 +186,25 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         UohIdlingResource.increment()
         val requestParams = RequestParams.create()
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
-        atcUseCase.execute(requestParams, object : Subscriber<AddToCartDataModel>() {
-            override fun onNext(addToCartDataModel: AddToCartDataModel?) {
-                addToCartDataModel?.let {
-                    _atcResult.value = (Success(it))
+        try {
+            atcUseCase.execute(requestParams, object : Subscriber<AddToCartDataModel>() {
+                override fun onNext(addToCartDataModel: AddToCartDataModel?) {
+                    addToCartDataModel?.let {
+                        _atcResult.value = (Success(it))
+                        UohIdlingResource.decrement()
+                    }
+                }
+
+                override fun onCompleted() {}
+
+                override fun onError(e: Throwable?) {
+                    _atcResult.value = (e?.let { Fail(it) })
                     UohIdlingResource.decrement()
                 }
-            }
-
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable?) {
-                _atcResult.value = (e?.let { Fail(it) })
-                UohIdlingResource.decrement()
-            }
-        })
+            })
+        } catch (e: Exception) {
+            _atcResult.value = Fail(e.fillInStackTrace())
+            UohIdlingResource.decrement()
+        }
     }
 }
