@@ -77,7 +77,7 @@
           "dimension59": "{{.*}}"
         }
       ],
-      "eventLabel": "{{success - (?:default|check all|partial shop|partial product|partial shop and product|default - cod|check all - cod|partial shop - cod|partial product - cod|partial shop and product - cod)}}",
+      "eventLabel": "{{success - (.*)}}",
       "checkout_option": "cart page loaded"
     }
   ],
