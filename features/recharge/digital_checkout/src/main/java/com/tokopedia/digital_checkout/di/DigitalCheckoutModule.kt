@@ -16,7 +16,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
-import javax.inject.Named
 
 /**
  * @author by jessica on 07/01/21
@@ -50,12 +49,18 @@ class DigitalCheckoutModule {
     @Provides
     @DigitalCheckoutScope
     @DigitalCartCheckoutQualifier
-    fun provideDigitalCheckoutInterceptor(@ApplicationContext context: Context, digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
+    fun provideDigitalCheckoutInterceptor(akamaiBotInterceptor: AkamaiBotInterceptor,
+                                          digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
         val listInterceptor = arrayListOf<Interceptor>()
         listInterceptor.add(digitalInterceptor)
         listInterceptor.add(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
-        listInterceptor.add(AkamaiBotInterceptor(context))
+        listInterceptor.add(akamaiBotInterceptor)
         return listInterceptor
+    }
+
+    @Provides
+    fun provideDigitalAkamaiInterceptor(@ApplicationContext context: Context): AkamaiBotInterceptor {
+        return AkamaiBotInterceptor(context)
     }
 
     @Provides
