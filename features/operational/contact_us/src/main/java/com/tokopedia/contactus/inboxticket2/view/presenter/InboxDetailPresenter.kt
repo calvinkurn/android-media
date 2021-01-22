@@ -343,7 +343,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                     if (replyTicketResponse.ticketReply?.ticketReplyData?.status.equals(REPLY_TICKET_RESPONSE_STATUS)) {
                         addNewLocalComment()
                     } else {
-                        mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong)
+                        mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_sent_error_message)
                                 ?: "", true)
                     }
 
@@ -400,12 +400,12 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                             sendImages(requestParams)
                         } else {
                             mView?.hideSendProgress()
-                            mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong)
+                            mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_sent_error_message)
                                     ?: "", true)
                         }
                     } else {
                         mView?.hideSendProgress()
-                        mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong)
+                        mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_sent_error_message)
                                 ?: "", true)
                     }
 
@@ -427,7 +427,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                         addNewLocalComment()
                     } else {
                         mView?.hideSendProgress()
-                        mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_step_two_response_failure_message)?:"", true)
+                        mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_sent_error_message)?:"", true)
                     }
                 },
                 onError = {
