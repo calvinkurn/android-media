@@ -1072,8 +1072,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 .load(backgroundUrl)
                 .fitCenter()
                 .dontAnimate()
-                .placeholder(com.tokopedia.abstraction.R.drawable.loading_page)
-                .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                 .into(backgroundViewImage)
     }
 

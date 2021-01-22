@@ -165,13 +165,13 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }
                                     homeData.atfData?.isProcessingAtf = false
-                                    cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
-                                        homeCachedDataSource.saveToDatabase(homeData)
-                                    })
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
                                     atfData.content = null
                                 }
+                                cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                    homeCachedDataSource.saveToDatabase(homeData)
+                                })
                                 atfData
                             }
                             jobList.add(job)
@@ -185,12 +185,12 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }
                                     homeData.atfData?.isProcessingAtf = false
-                                    cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
-                                        homeCachedDataSource.saveToDatabase(homeData)
-                                    })
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
                                 }
+                                cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                    homeCachedDataSource.saveToDatabase(homeData)
+                                })
                                 atfData
                             }
                             jobList.add(job)
@@ -198,15 +198,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         else -> {
 
                         }
-                    }
-                }
-            }
-
-            jobList.awaitAll().let {
-                it.forEach error@{
-                    if (it.status == AtfKey.STATUS_ERROR && !it.isOptional && it.component != TYPE_TICKER) {
-                        emit(Result.errorAtf(Throwable(),null))
-                        return@error
                     }
                 }
             }
