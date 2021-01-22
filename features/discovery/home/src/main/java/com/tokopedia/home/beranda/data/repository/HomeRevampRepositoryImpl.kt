@@ -249,7 +249,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                  * 7.1 Emit error pagination only when atf is empty
                  * Because there is no content that we can show, we showing error page
                  */
-                if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
+                if ((homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) || homeData.atfData?.dataList?.isEmpty() == true) {
                     emit(Result.errorGeneral(Throwable(),null))
                 }
                 homeCachedDataSource.saveToDatabase(homeData)

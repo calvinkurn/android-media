@@ -1823,12 +1823,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun showNetworkError(message: String) {
         if (isAdded && activity != null && adapter != null) {
-            if (adapter!!.itemCount > 0) {
-                showToaster(message, TYPE_ERROR)
-            } else {
-                NetworkErrorHelper.showEmptyState(activity, root, message) { onRefresh() }
-                pageLoadTimeCallback?.invalidate()
-            }
+            showToaster(message, TYPE_ERROR)
         }
     }
 
