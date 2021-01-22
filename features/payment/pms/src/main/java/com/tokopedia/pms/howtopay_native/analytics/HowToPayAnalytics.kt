@@ -32,6 +32,7 @@ class HowToPayAnalytics @Inject constructor(val userSessionInterface: UserSessio
         map[SCREEN_NAME] = paymentType
         map[IS_LOGGED_IN_STATUS] = userSessionInterface.isLoggedIn.toString()
         map[USER_ID] = userSessionInterface.userId
+        analyticTracker.sendGeneralEvent(map)
     }
 
     fun eventOnScreenShotClick(paymentType: String){
@@ -42,6 +43,7 @@ class HowToPayAnalytics @Inject constructor(val userSessionInterface: UserSessio
         map[SCREEN_NAME] = paymentType
         map[IS_LOGGED_IN_STATUS] = userSessionInterface.isLoggedIn.toString()
         map[USER_ID] = userSessionInterface.userId
+        analyticTracker.sendGeneralEvent(map)
     }
 
     companion object{
