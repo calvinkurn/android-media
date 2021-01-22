@@ -390,7 +390,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         } else {
             handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
         }
-        linkerDataMapper(data)
         LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                 linkerDataMapper(data), object : ShareCallback {
             override fun urlCreated(linkerShareData: LinkerShareResult) {
@@ -408,7 +407,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         val linkerData = LinkerData()
         linkerData.id = data?.id?.toString() ?: ""
         linkerData.name = data?.name ?: ""
-        linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url ?: "", discoveryViewModel.getDeepLinkQueryParam())
+        linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url ?: "", discoComponentQuery)
         linkerData.description = data?.share?.description ?: ""
         linkerData.isThrowOnError = true
         val linkerShareData = LinkerShareData()

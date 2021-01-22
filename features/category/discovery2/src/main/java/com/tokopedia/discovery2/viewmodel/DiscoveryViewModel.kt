@@ -59,7 +59,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
     private val wishlistUpdateLiveData = MutableLiveData<ProductCardOptionsModel>()
     private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
-    private var deepLinkQueryParam : Map<String, String?>? = null
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
@@ -176,7 +175,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun getMapOfQueryParameter(intentUri: Uri): Map<String, String?> {
-        deepLinkQueryParam = mapOf(
+        return mapOf(
                 SOURCE to intentUri.getQueryParameter(SOURCE),
                 COMPONENT_ID to intentUri.getQueryParameter(COMPONENT_ID),
                 ACTIVE_TAB to intentUri.getQueryParameter(ACTIVE_TAB),
@@ -186,7 +185,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 CATEGORY_ID to intentUri.getQueryParameter(CATEGORY_ID),
                 EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY)
         )
-        return deepLinkQueryParam as Map<String, String?>
     }
 
     fun scrollToPinnedComponent(listComponent: List<ComponentsItem>, pinnedComponentId: String?): Int {
@@ -200,6 +198,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun getQueryParameterMapFromBundle(bundle: Bundle?): MutableMap<String, String?> {
         return mutableMapOf(
+                SOURCE to bundle?.getString(SOURCE, ""),
+                COMPONENT_ID to bundle?.getString(COMPONENT_ID, ""),
                 ACTIVE_TAB to bundle?.getString(ACTIVE_TAB, ""),
                 TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
                 PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
@@ -247,5 +247,4 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun getWishListLiveData() = wishlistUpdateLiveData
-    fun getDeepLinkQueryParam() = deepLinkQueryParam
 }
