@@ -518,7 +518,7 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>app_enable_new_pdp</key>
+        <key>app_enable_pdp_diffutil</key>
         <value>true</value>
     </entry>
 </defaultsMap>
