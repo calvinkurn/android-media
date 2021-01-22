@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-object TimeHelper {
+object InboxCommonTimeHelper {
 
     private val DAYS_90_IN_SECOND = TimeUnit.DAYS.toSeconds(90)
     private val DAYS_6_IN_SECOND = TimeUnit.DAYS.toSeconds(6)
