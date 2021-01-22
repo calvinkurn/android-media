@@ -1,9 +1,10 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
-import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
@@ -22,12 +23,14 @@ class InspirationCardOptionRelatedViewHolder(
     }
 
     fun bind(inspirationCardOptionViewModel: InspirationCardOptionViewModel) {
-        val container = itemView.findViewById<LinearLayout?>(R.id.inspirationCardRelatedContainer)
+        val container = itemView.findViewById<ConstraintLayout?>(R.id.inspirationCardRelatedContainer)
         val image = itemView.findViewById<ImageUnify?>(R.id.inspirationCardRelatedImage)
         val title = itemView.findViewById<Typography?>(R.id.inspirationCardRelatedTitle)
+        val separator = itemView.findViewById<View?>(R.id.inspirationCardSeparator)
 
         image?.urlSrc = inspirationCardOptionViewModel.img
         title?.text = inspirationCardOptionViewModel.text
+        separator?.showWithCondition(adapterPosition > 0)
 
         container?.setOnClickListener {
             inspirationCardListener.onInspirationCardOptionClicked(inspirationCardOptionViewModel)

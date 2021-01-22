@@ -106,7 +106,8 @@ class BigGridInspirationCardViewHolder(
         itemView.bigGridCardViewInspirationCard?.recyclerViewInspirationCardOptionList?.let {
             it.layoutManager = createLayoutManager()
             it.adapter = createAdapter(element.options)
-            it.addItemDecorationIfNotExists(spacingItemDecoration)
+            if (!element.isRelated())
+                it.addItemDecorationIfNotExists(spacingItemDecoration)
         }
     }
 
