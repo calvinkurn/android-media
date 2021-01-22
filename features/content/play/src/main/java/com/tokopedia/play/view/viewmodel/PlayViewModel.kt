@@ -100,6 +100,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent
     val observableCartInfo: LiveData<PlayCartInfoUiModel> /**Changed**/
         get() = _observableCartInfo
+    val observableShareInfo: LiveData<PlayShareInfoUiModel> /**Added**/
+        get() = _observableShareInfo
     val observableEventPiP: LiveData<Event<PiPMode>>
         get() = _observableEventPiP
 
@@ -147,6 +149,7 @@ class PlayViewModel @Inject constructor(
         get() {
             return PlayChannelData.Complete(
                     partnerInfo = _observablePartnerInfo.value ?: error("Partner Info should not be null"),
+                    shareInfo = _observableShareInfo.value ?: error("Share Info should not be null"),
                     cartInfo = _observableCartInfo.value ?: error("Cart Info should not be null"),
                     pinnedInfo = PlayPinnedInfoUiModel(
                             pinnedMessage = _observablePinnedMessage.value,
@@ -200,6 +203,7 @@ class PlayViewModel @Inject constructor(
     }
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableCartInfo = MutableLiveData<PlayCartInfoUiModel>() /**Changed**/
+    private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
@@ -457,12 +461,14 @@ class PlayViewModel @Inject constructor(
             PlayChannelData.Empty -> {}
             is PlayChannelData.Placeholder -> {
                 handlePartnerInfo(channelData.partnerInfo)
+                handleShareInfo(channelData.shareInfo)
                 handleCartInfo(channelData.cartInfo)
                 handlePinnedInfo(channelData.pinnedInfo)
                 handleQuickReplyInfo(channelData.quickReplyInfo)
             }
             is PlayChannelData.Complete -> {
                 handlePartnerInfo(channelData.partnerInfo)
+                handleShareInfo(channelData.shareInfo)
                 handleCartInfo(channelData.cartInfo)
                 handlePinnedInfo(channelData.pinnedInfo)
                 handleQuickReplyInfo(channelData.quickReplyInfo)
@@ -704,6 +710,10 @@ class PlayViewModel @Inject constructor(
      */
     private fun handlePartnerInfo(partnerInfo: PlayPartnerInfoUiModel) {
         _observablePartnerInfo.value = partnerInfo
+    }
+
+    private fun handleShareInfo(shareInfo: PlayShareInfoUiModel) {
+        _observableShareInfo.value = shareInfo
     }
 
     private fun handleCartInfo(cartInfo: PlayCartInfoUiModel) {

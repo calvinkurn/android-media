@@ -1,20 +1,29 @@
 package com.tokopedia.play.view.uimodel.mapper
 
+import android.content.Context
+import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PartnerFolowStatus
-import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
-import com.tokopedia.play.view.uimodel.PinnedProductUiModel
+import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play_common.player.PlayVideoManager
 
 /**
  * Created by jegul on 21/01/21
  */
 typealias PlayChannelResponseMapper = PlayViewerMapper<ChannelDetailsWithRecomResponse, List<PlayChannelData.Placeholder>>
 
-class PlayChannelDetailsWithRecomMapper : PlayChannelResponseMapper {
+class PlayChannelDetailsWithRecomMapper(
+        private val context: Context
+) : PlayChannelResponseMapper {
+
+    private val exoPlayer: ExoPlayer
+        get() = PlayVideoManager.getInstance(context).videoPlayer
 
     override fun map(input: ChannelDetailsWithRecomResponse): List<PlayChannelData.Placeholder> {
         return input.channelDetails.dataList.map {
@@ -26,6 +35,7 @@ class PlayChannelDetailsWithRecomMapper : PlayChannelResponseMapper {
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
+//                    videoMetaInfo = mapVideoMeta(it.video, it.config, it.isLive),
                     miscConfigInfo = mapMiscConfigInfo(it.config),
             )
         }
@@ -98,6 +108,33 @@ class PlayChannelDetailsWithRecomMapper : PlayChannelResponseMapper {
 
     private fun mapQuickReply(quickRepliesResponse: List<String>) = PlayQuickReplyInfoUiModel(
             quickReplyList = quickRepliesResponse.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() }
+    )
+
+    private fun mapVideoMeta(
+            videoResponse: ChannelDetailsWithRecomResponse.Video,
+            configResponse: ChannelDetailsWithRecomResponse.Config,
+            isLive: Boolean
+    ) = PlayVideoMetaInfoUiModel(
+            videoPlayer = mapVideoPlayer(videoResponse),
+            videoStream = mapVideoStream(videoResponse, configResponse, isLive)
+    )
+
+    private fun mapVideoPlayer(videoResponse: ChannelDetailsWithRecomResponse.Video) = when (videoResponse.type) {
+        "live", "vod" -> General(exoPlayer)
+        "youtube" -> YouTube(videoResponse.streamSource)
+        else -> Unknown
+    }
+
+    private fun mapVideoStream(
+            videoResponse: ChannelDetailsWithRecomResponse.Video,
+            configResponse: ChannelDetailsWithRecomResponse.Config,
+            isLive: Boolean
+    ) = VideoStreamUiModel(
+            uriString = videoResponse.streamSource,
+            channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
+            orientation = VideoOrientation.getByValue(videoResponse.orientation),
+            backgroundUrl = configResponse.roomBackground.imageUrl,
+            isActive = configResponse.active
     )
 
     private fun mapMiscConfigInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayMiscConfigUiModel(

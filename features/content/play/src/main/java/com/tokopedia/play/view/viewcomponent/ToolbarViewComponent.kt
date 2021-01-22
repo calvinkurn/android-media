@@ -17,6 +17,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.ShareInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayCartInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.isFollowed
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
@@ -104,8 +105,8 @@ class ToolbarViewComponent(
         }
     }
 
-    fun setShareInfo(shareInfoUiModel: ShareInfoUiModel) {
-        setIsShareable(shareInfoUiModel.isShowButton)
+    fun setShareInfo(shareInfoUiModel: PlayShareInfoUiModel) {
+        setIsShareable(shareInfoUiModel.shouldShow)
 
         ivCopyLink.setOnClickListener {
             listener.onCopyButtonClicked(this, shareInfoUiModel.content)

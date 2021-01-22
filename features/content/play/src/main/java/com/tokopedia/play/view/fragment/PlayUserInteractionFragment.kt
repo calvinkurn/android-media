@@ -481,6 +481,7 @@ class PlayUserInteractionFragment @Inject constructor(
         observeLikeContent()
         observeBottomInsetsState()
         observeEventUserInfo()
+        observeShareInfo()
 
         observeLoggedInInteractionEvent()
     }
@@ -549,7 +550,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeChannelInfo() {
         playViewModel.observableLatestChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
             triggerStartMonitoring()
-            toolbarView.setShareInfo(it.channelInfo.shareInfo)
         })
     }
 
@@ -698,6 +698,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeCartInfo() {
         playViewModel.observableCartInfo.observe(viewLifecycleOwner, DistinctObserver {
             toolbarView.setCartInfo(it)
+        })
+    }
+
+    private fun observeShareInfo() {
+        playViewModel.observableShareInfo.observe(viewLifecycleOwner, DistinctObserver {
+            toolbarView.setShareInfo(it)
         })
     }
     //endregion
