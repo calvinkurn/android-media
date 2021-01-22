@@ -72,7 +72,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     private var adminHelpText: Typography? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        observeAdminAuthorize()
+        observeLiveData()
         return inflater.inflate(R.layout.fragment_admin_role_authorize, container, false)
     }
 
@@ -96,6 +96,11 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         adminHelpText = findViewById(R.id.tv_admin_role_help)
 
         viewModel.checkAccess(adminFeature)
+    }
+
+    private fun observeLiveData() {
+        observeAdminAuthorize()
+        observeIsLoading()
     }
 
     private fun observeAdminAuthorize() {
@@ -149,7 +154,6 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     }
 
     private fun GlobalError.showAdminIneligible() {
-        setType(GlobalError.PAGE_NOT_FOUND)
         ImageHandler.loadImageAndCache(errorIllustration, SellerBaseUrl.ADMIN_ERROR_ILLUSTRATION)
         getNoPermissionText(adminFeature).let { (title, desc) ->
             errorTitle.text = title
