@@ -119,7 +119,7 @@ class TroubleshootViewModelTest {
         verify { instanceManager.getNewToken(any(), any()) }
         verify { tokenObserver.onChanged(expectedValue) }
 
-        viewModel.token isEqualsTo token
+        viewModel.token isEqualsTo expectedValue
     }
 
     @Test fun `it should update new token`() {
