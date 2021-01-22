@@ -9,40 +9,42 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.Glide
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.setMargin
+import com.tokopedia.promoui.common.PromoCouponView
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.htmltags.HtmlUtil
 
 /*
-* Pending
-* 1. Setting green image
-* 2. Shadow background
+* 1. It has internal Padding of 6dp to render its shadows
 * */
 class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
     lateinit var tvTitle: Typography
     lateinit var tvSubTitle: Typography
     lateinit var imageChevron: AppCompatImageView
     lateinit var imageCoupon: AppCompatImageView
+    lateinit var promoCouponView: PromoCouponView
     var shopId: String = ""
 
     init {
         View.inflate(context, R.layout.mvc_entry_view, this)
         val lp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dpToPx(64).toInt())
         this.layoutParams = lp
-        val startPadding = dpToPx(16).toInt()
-        val topPadding = dpToPx(8).toInt()
-        setPadding(startPadding, topPadding, startPadding, 0)
         initViews()
+
+        val startPadding = dpToPx(16).toInt() - promoCouponView.defaultPadding
+        val topPadding = dpToPx(8).toInt() - promoCouponView.topPadding
+        setPadding(startPadding, topPadding, startPadding, 0)
+
         setClicks()
     }
 
     private fun initViews() {
         tvTitle = this.findViewById(R.id.tvTitle)
+        promoCouponView = this.findViewById(R.id.promo_coupon_view)
         tvSubTitle = this.findViewById(R.id.tvSubTitle)
         imageChevron = this.findViewById(R.id.image_chevron)
         imageCoupon = this.findViewById(R.id.image_coupon)

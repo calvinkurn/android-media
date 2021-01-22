@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -29,6 +28,7 @@ class PromoCouponView @JvmOverloads constructor(
     var commonOffset = 0f
     var cornerRadius = 0f
     var defaultPadding = 0
+    var topPadding = 0
     var bottomPadding = 0
     private val blurMaskFilter: BlurMaskFilter
 
@@ -58,7 +58,6 @@ class PromoCouponView @JvmOverloads constructor(
 
         blurMaskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.OUTER)
         setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-        setPadding(defaultPadding, 0, defaultPadding, defaultPadding)
 
         bottomPaint.style = Paint.Style.FILL
         bottomPaint.color = Color.WHITE
@@ -66,6 +65,22 @@ class PromoCouponView @JvmOverloads constructor(
 
         shadowColor = ContextCompat.getColor(context, R.color.promo_ui_com_shadow_color)
         readDataFromAttrs(attrs)
+        configure()
+
+        setPadding(defaultPadding, topPadding, defaultPadding, defaultPadding)
+    }
+
+    private fun configure() {
+        when (viewType) {
+            VIEW_TYPE_MVC -> {
+                shadowStartY = 0f
+                cornerRadius = 0f
+                topPadding = defaultPadding
+                shadowTopOffset += dpToPx(4)
+                shadowStrokeWidth = dpToPx(3)
+                shadowColor = ContextCompat.getColor(context, R.color.promo_ui_mvc_shadow_color)
+            }
+        }
     }
 
     private fun readDataFromAttrs(attrs: AttributeSet?) {
@@ -73,9 +88,6 @@ class PromoCouponView @JvmOverloads constructor(
             val typedArray = context.obtainStyledAttributes(attrs, R.styleable.PromoCouponView, 0, 0)
             try {
                 viewType = typedArray.getInt(R.styleable.PromoCouponView_promo_coupon_view_type, VIEW_TYPE_NORMAL)
-                if (viewType == VIEW_TYPE_MVC) {
-                    cornerRadius = 0f
-                }
             } finally {
                 typedArray.recycle();
             }
@@ -85,7 +97,9 @@ class PromoCouponView @JvmOverloads constructor(
 
     override fun dispatchDraw(canvas: Canvas) {
         drawShadow(canvas)
-        drawBottomRoundBg(canvas)
+        if (viewType == VIEW_TYPE_NORMAL) {
+            drawBottomRoundBg(canvas)
+        }
         super.dispatchDraw(canvas)
     }
 
@@ -102,7 +116,7 @@ class PromoCouponView @JvmOverloads constructor(
             }
             val subtractForMvcType = if (viewType == VIEW_TYPE_MVC) dpToPx(10) else 0f
             bottomRoundPath.reset()
-            bottomRectF.top = bottomOfBigImage
+            bottomRectF.top = bottomOfBigImage + topPadding
             bottomRectF.left = bottomPadding.toFloat() + subtractForMvcType
             bottomRectF.right = width - bottomPadding.toFloat() - subtractForMvcType
             bottomRectF.bottom = height - bottomPadding.toFloat()
@@ -142,6 +156,6 @@ class PromoCouponView @JvmOverloads constructor(
     }
 }
 
-fun View.dpToPx(dp: Int): Float {
+fun dpToPx(dp: Int): Float {
     return (dp * Resources.getSystem().displayMetrics.density)
 }

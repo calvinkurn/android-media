@@ -16,8 +16,6 @@ class DummyMvcActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         val fm = FrameLayout(this)
         fm.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        fm.clipChildren = false
-        fm.clipToPadding = false
 
         val mvcView = MvcView(this)
 //        mvcView.setData(MvcData("Ada Gratis Ongkir Rp100.000",
