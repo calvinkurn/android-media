@@ -151,13 +151,13 @@ class MvcDetailView @JvmOverloads constructor(
 
     private fun handleMembershipRegistrationSuccess(message: String?) {
         if (!message.isNullOrEmpty())
-            Toaster.build(this, message, Toast.LENGTH_SHORT).show()
+            Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun handleMembershipRegistrationError(th: Throwable?) {
         toggleLoading(false)
         if (!th?.message.isNullOrEmpty()) {
-            Toaster.build(this, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
+            Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 mvcFollowContainer.twoActionView.performClick()
             })
         }
@@ -165,13 +165,13 @@ class MvcDetailView @JvmOverloads constructor(
 
     private fun handleFollowSuccess(message: String?) {
         if (!message.isNullOrEmpty())
-            Toaster.build(this, message, Toast.LENGTH_SHORT).show()
+            Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun handleFollowFail(th: Throwable?) {
         toggleLoading(false)
         if (!th?.message.isNullOrEmpty()) {
-            Toaster.build(this, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
+            Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 mvcFollowContainer.oneActionView.performClick()
             })
         }
