@@ -27,8 +27,12 @@
 
     <!--seller review-->
     <string name="sir_send">Kirim</string>
+    <string name="sir_send_feedback">Beri Masukan</string>
     <string name="sir_default_title">Waktunya kasih bintang, nih</string>
     <string name="sir_default_message">Seberapa puas sih kamu dengan aplikasi Tokopedia?</string>
+    <string name="sir_feedback_title">Bantu kami menggapai bintang</string>
+    <string name="sir_feedback_message">Yuk, berikan masukan agar Tokopedia bisa lebih \n memenuhi kebutuhanmu.</string>
+    <string name="sir_feedback_placeholder">Tulis masukanmu disini</string>
     <string name="sir_rate_1_star">Sangat Kurang</string>
     <string name="sir_rate_2_star">Kurang</string>
     <string name="sir_rate_3_star">Cukup</string>
