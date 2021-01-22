@@ -1,3 +1,4 @@
+/*
 package com.tokopedia.editshipping.ui.shippingeditor.adapter.viewholder_unused
 
 import android.view.View
@@ -126,11 +127,13 @@ class ShippingEditorAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
 
 
-        /* private fun setListener(data: OnDemandModel) {
+        */
+/* private fun setListener(data: OnDemandModel) {
             shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
                 listener.onShipperInfoClicked()
             }
-        }*/
+        }*//*
+
     }
 
-}
+}*/

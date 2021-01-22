@@ -1,3 +1,4 @@
+/*
 package com.tokopedia.editshipping.ui.shippingeditor.adapter.viewholder_unused
 
 import android.view.View
@@ -55,4 +56,4 @@ class ShippingEditorConventionalViewHolder(itemView: View): RecyclerView.ViewHol
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-}
+}*/

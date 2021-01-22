@@ -41,11 +41,11 @@ class ShippingEditorDetailsAdapter : RecyclerView.Adapter<ShippingEditorDetailsA
 
     fun setShipperDetailsData(shipperDetails: List<ShipperDetailsModel>) {
         data.addAll(shipperDetails)
+        data.add(shipperDetails.size, DividerModelFeature())
         notifyDataSetChanged()
     }
 
     fun setServiceData(serviceDetailsModel: List<ServiceDetailsModel>){
-        data.add(0, DividerModelFeature())
         data.addAll(serviceDetailsModel)
         notifyDataSetChanged()
     }

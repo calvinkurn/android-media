@@ -6,10 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.editshipping.domain.mapper.ShipperDetailMapper
 import com.tokopedia.editshipping.domain.mapper.ShippingEditorMapper
-import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperDetailModel
-import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperListModel
-import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
-import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorState
+import com.tokopedia.editshipping.domain.mapper.ValidateShippingNewMapper
+import com.tokopedia.editshipping.domain.model.shippingEditor.*
 import com.tokopedia.logisticCommon.data.repository.ShippingEditorRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
@@ -21,6 +19,7 @@ class ShippingEditorViewModel @Inject constructor(
         private val repo: ShopLocationRepository,
         private val shippingEditorRepo: ShippingEditorRepository,
         private val mapper: ShippingEditorMapper,
+        private val validateShippingMapper: ValidateShippingNewMapper,
         private val detailMapper: ShipperDetailMapper) : ViewModel() {
 
     private val _shopWhitelist = MutableLiveData<ShippingEditorState<ShopLocWhitelist>>()
@@ -38,6 +37,10 @@ class ShippingEditorViewModel @Inject constructor(
     private val _shipperDetail = MutableLiveData<ShippingEditorState<ShipperDetailModel>>()
     val shipperDetail: LiveData<ShippingEditorState<ShipperDetailModel>>
         get() = _shipperDetail
+
+    private val _validateDataShipper = MutableLiveData<ShippingEditorState<ValidateShippingEditorModel>>()
+    val validateDataShipper: LiveData<ShippingEditorState<ValidateShippingEditorModel>>
+        get() = _validateDataShipper
 
 
     fun getWhitelistData(shopId: Int) {
@@ -74,8 +77,11 @@ class ShippingEditorViewModel @Inject constructor(
         }
     }
 
-    fun validateShippingEditor() {
-
+    fun validateShippingEditor(shopId: Int, activatedSpIds: String) {
+        viewModelScope.launch {
+            val getValidateData = shippingEditorRepo.validateShippingEditor(shopId, activatedSpIds)
+            _validateDataShipper.value = ShippingEditorState.Success(validateShippingMapper.mapShippingEditorData(getValidateData.ongkirShippingEditorPopup.data))
+        }
     }
 
     private val onErrorGetWhitelistData = CoroutineExceptionHandler { _, e ->

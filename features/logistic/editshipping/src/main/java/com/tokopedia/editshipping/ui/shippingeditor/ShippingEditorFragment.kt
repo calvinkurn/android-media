@@ -124,10 +124,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private fun initAdapter() {
         shipperListOnDemand?.adapter = shippingEditorOnDemandAdapter
         shipperListConventional?.adapter = shippingEditorConventionalAdapter
-        bottomSheetShipperDetailsRv?.adapter = bottomSheetShipperAdapter
         shipperListOnDemand?.layoutManager = LinearLayoutManager(context)
         shipperListConventional?.layoutManager = LinearLayoutManager(context)
-        bottomSheetShipperDetailsRv?.layoutManager = LinearLayoutManager(context)
     }
 
     private fun initViewModel() {
@@ -217,8 +215,13 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         val viewBottomSheetShipperDetails = View.inflate(context, R.layout.bottomsheet_shipper_detail, null)
         setupChild(viewBottomSheetShipperDetails)
 
+        bottomSheetShipperDetailsRv?.apply {
+            layoutManager = LinearLayoutManager(this.context)
+            adapter = bottomSheetShipperAdapter
+        }
+
         bottomSheetShipperDetails?.apply {
-            setTitle(getString(R.string.title_details_shhipper))
+            setTitle("Detail Kurir Pengiriman")
             setCloseClickListener { dismiss() }
             setChild(viewBottomSheetShipperDetails)
             setOnDismissListener { dismiss() }

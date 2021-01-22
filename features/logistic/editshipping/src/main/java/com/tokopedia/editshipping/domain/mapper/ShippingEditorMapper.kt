@@ -145,6 +145,8 @@ class ShippingEditorMapper @Inject constructor() {
                     it.postalCode,
                     it.isDefault,
                     it.latLon,
+                    it.latitude,
+                    it.longitude,
                     it.addressDetail,
                     it.country,
                     it.isFulfillment,

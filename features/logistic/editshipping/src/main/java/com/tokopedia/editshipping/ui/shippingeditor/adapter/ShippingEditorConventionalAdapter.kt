@@ -3,7 +3,6 @@ package com.tokopedia.editshipping.ui.shippingeditor.adapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
@@ -61,7 +60,7 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)
         private val shipmentItemCb = itemView.findViewById<CheckboxUnify>(R.id.cb_shipment_item)
         private val shipmentCategory = itemView.findViewById<Typography>(R.id.shipment_category)
-        private val shipmentProductRv = itemView.findViewById<RecyclerView>(R.id.shipment_item_list)
+//        private val shipmentProductRv = itemView.findViewById<RecyclerView>(R.id.shipment_item_list)
         private val tickerShipper = itemView.findViewById<Ticker>(R.id.ticker_shipper)
 
         fun binData(data: ConventionalModel) {
@@ -84,13 +83,13 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
 
             shipmentCategory.text = sb.substring(0, sb.length - 2)
 
-            shipperProductConventionalChild = ShipperProductItemAdapter(this@ShippingEditorConventionalViewHolder)
+         /*   shipperProductConventionalChild = ShipperProductItemAdapter(this@ShippingEditorConventionalViewHolder)
             shipmentProductRv.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = shipperProductConventionalChild
-            }
+            }*/
 
-            shipperProductConventionalChild?.addData(data.shipperProduct)
+//            shipperProductConventionalChild?.addData(data.shipperProduct)
 
             when (data.tickerState) {
                 1 -> {
