@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.productcard.ProductCardGridView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/productCardView"
-    android:layout_width="153dp"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/thank_success_img_height"
+    android:layout_height="match_parent"
     android:background="@color/Unify_N0"
     android:clickable="true" />

@@ -19,6 +19,7 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
              listener: ProductCardViewListener?) {
         thankYouProductCardModel.productCardModel?.let { productCardModel ->
             productCardView.run {
+                applyCarousel()
                 setProductModel(productCardModel)
                 setImageProductViewHintListener(thankYouProductCardModel
                         .recommendationItem, object : ViewHintListener {

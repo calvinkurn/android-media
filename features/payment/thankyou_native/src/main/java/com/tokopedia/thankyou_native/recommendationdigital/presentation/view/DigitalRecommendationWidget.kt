@@ -15,6 +15,9 @@ import kotlinx.android.synthetic.main.thank_digital_recommendation_item.view.*
 class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
+    val HISTORY = "history"
+    val RECOMMENDATION = "recommendation"
+
     var data: RecommendationsItem? = null
         set(value) {
             field = value
@@ -25,26 +28,30 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         View.inflate(context, getLayout(), this)
     }
 
-    fun renderWidget(element: RecommendationsItem) {
+    private fun renderWidget(element: RecommendationsItem) {
         renderImage(element)
         renderProduct(element)
 
-        if ("history".equals(element.type, ignoreCase = true)) {
-            renderTitle(element.productName)
-        } else if ("recommendation".equals(element.type, ignoreCase = true)) {
-            renderTitle(element.description)
-        } else {
-            renderTitle(element)
+        when {
+            HISTORY.equals(element.type, ignoreCase = true) -> {
+                renderTitle(element.productName)
+            }
+            RECOMMENDATION.equals(element.type, ignoreCase = true) -> {
+                renderTitle(element.type)
+            }
+            else -> {
+                renderTitle(element)
+            }
         }
         renderTitle(element)
         renderSubtitle(element)
     }
 
-    fun renderImage(element: RecommendationsItem) {
+    private fun renderImage(element: RecommendationsItem) {
         ImageHandler.LoadImage(thanks_dg_rec_image, element.iconUrl)
     }
 
-    fun renderProduct(element: RecommendationsItem) {
+    private fun renderProduct(element: RecommendationsItem) {
         if (element.categoryName.isNullOrBlank()) {
             thanks_dh_rec_name.gone()
         } else {
@@ -53,7 +60,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         }
     }
 
-    fun renderTitle(element: RecommendationsItem) {
+    private fun renderTitle(element: RecommendationsItem) {
         if (element.productName.isNullOrBlank()) {
             if (element.description.isNullOrBlank()) {
                 thanks_dg_rec_text_sub.gone()
@@ -68,7 +75,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     }
 
-    fun renderTitle(productName: String?) {
+    private fun renderTitle(productName: String?) {
         if (productName.isNullOrBlank()) {
             thanks_dg_rec_text_sub.gone()
         } else {
@@ -78,7 +85,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     }
 
-    fun renderSubtitle(element: RecommendationsItem) {
+    private fun renderSubtitle(element: RecommendationsItem) {
         if (element.clientNumber.isNullOrBlank()) {
             thanks_dg_rec_text_desc.gone()
         } else {
@@ -88,8 +95,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     }
 
-
-    fun getLayout(): Int {
+    private fun getLayout(): Int {
         return R.layout.thank_digital_recommendation_item
     }
 

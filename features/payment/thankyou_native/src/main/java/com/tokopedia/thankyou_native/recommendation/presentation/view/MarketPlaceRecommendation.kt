@@ -112,20 +112,23 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
     private fun addResultToUI(data: ProductRecommendationData) {
         tvTitle.text = data.title
         tvTitle.visible()
-        setupRecyclerView(data.thankYouProductCardModelList)
+        setupRecyclerView(data.thankYouProductCardModelList, data.maxHeight)
         adapter.notifyDataSetChanged()
     }
 
-    private fun setupRecyclerView(thankYouProductCardModelList: List<ThankYouProductCardModel>) {
+    private fun setupRecyclerView(thankYouProductCardModelList: List<ThankYouProductCardModel>, maxHeight: Int) {
         listener = getRecommendationListener()
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
-        if(thankYouProductCardModelList.isNotEmpty()) {
+        if (thankYouProductCardModelList.isNotEmpty()) {
+            val carouselLayoutParams = this.recyclerView.layoutParams
+            carouselLayoutParams.height = maxHeight
+            recyclerView.layoutParams = carouselLayoutParams
             recyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL,
                     false)
             adapter = ProductCardViewAdapter(thankYouProductCardModelList, listener)
             recyclerView.adapter = adapter
             recyclerView.addItemDecoration(ProductCardDefaultDecorator())
-        }else{
+        } else {
             gone()
         }
     }
@@ -168,13 +171,12 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
         listener = null
     }
 
-    companion object{
+    companion object {
         const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         const val REQUEST_FROM_PDP = 138
     }
 
 }
-
 
 
 /*

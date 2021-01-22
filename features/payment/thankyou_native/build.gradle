@@ -38,26 +38,18 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.features.commonPayment)
-    implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.searchbar)
 
-    implementation project(rootProject.ext.libraries.remoteConfig)
-
-
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-
-    implementation project(rootProject.ext.libraries.graphql)
-
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.supportLibDependencies.appCompactV7
 
 
@@ -73,12 +65,9 @@ dependencies {
 
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.features.carouselProductCard)
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.features.promotionsTarget)
@@ -95,9 +84,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
-
-
-
 
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
