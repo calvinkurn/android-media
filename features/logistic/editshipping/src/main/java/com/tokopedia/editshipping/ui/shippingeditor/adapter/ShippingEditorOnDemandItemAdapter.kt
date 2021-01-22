@@ -3,6 +3,7 @@ package com.tokopedia.editshipping.ui.shippingeditor.adapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
@@ -43,9 +44,11 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
 
     fun setTickerData(data: List<CourierTickerModel>) {
         data.forEach {
-            shipperOnDemandModel.find { onDemand ->
+            val onDemandModel = shipperOnDemandModel.find { onDemand ->
                 onDemand.shipperId == it.shipperId
-            }?.tickerState = it.tickerState
+            }
+            onDemandModel?.tickerState = it.tickerState
+            onDemandModel?.isAvailable = it.isAvailable
 
         }
         notifyDataSetChanged()
@@ -63,6 +66,8 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         private val shipmentCategory = itemView.findViewById<Typography>(R.id.shipment_category)
 //        private val shipmentProductRv = itemView.findViewById<RecyclerView>(R.id.shipment_item_list)
         private val tickerShipper = itemView.findViewById<Ticker>(R.id.ticker_shipper)
+        private val couponLayout = itemView.findViewById<RelativeLayout>(R.id.layout_coupon)
+        private val couponText = itemView.findViewById<Typography>(R.id.title_coupon)
 
 
         fun bindData(data: OnDemandModel) {
@@ -83,6 +88,13 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                 sb.append(shipperName[x].shipperProductName).append(" | ")
             }
             shipmentCategory.text = sb.substring(0, sb.length - 2)
+
+            if(data.textPromo.isEmpty()) {
+                couponLayout.visibility = View.GONE
+            } else {
+                couponLayout.visibility = View.VISIBLE
+                couponText.text = data.textPromo
+            }
 /*
 
             shipperProductChild = ShipperProductItemAdapter(this@ShippingEditorOnDemandViewHolder)

@@ -3,6 +3,7 @@ package com.tokopedia.editshipping.ui.shippingeditor.adapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
@@ -42,10 +43,11 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
 
     fun setTickerData(data: List<CourierTickerModel>) {
         data.forEach {
-            shipperConventionalModel.find { conventional ->
+           val conventionalModel = shipperConventionalModel.find { conventional ->
                 conventional.shipperId == it.shipperId
-            }?.tickerState = it.tickerState
-
+            }
+            conventionalModel?.tickerState = it.tickerState
+            conventionalModel?.isAvailable = it.isAvailable
         }
         notifyDataSetChanged()
     }
@@ -62,6 +64,8 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
         private val shipmentCategory = itemView.findViewById<Typography>(R.id.shipment_category)
 //        private val shipmentProductRv = itemView.findViewById<RecyclerView>(R.id.shipment_item_list)
         private val tickerShipper = itemView.findViewById<Ticker>(R.id.ticker_shipper)
+        private val couponLayout = itemView.findViewById<RelativeLayout>(R.id.layout_coupon)
+        private val couponText = itemView.findViewById<Typography>(R.id.title_coupon)
 
         fun binData(data: ConventionalModel) {
             setItemData(data)
@@ -82,6 +86,13 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
             }
 
             shipmentCategory.text = sb.substring(0, sb.length - 2)
+
+            if(data.textPromo.isEmpty()) {
+                couponLayout.visibility = View.GONE
+            } else {
+                couponLayout.visibility = View.VISIBLE
+                couponText.text = data.textPromo
+            }
 
          /*   shipperProductConventionalChild = ShipperProductItemAdapter(this@ShippingEditorConventionalViewHolder)
             shipmentProductRv.apply {
