@@ -24,6 +24,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import rx.Subscriber
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -82,7 +83,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
             try {
                 _orderHistoryListResult.value = uohListUseCase.executeSuspend(paramOrder)
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.d(e)
                 _orderHistoryListResult.value = Fail(e.fillInStackTrace())
             }
             UohIdlingResource.decrement()
@@ -99,7 +100,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                                 pageName = UohConsts.PAGE_NAME))
                 _recommendationListResult.value = (recommendationData.asSuccess())
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.d(e)
                 _recommendationListResult.value = Fail(e.fillInStackTrace())
             }
             UohIdlingResource.decrement()
@@ -112,7 +113,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
             try {
                 _finishOrderResult.value = (uohFinishOrderUseCase.executeSuspend(paramFinishOrder))
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.d(e)
                 _finishOrderResult.value = Fail(e.fillInStackTrace())
             }
             UohIdlingResource.decrement()
@@ -125,7 +126,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
             try {
                 _atcMultiResult.value = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.d(e)
                 _atcMultiResult.value = Fail(e.fillInStackTrace())
             }
             UohIdlingResource.decrement()
@@ -138,6 +139,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
             try {
                 _lsPrintFinishOrderResult.value = (lsPrintFinishOrderUseCase.executeSuspend(verticalId))
             } catch (e: Exception) {
+                Timber.d(e)
                 _lsPrintFinishOrderResult.value = Fail(e.fillInStackTrace())
             }
             UohIdlingResource.decrement()
@@ -150,6 +152,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
             try {
                 _flightResendEmailResult.value = (flightResendEmailUseCase.executeSuspend(invoiceId, email))
             } catch (e: Exception) {
+                Timber.d(e)
                 _flightResendEmailResult.value = Fail(e.fillInStackTrace())
             }
             UohIdlingResource.decrement()
@@ -162,6 +165,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
             try {
                 _trainResendEmailResult.value = (trainResendEmailUseCase.executeSuspend(param))
             } catch (e: Exception) {
+                Timber.d(e)
                 _trainResendEmailResult.value = Fail(e.fillInStackTrace())
             }
             UohIdlingResource.decrement()
@@ -175,6 +179,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
             try {
                 _rechargeSetFailResult.value = (rechargeSetFailUseCase.executeSuspend(orderId))
             } catch (e: Exception) {
+                Timber.d(e)
                 _rechargeSetFailResult.value = Fail(e.fillInStackTrace())
             }
             UohIdlingResource.decrement()
@@ -203,6 +208,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                 }
             })
         } catch (e: Exception) {
+            Timber.d(e)
             _atcResult.value = Fail(e.fillInStackTrace())
             UohIdlingResource.decrement()
         }
