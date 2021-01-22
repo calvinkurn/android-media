@@ -478,7 +478,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         applySortFilterModel.mapParameter.forEach {
             SimilarProductRecommendationTracking.eventUserClickFullFilterChip(recommendationViewModel.userId(), "${it.key}=${it.value}")
         }
-        SimilarProductRecommendationTracking.eventUserClickShowProduct(recommendationViewModel.userId(), "$selectedSortString&$selectedFilterString")
+        var trackerParam = selectedSortString
+        if(selectedFilterString.isNotEmpty()){
+            trackerParam += if(trackerParam.isNotEmpty()) "&" else "" + selectedFilterString
+        }
+        SimilarProductRecommendationTracking.eventUserClickShowProduct(recommendationViewModel.userId(), trackerParam)
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {

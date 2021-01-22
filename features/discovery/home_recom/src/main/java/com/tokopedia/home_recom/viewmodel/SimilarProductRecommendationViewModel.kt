@@ -121,7 +121,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
             if(recommendation.isNotEmpty()){
                 val filterData = FilterSortChip(fullFilterAsync.await(), quickFilterAsync.await().filterChip)
                 _filterSortChip.postValue(Response.success(filterData))
-                _recommendationItem.postValue(Response.success(recommendation.map { it.copy(dimension61 = param) }))
+                _recommendationItem.postValue(Response.success(recommendation.map { it.copy(dimension61 = "$filterString&$sortString") }))
             } else {
                 _filterSortChip.postValue(Response.success(oldFilterData))
                 _recommendationItem.postValue(Response.empty())
@@ -136,16 +136,18 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         launchCatchError(dispatcher.getIODispatcher(), block = {
             _filterSortChip.value?.data?.let { filterSort ->
                 var resultQuery = queryParam
-
+                var dimension61 = ""
                 filterSort.filterAndSort.sortChip.forEach {
                     val isActivated = it.key in sort.keys && it.value == sort[it.key]
-                    if (isActivated) resultQuery += "&${it.key}=${it.value}"
+                    if (isActivated) dimension61 += "&${it.key}=${it.value}"
                 }
 
                 filterSort.filterAndSort.filterChip.getOption().forEach {
                     val isActivated = it.key in filter.keys && filter[it.key] == it.value
-                    if (isActivated) resultQuery += "&${it.key}=${it.value}"
+                    if (isActivated) dimension61 += "&${it.key}=${it.value}"
                 }
+
+                resultQuery += dimension61
 
                 getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = "", queryParam = resultQuery, type = QUICK_FILTER, pageName = pageName)
                 val quickFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
@@ -160,7 +162,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
 
                 if (recommendation.isNotEmpty()) {
                     _filterSortChip.postValue(Response.success(FilterSortChip(fullFilterAsync.await(), quickFilterAsync.await().filterChip)))
-                    _recommendationItem.postValue(Response.success(recommendation.map { it.copy(dimension61 = resultQuery) }))
+                    _recommendationItem.postValue(Response.success(recommendation.map { it.copy(dimension61 = dimension61) }))
                 } else {
                     _filterSortChip.postValue(Response.success(filterSort))
                     _recommendationItem.postValue(Response.empty())
@@ -182,25 +184,27 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
 
             val oldFilterData = _filterSortChip.value?.data
             val sortString = _filterSortChip.value?.data?.filterAndSort?.sortChip?.filter { it.isSelected }?.joinToString (separator = "&"){ it.key + "=" + it.value }
-
-            val filterString = "$queryParam&$sortString&" + _filterSortChip.value?.data?.filterAndSort?.filterChip?.getSelectedOption()?.joinToString(separator = "&") { opt ->
+            val filterString = _filterSortChip.value?.data?.filterAndSort?.filterChip?.getSelectedOption()?.joinToString(separator = "&") { opt ->
                 "${opt.key}=${opt.value}"
             }
+            val dimension61 = "$sortString&$filterString"
+            val query = "$queryParam&$sortString&$filterString"
 
-            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = filterString, type = QUICK_FILTER, pageName = pageName)
+            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = query, type = QUICK_FILTER, pageName = pageName)
+
             val quickFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
 
-            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = filterString, type = FULL_FILTER, pageName = pageName)
+            getRecommendationFilterChips.setParams(userId = userSessionInterface.userId.toIntOrZero(), productIDs = productId, queryParam = query, type = FULL_FILTER, pageName = pageName)
             val fullFilterAsync = async { getRecommendationFilterChips.executeOnBackground() }
 
             _filterSortChip.postValue(Response.loading())
             _recommendationItem.postValue(Response.loading())
 
-            val recommendation = singleRecommendationUseCase.createObservable(singleRecommendationUseCase.getRecomParams(queryParam = filterString, productIds = listOf(productId), pageNumber = 1)).toBlocking().first()
+            val recommendation = singleRecommendationUseCase.createObservable(singleRecommendationUseCase.getRecomParams(queryParam = query, productIds = listOf(productId), pageNumber = 1)).toBlocking().first()
             if(recommendation.isNotEmpty()){
                 val filterData = FilterSortChip(fullFilterAsync.await(), quickFilterAsync.await().filterChip)
                 _filterSortChip.postValue(Response.success(filterData))
-                _recommendationItem.postValue(Response.success(recommendation.map { it.copy(dimension61 = filterString) }))
+                _recommendationItem.postValue(Response.success(recommendation.map { it.copy(dimension61 = dimension61) }))
             } else {
                 _filterSortChip.postValue(Response.empty(oldFilterData))
                 _recommendationItem.postValue(Response.empty())
