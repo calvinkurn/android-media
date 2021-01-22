@@ -224,7 +224,6 @@
             android:gravity="center_vertical"
             android:minWidth="@dimen/dp_80"
             android:visibility="gone"
-            android:drawablePadding="@dimen/dp_5"
             app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_follower_icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:unifyButtonSize="micro"
