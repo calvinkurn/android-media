@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
@@ -48,6 +49,7 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
             }
             conventionalModel?.tickerState = it.tickerState
             conventionalModel?.isAvailable = it.isAvailable
+            conventionalModel?.warehouseIds = it.warehouseIds
         }
         notifyDataSetChanged()
     }
@@ -62,7 +64,7 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)
         private val shipmentItemCb = itemView.findViewById<CheckboxUnify>(R.id.cb_shipment_item)
         private val shipmentCategory = itemView.findViewById<Typography>(R.id.shipment_category)
-//        private val shipmentProductRv = itemView.findViewById<RecyclerView>(R.id.shipment_item_list)
+        private val shipmentProductRv = itemView.findViewById<RecyclerView>(R.id.shipment_item_list)
         private val tickerShipper = itemView.findViewById<Ticker>(R.id.ticker_shipper)
         private val couponLayout = itemView.findViewById<RelativeLayout>(R.id.layout_coupon)
         private val couponText = itemView.findViewById<Typography>(R.id.title_coupon)
@@ -94,34 +96,24 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
                 couponText.text = data.textPromo
             }
 
-         /*   shipperProductConventionalChild = ShipperProductItemAdapter(this@ShippingEditorConventionalViewHolder)
+            shipperProductConventionalChild = ShipperProductItemAdapter(this@ShippingEditorConventionalViewHolder)
             shipmentProductRv.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = shipperProductConventionalChild
-            }*/
+            }
 
-//            shipperProductConventionalChild?.addData(data.shipperProduct)
+            shipperProductConventionalChild?.addData(data.shipperProduct)
 
             when (data.tickerState) {
                 1 -> {
                     tickerShipper.visibility = View.VISIBLE
                     tickerShipper.tickerType = Ticker.TYPE_ERROR
-                    tickerShipper.setHtmlDescription(itemView.context.getString(R.string.charge_bo_ticker_content))
-                    tickerShipper.setDescriptionClickEvent(object: TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            listener.onShipperTickerConventionalClicked()
-                        }
-
-                        override fun onDismiss() {
-                            //no-op
-                        }
-
-                    })
+                    tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_red))
                 }
                 2 -> {
                     tickerShipper.visibility = View.VISIBLE
                     tickerShipper.tickerType = Ticker.TYPE_WARNING
-                    tickerShipper.setHtmlDescription(itemView.context.getString(R.string.charge_bo_ticker_content))
+                    tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_yellow, data.warehouseIds?.size))
                     tickerShipper.setDescriptionClickEvent(object: TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             listener.onShipperTickerConventionalClicked()

@@ -11,7 +11,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ShipperProductItemAdapter(private val listener: ShipperProductOnDemandItemListener): RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
 
-    private var shipperProductOnDemandModel = mutableListOf<ShipperProductModel>()
+    private var shipperProduct = mutableListOf<ShipperProductModel>()
 
     interface ShipperProductOnDemandItemListener {
         fun onShipperProductItemClicked()
@@ -23,20 +23,20 @@ class ShipperProductItemAdapter(private val listener: ShipperProductOnDemandItem
     }
 
     override fun getItemCount(): Int {
-        return shipperProductOnDemandModel.size
+        return shipperProduct.size
     }
 
     override fun onBindViewHolder(holder: ShipperProductOnDemandViewHolder, position: Int) {
-        holder.bindData(shipperProductOnDemandModel[position])
+        holder.bindData(shipperProduct[position])
     }
 
     fun addData(data: List<ShipperProductModel>) {
-        shipperProductOnDemandModel.addAll(data)
+        shipperProduct.addAll(data)
         notifyDataSetChanged()
     }
 
     fun clearData() {
-        shipperProductOnDemandModel.clear()
+        shipperProduct.clear()
         notifyDataSetChanged()
     }
 
@@ -51,7 +51,7 @@ class ShipperProductItemAdapter(private val listener: ShipperProductOnDemandItem
         }
 
         private fun setItemData(data: ShipperProductModel) {
-            val lastItem = shipperProductOnDemandModel.last()
+            val lastItem = shipperProduct.last()
             shipperProductName.text = data.shipperProductName
             shipperProductCb.isChecked = data.isActive
 

@@ -24,7 +24,8 @@ data class OnDemandModel(
         var featureInfo: List<FeatureInfoModel> = listOf(),
         var shipperProduct: List<ShipperProductModel> = listOf(),
         var tickerState: Int = 0,
-        var isAvailable: Boolean = true
+        var isAvailable: Boolean = true,
+        var warehouseIds: List<Int>? = emptyList()
 ) : ShippingEditorVisitable()
 
 data class ConventionalModel(
@@ -36,7 +37,8 @@ data class ConventionalModel(
         var featureInfo: List<FeatureInfoModel> = listOf(),
         var shipperProduct: List<ShipperProductModel> = listOf(),
         var tickerState: Int = 0,
-        var isAvailable: Boolean = true
+        var isAvailable: Boolean = true,
+        var warehouseIds: List<Int>? = emptyList()
 ) : ShippingEditorVisitable()
 
 @Parcelize

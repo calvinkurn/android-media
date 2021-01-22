@@ -105,6 +105,7 @@
                         android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         app:layout_constraintTop_toBottomOf="@id/ticker_dijemput_kurir"
+                        android:descendantFocusability="blocksDescendants"
                         app:layout_constraintStart_toStartOf="parent"/>
 
                     <View
@@ -138,7 +139,7 @@
                         app:typographyType="body_3"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_antar_ke_agen"
-                        android:text="Bawa pesanan ke gerai terdekat dan minta resi dari petugas" />-->
+                        android:text="Bawa pesanan ke gerai terdekat dan minta resi dari petugas" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_conventional"
@@ -147,6 +148,7 @@
                         android:layout_marginTop="@dimen/unify_space_16"
                         android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
+                        android:descendantFocusability="blocksDescendants"
                         app:layout_constraintTop_toBottomOf="@id/tv_antar_ke_agen_detail"/>
 
                     <View
@@ -170,6 +172,13 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/divider_shipping_editor_2" />
+
+                    <com.tokopedia.globalerror.GlobalError
+                        android:id="@+id/global_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:visibility="gone" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -199,13 +208,6 @@
                 android:textStyle="bold" />
 
         </FrameLayout>
-
-        <com.tokopedia.globalerror.GlobalError
-            android:id="@+id/global_error"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
