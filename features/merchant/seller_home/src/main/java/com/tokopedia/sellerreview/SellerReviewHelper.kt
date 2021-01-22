@@ -11,7 +11,7 @@ import com.tokopedia.sellerreview.view.bottomsheet.RatingBottomSheet
 
 object SellerReviewHelper {
 
-    private const val POPUP_DELAY = 2000L
+    private const val POPUP_DELAY = 1000L
 
     fun checkForReview(context: Context, fm: FragmentManager) {
         Handler().postDelayed({

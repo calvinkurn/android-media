@@ -25,6 +25,16 @@
 
     <string name="sah_ticker_warning">#ecdb77</string>
 
+    <!--seller review-->
+    <string name="sir_send">Kirim</string>
+    <string name="sir_default_title">Waktunya kasih bintang, nih</string>
+    <string name="sir_default_message">Seberapa puas sih kamu dengan aplikasi Tokopedia?</string>
+    <string name="sir_rate_1_star">Sangat Kurang</string>
+    <string name="sir_rate_2_star">Kurang</string>
+    <string name="sir_rate_3_star">Cukup</string>
+    <string name="sir_rate_4_star">Puas</string>
+    <string name="sir_rate_5_star">Sangat Puas</string>
+
     <string name="menu_setting_title">Pengaturan</string>
     <string name="setting_logout">Logout</string>
     <string name="setting_application_version">Versi %1$s</string>
