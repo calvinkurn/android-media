@@ -6,10 +6,10 @@ import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
+import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -57,7 +57,7 @@ class ShopHomeVoucherViewHolder(
     private var merchantVoucherWidget: MvcView? = null
     private var merchantVoucherReload: CardView? = null
     private var merchantVoucherUiModel: ShopHomeVoucherUiModel? = null
-    private var merchantVoucherShimmering: LinearLayout? = null
+    private var merchantVoucherShimmering: LoaderImageView? = null
     private var textReload: Typography? = null
     private var imageReload: ImageView? = null
     private var textReloadDesc: Typography? = null
