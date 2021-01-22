@@ -45,9 +45,9 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.utils.URLGenerator;
-import com.tokopedia.url.Env;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -56,6 +56,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -87,6 +88,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
     private static final String REGISTER_APPLINK = "tokopedia://registration";
+    private static final String LITE_THANK_PAGE_URL_IDENTIFIER = "tokopedia.com/payment/thank-you/";
 
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
@@ -727,28 +729,24 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private boolean isLiteThankYouPage(String url) {
-        if (url.startsWith(getLiteThankYouPageURL())) {
-            return true;
-        }
-        return false;
+        return url.contains(LITE_THANK_PAGE_URL_IDENTIFIER);
     }
 
-
-    private String getLiteThankYouPageURL() {
-        if (TokopediaUrl.getInstance().getTYPE() == Env.LIVE) {
-            return "https://m.tokopedia.com/payment/thank-you/";
-        } else {
-            return "https://m-staging.tokopedia.com/payment/thank-you/";
-        }
-    }
 
     private boolean openNativeThankYouPage(String url) {
-        String applinkThankYouPage = "tokopedia://payment/thankyou?merchant=%s&payment_id=%s";
-        String[] params = url.replace(getLiteThankYouPageURL(), "").split("/");
-        if (params.length == 2) {
-            RouteManager.route(getActivity(), String.format(applinkThankYouPage, params[0], params[1]));
-            getActivity().finish();
-            return true;
+        String appLinkThankYouPage = ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE
+                + "?merchant=%s&payment_id=%s";
+        Uri uri = Uri.parse(url);
+        List<String> pathSegments = uri.getPathSegments();
+        if (pathSegments != null && pathSegments.size() >= 2) {
+            String paymentId = pathSegments.get(pathSegments.size() - 1);
+            String merchantCode = pathSegments.get(pathSegments.size() - 2);
+            if (merchantCode != null && paymentId != null) {
+                RouteManager.route(getActivity(), String.format(appLinkThankYouPage, merchantCode, paymentId));
+                if (getActivity() != null)
+                    getActivity().finish();
+                return true;
+            }
         }
         return false;
     }
