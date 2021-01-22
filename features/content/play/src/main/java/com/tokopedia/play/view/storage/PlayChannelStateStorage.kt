@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class PlayChannelStateStorage {
 
-    private val playPageMap: ConcurrentHashMap<String, PlayChannelData> = ConcurrentHashMap()
+    private val playPageMap: MutableMap<String, PlayChannelData> = mutableMapOf()
 
     init {
 //        playPageMap.putAll(
@@ -28,7 +28,7 @@ class PlayChannelStateStorage {
         playPageMap[channelId] = channelData
     }
 
-    fun getChannelList() = playPageMap.keys().toList()
+    fun getChannelList() = playPageMap.keys.toList()
 
 }
 
@@ -40,6 +40,7 @@ data class PlayChannelData(
         val cartInfo: PlayCartInfoUiModel,
         val pinnedInfo: PlayPinnedInfoUiModel,
         val quickReplyInfo: PlayQuickReplyInfoUiModel,
+        val videoMetaInfo: PlayVideoMetaInfoUiModel,
 )
 
 //sealed class PlayChannelData {

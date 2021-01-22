@@ -1,16 +1,14 @@
 package com.tokopedia.play.view.activity
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.Observer
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
+import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.analytics.performance.util.PltPerformanceData
@@ -20,9 +18,8 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.view.contract.PlayNavigation
-import com.tokopedia.play.view.contract.PlayNewChannelInteractor
-import com.tokopedia.play.view.contract.PlayPiPCoordinator
+import com.tokopedia.play.util.PlaySensorOrientationManager
+import com.tokopedia.play.view.contract.*
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
@@ -36,7 +33,12 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  * {@link com.tokopedia.applink.internal.ApplinkConstInternalContent#PLAY_DETAIL}
  */
-class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, PlayPiPCoordinator, SwipeContainerViewComponent.DataSource {
+class PlayActivity : BaseActivity(),
+        PlayNewChannelInteractor,
+        PlayNavigation,
+        PlayPiPCoordinator,
+        SwipeContainerViewComponent.DataSource,
+        PlayOrientationListener {
 
     @Inject
     lateinit var playLifecycleObserver: PlayVideoPlayerObserver
@@ -49,6 +51,8 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
 
     @Inject
     lateinit var playParentViewModelFactory: PlayParentViewModel.Factory
+
+    private lateinit var orientationManager: PlaySensorOrientationManager
 
     private lateinit var viewModel: PlayParentViewModel
 
@@ -85,12 +89,14 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
 
     override fun onResume() {
         super.onResume()
+        orientationManager.enable()
         volumeControlStream = AudioManager.STREAM_MUSIC
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     override fun onPause() {
         super.onPause()
+        orientationManager.disable()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
@@ -114,6 +120,20 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
         onBackPressed(isSystemBack = false)
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        swipeContainerView.setEnableSwiping(!ScreenOrientation.getByInt(newConfig.orientation).isLandscape)
+        swipeContainerView.refocusFragment()
+    }
+
+    override fun onOrientationChanged(screenOrientation: ScreenOrientation, isTilting: Boolean) {
+        if (requestedOrientation != screenOrientation.requestedOrientation && !onInterceptOrientationChangedEvent(screenOrientation))
+            requestedOrientation = screenOrientation.requestedOrientation
+
+        //TODO("Tracker")
+//        sendTrackerWhenRotateScreen(screenOrientation, isTilting)
+    }
+
     /**
      * Swipe Container View Component
      */
@@ -124,6 +144,15 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
                 putString(PLAY_KEY_CHANNEL_ID, channelId)
             }
         }
+    }
+
+    private fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        if (swipeContainerView.scrollState != ViewPager2.SCROLL_STATE_IDLE) return true
+
+        val currFragment = supportFragmentManager.fragments[swipeContainerView.getCurrentPos()]
+
+        return if (currFragment is PlayFragmentContract) currFragment.onInterceptOrientationChangedEvent(newOrientation)
+        else false
     }
 
     private fun inject() {
@@ -141,7 +170,8 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
 //    }
 
     private fun setupViewModel(channelId: String?) {
-        val viewModelFactory = object : AbstractSavedStateViewModelFactory(this, intent?.extras ?: Bundle()) {
+        val viewModelFactory = object : AbstractSavedStateViewModelFactory(this, intent?.extras
+                ?: Bundle()) {
             override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
                 return playParentViewModelFactory.create(handle) as T
             }
@@ -151,7 +181,12 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
     }
 
     private fun setupPage() {
+        setupOrientation()
         lifecycle.addObserver(playLifecycleObserver)
+    }
+
+    private fun setupOrientation() {
+        orientationManager = PlaySensorOrientationManager(this, this)
     }
 
     private fun setupObserve() {
@@ -162,21 +197,6 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
         viewModel.observableChannelIdList.observe(this, Observer {
             swipeContainerView.setChannelIds(it)
         })
-    }
-
-    private fun setupView(channelId: String?) {
-        if (supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG) == null) {
-            onNewChannel(channelId)
-        }
-    }
-
-    private fun getPlayFragment(channelId: String?): Fragment {
-        val fragmentFactory = supportFragmentManager.fragmentFactory
-        return fragmentFactory.instantiate(classLoader, PlayFragment::class.java.name).apply {
-            arguments = Bundle().apply {
-                putString(PLAY_KEY_CHANNEL_ID, channelId)
-            }
-        }
     }
 
     override fun onBackPressed(isSystemBack: Boolean) {

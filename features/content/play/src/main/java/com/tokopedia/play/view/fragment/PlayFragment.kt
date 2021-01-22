@@ -100,7 +100,6 @@ class PlayFragment @Inject constructor(
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
-    private lateinit var orientationManager: PlaySensorOrientationManager
     private val keyboardWatcher = KeyboardWatcher()
 
     private var requestedOrientation: Int
@@ -124,7 +123,6 @@ class PlayFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setOrientation()
         playParentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayParentViewModel::class.java)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         processChannelInfo()
@@ -149,7 +147,6 @@ class PlayFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        orientationManager.enable()
         stopPrepareMonitoring()
         updateChannelInfo()
         view?.postDelayed({
@@ -165,7 +162,6 @@ class PlayFragment @Inject constructor(
         )
         playViewModel.stopJob()
         super.onPause()
-        if (::orientationManager.isInitialized) orientationManager.disable()
     }
 
     override fun onDestroyView() {
@@ -331,10 +327,6 @@ class PlayFragment @Inject constructor(
 
     private fun destroyInsets(view: View) {
         ViewCompat.setOnApplyWindowInsetsListener(requireView(), null)
-    }
-
-    private fun setOrientation() {
-        orientationManager = PlaySensorOrientationManager(requireContext(), this)
     }
 
     private fun initView(view: View) {

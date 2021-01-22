@@ -20,6 +20,9 @@ class SwipeContainerViewComponent(
         dataSource: DataSource
 ) : ViewComponent(container, rootId) {
 
+    val scrollState: Int
+        get() = vpFragment.scrollState
+
     private val vpFragment = rootView as ViewPager2
 
     private val adapter = SwipeContainerStateAdapter(fragmentManager, lifecycle, dataSource::getFragment)
@@ -31,6 +34,25 @@ class SwipeContainerViewComponent(
 
     fun setChannelIds(channelIds: List<String>) {
         adapter.setChannelList(channelIds)
+    }
+
+    fun getCurrentPos(): Int {
+        return vpFragment.currentItem
+    }
+
+    fun refocusFragment() {
+        vpFragment.post {
+            if (adapter.itemCount > 1) {
+                val currentPos = vpFragment.currentItem
+                val fakePos = if (currentPos == 0) 1 else vpFragment.currentItem - 1
+                vpFragment.setCurrentItem(fakePos, false)
+                vpFragment.setCurrentItem(currentPos, false)
+            }
+        }
+    }
+
+    fun setEnableSwiping(shouldEnable: Boolean) {
+        vpFragment.isUserInputEnabled = shouldEnable
     }
 
     interface DataSource {

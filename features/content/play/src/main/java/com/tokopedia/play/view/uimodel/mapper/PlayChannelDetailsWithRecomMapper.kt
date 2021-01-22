@@ -34,7 +34,7 @@ class PlayChannelDetailsWithRecomMapper(
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
-//                    videoMetaInfo = mapVideoMeta(it.video, it.config, it.isLive),
+                    videoMetaInfo = mapVideoMeta(it.video, it.config, it.isLive),
 //                    miscConfigInfo = mapMiscConfigInfo(it.config),
             )
         }

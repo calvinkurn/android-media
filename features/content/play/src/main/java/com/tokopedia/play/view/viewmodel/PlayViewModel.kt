@@ -70,7 +70,7 @@ class PlayViewModel @Inject constructor(
         get() = _observableChannelErrorEvent
     val observableLatestChannelInfo: LiveData<PlayCompleteInfoUiModel>
         get() = _observableLatestChannelInfo
-    val observableVideoMeta: LiveData<VideoMetaUiModel>
+    val observableVideoMeta: LiveData<PlayVideoMetaInfoUiModel> /**Changed**/
         get() = _observableVideoMeta
     val observableSocketInfo: LiveData<PlaySocketInfo>
         get() = _observableSocketInfo
@@ -109,7 +109,7 @@ class PlayViewModel @Inject constructor(
 
     val videoOrientation: VideoOrientation
         get() {
-            val videoStream = _observableLatestChannelInfo.value?.videoStream
+            val videoStream = _observableVideoMeta.value?.videoStream
             return videoStream?.orientation ?: VideoOrientation.Unknown
         }
     val channelType: PlayChannelType
@@ -161,7 +161,8 @@ class PlayViewModel @Inject constructor(
                             pinnedMessage = _observablePinnedMessage.value,
                             pinnedProduct = _observablePinnedProduct.value
                     ),
-                    quickReplyInfo = _observableQuickReply.value ?: error("Quick Reply should not be null")
+                    quickReplyInfo = _observableQuickReply.value ?: mChannelData?.quickReplyInfo ?: error("Quick Reply should not be null"),
+                    videoMetaInfo = _observableVideoMeta.value ?: mChannelData?.videoMetaInfo ?: error("Video Meta should not be null")
             )
         }
 
@@ -199,7 +200,7 @@ class PlayViewModel @Inject constructor(
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
-    private val _observableVideoMeta = MutableLiveData<VideoMetaUiModel>()
+    private val _observableVideoMeta = MutableLiveData<PlayVideoMetaInfoUiModel>() /**Changed**/
     private val _observableProductSheetContent = MutableLiveData<PlayResult<ProductSheetUiModel>>()
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observableLikeInfo = MutableLiveData<PlayLikeInfoUiModel>() /**Added**/
@@ -261,7 +262,7 @@ class PlayViewModel @Inject constructor(
                 if (!videoPlayer.isYouTube) {
                     val videoPlayer = General(player)
                     val currentMetaValue = _observableVideoMeta.value
-                    _observableVideoMeta.value = currentMetaValue?.copy(videoPlayer = videoPlayer) ?: VideoMetaUiModel(videoPlayer)
+                    _observableVideoMeta.value = currentMetaValue?.copy(videoPlayer = videoPlayer) ?: PlayVideoMetaInfoUiModel(videoPlayer)
                 }
             }
         }
@@ -471,6 +472,7 @@ class PlayViewModel @Inject constructor(
     fun processChannelInfo(channelData: PlayChannelData) {
         mChannelData = channelData
         handlePartnerInfo(channelData.partnerInfo)
+        handleVideoMetaInfo(channelData.videoMetaInfo)
         handleShareInfo(channelData.shareInfo)
         handleCartInfo(channelData.cartInfo)
         handlePinnedInfo(channelData.pinnedInfo)
@@ -508,7 +510,7 @@ class PlayViewModel @Inject constructor(
                 _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
                 _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
 //                _observableQuickReply.value = completeInfoUiModel.quickReply
-                _observableVideoMeta.value = VideoMetaUiModel(completeInfoUiModel.videoPlayer, completeInfoUiModel.videoStream)
+//                _observableVideoMeta.value = VideoMetaUiModel(completeInfoUiModel.videoPlayer, completeInfoUiModel.videoStream)
                 _observableEvent.value = completeInfoUiModel.event
 
                 if (!isActive) return@launchCatchError
@@ -708,8 +710,8 @@ class PlayViewModel @Inject constructor(
         _observablePartnerInfo.value = partnerInfo
     }
 
-    private fun handleLikeInfo(likeInfoUiModel: PlayLikeInfoUiModel) {
-        _observableLikeInfo.value = likeInfoUiModel
+    private fun handleVideoMetaInfo(videoMetaInfo: PlayVideoMetaInfoUiModel) {
+        _observableVideoMeta.value = videoMetaInfo
     }
 
     private fun handleShareInfo(shareInfo: PlayShareInfoUiModel) {
