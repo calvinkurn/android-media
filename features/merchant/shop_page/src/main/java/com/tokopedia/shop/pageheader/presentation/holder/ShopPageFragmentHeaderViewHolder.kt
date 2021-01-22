@@ -43,6 +43,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                                        private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
                                        private val context: Context) {
     private var isShopFavorite = false
+    private var voucherUrl: String? = null
     private val shopPageProfileBadgeView: AppCompatImageView
         get() = view.shop_page_main_profile_badge.takeIf {
             isUsingNewNavigation()
@@ -139,6 +140,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         followButton.visibility = View.VISIBLE
         followButton.setOnClickListener {
             if (!followButton.isLoading) {
+                voucherUrl?.run { removeDrawableFollowButton() }
                 followButton.isLoading = true
                 listener.setFollowStatus(isShopFavorite)
             }
@@ -279,7 +281,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         isShopFavorite = followStatus?.status?.userIsFollowing == true
         followStatus?.let {
             followButton.text = it.followButton?.buttonLabel
-            val voucherUrl = it.followButton?.voucherIconURL
+            voucherUrl = it.followButton?.voucherIconURL
             val coachMarkText = it.followButton?.coachmarkText
             if (!voucherUrl.isNullOrBlank()) {
                 loadLeftDrawable(voucherUrl)
@@ -311,6 +313,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         )
         coachMark = CoachMark2(context)
         coachMark?.showCoachMark(coachMarkItem)
+    }
+
+    private fun removeDrawableFollowButton() {
+        followButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
     }
 
     private fun loadLeftDrawable(url: String?) {
