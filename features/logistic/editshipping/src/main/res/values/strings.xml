@@ -39,6 +39,12 @@
     <string name="non_tunai_title">Non Tunai</string>
     <string name="non_tunai_detail">Penjual tidak perlu bayar ongkir ke kurir. Ongkir dipotong langsung dari saldo penjual saat barang sudah diterima pembeli.</string>
     <string name="tv_detail_kurir">Kenali detail kurir pengiriman agar kamu bisa memilih yang terbaik untuk pembelimu. Selengkapnya</string>
-    <string name="title_details_shhipper">Detail Kurir Pengiriman</string>
+    <string name="ticker_dijemput_kurir">Semua kurir pada layanan dijemput kurir memiliki fitur:&lt;br/&gt;</string>
+    <string name="awb_otomatis_list">&lt;li&gt; AWB Otomatis. </string>
+    <string name="button">Selengkapnya</string>
+    <string name="non_tunai_list"> &lt;li&gt; Non Tunai. </string>
+    <string name="non_tunai_button">Selengkapnya</string>
+
+    <string name="ticker_dijemput_kurir_complete">Semua kurir pada layanan dijemput kurir memiliki fitur:&lt;br/&gt; &lt;ul&gt; &lt;li&gt; AWB Otomatis. &lt;a href="#"&gt;Selengkapnya&lt;/a&gt; &lt;br/&gt; &lt;li&gt; Non Tunai. &lt;a href="#"&gt;Selengkapnya&lt;/a&gt; &lt;/ul&gt; </string>
 
 </resources>

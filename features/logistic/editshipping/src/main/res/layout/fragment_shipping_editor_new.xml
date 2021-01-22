@@ -39,6 +39,7 @@
                         android:layout_height="wrap_content"
                         app:closeButtonVisibility="gone"
                         app:tckv_content_text_size = "@dimen/sp_12"
+                        android:layout_marginTop="@dimen/dp_4"
                         android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         app:layout_constraintTop_toTopOf="parent"
@@ -79,7 +80,7 @@
                         android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         app:typographyType="body_3"
-                        android:text="Kurir akan menjemput pesanan di alamatmu untuk diantar"
+                        android:text="Kurir akan menjemput pesanan di alamatmu untuk dianta ke pembeli"
                         app:layout_constraintTop_toBottomOf="@id/tv_dijemput_kurir"
                         app:layout_constraintStart_toStartOf="parent"/>
 

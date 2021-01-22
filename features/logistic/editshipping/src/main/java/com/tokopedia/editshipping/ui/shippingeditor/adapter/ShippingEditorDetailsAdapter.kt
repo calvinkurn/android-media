@@ -33,25 +33,20 @@ class ShippingEditorDetailsAdapter : RecyclerView.Adapter<ShippingEditorDetailsA
         is ServiceDetailsModel -> R.layout.item_service_detail
         is FeatureDetailsModel -> R.layout.item_feature_detail
         is DividerModelFeature -> R.layout.item_divider_feature
+        is DividerServiceFeature -> R.layout.item_divider_service
     }
 
     abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bind(item: T, position: Int)
     }
 
-    fun setShipperDetailsData(shipperDetails: List<ShipperDetailsModel>) {
-        data.addAll(shipperDetails)
-        data.add(shipperDetails.size, DividerModelFeature())
-        notifyDataSetChanged()
-    }
-
-    fun setServiceData(serviceDetailsModel: List<ServiceDetailsModel>){
-        data.addAll(serviceDetailsModel)
-        notifyDataSetChanged()
-    }
-
-    fun setFeatureData(featureData : List<FeatureDetailsModel>) {
-        data.addAll(featureData)
+    fun setShippingEditorDetailsData(model: ShipperDetailModel) {
+        data.clear()
+        data.addAll(model.shipperDetails)
+        data.add(model.shipperDetails.size, DividerModelFeature())
+        data.addAll(model.featureDetails)
+        data.add(model.shipperDetails.size + model.featureDetails.size, DividerServiceFeature())
+        data.addAll(model.serviceDetails)
         notifyDataSetChanged()
     }
 

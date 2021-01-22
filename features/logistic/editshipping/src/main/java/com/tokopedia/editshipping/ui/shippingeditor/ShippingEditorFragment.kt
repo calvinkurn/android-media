@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.di.shippingeditor.ShippingEditorComponent
 import com.tokopedia.editshipping.domain.model.shippingEditor.*
@@ -35,6 +37,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
@@ -58,6 +61,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private var shipperListConventional: RecyclerView? = null
     private var btnSaveShipper: UnifyButton? = null
     private var tvDetailCourier: Typography? = null
+    private var tickerOnDemand: Ticker? = null
 
     private var bottomSheetShipperInfo: BottomSheetUnify? = null
     private var bottomSheetImageInfo: DeferredImageView? = null
@@ -103,8 +107,15 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         globalErrorLayout = view?.findViewById(R.id.global_error)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
         tvDetailCourier = view?.findViewById(R.id.tv_detail_kurir)
+        tickerOnDemand = view?.findViewById(R.id.ticker_dijemput_kurir)
 
+        renderTickerOnDemand()
         renderTextDetailCourier()
+    }
+
+    private fun renderTickerOnDemand() {
+        val awbText = SpannableString(getString(R.string.awb_otomatis_list))
+        tickerOnDemand?.setHtmlDescription(getString(R.string.ticker_dijemput_kurir_complete))
     }
 
     private fun renderTextDetailCourier() {
@@ -183,19 +194,31 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     private fun updateTickerBottomSheet(data: ShipperDetailModel) {
-        bottomSheetShipperAdapter.setShipperDetailsData(data.shipperDetails)
-        bottomSheetShipperAdapter.setFeatureData(data.featureDetails)
-        bottomSheetShipperAdapter.setServiceData(data.serviceDetails)
+        bottomSheetShipperAdapter.setShippingEditorDetailsData(data)
         openBottomSheetDetails()
     }
 
     private fun renderTicker(tickers: List<TickerModel>) {
+        val messages = ArrayList<TickerData>()
         if (tickers.isNotEmpty()) {
-            val messages = ArrayList<TickerData>()
             for (item in tickers) {
-                messages.add(TickerData(item.header, item.body + item.textLink, Ticker.TYPE_ANNOUNCEMENT))
+                val spannableString = SpannableString(item.body + " " + item.textLink)
+                val color = getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)
+                spannableString.setSpan(ForegroundColorSpan(color), spannableString.length - item.textLink.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                messages.add(TickerData(item.header, item.body + " " + item.textLink, Ticker.TYPE_ANNOUNCEMENT, true, item.urlLink))
             }
-            context?.run { tickerShipperInfo?.addPagerView(TickerPagerAdapter(this, messages), messages) }
+            val tickerPageAdapter = TickerPagerAdapter(context, messages)
+            tickerShipperInfo?.addPagerView(tickerPageAdapter, messages)
+            tickerPageAdapter?.setPagerDescriptionClickEvent(object: TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    view?.let { Toaster.build(it, "MUNCUL", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL) }
+                    val applink = itemData.toString()
+                    if(!TextUtils.isEmpty(applink)) {
+                        RouteManager.route(activity, applink)
+                    }
+                }
+
+            })
             tickerShipperInfo?.visibility = View.VISIBLE
         } else {
             tickerShipperInfo?.visibility = View.GONE

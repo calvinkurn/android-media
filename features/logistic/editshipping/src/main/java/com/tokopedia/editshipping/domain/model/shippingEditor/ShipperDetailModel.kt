@@ -31,3 +31,4 @@ data class ServiceDetailsModel(
 ) : ShipperDetailVisitable()
 
 data class DividerModelFeature(var text: String? = null) : ShipperDetailVisitable()
+data class DividerServiceFeature(var text: String? = null) : ShipperDetailVisitable()
