@@ -102,7 +102,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         when (this.paymentMode) {
             is PayLater -> payLaterViewModel.getPayLaterSimulationData(productPrice)
             is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
-
         }
     }
 
@@ -168,9 +167,9 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         paylaterTabLayout?.run {
             setupWithViewPager(payLaterViewPager)
             getUnifyTabLayout().removeAllTabs()
-            addNewTab(context.getString(R.string.pay_later_simulation_tab_title))
+            addNewTab(context.getString(R.string.pdp_simulation_tab_title))
             when (paymentMode) {
-                is CreditCard -> addNewTab(context.getString(R.string.pay_later_credit_card_tnc_title))
+                is CreditCard -> addNewTab(context.getString(R.string.pdp_simulation_credit_card_tnc_title))
                 else -> addNewTab(context.getString(R.string.pay_later_offer_details_tab_title))
             }
         }
@@ -261,7 +260,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun onPageSelected(position: Int) {
-        if (position == SIMULATION_TAB_INDEX && !PayLaterHelper.isPayLaterProductActive(applicationStatusList)) showRegisterWidget()
+        if (position == SIMULATION_TAB_INDEX && !payLaterViewModel.isPayLaterProductActive) showRegisterWidget()
         else daftarGroup.gone()
     }
 

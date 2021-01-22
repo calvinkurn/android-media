@@ -27,22 +27,26 @@ class CreditCardSimulationViewHolder(val view: View) : RecyclerView.ViewHolder(v
 
     fun setBackGround(simulationData: CreditCardInstallmentItem) {
         view.apply {
-            if (simulationData.isSelected) {
-                ccSimulationCard.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                tvInstallmentHeader.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                tvInstallmentPrice.visible()
-                tvMonthlyTenure.text = "/bulan"
-            } else if (simulationData.isDisabled == true) {
-                tvInstallmentHeader.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-                ccSimulationCard.cardType = CardUnify.TYPE_BORDER_DISABLED
-                tvInstallmentPrice.gone()
-                val amount = simulationData.minAmount?.div(MILLION)
-                tvMonthlyTenure.text = "Untuk harga min. Rp${amount} Juta"
-            } else {
-                ccSimulationCard.cardType = CardUnify.TYPE_BORDER
-                tvInstallmentHeader.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                tvInstallmentPrice.visible()
-                tvMonthlyTenure.text = "/bulan"
+            when {
+                simulationData.isSelected -> {
+                    ccSimulationCard.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                    tvInstallmentHeader.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    tvInstallmentPrice.visible()
+                    tvMonthlyTenure.text = "/bulan"
+                }
+                simulationData.isDisabled == true -> {
+                    tvInstallmentHeader.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+                    ccSimulationCard.cardType = CardUnify.TYPE_BORDER_DISABLED
+                    tvInstallmentPrice.gone()
+                    val amount = simulationData.minAmount?.div(MILLION)
+                    tvMonthlyTenure.text = "Untuk harga min. Rp${amount} Juta"
+                }
+                else -> {
+                    ccSimulationCard.cardType = CardUnify.TYPE_BORDER
+                    tvInstallmentHeader.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    tvInstallmentPrice.visible()
+                    tvMonthlyTenure.text = "/bulan"
+                }
             }
         }
     }

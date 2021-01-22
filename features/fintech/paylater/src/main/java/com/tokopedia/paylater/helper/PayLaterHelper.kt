@@ -45,13 +45,6 @@ object PayLaterHelper {
         }
     }
 
-    fun isPayLaterProductActive(payLaterApplicationStatus: ArrayList<PayLaterApplicationDetail>): Boolean {
-        for (payLaterItem in payLaterApplicationStatus) {
-            if (PayLaterApplicationStatusMapper.getApplicationStatusType(payLaterItem) is PayLaterStatusActive) return true
-        }
-        return false
-    }
-
     fun getJson(path : String) : String {
         val uri = this.javaClass.classLoader?.getResource(path)
         val file = File(uri?.path)

@@ -10,7 +10,7 @@ import com.tokopedia.paylater.di.component.DaggerPdpSimulationComponent
 import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.presentation.fragment.PdpSimulationFragment
 
-class PayLaterActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent> {
+class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent> {
 
     private lateinit var pdpSimulationComponent: PdpSimulationComponent
 
@@ -23,7 +23,7 @@ class PayLaterActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCompone
         updateTitle(SCREEN_NAME)
     }
 
-    override fun getLayoutRes() = R.layout.activity_paylater
+    override fun getLayoutRes() = R.layout.activity_pdp_simulation
 
     override fun getToolbarResourceID() = R.id.paylaterHeader
 
@@ -37,7 +37,7 @@ class PayLaterActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCompone
     }
 
     companion object {
-        const val SCREEN_NAME = "PayLater & Cicilan"
+        const val SCREEN_NAME = "Pdp Simulation"
     }
 
     override fun getComponent(): PdpSimulationComponent {

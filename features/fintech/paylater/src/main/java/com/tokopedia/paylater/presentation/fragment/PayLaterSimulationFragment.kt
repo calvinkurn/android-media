@@ -23,8 +23,6 @@ import com.tokopedia.paylater.data.mapper.PaymentMode
 import com.tokopedia.paylater.di.component.PdpSimulationComponent
 import com.tokopedia.paylater.domain.model.PayLaterSimulationGatewayItem
 import com.tokopedia.paylater.domain.model.SimulationItemDetail
-import com.tokopedia.paylater.domain.model.UserCreditApplicationStatus
-import com.tokopedia.paylater.helper.PayLaterHelper
 import com.tokopedia.paylater.helper.PdpSimulationException
 import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
 import com.tokopedia.paylater.presentation.widget.*
@@ -98,10 +96,10 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
                 viewLifecycleOwner,
                 {
                     when (it) {
-                        is Success -> onApplicationStatusLoaded(it.data)
-                        is Fail -> onApplicationStatusLoadingFail(it.throwable)
+                        is Success -> handleRegisterWidgetVisibility()
+                        is Fail -> handleRegisterWidgetVisibility()
                     }
-                },
+                }
         )
     }
 
@@ -109,9 +107,9 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         payLaterSimulationCallback?.getPayLaterProductInfo()
         shimmerGroup.gone()
         simulationDataGroup.visible()
+        tickerSimulation.visible()
         clearAllViews()
         populateSimulationTable(data)
-        tickerSimulation.visible()
         tickerSimulation.setTextDescription(context?.getString(R.string.pay_later_simulation_ticker_text)
                 ?: "")
     }
@@ -119,35 +117,29 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     private fun onSimulationLoadingFail(throwable: Throwable) {
         payLaterSimulationCallback?.getPayLaterProductInfo()
         shimmerGroup.gone()
-        paylaterDaftarWidget.gone()
-        btnDaftarPayLater.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
                 payLaterSimulationCallback?.noInternetCallback()
                 shimmerGroup.visible()
+                supervisorWidget.gone()
                 return
             }
-            is IllegalStateException -> {
-                setGlobalErrors(GlobalError.PAGE_FULL)
-            }
+            is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
             is PdpSimulationException.PayLaterNotApplicableException -> {
                 payLaterTermsEmptyView.visible()
-                dividerVertical.visible()
-                paylaterDaftarWidget.visible()
-                tickerSimulation.setHtmlDescription("Tenang, kamu bisa coba pakai kartu credit. Ada  bunga 0% juga! <a href='https://google.com'>Lihat Simulasi Kartu Credit</a>")
+                tickerSimulation.visible()
+                tickerSimulation.setHtmlDescription(context?.getString(R.string.pay_later_not_applicable_ticker_text)
+                        ?: "")
                 tickerSimulation.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         payLaterSimulationCallback?.switchPaymentMode()
                     }
 
-                    override fun onDismiss() {
-                    }
+                    override fun onDismiss() {}
                 })
                 return
             }
-            else -> {
-                setGlobalErrors(GlobalError.SERVER_ERROR)
-            }
+            else -> setGlobalErrors(GlobalError.SERVER_ERROR)
         }
     }
 
@@ -157,37 +149,18 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         simulationGlobalError.setActionClickListener {
             simulationGlobalError.gone()
             shimmerGroup.visible()
+            supervisorWidget.gone()
             payLaterSimulationCallback?.getSimulationProductInfo(PayLater)
         }
     }
 
-    private fun onApplicationStatusLoadingFail(throwable: Throwable) {
-        registerShimmer.gone()
-        if (payLaterViewModel.payLaterSimulationResultLiveData.value is Fail) {
-            btnDaftarPayLater.gone()
-            paylaterDaftarWidget.gone()
-        } else {
-            btnDaftarPayLater.visible()
-            paylaterDaftarWidget.gone()
-        }
-        payLaterSimulationCallback?.showRegisterWidget()
-    }
-
-    private fun onApplicationStatusLoaded(data: UserCreditApplicationStatus) {
+    private fun handleRegisterWidgetVisibility() {
         supervisorWidget.visible()
         registerShimmer.gone()
-        if (PayLaterHelper.isPayLaterProductActive(data.applicationDetailList
-                        ?: arrayListOf())) {
+        dividerVertical.visible()
+        if (payLaterViewModel.isPayLaterProductActive) {
             btnDaftarPayLater.gone()
             paylaterDaftarWidget.visible()
-        } else if (payLaterViewModel.isPayLaterNotApplicable()) {
-            btnDaftarPayLater.gone()
-            dividerVertical.visible()
-            paylaterDaftarWidget.visible()
-            supervisorWidget.gone()
-        } else if (payLaterViewModel.payLaterSimulationResultLiveData.value is Fail) {
-            btnDaftarPayLater.gone()
-            paylaterDaftarWidget.gone()
         } else {
             btnDaftarPayLater.visible()
             paylaterDaftarWidget.gone()

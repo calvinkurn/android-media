@@ -119,22 +119,14 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
 
     private fun onPayLaterApplicationLoadingFail(throwable: Throwable) {
         payLaterViewModel.let {
-            val payLaterProductList = ArrayList<PayLaterItemProductData>()
-            payLaterProductList.addAll(it.getPayLaterOptions())
-            // @Todo remove below lines
-            payLaterProductList.add(payLaterProductList[0])
-            payLaterProductList.add(payLaterProductList[0])
-            this.payLaterDataList = payLaterProductList
+            this.payLaterDataList = it.getPayLaterOptions()
             initAdapter()
         }
     }
 
     private fun onPayLaterApplicationStatusLoaded(data: UserCreditApplicationStatus) {
         payLaterViewModel.let {
-
-            val payLaterProductList = ArrayList<PayLaterItemProductData>()
-            payLaterProductList.addAll(it.getPayLaterOptions())
-            this.payLaterDataList = payLaterProductList
+            this.payLaterDataList = it.getPayLaterOptions()
             this.payLaterApplicationStatusList = data.applicationDetailList ?: arrayListOf()
             initAdapter()
         }

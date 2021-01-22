@@ -2,8 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clSimulationContainer"
@@ -154,12 +153,12 @@
 
         <com.tokopedia.globalerror.GlobalError
             android:id="@+id/simulationGlobalError"
-            android:layout_width="@dimen/unify_space_0"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:layout_marginTop="@dimen/unify_space_32"
             android:gravity="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/payLaterTermsEmptyView" />
 
         <com.tokopedia.unifycomponents.DividerUnify
@@ -170,7 +169,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/simulationGlobalError" />
+            app:layout_constraintTop_toBottomOf="@+id/payLaterTermsEmptyView" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/tickerSimulation"
@@ -233,7 +232,6 @@
             layout="@layout/paylater_supervisor_widget"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginTop="@dimen/unify_space_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -244,7 +242,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="tvTitleSimulation,tvSubtitleSimulation, offerLabel, llPayLaterPartner,hsvInstallment,ivShadow,tvRepaymentDescription " />
+            app:constraint_referenced_ids="tvTitleSimulation,tvSubtitleSimulation, offerLabel, llPayLaterPartner,hsvInstallment,ivShadow,tvRepaymentDescription, supervisorWidget " />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/shimmerGroup"

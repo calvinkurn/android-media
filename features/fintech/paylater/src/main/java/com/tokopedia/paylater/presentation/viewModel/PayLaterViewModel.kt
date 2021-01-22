@@ -31,6 +31,7 @@ class PayLaterViewModel @Inject constructor(
     val payLaterActivityResultLiveData = MutableLiveData<Result<PayLaterProductData>>()
     val payLaterApplicationStatusResultLiveData = MutableLiveData<Result<UserCreditApplicationStatus>>()
     val payLaterSimulationResultLiveData = MutableLiveData<Result<ArrayList<PayLaterSimulationGatewayItem>>>()
+    var isPayLaterProductActive = false
 
     // invoke only when amount in 10000..30000000
     fun getPayLaterSimulationData(amount: Int) {
@@ -80,26 +81,19 @@ class PayLaterViewModel @Inject constructor(
         payLaterSimulationResultLiveData.value = Fail(throwable)
     }
 
-    fun isPayLaterNotApplicable(): Boolean {
-        if (payLaterSimulationResultLiveData.value is Fail) {
-            return (payLaterSimulationResultLiveData.value as Fail).throwable.message == PAY_LATER_NOT_APPLICABLE
-        } else return false
-    }
-
     private fun onPayLaterApplicationStatusError(throwable: Throwable) {
         payLaterApplicationStatusResultLiveData.value = Fail(throwable)
     }
 
     private fun onPayLaterApplicationStatusSuccess(userCreditApplicationStatus: UserCreditApplicationStatus) {
-        //payLaterApplicationStatusResultLiveData.value = Fail(PdpSimulationException.PayLaterNullDataException(APPLICATION_STATE_DATA_FAILURE))
-
         launchCatchError(block = {
             val isResponseValid = withContext(ioDispatcher) {
                 return@withContext PayLaterApplicationStatusMapper.handleApplicationStateResponse(userCreditApplicationStatus)
             }
-            if (isResponseValid)
+            if (isResponseValid.first) {
+                isPayLaterProductActive = isResponseValid.second
                 payLaterApplicationStatusResultLiveData.value = Success(userCreditApplicationStatus)
-            else onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(APPLICATION_STATE_DATA_FAILURE))
+            } else onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(APPLICATION_STATE_DATA_FAILURE))
         }, onError = { onPayLaterApplicationStatusError(it) })
     }
 

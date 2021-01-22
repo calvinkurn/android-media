@@ -42,15 +42,18 @@ object PayLaterApplicationStatusMapper {
         }
     }
 
-    fun handleApplicationStateResponse(userCreditApplicationStatus: UserCreditApplicationStatus): Boolean {
+    fun handleApplicationStateResponse(userCreditApplicationStatus: UserCreditApplicationStatus): Pair<Boolean, Boolean> {
+        var isPayLaterActive = false
         userCreditApplicationStatus.run {
             if (!applicationDetailList.isNullOrEmpty()) {
                 for (applicationDetail in applicationDetailList) {
                     setLabelData(applicationDetail)
+                    if (getApplicationStatusType(applicationDetail) is PayLaterStatusActive)
+                        isPayLaterActive = true
                 }
-            } else return false
+            } else return Pair(false, isPayLaterActive)
         }
-        return true
+        return Pair(true, isPayLaterActive)
     }
 
     /**
