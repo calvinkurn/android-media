@@ -1,7 +1,6 @@
 package com.tokopedia.topads.dashboard.view.activity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -21,8 +20,6 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_NAME
@@ -34,12 +31,12 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
-import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
+import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_detail_view_widget.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
@@ -93,12 +90,16 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         view_pager_frag.adapter = getViewPagerAdapter()
         view_pager_frag.offscreenPageLimit = 3
         view_pager_frag.currentItem = 0
-        view_pager_frag.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
         tab_layout.setupWithViewPager(view_pager_frag)
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
         val list: MutableList<FragmentTabItem> = mutableListOf()
+        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        tab_layout?.addNewTab(TopAdsDashboardConstant.PRODUK)
+        tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
+        tab_layout?.addNewTab(TopAdsDashboardConstant.NEG_KATA_KUNCI)
+        tab_layout?.customTabMode = TabLayout.MODE_FIXED
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
         bundle.putString(GROUP_NAME, groupName)
@@ -235,15 +236,13 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     fun setProductCount(size: Int) {
-        detailPagerAdapter.setTitle(String.format(getString(R.string.topads_dash_product_count), size), 0)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
     }
-
     fun setKeywordCount(size: Int) {
-        detailPagerAdapter.setTitle(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_1)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(1)?.setCounter(size)
     }
-
     fun setNegKeywordCount(size: Int) {
-        detailPagerAdapter.setTitle(String.format(getString(R.string.topads_dash_neg_key_count), size), CONST_2)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(2)?.setCounter(size)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {

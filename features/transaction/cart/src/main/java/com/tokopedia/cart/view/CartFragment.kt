@@ -895,7 +895,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 setIcon(
                         IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
                                 .addIcon(
-                                        iconId = IconList.ID_NAV_LOTTIE_WISHLIST,
+                                        iconId = IconList.ID_NAV_ANIMATED_WISHLIST,
                                         disableDefaultGtmTracker = true,
                                         onClick = ::onNavigationToolbarWishlistClicked
                                 )
@@ -1191,12 +1191,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartItemQuantityPlusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
         cartPageAnalytics.eventClickAtcCartClickButtonPlus()
-        cartAdapter.increaseQuantity(position, parentPosition)
     }
 
     override fun onCartItemQuantityMinusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
         cartPageAnalytics.eventClickAtcCartClickButtonMinus()
-        cartAdapter.decreaseQuantity(position, parentPosition)
     }
 
     override fun onCartItemQuantityReseted(position: Int, parentPosition: Int, needRefreshItemView: Boolean) {
@@ -2967,11 +2965,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun animateProductImage(message: String) {
         var target: Pair<Int, Int>? = null
 
-        if (toolbarType.equals(TOOLBAR_VARIANT_BASIC, true)) {
-            target = toolbar.getWishlistIconPosition()
-        } else {
+        if (toolbarType.equals(TOOLBAR_VARIANT_NAVIGATION, true)) {
             val targetX = getScreenWidth() - resources.getDimensionPixelSize(R.dimen.dp_64)
             target = Pair(targetX, 0)
+        } else {
+            target = toolbar.getWishlistIconPosition()
         }
 
         tmpAnimatedImage.show()
@@ -2997,10 +2995,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onAnimationEnd(animation: Animator) {
                     tmpAnimatedImage.gone()
 
-                    if (toolbarType.equals(TOOLBAR_VARIANT_BASIC, true)) {
-                        toolbar.animateWishlistIcon()
+                    if (toolbarType.equals(TOOLBAR_VARIANT_NAVIGATION, true)) {
+                        navToolbar.triggerAnimatedVectorDrawableAnimation(IconList.ID_WISHLIST)
                     } else {
-                        navToolbar.triggerLottieAnimation(IconList.ID_NAV_LOTTIE_WISHLIST)
+                        toolbar.animateWishlistIcon()
                     }
 
                     showToastMessageGreen(message)
@@ -3470,6 +3468,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse() {
+        cartAdapter.checkForShipmentForm()
         val params = generateParamValidateUsePromoRevamp(false, -1, -1, true)
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()

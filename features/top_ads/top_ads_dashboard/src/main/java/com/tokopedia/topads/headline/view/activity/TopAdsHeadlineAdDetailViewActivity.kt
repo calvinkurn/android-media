@@ -1,7 +1,6 @@
 package com.tokopedia.topads.headline.view.activity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,17 +9,23 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.IS_CHANGED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KATA_KUNCI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
@@ -34,6 +39,7 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashStatisticFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineKeyFragment
+import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.*
 import kotlinx.android.synthetic.main.topads_dash_headline_detail_view_widget.*
@@ -54,6 +60,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
     private var groupName: String? = ""
     private var priceDaily = 0
     private var groupTotal = 0
+    private var isDataChanged = false
 
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
 
@@ -81,6 +88,8 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
 
     private fun getViewPagerAdapter(): PagerAdapter {
         val list: MutableList<FragmentTabItem> = mutableListOf()
+        tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
+        tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
         list.add(FragmentTabItem(KATA_KUNCI, TopAdsHeadlineKeyFragment.createInstance(bundle)))
@@ -115,7 +124,19 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
             loadStatisticsData()
         }
         header_toolbar.setNavigationOnClickListener {
-            super.onBackPressed()
+            onBackPressed()
+        }
+        hari_ini?.date_image?.setImageDrawable(this.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
+        hari_ini?.next_image?.setImageDrawable(this.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
+        hari_ini?.setOnClickListener {
+            showBottomSheet()
+        }
+        header_toolbar.addRightIcon(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon).setOnClickListener {
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
+                putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
+                putExtra(ParamObject.GROUP_ID, groupId.toString())
+            }
+            startActivityForResult(intent, EDIT_HEADLINE_REQUEST_CODE)
         }
         app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
@@ -139,6 +160,15 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
                 }
             }
         })
+    }
+
+    override fun onBackPressed() {
+        if(isDataChanged){
+            val intent = Intent()
+            intent.putExtra(IS_CHANGED, isDataChanged)
+            setResult(Activity.RESULT_OK, intent)
+        }
+        super.onBackPressed()
     }
 
     private fun loadData() {
@@ -180,9 +210,15 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == EDIT_GROUP_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK)
+        if(resultCode == Activity.RESULT_OK){
+            if(requestCode == EDIT_GROUP_REQUEST_CODE){
                 loadData()
+            }else if(requestCode == EDIT_HEADLINE_REQUEST_CODE){
+                isDataChanged = true
+                loadData()
+                loadStatisticsData()
+                renderTabAndViewPager()
+            }
         }
     }
 
@@ -217,7 +253,8 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
     }
 
     fun setKeywordCount(size: Int) {
-        detailPagerAdapter.setTitle(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_0)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
+//        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_0)
     }
 
     fun setNegKeywordCount(size: Int) {

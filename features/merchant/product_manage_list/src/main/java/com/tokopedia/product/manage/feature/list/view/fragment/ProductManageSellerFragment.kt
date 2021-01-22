@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -73,8 +74,8 @@ class ProductManageSellerFragment : ProductManageFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         checkLogin()
         super.onViewCreated(view, savedInstanceState)
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         tvDraftProduct.visibility = View.GONE
-        searchBar?.setBackgroundColor(Color.TRANSPARENT)
         getDefaultKeywordOptionFromArguments()
         getDefaultFilterOptionsFromArguments()
         observeGetAllDraftCount()

@@ -26,6 +26,7 @@ import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProduc
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_PRODUK
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GRUP
@@ -49,6 +50,7 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
+import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.*
@@ -184,7 +186,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     private fun renderManualViewPager() {
-        tab_layout.visibility = View.VISIBLE
+        tab_layout?.visibility = View.VISIBLE
         view_pager_frag?.adapter = getViewPagerAdapter()
         view_pager_frag.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {}
@@ -195,11 +197,14 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
                 loadStatisticsData()
             }
         })
-        tab_layout.setupWithViewPager(view_pager_frag)
+        tab_layout?.setupWithViewPager(view_pager_frag)
     }
 
     private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter? {
         val list: ArrayList<FragmentTabItem> = arrayListOf()
+        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        tab_layout?.addNewTab(TopAdsDashboardConstant.GRUP)
+        tab_layout?.addNewTab(TopAdsDashboardConstant.TANPA_GRUP)
         list.add(FragmentTabItem(GRUP, TopAdsDashGroupFragment()))
         list.add(FragmentTabItem(TANPA_GRUP, TopAdsDashWithoutGroupFragment()))
         val adapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
@@ -228,8 +233,8 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     private fun fetchNextPage(page: Int) {
-        topAdsDashboardPresenter.getGroupProductData(resources, page, null, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
+        topAdsDashboardPresenter.getGroupProductData(page, null, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
     }
 
     override fun onDestroy() {
@@ -300,8 +305,8 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         currentPageNum = 1
         autoAdsAdapter.items.clear()
         autoAdsAdapter.notifyDataSetChanged()
-        topAdsDashboardPresenter.getGroupProductData(resources, 1, null, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
+        topAdsDashboardPresenter.getGroupProductData(1, null, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
     }
 
     private fun autoAds() {
@@ -311,7 +316,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoAdsWidget?.visibility = View.VISIBLE
         view_pager_frag.visibility = View.GONE
         autoads_layout.visibility = View.VISIBLE
-        tab_layout.visibility = View.GONE
+        tab_layout?.visibility = View.GONE
         empty_view.visibility = View.GONE
         autoadsOnboarding.visibility = View.GONE
         fetchData()
@@ -360,7 +365,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         var adType = (activity as TopAdsDashboardActivity?)?.getAdInfo()
                 ?: MANUAL_AD
 
-        if ((activity as TopAdsDashboardActivity?)?.getAdInfo() == MANUAL_AD && tab_layout?.selectedTabPosition == 1)
+        if ((activity as TopAdsDashboardActivity?)?.getAdInfo() == MANUAL_AD && tab_layout?.tabLayout?.selectedTabPosition == 1)
             adType = SINGLE_AD
 
         topAdsDashboardPresenter.getStatistic(startDate!!, endDate!!, selectedStatisticType, adType, ::onSuccesGetStatisticsInfo)
@@ -416,12 +421,13 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     fun setGroupCount(size: Int) {
-        groupPagerAdapter?.setTitle(String.format(getString(R.string.topads_dash_group), size), 0)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
     }
 
     fun setNonGroupCount(size: Int) {
-        groupPagerAdapter?.setTitle(String.format(getString(R.string.topads_dash_non_group), size), 1)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(1)?.setCounter(size)
     }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

@@ -15,6 +15,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.dashboard.R
@@ -112,7 +113,15 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = HeadLineAdItemsListAdapter(HeadLineAdItemsAdapterTypeFactoryImpl(::startSelectMode,
-                ::singleItemDelete, ::statusChange, ::onGroupClicked))
+                ::singleItemDelete, ::statusChange, ::editGroup, ::onGroupClicked))
+    }
+
+    private fun editGroup(groupId: Int) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
+            putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
+            putExtra(ParamObject.GROUP_ID, groupId.toString())
+        }
+        activity?.startActivityForResult(intent, TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -197,6 +206,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         this.dataStatistic = dataStatistic
         if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
             topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
+            topAdsTabAdapter?.hideTabforHeadline()
         }
         val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment
         if (fragment != null && fragment is TopAdsDashStatisticFragment) {
@@ -335,10 +345,9 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     private fun fetchNextPage(currentPage: Int) {
-        presenter.getGroupData(resources, currentPage, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                Utils.format.format(startDate), Utils.format.format(endDate), GROUP_TYPE_HEADLINE,
-                this::onSuccessGroupResult)
+        presenter.getGroupData(currentPage, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), Utils.format.format(startDate),
+                Utils.format.format(endDate), GROUP_TYPE_HEADLINE, this::onSuccessGroupResult)
     }
 
     private fun onSuccessGroupResult(response: GroupItemResponse.GetTopadsDashboardGroups) {
@@ -353,8 +362,8 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         if (adapter.items.size.isZero()) {
             onEmptyResult()
         } else if (groupIds.isNotEmpty()) {
-            presenter.getGroupStatisticsData(resources, 1, ",", "", 0,
-                    "", "", groupIds, ::onSuccessStatistics)
+            presenter.getGroupStatisticsData(1, ",", "", 0, "",
+                    "", groupIds, ::onSuccessStatistics)
             presenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
         }
         setFilterCount()
@@ -397,10 +406,9 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         loader.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
-        presenter.getGroupData(resources, currentPageNum, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                Utils.format.format(startDate), Utils.format.format(endDate), GROUP_TYPE_HEADLINE,
-                this::onSuccessGroupResult)
+        presenter.getGroupData(currentPageNum, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), Utils.format.format(startDate),
+                Utils.format.format(endDate), GROUP_TYPE_HEADLINE, this::onSuccessGroupResult)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

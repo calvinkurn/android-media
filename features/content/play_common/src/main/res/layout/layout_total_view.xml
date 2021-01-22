@@ -31,7 +31,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_Static_White"
         app:typographyType="body_3"
         tools:text="2382"
         />

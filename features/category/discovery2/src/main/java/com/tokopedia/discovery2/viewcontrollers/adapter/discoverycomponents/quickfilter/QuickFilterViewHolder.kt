@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.di.getSubComponent
@@ -46,6 +45,22 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
                     quickFilterViewModel.fetchQuickFilters()
                 }
             })
+            quickFilterViewModel.productCountLiveData.observe(it, { count ->
+                if (!count.isNullOrEmpty()) {
+                    sortFilterBottomSheet.setResultCountText(count)
+                } else {
+                    sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.discovery_bottom_sheet_filter_finish_button_text))
+                }
+            })
+        }
+    }
+
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            quickFilterViewModel.getDynamicFilterModelLiveData().removeObservers(it)
+            quickFilterViewModel.getSyncPageLiveData().removeObservers(it)
+            quickFilterViewModel.productCountLiveData.removeObservers(it)
         }
     }
 
@@ -143,7 +158,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
-        sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.discovery_bottom_sheet_filter_finish_button_text))
+        quickFilterViewModel.filterProductsCount(mapParameter)
     }
 
     override fun onViewAttachedToWindow() {
@@ -155,6 +170,4 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     override fun onViewDetachedToWindow() {
         quickFilterViewModel.getQuickFilterLiveData().removeObservers(fragment.viewLifecycleOwner)
     }
-
 }
-

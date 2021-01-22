@@ -28,7 +28,7 @@ import javax.inject.Named
     ): String {
         return GraphqlHelper.loadRawString(
                 context.resources,
-                R.raw.mutation_add_to_cart
+                com.tokopedia.atc_common.R.raw.mutation_add_to_cart
         )
     }
 
