@@ -32,6 +32,7 @@
         <ImageView
             android:layout_width="102dp"
             android:layout_height="66dp"
+            android:contentDescription="null"
             android:background="@drawable/top_ads" />
     </LinearLayout>
 

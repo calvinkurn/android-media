@@ -18,12 +18,14 @@
             android:id="@+id/feed_background_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="null"
             android:background="@drawable/gradient_feed"/>
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:contentDescription="null"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_searchbar_feed_header_mask"/>
     </FrameLayout>

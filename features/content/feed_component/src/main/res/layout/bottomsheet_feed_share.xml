@@ -22,6 +22,7 @@
         <ImageView
             android:layout_width="@dimen/dp_150"
             android:layout_height="@dimen/dp_150"
+            android:contentDescription="null"
             android:layout_gravity="center_horizontal"
             app:srcCompat="@drawable/status_no_result"/>
 
