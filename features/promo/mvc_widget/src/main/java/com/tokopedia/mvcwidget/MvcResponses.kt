@@ -20,6 +20,7 @@ data class TokopointsCatalogMVCList(
 data class ResultStatus(
         @SerializedName("code") val code: String?,
         @SerializedName("message") val message: List<String?>?,
+        @SerializedName("status") val status: String?,
         @SerializedName("reason") val reason: String?
 )
 
