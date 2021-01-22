@@ -57,10 +57,10 @@ object SellerReviewProductDetailMapper {
         return topicListUiModel
     }
 
-    fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
+    fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct?,
                              userSession: UserSessionInterface): List<FeedbackUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackUiModel>()
-        productFeedbackDataPerProduct.list.map {
+        productFeedbackDataPerProduct?.list?.map {
             val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
             it.attachments.map { attachment ->
                 mapAttachment.add(FeedbackUiModel.Attachment(
