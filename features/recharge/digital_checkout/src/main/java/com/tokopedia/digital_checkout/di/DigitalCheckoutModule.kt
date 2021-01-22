@@ -4,10 +4,14 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
+import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
+import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -16,7 +20,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
-import javax.inject.Named
 
 /**
  * @author by jessica on 07/01/21
@@ -60,8 +63,8 @@ class DigitalCheckoutModule {
 
     @Provides
     fun provideDigitalCartInterceptor(@ApplicationContext context: Context,
-                                  networkRouter: NetworkRouter,
-                                  userSession: UserSessionInterface): DigitalInterceptor {
+                                      networkRouter: NetworkRouter,
+                                      userSession: UserSessionInterface): DigitalInterceptor {
         return DigitalInterceptor(context, networkRouter, userSession)
     }
 
@@ -71,4 +74,22 @@ class DigitalCheckoutModule {
         return if (context is NetworkRouter) context
         else throw RuntimeException("Application must implement " + NetworkRouter::class.java.canonicalName)
     }
+
+    @DigitalCheckoutScope
+    @Provides
+    fun provideDigitalAnalytics(): DigitalAnalytics = DigitalAnalytics()
+
+    @DigitalCheckoutScope
+    @Provides
+    fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
+
+    @DigitalCheckoutScope
+    @Provides
+    fun provideRechargePushEventRecommendationUseCase(graphQlUseCase: GraphqlUseCase,
+                                                      @ApplicationContext context: Context)
+            : RechargePushEventRecommendationUseCase = RechargePushEventRecommendationUseCase(graphQlUseCase, context)
+
+    @DigitalCheckoutScope
+    @Provides
+    fun provideRechargeAnalytics(usecase: RechargePushEventRecommendationUseCase): RechargeAnalytics = RechargeAnalytics(usecase)
 }

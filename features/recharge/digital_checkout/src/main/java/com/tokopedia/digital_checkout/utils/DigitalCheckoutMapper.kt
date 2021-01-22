@@ -152,16 +152,16 @@ object DigitalCheckoutMapper {
 
             responseRechargeGetCart.response.mainnInfo.let { mainInfos ->
                 cartDigitalInfoData.mainInfo = mainInfos.map {
-                    CartItemDigital(it.label ?: "", it.value ?: "")
+                    CartItemDigital(it.label, it.value)
                 }
             }
 
             responseRechargeGetCart.response.additionalInfo.let { additionalInfos ->
                 cartDigitalInfoData.additionalInfos = additionalInfos.map {
-                    CartItemDigitalWithTitle(it.title ?: "",
+                    CartItemDigitalWithTitle(it.title,
                             it.detail?.map { detail ->
-                                CartItemDigital(detail.label ?: "", detail.value ?: "")
-                            } ?: listOf())
+                                CartItemDigital(detail.label, detail.value)
+                            })
                 }
             }
 

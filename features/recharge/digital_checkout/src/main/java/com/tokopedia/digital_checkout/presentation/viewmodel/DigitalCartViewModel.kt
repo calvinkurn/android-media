@@ -24,6 +24,7 @@ import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper.getRequestBodyCheckout
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
+import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.ResponseDataNullException
@@ -48,6 +49,7 @@ import javax.inject.Inject
  */
 
 class DigitalCartViewModel @Inject constructor(
+        private val analytics: DigitalAnalytics,
         private val digitalGetCartUseCase: DigitalGetCartUseCase,
         private val digitalAddToCartUseCase: DigitalAddToCartUseCase,
         private val cancelVoucherUseCase: DigitalCancelVoucherUseCase,
@@ -103,7 +105,7 @@ class DigitalCartViewModel @Inject constructor(
             digitalCheckoutPassData.categoryId?.let { categoryId ->
                 digitalGetCartUseCase.execute(
                         DigitalGetCartUseCase.createParams(categoryId.toInt()),
-                        onSuccessGetCart(),
+                        onSuccessGetCart(digitalCheckoutPassData.source),
                         onErrorGetCart()
                 )
             }
@@ -126,7 +128,7 @@ class DigitalCartViewModel @Inject constructor(
                             digitalIdentifierParam,
                             digitalSubscriptionParams
                     ), digitalCheckoutPassData.idemPotencyKey)
-            digitalAddToCartUseCase.execute(requestParams, getSubscriberCart())
+            digitalAddToCartUseCase.execute(requestParams, getSubscriberCart(digitalCheckoutPassData.source))
         }
     }
 
@@ -140,12 +142,14 @@ class DigitalCartViewModel @Inject constructor(
         digitalPatchOtpUseCase.execute(requestParams, getSubscriberOtp(digitalCheckoutPassData, errorNotLoginMessage))
     }
 
-    private fun onSuccessGetCart(): (RechargeGetCart.Response) -> Unit {
+    private fun onSuccessGetCart(source: Int): (RechargeGetCart.Response) -> Unit {
         return {
             _showContentCheckout.postValue(true)
             _showLoading.postValue(false)
 
             val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
+            analytics.eventAddToCart(mappedCartData, source)
+            analytics.eventCheckout(mappedCartData)
 
             if (mappedCartData.isNeedOtp) {
                 _isNeedOtp.postValue(userSession.phoneNumber)
@@ -167,7 +171,7 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    private fun getSubscriberCart(): Subscriber<Map<Type, RestResponse>> {
+    private fun getSubscriberCart(source: Int): Subscriber<Map<Type, RestResponse>> {
         return object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
@@ -182,6 +186,9 @@ class DigitalCartViewModel @Inject constructor(
                 val data = restResponse!!.getData<DataResponse<*>>()
                 val responseCartData: ResponseCartData = data.data as ResponseCartData
                 val mappedCartData = DigitalCheckoutMapper.mapToCartDigitalInfoData(responseCartData)
+
+                analytics.eventAddToCart(mappedCartData, source)
+                analytics.eventCheckout(mappedCartData)
 
                 if (mappedCartData.isNeedOtp) {
                     _isNeedOtp.postValue(userSession.phoneNumber)
@@ -303,6 +310,7 @@ class DigitalCartViewModel @Inject constructor(
         val cartDigitalInfoData = _cartDigitalInfoData.value
         cartDigitalInfoData?.let {
             val checkoutData = DigitalCheckoutMapper.buildCheckoutData(it, userSession.accessToken)
+            checkoutData.transactionAmount = _totalPrice.value ?: 0
             checkoutData.voucherCode = promoCode
             _showLoading.postValue(true)
             if (checkoutData.isNeedOtp) {
