@@ -12,13 +12,13 @@ import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase
 import com.tokopedia.common_digital.common.constant.DigitalUrl
 import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
 import com.tokopedia.digital_checkout.data.response.ResponseCheckout
-import com.tokopedia.digital_checkout.di.DigitalCheckoutScope
+import com.tokopedia.digital_checkout.di.DigitalCartCheckoutQualifier
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.usecase.RequestParams
 import okhttp3.Interceptor
 import javax.inject.Inject
 
-class DigitalCheckoutUseCase @Inject constructor(@DigitalCheckoutScope authInterceptor: ArrayList<Interceptor>,
+class DigitalCheckoutUseCase @Inject constructor(@DigitalCartCheckoutQualifier authInterceptor: ArrayList<Interceptor>,
                                                  @ApplicationContext context: Context)
     : RestRequestSupportInterceptorUseCase(authInterceptor, context) {
 

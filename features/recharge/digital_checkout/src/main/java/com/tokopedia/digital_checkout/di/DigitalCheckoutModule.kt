@@ -16,6 +16,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
+import javax.inject.Named
 
 /**
  * @author by jessica on 07/01/21
@@ -37,7 +38,8 @@ class DigitalCheckoutModule {
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
-    @DigitalCartScope
+    @DigitalCheckoutScope
+    @DigitalCartQualifier
     fun provideDigitalInterceptor(digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
         val listInterceptor = arrayListOf<Interceptor>()
         listInterceptor.add(digitalInterceptor)
@@ -47,6 +49,7 @@ class DigitalCheckoutModule {
 
     @Provides
     @DigitalCheckoutScope
+    @DigitalCartCheckoutQualifier
     fun provideDigitalCheckoutInterceptor(@ApplicationContext context: Context, digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
         val listInterceptor = arrayListOf<Interceptor>()
         listInterceptor.add(digitalInterceptor)
@@ -56,8 +59,7 @@ class DigitalCheckoutModule {
     }
 
     @Provides
-    @DigitalCheckoutScope
-    fun provideDigitalInterceptor(@ApplicationContext context: Context,
+    fun provideDigitalCartInterceptor(@ApplicationContext context: Context,
                                   networkRouter: NetworkRouter,
                                   userSession: UserSessionInterface): DigitalInterceptor {
         return DigitalInterceptor(context, networkRouter, userSession)
