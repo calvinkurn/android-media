@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.promoui.common.PromoRoundImageView
         android:id="@+id/image"
         android:scaleType="centerCrop"
         android:layout_width="match_parent"

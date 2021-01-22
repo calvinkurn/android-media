@@ -53,6 +53,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     private fun setClicks() {
         imageChevron.setOnClickListener {
             val bottomSheet = BottomSheetUnify()
+
             bottomSheet.setTitle("Daftar Kupon Toko")
             val childView = MvcDetailView(context)
             bottomSheet.setChild(childView)
@@ -63,6 +64,10 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
                 bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(20).toInt(), 0, 0)
                 bottomSheet.bottomSheetClose.setImageResource(R.drawable.mvc_dialog_close)
                 bottomSheet.bottomSheetClose.setMargin(imageMargin, 0, dpToPx(20).toInt(), 0)
+            }
+            imageChevron.isEnabled = false
+            bottomSheet.setOnDismissListener {
+                imageChevron.isEnabled = true
             }
 
         }
