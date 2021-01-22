@@ -810,16 +810,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }, REQUEST_SUBMIT_CSAT)
     }
 
-    override fun onStickyActionButtonCLicked(invoiceRefNum: String, replyText: String) {
+    override fun onStickyActionButtonClicked(invoiceRefNum: String, replyText: String) {
         this.invoiceRefNum = invoiceRefNum
         this.replyText = replyText
-        this.isStickyButtonClicked = true
         presenter.checkLinkForRedirection(invoiceRefNum,
                 onGetSuccessResponse = {
                     if (it.isNotEmpty()){
                         onGoToWebView(it, it)}
                 },
-                checkForReplyText = {},
+                setStickyButtonStatus = { isResoListNotEmpty->
+                    if (!isResoListNotEmpty) this.isStickyButtonClicked = true
+                },
                 onError = {
 
                 })
@@ -833,14 +834,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun sendReplyTextForResolutionComponent() {
         if (isStickyButtonClicked) {
+            this.isStickyButtonClicked = false
             presenter.checkLinkForRedirection(invoiceRefNum,
                     onGetSuccessResponse = {},
-                    checkForReplyText = {
-                        val startTime = SendableViewModel.generateStartTime()
-                        presenter.sendMessage(messageId, replyText, startTime, opponentId,
-                                onSendingMessage(replyText, startTime))
-                        this.isStickyButtonClicked = false
-
+                    setStickyButtonStatus = { isResoListNotEmpty ->
+                        if (isResoListNotEmpty) {
+                            val startTime = SendableViewModel.generateStartTime()
+                            presenter.sendMessage(messageId, replyText, startTime, opponentId,
+                                    onSendingMessage(replyText, startTime))
+                        }
                     },
                     onError = {
 

@@ -532,7 +532,7 @@ class ChatbotPresenter @Inject constructor(
 
     override fun checkLinkForRedirection(invoiceRefNum: String,
                                          onGetSuccessResponse: (String) -> Unit,
-                                         checkForReplyText: () -> Unit,
+                                         setStickyButtonStatus: (Boolean) -> Unit,
                                          onError: (Throwable) -> Unit) {
         val params = getResolutionLinkUseCase.createRequestParams(invoiceRefNum)
         launchCatchError(
@@ -542,7 +542,9 @@ class ChatbotPresenter @Inject constructor(
                                     .getResoLinkResponse(params)
                                     .getResolutionLink?.resolutionLinkData?.orderList?.firstOrNull()
                     if (orderList?.resoList?.isNotEmpty() == true) {
-                        checkForReplyText()
+                        setStickyButtonStatus(true)
+                    }else{
+                        setStickyButtonStatus(false)
                     }
                     val link = orderList?.dynamicLink ?: ""
                     onGetSuccessResponse(getEnvResoLink(link))

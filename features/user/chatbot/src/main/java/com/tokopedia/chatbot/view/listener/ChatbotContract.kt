@@ -103,7 +103,7 @@ interface ChatbotContract {
 
         fun checkLinkForRedirection(invoiceRefNum: String,
                                     onGetSuccessResponse: (String) -> Unit,
-                                    checkForReplyText:() ->Unit,
+                                    setStickyButtonStatus: (Boolean) -> Unit,
                                     onError: (Throwable) -> Unit)
 
     }
