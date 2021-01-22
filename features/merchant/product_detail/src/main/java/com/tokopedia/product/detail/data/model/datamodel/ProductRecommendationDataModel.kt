@@ -64,30 +64,21 @@ data class ProductRecommendationDataModel(
     }
 
     private fun areRecomItemTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {
-        var areSame = false
         if (recomWidgetData?.recommendationItemList == null && newRecomWidgetData?.recommendationItemList == null) {
             return true
         } else if (recomWidgetData?.recommendationItemList?.size != newRecomWidgetData?.recommendationItemList?.size) {
             return false
         }
 
-        val pairRecom = recomWidgetData?.recommendationItemList?.zip(newRecomWidgetData?.recommendationItemList
-                ?: listOf())
-
-        if (pairRecom != null) {
-            for ((oldItem, newItem) in pairRecom) {
-                if (newItem == oldItem) {
-                    areSame = true
-                    break
-                }
-            }
-        }
-        return areSame
+        return recomWidgetData?.recommendationItemList?.hashCode() == newRecomWidgetData?.recommendationItemList?.hashCode()
     }
 
     private fun areFilterTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {
         var areSame = false
-        if (recomWidgetData?.recommendationFilterChips?.isEmpty() == true && newRecomWidgetData?.recommendationFilterChips?.isEmpty() == true) return false
+        if (recomWidgetData?.recommendationFilterChips == null && newRecomWidgetData?.recommendationFilterChips == null ||
+                recomWidgetData?.recommendationFilterChips?.isEmpty() == true && newRecomWidgetData?.recommendationFilterChips?.isEmpty() == true) {
+            return true
+        }
         val currentFilterData = recomWidgetData?.recommendationFilterChips?.zip(newRecomWidgetData?.recommendationFilterChips
                 ?: listOf())
 

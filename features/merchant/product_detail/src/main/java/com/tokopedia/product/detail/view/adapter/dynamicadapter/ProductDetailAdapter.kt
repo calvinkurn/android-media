@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.ProductMediaViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 
 /**
@@ -62,6 +63,13 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
                 currentList[holder.adapterPosition] is ProductRecommendationDataModel &&
                 (currentList[holder.adapterPosition] as ProductRecommendationDataModel).recomWidgetData == null) {
             listener?.loadTopads((currentList[holder.adapterPosition] as ProductRecommendationDataModel).name)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is ProductMediaViewHolder) {
+            holder.detachView()
         }
     }
 

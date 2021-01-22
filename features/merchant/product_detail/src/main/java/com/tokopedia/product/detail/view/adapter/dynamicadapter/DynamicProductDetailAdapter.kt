@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.ProductMediaViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
 
 class DynamicProductDetailAdapter(
@@ -171,6 +172,13 @@ class DynamicProductDetailAdapter(
                 visitables[holder.adapterPosition] is ProductRecommendationDataModel &&
                 (visitables[holder.adapterPosition] as ProductRecommendationDataModel).recomWidgetData == null) {
             listener.loadTopads((visitables[holder.adapterPosition] as ProductRecommendationDataModel).name)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is ProductMediaViewHolder) {
+            holder.detachView()
         }
     }
 }
