@@ -18,7 +18,7 @@ class CashbackExpenseInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
     companion object {
         @JvmStatic
         fun createInstance(context: Context,
-                           getCashbackInfo: () -> CashbackPercentageInfoUiModel) : CashbackExpenseInfoBottomSheetFragment {
+                           getCashbackInfo: () -> CashbackPercentageInfoUiModel): CashbackExpenseInfoBottomSheetFragment {
             return CashbackExpenseInfoBottomSheetFragment().apply {
                 val view = View.inflate(context, R.layout.mvc_cashback_expense_info, null)
                 setChild(view)
@@ -29,8 +29,9 @@ class CashbackExpenseInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
 
         const val TAG = "CashbackExpenseInfoBottomSheet"
     }
+
     private var getCashbackInfo: () -> CashbackPercentageInfoUiModel = {
-        CashbackPercentageInfoUiModel(0,0,0,0)
+        CashbackPercentageInfoUiModel(0, 0, 0, 0)
     }
 
     private var onEditButtonClicked: () -> Unit = {}
@@ -48,11 +49,14 @@ class CashbackExpenseInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
     }
 
     private fun initView() {
+        val title = context?.getString(R.string.mvc_create_promo_type_bottomsheet_subtitle_increase_discount)
+                ?: ""
+        this.setTitle(title)
         getCashbackInfo().run {
-            minimumPurchaseInfo?.infoValueString = String.format(
+            minimumPurchaseInfoValue?.text = String.format(
                     context?.getString(R.string.mvc_rp_value).toBlankOrString(),
                     CurrencyFormatHelper.convertToRupiah(minimumPurchase.toString())).toBlankOrString()
-            percentageInfo?.infoValueString = "$cashbackPercentage%"
+            percentageInfoValue?.text = "$cashbackPercentage%"
             infoDiscountValue?.text = String.format(context?.getString(R.string.mvc_create_promo_type_bottomsheet_discount_value).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(minimumDiscount.toString()))
             val description = String.format(context?.getString(R.string.mvc_create_promo_type_bottomsheet_desc).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(minimumDiscount.toString())).parseAsHtml()
             cashbackExpenseDescription?.text = description

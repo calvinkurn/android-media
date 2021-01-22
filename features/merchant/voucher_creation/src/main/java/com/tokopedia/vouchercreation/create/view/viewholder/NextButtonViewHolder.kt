@@ -16,6 +16,7 @@ class NextButtonViewHolder(itemView: View) : AbstractViewHolder<NextButtonUiMode
 
     override fun bind(element: NextButtonUiModel) {
         itemView.nextButton?.run {
+            isEnabled = element.isEnabled
             isLoading = false
             setOnClickListener {
                 isLoading = true

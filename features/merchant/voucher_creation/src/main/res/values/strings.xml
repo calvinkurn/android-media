@@ -29,6 +29,8 @@
     <string name="mvc_create_step_desc_voucher_period">Periode voucher</string>
     <string name="mvc_create_step_desc_voucher_review">Review voucher</string>
     <string name="mvc_create_step_desc_cashback">Cashback</string>
+    <string name="mvc_create_step_desc_voucher_information">Informasi Voucher</string>
+    <string name="mvc_create_step_desc_voucher_adjustment">Pengaturan Voucher</string>
 
     <!--Prompt back-->
     <string name="mvc_create_prompt_back_title">Yakin mau batalkan tambah voucher?</string>

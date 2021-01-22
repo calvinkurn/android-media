@@ -97,10 +97,6 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
         viewModelProvider.get(CashbackVoucherCreateViewModel::class.java)
     }
 
-    private val voucherTitleUiModel by lazy {
-        VoucherTitleUiModel(context?.getString(R.string.mvc_create_cashback).toBlankOrString())
-    }
-
     private val recommendationTickerUiModel by lazy {
         RecommendationTickerUiModel(true)
     }
@@ -212,12 +208,11 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     }
 
     private val nextButtonUiModel by lazy {
-        NextButtonUiModel(::onNext)
+        NextButtonUiModel(::onNext, true)
     }
 
     private val topSectionUiModelList by lazy {
         listOf(
-                voucherTitleUiModel,
                 recommendationTickerUiModel,
                 cashbackTypePickerModel
         )
