@@ -10,9 +10,9 @@ import com.tokopedia.abstraction.aidl.PushNotificationApi
 import com.tokopedia.appaidl.AidlApi
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.common.CMRemoteConfigUtils
 import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
-import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.utils.NotificationValidationManager
 import com.tokopedia.notifications.worker.PushWorker
@@ -20,6 +20,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.notifications.common.PayloadConverter.advanceTargetNotification as advanceTargetNotification
+import com.tokopedia.notifications.common.PayloadConverter.convertMapToBundle as convertMapToBundle
 
 /**
  * Created by Ashwani Tyagi on 18/10/18.
@@ -145,10 +147,10 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
      */
     fun isFromCMNotificationPlatform(extras: Map<String, String>?): Boolean {
         try {
-            if (null != extras && extras.containsKey(CMConstant.PayloadKeys.SOURCE)) {
-                val confirmationValue = extras[CMConstant.PayloadKeys.SOURCE]
-                return confirmationValue == CMConstant.PayloadKeys.FCM_EXTRA_CONFIRMATION_VALUE ||
-                        confirmationValue == CMConstant.PayloadKeys.SOURCE_VALUE
+            if (null != extras && extras.containsKey(SOURCE)) {
+                val confirmationValue = extras[SOURCE]
+                return confirmationValue == FCM_EXTRA_CONFIRMATION_VALUE ||
+                        confirmationValue == SOURCE_VALUE
             }
         } catch (e: Exception) {
             Log.e(TAG, "CMPushNotificationManager: isFromCMNotificationPlatform", e)
@@ -163,28 +165,27 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
      * @param remoteMessage
      */
     fun handlePushPayload(remoteMessage: RemoteMessage?) {
-        if (null == remoteMessage)
-            return
-
+        if (null == remoteMessage) return
         val data = remoteMessage.data
-
         val dataString = data.toString()
+
         try {
             if (isFromCMNotificationPlatform(data)) {
-                val confirmationValue = data[CMConstant.PayloadKeys.SOURCE]
-                val bundle = PayloadConverter.convertMapToBundle(data)
-                if (confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) && isInAppEnable) {
+                val confirmationValue = data[SOURCE]
+                val bundle = convertMapToBundle(data)
+
+                if (confirmationValue.equals(SOURCE_VALUE) && isInAppEnable) {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
                 } else if (isPushEnable) {
-                    val mockValidationByMessage = bundle.getString(CMConstant.PayloadKeys.MESSAGE, "")
-                    val mockAppPriorities = NotificationValidationManager.mockPriorities(mockValidationByMessage)
-                    val validator = NotificationValidationManager(applicationContext, mockAppPriorities)
+                    val targeting = advanceTargetNotification(bundle)
+                    val validation = NotificationValidationManager(applicationContext, targeting)
+
                     aidlApiBundle?.let {
-                        validator.validate(aidlApiBundle) {
+                        validation.validate(it) {
                             PushController(applicationContext).handleNotificationBundle(bundle)
                         }
                     }
-                } else if (!(confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) || confirmationValue.equals(CMConstant.PayloadKeys.FCM_EXTRA_CONFIRMATION_VALUE))){
+                } else if (!(confirmationValue.equals(SOURCE_VALUE) || confirmationValue.equals(FCM_EXTRA_CONFIRMATION_VALUE))){
                     Timber.w("${CMConstant.TimberTags.TAG}validation;reason='not_cm_source';data='${dataString.
                     take(CMConstant.TimberTags.MAX_LIMIT)}'")
                 }
