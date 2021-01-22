@@ -120,8 +120,9 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
             val recommendation = singleRecommendationUseCase.createObservable(singleRecommendationUseCase.getRecomParams(queryParam = param, productIds = listOf(productId), pageNumber = 1)).toBlocking().first()
             if(recommendation.isNotEmpty()){
                 val filterData = FilterSortChip(fullFilterAsync.await(), quickFilterAsync.await().filterChip)
+                val dimension61 = filterString + if(sortString?.isNotEmpty() == true)"&" else "" + sortString
                 _filterSortChip.postValue(Response.success(filterData))
-                _recommendationItem.postValue(Response.success(recommendation.map { it.copy(dimension61 = "$filterString&$sortString") }))
+                _recommendationItem.postValue(Response.success(recommendation.map { it.copy(dimension61 = dimension61) }))
             } else {
                 _filterSortChip.postValue(Response.success(oldFilterData))
                 _recommendationItem.postValue(Response.empty())
