@@ -1,18 +1,16 @@
 package com.tokopedia.topads.view.model
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.topads.common.data.response.KeywordSearch
 import com.tokopedia.topads.common.data.response.ResponseEtalase
-import com.tokopedia.topads.data.response.ResponseProductList
-import com.tokopedia.topads.view.RequestHelper
+import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
+import com.tokopedia.topads.common.domain.usecase.GetEtalaseListUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetListProductUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSession
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
@@ -33,36 +31,31 @@ class ProductAdsListViewModelTest {
 
     private lateinit var viewModel: ProductAdsListViewModel
 
-    private lateinit var repository: GraphqlRepository
-    private lateinit var context: Context
     private lateinit var userSession: UserSession
-    private lateinit var searchKeywordUseCase: GraphqlUseCase<KeywordSearch>
+    private val getEtalaseListUseCase: GetEtalaseListUseCase = mockk(relaxed = true)
+    private val topAdsGetListProductUseCase: TopAdsGetListProductUseCase = mockk(relaxed = true)
 
     @Before
     fun setUp() {
-        repository = mockk()
-        context = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
-        searchKeywordUseCase = mockk(relaxed = true)
-        viewModel = spyk(ProductAdsListViewModel(context, rule.dispatchers, userSession, repository))
-        mockkObject(RequestHelper)
-        every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
-        every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
+        viewModel = spyk(ProductAdsListViewModel(rule.dispatchers, userSession, getEtalaseListUseCase, topAdsGetListProductUseCase))
     }
 
     @Test
     fun `test exception in etalaseList`() {
-        var t: Throwable? = null
-        val myThrowable: Throwable = Exception("my excep")
+        var actual: Throwable? = null
+        val expected = Exception("my excep")
 
-        coEvery { repository.getReseponse(any(), any()) } throws myThrowable
+        val onError: (Throwable) -> Unit = {
+            actual = expected
+        }
+        every { getEtalaseListUseCase.execute(any(), any()) } throws expected
 
         viewModel.etalaseList(
                 onSuccess = {},
-                onError = { t = it }
+                onError = onError
         )
-
-        Assert.assertEquals(myThrowable.message, t?.message)
+        Assert.assertEquals(actual?.message, expected.message)
     }
 
     @Test
@@ -70,41 +63,37 @@ class ProductAdsListViewModelTest {
         val expected = "name"
         var actual = ""
         val data = ResponseEtalase.Data(ResponseEtalase.Data.ShopShowcasesByShopID(listOf(ResponseEtalase.Data.ShopShowcasesByShopID.Result(name = expected))))
-        val response: GraphqlResponse = mockk(relaxed = true)
-
+        val onSuccess: (List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) -> Unit = {
+            actual = it.first().name
+        }
         every { userSession.shopId } returns "2"
-
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.getReseponse(any(), any()) } returns response
-        every { response.getError(ResponseEtalase.Data::class.java) } returns listOf()
-        every { response.getData<ResponseEtalase.Data>(ResponseEtalase.Data::class.java) } returns data
-
+        every { getEtalaseListUseCase.execute(captureLambda(), any()) } answers {
+            onSuccess(data.shopShowcasesByShopID.result)
+        }
         viewModel.etalaseList(
-                onSuccess = {
-                    actual = it[0].name
-                },
+                onSuccess = onSuccess,
                 onError = {}
         )
-
         Assert.assertEquals(expected, actual)
     }
 
     @Test
     fun `test exception in productList`() {
-        var t: Throwable? = null
-        val myThrowable: Throwable = Exception("my excep")
+        var actual: Throwable? = null
+        val expected = Exception("my excep")
 
+        val onError: (Throwable) -> Unit = {
+            actual = expected
+        }
         every { userSession.shopId } returns "2"
-
-        coEvery { repository.getReseponse(any(), any()) } throws myThrowable
+        every { topAdsGetListProductUseCase.execute(any(), any()) } throws expected
 
         viewModel.productList("", "", "", "", 0, 0,
-                onSuccess = { list, eof -> },
+                onSuccess = { _, _ -> },
                 onEmpty = {},
-                onError = { t = it })
-
-        Assert.assertEquals(myThrowable.message, t?.message)
+                onError = onError
+        )
+        Assert.assertEquals(actual?.message, expected.message)
     }
 
     @Test
@@ -112,21 +101,21 @@ class ProductAdsListViewModelTest {
         val expected = "empty"
         var actual = ""
         val data = ResponseProductList.Result()
-        val response: GraphqlResponse = mockk(relaxed = true)
+        val onEmpty: (() -> Unit) = {
+            actual = expected
+        }
 
         every { userSession.shopId } returns "2"
 
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.getReseponse(any(), any()) } returns response
-        every { response.getError(ResponseProductList.Result::class.java) } returns listOf()
-        every { response.getData<ResponseProductList.Result>(ResponseProductList.Result::class.java) } returns data
-
+        every { topAdsGetListProductUseCase.execute(captureLambda(), any()) } answers {
+            if (data.topadsGetListProduct.data.isEmpty()) {
+                onEmpty()
+            }
+        }
         viewModel.productList("", "", "", "", 0, 0,
-                onSuccess = { list, eof -> },
-                onEmpty = { actual = "empty" },
+                onSuccess = { _, _ -> },
+                onEmpty = onEmpty,
                 onError = {})
-
         Assert.assertEquals(expected, actual)
     }
 
@@ -136,23 +125,19 @@ class ProductAdsListViewModelTest {
         var actualSize = 0
         val expectedEof = true
         var actualEof = false
-
-        val data = ResponseProductList.Result(ResponseProductList.Result.TopadsGetListProduct(listOf(ResponseProductList.Result.TopadsGetListProduct.Data()), eof = expectedEof))
-        val response: GraphqlResponse = mockk(relaxed = true)
-
+        val onSuccess: ((List<TopAdsProductModel>, eof: Boolean) -> Unit) = { list, eof ->
+            actualSize = list.size
+            actualEof = eof
+        }
+        val data = ResponseProductList.Result(ResponseProductList.Result.TopadsGetListProduct(listOf(TopAdsProductModel()), eof = expectedEof))
         every { userSession.shopId } returns "2"
-
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.getReseponse(any(), any()) } returns response
-        every { response.getError(ResponseProductList.Result::class.java) } returns listOf()
-        every { response.getData<ResponseProductList.Result>(ResponseProductList.Result::class.java) } returns data
-
+        every { topAdsGetListProductUseCase.execute(captureLambda(), any()) } answers {
+            if (data.topadsGetListProduct.data.isNotEmpty()) {
+                onSuccess(data.topadsGetListProduct.data, data.topadsGetListProduct.eof)
+            }
+        }
         viewModel.productList("", "eid", "", "", 0, 0,
-                onSuccess = { list, eof ->
-                    actualSize = list.size
-                    actualEof = eof
-                },
+                onSuccess = onSuccess,
                 onEmpty = { },
                 onError = {})
 

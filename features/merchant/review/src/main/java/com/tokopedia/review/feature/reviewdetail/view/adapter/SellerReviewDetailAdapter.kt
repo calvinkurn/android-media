@@ -2,12 +2,11 @@ package com.tokopedia.review.feature.reviewdetail.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.review.common.util.DataEndlessScrollListener
 import com.tokopedia.review.feature.reviewdetail.view.model.*
 
 class SellerReviewDetailAdapter(
         sellerReviewDetailAdapterTypeFactory: SellerReviewDetailAdapterTypeFactory
-) : BaseListAdapter<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(sellerReviewDetailAdapterTypeFactory), DataEndlessScrollListener.OnDataEndlessScrollListener {
+) : BaseListAdapter<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(sellerReviewDetailAdapterTypeFactory) {
 
     companion object {
         const val PAYLOAD_RATING_FILTER = 101
@@ -15,17 +14,14 @@ class SellerReviewDetailAdapter(
         const val PAYLOAD_TOPIC_FILTER_REVIEW_COUNT = 103
     }
 
-    private var productReviewDetailFeedback: MutableList<FeedbackUiModel> = mutableListOf()
-
-    fun setFeedbackListData(feedbackListUiModel: List<FeedbackUiModel>, reviewCount: Int) {
+    fun setFeedbackListData(feedbackListUiModel: List<FeedbackUiModel>, reviewCount: Long) {
         val lastIndex = visitables.size
         updateReviewCount(reviewCount)
-        productReviewDetailFeedback.addAll(feedbackListUiModel)
         visitables.addAll(feedbackListUiModel)
         notifyItemRangeInserted(lastIndex, feedbackListUiModel.size)
     }
 
-    private fun updateReviewCount(reviewCount: Int) {
+    private fun updateReviewCount(reviewCount: Long) {
         val topicIndex = visitables.indexOfFirst { it is TopicUiModel }
         visitables.find { it is TopicUiModel }?.also {
             (it as TopicUiModel).countFeedback = reviewCount
@@ -98,8 +94,4 @@ class SellerReviewDetailAdapter(
             notifyItemInserted(lastIndex)
         }
     }
-
-    override val endlessDataSize: Int
-        get() = productReviewDetailFeedback.size
-
 }

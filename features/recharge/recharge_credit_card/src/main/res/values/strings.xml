@@ -12,5 +12,6 @@
     <string name="cc_placeholder_input_number">0123 4567 8901 2345</string>
     <string name="cc_label_list_bank">Lihat Daftar Bank</string>
     <string name="cc_bank_is_not_supported">Bank belum didukung</string>
+    <string name="cc_bank_list_title">Daftar Bank</string>
     <string name="cc_desc_bank_list">Kamu bisa bayar kartu kredit dari bank-bank yang terdaftar di bawah. Cukup masukkan nomor kartu kreditmu dan bank akan terpilih otomatis.</string>
 </resources>
