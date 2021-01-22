@@ -30,7 +30,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
                                     var actionDelete: ((pos: Int) -> Unit),
                                     var actionStatusChange: ((pos: Int, status: Int) -> Unit),
                                     private var editDone: ((groupId: Int) -> Unit),
-                                    private var onClickItem: ((id: Int, priceSpent: String) -> Unit)) : HeadLineAdItemsViewHolder<HeadLineAdItemsItemViewModel>(view) {
+                                    private var onClickItem: ((id: Int, priceSpent: String) -> Unit)) : HeadLineAdItemsViewHolder<HeadLineAdItemsItemModel>(view) {
 
     companion object {
         @LayoutRes

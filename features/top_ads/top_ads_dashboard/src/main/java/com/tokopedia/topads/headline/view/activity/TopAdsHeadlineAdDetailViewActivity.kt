@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
@@ -50,7 +49,7 @@ import kotlin.math.abs
  * Created by Pika on 16/10/20.
  */
 
-class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<TopAdsDashboardComponent>, CompoundButton.OnCheckedChangeListener{
+class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<TopAdsDashboardComponent>, CompoundButton.OnCheckedChangeListener {
 
     private var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
@@ -126,11 +125,6 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
         header_toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
-        hari_ini?.date_image?.setImageDrawable(this.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
-        hari_ini?.next_image?.setImageDrawable(this.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
-        hari_ini?.setOnClickListener {
-            showBottomSheet()
-        }
         header_toolbar.addRightIcon(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon).setOnClickListener {
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
                 putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
@@ -163,7 +157,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
     }
 
     override fun onBackPressed() {
-        if(isDataChanged){
+        if (isDataChanged) {
             val intent = Intent()
             intent.putExtra(IS_CHANGED, isDataChanged)
             setResult(Activity.RESULT_OK, intent)
@@ -210,10 +204,10 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == Activity.RESULT_OK){
-            if(requestCode == EDIT_GROUP_REQUEST_CODE){
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == EDIT_GROUP_REQUEST_CODE) {
                 loadData()
-            }else if(requestCode == EDIT_HEADLINE_REQUEST_CODE){
+            } else if (requestCode == EDIT_HEADLINE_REQUEST_CODE) {
                 isDataChanged = true
                 loadData()
                 loadStatisticsData()
