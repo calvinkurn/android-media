@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.inboxcommon.time.InboxCommonTimeHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
@@ -15,6 +14,7 @@ import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatsearch.view.uimodel.ChatReplyUiModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.time.TimeHelper
 
 class ItemSearchChatReplyViewHolder(
         itemView: View?,
@@ -80,7 +80,7 @@ class ItemSearchChatReplyViewHolder(
 
     private fun bindTimeStamp(element: ChatReplyUiModel) {
         if (element.timeStamp.isEmpty()) return
-        time?.text = InboxCommonTimeHelper.getRelativeTimeFromNow(element.timeStampSecond)
+        time?.text = TimeHelper.getRelativeTimeFromNow(element.timeStampMillis)
     }
 
     private fun bindClick(element: ChatReplyUiModel) {

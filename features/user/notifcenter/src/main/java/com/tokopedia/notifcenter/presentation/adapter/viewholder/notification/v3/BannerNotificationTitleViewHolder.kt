@@ -3,7 +3,6 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v
 import android.view.View
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.inboxcommon.time.InboxCommonTimeHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
@@ -14,6 +13,7 @@ import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.widget.BroadcastBannerNotificationImageView
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.time.TimeHelper
 
 class BannerNotificationTitleViewHolder(
         itemView: View?,
@@ -51,11 +51,11 @@ class BannerNotificationTitleViewHolder(
 
     private fun bindFooterTimeStatus(element: NotificationUiModel) {
         if (element.isPromotion()) {
-            val isIn24HourAfterCurrentTime = InboxCommonTimeHelper.isIn24HourAfterCurrentTime(
-                    element.expireTimeUnix
+            val isIn24HourAfterCurrentTime = TimeHelper.isIn24HourAfterCurrentTime(
+                    element.expireTimeUnixMillis
             )
-            val isAfterCurrentTime = InboxCommonTimeHelper.isAfterCurrentTime(element.expireTimeUnix)
-            val isBeforeCurrentTime = InboxCommonTimeHelper.isBeforeCurrentTime(element.expireTimeUnix)
+            val isAfterCurrentTime = TimeHelper.isAfterCurrentTime(element.expireTimeUnixMillis)
+            val isBeforeCurrentTime = TimeHelper.isBeforeCurrentTime(element.expireTimeUnixMillis)
             val timeMetaData = TimeMetaData(
                     isIn24HourAfterCurrentTime, isAfterCurrentTime, isBeforeCurrentTime
             )
@@ -102,8 +102,8 @@ class BannerNotificationTitleViewHolder(
         val text: String? = when {
             // hide if it's end in 24 hour, need to show countdown
             timeMetaData.isIn24HourAfterCurrentTime -> null
-            timeMetaData.isAfterCurrentTime -> InboxCommonTimeHelper.getDateMonthYearFormat(
-                    element.expireTimeUnix * 1000
+            timeMetaData.isAfterCurrentTime -> TimeHelper.getDateMonthYearFormat(
+                    element.expireTimeUnixMillis
             )
             else -> null
         }

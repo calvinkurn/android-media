@@ -12,12 +12,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.inboxcommon.time.InboxCommonTimeHelper
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.time.TimeHelper
 
 abstract class BaseNotificationViewHolder constructor(
         itemView: View?,
@@ -136,7 +136,7 @@ abstract class BaseNotificationViewHolder constructor(
     }
 
     private fun bindTime(element: NotificationUiModel) {
-        time?.text = InboxCommonTimeHelper.getRelativeTimeFromNow(element.createTimeUnix)
+        time?.text = TimeHelper.getRelativeTimeFromNow(element.createTimeUnixMillis)
     }
 
     private fun getStringResource(stringId: Int): String {

@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Menus
-import com.tokopedia.inboxcommon.time.InboxCommonTimeHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -31,6 +30,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.time.TimeHelper
 
 /**
  * @author : Steven 2019-08-07
@@ -324,7 +324,7 @@ class ChatItemListViewHolder(
     }
 
     private fun bindTimeStamp(chat: ItemChatListPojo) {
-        time.text = InboxCommonTimeHelper.getRelativeTimeFromNow(chat.lastReplyTimeSecond)
+        time.text = TimeHelper.getRelativeTimeFromNow(chat.lastReplyTimeMillis)
     }
 
     private fun bindLabel(chat: ItemChatListPojo) {
