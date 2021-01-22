@@ -36,6 +36,7 @@ inline fun View.changeConstraint(transform: ConstraintSet.() -> Unit) {
     constraintSet.applyTo(this)
 }
 
+//TODO("Check this as sometimes this causes memory leak, maybe check both old and new vto?")
 suspend inline fun View.awaitMeasured() = suspendCancellableCoroutine<Unit> { cont ->
     if (measuredWidth > 0 && measuredHeight > 0) cont.resume(Unit)
     else {

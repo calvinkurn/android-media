@@ -424,6 +424,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun setupInsets(view: View) {
+        //TODO("Check this as sometimes it's not working properly?")
         spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
             var isMarginChanged = false

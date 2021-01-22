@@ -5,6 +5,7 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.play.view.adapter.SwipeContainerStateAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -41,14 +42,11 @@ class SwipeContainerViewComponent(
     }
 
     fun refocusFragment() {
-        vpFragment.post {
-            if (adapter.itemCount > 1) {
-                val currentPos = vpFragment.currentItem
-                val fakePos = if (currentPos == 0) 1 else vpFragment.currentItem - 1
-                vpFragment.setCurrentItem(fakePos, false)
-                vpFragment.setCurrentItem(currentPos, false)
-            }
-        }
+        //TODO("Research the best way to handle this")
+
+        val destItemPos = vpFragment.currentItem
+        val recyclerView = vpFragment.getChildAt(0) as RecyclerView
+        recyclerView.scrollToPosition(destItemPos)
     }
 
     fun setEnableSwiping(shouldEnable: Boolean) {
