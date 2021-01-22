@@ -21,6 +21,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.R
+import com.tokopedia.pms.howtopay_native.analytics.HowToPayAnalytics
 import com.tokopedia.pms.howtopay_native.data.model.*
 import com.tokopedia.pms.howtopay_native.di.HowToPayComponent
 import com.tokopedia.pms.howtopay_native.ui.adapter.InstructionAdapter
@@ -31,6 +32,7 @@ import com.tokopedia.pms.howtopay_native.util.ScreenshotHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.pms_hwp_info.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -44,8 +46,15 @@ class HowToPayFragment : BaseDaggerFragment() {
     private val TIMBER_TAG = "P2#HOW_TO_PAY#"
     private val TIMBER_CHAR_MAX_LIMIT = 1000;
 
+
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var userSessionInterface: dagger.Lazy<UserSessionInterface>
+
+    @Inject
+    lateinit var howToPayAnalytics: dagger.Lazy<HowToPayAnalytics>
 
     private val screenshotHelper: ScreenshotHelper by lazy(LazyThreadSafetyMode.NONE) {
         ScreenshotHelper { showToast(getString(R.string.pms_hwp_screenshot_success)) }
@@ -65,7 +74,7 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments == null) {
+        if (arguments == null || !userSessionInterface.get().isLoggedIn) {
             activity?.finish()
         }
     }
@@ -99,7 +108,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun onAppLinkParsingError(){
+    private fun onAppLinkParsingError() {
         loaderViewHowToPay.gone()
         activity?.finish()
         Timber.w("${TIMBER_TAG}validation;reason='bundle_app_link_parsing_error';data='${arguments.toString().take(TIMBER_CHAR_MAX_LIMIT)}'")
@@ -107,6 +116,7 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     private fun onAppLinkPaymentInfoLoaded(appLinkPaymentInfo: AppLinkPaymentInfo) {
         this.appLinkPaymentInfo = appLinkPaymentInfo
+        howToPayAnalytics.get().eventOnScreenOpen(appLinkPaymentInfo.payment_type)
         howToPayViewModel.getHowToPayInstruction(appLinkPaymentInfo)
     }
 
@@ -185,13 +195,20 @@ class HowToPayFragment : BaseDaggerFragment() {
                 getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
                 getString(R.string.pms_hwp_screenshot),
                 IconUnify.DOWNLOAD) {
-            screenshotHelper.takeScreenShot(view, this)
+            takeScreenShot()
         }
         tvStorePaymentNote.visible()
         context?.let {
             tvStorePaymentNote.movementMethod = LinkMovementMethod.getInstance()
             tvStorePaymentNote.text = getSpannableStoreNote(it)
         }
+    }
+
+
+    private fun takeScreenShot() {
+        if (::appLinkPaymentInfo.isInitialized)
+            howToPayAnalytics.get().eventOnScreenShotClick(appLinkPaymentInfo.payment_type)
+        screenshotHelper.takeScreenShot(view, this)
     }
 
     private fun addKlikBCAPayment() {
@@ -293,6 +310,8 @@ class HowToPayFragment : BaseDaggerFragment() {
             val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
                     dataStr.replace(extraSpaceRegexStr, ""))
             clipboard.setPrimaryClip(clip)
+            if (::appLinkPaymentInfo.isInitialized)
+                howToPayAnalytics.get().eventOnCopyCodeClick(appLinkPaymentInfo.payment_type)
         }
     }
 

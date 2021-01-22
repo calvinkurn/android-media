@@ -10,6 +10,8 @@ import com.tokopedia.pms.R
 import com.tokopedia.pms.howtopay_native.data.model.StoreList
 import com.tokopedia.pms.howtopay_native.ui.adapter.StoreListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.unifycomponents.toDp
 
 class StoreListBottomSheet : BottomSheetUnify() {
 
@@ -19,6 +21,7 @@ class StoreListBottomSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         showCloseIcon = true
         isDragable = true
+        customPeekHeight = getScreenHeight().toDp()
         setTitle(getString(R.string.pms_hwp_store_list))
         childView = LayoutInflater.from(context).inflate(R.layout.pms_hwp_store_list,
                 null, false)
