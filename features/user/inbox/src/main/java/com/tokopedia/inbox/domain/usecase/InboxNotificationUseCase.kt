@@ -31,9 +31,7 @@ class InboxNotificationUseCase @Inject constructor(
                     onSuccess(response.notifications)
                 },
                 onError = {
-                    withContext(dispatchers.Main) {
-                        onError(it)
-                    }
+                    onError(it)
                 }
         )
     }
