@@ -1,4 +1,4 @@
-package com.tokopedia.sellerreview
+package com.tokopedia.sellerreview.common
 
 import android.content.Context
 import android.os.Handler
