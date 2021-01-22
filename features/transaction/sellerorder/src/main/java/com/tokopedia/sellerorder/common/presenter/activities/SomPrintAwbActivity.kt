@@ -8,6 +8,8 @@ import android.view.Menu
 import android.webkit.JavascriptInterface
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.tokopedia.sellerorder.R
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.TkpdWebView
@@ -72,6 +74,10 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
                         printManager?.print(PRINT_JOB_NAME, printAdapter, builder.build())
                     }
                 }
+            }
+        } else {
+            webView?.run {
+                Toaster.build(this, getString(R.string.som_print_awb_minimum_os_error_message), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
             }
         }
     }
