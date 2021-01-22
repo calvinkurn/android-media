@@ -24,9 +24,7 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
-import com.tokopedia.play.view.uimodel.recom.PlayCartInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.isFollowed
+import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -88,7 +86,7 @@ class PlayViewModel @Inject constructor(
         get() = _observableTotalViews
     val observablePartnerInfo: LiveData<PlayPartnerInfoUiModel> /**Changed**/
         get() = _observablePartnerInfo
-    val observableQuickReply: LiveData<QuickReplyUiModel>
+    val observableQuickReply: LiveData<PlayQuickReplyInfoUiModel> /**Changed**/
         get() = _observableQuickReply
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
@@ -149,9 +147,12 @@ class PlayViewModel @Inject constructor(
         get() {
             return PlayChannelData.Complete(
                     partnerInfo = _observablePartnerInfo.value ?: error("Partner Info should not be null"),
-                    cartInfo = _observableCartInfo.value ?: error("Cart Info should not be null")
-//                    pinnedMessage = pinnedMessage,
-//                    pinnedProduct = pinnedProduct
+                    cartInfo = _observableCartInfo.value ?: error("Cart Info should not be null"),
+                    pinnedInfo = PlayPinnedInfoUiModel(
+                            pinnedMessage = _observablePinnedMessage.value,
+                            pinnedProduct = _observablePinnedProduct.value
+                    ),
+                    quickReplyInfo = _observableQuickReply.value ?: error("Quick Reply should not be null")
             )
         }
 
@@ -183,8 +184,8 @@ class PlayViewModel @Inject constructor(
     private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
     private val _observableLikeState = MutableLiveData<NetworkResult<LikeStateUiModel>>()
     private val _observableTotalViews = MutableLiveData<TotalViewUiModel>()
-    private val _observablePartnerInfo = MutableLiveData<PlayPartnerInfoUiModel>()
-    private val _observableQuickReply = MutableLiveData<QuickReplyUiModel>()
+    private val _observablePartnerInfo = MutableLiveData<PlayPartnerInfoUiModel>() /**Changed**/
+    private val _observableQuickReply = MutableLiveData<PlayQuickReplyInfoUiModel>() /**Changed**/
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>()
@@ -198,7 +199,7 @@ class PlayViewModel @Inject constructor(
         }
     }
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
-    private val _observableCartInfo = MutableLiveData<PlayCartInfoUiModel>()
+    private val _observableCartInfo = MutableLiveData<PlayCartInfoUiModel>() /**Changed**/
     private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
@@ -457,10 +458,14 @@ class PlayViewModel @Inject constructor(
             is PlayChannelData.Placeholder -> {
                 handlePartnerInfo(channelData.partnerInfo)
                 handleCartInfo(channelData.cartInfo)
+                handlePinnedInfo(channelData.pinnedInfo)
+                handleQuickReplyInfo(channelData.quickReplyInfo)
             }
             is PlayChannelData.Complete -> {
                 handlePartnerInfo(channelData.partnerInfo)
                 handleCartInfo(channelData.cartInfo)
+                handlePinnedInfo(channelData.pinnedInfo)
+                handleQuickReplyInfo(channelData.quickReplyInfo)
             }
         }
     }
@@ -503,7 +508,7 @@ class PlayViewModel @Inject constructor(
                 _observableTotalViews.value = completeInfoUiModel.totalView
                 _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
                 _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
-                _observableQuickReply.value = completeInfoUiModel.quickReply
+//                _observableQuickReply.value = completeInfoUiModel.quickReply
                 _observableVideoMeta.value = VideoMetaUiModel(completeInfoUiModel.videoPlayer, completeInfoUiModel.videoStream)
                 _observableEvent.value = completeInfoUiModel.event
 
@@ -635,7 +640,8 @@ class PlayViewModel @Inject constructor(
                         _observablePinnedMessage.value = PlayUiMapper.mapPinnedMessage(partnerName, result)
                     }
                     is QuickReply -> {
-                        _observableQuickReply.value = PlayUiMapper.mapQuickReply(result)
+                        //TODO("Use separate mapper")
+//                        _observableQuickReply.value = PlayUiMapper.mapQuickReply(result)
                     }
                     is BannedFreeze -> {
                         if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
@@ -702,6 +708,15 @@ class PlayViewModel @Inject constructor(
 
     private fun handleCartInfo(cartInfo: PlayCartInfoUiModel) {
         _observableCartInfo.value = cartInfo
+    }
+
+    private fun handlePinnedInfo(pinnedInfo: PlayPinnedInfoUiModel) {
+        _observablePinnedMessage.value = pinnedInfo.pinnedMessage
+        _observablePinnedProduct.value = pinnedInfo.pinnedProduct
+    }
+
+    private fun handleQuickReplyInfo(quickReplyInfo: PlayQuickReplyInfoUiModel) {
+        _observableQuickReply.value = quickReplyInfo
     }
 
     /**

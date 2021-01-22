@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.ui.quickreply.adapter.QuickReplyAdapter
 import com.tokopedia.play.ui.quickreply.itemdecoration.QuickReplyItemDecoration
 import com.tokopedia.play.view.uimodel.QuickReplyUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -30,7 +31,7 @@ class QuickReplyViewComponent(
         }
     }
 
-    fun setQuickReply(quickReply: QuickReplyUiModel) {
+    fun setQuickReply(quickReply: PlayQuickReplyInfoUiModel) {
         quickReplyAdapter.setQuickReply(quickReply.quickReplyList)
     }
 

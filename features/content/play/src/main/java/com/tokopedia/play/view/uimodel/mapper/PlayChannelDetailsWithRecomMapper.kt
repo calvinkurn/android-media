@@ -5,6 +5,8 @@ import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PartnerFolowStatus
+import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
+import com.tokopedia.play.view.uimodel.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 
 /**
@@ -22,6 +24,8 @@ class PlayChannelDetailsWithRecomMapper : PlayChannelResponseMapper {
                     likeInfo = mapLikeInfo(it.config.feedLikeParam),
                     shareInfo = mapShareInfo(it.share, it.config.active, it.config.freezed),
                     cartInfo = mapCartInfo(it.config),
+                    pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
+                    quickReplyInfo = mapQuickReply(it.quickReplies),
                     miscConfigInfo = mapMiscConfigInfo(it.config),
             )
         }
@@ -60,6 +64,40 @@ class PlayChannelDetailsWithRecomMapper : PlayChannelResponseMapper {
     private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
             shouldShow = configResponse.showCart,
             count = 0
+    )
+
+    private fun mapPinnedInfo(
+            pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage,
+            partnerResponse: ChannelDetailsWithRecomResponse.Partner,
+            configResponse: ChannelDetailsWithRecomResponse.Config
+    ) = PlayPinnedInfoUiModel(
+            pinnedMessage = mapPinnedMessage(pinnedMessageResponse, partnerResponse),
+            pinnedProduct = mapPinnedProduct(configResponse, partnerResponse)
+    )
+
+    private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner): PinnedMessageUiModel? {
+        return if (pinnedMessageResponse.id.isNotEmpty()
+                && !pinnedMessageResponse.id.contentEquals("0")
+                && pinnedMessageResponse.title.isNotEmpty()) {
+            PinnedMessageUiModel(
+                    applink = pinnedMessageResponse.redirectUrl,
+                    partnerName = partnerResponse.name,
+                    title = pinnedMessageResponse.title
+            )
+        } else null
+    }
+
+    private fun mapPinnedProduct(configResponse: ChannelDetailsWithRecomResponse.Config, partnerResponse: ChannelDetailsWithRecomResponse.Partner): PinnedProductUiModel? {
+        return if (configResponse.showPinnedProduct)
+            PinnedProductUiModel(
+                    partnerName = partnerResponse.name,
+                    title = configResponse.pinnedProductConfig.pinTitle,
+                    hasPromo = configResponse.hasPromo
+            ) else null
+    }
+
+    private fun mapQuickReply(quickRepliesResponse: List<String>) = PlayQuickReplyInfoUiModel(
+            quickReplyList = quickRepliesResponse.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() }
     )
 
     private fun mapMiscConfigInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayMiscConfigUiModel(

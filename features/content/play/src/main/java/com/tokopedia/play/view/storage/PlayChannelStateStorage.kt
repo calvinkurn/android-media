@@ -44,12 +44,16 @@ sealed class PlayChannelData {
             val likeInfo: PlayLikeInfoUiModel,
             val shareInfo: PlayShareInfoUiModel,
             val cartInfo: PlayCartInfoUiModel,
+            val pinnedInfo: PlayPinnedInfoUiModel,
+            val quickReplyInfo: PlayQuickReplyInfoUiModel,
             val miscConfigInfo: PlayMiscConfigUiModel,
     ) : PlayChannelData()
 
     data class Complete(
             val partnerInfo: PlayPartnerInfoUiModel,
             val cartInfo: PlayCartInfoUiModel,
+            val pinnedInfo: PlayPinnedInfoUiModel,
+            val quickReplyInfo: PlayQuickReplyInfoUiModel,
 //            val pinnedMessage: PinnedMessageUiModel?,
 //            val pinnedProduct: PinnedProductUiModel?,
     ) : PlayChannelData()
