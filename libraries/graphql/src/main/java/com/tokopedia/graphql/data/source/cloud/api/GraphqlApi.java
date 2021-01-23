@@ -21,8 +21,9 @@ import static com.tokopedia.graphql.GraphqlConstant.GqlApiKeys.ANDROID_FLAG;
  */
 public interface GraphqlApi {
 
-    @Headers(ANDROID_FLAG)
+
     @POST("./")
+    @Headers(ANDROID_FLAG)
     Observable<Response<JsonArray>> getResponse(@Body List<GraphqlRequest> requestObject,
                                                 @HeaderMap Map<String, String> headerMap,
                                                 @Header(GraphqlConstant.GqlApiKeys.CACHE) String values);

@@ -12,8 +12,9 @@ import retrofit2.http.*
  */
 interface GraphqlApiSuspend {
 
-    @Headers(ANDROID_FLAG)
+
     @POST("./")
+    @Headers(ANDROID_FLAG)
     suspend fun getResponseSuspend(@Body requestObject: MutableList<GraphqlRequest>,
                                    @HeaderMap header: Map<String, String>,
                                    @Header(GraphqlConstant.GqlApiKeys.CACHE) values: String?): Response<JsonArray>
