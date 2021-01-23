@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
-import com.tokopedia.editshipping.domain.model.shippingEditor.CourierTickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.OnDemandModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -23,7 +23,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
 
     interface ShippingEditorItemAdapterListener {
         fun onShipperInfoClicked()
-        fun onShipperTickerOnDemandClicked()
+        fun onShipperTickerOnDemandClicked(data: OnDemandModel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShippingEditorOnDemandViewHolder {
@@ -43,16 +43,22 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         notifyDataSetChanged()
     }
 
-    fun setTickerData(data: List<CourierTickerModel>) {
-        data.forEach {
+    fun setTickerData(data: ShipperTickerModel) {
+        data.courierTicker.forEach {
             val onDemandModel = shipperOnDemandModel.find { onDemand ->
                 onDemand.shipperId == it.shipperId
             }
             onDemandModel?.tickerState = it.tickerState
             onDemandModel?.isAvailable = it.isAvailable
             onDemandModel?.warehouseIds = it.warehouseIds
-
+            onDemandModel?.warehouseModel = data.warehouses
         }
+
+        /*data.warehouses?.forEach {
+            val warehouseModel = shipperOnDemandModel.find {onDemandModel ->
+
+            }
+        }*/
         notifyDataSetChanged()
     }
 
@@ -118,7 +124,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                     tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_yellow, data.warehouseIds?.size))
                     tickerShipper.setDescriptionClickEvent(object: TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            listener.onShipperTickerOnDemandClicked()
+                            listener.onShipperTickerOnDemandClicked(data)
                         }
 
                         override fun onDismiss() {

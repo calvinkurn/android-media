@@ -59,6 +59,21 @@
                         app:layout_constraintTop_toBottomOf="@id/ticker_shipper_info"
                         app:layout_constraintStart_toStartOf="parent"/>
 
+                    <com.tokopedia.unifycomponents.ticker.Ticker
+                        android:id="@+id/ticker_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:closeButtonVisibility="gone"
+                        android:layout_marginTop="@dimen/unify_space_16"
+                        android:layout_marginStart="@dimen/unify_space_16"
+                        android:layout_marginEnd="@dimen/unify_space_16"
+                        app:tckv_content_text_size = "@dimen/sp_12"
+                        app:tickerShapeType="loose"
+                        app:tickerType="error"
+                        android:visibility="gone"
+                        app:layout_constraintTop_toBottomOf="@id/tv_layanan_pengiriman"
+                        app:layout_constraintStart_toStartOf="parent"/>
+
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_dijemput_kurir"
                         android:layout_width="wrap_content"
@@ -69,7 +84,7 @@
                         app:typographyType="heading_4"
                         app:typographyWeight="bold"
                         android:text="Dijemput Kurir"
-                        app:layout_constraintTop_toBottomOf="@id/tv_layanan_pengiriman"
+                        app:layout_constraintTop_toBottomOf="@id/ticker_header"
                         app:layout_constraintStart_toStartOf="parent"/>
 
                     <com.tokopedia.unifyprinciples.Typography

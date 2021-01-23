@@ -21,7 +21,8 @@ data class WarehousesModel(
         var warehouseType: Int = 0,
         var email: String = "false",
         var shopId: ShopIdModel = ShopIdModel(),
-        var partnerId: PartnerIdModel = PartnerIdModel()
+        var partnerId: PartnerIdModel = PartnerIdModel(),
+        var isShown: Boolean = false
 )
 
 data class ShopIdModel(

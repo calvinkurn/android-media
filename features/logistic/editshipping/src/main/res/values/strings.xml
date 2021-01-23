@@ -48,5 +48,7 @@
     <string name="ticker_dijemput_kurir_complete">Semua kurir pada layanan dijemput kurir memiliki fitur:&lt;br/&gt; &lt;ul&gt; &lt;li&gt; AWB Otomatis. &lt;a href="#"&gt;Selengkapnya&lt;/a&gt; &lt;br/&gt; &lt;li&gt; Non Tunai. &lt;a href="#"&gt;Selengkapnya&lt;/a&gt; &lt;/ul&gt; </string>
     <string name="shipper_ticker_yellow">Kurir ini tidak tersedia di &lt;b>%d lokasimu.&lt;/b> &lt;a href="#"&gt; Lihat.&lt;/a&gt;</string>
     <string name="shipper_ticker_red">Kurir ini tidak dapat diaktifkan sementara</string>
+    <string name="ticker_header_clicked">&lt;a href="#"&gt; Lihat Detail&lt;/a&gt;</string>
+    <string name="title_bottomsheet_courier_inactive">Kurir ini tidak tersedia di %d lokasi tokomu</string>
 
 </resources>

@@ -102,6 +102,7 @@ class ShippingEditorMapper @Inject constructor() {
             body = response.body
             textLink = response.textLink
             urlLink = response.urlLink
+            warehouseIds = response.warehouseIds
             isActive = response.isActive
         }
     }

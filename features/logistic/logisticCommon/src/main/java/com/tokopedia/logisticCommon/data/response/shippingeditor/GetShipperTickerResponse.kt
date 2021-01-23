@@ -34,6 +34,8 @@ data class HeaderTicker(
         var textLink: String = "",
         @SerializedName("url_link")
         var urlLink: String = "",
+        @SerializedName("warehouse_ids")
+        var warehouseIds: List<Int> = emptyList(),
         @SerializedName("is_active")
         var isActive: Boolean = false
 )

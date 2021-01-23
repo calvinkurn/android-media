@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.ui.shippingeditor
 
+import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -26,6 +27,7 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.*
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorConventionalAdapter
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorDetailsAdapter
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorOnDemandItemAdapter
+import com.tokopedia.editshipping.ui.shippingeditor.adapter.WarehouseInactiveAdapter
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -34,10 +36,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
@@ -62,6 +61,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private var btnSaveShipper: UnifyButton? = null
     private var tvDetailCourier: Typography? = null
     private var tickerOnDemand: Ticker? = null
+    private var tickerHeader: Ticker? = null
 
     private var bottomSheetShipperInfo: BottomSheetUnify? = null
     private var bottomSheetImageInfo: DeferredImageView? = null
@@ -73,6 +73,14 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private var bottomSheetShipperDetails: BottomSheetUnify? = null
     private var bottomSheetShipperDetailsRv: RecyclerView? = null
     private var bottomSheetShipperAdapter = ShippingEditorDetailsAdapter()
+    private var bottomSheetCourierInactiveAdapter = WarehouseInactiveAdapter()
+
+    private var bottomSheetCourierInactive: BottomSheetUnify? = null
+    private var tvCourierInactive: Typography? = null
+    private var warehouseListRv: RecyclerView? = null
+    private var primaryButtonCourierInactive: UnifyButton? = null
+    private var secondaryButtonCourierInactive: UnifyButton? = null
+    private var bottomSheetCourierInactiveState: Int = 0
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var globalErrorLayout: GlobalError? = null
@@ -108,6 +116,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
         tvDetailCourier = view?.findViewById(R.id.tv_detail_kurir)
         tickerOnDemand = view?.findViewById(R.id.ticker_dijemput_kurir)
+        tickerHeader = view?.findViewById(R.id.ticker_header)
 
         renderTickerOnDemand()
         renderTextDetailCourier()
@@ -163,7 +172,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         viewModel.shipperTickerList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ShippingEditorState.Success -> {
-                    updateTickerData(it.data.courierTicker)
+                    updateTickerData(it.data)
+                    updateHeaderTickerData(it.data.headerTicker)
                 }
             }
         })
@@ -171,7 +181,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         viewModel.shipperDetail.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ShippingEditorState.Success -> {
-                    updateTickerBottomSheet(it.data)
+                    updateBottomsheetData(it.data)
                 }
             }
         })
@@ -188,14 +198,40 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         shippingEditorConventionalAdapter.updateData(data.conventional)
     }
 
-    private fun updateTickerData(data: List<CourierTickerModel>) {
+    private fun updateTickerData(data: ShipperTickerModel) {
         shippingEditorOnDemandAdapter.setTickerData(data)
-        shippingEditorConventionalAdapter.setTickerData(data)
+        shippingEditorConventionalAdapter.setTickerData(data.courierTicker)
     }
 
-    private fun updateTickerBottomSheet(data: ShipperDetailModel) {
+    private fun updateBottomsheetData(data: ShipperDetailModel) {
         bottomSheetShipperAdapter.setShippingEditorDetailsData(data)
         openBottomSheetDetails()
+    }
+
+    private fun setWarehouseInactiveData(data: OnDemandModel) {
+        bottomSheetCourierInactiveAdapter.setData(data.warehouseModel)
+        bottomSheetCourierInactiveAdapter.setInactiveWarehouse(data)
+        context?.let { openBottomSheetWarehouseInactive(it, data) }
+    }
+
+    private fun updateHeaderTickerData(data: HeaderTickerModel) {
+        if (data.isActive) {
+            tickerHeader?.apply {
+                visibility = View.VISIBLE
+                tickerTitle = data.header
+                setHtmlDescription(data.body + getString(R.string.ticker_header_clicked))
+                setDescriptionClickEvent(object: TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        openBottomSheetShipperInfo()
+                    }
+
+                    override fun onDismiss() {
+                        //no-op
+                    }
+
+                })
+            }
+        } else tickerHeader?.visibility = View.GONE
     }
 
     private fun renderTicker(tickers: List<TickerModel>) {
@@ -229,19 +265,52 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onShipperTickerOnDemandClicked() {
-        openBottomSheetShipperInfo()
+    override fun onShipperTickerOnDemandClicked(data: OnDemandModel) {
+        bottomSheetCourierInactiveState = 1
+        setWarehouseInactiveData(data)
+    }
+
+    private fun openBottomSheetWarehouseInactive(ctx: Context, data: OnDemandModel) {
+        bottomSheetCourierInactive = BottomSheetUnify()
+        val viewBottomSheetWarehouseInactive = View.inflate(ctx, R.layout.bottomsheet_courier_inactive, null)
+        setupChildCourierInactive(viewBottomSheetWarehouseInactive)
+
+        bottomSheetCourierInactive?.apply {
+            setTitle(ctx.getString(R.string.title_bottomsheet_courier_inactive, data.warehouseIds?.size))
+            setCloseClickListener { dismiss() }
+            setChild(viewBottomSheetWarehouseInactive)
+            setOnDismissListener { dismiss() }
+        }
+
+        fragmentManager?.let {
+            bottomSheetCourierInactive?.show(it, "show")
+        }
+    }
+
+    private fun setupChildCourierInactive(child: View) {
+        tvCourierInactive = child.findViewById(R.id.tv_courier_inactive)
+        warehouseListRv = child.findViewById(R.id.rv_warehouse_inactive)
+        primaryButtonCourierInactive = child.findViewById(R.id.btn_primary)
+        secondaryButtonCourierInactive = child.findViewById(R.id.btn_secondary)
+
+        warehouseListRv?.apply {
+            layoutManager = LinearLayoutManager(this.context)
+            adapter = bottomSheetCourierInactiveAdapter
+        }
+
+        if (bottomSheetCourierInactiveState == 1) {
+            primaryButtonCourierInactive?.text = "Mengerti"
+            primaryButtonCourierInactive?.setOnClickListener {
+                bottomSheetCourierInactive?.dismiss()
+            }
+            secondaryButtonCourierInactive?.visibility = View.GONE
+        }
     }
 
     private fun openBottomSheetDetails() {
         bottomSheetShipperDetails = BottomSheetUnify()
         val viewBottomSheetShipperDetails = View.inflate(context, R.layout.bottomsheet_shipper_detail, null)
         setupChild(viewBottomSheetShipperDetails)
-
-        bottomSheetShipperDetailsRv?.apply {
-            layoutManager = LinearLayoutManager(this.context)
-            adapter = bottomSheetShipperAdapter
-        }
 
         bottomSheetShipperDetails?.apply {
             setTitle("Detail Kurir Pengiriman")
@@ -257,6 +326,11 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
     private fun setupChild(child: View) {
         bottomSheetShipperDetailsRv = child.findViewById(R.id.rv_shipper_detail)
+
+        bottomSheetShipperDetailsRv?.apply {
+            layoutManager = LinearLayoutManager(this.context)
+            adapter = bottomSheetShipperAdapter
+        }
     }
 
     private fun openBottomSheetShipperInfo() {
