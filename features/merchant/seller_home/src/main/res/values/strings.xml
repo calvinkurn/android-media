@@ -33,6 +33,8 @@
     <string name="sir_feedback_title">Bantu kami menggapai bintang</string>
     <string name="sir_feedback_message">Yuk, berikan masukan agar Tokopedia bisa lebih \n memenuhi kebutuhanmu.</string>
     <string name="sir_feedback_placeholder">Tulis masukanmu disini</string>
+    <string name="sir_thank_you_title">Yay, terima kasih untuk \nbintangnya!</string>
+    <string name="sir_thank_you_message">Senang bisa memenuhi kebutuhanmu. Sering-sering berkunjung, ya!</string>
     <string name="sir_rate_1_star">Sangat Kurang</string>
     <string name="sir_rate_2_star">Kurang</string>
     <string name="sir_rate_3_star">Cukup</string>
