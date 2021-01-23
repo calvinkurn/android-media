@@ -2,18 +2,17 @@ package com.tokopedia.graphql.data.source.cloud.api;
 
 import com.google.gson.JsonArray
 import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.GraphqlConstant.GqlApiKeys.ANDROID_FLAG
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.HeaderMap
+import retrofit2.http.*
 
 /**
  * Created by Vishal
  */
 interface GraphqlApiSuspend {
 
+    @Headers(ANDROID_FLAG)
     @POST("./")
     suspend fun getResponseSuspend(@Body requestObject: MutableList<GraphqlRequest>,
                                    @HeaderMap header: Map<String, String>,
