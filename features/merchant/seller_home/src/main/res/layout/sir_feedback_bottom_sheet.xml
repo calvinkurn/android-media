@@ -44,21 +44,20 @@
         app:layout_constraintTop_toBottomOf="@+id/tvSirFeedbackTitle"
         app:typographyType="body_3" />
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/edtSirFeedback"
+    <com.tokopedia.unifycomponents.TextAreaUnify
+        android:id="@+id/tauSirFeedback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl5"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSirFeedbackMessage"
-        app:text_field_input_type="text"
-        app:text_field_label="@string/sir_feedback_placeholder"
-        tools:layout_height="40dp" />
+        app:text_area_label="@string/sir_feedback_placeholder"
+        tools:layout_height="@dimen/layout_lvl8" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnSirSubmitFeedback"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl4"
         android:layout_marginBottom="@dimen/layout_lvl2"
@@ -66,5 +65,7 @@
         android:text="@string/sir_send_feedback"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtSirFeedback" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tauSirFeedback" />
 </androidx.constraintlayout.widget.ConstraintLayout>
