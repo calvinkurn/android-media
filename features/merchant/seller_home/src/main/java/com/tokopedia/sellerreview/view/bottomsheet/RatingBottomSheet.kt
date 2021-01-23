@@ -1,7 +1,6 @@
 package com.tokopedia.sellerreview.view.bottomsheet
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,13 +66,8 @@ class RatingBottomSheet : BaseBottomSheet() {
         childView?.run {
             btnSirSubmit.isLoading = true
 
-            Handler().postDelayed({
-                btnSirSubmit.isLoading = false
-                this@RatingBottomSheet.dismiss()
-                Handler().postDelayed({
-                    onSubmitted?.invoke()
-                }, 500)
-            }, 2000)
+            this@RatingBottomSheet.dismiss()
+            onSubmitted?.invoke()
         }
     }
 
