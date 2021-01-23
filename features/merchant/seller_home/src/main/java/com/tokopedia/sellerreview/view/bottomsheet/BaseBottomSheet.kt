@@ -19,7 +19,7 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.UnifyBottomSheetNotOverlapStyle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
