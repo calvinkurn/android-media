@@ -1,6 +1,8 @@
 package com.tokopedia.sellerreview.common
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Handler
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.sellerreview.view.bottomsheet.FeedbackBottomSheet
@@ -22,12 +24,20 @@ object SellerReviewHelper {
         Handler().postDelayed({
             RatingBottomSheet.createInstance()
                     .setOnSubmittedListener {
-                        Handler().postDelayed({
-                            showFeedBackBottomSheet(fm)
-                        }, POPUP_DELAY)
+                        setOnRatingSubmitted(context, fm, it)
                     }
                     .show(fm)
         }, POPUP_DELAY)
+    }
+
+    private fun setOnRatingSubmitted(context: Context, fm: FragmentManager, rating: Int) {
+        if (rating >= 4) {
+            rateOnPlayStore(context, fm)
+        } else {
+            Handler().postDelayed({
+                showFeedBackBottomSheet(fm)
+            }, POPUP_DELAY)
+        }
     }
 
     private fun showFeedBackBottomSheet(fm: FragmentManager) {
@@ -43,5 +53,15 @@ object SellerReviewHelper {
     private fun showTankYouBottomSheet(fm: FragmentManager) {
         ThankYouBottomSheet.createInstance()
                 .show(fm)
+    }
+
+    private fun rateOnPlayStore(context: Context, fm: FragmentManager) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse("market://details?id=${context.packageName}")
+        context.startActivity(intent)
+
+        Handler().postDelayed({
+            showTankYouBottomSheet(fm)
+        }, POPUP_DELAY)
     }
 }

@@ -28,7 +28,8 @@ class RatingBottomSheet : BaseBottomSheet() {
     }
 
     private var ratingStatus: Array<String>? = null
-    private var onSubmitted: (() -> Unit)? = null
+    private var onSubmitted: ((Int) -> Unit)? = null
+    private var givenRating = 0
 
     override fun getResLayout(): Int = R.layout.sir_rating_bottom_sheet
 
@@ -46,6 +47,7 @@ class RatingBottomSheet : BaseBottomSheet() {
                 setOnStarClicked(this@run, position)
                 showRatePickerStatus(position)
                 btnSirSubmit.isEnabled = true
+                givenRating = position
             }
         })
         btnSirSubmit.setOnClickListener {
@@ -57,7 +59,7 @@ class RatingBottomSheet : BaseBottomSheet() {
         show(fm, TAG)
     }
 
-    fun setOnSubmittedListener(action: () -> Unit): RatingBottomSheet {
+    fun setOnSubmittedListener(action: (rating: Int) -> Unit): RatingBottomSheet {
         onSubmitted = action
         return this
     }
@@ -67,7 +69,7 @@ class RatingBottomSheet : BaseBottomSheet() {
             btnSirSubmit.isLoading = true
 
             this@RatingBottomSheet.dismiss()
-            onSubmitted?.invoke()
+            onSubmitted?.invoke(givenRating)
         }
     }
 
