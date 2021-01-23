@@ -11,15 +11,19 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import rx.Observable;
+import static com.tokopedia.graphql.GraphqlConstant.GqlApiKeys.ANDROID_FLAG;
 
 /**
  * Created by Vishal
  */
 public interface GraphqlApi {
 
+
     @POST("./")
+    @Headers(ANDROID_FLAG)
     Observable<Response<JsonArray>> getResponse(@Body List<GraphqlRequest> requestObject,
                                                 @HeaderMap Map<String, String> headerMap,
                                                 @Header(GraphqlConstant.GqlApiKeys.CACHE) String values);
