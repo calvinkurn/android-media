@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
 
-    var mPhone = "082245454504"
+    var mPhone = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -53,7 +53,7 @@ class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         baseAddNameListener = this
-//        mPhone = arguments?.getString(ApplinkConstInternalGlobal.PARAM_PHONE, "") ?: ""
+        mPhone = arguments?.getString(ApplinkConstInternalGlobal.PARAM_PHONE, "") ?: ""
     }
 
     override fun initObserver() {
