@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.external_register.base.di
 
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.external_register.base.fragment.ExternalAccountFinalFragment
 import com.tokopedia.loginregister.external_register.ovo.view.OvoAddNameFragment
 import com.tokopedia.loginregister.external_register.ovo.view.OvoAddPhoneFragment
 import com.tokopedia.loginregister.external_register.ovo.view.OvoRegisterInitialFragment
@@ -21,4 +22,5 @@ interface ExternalRegisterComponent {
     fun inject(fragment: OvoAddNameFragment)
     fun inject(fragment: OvoAddPhoneFragment)
     fun inject(fragment: OvoRegisterInitialFragment)
+    fun inject(fragment: ExternalAccountFinalFragment)
 }

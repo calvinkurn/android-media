@@ -53,6 +53,7 @@ import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
+import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -135,6 +136,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     @Inject
     lateinit var registerAnalytics: RegisterAnalytics
+
+    @Inject
+    lateinit var ovoCreationAnalytics: OvoCreationAnalytics
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -528,14 +532,17 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     fun showRegisterOvoDialog() {
         activity?.let {
+            ovoCreationAnalytics.trackViewOvoRegisterDialog()
             phoneNumber?.run {
                 OvoAccountDialog.showRegisterDialogUnify(it, this, object: BaseDialogConnectAccListener {
                     override fun onDialogPositiveBtnClicked() {
+                        ovoCreationAnalytics.trackClickCreateOvo()
                         goToOvoAddName(this@run)
                     }
 
                     override fun onDialogNegativeBtnClicked() {
                         phoneNumber?.run {
+                            ovoCreationAnalytics.trackClickRegTkpdOnly()
                             goToRegisterWithPhoneNumber(this)
                         }
                     }
@@ -546,13 +553,16 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     fun showConnectOvoDialog() {
         activity?.run {
+            ovoCreationAnalytics.trackViewOvoConnectDialog()
             OvoAccountDialog.showConnectDialogUnify(this, object: BaseDialogConnectAccListener {
                 override fun onDialogPositiveBtnClicked() {
+                    ovoCreationAnalytics.trackClickConnectOvo()
                     goToOvoAddName(phoneNumber ?: "")
                 }
 
                 override fun onDialogNegativeBtnClicked() {
                     phoneNumber?.run {
+                        ovoCreationAnalytics.trackClickConnectTkpdOnly()
                         goToRegisterWithPhoneNumber(this)
                     }
                 }

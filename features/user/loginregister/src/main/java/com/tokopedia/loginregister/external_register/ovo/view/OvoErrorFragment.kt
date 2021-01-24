@@ -23,6 +23,7 @@ class OvoErrorFragment: ExternalAccountFinalFragment(), BaseFinalListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.run {
+            ovoCreationAnalytics.trackViewOvoFailPage()
             setTitle(getString(R.string.ovo_external_register_title_error))
             setDescription(getString(R.string.ovo_external_register_description_error))
             setMainImage(imgResId = R.drawable.img_ovo_error)
@@ -32,7 +33,12 @@ class OvoErrorFragment: ExternalAccountFinalFragment(), BaseFinalListener {
     }
 
     override fun onMainSuccessButtonClicked() {
+        ovoCreationAnalytics.trackClickOvoFailBtn()
         activity?.setResult(Activity.RESULT_CANCELED)
         activity?.finish()
+    }
+
+    fun onBackButtonClicked() {
+        ovoCreationAnalytics.trackClickOvoFailBackBtn()
     }
 }

@@ -4,20 +4,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterComponent
 import com.tokopedia.loginregister.external_register.base.listener.BaseFinalListener
+import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_base_success_external_account.view.*
+import javax.inject.Inject
 
 /**
  * Created by Yoris Prayogo on 17/11/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-open class ExternalAccountFinalFragment: Fragment() {
+open class ExternalAccountFinalFragment: BaseDaggerFragment() {
 
      var listener: BaseFinalListener? = null
+
+    @Inject
+    lateinit var ovoCreationAnalytics: OvoCreationAnalytics
+
+    override fun getScreenName(): String = ""
+
+    override fun initInjector() {
+        getComponent(ExternalRegisterComponent::class.java).inject(this)
+    }
 
     companion object {
         fun createInstance(): ExternalAccountFinalFragment {

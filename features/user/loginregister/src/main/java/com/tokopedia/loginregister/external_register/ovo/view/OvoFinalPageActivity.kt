@@ -49,4 +49,11 @@ class OvoFinalPageActivity: BaseSimpleActivity() {
             supportActionBar?.title = getString(R.string.title_external_register_verify)
         }
     }
+
+    override fun onBackPressed() {
+        if(fragment is OvoErrorFragment){
+            (fragment as OvoErrorFragment).onBackButtonClicked()
+        }
+        super.onBackPressed()
+    }
 }

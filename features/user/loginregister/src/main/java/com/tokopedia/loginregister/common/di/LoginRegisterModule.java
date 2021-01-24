@@ -16,6 +16,7 @@ import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
+import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
@@ -59,6 +60,13 @@ public class LoginRegisterModule {
     @Provides
     SeamlessLoginAnalytics provideSeamlessAnalytics() {
         return new SeamlessLoginAnalytics();
+    }
+
+    @LoginRegisterScope
+    @Provides
+    OvoCreationAnalytics provideOvoCreationAnalytics(
+            @Named(SessionModule.SESSION_MODULE) UserSessionInterface userSessionInterface) {
+        return new OvoCreationAnalytics(userSessionInterface);
     }
 
     @LoginRegisterScope

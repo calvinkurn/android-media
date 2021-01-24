@@ -1,7 +1,6 @@
 package com.tokopedia.loginregister.external_register.base.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import dagger.Module
 import dagger.Provides
