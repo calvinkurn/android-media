@@ -52,6 +52,8 @@
             android:drawablePadding="@dimen/dp_5"
             app:typographyType="heading_4"
             app:typographyWeight="bold"
+            android:text="@string/follow_button_label"
+            android:textColor="@color/g_500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

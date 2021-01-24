@@ -442,7 +442,9 @@ class ShopPageFragment :
                         shopPageFragmentHeaderViewHolder.setFollowStatus(this)
                     }
                 }
-                is Fail -> { }
+                is Fail -> {
+                    shopPageFragmentHeaderViewHolder.setLoadingFollowButton(false)
+                }
             }
         }
 
@@ -559,7 +561,7 @@ class ShopPageFragment :
 
     private fun observeShopPageFollowingStatusSharedViewModel() {
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.observe(viewLifecycleOwner, Observer {
-            shopPageFragmentHeaderViewHolder.setFavoriteValue(it)
+            shopPageFragmentHeaderViewHolder.updateFollowStatus(it)
         })
     }
 

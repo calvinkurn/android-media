@@ -198,7 +198,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
 
     private fun toggleFollowButton(followShop: FollowShop?) {
         isFollowShop = followShop?.isFollowing == true
-        shopPageFollowingStatusSharedViewModel?.setShopPageFollowingStatus(isFollowShop)
+        shopPageFollowingStatusSharedViewModel?.setShopPageFollowingStatus(followShop)
         followShop?.run { refreshButtonData(this.buttonLabel) }
     }
 
