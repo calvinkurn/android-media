@@ -20,6 +20,7 @@ import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.di.shippingeditor.ShippingEditorComponent
@@ -81,6 +82,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private var primaryButtonCourierInactive: UnifyButton? = null
     private var secondaryButtonCourierInactive: UnifyButton? = null
     private var bottomSheetCourierInactiveState: Int = 0
+    private var tickerChargeBoCourierInactive: Ticker? = null
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var globalErrorLayout: GlobalError? = null
@@ -185,6 +187,14 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                 }
             }
         })
+
+        viewModel.validateDataShipper.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    validateSaveData(it.data)
+                }
+            }
+        })
     }
 
     private fun fetchData() {
@@ -200,7 +210,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
     private fun updateTickerData(data: ShipperTickerModel) {
         shippingEditorOnDemandAdapter.setTickerData(data)
-        shippingEditorConventionalAdapter.setTickerData(data.courierTicker)
+        shippingEditorConventionalAdapter.setTickerData(data)
     }
 
     private fun updateBottomsheetData(data: ShipperDetailModel) {
@@ -209,9 +219,24 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     private fun setWarehouseInactiveData(data: OnDemandModel) {
+        bottomSheetCourierInactiveState = 1
         bottomSheetCourierInactiveAdapter.setData(data.warehouseModel)
-        bottomSheetCourierInactiveAdapter.setInactiveWarehouse(data)
+        bottomSheetCourierInactiveAdapter.setInactiveWarehouseOnDemand(data)
         context?.let { openBottomSheetWarehouseInactive(it, data) }
+    }
+
+    private fun setDataCourierNotCovered(data: UiContentModel) {
+        bottomSheetCourierInactiveState = 3
+        bottomSheetCourierInactiveAdapter.setData(data.warehouses)
+        bottomSheetCourierInactiveAdapter.setInactiveWarehouseValidate(data)
+        openBottomSheetValidateCoureirNotCovered(data)
+    }
+
+    private fun setDataBoAndCourierNotCovered(data: UiContentModel) {
+        bottomSheetCourierInactiveState = 4
+        bottomSheetCourierInactiveAdapter.setData(data.warehouses)
+        bottomSheetCourierInactiveAdapter.setInactiveWarehouseValidate(data)
+        openBottomSheetValidateCoureirNotCovered(data)
     }
 
     private fun updateHeaderTickerData(data: HeaderTickerModel) {
@@ -222,7 +247,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                 setHtmlDescription(data.body + getString(R.string.ticker_header_clicked))
                 setDescriptionClickEvent(object: TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        openBottomSheetShipperInfo()
+                        //openBottomSheetWarehouseInactive()
                     }
 
                     override fun onDismiss() {
@@ -247,7 +272,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             tickerShipperInfo?.addPagerView(tickerPageAdapter, messages)
             tickerPageAdapter?.setPagerDescriptionClickEvent(object: TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    view?.let { Toaster.build(it, "MUNCUL", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL) }
+//                    view?.let { Toaster.build(it, "MUNCUL", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL) }
                     val applink = itemData.toString()
                     if(!TextUtils.isEmpty(applink)) {
                         RouteManager.route(activity, applink)
@@ -261,19 +286,26 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         }
     }
 
+    private fun validateSaveData(data: ValidateShippingEditorModel) {
+        if (data.state == 5) {
+            setDataCourierNotCovered(data.uiContent)
+        } else if (data.state == 6) {
+            setDataBoAndCourierNotCovered(data.uiContent)
+        }
+    }
+
     override fun onShipperInfoClicked() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onShipperTickerOnDemandClicked(data: OnDemandModel) {
-        bottomSheetCourierInactiveState = 1
         setWarehouseInactiveData(data)
     }
 
     private fun openBottomSheetWarehouseInactive(ctx: Context, data: OnDemandModel) {
         bottomSheetCourierInactive = BottomSheetUnify()
         val viewBottomSheetWarehouseInactive = View.inflate(ctx, R.layout.bottomsheet_courier_inactive, null)
-        setupChildCourierInactive(viewBottomSheetWarehouseInactive)
+        setupChildCourierInactive(viewBottomSheetWarehouseInactive, data.shipperName, data.warehouseIds?.size, null)
 
         bottomSheetCourierInactive?.apply {
             setTitle(ctx.getString(R.string.title_bottomsheet_courier_inactive, data.warehouseIds?.size))
@@ -287,11 +319,29 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         }
     }
 
-    private fun setupChildCourierInactive(child: View) {
+    private fun openBottomSheetValidateCoureirNotCovered(data: UiContentModel) {
+        bottomSheetCourierInactive = BottomSheetUnify()
+        val viewBottomSheetWarehouseInactive = View.inflate(context, R.layout.bottomsheet_courier_inactive, null)
+        setupChildCourierInactive(viewBottomSheetWarehouseInactive, data.headerLocation, data.warehouseId.size, data)
+
+        bottomSheetCourierInactive?.apply {
+            setTitle("Lokasi toko yang tidak memiliki kurir")
+            setCloseClickListener { dismiss() }
+            setChild(viewBottomSheetWarehouseInactive)
+            setOnDismissListener { dismiss() }
+        }
+
+        fragmentManager?.let {
+            bottomSheetCourierInactive?.show(it, "show")
+        }
+    }
+
+    private fun setupChildCourierInactive(child: View, header: String, courierCount: Int?, data: UiContentModel?) {
         tvCourierInactive = child.findViewById(R.id.tv_courier_inactive)
         warehouseListRv = child.findViewById(R.id.rv_warehouse_inactive)
         primaryButtonCourierInactive = child.findViewById(R.id.btn_primary)
         secondaryButtonCourierInactive = child.findViewById(R.id.btn_secondary)
+        tickerChargeBoCourierInactive = child.findViewById(R.id.ticker_charge_bo)
 
         warehouseListRv?.apply {
             layoutManager = LinearLayoutManager(this.context)
@@ -299,11 +349,51 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         }
 
         if (bottomSheetCourierInactiveState == 1) {
+            tvCourierInactive?.text = getString(R.string.text_header_courier_not_covered, header, courierCount)
             primaryButtonCourierInactive?.text = "Mengerti"
             primaryButtonCourierInactive?.setOnClickListener {
                 bottomSheetCourierInactive?.dismiss()
             }
             secondaryButtonCourierInactive?.visibility = View.GONE
+            tickerChargeBoCourierInactive?.visibility = View.GONE
+        } else if (bottomSheetCourierInactiveState == 3) {
+            tvCourierInactive?.text = getString(R.string.text_header_validate_courier_not_covered, courierCount)
+            primaryButtonCourierInactive?.text = "Batalkan & Atur Ulang"
+            primaryButtonCourierInactive?.setOnClickListener {
+                bottomSheetCourierInactive?.dismiss()
+            }
+            secondaryButtonCourierInactive?.visibility = View.VISIBLE
+            secondaryButtonCourierInactive?.text = "Simpan"
+            secondaryButtonCourierInactive?.setOnClickListener {
+                //save
+            }
+            tickerChargeBoCourierInactive?.visibility = View.GONE
+        } else if (bottomSheetCourierInactiveState == 4) {
+            tvCourierInactive?.text = getString(R.string.text_header_validate_courier_not_covered, courierCount)
+            primaryButtonCourierInactive?.text = "Tetap Aktifkan"
+            primaryButtonCourierInactive?.setOnClickListener {
+                bottomSheetCourierInactive?.dismiss()
+            }
+            secondaryButtonCourierInactive?.visibility = View.VISIBLE
+            secondaryButtonCourierInactive?.text = "Nonaktifkan"
+            secondaryButtonCourierInactive?.setOnClickListener {
+                //save
+            }
+            tickerChargeBoCourierInactive?.visibility = View.VISIBLE
+            tickerChargeBoCourierInactive?.apply {
+                tickerTitle = data?.ticker?.header
+                data?.ticker?.body?.let { setHtmlDescription(it + getString(R.string.text_bo_link)) }
+                setDescriptionClickEvent(object: TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        startActivity(RouteManager.getIntent(context, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, data?.ticker?.urlLink)))
+                    }
+
+                    override fun onDismiss() {
+                        //no-op
+                    }
+
+                })
+            }
         }
     }
 
@@ -409,8 +499,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         globalErrorLayout?.visible()
     }
 
-    override fun onShipperTickerConventionalClicked() {
-        openBottomSheetShipperInfo()
+    override fun onShipperTickerConventionalClicked(data: ConventionalModel) {
+        //openBottomSheetWarehouseInactive()
     }
 
 

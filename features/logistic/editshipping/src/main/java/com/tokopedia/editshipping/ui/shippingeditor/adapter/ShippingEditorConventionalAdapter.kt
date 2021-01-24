@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.ConventionalModel
-import com.tokopedia.editshipping.domain.model.shippingEditor.CourierTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -22,7 +22,7 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
     private var shipperProductConventionalChild: ShipperProductItemAdapter? = null
 
     interface ShippingEditorConventionalListener {
-        fun onShipperTickerConventionalClicked()
+        fun onShipperTickerConventionalClicked(data: ConventionalModel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShippingEditorConventionalViewHolder {
@@ -42,14 +42,15 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
         notifyDataSetChanged()
     }
 
-    fun setTickerData(data: List<CourierTickerModel>) {
-        data.forEach {
+    fun setTickerData(data: ShipperTickerModel) {
+        data.courierTicker.forEach {
            val conventionalModel = shipperConventionalModel.find { conventional ->
                 conventional.shipperId == it.shipperId
             }
             conventionalModel?.tickerState = it.tickerState
             conventionalModel?.isAvailable = it.isAvailable
             conventionalModel?.warehouseIds = it.warehouseIds
+            conventionalModel?.warehouseModel = data.warehouses
         }
         notifyDataSetChanged()
     }
@@ -116,7 +117,7 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
                     tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_yellow, data.warehouseIds?.size))
                     tickerShipper.setDescriptionClickEvent(object: TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            listener.onShipperTickerConventionalClicked()
+                            listener.onShipperTickerConventionalClicked(data)
                         }
 
                         override fun onDismiss() {

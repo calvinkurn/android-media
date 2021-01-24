@@ -50,5 +50,8 @@
     <string name="shipper_ticker_red">Kurir ini tidak dapat diaktifkan sementara</string>
     <string name="ticker_header_clicked">&lt;a href="#"&gt; Lihat Detail&lt;/a&gt;</string>
     <string name="title_bottomsheet_courier_inactive">Kurir ini tidak tersedia di %d lokasi tokomu</string>
+    <string name="text_header_courier_not_covered">Kurir %1$s tidak tersedia di %2$d lokasi tokomu ini, sehingga kamu tidak bisa melakukan pengiriman dengan kurir tersebut dari lokasi di bawah.</string>
+    <string name="text_header_validate_courier_not_covered">Perubahan kurir akan membuat %d lokasi di bawah tidak memiliki kurir &amp; tidak dapat melakukan pengiriman. Lanjutkan?</string>
+    <string name="text_bo_link">&lt;a href="#"&gt; di sini.&lt;/a&gt;</string>
 
 </resources>

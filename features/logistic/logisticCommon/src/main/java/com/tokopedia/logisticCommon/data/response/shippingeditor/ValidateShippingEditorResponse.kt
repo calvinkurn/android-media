@@ -35,7 +35,7 @@ data class UiContent(
         @SerializedName("header_location")
         var headerLocation: String = "",
         @SerializedName("warehouses")
-        var warehouses: Warehouses = Warehouses(),
+        var warehouses: List<Warehouses> = listOf(),
         @SerializedName("warehouse_id")
         var warehouseId: List<Int> = listOf()
 

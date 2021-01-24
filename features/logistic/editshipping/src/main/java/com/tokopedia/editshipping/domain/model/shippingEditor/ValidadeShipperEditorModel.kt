@@ -11,7 +11,7 @@ data class UiContentModel(
         var body: List<String> = listOf(),
         var ticker: TickerContentModel = TickerContentModel(),
         var headerLocation: String = "",
-        var warehouses: WarehousesModel = WarehousesModel(),
+        var warehouses: List<WarehousesModel> = listOf(),
         var warehouseId: List<Int> = listOf()
 
 )

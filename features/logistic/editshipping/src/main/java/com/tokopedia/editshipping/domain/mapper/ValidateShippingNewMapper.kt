@@ -33,29 +33,31 @@ class ValidateShippingNewMapper @Inject constructor() {
         }
     }
 
-    private fun mapWarehouses(response: Warehouses): WarehousesModel {
-        return WarehousesModel().apply {
-            warehouseId = response.warehouseId
-            warehouseName = response.warehouseName
-            districtId = response.districtId
-            districtName = response.districtName
-            cityId = response.cityId
-            cityName = response.cityName
-            provinceId = response.provinceId
-            provinceName = response.provinceName
-            status = response.status
-            postalCode = response.postalCode
-            isDefault = response.isDefault
-            latLon = response.latLon
-            latitude = response.latitude
-            longitude = response.longitude
-            addressDetail = response.addressDetail
-            country = response.country
-            isFulfillment = response.isFulfillment
-            warehouseType = response.warehouseType
-            email = response.email
-            shopId = mapShopId(response.shopId)
-            partnerId = mapPartnerId(response.partnerId)
+    private fun mapWarehouses(response: List<Warehouses>): List<WarehousesModel> {
+        return response.map {
+            WarehousesModel(
+                    it.warehouseId,
+                    it.warehouseName,
+                    it.districtId,
+                    it.districtName,
+                    it.cityId,
+                    it.cityName,
+                    it.provinceId,
+                    it.provinceName,
+                    it.status,
+                    it.postalCode,
+                    it.isDefault,
+                    it.latLon,
+                    it.latitude,
+                    it.longitude,
+                    it.addressDetail,
+                    it.country,
+                    it.isFulfillment,
+                    it.warehouseType,
+                    it.email,
+                    mapShopId(it.shopId),
+                    mapPartnerId(it.partnerId)
+            )
         }
     }
 

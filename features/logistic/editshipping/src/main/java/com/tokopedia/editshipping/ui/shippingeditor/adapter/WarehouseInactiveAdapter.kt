@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.OnDemandModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.UiContentModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifyprinciples.Typography
@@ -31,14 +32,23 @@ class WarehouseInactiveAdapter: RecyclerView.Adapter<WarehouseInactiveAdapter.Wa
         notifyDataSetChanged()
     }
 
-    fun setInactiveWarehouse(data: OnDemandModel) {
+    fun setInactiveWarehouseOnDemand(data: OnDemandModel) {
         data.warehouseIds?.forEach {
             warehouseData.find { warehouse ->
                 warehouse.warehouseId == it
             }?.isShown = true
         }
+        notifyDataSetChanged()
     }
 
+    fun setInactiveWarehouseValidate(data: UiContentModel) {
+        data.warehouseId?.forEach {
+            warehouseData.find { warehouse ->
+                warehouse.warehouseId == it
+            }?.isShown = true
+        }
+        notifyDataSetChanged()
+    }
 
    inner class WarehouseInactiveViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 

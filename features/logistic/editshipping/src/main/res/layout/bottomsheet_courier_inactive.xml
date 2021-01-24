@@ -22,16 +22,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_courier_inactive"/>
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_charge_bo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:closeButtonVisibility="gone"
+        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:tckv_content_text_size = "@dimen/sp_12"
+        app:tickerShapeType="loose"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/rv_warehouse_inactive"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_18"
         android:layout_marginBottom="24dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_warehouse_inactive">
+        app:layout_constraintTop_toBottomOf="@id/ticker_charge_bo">
 
 
         <com.tokopedia.unifycomponents.UnifyButton
