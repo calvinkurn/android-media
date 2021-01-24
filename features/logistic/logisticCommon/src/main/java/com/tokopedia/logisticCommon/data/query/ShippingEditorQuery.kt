@@ -187,4 +187,23 @@ object ShippingEditorQuery {
           }
         }
     """.trimIndent()
+
+    val saveShippingEditor = """
+        mutation OngkirShippingEditorSave(${'$'}input : OngkirShippingEditorSaveInput!)
+        {
+          ongkirShippingEditorSave(input:${'$'}input) {
+            status
+            message
+            data {
+              message
+              is_success
+            }
+            errors {
+              id
+              status
+              title
+            }
+          }
+        }
+    """.trimIndent()
 }

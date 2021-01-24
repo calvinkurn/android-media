@@ -10,6 +10,7 @@ import com.tokopedia.editshipping.domain.mapper.ValidateShippingNewMapper
 import com.tokopedia.editshipping.domain.model.shippingEditor.*
 import com.tokopedia.logisticCommon.data.repository.ShippingEditorRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
+import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingResponse
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -41,6 +42,11 @@ class ShippingEditorViewModel @Inject constructor(
     private val _validateDataShipper = MutableLiveData<ShippingEditorState<ValidateShippingEditorModel>>()
     val validateDataShipper: LiveData<ShippingEditorState<ValidateShippingEditorModel>>
         get() = _validateDataShipper
+
+    private val _saveShippingData = MutableLiveData<ShippingEditorState<SaveShippingResponse>>()
+    val saveShippingData: LiveData<ShippingEditorState<SaveShippingResponse>>
+        get() = _saveShippingData
+
 
 
     fun getWhitelistData(shopId: Int) {
@@ -81,6 +87,13 @@ class ShippingEditorViewModel @Inject constructor(
         viewModelScope.launch {
             val getValidateData = shippingEditorRepo.validateShippingEditor(shopId, activatedSpIds)
             _validateDataShipper.value = ShippingEditorState.Success(validateShippingMapper.mapShippingEditorData(getValidateData.ongkirShippingEditorPopup.data))
+        }
+    }
+
+    fun saveShippingData(shopId: Int, activatedSpIds: String, featuresId: String) {
+        viewModelScope.launch {
+            val saveShippingEditor = shippingEditorRepo.saveShippingEditor(shopId, activatedSpIds, featuresId)
+            _saveShippingData.value = ShippingEditorState.Success(saveShippingEditor.saveShippingEditor)
         }
     }
 

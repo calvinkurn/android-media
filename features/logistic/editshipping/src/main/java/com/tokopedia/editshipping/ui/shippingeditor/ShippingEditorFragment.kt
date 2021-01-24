@@ -11,6 +11,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,6 +57,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         ViewModelProvider(this, viewModelFactory).get(ShippingEditorViewModel::class.java)
     }
 
+    private var shippingEditorLayout: ConstraintLayout? = null
     private var tickerShipperInfo: Ticker? = null
     private var shipperListOnDemand: RecyclerView? = null
     private var shipperListConventional: RecyclerView? = null
@@ -86,6 +88,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var globalErrorLayout: GlobalError? = null
+    private val activatedSpIds: List<Int> = emptyList()
 
     private var shippingEditorOnDemandAdapter = ShippingEditorOnDemandItemAdapter(this)
     private var shippingEditorConventionalAdapter = ShippingEditorConventionalAdapter(this)
@@ -110,6 +113,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     private fun initViews() {
+        shippingEditorLayout = view?.findViewById(R.id.shipping_editor_layout)
         tickerShipperInfo = view?.findViewById(R.id.ticker_shipper_info)
         shipperListOnDemand = view?.findViewById(R.id.rv_on_demand)
         shipperListConventional = view?.findViewById(R.id.rv_conventional)
@@ -122,10 +126,11 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
         renderTickerOnDemand()
         renderTextDetailCourier()
+        btnSaveShipper?.setOnClickListener { saveButtonShippingEditor() }
     }
 
     private fun renderTickerOnDemand() {
-        val awbText = SpannableString(getString(R.string.awb_otomatis_list))
+        SpannableString(getString(R.string.awb_otomatis_list))
         tickerOnDemand?.setHtmlDescription(getString(R.string.ticker_dijemput_kurir_complete))
     }
 
@@ -155,6 +160,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             when (it) {
                 is ShippingEditorState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
+                    shippingEditorLayout?.verticalFadingEdgeLength
+                    btnSaveShipper?.visibility
                     globalErrorLayout?.gone()
                     updateData(it.data.shippers)
                     renderTicker(it.data.ticker)
@@ -167,7 +174,11 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                     }
                 }
 
-                else -> swipeRefreshLayout?.isRefreshing = true
+                else -> {
+                    shippingEditorLayout?.gone()
+                    btnSaveShipper?.gone()
+                    swipeRefreshLayout?.isRefreshing = true
+                }
             }
         })
 
@@ -183,16 +194,33 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         viewModel.shipperDetail.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ShippingEditorState.Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
                     updateBottomsheetData(it.data)
                 }
+                is ShippingEditorState.Fail ->  swipeRefreshLayout?.isRefreshing = false
+                else ->  swipeRefreshLayout?.isRefreshing = true
             }
         })
 
         viewModel.validateDataShipper.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ShippingEditorState.Success -> {
+                    swipeRefreshLayout?.isRefreshing = true
                     validateSaveData(it.data)
                 }
+                is ShippingEditorState.Fail ->  swipeRefreshLayout?.isRefreshing = false
+                else ->  swipeRefreshLayout?.isRefreshing = true
+            }
+        })
+
+        viewModel.saveShippingData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    swipeRefreshLayout?.isRefreshing = true
+                    fetchData()
+                }
+                is ShippingEditorState.Fail ->  swipeRefreshLayout?.isRefreshing = false
+                else ->  swipeRefreshLayout?.isRefreshing = true
             }
         })
     }
@@ -225,17 +253,17 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         context?.let { openBottomSheetWarehouseInactive(it, data) }
     }
 
-    private fun setDataCourierNotCovered(data: UiContentModel) {
+    private fun setDataCourierNotCovered(data: ValidateShippingEditorModel) {
         bottomSheetCourierInactiveState = 3
-        bottomSheetCourierInactiveAdapter.setData(data.warehouses)
-        bottomSheetCourierInactiveAdapter.setInactiveWarehouseValidate(data)
+        bottomSheetCourierInactiveAdapter.setData(data.uiContent.warehouses)
+        bottomSheetCourierInactiveAdapter.setInactiveWarehouseValidate(data.uiContent)
         openBottomSheetValidateCoureirNotCovered(data)
     }
 
-    private fun setDataBoAndCourierNotCovered(data: UiContentModel) {
+    private fun setDataBoAndCourierNotCovered(data: ValidateShippingEditorModel) {
         bottomSheetCourierInactiveState = 4
-        bottomSheetCourierInactiveAdapter.setData(data.warehouses)
-        bottomSheetCourierInactiveAdapter.setInactiveWarehouseValidate(data)
+        bottomSheetCourierInactiveAdapter.setData(data.uiContent.warehouses)
+        bottomSheetCourierInactiveAdapter.setInactiveWarehouseValidate(data.uiContent)
         openBottomSheetValidateCoureirNotCovered(data)
     }
 
@@ -288,9 +316,9 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
     private fun validateSaveData(data: ValidateShippingEditorModel) {
         if (data.state == 5) {
-            setDataCourierNotCovered(data.uiContent)
+            setDataCourierNotCovered(data)
         } else if (data.state == 6) {
-            setDataBoAndCourierNotCovered(data.uiContent)
+            setDataBoAndCourierNotCovered(data)
         }
     }
 
@@ -319,10 +347,11 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         }
     }
 
-    private fun openBottomSheetValidateCoureirNotCovered(data: UiContentModel) {
+    private fun openBottomSheetValidateCoureirNotCovered(data: ValidateShippingEditorModel) {
+        val uiContentModel = data.uiContent
         bottomSheetCourierInactive = BottomSheetUnify()
         val viewBottomSheetWarehouseInactive = View.inflate(context, R.layout.bottomsheet_courier_inactive, null)
-        setupChildCourierInactive(viewBottomSheetWarehouseInactive, data.headerLocation, data.warehouseId.size, data)
+        setupChildCourierInactive(viewBottomSheetWarehouseInactive, uiContentModel.headerLocation, uiContentModel.warehouseId.size, data)
 
         bottomSheetCourierInactive?.apply {
             setTitle("Lokasi toko yang tidak memiliki kurir")
@@ -336,7 +365,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         }
     }
 
-    private fun setupChildCourierInactive(child: View, header: String, courierCount: Int?, data: UiContentModel?) {
+    private fun setupChildCourierInactive(child: View, header: String, courierCount: Int?, data: ValidateShippingEditorModel?) {
         tvCourierInactive = child.findViewById(R.id.tv_courier_inactive)
         warehouseListRv = child.findViewById(R.id.rv_warehouse_inactive)
         primaryButtonCourierInactive = child.findViewById(R.id.btn_primary)
@@ -365,7 +394,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             secondaryButtonCourierInactive?.visibility = View.VISIBLE
             secondaryButtonCourierInactive?.text = "Simpan"
             secondaryButtonCourierInactive?.setOnClickListener {
-                //save
+                viewModel.saveShippingData(userSession?.shopId.toInt(), activatedSpIds.toString(), data?.featureId.toString())
             }
             tickerChargeBoCourierInactive?.visibility = View.GONE
         } else if (bottomSheetCourierInactiveState == 4) {
@@ -377,15 +406,15 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             secondaryButtonCourierInactive?.visibility = View.VISIBLE
             secondaryButtonCourierInactive?.text = "Nonaktifkan"
             secondaryButtonCourierInactive?.setOnClickListener {
-                //save
+                viewModel.saveShippingData(userSession?.shopId.toInt(), activatedSpIds.toString(), data?.featureId.toString())
             }
             tickerChargeBoCourierInactive?.visibility = View.VISIBLE
             tickerChargeBoCourierInactive?.apply {
-                tickerTitle = data?.ticker?.header
-                data?.ticker?.body?.let { setHtmlDescription(it + getString(R.string.text_bo_link)) }
+                tickerTitle = data?.uiContent?.ticker?.header
+                data?.uiContent?.ticker?.body?.let { setHtmlDescription(it + getString(R.string.text_bo_link)) }
                 setDescriptionClickEvent(object: TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        startActivity(RouteManager.getIntent(context, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, data?.ticker?.urlLink)))
+                        startActivity(RouteManager.getIntent(context, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, data?.uiContent?.ticker?.urlLink)))
                     }
 
                     override fun onDismiss() {
@@ -458,6 +487,10 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         btnShipperBottomSheet?.setOnClickListener { bottomSheetShipperInfo?.dismiss() }
     }
 
+    private fun saveButtonShippingEditor() {
+        viewModel.validateShippingEditor(userSession?.shopId.toInt(), "")
+    }
+
     private fun handleError(throwable: Throwable) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
@@ -494,8 +527,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         globalErrorLayout?.setActionClickListener {
             fetchData()
         }
-        /*satu layout gone*/
-        shipperListOnDemand?.gone()
+        shippingEditorLayout?.gone()
+        btnSaveShipper?.gone()
         globalErrorLayout?.visible()
     }
 

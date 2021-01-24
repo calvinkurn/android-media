@@ -3,10 +3,7 @@ package com.tokopedia.logisticCommon.data.repository
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logisticCommon.data.query.ShippingEditorQuery
-import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperDetailResponse
-import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperListResponse
-import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperTickerResponse
-import com.tokopedia.logisticCommon.data.response.shippingeditor.ValidateShippingEditorResponse
+import com.tokopedia.logisticCommon.data.response.shippingeditor.*
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
 
@@ -37,6 +34,16 @@ class ShippingEditorRepository @Inject constructor(private val gql: GraphqlRepos
                 "activated_sp_id" to activatedSpId))
         val request = GraphqlRequest(ShippingEditorQuery.ongkirShippingEditorPopup,
                 ValidateShippingEditorResponse::class.java, param)
+        return gql.getResponse(request)
+    }
+
+    suspend fun saveShippingEditor(shopId: Int, activatedSpId: String, featureId: String): SaveShippingEditorResponse {
+        val param  = mapOf("input" to mapOf(
+                "shop_id" to shopId,
+                "activated_sp_id" to activatedSpId,
+                "feature_id" to featureId))
+        val request = GraphqlRequest(ShippingEditorQuery.saveShippingEditor,
+                SaveShippingEditorResponse::class.java, param)
         return gql.getResponse(request)
     }
 }
