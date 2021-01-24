@@ -5,7 +5,15 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 data class ShopLocationModel (
+        var generalTicker: GeneralTickerModel = GeneralTickerModel(),
         var listWarehouse: List<Warehouse> = emptyList()
+)
+
+data class GeneralTickerModel(
+        var header: String = "",
+        var body: String = "",
+        var bodyLinkText: String = "",
+        var bodyLinkUrl: String = ""
 )
 
 @Parcelize

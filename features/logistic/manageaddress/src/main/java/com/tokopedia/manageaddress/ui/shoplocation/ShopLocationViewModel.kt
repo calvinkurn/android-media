@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
+import com.tokopedia.logisticCommon.data.entity.shoplocation.ShopLocationModel
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationSetStatusResponse
@@ -20,8 +20,8 @@ class ShopLocationViewModel @Inject constructor(
 
     var shopLocationStateStatus: Boolean = false
 
-    private val _shopLocation = MutableLiveData<ShopLocationState<List<Warehouse>>>()
-    val shopLocation: LiveData<ShopLocationState<List<Warehouse>>>
+    private val _shopLocation = MutableLiveData<ShopLocationState<ShopLocationModel>>()
+    val shopLocation: LiveData<ShopLocationState<ShopLocationModel>>
         get() = _shopLocation
 
     private val _result = MutableLiveData<ShopLocationState<ShopLocationSetStatusResponse>>()
@@ -37,7 +37,7 @@ class ShopLocationViewModel @Inject constructor(
         _shopLocation.value = ShopLocationState.Loading
         viewModelScope.launch(onErrorGetShopLocation) {
             val getShopLocation = repo.getShopLocation(shopId)
-             _shopLocation.value = ShopLocationState.Success(mapper.mapShopLocation(getShopLocation))
+             _shopLocation.value = ShopLocationState.Success(mapper.mapLocationResponse(getShopLocation))
         }
     }
 

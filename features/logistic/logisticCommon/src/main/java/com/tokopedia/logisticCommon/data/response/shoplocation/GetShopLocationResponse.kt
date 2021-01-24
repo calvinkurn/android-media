@@ -26,8 +26,21 @@ data class Error(
 )
 
 data class Data(
+		@SerializedName("general_ticker")
+		var generalTicker: GeneralTicker = GeneralTicker(),
 		@SerializedName("warehouses")
 		var warehouse: List<Warehouse> = listOf()
+)
+
+data class GeneralTicker(
+		@SerializedName("header")
+		var header: String = "",
+		@SerializedName("body")
+		var body: String = "",
+		@SerializedName("body_link_text")
+		var bodyLinkText: String = "",
+		@SerializedName("body_link_url")
+		var bodyLinkUrl: String = ""
 )
 
 data class Warehouse(

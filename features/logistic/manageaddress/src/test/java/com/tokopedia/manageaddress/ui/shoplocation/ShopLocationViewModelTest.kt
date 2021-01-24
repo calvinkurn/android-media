@@ -2,7 +2,7 @@ package com.tokopedia.manageaddress.ui.shoplocation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
+import com.tokopedia.logisticCommon.data.entity.shoplocation.ShopLocationModel
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.shoplocation.*
 import com.tokopedia.manageaddress.domain.mapper.ShopLocationMapper
@@ -27,7 +27,7 @@ class ShopLocationViewModelTest {
     private val repo: ShopLocationRepository = mockk(relaxed = true)
     private val mapper: ShopLocationMapper = ShopLocationMapper()
 
-    private val shopLocationObserver: Observer<ShopLocationState<List<Warehouse>>> = mockk(relaxed = true)
+    private val shopLocationObserver: Observer<ShopLocationState<ShopLocationModel>> = mockk(relaxed = true)
     private val resultObserver: Observer<ShopLocationState<ShopLocationSetStatusResponse>> = mockk(relaxed = true)
     private val shopWhitelistObserver: Observer<ShopLocationState<ShopLocWhitelist>> = mockk(relaxed = true)
 

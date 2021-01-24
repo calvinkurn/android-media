@@ -11,12 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.data.entity.shoplocation.GeneralTickerModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
@@ -29,6 +31,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.ConnectException
@@ -136,7 +139,8 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                 is ShopLocationState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     globalErrorLayout?.gone()
-                    updateData(it.data)
+                    updateData(it.data.listWarehouse)
+                    setGeneralTicker(it.data.generalTicker)
                 }
 
                 is ShopLocationState.Fail -> {
@@ -177,8 +181,29 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     private fun updateData(data: List<Warehouse>) {
         adapter.clearData()
-        tickerShopLocation?.visibility = View.GONE
         adapter.addList(data)
+    }
+
+    private fun setGeneralTicker(data: GeneralTickerModel) {
+        if (data.header.isNotEmpty()) {
+            tickerShopLocation?.apply {
+                tickerTitle = data.header
+                visibility = View.VISIBLE
+                setHtmlDescription(data.body + getString(R.string.general_ticker_link))
+                setDescriptionClickEvent(object: TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        startActivity(RouteManager.getIntent(activity, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, data.bodyLinkUrl)))
+                    }
+
+                    override fun onDismiss() {
+                        //no-op
+                    }
+
+                })
+            }
+        } else {
+            tickerShopLocation?.visibility = View.GONE
+        }
     }
 
     private fun openBottomSheetAddressType(shopLocation: Warehouse) {

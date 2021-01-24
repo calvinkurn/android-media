@@ -1,15 +1,29 @@
 package com.tokopedia.manageaddress.domain.mapper
 
-import com.tokopedia.logisticCommon.data.entity.shoplocation.PartnerId
-import com.tokopedia.logisticCommon.data.entity.shoplocation.ShopId
-import com.tokopedia.logisticCommon.data.entity.shoplocation.Ticker
-import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
+import com.tokopedia.logisticCommon.data.entity.shoplocation.*
+import com.tokopedia.logisticCommon.data.response.shoplocation.GeneralTicker
 import com.tokopedia.logisticCommon.data.response.shoplocation.GetShopLocationResponse
 import javax.inject.Inject
 
 class ShopLocationMapper @Inject constructor(){
 
-    fun mapShopLocation(response: GetShopLocationResponse) : List<Warehouse> {
+    fun mapLocationResponse(response: GetShopLocationResponse): ShopLocationModel {
+        return ShopLocationModel().apply {
+            generalTicker = mapGeneralTicker(response.shopLocations.data.generalTicker)
+            listWarehouse = mapWarehouses(response)
+        }
+    }
+
+    private fun mapGeneralTicker(response: GeneralTicker): GeneralTickerModel {
+        return GeneralTickerModel().apply {
+            header = response.header
+            body = response.body
+            bodyLinkText = response.bodyLinkText
+            bodyLinkUrl = response.bodyLinkUrl
+        }
+    }
+
+    private fun mapWarehouses(response: GetShopLocationResponse) : List<Warehouse> {
         val data = response.shopLocations.data.warehouse
         return data.map {
             Warehouse(
