@@ -17,8 +17,8 @@ class ShippingEditorMapper @Inject constructor() {
         val data = response.ongkirShippingEditorGetShipperTicker.data
         return ShipperTickerModel().apply {
             headerTicker = mapHeaderTicker(data.headerTicker)
-            courierTicker = mapCourierTicker(data.courierTicker)
-            warehouses = mapWarehousesTicker(data.warehouses)
+            courierTicker = mapCourierTicker(data.courierTicker, data.warehouses)
+//            warehouses = mapWarehousesTicker(data.warehouses)
         }
     }
 
@@ -107,15 +107,25 @@ class ShippingEditorMapper @Inject constructor() {
         }
     }
 
-    private fun mapCourierTicker(response: List<CourierTicker>): List<CourierTickerModel> {
+    private fun mapCourierTicker(response: List<CourierTicker>, warehouses: List<Warehouses>): List<CourierTickerModel> {
         return response.map {
             CourierTickerModel(
                     it.shipperId,
-                    it.warehouseIds,
+                    mapWarehouseModelBasedOnWarehouseId(it.warehouseIds?: emptyList(), warehouses),
                     it.tickerState,
                     it.isAvailable,
                     mapShipperProductTicker(it.shipperProduct)
             )
+        }
+    }
+
+    private fun mapWarehouseModelBasedOnWarehouseId(response: List<Int>, warehouses: List<Warehouses>): List<WarehousesModel> {
+        return warehouses.filter {
+            response.any { id ->
+                it.warehouseId == id
+            }
+        }.map {
+            mapWarehousesTicker(it)
         }
     }
 
@@ -131,9 +141,8 @@ class ShippingEditorMapper @Inject constructor() {
         return shipperProductTickerList
     }
 
-    private fun mapWarehousesTicker(response: List<Warehouses>) : List<WarehousesModel> {
-        return response.map {
-            WarehousesModel(
+    private fun mapWarehousesTicker(it: Warehouses) : WarehousesModel {
+        return WarehousesModel(
                     it.warehouseId,
                     it.warehouseName,
                     it.districtId,
@@ -155,8 +164,7 @@ class ShippingEditorMapper @Inject constructor() {
                     it.email,
                     mapShopId(it.shopId),
                     mapPartnerId(it.partnerId)
-            )
-        }
+        )
     }
 
     private fun mapShopId(response: ShopId) : ShopIdModel {

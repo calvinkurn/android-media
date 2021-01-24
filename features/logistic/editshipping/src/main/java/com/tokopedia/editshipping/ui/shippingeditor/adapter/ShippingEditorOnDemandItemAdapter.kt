@@ -50,16 +50,13 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
             }
             onDemandModel?.tickerState = it.tickerState
             onDemandModel?.isAvailable = it.isAvailable
-            onDemandModel?.warehouseIds = it.warehouseIds
-            onDemandModel?.warehouseModel = data.warehouses
+            onDemandModel?.warehouseModel = it.warehouses
         }
-
-        /*data.warehouses?.forEach {
-            val warehouseModel = shipperOnDemandModel.find {onDemandModel ->
-
-            }
-        }*/
         notifyDataSetChanged()
+    }
+
+    fun getList(): List<OnDemandModel> {
+        return shipperOnDemandModel
     }
 
     fun clearData() {
@@ -68,6 +65,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
     }
 
     inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener): RecyclerView.ViewHolder(itemView), ShipperProductItemAdapter.ShipperProductOnDemandItemListener {
+        lateinit var onDemandModel: OnDemandModel
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)
         private val shipmentItemCb = itemView.findViewById<CheckboxUnify>(R.id.cb_shipment_item)
@@ -79,6 +77,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
 
 
         fun bindData(data: OnDemandModel) {
+            onDemandModel = data
             setItemData(data)
         }
 
@@ -121,7 +120,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                 2 -> {
                     tickerShipper.visibility = View.VISIBLE
                     tickerShipper.tickerType = Ticker.TYPE_WARNING
-                    tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_yellow, data.warehouseIds?.size))
+                    tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_yellow, data.warehouseModel?.size))
                     tickerShipper.setDescriptionClickEvent(object: TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             listener.onShipperTickerOnDemandClicked(data)
@@ -137,10 +136,26 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                     tickerShipper.visibility = View.GONE
                 }
             }
+
+            shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    onDemandModel.listActivatedSpId.addAll(data.shipperProduct.map {
+                        it.shipperProductId
+                    })
+                    shipperProductChild?.checkAll()
+                } else {
+                    onDemandModel.listActivatedSpId.removeAll(data.shipperProduct.map {
+                        it.shipperProductId
+                    })
+                    shipperProductChild?.uncheckAll()
+                }
+            }
         }
 
-        override fun onShipperProductItemClicked() {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        override fun onShipperProductChecked(shipperId: String, isChecked: Boolean) {
+            if (isChecked) {
+                onDemandModel.listActivatedSpId.add(shipperId)
+            } else onDemandModel.listActivatedSpId.remove(shipperId)
         }
 
         /* private fun setListener(data: OnDemandModel) {

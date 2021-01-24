@@ -14,7 +14,7 @@ class ShipperProductItemAdapter(private val listener: ShipperProductOnDemandItem
     private var shipperProduct = mutableListOf<ShipperProductModel>()
 
     interface ShipperProductOnDemandItemListener {
-        fun onShipperProductItemClicked()
+        fun onShipperProductChecked(shipperId: String, isChecked: Boolean)
     }
 
 
@@ -40,6 +40,20 @@ class ShipperProductItemAdapter(private val listener: ShipperProductOnDemandItem
         notifyDataSetChanged()
     }
 
+    fun uncheckAll() {
+        shipperProduct.forEach {
+            it.isActive = false
+        }
+        notifyDataSetChanged()
+    }
+
+    fun checkAll() {
+        shipperProduct.forEach {
+            it.isActive = true
+        }
+        notifyDataSetChanged()
+    }
+
     inner class ShipperProductOnDemandViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         private val shipperProductName = itemView.findViewById<Typography>(R.id.shipper_product_name)
@@ -57,6 +71,10 @@ class ShipperProductItemAdapter(private val listener: ShipperProductOnDemandItem
 
             if (data == lastItem) {
                 divider.visibility = View.GONE
+            }
+
+            shipperProductCb?.setOnCheckedChangeListener { _, isChecked ->
+                listener.onShipperProductChecked(data.shipperProductId, isChecked)
             }
         }
     }

@@ -88,7 +88,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var globalErrorLayout: GlobalError? = null
-    private val activatedSpIds: List<Int> = emptyList()
+    private val activatedSpIds: MutableList<String> = mutableListOf()
 
     private var shippingEditorOnDemandAdapter = ShippingEditorOnDemandItemAdapter(this)
     private var shippingEditorConventionalAdapter = ShippingEditorConventionalAdapter(this)
@@ -246,13 +246,6 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         openBottomSheetDetails()
     }
 
-    private fun setWarehouseInactiveData(data: OnDemandModel) {
-        bottomSheetCourierInactiveState = 1
-        bottomSheetCourierInactiveAdapter.setData(data.warehouseModel)
-        bottomSheetCourierInactiveAdapter.setInactiveWarehouseOnDemand(data)
-        context?.let { openBottomSheetWarehouseInactive(it, data) }
-    }
-
     private fun setDataCourierNotCovered(data: ValidateShippingEditorModel) {
         bottomSheetCourierInactiveState = 3
         bottomSheetCourierInactiveAdapter.setData(data.uiContent.warehouses)
@@ -326,17 +319,13 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onShipperTickerOnDemandClicked(data: OnDemandModel) {
-        setWarehouseInactiveData(data)
-    }
-
-    private fun openBottomSheetWarehouseInactive(ctx: Context, data: OnDemandModel) {
+    private fun openBottomSheetWarehouseInactive(ctx: Context, data: List<WarehousesModel>, shipperName: String) {
         bottomSheetCourierInactive = BottomSheetUnify()
         val viewBottomSheetWarehouseInactive = View.inflate(ctx, R.layout.bottomsheet_courier_inactive, null)
-        setupChildCourierInactive(viewBottomSheetWarehouseInactive, data.shipperName, data.warehouseIds?.size, null)
+        setupChildCourierInactive(viewBottomSheetWarehouseInactive, shipperName, data?.size, null)
 
         bottomSheetCourierInactive?.apply {
-            setTitle(ctx.getString(R.string.title_bottomsheet_courier_inactive, data.warehouseIds?.size))
+            setTitle(ctx.getString(R.string.title_bottomsheet_courier_inactive, data?.size))
             setCloseClickListener { dismiss() }
             setChild(viewBottomSheetWarehouseInactive)
             setOnDismissListener { dismiss() }
@@ -394,7 +383,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             secondaryButtonCourierInactive?.visibility = View.VISIBLE
             secondaryButtonCourierInactive?.text = "Simpan"
             secondaryButtonCourierInactive?.setOnClickListener {
-                viewModel.saveShippingData(userSession?.shopId.toInt(), activatedSpIds.toString(), data?.featureId.toString())
+                viewModel.saveShippingData(userSession?.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getList(), shippingEditorOnDemandAdapter.getList()), data?.featureId.toString())
             }
             tickerChargeBoCourierInactive?.visibility = View.GONE
         } else if (bottomSheetCourierInactiveState == 4) {
@@ -406,7 +395,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             secondaryButtonCourierInactive?.visibility = View.VISIBLE
             secondaryButtonCourierInactive?.text = "Nonaktifkan"
             secondaryButtonCourierInactive?.setOnClickListener {
-                viewModel.saveShippingData(userSession?.shopId.toInt(), activatedSpIds.toString(), data?.featureId.toString())
+                viewModel.saveShippingData(userSession?.shopId.toInt(),  getListActivatedSpIds(shippingEditorConventionalAdapter.getList(), shippingEditorOnDemandAdapter.getList()), data?.featureId.toString())
             }
             tickerChargeBoCourierInactive?.visibility = View.VISIBLE
             tickerChargeBoCourierInactive?.apply {
@@ -488,7 +477,22 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     private fun saveButtonShippingEditor() {
-        viewModel.validateShippingEditor(userSession?.shopId.toInt(), "")
+        viewModel.validateShippingEditor(userSession?.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getList(), shippingEditorOnDemandAdapter.getList()))
+    }
+
+    private fun getListActivatedSpIds(conventionalModel: List<ConventionalModel>, onDemandModel: List<OnDemandModel>): String {
+        conventionalModel.forEach {
+            it.listActivatedSpId.forEach { id ->
+                activatedSpIds.add(id)
+            }
+        }
+
+        onDemandModel.forEach {
+            it.listActivatedSpId.forEach { id ->
+                activatedSpIds.add(id)
+            }
+        }
+        return activatedSpIds.joinToString().replace(" ", "")
     }
 
     private fun handleError(throwable: Throwable) {
@@ -533,8 +537,15 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     override fun onShipperTickerConventionalClicked(data: ConventionalModel) {
-        //openBottomSheetWarehouseInactive()
+        bottomSheetCourierInactiveState = 1
+        bottomSheetCourierInactiveAdapter.setData(data.warehouseModel)
+        context?.let { openBottomSheetWarehouseInactive(it, data.warehouseModel, data.shipperName) }
     }
 
+    override fun onShipperTickerOnDemandClicked(data: OnDemandModel) {
+        bottomSheetCourierInactiveState = 1
+        bottomSheetCourierInactiveAdapter.setData(data.warehouseModel)
+        context?.let { openBottomSheetWarehouseInactive(it, data.warehouseModel, data.shipperName) }
+    }
 
 }

@@ -25,8 +25,8 @@ data class OnDemandModel(
         var shipperProduct: List<ShipperProductModel> = listOf(),
         var tickerState: Int = 0,
         var isAvailable: Boolean = true,
-        var warehouseIds: List<Int>? = emptyList(),
-        var warehouseModel: List<WarehousesModel> = listOf()
+        var warehouseModel: List<WarehousesModel> = listOf(),
+        var listActivatedSpId: MutableSet<String> = mutableSetOf()
 ) : ShippingEditorVisitable()
 
 data class ConventionalModel(
@@ -39,8 +39,8 @@ data class ConventionalModel(
         var shipperProduct: List<ShipperProductModel> = listOf(),
         var tickerState: Int = 0,
         var isAvailable: Boolean = true,
-        var warehouseIds: List<Int>? = emptyList(),
-        var warehouseModel: List<WarehousesModel> = listOf()
+        var warehouseModel: List<WarehousesModel> = listOf(),
+        var listActivatedSpId: MutableSet<String> = mutableSetOf()
 ) : ShippingEditorVisitable()
 
 @Parcelize

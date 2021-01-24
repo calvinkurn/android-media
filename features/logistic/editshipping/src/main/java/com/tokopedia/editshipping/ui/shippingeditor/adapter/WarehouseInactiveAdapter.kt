@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.R
-import com.tokopedia.editshipping.domain.model.shippingEditor.OnDemandModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.UiContentModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
@@ -29,15 +28,6 @@ class WarehouseInactiveAdapter: RecyclerView.Adapter<WarehouseInactiveAdapter.Wa
     fun setData(data: List<WarehousesModel>) {
         warehouseData.clear()
         warehouseData.addAll(data)
-        notifyDataSetChanged()
-    }
-
-    fun setInactiveWarehouseOnDemand(data: OnDemandModel) {
-        data.warehouseIds?.forEach {
-            warehouseData.find { warehouse ->
-                warehouse.warehouseId == it
-            }?.isShown = true
-        }
         notifyDataSetChanged()
     }
 

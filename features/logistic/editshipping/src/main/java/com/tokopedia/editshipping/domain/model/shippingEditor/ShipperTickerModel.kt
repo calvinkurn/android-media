@@ -17,7 +17,7 @@ data class HeaderTickerModel(
 
 data class CourierTickerModel(
         var shipperId: Int = -1,
-        var warehouseIds: List<Int>? = emptyList(),
+        var warehouses: List<WarehousesModel> = emptyList(),
         var tickerState: Int = -1,
         var isAvailable: Boolean = false,
         var shipperProduct: List<ShipperProductTickerModel> = listOf()
