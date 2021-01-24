@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -20,12 +21,18 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.UiUtil.loadLeftDrawable
+import com.tokopedia.shop.common.util.UiUtil.removeDrawable
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeCampaignNplTncAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeNplCampaignTncBottomSheetViewModel
+import com.tokopedia.shop.pageheader.data.model.FollowButton
+import com.tokopedia.shop.pageheader.data.model.FollowShop
+import com.tokopedia.shop.pageheader.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_FOLLOW
+import com.tokopedia.shop.pageheader.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -156,8 +163,8 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
                     if (!isLoggedIn || !isRuleId33(ruleId)) {
                         hideFollowButton()
                     } else {
-                        isFollowShop = isAlreadyFollowed(it.data.alreadyFavorited)
-                        showFollowButton()
+                        isFollowShop = it.data.status?.userIsFollowing == true
+                        showFollowButton(it.data.followButton)
                     }
                 }
             }
@@ -167,7 +174,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
             btn_follow?.isLoading = false
             when (it) {
                 is Success -> {
-                    toggleFollowButton()
+                    toggleFollowButton(it.data.followShop)
                     shopPageHomeTracking.clickTncBottomSheetFollowButtonNplFollower(
                             isOwner,
                             isFollowShop,
@@ -189,31 +196,54 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun toggleFollowButton() {
-        isFollowShop = !isFollowShop
+    private fun toggleFollowButton(followShop: FollowShop?) {
+        isFollowShop = followShop?.isFollowing == true
         shopPageFollowingStatusSharedViewModel?.setShopPageFollowingStatus(isFollowShop)
-        refreshButtonData()
+        followShop?.run { refreshButtonData(this.buttonLabel) }
     }
 
-    private fun refreshButtonData() {
+    private fun refreshButtonData(label: String?) {
+        tf_follow.bringToFront()
+        tf_follow.show()
+        tf_follow.text = label
         btn_follow?.apply {
+            isLoading = false
             if (isFollowShop) {
-                text = context.getString(R.string.shop_header_action_following)
                 buttonVariant = UnifyButton.Variant.GHOST
+                tf_follow.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Green_G500))
             } else {
-                text = context.getString(R.string.shop_home_npl_campaign_follow)
                 buttonVariant = UnifyButton.Variant.FILLED
+                tf_follow.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Neutral_N0))
             }
         }
     }
 
-    private fun showFollowButton() {
+    private fun showFollowButton(followButton: FollowButton?) {
         layout_button_follow_container?.show()
-        refreshButtonData()
+
+        val voucherUrl = followButton?.voucherIconURL
+        followButton?.run { refreshButtonData(this.buttonLabel) }
+
+        if (!voucherUrl.isNullOrBlank()) {
+            loadLeftDrawable(
+                    context = requireContext(),
+                    url = voucherUrl,
+                    typography = tf_follow,
+                    convertIntoSize = 50
+            )
+        }
+
         btn_follow?.apply {
             setOnClickListener {
                 isLoading = true
-                viewModel?.followUnfollowShop(shopId)
+                tf_follow.hide()
+                val action = if (isFollowShop) {
+                    ACTION_UNFOLLOW
+                } else {
+                    ACTION_FOLLOW
+                }
+                viewModel?.updateFollowStatus(shopId, action)
+                voucherUrl?.run { removeDrawable(tf_follow) }
             }
         }
     }
@@ -276,10 +306,6 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
 
     private fun hideLoading() {
         loader_unify?.hide()
-    }
-
-    private fun isAlreadyFollowed(alreadyFavorited: Int): Boolean {
-        return alreadyFavorited == 1
     }
 
     private fun isRuleId33(ruleId: String): Boolean {

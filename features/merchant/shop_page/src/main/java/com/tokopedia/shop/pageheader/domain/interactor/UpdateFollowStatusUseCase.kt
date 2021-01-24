@@ -14,6 +14,8 @@ class UpdateFollowStatusUseCase @Inject constructor(
         private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<FollowShopResponse>() {
     companion object {
+        const val ACTION_FOLLOW = "follow"
+        const val ACTION_UNFOLLOW = "unfollow"
         private const val PARAM_INPUT = "input"
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_ACTION = "action"

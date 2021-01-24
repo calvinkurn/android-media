@@ -5,28 +5,28 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.UserNotLoginException
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.home.domain.GetShopHomeCampaignNplTncUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
+import com.tokopedia.shop.pageheader.data.model.FollowShopResponse
+import com.tokopedia.shop.pageheader.data.model.FollowStatus
+import com.tokopedia.shop.pageheader.domain.interactor.GetFollowStatusUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.withContext
+import dagger.Lazy
 import javax.inject.Inject
 
 class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
-    private val dispatcherProvider: CoroutineDispatchers,
-    private val userSession: UserSessionInterface,
-    private val getCampaignNplTncUseCase: GetShopHomeCampaignNplTncUseCase,
-    private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
-    private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
+        private val dispatcherProvider: CoroutineDispatchers,
+        private val userSession: UserSessionInterface,
+        private val getCampaignNplTncUseCase: GetShopHomeCampaignNplTncUseCase,
+        private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
+        private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
 ) : BaseViewModel(dispatcherProvider.main) {
 
     val userSessionShopId: String
@@ -39,14 +39,13 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
         get() = _campaignTncLiveData
     private val _campaignTncLiveData = MutableLiveData<Result<ShopHomeCampaignNplTncUiModel>>()
 
-    val campaignFollowStatusLiveData: LiveData<Result<ShopInfo.FavoriteData>>
+    val campaignFollowStatusLiveData: LiveData<Result<FollowStatus>>
         get() = _campaignFollowStatusLiveData
-    private val _campaignFollowStatusLiveData = MutableLiveData<Result<ShopInfo.FavoriteData>>()
+    private val _campaignFollowStatusLiveData = MutableLiveData<Result<FollowStatus>>()
 
-    val followUnfollowShopLiveData: LiveData<Result<Boolean>>
+    val followUnfollowShopLiveData: LiveData<Result<FollowShopResponse>>
         get() = _followUnfollowShopLiveData
-    private val _followUnfollowShopLiveData = MutableLiveData<Result<Boolean>>()
-
+    private val _followUnfollowShopLiveData = MutableLiveData<Result<FollowShopResponse>>()
 
     val isUserLoggedIn: Boolean
         get() = userSession.isLoggedIn
@@ -61,7 +60,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
             })
 
             val shopFollowStatusAsync = asyncCatchError(dispatcherProvider.io, block = {
-                getShopFavoriteStatus(shopId).takeIf { !isOwner }
+                getFollowStatus(shopId).takeIf { !isOwner }
             }, onError = {
                 if(!isOwner)
                     _campaignTncLiveData.postValue(Fail(it))
@@ -81,10 +80,9 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getShopFavoriteStatus(shopId: String): ShopInfo.FavoriteData {
-        val id = shopId.toIntOrZero()
-        gqlGetShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(if (id == 0) listOf() else listOf(id), "")
-        return gqlGetShopFavoriteStatusUseCase.executeOnBackground().favoriteData
+   private suspend fun getFollowStatus(shopId: String): FollowStatus? {
+        getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId)
+        return getFollowStatusUseCase.get().executeOnBackground().followStatus
     }
 
     private suspend fun getTncResponse(campaignId: String): ShopHomeCampaignNplTncUiModel {
@@ -94,24 +92,17 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
         )
     }
 
-    fun followUnfollowShop(shopId: String) {
-        launchCatchError(block = {
-            val onSuccessFollowUnfollowShop = withContext(dispatcherProvider.io) {
-                toggleFavorite(shopId)
-            }
-            _followUnfollowShopLiveData.postValue(Success(onSuccessFollowUnfollowShop  ?: false))
-        }) {
-            _followUnfollowShopLiveData.postValue(Fail(it))
-        }
-    }
-
-    private fun toggleFavorite(shopID: String): Boolean? {
+    fun updateFollowStatus(shopId: String, action: String) {
         if (!userSession.isLoggedIn) {
-            throw UserNotLoginException()
+            _followUnfollowShopLiveData.value = Fail(UserNotLoginException())
+            return
         }
-        return toggleFavouriteShopUseCase.createObservable(
-                ToggleFavouriteShopUseCase.createRequestParam(shopID)
-        ).toBlocking().first()
-    }
 
+        launchCatchError(dispatcherProvider.io, block = {
+            updateFollowStatusUseCase.get().params = UpdateFollowStatusUseCase.createParams(shopId, action)
+            _followUnfollowShopLiveData.postValue(Success(updateFollowStatusUseCase.get().executeOnBackground()))
+        }, onError = {
+            _followUnfollowShopLiveData.postValue(Fail(it))
+        })
+    }
 }

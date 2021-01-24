@@ -5,17 +5,11 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
@@ -28,6 +22,8 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
+import com.tokopedia.shop.common.util.UiUtil.loadLeftDrawable
+import com.tokopedia.shop.common.util.UiUtil.removeDrawable
 import com.tokopedia.shop.extension.formatToSimpleNumber
 import com.tokopedia.shop.pageheader.data.model.FollowShop
 import com.tokopedia.shop.pageheader.data.model.FollowStatus
@@ -140,7 +136,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         followButton.visibility = View.VISIBLE
         followButton.setOnClickListener {
             if (!followButton.isLoading) {
-                voucherUrl?.run { removeDrawableFollowButton() }
+                voucherUrl?.run { removeDrawable(followButton) }
                 followButton.isLoading = true
                 listener.setFollowStatus(isShopFavorite)
             }
@@ -284,7 +280,12 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             voucherUrl = it.followButton?.voucherIconURL
             val coachMarkText = it.followButton?.coachmarkText
             if (!voucherUrl.isNullOrBlank()) {
-                loadLeftDrawable(voucherUrl)
+                loadLeftDrawable(
+                        context = context,
+                        url = voucherUrl,
+                        button = followButton,
+                        convertIntoSize = 50
+                )
             }
             if (!coachMarkText.isNullOrBlank() && listener.isFirstTimeVisit() == false) {
                 setCoachMark(coachMarkText)
@@ -313,34 +314,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         )
         coachMark = CoachMark2(context)
         coachMark?.showCoachMark(coachMarkItem)
-    }
-
-    private fun removeDrawableFollowButton() {
-        followButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
-    }
-
-    private fun loadLeftDrawable(url: String?) {
-        convertUrlToBitmapAndLoadImage(url) {
-            followButton.setCompoundDrawablesWithIntrinsicBounds(
-                    BitmapDrawable(followButton.resources, it),
-                    null,
-                    null,
-                    null
-            )
-        }
-    }
-
-    private fun convertUrlToBitmapAndLoadImage(url: String?, loadImage: (resource: Bitmap) -> Unit) {
-        val imageSize = 50
-        Glide.with(context)
-                .asBitmap()
-                .load(url)
-                .into(object : CustomTarget<Bitmap>(imageSize, imageSize) {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        loadImage(resource)
-                    }
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                })
     }
 
     fun showShopReputationBadges(shopBadge: ShopBadge) {

@@ -98,6 +98,8 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
+import com.tokopedia.shop.pageheader.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_FOLLOW
+import com.tokopedia.shop.pageheader.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
 import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
@@ -165,8 +167,6 @@ class ShopPageFragment :
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
-        private const val ACTION_FOLLOW = "follow"
-        private const val ACTION_UNFOLLOW = "unfollow"
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
@@ -1420,9 +1420,10 @@ class ShopPageFragment :
                 isFollowing
         )
 
-        var action = ACTION_FOLLOW
-        if (isFollowing) {
-            action = ACTION_UNFOLLOW
+        val action = if (isFollowing) {
+            ACTION_UNFOLLOW
+        } else {
+            ACTION_FOLLOW
         }
         shopViewModel.updateFollowStatus(shopId, action)
     }
