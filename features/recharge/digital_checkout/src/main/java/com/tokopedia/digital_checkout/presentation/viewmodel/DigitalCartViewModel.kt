@@ -269,8 +269,8 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun onReceivedPromoCode(promoData: PromoData, inputPrice: Long, ) {
-        resetVoucherCart(inputPrice)
+    fun onReceivedPromoCode(promoData: PromoData) {
+        resetVoucherCart()
         if (promoData.amount > 0) {
             val additionals: MutableList<CartItemDigitalWithTitle> = ArrayList(_cartAdditionalInfoList.value
                     ?: listOf())
@@ -283,11 +283,11 @@ class DigitalCartViewModel @Inject constructor(
             val cartAdditionalInfo = CartItemDigitalWithTitle("Pembayaran", items)
             additionals.add(cartAdditionalInfo)
             _cartAdditionalInfoList.value = additionals
-            _totalPrice.value = cartDigitalInfoData.value?.attributes?.pricePlain ?: 0L
+            _totalPrice.forceRefresh()
         }
     }
 
-    fun resetVoucherCart(inputPrice: Long) {
+    fun resetVoucherCart() {
         val additionalInfos = cartAdditionalInfoList.value?.toMutableList() ?: mutableListOf()
         for ((i, additionalInfo) in additionalInfos.withIndex()) {
             if (additionalInfo.title.contains("Pembayaran")) {
@@ -296,15 +296,14 @@ class DigitalCartViewModel @Inject constructor(
             }
         }
         _cartAdditionalInfoList.value = additionalInfos
-        _totalPrice.value = if (inputPrice > 0) inputPrice else cartDigitalInfoData.value?.attributes?.pricePlain
-                ?: 0L
+        _totalPrice.forceRefresh()
     }
 
     fun onSubscriptionChecked(isChecked: Boolean) {
         requestCheckoutParam.isSubscriptionChecked = isChecked
     }
 
-    fun updateTotalPriceWithFintechProduct(isChecked: Boolean) {
+    fun updateTotalPriceWithFintechProduct(isChecked: Boolean, userInputPrice: Long) {
         requestCheckoutParam.isFintechProductChecked = isChecked
 
         cartDigitalInfoData.value?.attributes?.let { attributes ->
@@ -335,7 +334,7 @@ class DigitalCartViewModel @Inject constructor(
             }
             val requestParams: RequestParams = digitalCheckoutUseCase.createRequestParams(
                     getRequestBodyCheckout(requestCheckoutParam, digitalIdentifierParam,
-                            it.attributes?.fintechProduct?.getOrNull(0) ?: null))
+                            it.attributes?.fintechProduct?.getOrNull(0)))
             digitalCheckoutUseCase.execute(requestParams, getSubscriberCheckout())
         }
     }
@@ -360,5 +359,9 @@ class DigitalCartViewModel @Inject constructor(
                 _paymentPassData.postValue(checkoutData)
             }
         }
+    }
+
+    private fun <T> MutableLiveData<T>.forceRefresh() {
+        this.value = this.value
     }
 }

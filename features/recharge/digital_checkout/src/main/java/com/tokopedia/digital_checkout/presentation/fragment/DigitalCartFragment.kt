@@ -315,7 +315,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             data?.let { data ->
                 if (data.hasExtra(EXTRA_PROMO_DATA)) {
                     promoData = data.getParcelableExtra(EXTRA_PROMO_DATA)
-                    viewModel.resetVoucherCart(inputPriceHolderView.getPriceInput())
+                    viewModel.resetVoucherCart()
                     when (promoData.state) {
                         TickerCheckoutView.State.FAILED -> {
                             promoData.promoCode = ""
@@ -324,7 +324,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                         }
                         TickerCheckoutView.State.ACTIVE -> {
                             renderPromoTickerView()
-                            viewModel.onReceivedPromoCode(promoData, inputPriceHolderView.getPriceInput())
+                            viewModel.onReceivedPromoCode(promoData)
                             cartDetailInfoAdapter.isExpanded = true
                         }
                         TickerCheckoutView.State.EMPTY -> {
@@ -374,7 +374,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     private fun resetPromoTickerView() {
         promoData = PromoData()
         renderPromoTickerView()
-        viewModel.resetVoucherCart(inputPriceHolderView.getPriceInput())
+        viewModel.resetVoucherCart()
     }
 
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
@@ -445,7 +445,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                 } else {
                     digitalAnalytics.eventClickCrossSell(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
                 }
-                viewModel.updateTotalPriceWithFintechProduct(isChecked)
+                viewModel.updateTotalPriceWithFintechProduct(isChecked, inputPriceHolderView.getPriceInput())
             }
         }
 

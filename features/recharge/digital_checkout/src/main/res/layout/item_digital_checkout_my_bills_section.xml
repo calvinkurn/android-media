@@ -32,7 +32,7 @@
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_1"
+                app:typographyType="heading_3"
                 tools:text="Bayar Otomatis Bayar Bayar Otomatis Otomatis Bayar Otomatis Bayar Otomatis Bayar Otomatis" />
 
 

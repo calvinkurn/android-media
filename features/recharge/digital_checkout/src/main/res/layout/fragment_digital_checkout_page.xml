@@ -67,11 +67,31 @@
                 app:typographyType="body_2" />
 
             <LinearLayout
+                android:id="@+id/inputPriceContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginTop="@dimen/spacing_lvl3">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Neutral_N75" />
+
+                <com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
+                    android:id="@+id/inputPriceHolderView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/layoutMyBills"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingVertical="@dimen/spacing_lvl4">
+                android:paddingBottom="@dimen/spacing_lvl4">
 
                 <View
                     android:layout_width="match_parent"
@@ -91,25 +111,6 @@
                     android:layout_marginTop="@dimen/spacing_lvl3"
                     android:visibility="gone"
                     tools:visibility="visible" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/inputPriceContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="@dimen/spacing_lvl4"
-                    android:background="@color/Neutral_N75" />
-
-                <com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
-                    android:id="@+id/inputPriceHolderView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
         </LinearLayout>
