@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.common.R
+import com.tokopedia.shop.common.util.loadLeftDrawable
+import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.common.util.RoundedShadowUtill
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -60,7 +62,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         }
     }
 
-    fun renderView(title: String, desc: String, alreadyFollowShop: Boolean = true) = with(view) {
+    fun renderView(title: String, desc: String, alreadyFollowShop: Boolean = true, buttonLabel: String? = null, voucherIconUrl: String? = null) = with(view) {
         if (alreadyFollowShop) {
             setupVisibility = false
             return@with
@@ -69,7 +71,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         shop_followers_title.text = title
         shop_followers_desc.text = desc
 
-        setupButtonFollowers()
+        setupButtonFollowers(buttonLabel, voucherIconUrl)
         setOnClickListener {}
         setupRoundedTopShadow()
 
@@ -110,12 +112,23 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         })
     }
 
-    private fun setupButtonFollowers() {
+    private fun setupButtonFollowers(buttonLabel: String?, voucherIconUrl: String?) {
+        voucherIconUrl?.run {
+            followersBtn?.loadLeftDrawable(
+                    context = view.context,
+                    url = voucherIconUrl,
+                    convertIntoSize = 50
+            )
+        }
+        followersBtn?.text = buttonLabel
         followersBtn?.run {
             setOnClickListener {
                 if (!isLoading) {
                     followersBtn?.isLoading = true
                     listener.onButtonFollowNplClick()
+                    if (!voucherIconUrl.isNullOrBlank()) {
+                        followersBtn?.removeDrawable()
+                    }
                 }
             }
         }

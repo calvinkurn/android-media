@@ -467,13 +467,15 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         viewModel.restrictionEngineData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val shopRestrictionData = it.data.dataResponse[0]
+                    val shopRestrictionData = it.data
                     // handle view to follow shop for campaign type showcase
                     val isFollowShop = shopRestrictionData.status != PRODUCT_INELIGIBLE
                     if(isLogin && !isMyShop && !isFollowShop) {
                         val title = shopRestrictionData.actions[0].title
                         val description = shopRestrictionData.actions[0].description
-                        showShopFollowersView(title, description, isFollowShop)
+                        val buttonLabel = shopRestrictionData.buttonLabel
+                        val voucherIconUrl = shopRestrictionData.voucherIconUrl
+                        showShopFollowersView(title, description, isFollowShop, buttonLabel, voucherIconUrl)
                     }
                 }
                 is Fail -> { }
@@ -539,7 +541,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
     }
 
-    private fun showShopFollowersView(title: String, desc: String, isFollowShop: Boolean) {
+    private fun showShopFollowersView(title: String, desc: String, isFollowShop: Boolean, buttonLabel: String?, voucherIconUrl: String?) {
         prepareShopFollowersView()
         partialShopNplFollowersViewLayout?.let {
             partialShopNplFollowersView = PartialButtonShopFollowersView.build(it, object: PartialButtonShopFollowersListener {
@@ -552,7 +554,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopId?.let { shopId -> toggleFavoriteShop(shopId) }
                 }
             })
-            partialShopNplFollowersView?.renderView(title, desc, isFollowShop)
+            partialShopNplFollowersView?.renderView(title, desc, isFollowShop, buttonLabel, voucherIconUrl)
         }
     }
 

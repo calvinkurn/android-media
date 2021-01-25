@@ -22,9 +22,13 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.common.data.model.RestrictionEngineModel
+import com.tokopedia.shop.pageheader.data.model.FollowStatus
+import com.tokopedia.shop.pageheader.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper.mapRestrictionEngineResponseToModel
 import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
@@ -37,6 +41,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
@@ -51,7 +56,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                                              private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
                                                              private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
                                                              private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
-                                                             private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
+                                                             private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
+                                                             private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>
 ) : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
@@ -72,8 +78,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     val productDataEmpty: LiveData<Result<List<ShopProductUiModel>>>
         get() = _productDataEmpty
 
-    private val _restrictionEngineData = MutableLiveData<Result<RestrictValidateRestriction>>()
-    val restrictionEngineData: LiveData<Result<RestrictValidateRestriction>>
+    private val _restrictionEngineData = MutableLiveData<Result<RestrictionEngineModel>>()
+    val restrictionEngineData: LiveData<Result<RestrictionEngineModel>>
         get() = _restrictionEngineData
 
     private var shopSortList = mutableListOf<ShopProductSortModel>()
@@ -94,14 +100,37 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     fun getShopRestrictionInfo(input: RestrictionEngineRequestParams) {
         launchCatchError(block = {
-            restrictionEngineNplUseCase.params = RestrictionEngineNplUseCase.createRequestParams(input)
-            val restrictionEngineResponse = withContext(dispatcherProvider.io) {
-                restrictionEngineNplUseCase.executeOnBackground()
+            restrictionEngineAsync(input).await()?.run {
+                val restrictionEngineResponse = mapRestrictionEngineResponseToModel(dataResponse.firstOrNull())
+                getFollowStatusAsync(userSession.shopId).await()?.let {
+                    restrictionEngineResponse.buttonLabel = it.followButton?.buttonLabel
+                    restrictionEngineResponse.voucherIconUrl = it.followButton?.voucherIconURL
+                }
+                _restrictionEngineData.value = Success(restrictionEngineResponse)
             }
-            _restrictionEngineData.value = Success(restrictionEngineResponse)
         }) {
             _restrictionEngineData.value = Fail(it)
         }
+    }
+
+    private suspend fun restrictionEngineAsync(input: RestrictionEngineRequestParams): Deferred<RestrictValidateRestriction?> {
+        restrictionEngineNplUseCase.params = RestrictionEngineNplUseCase.createRequestParams(input)
+        return asyncCatchError(dispatcherProvider.io, block = {
+            restrictionEngineNplUseCase.executeOnBackground()
+        }, onError = {
+            _restrictionEngineData.postValue(Fail(it))
+            null
+        })
+    }
+
+    private suspend fun getFollowStatusAsync(shopId: String): Deferred<FollowStatus?> {
+        getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId)
+        return asyncCatchError(dispatcherProvider.io, block = {
+            getFollowStatusUseCase.get().executeOnBackground().followStatus
+        }, onError = {
+            _restrictionEngineData.postValue(Fail(it))
+            null
+        })
     }
 
     fun toggleFavorite(shopId: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
