@@ -85,7 +85,6 @@ class ManagePasswordWebViewFragment : BaseWebViewFragment() {
 
     companion object {
 
-
         fun instance(bundle: Bundle): Fragment {
             val fragment = ManagePasswordWebViewFragment()
             fragment.arguments = bundle

@@ -4,12 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Base64
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.managepassword.ManagePasswordWebViewActivity
 import com.tokopedia.managepassword.common.ManagePasswordConstant.KEY_IS_CONTAINS_LOGIN_APPLINK
 import com.tokopedia.managepassword.common.ManagePasswordConstant.PARAM_AUTO_FILL
@@ -42,6 +44,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     lateinit var userSession: UserSessionInterface
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private lateinit var uri: Uri
 
     private val isDirectToWebView: Boolean
         get() = getAbTestPlatform()?.getString(AB_TEST_RESET_PASSWORD_KEY) == AB_TEST_RESET_PASSWORD
@@ -80,19 +83,24 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK && data != null && data.extras != null ) {
+        if (resultCode == Activity.RESULT_OK) {
             when(requestCode) {
                 REQUEST_CODE_WEB_VIEW -> {
-                    val isContainsLoginApplink = data.extras?.getBoolean(KEY_IS_CONTAINS_LOGIN_APPLINK) ?: false
-                    val url = data.extras?.getString(KEY_URL) ?: ""
+                    if (data != null && data.extras != null) {
+                        val isContainsLoginApplink = data.extras?.getBoolean(KEY_IS_CONTAINS_LOGIN_APPLINK) ?: false
+                        val url = data.extras?.getString(KEY_URL) ?: ""
+                        uri = Uri.parse(url).buildUpon().build()
 
-                    if (isContainsLoginApplink) {
-                        gotoLogin(url)
+                        if (isContainsLoginApplink) {
+                            if (userSession.isLoggedIn && isForceLogout(uri)) {
+                                gotoLogout()
+                            } else {
+                                gotoLogin(uri)
+                            }
+                        }
                     }
                 }
-                REQUEST_CODE_LOGIN -> {
-                    if (userSession.isLoggedIn) gotoHome()
-                }
+                REQUEST_CODE_LOGOUT -> gotoLogin(uri)
             }
         } else {
             finish()
@@ -108,27 +116,38 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         startActivityForResult(intent, REQUEST_CODE_WEB_VIEW)
     }
 
-    private fun gotoLogin(url: String) {
-        val uri = Uri.parse(url).buildUpon().build()
+    private fun isForceLogout(uri: Uri): Boolean {
+        val segment = uri.pathSegments[0]
+        return segment.contains(CLEAR_CACHE_PREFIX)
+    }
+
+    private fun gotoLogout() {
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.LOGOUT)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, true)
+        startActivityForResult(intent, REQUEST_CODE_LOGOUT)
+    }
+
+    private fun gotoLogin(uri: Uri) {
         val email = uri.getQueryParameter(QUERY_PARAM_EMAIL)
         val phone = uri.getQueryParameter(QUERY_PARAM_PHONE)
 
         val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
         if (!email.isNullOrEmpty()) {
-            intent.putExtra(PARAM_AUTO_FILL, email)
-            userSession.autofillUserData = email
+            intent.putExtra(PARAM_AUTO_FILL, decodeParam(email))
+            userSession.autofillUserData = decodeParam(email)
         } else if (!phone.isNullOrEmpty()) {
-            intent.putExtra(PARAM_AUTO_FILL, phone)
-            userSession.autofillUserData = phone
+            intent.putExtra(PARAM_AUTO_FILL, decodeParam(phone))
+            userSession.autofillUserData = decodeParam(phone)
         }
-
-        startActivityForResult(intent, REQUEST_CODE_LOGIN)
-    }
-
-    private fun gotoHome() {
-        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
         finish()
+    }
+
+    private fun decodeParam(value: String): String {
+        val byteArray = Base64.decode(value, Base64.DEFAULT)
+        return String(byteArray)
     }
 
     private fun getAbTestPlatform(): AbTestPlatform? {
@@ -149,14 +168,16 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
 
     companion object {
         private const val REQUEST_CODE_WEB_VIEW = 100
-        private const val REQUEST_CODE_LOGIN = 101
+        private const val REQUEST_CODE_LOGOUT = 101
 
-        const val QUERY_PARAM_EMAIL = "email"
-        const val QUERY_PARAM_PHONE = "phone"
+        const val QUERY_PARAM_EMAIL = "e"
+        const val QUERY_PARAM_PHONE = "p"
+
+        private const val CLEAR_CACHE_PREFIX = "clear-cache"
 
         private const val SCREEN_FORGOT_PASSWORD = "Forgot password page"
-//        private const val URL_FORGOT_PASSWORD = "https://m.tokopedia.com/reset-password"
-        private const val URL_FORGOT_PASSWORD = "https://staging.tokopedia.com/reset-password"
+        private const val URL_FORGOT_PASSWORD = "https://m.tokopedia.com/reset-password"
+//        private const val URL_FORGOT_PASSWORD = "https://staging.tokopedia.com/reset-password"
         private const val REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL = "android_forgot_password_webview_url"
         private const val AB_TEST_RESET_PASSWORD_KEY = "Reset Password AND"
         private const val AB_TEST_RESET_PASSWORD = "Reset Password AND"
