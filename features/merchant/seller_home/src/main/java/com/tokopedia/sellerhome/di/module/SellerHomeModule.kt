@@ -7,6 +7,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
@@ -51,5 +53,11 @@ class SellerHomeModule {
     fun provideFreeShippingTracker(userSession: UserSessionInterface): SettingFreeShippingTracker {
         val analytics = TrackApp.getInstance().gtm
         return SettingFreeShippingTracker(analytics, userSession)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideSellerReviewCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
+        return LocalCacheHandler(context, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
     }
 }
