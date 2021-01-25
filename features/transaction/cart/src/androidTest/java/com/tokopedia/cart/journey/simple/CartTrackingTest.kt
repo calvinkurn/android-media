@@ -18,7 +18,12 @@ import org.junit.Test
 class CartTrackingTest {
 
     @get:Rule
-    var activityRule = IntentsTestRule(InstrumentTestCartActivity::class.java, false, false)
+    var activityRule = object : IntentsTestRule<InstrumentTestCartActivity>(InstrumentTestCartActivity::class.java, false, false) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+        }
+    }
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
