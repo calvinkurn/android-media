@@ -35,4 +35,8 @@
         <attr name="gfCvCircleRadius" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="GamificationRoundImageView">
+        <attr name="gfRoundImageRadius" format="dimension" />
+    </declare-styleable>
+
 </resources>
