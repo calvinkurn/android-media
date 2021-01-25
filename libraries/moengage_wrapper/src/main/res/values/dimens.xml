@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="mw_dp_38">38dp</dimen>
+    <dimen name="mw_sp_13">13sp</dimen>
+</resources>
