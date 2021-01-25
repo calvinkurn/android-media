@@ -24,19 +24,19 @@ class DummyMvcActivity : BaseActivity() {
         fm.addView(mvcView)
         setContentView(fm)
 
-        GlobalScope.launch (Dispatchers.IO){
-            val shopId = "480136"
-            val usecase = MVCSummaryUseCase(GqlUseCaseWrapper())
-            val params = usecase.getQueryParams(shopId)
-            val response = usecase.getResponse(params)
-            response?.data?.let {
-                val mvcData = usecase.mapTokopointsCatalogMVCSummaryToMvcData(it)
-                withContext(Dispatchers.Main){
-                    mvcView.setData(mvcData, shopId)
-                }
-            }
-
-        }
+//        GlobalScope.launch (Dispatchers.IO){
+//            val shopId = "480136"
+//            val usecase = MVCSummaryUseCase(GqlUseCaseWrapper())
+//            val params = usecase.getQueryParams(shopId)
+//            val response = usecase.getResponse(params)
+//            response?.data?.let {
+//                val mvcData = usecase.mapTokopointsCatalogMVCSummaryToMvcData(it)
+//                withContext(Dispatchers.Main){
+//                    mvcView.setData(mvcData, shopId)
+//                }
+//            }
+//
+//        }
 
 //        var bottomSheet = BottomSheetUnify()
 //        val tokomemberView = MvcTokomemberBmView(this)
