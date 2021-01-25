@@ -21,6 +21,7 @@ import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.DepositAmount
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
@@ -161,7 +162,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 dailyBudgetType.text = getString(R.string.anggaran_dibatasi)
                 var budget = 0
                 try {
-                    budget = Integer.parseInt(daily_budget.textFieldInput.text.toString().replace(",", ""))
+                    budget = Integer.parseInt(daily_budget.textFieldInput.text.toString().removeCommaRawString())
                 } catch (e: NumberFormatException) {
 
                 }
@@ -226,12 +227,12 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val input = number.toInt()
-                if (input < stepperModel?.finalBidPerClick ?: 0 * MULTIPLIER
+                if (input < (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
                         && daily_budget.isVisible) {
                     daily_budget.setError(true)
                     daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
                     btn_submit.isEnabled = false
-                } else if(input > MAXIMUM_LIMIT && daily_budget.isVisible) {
+                } else if (input > MAXIMUM_LIMIT && daily_budget.isVisible) {
                     daily_budget.setError(true)
                     daily_budget.setMessage(String.format(getString(R.string.topads_common_maximum_daily_budget), MAXIMUM_LIMIT))
                     btn_submit.isEnabled = false

@@ -1318,7 +1318,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.let {
             it.showProgressLoading()
 
-            val updateCartRequestList = getUpdateCartRequest(it.getAllAvailableCartDataList())
+            val updateCartRequestList = getUpdateCartRequest(it.getAllSelectedCartDataList() ?: emptyList())
             if (updateCartRequestList.isNotEmpty()) {
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
@@ -1347,7 +1347,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest) {
         view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemData>()
-            cartListView.getAllAvailableCartDataList().let { listCartItemData ->
+            cartListView.getAllSelectedCartDataList()?.let { listCartItemData ->
                 for (data in listCartItemData) {
                     if (!data.isError) {
                         cartItemDataList.add(data)

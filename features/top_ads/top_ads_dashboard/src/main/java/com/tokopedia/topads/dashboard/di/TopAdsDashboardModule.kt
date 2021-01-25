@@ -30,7 +30,6 @@ import javax.inject.Named
  * Created by hadi.putra on 23/04/18.
  */
 
-@TopAdsDashboardScope
 @Module
 class TopAdsDashboardModule {
 

@@ -17,7 +17,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 @Module
-@TopAdsDashboardScope
 class TopAdsDashboardShopModule {
     @ShopQualifier
     @Provides
