@@ -1,12 +1,14 @@
 package com.tokopedia.notifcenter.data.uimodel
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.data.entity.notification.*
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import java.util.*
 
+@SuppressLint("Invalid Data Type")
 data class NotificationUiModel(
         @SerializedName("bottomsheet")
         val bottomsheet: Bottomsheet = Bottomsheet(),
@@ -69,7 +71,13 @@ data class NotificationUiModel(
         @SerializedName("update_time_unix")
         val updateTimeUnix: Long = 0,
         @SerializedName("user_id")
-        val userId: Long = 0
+        val userId: Long = 0,
+        @SerializedName("type_widget_history")
+        val widgetType: Int = 0,
+        @SerializedName("track_history")
+        val trackHistory: List<TrackHistory> = listOf(),
+        @SerializedName("widget")
+        val widget: Widget = Widget()
 ) : Visitable<NotificationTypeFactory> {
 
     @delegate:Transient

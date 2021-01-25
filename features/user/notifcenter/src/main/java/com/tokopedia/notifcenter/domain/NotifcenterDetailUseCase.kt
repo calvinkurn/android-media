@@ -166,6 +166,7 @@ class NotifcenterDetailUseCase @Inject constructor(
     companion object {
         const val QUERY_NOTIFCENTER_DETAIL_V3 = "QUERY_NOTIFCENTER_DETAIL_V3"
         const val FILTER_NONE: Long = 0
+        // TODO: Add widget and track history
         val queryRes = R.raw.query_notifcenter_detail_v3
 
         private const val PARAM_TYPE_ID = "type_id"
