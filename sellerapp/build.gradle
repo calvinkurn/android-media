@@ -326,6 +326,7 @@ dependencies {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
     implementation(rootProject.ext.analyticsDependencies.moengage)
+    implementation project(rootProject.ext.libraries.moengageWrapper)
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core

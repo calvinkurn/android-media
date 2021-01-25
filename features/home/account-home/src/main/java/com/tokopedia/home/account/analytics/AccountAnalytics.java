@@ -3,14 +3,13 @@ package com.tokopedia.home.account.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.moengage.push.PushManager;
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.analytics.firebase.FirebaseParams;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
+import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -23,13 +22,6 @@ import com.tokopedia.user_identification_common.KYCConstant;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_UNIQUE_ID;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_BDAY;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_EMAIL;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_FIRST_NAME;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_GENDER;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_MOBILE;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_NAME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK_LEARN_MORE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK_OPEN_SHOP;
@@ -57,24 +49,22 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.ECOMMERCE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EMPTY;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION;
-import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_IMPRESSION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_DALAM_PROSES;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_ETICKET_EVOUCHER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION;
-import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_TS_USR_MENU;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_MENUNGGU_PEMBAYARAN;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_SEMUA_TRANSAKSI;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_TS_USR_MENU;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_ACCOUNT_PAGE_BUYER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_AKUN_PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CLICK_ACCOUNT;
-import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_NAME_CLICK_NOTIF_CENTER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_LABEL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_NAME_CLICK_NOTIF_CENTER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PRODUCT_CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PRODUCT_VIEW;
-import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PROMO_CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PROMO_VIEW;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_CREATIVE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_CREATIVE_URL;
@@ -82,7 +72,6 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_ID;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_NAME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_POSITION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_SHOP_ID;
-import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_USER_ID;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_USER_ID;
 import static com.tokopedia.home.account.AccountConstants.Analytics.IDR;
 import static com.tokopedia.home.account.AccountConstants.Analytics.IMPRESSIONS;
@@ -95,7 +84,6 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PRODUCTS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROMOTIONS;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PROMOTION_CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROMOTION_VIEW;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME_ACCOUNT;
@@ -112,12 +100,6 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_BEBAS_
 import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_PRODUCT_RECOMMENDATION_LIST;
 import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_PRODUCT_TOPADS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_WISHLIST_PRODUCT;
-import static com.tokopedia.home.account.AccountConstants.MOENGAGE.HAS_PURCHASED_MARKETPLACE;
-import static com.tokopedia.home.account.AccountConstants.MOENGAGE.LAST_TRANSACT_DATE;
-import static com.tokopedia.home.account.AccountConstants.MOENGAGE.SHOP_ID;
-import static com.tokopedia.home.account.AccountConstants.MOENGAGE.SHOP_NAME;
-import static com.tokopedia.home.account.AccountConstants.MOENGAGE.TOPADS_AMT;
-import static com.tokopedia.home.account.AccountConstants.MOENGAGE.TOTAL_SOLD_ITEM;
 
 /**
  * Created by meta on 04/08/18.
@@ -470,46 +452,23 @@ public class AccountAnalytics {
 
     public void setUserAttributes(UserAttributeData profileData) {
         if(context != null){
-            Map<String, Object> value = new HashMap<>();
-            value.put(USER_ATTRIBUTE_USER_NAME, profileData.getProfile() == null ? "" : profileData.getProfile().getFullName());
-            value.put(USER_ATTRIBUTE_USER_FIRST_NAME, profileData.getProfile() != null && profileData.getProfile().getFirstName() != null ? profileData.getProfile().getFirstName() : "");
-            value.put(USER_ATTRIBUTE_UNIQUE_ID, profileData.getProfile() == null ? "" : profileData.getProfile().getUserId());
-            value.put(USER_ATTRIBUTE_USER_EMAIL, profileData.getProfile() == null ? "" : profileData.getProfile().getEmail());
-            value.put(USER_ATTRIBUTE_USER_MOBILE, normalizePhoneNumber(profileData.getProfile() == null || profileData.getProfile().getPhone() == null ? "" : profileData.getProfile().getPhone()));
-            value.put(USER_ATTRIBUTE_USER_BDAY, DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MM_YYYY, extractFirstSegment(context, profileData.getProfile().getBday() != null ? profileData.getProfile().getBday() : "", "T")));
-            value.put(SHOP_ID, profileData.getUserShopInfo() != null ? profileData.getUserShopInfo().getInfo().getShopId() : "");
-            value.put(SHOP_NAME, profileData.getUserShopInfo() != null ? profileData.getUserShopInfo().getInfo().getShopName() : "");
-            value.put(TOTAL_SOLD_ITEM, profileData.getUserShopInfo() != null ? profileData.getUserShopInfo().getStats().getShopItemSold() : "0");
-            value.put(TOPADS_AMT, profileData.getTopadsDeposit() != null ? profileData.getTopadsDeposit().getTopadsAmount() + "" : "");
-            value.put(HAS_PURCHASED_MARKETPLACE, profileData.getPaymentAdminProfile().getIsPurchasedMarketplace() != null ? profileData.getPaymentAdminProfile().getIsPurchasedMarketplace() : false);
-            value.put(LAST_TRANSACT_DATE, DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MM_YYYY, extractFirstSegment(context, profileData.getPaymentAdminProfile() != null ? profileData.getPaymentAdminProfile().getLastPurchaseDate() : "", "T")));
-            value.put(USER_ATTRIBUTE_USER_GENDER, profileData.getProfile().getGender() != null ? profileData.getProfile().getGender() : "0");
-
-            TrackApp.getInstance().getMoEngage().setUserData(value, "GRAPHQL");
+            MoengageInteractor.INSTANCE.setUserDataGraphQL(profileData.getProfile() == null ? "" : profileData.getProfile().getFullName(),
+                    profileData.getProfile() != null && profileData.getProfile().getFirstName() != null ? profileData.getProfile().getFirstName() : "",
+                    profileData.getProfile() == null ? "" : profileData.getProfile().getUserId(),
+                    profileData.getProfile() == null ? "" : profileData.getProfile().getEmail(),
+                    profileData.getProfile() == null || profileData.getProfile().getPhone() == null ? "" : profileData.getProfile().getPhone(),
+                    profileData.getProfile().getBday() != null ? profileData.getProfile().getBday() : "",
+                    profileData.getUserShopInfo() != null ? profileData.getUserShopInfo().getInfo().getShopName() : "",
+                    profileData.getUserShopInfo() != null ? profileData.getUserShopInfo().getInfo().getShopId() : "",
+                    profileData.getUserShopInfo() != null ? profileData.getUserShopInfo().getStats().getShopItemSold() : "0",
+                    profileData.getTopadsDeposit() != null ? profileData.getTopadsDeposit().getTopadsAmount() + "" : "",
+                    profileData.getPaymentAdminProfile() != null ? profileData.getPaymentAdminProfile().getLastPurchaseDate() : "",
+                    profileData.getProfile().getGender() != null ? profileData.getProfile().getGender() : "0",
+                    profileData.getPaymentAdminProfile().getIsPurchasedMarketplace() != null ? profileData.getPaymentAdminProfile().getIsPurchasedMarketplace() : false);
+            //update on the basis of moengage flag
             if (!TextUtils.isEmpty(userSessionInterface.getDeviceId()))
-                PushManager.getInstance().refreshToken(context.getApplicationContext(), userSessionInterface.getDeviceId());
+                MoengageInteractor.INSTANCE.refreshToken(userSessionInterface.getDeviceId());
         }
-    }
-
-    private String normalizePhoneNumber(String phoneNum) {
-        if (!TextUtils.isEmpty(phoneNum))
-            return phoneNum.replaceFirst("^0(?!$)", "62");
-        else
-            return "";
-    }
-
-    private String extractFirstSegment(Context context,String inputString, String separator) {
-        String firstSegment = "";
-        if (!TextUtils.isEmpty(inputString)) {
-            String token[] = inputString.split(separator);
-            if (token.length > 1) {
-                firstSegment = token[0];
-            } else {
-                firstSegment = separator;
-            }
-        }
-
-        return firstSegment;
     }
 
     public static void clickOpenShopFree() {

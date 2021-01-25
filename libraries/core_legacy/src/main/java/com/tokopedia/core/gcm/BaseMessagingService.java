@@ -10,7 +10,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.moengage.pushbase.push.MoEngageNotificationUtils;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.BuildConfig;
@@ -19,6 +18,7 @@ import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
+import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -56,7 +56,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         if (Hansel.isPushFromHansel(data) && !GlobalConfig.isSellerApp()) {
             Hansel.handlePushPayload(this, data);
             Timber.w("P1#MESSAGING_SERVICE#HanselPush;from='%s';data='%s'", remoteMessage.getFrom(), data.toString());
-        } else if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
+        } else if (MoengageInteractor.INSTANCE.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
             appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
             Timber.w("P1#MESSAGING_SERVICE#MoengageNotification;from='%s';data='%s'", remoteMessage.getFrom(), data.toString());
         } else if (appNotificationReceiver.isFromCMNotificationPlatform(remoteMessage.getData())) {
@@ -69,7 +69,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         }
         logOnMessageReceived(data);
 
-        if (com.tokopedia.config.GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             sendPushNotificationIntent();
         }
     }

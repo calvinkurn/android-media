@@ -1,0 +1,31 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+
+    implementation rootProject.ext.analyticsDependencies.moengage
+    implementation rootProject.ext.analyticsDependencies.moengageAmp
+    implementation project(rootProject.ext.libraries.cmPushNotifications)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+
+    testImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+
+}
+
+project.ext {
+    artifactId = 'moengage_wrapper'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.1"
+    artifactName = "moengage_wrapper-release"
+}
+
+apply from: '../../publish_local.gradle'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'

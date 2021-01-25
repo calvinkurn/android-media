@@ -16,10 +16,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.github.moduth.blockcanary.BlockCanary;
 import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.android.play.core.splitcompat.SplitCompat;
-import com.moengage.inapp.InAppManager;
-import com.moengage.inapp.InAppMessage;
-import com.moengage.inapp.InAppTracker;
-import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.authentication.AuthHelper;
@@ -36,6 +32,9 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.moengage_wrapper.MoengageInteractor;
+import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
+import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -65,8 +64,8 @@ import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHOR
  * Created by ricoharisin on 11/11/16.
  */
 
-public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction,
-        InAppManager.InAppMessageListener {
+public class SellerMainApplication extends SellerRouterApplication implements
+        MoengagePushListener, MoengageInAppListener {
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
@@ -74,22 +73,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-    }
-
-    @Override
-    public void onInAppShown(InAppMessage message) {
-        InAppTracker.getInstance(this).trackInAppClicked(message);
-    }
-
-    @Override
-    public boolean showInAppMessage(InAppMessage message) {
-        InAppTracker.getInstance(this).trackInAppClicked(message);
-        return false;
-    }
-
-    @Override
-    public void onInAppClosed(InAppMessage message) {
-
     }
 
     @Override
@@ -160,8 +143,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         TimberWrapper.init(this);
         super.onCreate();
-        MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
-        InAppManager.getInstance().setInAppListener(this);
+        MoengageInteractor.INSTANCE.setPushListener(SellerMainApplication.this);
+        MoengageInteractor.INSTANCE.setInAppListener(this);
         initCacheApi();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
         GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
@@ -175,12 +158,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initSlicePermission();
     }
 
-    private void initCacheManager(){
+    private void initCacheManager() {
         PersistentCacheManager.init(this);
         cacheManager = PersistentCacheManager.instance;
     }
 
-    private void setVersionName(){
+    private void setVersionName() {
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             Pair<String, String> versions = AuthHelper.getVersionName(pInfo.versionName);
@@ -201,7 +184,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
     }
 
-    public void initBlockCanary(){
+    public void initBlockCanary() {
         BlockCanary.install(context, new BlockCanaryContext()).start();
     }
 
@@ -232,7 +215,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
     }
 
-    protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
+    protected AbTestPlatform.Listener getRemoteConfigListener() {
+        return null;
+    }
 
     private void setVersionCode() {
         try {
@@ -289,7 +274,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return remoteConfig != null
                 && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
     }
-
 
 
     @Override

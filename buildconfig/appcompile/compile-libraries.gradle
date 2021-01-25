@@ -42,6 +42,7 @@ include "libraries:instrumentation_test"
 include 'libraries:iris'
 include 'libraries:iris_session'
 include "libraries:mediauploader"
+include "libraries:moengage_wrapper"
 include "libraries:oms"
 include "libraries:push_notification"
 include "libraries:product_photo_adapter"

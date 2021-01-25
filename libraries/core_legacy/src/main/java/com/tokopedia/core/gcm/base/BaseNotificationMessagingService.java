@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.moengage.push.PushManager;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.FCMTokenReceiver;
@@ -18,6 +17,7 @@ import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
 import com.tokopedia.fcmcommon.di.FcmComponent;
 import com.tokopedia.fcmcommon.di.FcmModule;
+import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -79,6 +79,7 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     public void onNewToken(String newToken) {
         fcmManager.onNewToken(newToken);
         propagateIDtoServer(newToken);
+        //update on the basis of moengage flag
         updateMoEngageToken(newToken);
         Hansel.setNewToken(this, newToken);
         updateApsFlyerToken(newToken);
@@ -105,7 +106,7 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
 
     public void updateMoEngageToken(String token) {
         Timber.d("Moengage RefreshedToken: " + token);
-        PushManager.getInstance().refreshToken(getApplicationContext(), token);
+        MoengageInteractor.INSTANCE.refreshToken(token);
     }
 
     public void propagateIDtoServer(String token) {
