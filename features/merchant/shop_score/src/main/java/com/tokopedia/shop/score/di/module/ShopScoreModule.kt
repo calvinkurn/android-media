@@ -13,7 +13,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-@ShopScoreScope
 class ShopScoreModule {
 
     @ShopScoreScope

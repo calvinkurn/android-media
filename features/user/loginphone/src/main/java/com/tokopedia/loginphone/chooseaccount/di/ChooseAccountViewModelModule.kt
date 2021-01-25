@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  * ade.hadian@tokopedia.com
  */
 
-@ChooseAccountScope
 @Module
 abstract class ChooseAccountViewModelModule{
 

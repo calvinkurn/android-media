@@ -3,7 +3,6 @@ package com.tokopedia.shop.pageheader.presentation
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -57,6 +56,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -211,12 +211,11 @@ class ShopPageViewModel @Inject constructor(
         launchCatchError(dispatcherProvider.io, {
             ImageHandler.loadImageWithTarget(context, shopSnippetUrl, object : CustomTarget<Bitmap>(){
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    val savedFile = ImageUtils.writeImageToTkpdPath(
-                            ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
+                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
                             resource,
-                            true
+                            Bitmap.CompressFormat.PNG
                     )
-                    if(savedFile != null) {
+                    if (savedFile!= null) {
                         shopImagePath.postValue(savedFile.absolutePath)
                     }
                 }

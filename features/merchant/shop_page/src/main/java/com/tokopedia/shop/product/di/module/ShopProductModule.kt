@@ -61,7 +61,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Named
 
-@ShopProductScope
 @Module(includes = [ShopProductViewModelModule::class])
 class ShopProductModule {
     @ShopProductScope

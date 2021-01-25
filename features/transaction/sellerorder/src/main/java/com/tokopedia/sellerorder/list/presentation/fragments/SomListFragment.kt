@@ -49,7 +49,10 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_ORDER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
@@ -61,24 +64,24 @@ import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
+import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListBulkProcessOrderTypeFactory
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderEmptyViewHolder
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderViewHolder
-import com.tokopedia.sellerorder.list.presentation.bottomsheets.SomListBulkAcceptOrderBottomSheet
-import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkActionDialog
+import com.tokopedia.sellerorder.list.presentation.bottomsheets.SomListBulkProcessOrderBottomSheet
+import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkAcceptOrderDialog
+import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkPrintDialog
 import com.tokopedia.sellerorder.list.presentation.filtertabs.SomListSortFilterTab
-import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
-import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
-import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
-import com.tokopedia.sellerorder.list.presentation.models.SomListTickerUiModel
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CHANGE_COURIER
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CONFIRM_REQUEST_PICKUP
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CONFIRM_SHIPPING
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_DETAIL
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToChangeCourierPage
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToConfirmShippingPage
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToRequestPickupPage
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToSomOrderDetail
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToTrackingPage
+import com.tokopedia.sellerorder.list.presentation.models.*
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CHANGE_COURIER
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_DETAIL
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToPrintAwb
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
+import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
@@ -101,9 +104,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomListAdapterTypeFactory>(), SomListSortFilterTab.SomListSortFilterTabClickListener,
         TickerCallback, TickerPagerCallback, SearchInputView.Listener,
         SomListOrderViewHolder.SomListOrderItemListener, CoroutineScope,
-        SomListBulkAcceptOrderBottomSheet.SomListBulkAcceptOrderBottomSheetListener,
+        SomListBulkProcessOrderBottomSheet.SomListBulkProcessOrderBottomSheetListener,
         SomFilterBottomSheet.SomFilterFinishListener,
-        SomListOrderEmptyViewHolder.SomListEmptyStateListener {
+        SomListOrderEmptyViewHolder.SomListEmptyStateListener, SomListBulkPrintDialog.SomListBulkPrintDialogClickListener {
 
     companion object {
         private const val DELAY_SEARCH = 500L
@@ -245,8 +248,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var coachMarkIndexToShow: Int = 0
     private var selectedOrderId: String = ""
     private var tabActive: String = ""
-    private var somListBulkAcceptOrderBottomSheet: SomListBulkAcceptOrderBottomSheet? = null
-    private var bulkAcceptOrderDialog: SomListBulkActionDialog? = null
+    private var somListBulkProcessOrderBottomSheet: SomListBulkProcessOrderBottomSheet? = null
+    private var bulkAcceptOrderDialog: SomListBulkAcceptOrderDialog? = null
     private var tickerPagerAdapter: TickerPagerAdapter? = null
     private var userNotAllowedDialog: DialogUnify? = null
     private var errorToaster: Snackbar? = null
@@ -659,13 +662,33 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun isMultiSelectEnabled(): Boolean = viewModel.isMultiSelectEnabled
 
-    override fun onBulkAcceptOrderButtonClicked() {
+    override fun onBulkProcessOrderButtonClicked() {
         viewModel.bulkAcceptOrder(getSelectedOrderIds())
+    }
+
+    override fun onMenuItemClicked(keyAction: String) {
+        when (keyAction) {
+            KEY_PRINT_AWB -> {
+                context?.let { context ->
+                    SomListBulkPrintDialog(context)?.run {
+                        setTitle(getString(R.string.som_list_bulk_print_dialog_title, getSelectedOrderIds().size))
+                        setListener(this@SomListFragment)
+                        show()
+                    }
+                    SomAnalytics.eventClickBulkPrintAwb(userSession.userId)
+                }
+            }
+        }
+    }
+
+    override fun onPrintButtonClicked(markAsPrinted: Boolean) {
+        goToPrintAwb(activity, view, getSelectedOrderIds(), markAsPrinted)
+        SomAnalytics.eventClickYesOnBulkPrintAwb(userSession.userId)
     }
 
     private fun setDefaultSortByValue() {
         if (somListSortFilterTab?.isSortByAppliedManually() != true) {
-            if (tabActive == SomConsts.KEY_CONFIRM_SHIPPING) {
+            if (tabActive == KEY_CONFIRM_SHIPPING) {
                 viewModel.setSortOrderBy(SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING)
             } else {
                 viewModel.setSortOrderBy(SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING)
@@ -676,7 +699,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun showBulkAcceptOrderDialog(orderCount: Int) {
         context?.let { context ->
             if (bulkAcceptOrderDialog == null) {
-                bulkAcceptOrderDialog = SomListBulkActionDialog(context).apply {
+                bulkAcceptOrderDialog = SomListBulkAcceptOrderDialog(context).apply {
                     init()
                     setOnDismiss {
                         resetOrderSelectedStatus()
@@ -863,15 +886,15 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.bulkAcceptOrderResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
-                    if (somListBulkAcceptOrderBottomSheet?.isVisible == true) {
-                        somListBulkAcceptOrderBottomSheet?.dismiss()
+                    if (somListBulkProcessOrderBottomSheet?.isVisible == true) {
+                        somListBulkProcessOrderBottomSheet?.dismiss()
                     }
                     showBulkAcceptOrderDialog(getSelectedOrderIds().size)
                 }
                 is Fail -> {
-                    if (somListBulkAcceptOrderBottomSheet?.isVisible == true) {
-                        somListBulkAcceptOrderBottomSheet?.onBulkAcceptOrderFailed()
-                        showCommonToaster(somListBulkAcceptOrderBottomSheet?.getChildViews(), "Terjadi kesalahan.", Toaster.TYPE_ERROR)
+                    if (somListBulkProcessOrderBottomSheet?.isVisible == true) {
+                        somListBulkProcessOrderBottomSheet?.onBulkAcceptOrderFailed()
+                        showCommonToaster(somListBulkProcessOrderBottomSheet?.getChildViews(), "Terjadi kesalahan.", Toaster.TYPE_ERROR)
                     } else {
                         result.throwable.showErrorToaster()
                     }
@@ -1111,6 +1134,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         btnBulkAction.setOnClickListener {
             when (btnBulkAction.text) {
                 getString(R.string.som_list_bulk_accept_order_button) -> showBulkAcceptOrderBottomSheet()
+                getString(R.string.som_list_bulk_confirm_shipping_order_button) -> showBulkProcessOrderBottomSheet()
             }
         }
     }
@@ -1499,13 +1523,51 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun showBulkAcceptOrderBottomSheet() {
-        if (somListBulkAcceptOrderBottomSheet == null) {
-            somListBulkAcceptOrderBottomSheet = SomListBulkAcceptOrderBottomSheet()
+        if (somListBulkProcessOrderBottomSheet == null) {
+            somListBulkProcessOrderBottomSheet = SomListBulkProcessOrderBottomSheet()
         }
-        somListBulkAcceptOrderBottomSheet?.let {
-            it.setOrders(adapter.data.filterIsInstance<SomListOrderUiModel>().filter { it.isChecked })
+        somListBulkProcessOrderBottomSheet?.let {
+            val items = arrayListOf<Visitable<SomListBulkProcessOrderTypeFactory>>().apply {
+                add(SomListBulkProcessOrderDescriptionUiModel(getString(R.string.som_list_bottom_sheet_bulk_accept_order_description), false))
+                addAll(getOrdersProducts(adapter.data.filterIsInstance<SomListOrderUiModel>().filter { it.isChecked }))
+            }
+            it.setTitle(getString(R.string.som_list_bulk_accept_order_button))
+            it.setItems(items)
+            it.showButtonAction()
             it.setListener(this@SomListFragment)
             it.show(childFragmentManager, TAG_BOTTOM_SHEET_BULK_ACCEPT)
+        }
+    }
+
+    private fun showBulkProcessOrderBottomSheet() {
+        if (somListBulkProcessOrderBottomSheet == null) {
+            somListBulkProcessOrderBottomSheet = SomListBulkProcessOrderBottomSheet()
+        }
+        somListBulkProcessOrderBottomSheet?.let {
+            val items = arrayListOf<Visitable<SomListBulkProcessOrderTypeFactory>>().apply {
+                add(SomListBulkProcessOrderMenuItemUiModel(
+                        KEY_PRINT_AWB,
+                        getString(R.string.som_list_bulk_print_button),
+                        true
+                ))
+            }
+            it.setTitle(getString(R.string.som_list_bulk_confirm_shipping_order_button))
+            it.setItems(items)
+            it.hideButtonAction()
+            it.setListener(this@SomListFragment)
+            it.show(childFragmentManager, TAG_BOTTOM_SHEET_BULK_ACCEPT)
+        }
+    }
+
+    private fun getOrdersProducts(orders: List<SomListOrderUiModel>): List<SomListBulkProcessOrderProductUiModel> {
+        val products = orders.map { it.orderProduct }.flatten().groupBy { it.productId }
+
+        return products.filter { it.value.isNotEmpty() }.map {
+            SomListBulkProcessOrderProductUiModel(
+                    productName = it.value.first().productName,
+                    picture = it.value.first().picture,
+                    amount = it.value.size
+            )
         }
     }
 
@@ -1788,6 +1850,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun animateBulkAcceptOrderButtonEnter() {
         if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.cancel()
+        btnBulkAction.text = when (somListSortFilterTab?.getSelectedFilterStatus()) {
+            STATUS_NEW_ORDER -> getString(R.string.som_list_bulk_accept_order_button)
+            KEY_CONFIRM_SHIPPING -> getString(R.string.som_list_bulk_confirm_shipping_order_button)
+            else -> ""
+        }
         containerBtnBulkAction?.visible()
         bulkAcceptButtonEnterAnimation = containerBtnBulkAction?.animateSlide(containerBtnBulkAction?.translationY.orZero(), 0f)
     }
