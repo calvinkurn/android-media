@@ -60,6 +60,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.unifyDependencies.dialog
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.features.promoUiCommon)
 
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime

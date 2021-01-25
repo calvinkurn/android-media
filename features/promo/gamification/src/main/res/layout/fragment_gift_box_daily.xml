@@ -102,6 +102,17 @@
 
                     <!--                    <include layout="@layout/gami_gift_reminder" />-->
 
+                    <com.tokopedia.gamification.giftbox.presentation.views.GamiDirectGiftView
+                        android:id="@+id/direct_gift_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/gami_direct_view_bottom_margin"
+                        android:gravity="center_horizontal" />
+
                 </FrameLayout>
 
                 <LinearLayout
@@ -151,31 +162,9 @@
 
             <include layout="@layout/gami_gift_box_toolbar" />
 
-            <com.tokopedia.gamification.giftbox.presentation.views.DirectGiftView
-                android:id="@+id/direct_gift_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/gami_direct_view_bottom_margin"
-                android:gravity="center_horizontal" />
         </FrameLayout>
 
-        <View
-            android:id="@+id/emptyView"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/gamification_pdp_peek_height_xml"
-            tools:layout_height="0dp" />
     </LinearLayout>
-
-
-    <!--    <FrameLayout-->
-    <!--        android:id="@+id/bottomSheetContainer"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">-->
 
     <com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
         android:id="@+id/pdpGamificationView"
@@ -183,5 +172,4 @@
         android:layout_height="wrap_content"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         tools:layout_height="0dp" />
-    <!--    </FrameLayout>-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

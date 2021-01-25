@@ -13,7 +13,7 @@ import com.tokopedia.gamification.giftbox.data.entities.PrizeListItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class DirectGiftView @JvmOverloads constructor(
+class GamiDirectGiftView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : GiftBoxGlowingView(context, attrs, defStyleAttr) {
 
@@ -22,7 +22,6 @@ class DirectGiftView @JvmOverloads constructor(
     lateinit var tvTitle: Typography
     lateinit var tvMessage: Typography
     lateinit var greenBtn: GreenGradientButton
-//    lateinit var btnContainer: View
 
     init {
         View.inflate(context, LAYOUT, this)

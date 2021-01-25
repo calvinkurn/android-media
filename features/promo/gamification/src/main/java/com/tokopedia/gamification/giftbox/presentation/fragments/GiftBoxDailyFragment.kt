@@ -69,7 +69,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //    lateinit var reminderLayout: RelativeLayout
 //    lateinit var fmReminder: FrameLayout
 //    lateinit var imageInfo: AppCompatImageView
-    lateinit var directGiftView: DirectGiftView
+    lateinit var directGiftView: GamiDirectGiftView
     lateinit var pdpGamificationView: PdpGamificationView
 //    lateinit var bottomSheetContainer: ViewGroup
 
