@@ -13,5 +13,8 @@ class DigitalCheckoutDataParameter (
         var walletRefreshToken: String? = null,
         var relationType: String? = null,
         var relationId: String? = null,
-        var isNeedOtp: Boolean = false
+        var isNeedOtp: Boolean = false,
+
+        var isSubscriptionChecked: Boolean = false,
+        var isFintechProductChecked: Boolean = false
 )

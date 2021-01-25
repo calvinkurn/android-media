@@ -13,6 +13,7 @@ import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
 import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
+import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.track.TrackApp
 
@@ -284,7 +285,8 @@ object DigitalCheckoutMapper {
     }
 
     fun getRequestBodyCheckout(checkoutData: DigitalCheckoutDataParameter,
-                               digitalIdentifierParam: RequestBodyIdentifier): RequestBodyCheckout {
+                               digitalIdentifierParam: RequestBodyIdentifier,
+                               fintechProduct: FintechProduct?): RequestBodyCheckout {
         val requestBodyCheckout = RequestBodyCheckout()
         requestBodyCheckout.type = "checkout"
 
@@ -299,6 +301,22 @@ object DigitalCheckoutMapper {
         attributes.appsFlyer = DeviceUtil.getAppsFlyerIdentifierParam(
                 TrackApp.getInstance().appsFlyer.uniqueId,
                 TrackApp.getInstance().appsFlyer.googleAdId)
+
+        attributes.subscribe = checkoutData.isSubscriptionChecked
+
+        if (checkoutData.isFintechProductChecked) {
+            fintechProduct?.run {
+                attributes.fintechProduct = listOf(RequestBodyCheckout.FintechProductCheckout(
+                        transactionType = transactionType,
+                        tierId = tierId,
+                        userId = attributes.identifier?.userId?.toLongOrNull(),
+                        fintechAmount = fintechAmount,
+                        fintechPartnerAmount = fintechPartnerAmount,
+                        productName = info.title
+                ))
+            }
+        }
+
         requestBodyCheckout.attributes = attributes
         requestBodyCheckout.relationships = CheckoutRelationships(
                 CheckoutRelationships.Cart(

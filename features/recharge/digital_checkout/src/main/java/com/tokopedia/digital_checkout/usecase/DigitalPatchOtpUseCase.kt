@@ -34,7 +34,7 @@ class DigitalPatchOtpUseCase @Inject constructor(@DigitalCartQualifier val authI
         requestBody.add("data", jsonElement)
 
         val restRequest = RestRequest.Builder(url, token)
-                .setRequestType(RequestType.POST)
+                .setRequestType(RequestType.PATCH)
                 .setBody(requestBody)
                 .build()
         networkRequest.add(restRequest)

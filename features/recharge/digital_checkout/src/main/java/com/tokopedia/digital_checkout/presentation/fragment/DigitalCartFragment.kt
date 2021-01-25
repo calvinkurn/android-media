@@ -15,11 +15,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
+import com.tokopedia.common_digital.common.constant.DigitalCache
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.digital_checkout.R
@@ -196,7 +198,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             interruptRequestTokenVerification(it)
         })
 
-        viewModel.checkoutData.observe(viewLifecycleOwner, Observer {
+        viewModel.paymentPassData.observe(viewLifecycleOwner, Observer {
             redirectToTopPayActivity(it)
         })
     }
@@ -342,8 +344,25 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             } else {
                 activity?.finish()
             }
+        } else if (requestCode == PaymentConstant.REQUEST_CODE) {
+            val categoryId = cartPassData?.categoryId ?: ""
+            when (resultCode) {
+                PaymentConstant.PAYMENT_SUCCESS -> {
+                    if (categoryId.isNotEmpty()) {
+                        PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId)
+                    }
+                }
+                PaymentConstant.PAYMENT_FAILED -> {
+                    showToastMessage(getString(R.string.digital_cart_alert_payment_canceled_or_failed))
+                    loadData()
+                }
+                PaymentConstant.PAYMENT_CANCELLED -> {
+                    showToastMessage(getString(R.string.digital_cart_alert_payment_canceled))
+                    loadData()
+                }
+                else -> loadData()
+            }
         }
-        //need to check others behaviour
     }
 
     private fun renderPromoTickerView() {
@@ -395,6 +414,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                             ?: "")
                     else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore
                             ?: "")
+                    viewModel.onSubscriptionChecked(isChecked)
                 }
             }
         }

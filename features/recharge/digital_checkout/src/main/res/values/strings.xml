@@ -22,4 +22,7 @@
     <string name="digital_cart_additional_payment_promo_label">Promo</string>
     <string name="digital_cart_additional_payment_total_cost_label">Total Bayar</string>
     <string name="digital_cart_additional_payment_label">Pembayaran</string>
+
+    <string name="digital_cart_alert_payment_canceled_or_failed">Pembayaran tidak berhasil atau dibatalkan</string>
+    <string name="digital_cart_alert_payment_canceled">Pembayaran dibatalkan</string>
 </resources>
