@@ -111,7 +111,7 @@ class RechargeBUWidgetProductCardViewHolder(
                     }
                     show()
                 } else {
-                    hide()
+                    visibility = View.INVISIBLE
                 }
             }
 
