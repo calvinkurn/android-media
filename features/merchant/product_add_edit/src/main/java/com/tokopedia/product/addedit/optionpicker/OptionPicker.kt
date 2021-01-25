@@ -9,19 +9,26 @@ import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.toDp
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.optionpicker.adapter.OptionTypeFactory
 import com.tokopedia.product.addedit.optionpicker.model.OptionModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipDividerItemDecoration
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.add_edit_product_specification_data_bottom_sheet_content.*
 import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
+import kotlinx.android.synthetic.main.bottom_sheet_list.view.searchBarData
+import java.util.*
+import kotlin.collections.ArrayList
 
 class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
     private var selectedPosition: Int = -1
     private var listener: ((selectedText: String, selectedPosition: Int) -> Unit)? = null
     private var contentView: View? = null
     private var isDividerVisible: Boolean = false
+    private var isSearchable: Boolean = false
     private var listAdapter: BaseListAdapter<OptionModel, OptionTypeFactory>? = null
 
     init {
@@ -48,6 +55,7 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
         changeCloseButtonSize()
         removeContainerPadding()
         addMarginCloseButton()
+        if (isSearchable) setupSearch()
     }
 
     private fun changeCloseButtonSize() {
@@ -76,6 +84,19 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
         (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
             setMargins(horizontalMargin, topMargin, horizontalMargin, 0)
             addRule(RelativeLayout.CENTER_VERTICAL)
+        }
+    }
+
+    private fun setupSearch() {
+        val locale = Locale.getDefault()
+        searchBarData.visible()
+        searchBarData.searchBarPlaceholder = getString(R.string.label_specification_search) +
+                " " + bottomSheetTitle.text.toString().toLowerCase(locale)
+        searchBarData.searchBarTextField.afterTextChanged { text ->
+            val filteredElements = listAdapter?.data?.filter {
+                it.text.toLowerCase(locale).startsWith(text)
+            }.orEmpty()
+            listAdapter?.setElements(filteredElements)
         }
     }
 
@@ -119,5 +140,9 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
 
     fun setDividerVisible(visible: Boolean) {
         isDividerVisible = visible
+    }
+
+    fun setSearchable(searchable: Boolean) {
+        isSearchable = searchable
     }
 }

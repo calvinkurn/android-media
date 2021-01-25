@@ -1,26 +1,28 @@
 package com.tokopedia.product.addedit.specification.presentation.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
+import com.tokopedia.product.addedit.specification.domain.model.Values
 import com.tokopedia.product.addedit.specification.presentation.adapter.viewholder.SpecificationValueViewHolder
-import com.tokopedia.product.addedit.specification.presentation.dialog.SpecificationDataBottomSheet
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 
 class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
         RecyclerView.Adapter<SpecificationValueViewHolder>(),
-        SpecificationValueViewHolder.OnSpecificationValueViewHolderClickListener,
-        SpecificationDataBottomSheet.SpecificationDataListener {
+        SpecificationValueViewHolder.OnSpecificationValueViewHolderClickListener {
 
     private var items: MutableList<AnnotationCategoryData> = mutableListOf()
     private var itemsSelected: MutableList<SpecificationInputModel> = mutableListOf()
-    private var editedPosition: Int? = null
+    private var mContext: Context? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpecificationValueViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_specification_value, parent, false)
+        mContext = parent.context
         return SpecificationValueViewHolder(rootView, this)
     }
 
@@ -36,15 +38,7 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
 
     override fun onSpecificationValueTextClicked(position: Int) {
         items.getOrNull(position)?.let { annotationData ->
-            val bottomSheet = SpecificationDataBottomSheet(
-                    title = annotationData.variant,
-                    ids = annotationData.data.map { it.id.toString() },
-                    data = annotationData.data.map { it.name },
-                    selectedId = getDataSelected(position).id,
-                    specificationDataListener = this)
-
-            editedPosition = position
-            bottomSheet.show(fragmentManager)
+            showSpecificationOption(annotationData.variant, annotationData.data, getDataSelected(position).id, position)
         }
     }
 
@@ -52,12 +46,6 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
         itemsSelected.getOrNull(position)?.let {
             it.id = ""
             it.data = ""
-        }
-    }
-
-    override fun onSpecificationDataSelected(specificationId: String, specificationData: String) {
-        editedPosition?.let {
-            setDataSelected(it, specificationId, specificationData)
         }
     }
 
@@ -95,5 +83,30 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
 
     fun getDataSelectedList(): List<SpecificationInputModel> {
         return itemsSelected
+    }
+
+    private fun showSpecificationOption(title: String, annotationData: List<Values>, selectedId: String, adapterPosition: Int) {
+        val optionTitle = mContext?.getString(R.string.title_specification_bottom_sheet) + " " + title
+        var selectedPosition: Int? = null
+        val options = annotationData.mapIndexed { index, value ->
+            if (value.id.toString() == selectedId) selectedPosition = index
+            value.name
+        }
+        val optionPicker = OptionPicker().apply {
+            selectedPosition?.let { setSelectedPosition(it) }
+            setDividerVisible(true)
+            setSearchable(true)
+            setTitle(optionTitle)
+            setItemMenuList(options)
+            setOnItemClickListener { selectedText, _ ->
+                annotationData.firstOrNull {
+                    it.name == selectedText
+                }?.let {
+                    setDataSelected(adapterPosition, it.id.toString(), it.name)
+                }
+            }
+        }
+
+        fragmentManager?.let { optionPicker.show(it, null) }
     }
 }

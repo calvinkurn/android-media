@@ -316,7 +316,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (viewModel.hasVariants) {
                 showImmutableCategoryDialog()
             } else {
-                if (viewModel.isEditing) {
+                if (viewModel.specificationList.isNotEmpty()) {
                     showChangeCategoryDialog {
                         startCategoryActivity(REQUEST_CODE_CATEGORY)
                     }
@@ -1352,6 +1352,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun subscribeToSpecificationText() {
         viewModel.specificationText.observe(viewLifecycleOwner, Observer {
             productSpecificationTextView?.text = it
+            addProductSpecificationButton?.text = if (viewModel.specificationList.isEmpty()) {
+                getString(R.string.action_specification_add)
+            } else {
+                getString(R.string.action_specification_change)
+            }
         })
     }
 
@@ -1635,12 +1640,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productCategoryRecListView?.onLoadFinish {
             selectFirstCategoryRecommendation(items)
 
-            productCategoryRecListView?.run {
-                this.setOnItemClickListener { _, _, position, _ ->
-                    if (viewModel.isAdding) {
-                        ProductAddMainTracking.clickProductCategoryRecom(shopId)
-                    }
+            productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
+                if (viewModel.isAdding) {
+                    ProductAddMainTracking.clickProductCategoryRecom(shopId)
+                }
+
+                // display confirmation if product has a specs
+                if (viewModel.specificationList.isEmpty()) {
                     selectCategoryRecommendation(items, position)
+                } else {
+                    showChangeCategoryDialog {
+                        selectCategoryRecommendation(items, position)
+                    }
                 }
             }
 
