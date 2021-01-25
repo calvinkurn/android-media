@@ -3,6 +3,8 @@ package com.tokopedia.product.addedit.preview.presentation.service
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -132,6 +134,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             // (4)
             clearProductDraft()
             setUploadProductDataSuccess()
+            addFlagOnUploadProductSuccess()
             ProductAddUploadTracking.uploadProductFinish(shopId, true)
         }, onError = { throwable ->
             val errorMessage = getErrorMessage(throwable)
@@ -157,6 +160,14 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         if(productDraftId > 0) {
             deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(productDraftId)
             deleteProductDraftUseCase.executeOnBackground()
+        }
+    }
+
+    private suspend fun addFlagOnUploadProductSuccess() {
+        withContext(Dispatchers.IO) {
+            val cacheHandler = LocalCacheHandler(applicationContext, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
+            cacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT, true)
+            cacheHandler.applyEditor()
         }
     }
 }
