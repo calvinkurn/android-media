@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.tkpd.tkpdreputation.R;
 
 import java.util.List;
 
@@ -53,11 +52,11 @@ public class ReviewProductActivity extends BaseSimpleActivity implements HasComp
 
     @Override
     protected int getParentViewResourceID() {
-        return R.id.review_product_parent_view;
+        return com.tokopedia.abstraction.R.id.parent_view;
     }
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_review_product;
+        return com.tokopedia.abstraction.R.layout.activity_base_simple;
     }
 }
