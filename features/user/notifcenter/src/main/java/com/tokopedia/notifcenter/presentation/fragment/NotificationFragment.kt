@@ -498,6 +498,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         markAsSeenAnalytic.markAsSeen(notifId)
     }
 
+    override fun refreshPage() {
+        onRetryClicked()
+    }
+
     private fun createViewHolderState(
             notification: NotificationUiModel,
             adapterPosition: Int,
