@@ -34,6 +34,8 @@ class CheckoutTrackingTest {
         gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, R.raw.saf_tracking_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ratesv3_tracking_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.validate_use_tracking_default_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -43,7 +45,12 @@ class CheckoutTrackingTest {
 
         checkoutPage {
             Thread.sleep(5000)
+            openDurationBottomsheet()
+            Thread.sleep(5000)
+            selectFirstShippingDurationOption()
+            Thread.sleep(5000)
         } choosePayment  {
+            Thread.sleep(5000)
             hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
     }
@@ -56,6 +63,8 @@ class CheckoutTrackingTest {
 
     companion object {
         private const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form"
+        private const val RATES_V3_KEY = "ratesV3"
+        private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout.json"
     }
