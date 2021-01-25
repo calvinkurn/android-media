@@ -64,11 +64,20 @@ class AddEditProductSpecificationViewModel @Inject constructor(
         }
     }
 
+    fun getHasSpecification(specificationList: List<SpecificationInputModel>) = specificationList.any {
+        it.id.isNotBlank()
+    }
+
     fun updateProductInputModelSpecifications(specificationList: List<SpecificationInputModel>) {
         mProductInputModel.value?.apply {
             detailInputModel.specifications = specificationList.filter {
                 it.id.isNotBlank()
             }
         }
+    }
+
+    fun removeSpecification() {
+        updateProductInputModelSpecifications(emptyList())
+        mAnnotationCategoryData.value = mAnnotationCategoryData.value // trigger observer change
     }
 }

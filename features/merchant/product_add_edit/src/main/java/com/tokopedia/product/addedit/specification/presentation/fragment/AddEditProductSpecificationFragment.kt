@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
@@ -111,11 +112,12 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
                 activity?.finish()
             }
             actionTextView?.setOnClickListener {
-                //showRemoveSpecificationDialog()
+                viewModel.removeSpecification()
             }
             actionTextView?.text = getString(R.string.title_specification_activity_action)
             tvDeleteAll = actionTextView
-            tvDeleteAll?.isEnabled = false
+            tvDeleteAll?.isEnabled = true
+            tvDeleteAll?.visible()
         }
     }
 
@@ -124,6 +126,10 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         rvSpecification.adapter = specificationValueAdapter
         setRecyclerViewToVertical(rvSpecification)
         specificationValueAdapter?.setData(annotationCategoryData, itemSelected)
+        tvDeleteAll?.isEnabled = viewModel.getHasSpecification(itemSelected)
+        specificationValueAdapter?.showOnSpecificationChanged {
+            tvDeleteAll?.isEnabled = viewModel.getHasSpecification(it)
+        }
     }
 
     private fun setupSubmitButton() {
