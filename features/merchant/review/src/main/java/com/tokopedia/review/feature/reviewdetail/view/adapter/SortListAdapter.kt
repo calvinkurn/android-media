@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.reviewdetail.view.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
@@ -11,28 +12,40 @@ import kotlinx.android.synthetic.main.item_chips.view.*
 
 class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListener.Sort): RecyclerView.Adapter<SortListAdapter.SortListViewHolder>() {
 
-    var sortFilterListUiModel: List<SortItemUiModel>? = null
+    var sortFilterListUiModel = mutableListOf<SortItemUiModel>()
 
     fun setSortFilter(sortFilterListUiModel: List<SortItemUiModel>) {
-        this.sortFilterListUiModel = sortFilterListUiModel
+        this.sortFilterListUiModel = sortFilterListUiModel.toMutableList()
+        val callback = SortListDiffUtil(this.sortFilterListUiModel, sortFilterListUiModel)
+        val diffResult = DiffUtil.calculateDiff(callback)
+        this.sortFilterListUiModel.clear()
+        this.sortFilterListUiModel.addAll(sortFilterListUiModel)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun updatedSortFilter(position: Int) {
-        val itemSelected = sortFilterListUiModel?.getOrNull(position)
+        val itemSelected = sortFilterListUiModel.getOrNull(position)
 
-        sortFilterListUiModel?.filter {
+        sortFilterListUiModel.filter {
             it.isSelected
-        }?.filterNot { it == itemSelected }?.onEach { it.isSelected = false }
+        }.mapIndexed { index, sortItemUiModel ->
+            if (sortItemUiModel.isSelected) {
+                sortItemUiModel.isSelected = false
+                notifyItemChanged(index)
+            }
+        }
 
         itemSelected?.isSelected = true
-        notifyDataSetChanged()
+        notifyItemChanged(position)
     }
 
     fun resetSortFilter() {
-        sortFilterListUiModel?.mapIndexed { index, sortItemUiModel ->
-            sortItemUiModel.isSelected = index == 0
+        sortFilterListUiModel.mapIndexed { index, sortItemUiModel ->
+            if(sortItemUiModel.isSelected) {
+                sortItemUiModel.isSelected = false
+                notifyItemChanged(index)
+            }
         }
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SortListViewHolder {
@@ -41,11 +54,12 @@ class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListen
     }
 
     override fun getItemCount(): Int {
-        return sortFilterListUiModel?.size ?: 0
+        return sortFilterListUiModel.size
     }
 
     override fun onBindViewHolder(holder: SortListViewHolder, position: Int) {
-        sortFilterListUiModel?.get(position)?.let { holder.bind(it) }
+        val data = sortFilterListUiModel[position]
+        holder.bind(data)
     }
 
     class SortListViewHolder(itemView: View, private val topicSortFilterListener: TopicSortFilterListener.Sort): RecyclerView.ViewHolder(itemView) {
