@@ -120,7 +120,10 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
             return
         }
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_NOTIFY_ME -> bindButton(element, listener.isOwner())
+            ProductDetailConstant.PAYLOAD_NOTIFY_ME ->  {
+                bindButton(element, listener.isOwner())
+                bindListener(element, ComponentTrackDataModel(element.type, element.name, adapterPosition + 1))
+            }
         }
     }
 }

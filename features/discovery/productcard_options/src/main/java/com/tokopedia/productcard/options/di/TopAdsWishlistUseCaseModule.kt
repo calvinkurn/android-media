@@ -16,7 +16,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 @Module
-@ProductCardOptionsScope
 internal class TopAdsWishlistUseCaseModule {
 
     @Provides

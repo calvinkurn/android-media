@@ -231,6 +231,12 @@ class OrderAppWidget : AppWidgetProvider() {
             }
         }
 
+        fun showNoLoginState(context: Context) {
+            val awm = AppWidgetManager.getInstance(context)
+            val widgetIds = AppWidgetHelper.getAppWidgetIds<OrderAppWidget>(context, awm)
+            OrderWidgetNoLoginState.setupNoLoginState(context, awm, widgetIds)
+        }
+
         private fun getIsUserLoggedIn(context: Context, awm: AppWidgetManager, userSession: UserSessionInterface, widgetIds: IntArray): Boolean {
             if (!userSession.isLoggedIn) {
                 OrderWidgetNoLoginState.setupNoLoginState(context, awm, widgetIds)
