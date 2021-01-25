@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.oneclickcheckout.common.data.model.*
 import com.tokopedia.oneclickcheckout.order.data.get.*
@@ -31,6 +32,7 @@ class GetOccCartMapper @Inject constructor() {
             }
             shop = generateOrderShop(cart.shop).apply {
                 errors = cart.errors
+                isFulfillment = cart.warehouse.isFulfillment
             }
             kero = OrderKero(data.keroToken, data.keroDiscomToken, data.keroUnixTime)
         }
@@ -135,6 +137,7 @@ class GetOccCartMapper @Inject constructor() {
             productFinsurance = product.productFinsurance
             isSlashPrice = product.productOriginalPrice > product.productPrice
             productTrackerData = ProductTrackerData(product.productTrackerData.attribution, product.productTrackerData.trackerListName)
+            preorderDuration = product.productPreorder.durationDay.toIntOrZero()
         }
         return orderProduct
     }

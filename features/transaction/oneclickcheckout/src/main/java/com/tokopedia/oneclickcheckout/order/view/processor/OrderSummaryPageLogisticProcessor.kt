@@ -63,6 +63,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             weightInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weight / 1000.0
             productInsurance = orderProduct.productFinsurance
             orderValue = orderProduct.quantity.orderQuantity * orderProduct.getPrice()
+            isFulfillment = orderShop.isFulfillment
+            preOrderDuration = orderProduct.preorderDuration
         }
     }
 
