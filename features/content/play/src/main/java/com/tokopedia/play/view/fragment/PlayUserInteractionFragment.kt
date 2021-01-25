@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -424,9 +425,30 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun setupInsets(view: View) {
-        //TODO("Check this as sometimes it's not working properly?")
-        spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, margin ->
+        /**
+         * This is a temporary workaround for when insets not working inside viewpager
+         * //TODO("Find the root cause and handle it the right way")
+         */
+        val realBottomMargin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            try {
+                val layoutParams = spaceSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
+                val initialBottomMargin = layoutParams.bottomMargin
+                val insets = activity?.window?.decorView?.rootWindowInsets
+                if (insets != null) {
+                    layoutParams.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
+                    initialBottomMargin
+                } else error("Insets not supported")
+            } catch (e: Throwable) { 0 }
+        } else 0
+
+        spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+
+            /**
+             * Reduce margin by the first added value
+             */
+            val margin = recordedMargin.copy(bottom = realBottomMargin)
+
             var isMarginChanged = false
 
             val newTopMargin = insets.systemWindowInsetTop
