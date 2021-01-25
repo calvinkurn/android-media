@@ -988,16 +988,15 @@ class AddEditProductPreviewFragment :
                     if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
                         viewModel.productInputModel.value?.apply {
                             startProductEditService(this)
-                            showLoading()
-                            Handler().postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                         }
                     } else {
                         viewModel.productInputModel.value?.let { productInputModel ->
                             startProductAddService(productInputModel)
                             activity?.setResult(RESULT_OK)
-                            activity?.finish()
                         }
                     }
+                    showLoading()
+                    Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                 }
                 ValidationResultModel.Result.VALIDATION_ERROR -> {
                     view?.let { Toaster.make(it, result.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
@@ -1169,7 +1168,7 @@ class AddEditProductPreviewFragment :
         view?.let {
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
-                    actionText = getString(com.tokopedia.imagepicker.R.string.title_try_again),
+                    actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
                         viewModel.getProductData(viewModel.getProductId())

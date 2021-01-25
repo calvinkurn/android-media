@@ -157,15 +157,6 @@ class BranchHelperValidation {
     private fun validateContentId(eventName: String ,contentId: String) {
         if (contentId.isNullOrBlank()) {
             logging("validation;reason=contentId_blank;eventName='$eventName';data=''")
-        } else {
-            try {
-                val productarray = JSONArray(contentId)
-                if (productarray.length() < 1) {
-                    logging("validation;reason=contentId_invalid;eventName='$eventName';data='$contentId'")
-                }
-            } catch (e: JSONException) {
-                logging("error;reason=contentId_array_exception;eventName='$eventName';data='$contentId'");
-            }
         }
     }
 

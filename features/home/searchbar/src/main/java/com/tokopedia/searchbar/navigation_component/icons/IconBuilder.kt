@@ -22,6 +22,9 @@ class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
 
             //lottiee
             IconList.ID_NAV_LOTTIE_WISHLIST -> listIcon.add(IconList.LottieWishlistIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
+
+            //Animated vector drawable
+            IconList.ID_NAV_ANIMATED_WISHLIST -> listIcon.add(IconList.AnimatedWishlistIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
         }
         return this
     }
@@ -33,6 +36,7 @@ internal data class IconToolbar(val id: Int, val name: String = "", val bundle: 
     companion object {
         val TYPE_IMAGE = 0
         val TYPE_LOTTIE = 1
+        val TYPE_ANIMATED = 2
     }
 }
 

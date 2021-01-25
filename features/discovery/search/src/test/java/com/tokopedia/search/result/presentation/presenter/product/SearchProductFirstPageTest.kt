@@ -32,6 +32,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         }
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given View getQueryKey will return the keyword`(searchParameter[SearchApiConst.Q].toString())
 
         `When Load Data`(searchParameter)
 
@@ -45,6 +46,10 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         every { searchProductFirstPageUseCase.execute(capture(requestParamsSlot), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
+    }
+
+    private fun `Given View getQueryKey will return the keyword`(keyword: String) {
+        every { productListView.queryKey } returns keyword
     }
 
     private fun `When Load Data`(searchParameter: Map<String, Any>) {
@@ -111,8 +116,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
     private fun `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog: CapturingSlot<String>, exception: Exception) {
         verifyOrder {
             productListView.isAnyFilterActive
-
-            productListView.isAnyFilterActive
             productListView.isAnySortActive
 
             productListView.stopPreparePagePerformanceMonitoring()
@@ -144,6 +147,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given View is first active tab`()
         `Given View reload data immediately calls load data`()
+        `Given View getQueryKey will return the keyword`("samsung")
 
         `When View is created`()
 

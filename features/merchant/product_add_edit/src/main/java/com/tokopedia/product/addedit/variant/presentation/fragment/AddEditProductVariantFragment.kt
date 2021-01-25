@@ -25,7 +25,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
@@ -758,6 +757,7 @@ class AddEditProductVariantFragment :
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
                 .withSimpleEditor()
+        builder.imagePickerEditorBuilder?.convertToWebp = true
         ImagePickerGlobalSettings.onImageEditorContinue = ImagePickerCallback(ctx) { it, _ ->
             val shopId = UserSession(it).shopId ?: ""
             if (isEditMode) ProductEditVariantTracking.pickProductVariantPhotos(shopId)
@@ -1075,7 +1075,6 @@ class AddEditProductVariantFragment :
     private fun removeSizechart() {
         val url = viewModel.variantSizechart.value?.urlOriginal.orEmpty()
         viewModel.updateSizechart("")
-        FileUtils.deleteFileInTokopediaFolder(url)
     }
 
     private fun showSizechartPicker() {
@@ -1083,6 +1082,7 @@ class AddEditProductVariantFragment :
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
                 .withSimpleEditor()
+        builder.imagePickerEditorBuilder?.convertToWebp = true
         ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
@@ -1106,7 +1106,8 @@ class AddEditProductVariantFragment :
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImageEditorBuilder(
                 imageUrls = arrayListOf(urlOrPath),
-                defaultRatio = ImageRatioType.RATIO_1_1
+                defaultRatio = ImageRatioType.RATIO_1_1,
+                convertToWebp = true
         )
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_EDITOR)
         intent.putImageEditorBuilder(builder)
@@ -1118,7 +1119,7 @@ class AddEditProductVariantFragment :
         view?.let {
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
-                    actionText = getString(com.tokopedia.imagepicker.R.string.title_try_again),
+                    actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
                         val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId

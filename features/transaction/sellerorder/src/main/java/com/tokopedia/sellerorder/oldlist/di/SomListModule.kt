@@ -11,7 +11,6 @@ import dagger.Provides
  */
 
 @Module
-@SomListScope
 class SomListModule {
     @SomListScope
     @Provides

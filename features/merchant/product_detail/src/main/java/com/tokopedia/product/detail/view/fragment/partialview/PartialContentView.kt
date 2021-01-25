@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
@@ -29,37 +29,33 @@ class PartialContentView(private val view: View,
         const val ONE_SECOND = 1000L
     }
 
-    fun renderData(product: DynamicProductInfoP1, isUpcomingNplType: Boolean, upcomingNplData: UpcomingNplDataModel) = with(view) {
-        val data = product.data
-        val basic = product.basic
-        val campaign = data.campaign
-
+    fun renderData(data: ProductContentMainData, isUpcomingNplType: Boolean, upcomingNplData: UpcomingNplDataModel) = with(view) {
         txt_main_price.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
-        product_name.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.name))
-        product_name.text = MethodChecker.fromHtml(data.name)
+        product_name.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
+        product_name.text = MethodChecker.fromHtml(data.productName)
 
-        img_free_ongkir.shouldShowWithAction(data.isFreeOngkir.isActive) {
-            ImageHandler.loadImageRounded2(context, img_free_ongkir, data.isFreeOngkir.imageURL)
+        img_free_ongkir.shouldShowWithAction(data.freeOngkir.isActive) {
+            ImageHandler.loadImageRounded2(context, img_free_ongkir, data.freeOngkir.imageURL)
         }
 
-        text_cashback_green.shouldShowWithAction(data.isCashback.percentage > 0) {
-            text_cashback_green.text = context.getString(R.string.template_cashback, data.isCashback.percentage.toString())
+        text_cashback_green.shouldShowWithAction(data.cashbackPercentage > 0) {
+            text_cashback_green.text = context.getString(R.string.template_cashback, data.cashbackPercentage.toString())
         }
 
         when {
             isUpcomingNplType -> {
-                renderNplRibbon(upcomingNplData.ribbonCopy, upcomingNplData.startDate, campaign)
+                renderNplRibbon(upcomingNplData.ribbonCopy, upcomingNplData.startDate)
                 renderCampaignInactiveNpl(data.price.value.getCurrencyFormatted())
             }
-            campaign.isActive -> {
-                renderCampaignActive(campaign, data.stock.stockWording)
+            data.campaign.isActive -> {
+                renderCampaignActive(data.campaign, data.stockWording)
             }
             else -> {
                 renderCampaignInactive(data.price.value.getCurrencyFormatted())
             }
         }
 
-        renderStockAvailable(campaign, data.variant.isVariant, data.stock.stockWording, basic.isActive())
+        renderStockAvailable(data.campaign, data.isVariant, data.stockWording, data.isProductActive)
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(view) {
@@ -172,7 +168,7 @@ class PartialContentView(private val view: View,
 
     private fun renderStockBarFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
         showStockBarFlashSale()
-        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.Unify_N50))
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
         setProgressStockBar(campaign, stockWording)
     }
 
@@ -180,10 +176,10 @@ class PartialContentView(private val view: View,
         hideStockBarAndBackgroundColor()
     }
 
-    private fun renderNplRibbon(ribbonCopy: String, startDate: String, campaign: CampaignModular) = with(view) {
+    private fun renderNplRibbon(ribbonCopy: String, startDate: String) = with(view) {
         if (startDate.isGivenDateIsBelowThan24H()) {
             text_title_discount_timer.text = context.getString(R.string.campaign_npl_start)
-            showCountDownTimerUpcomingNpl(startDate, campaign)
+            showCountDownTimerUpcomingNpl(startDate)
         } else {
             text_title_discount_timer.text = MethodChecker.fromHtml(ribbonCopy)
             count_down.hide()
@@ -205,10 +201,10 @@ class PartialContentView(private val view: View,
 
     fun renderTradein(showTradein: Boolean) = with(view) {
         tradein_header_container.showWithCondition(showTradein)
-        tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.tradein_white), null, null, null)
+        tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.common_tradein.R.drawable.tradein_white), null, null, null)
     }
 
-    private fun showCountDownTimerUpcomingNpl(startDateData: String, campaign: CampaignModular) = with(view) {
+    private fun showCountDownTimerUpcomingNpl(startDateData: String) = with(view) {
         try {
             val now = System.currentTimeMillis()
             val startTime = startDateData.toLongOrZero() * ProductNotifyMeViewHolder.SECOND
@@ -273,6 +269,6 @@ class PartialContentView(private val view: View,
 
     private fun hideStockBarAndBackgroundColor() = with(view) {
         hideStockBarFlashSale()
-        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.Unify_N0))
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 }

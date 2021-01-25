@@ -15,7 +15,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-@ProductManageScope
 class ProductManageModule  {
 
     @ProductManageScope

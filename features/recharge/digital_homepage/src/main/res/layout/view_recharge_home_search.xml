@@ -12,9 +12,9 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/digital_homepage_search_view_toolbar"
-            style="@style/Toolbar.White"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/Unify_N0"
             android:minHeight="?attr/actionBarSize"
             app:contentInsetLeft="@dimen/layout_lvl0"
             app:contentInsetStart="@dimen/layout_lvl0"
@@ -26,10 +26,10 @@
                 android:id="@+id/digital_homepage_search_view_search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:search_bar_show_icon="false"
-                app:search_bar_clearable="true"
                 android:paddingRight="@dimen/spacing_lvl4"
-                app:search_bar_placeholder="@string/digital_home_search_view_hint" />
+                app:search_bar_clearable="true"
+                app:search_bar_placeholder="@string/digital_home_search_view_hint"
+                app:search_bar_show_icon="false" />
 
         </androidx.appcompat.widget.Toolbar>
 

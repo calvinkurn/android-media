@@ -15,6 +15,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.settingnotif.usersetting.util.CacheManager.saveLastCheckedDate
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackClearCacheClicked
@@ -121,10 +122,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             }
         })
 
-        viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
-            setUpdateTokenStatus(newToken)
-            TroubleshooterTimber.token(newToken)
-            saveLastCheckedDate(requireContext())
+        viewModel.token.observe(viewLifecycleOwner, Observer {
+            getNewToken(it)
         })
 
         viewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
@@ -160,22 +159,35 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             val device = it.third
             val ringtone = it.fourth?.second
 
-            if (token.isNotNull() && notification.isNotNull() && device.isNotNull() && ringtone.isNotNull()) {
+            if (viewModel.tickerItems.isNotEmpty()) {
+                adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
+            } else {
+                adapter.removeTickers()
+            }
+
+            if (notification.isNotNull() && device.isNotNull() && ringtone.isNotNull() && token.isNotNull()) {
                 TroubleshooterTimber.combine(token, notification, device)
 
-                if (viewModel.tickerItems.isNotEmpty()) {
-                    adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
-                } else {
-                    adapter.removeTickers()
-                }
-
-                if (notification.isTrue() && device.isTrue() && !isSilent(ringtone)) {
+                if (notification.isTrue() && device.isTrue() && !isSilent(ringtone) && token.isTrue()) {
                     adapter.status(StatusState.Success)
                 } else {
                     adapter.status(StatusState.Warning)
                 }
             }
         })
+    }
+
+    private fun getNewToken(result: Result<String>) {
+        when (result) {
+            is Success -> {
+                setUpdateTokenStatus(result.data)
+                TroubleshooterTimber.token(result.data)
+                saveLastCheckedDate(requireContext())
+            }
+            is Fail -> {
+                setUpdateTokenStatus("")
+            }
+        }
     }
 
     private fun notificationSetting(result: Result<UserSettingUIView>) {
@@ -271,12 +283,19 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     private fun setUpdateTokenStatus(newToken: String) {
         val currentToken = fcmManager.currentToken().prefixToken().trim()
         val newTrimToken = newToken.prefixToken().trim()
+        txtToken?.show()
 
-        txtToken?.text = if (fcmManager.isNewToken(newToken)) {
-            viewModel.updateToken(newToken)
-            tokenUpdateMessage(currentToken, newTrimToken)
-        } else {
-            tokenCurrentMessage(currentToken, newTrimToken)
+        txtToken?.text = when {
+            newToken.isEmpty() || currentToken.isEmpty() -> {
+                getString(R.string.notif_error_update_token)
+            }
+            fcmManager.isNewToken(newToken) -> {
+                viewModel.updateToken(newToken)
+                tokenUpdateMessage(currentToken, newTrimToken)
+            }
+            else -> {
+                tokenCurrentMessage(currentToken, newTrimToken)
+            }
         }
     }
 
@@ -284,7 +303,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         return if (currentToken != newToken) {
             getString(R.string.notif_token_current_different, currentToken, newToken)
         } else {
-            getString(R.string.notif_token_current, newToken)
+            getString(R.string.notif_token_current, currentToken)
         }
     }
 

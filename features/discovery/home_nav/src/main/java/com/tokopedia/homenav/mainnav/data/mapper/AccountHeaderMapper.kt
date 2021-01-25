@@ -8,9 +8,7 @@ import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
-import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
-import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
-import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
+import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
 import com.tokopedia.user.session.UserSessionInterface
 
 class AccountHeaderMapper (
@@ -23,12 +21,12 @@ class AccountHeaderMapper (
                          saldoPojo: SaldoPojo?,
                          userMembershipPojo: MembershipPojo?,
                          shopInfoPojo: ShopInfoPojo?,
-                         isCache: Boolean): AccountHeaderViewModel {
-        var accountModel = AccountHeaderViewModel()
+                         isCache: Boolean): AccountHeaderDataModel {
+        var accountModel = AccountHeaderDataModel()
 
         when (val loginState = getLoginState()) {
-            AccountHeaderViewModel.LOGIN_STATE_LOGIN -> {
-                val data = AccountHeaderViewModel()
+            AccountHeaderDataModel.LOGIN_STATE_LOGIN -> {
+                val data = AccountHeaderDataModel()
                 userPojo?.let {
                     data.setProfileData(
                             userName = userPojo.profile.name,
@@ -63,9 +61,9 @@ class AccountHeaderMapper (
                 accountModel = data
 
             }
-            AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS,
-            AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN -> {
-                accountModel = AccountHeaderViewModel(loginState = loginState)
+            AccountHeaderDataModel.LOGIN_STATE_LOGIN_AS,
+            AccountHeaderDataModel.LOGIN_STATE_NON_LOGIN -> {
+                accountModel = AccountHeaderDataModel(loginState = loginState)
             }
         }
         return accountModel
@@ -73,18 +71,18 @@ class AccountHeaderMapper (
 
     private fun getLoginState(): Int {
         return when {
-            userSession.isLoggedIn -> AccountHeaderViewModel.LOGIN_STATE_LOGIN
-            haveUserLogoutData() -> AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
-            else -> AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN
+            userSession.isLoggedIn -> AccountHeaderDataModel.LOGIN_STATE_LOGIN
+            haveUserLogoutData() -> AccountHeaderDataModel.LOGIN_STATE_LOGIN_AS
+            else -> AccountHeaderDataModel.LOGIN_STATE_NON_LOGIN
         }
     }
 
     private fun haveUserLogoutData(): Boolean {
-        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
+        val name = getSharedPreference().getString(AccountHeaderDataModel.KEY_USER_NAME, "") ?: ""
         return name.isNotEmpty()
     }
 
     private fun getSharedPreference(): SharedPreferences {
-        return context.getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
+        return context.getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 }

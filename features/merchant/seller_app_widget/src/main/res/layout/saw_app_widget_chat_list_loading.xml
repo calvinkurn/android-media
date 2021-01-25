@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/saw_shape_rectangle_white_radius_16dp"
-    android:visibility="gone"
-    tools:visibility="visible">
+    android:visibility="visible">
 
     <RelativeLayout
         android:id="@+id/shimmerSawLoading1"

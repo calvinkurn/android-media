@@ -46,6 +46,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.mediauploader)
+    implementation project(rootProject.ext.libraries.utils)
 
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -74,6 +75,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.transition
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation rootProject.ext.networkDependencies.glide
 
@@ -86,6 +88,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.datepicker
+    implementation rootProject.ext.unifyDependencies.icons
 
 //    implementation 'com.alivc.component.encoder:AlivcCore:1.0'
 //    implementation 'com.aliyun.clientinforeport:AlivcReporter:1.0@aar'

@@ -1,7 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -56,6 +55,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceUtil;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.home.HomeInternalRouter;
@@ -217,6 +217,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
 
@@ -238,6 +239,7 @@ public class MainParentActivity extends BaseActivity implements
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
         installDFonBackground();
+        SubmitDeviceUtil.scheduleWorker(this, false);
     }
 
     private void installDFonBackground() {
@@ -588,7 +590,6 @@ public class MainParentActivity extends BaseActivity implements
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
         presenter.get().onResume();
-        clearNotification();
 
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
             reloadPage();
@@ -600,13 +601,6 @@ public class MainParentActivity extends BaseActivity implements
         if (currentFragment != null) {
             configureStatusBarBasedOnFragment(currentFragment);
             FragmentLifecycleObserver.INSTANCE.onFragmentSelected(currentFragment);
-        }
-    }
-
-    private void clearNotification() {
-        if (remoteConfig.get().getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
-            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
-            NotificationManagerCompat.from(this).cancelAll();
         }
     }
 
@@ -1056,7 +1050,6 @@ public class MainParentActivity extends BaseActivity implements
             }
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
             getPageLoadTimePerformanceInterface().stopMonitoring();
-            pageLoadTimePerformanceCallback = null;
         }
     }
 
