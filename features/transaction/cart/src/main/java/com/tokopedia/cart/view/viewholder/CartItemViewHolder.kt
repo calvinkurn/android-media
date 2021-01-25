@@ -44,6 +44,7 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -158,7 +159,7 @@ class CartItemViewHolder constructor(itemView: View,
                     }
 
                     override fun onError(e: Throwable) {
-                        e.printStackTrace()
+                        Timber.d(e)
                     }
 
                     override fun onNext(quantity: QuantityWrapper) {
