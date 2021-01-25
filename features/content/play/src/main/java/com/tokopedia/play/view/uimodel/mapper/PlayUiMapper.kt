@@ -130,7 +130,8 @@ object PlayUiMapper {
 //            channelType = PlayChannelType.Live,
 //            orientation = VideoOrientation.Horizontal(16, 9),
 //            backgroundUrl = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
-            isActive = config.active
+            isActive = config.active,
+            lastMillis = null
     )
 
     private fun mapVideoPlayer(video: Video, exoPlayer: ExoPlayer) = when (video.type) {

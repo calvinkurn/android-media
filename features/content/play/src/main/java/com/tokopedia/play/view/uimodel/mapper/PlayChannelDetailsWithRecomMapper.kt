@@ -136,7 +136,8 @@ class PlayChannelDetailsWithRecomMapper(
             buffer = mapVideoBufferControl(videoResponse.bufferControl),
             orientation = VideoOrientation.getByValue(videoResponse.orientation),
             backgroundUrl = configResponse.roomBackground.imageUrl,
-            isActive = configResponse.active
+            isActive = configResponse.active,
+            lastMillis = null
     )
 
     private fun mapMiscConfigInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayMiscConfigUiModel(

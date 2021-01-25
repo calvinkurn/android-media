@@ -151,6 +151,12 @@ class PlayViewModel @Inject constructor(
 
     val latestCompleteChannelData: PlayChannelData
         get() {
+            val videoMetaInfo = (_observableVideoMeta.value ?: mChannelData?.videoMetaInfo)
+            val videoStream = videoMetaInfo?.videoStream
+            val newVideoMeta = videoMetaInfo?.copy(
+                    videoStream = videoStream?.copy(lastMillis = playVideoManager.getCurrentPosition())
+            )
+
             return PlayChannelData(
                     id = mChannelData?.id ?: error("Channel Id should not be null"),
                     partnerInfo = _observablePartnerInfo.value ?: mChannelData?.partnerInfo ?: error("Partner Info should not be null"),
@@ -162,7 +168,7 @@ class PlayViewModel @Inject constructor(
                             pinnedProduct = _observablePinnedProduct.value
                     ),
                     quickReplyInfo = _observableQuickReply.value ?: mChannelData?.quickReplyInfo ?: error("Quick Reply should not be null"),
-                    videoMetaInfo = _observableVideoMeta.value ?: mChannelData?.videoMetaInfo ?: error("Video Meta should not be null")
+                    videoMetaInfo = newVideoMeta ?: error("Video Meta should not be null")
             )
         }
 
@@ -445,8 +451,9 @@ class PlayViewModel @Inject constructor(
 
     private fun initiateVideo(videoStream: VideoStreamUiModel) {
         startVideoWithUrlString(
-                videoStream.uriString,
-                videoStream.buffer
+                urlString = videoStream.uriString,
+                bufferControl = videoStream.buffer,
+                lastPosition = if (videoStream.channelType.isLive) null else videoStream.lastMillis
         )
         playVideoManager.setRepeatMode(shouldRepeat = false)
     }
@@ -460,9 +467,9 @@ class PlayViewModel @Inject constructor(
 //        playVideoManager.setRepeatMode(false)
 //    }
 
-    private fun startVideoWithUrlString(urlString: String, bufferControl: PlayBufferControl) {
+    private fun startVideoWithUrlString(urlString: String, bufferControl: PlayBufferControl, lastPosition: Long?) {
         try {
-            playVideoManager.playUri(uri = Uri.parse(urlString), bufferControl = bufferControl)
+            playVideoManager.playUri(uri = Uri.parse(urlString), bufferControl = bufferControl, startPosition = lastPosition)
         } catch (e: Exception) {}
     }
 

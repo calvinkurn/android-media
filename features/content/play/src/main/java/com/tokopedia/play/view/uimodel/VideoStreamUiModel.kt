@@ -13,5 +13,6 @@ data class VideoStreamUiModel(
         val orientation: VideoOrientation,
         val buffer: PlayBufferControl,
         val backgroundUrl: String,
-        val isActive: Boolean
+        val isActive: Boolean,
+        val lastMillis: Long?
 )
