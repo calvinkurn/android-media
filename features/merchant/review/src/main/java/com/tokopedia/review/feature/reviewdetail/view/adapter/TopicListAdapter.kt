@@ -28,17 +28,18 @@ class TopicListAdapter(private val topicSortFilterListener: TopicSortFilterListe
         sortFilterList.map { sortItemUiModel ->
             if(isSelected == sortItemUiModel) {
                 sortItemUiModel.isSelected = !updatedState
+                notifyItemChanged(position)
             }
         }
-
-        notifyItemChanged(position)
     }
 
     fun resetSortFilter() {
-        sortFilterList.mapIndexed { _, sortItemUiModel ->
-            sortItemUiModel.isSelected = false
+        sortFilterList.mapIndexed { index, sortItemUiModel ->
+            if(sortItemUiModel.isSelected) {
+                sortItemUiModel.isSelected = false
+                notifyItemChanged(index)
+            }
         }
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopicListViewHolder {

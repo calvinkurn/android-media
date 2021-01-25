@@ -10,7 +10,7 @@ import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_chips.view.*
 
-class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListener.Sort): RecyclerView.Adapter<SortListAdapter.SortListViewHolder>() {
+class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListener.Sort) : RecyclerView.Adapter<SortListAdapter.SortListViewHolder>() {
 
     var sortFilterListUiModel = mutableListOf<SortItemUiModel>()
 
@@ -24,24 +24,25 @@ class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListen
     }
 
     fun updatedSortFilter(position: Int) {
-        val itemSelected = sortFilterListUiModel.getOrNull(position)
-
-        sortFilterListUiModel.filter {
-            it.isSelected
-        }.mapIndexed { index, sortItemUiModel ->
-            if (sortItemUiModel.isSelected) {
+        sortFilterListUiModel.mapIndexed { index, sortItemUiModel ->
+            if(sortItemUiModel.isSelected) {
                 sortItemUiModel.isSelected = false
                 notifyItemChanged(index)
             }
         }
 
+        val itemSelected = sortFilterListUiModel.getOrNull(position)
         itemSelected?.isSelected = true
         notifyItemChanged(position)
     }
 
     fun resetSortFilter() {
+        val defaultSortIndex = 0
         sortFilterListUiModel.mapIndexed { index, sortItemUiModel ->
-            if(sortItemUiModel.isSelected) {
+            if (index == defaultSortIndex) {
+                sortFilterListUiModel.getOrNull(index)?.isSelected = true
+                notifyItemChanged(index)
+            } else if (sortItemUiModel.isSelected) {
                 sortItemUiModel.isSelected = false
                 notifyItemChanged(index)
             }
@@ -62,14 +63,14 @@ class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListen
         holder.bind(data)
     }
 
-    class SortListViewHolder(itemView: View, private val topicSortFilterListener: TopicSortFilterListener.Sort): RecyclerView.ViewHolder(itemView) {
+    class SortListViewHolder(itemView: View, private val topicSortFilterListener: TopicSortFilterListener.Sort) : RecyclerView.ViewHolder(itemView) {
         fun bind(data: SortItemUiModel) {
             with(itemView) {
                 chipsItem.apply {
                     centerText = true
                     chipText = data.title
                     chipSize = ChipsUnify.SIZE_MEDIUM
-                    chipType = if(data.isSelected) {
+                    chipType = if (data.isSelected) {
                         ChipsUnify.TYPE_SELECTED
                     } else {
                         ChipsUnify.TYPE_NORMAL
