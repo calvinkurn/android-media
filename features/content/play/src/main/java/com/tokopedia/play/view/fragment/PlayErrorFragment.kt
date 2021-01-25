@@ -115,16 +115,16 @@ class PlayErrorFragment @Inject constructor(
      * Observe
      */
     private fun observeErrorChannel() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
-            when (it) {
-                is NetworkResult.Fail -> {
-                    showGlobalError(it.error)
-                }
-                is NetworkResult.Success -> {
-                    container.hide()
-                }
-            }
-        })
+//        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
+//            when (it) {
+//                is NetworkResult.Fail -> {
+//                    showGlobalError(it.error)
+//                }
+//                is NetworkResult.Success -> {
+//                    container.hide()
+//                }
+//            }
+//        })
     }
 
     private fun showGlobalError(throwable: Throwable) {

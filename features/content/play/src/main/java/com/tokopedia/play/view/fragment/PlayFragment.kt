@@ -376,26 +376,26 @@ class PlayFragment @Inject constructor(
      * Observe
      */
     private fun observeGetChannelInfo() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
-            when (result) {
-                NetworkResult.Loading -> {
-                    if (!hasFetchedChannelInfo) loaderPage.show()
-                    else loaderPage.hide()
-
-                    fragmentErrorViewOnStateChanged(shouldShow = false)
-                }
-                is NetworkResult.Success -> {
-                    hasFetchedChannelInfo = true
-                    loaderPage.hide()
-                    fragmentErrorViewOnStateChanged(shouldShow = false)
-                    PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
-                }
-                is NetworkResult.Fail -> {
-                    loaderPage.hide()
-                    if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
-                }
-            }
-        })
+//        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
+//            when (result) {
+//                NetworkResult.Loading -> {
+//                    if (!hasFetchedChannelInfo) loaderPage.show()
+//                    else loaderPage.hide()
+//
+//                    fragmentErrorViewOnStateChanged(shouldShow = false)
+//                }
+//                is NetworkResult.Success -> {
+//                    hasFetchedChannelInfo = true
+//                    loaderPage.hide()
+//                    fragmentErrorViewOnStateChanged(shouldShow = false)
+//                    PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
+//                }
+//                is NetworkResult.Fail -> {
+//                    loaderPage.hide()
+//                    if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
+//                }
+//            }
+//        })
     }
 
     private fun observeChannelErrorEvent() {

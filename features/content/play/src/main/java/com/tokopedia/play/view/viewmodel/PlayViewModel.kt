@@ -63,8 +63,8 @@ class PlayViewModel @Inject constructor(
     /**
      * Not Used for Event to component
      */
-    val observableGetChannelInfo: LiveData<NetworkResult<ChannelInfoUiModel>>
-        get() = _observableGetChannelInfo
+//    val observableGetChannelInfo: LiveData<NetworkResult<ChannelInfoUiModel>>
+//        get() = _observableGetChannelInfo
 
     val observableChannelErrorEvent: LiveData<Event<Boolean>>
         get() = _observableChannelErrorEvent
@@ -114,7 +114,7 @@ class PlayViewModel @Inject constructor(
         }
     val channelType: PlayChannelType
         get() {
-            val videoStream = _observableLatestChannelInfo.value?.videoStream
+            val videoStream = _observableVideoMeta.value?.videoStream
             return videoStream?.channelType ?: PlayChannelType.Unknown
         }
     val videoPlayer: VideoPlayerUiModel
@@ -194,7 +194,7 @@ class PlayViewModel @Inject constructor(
 
     private val _observableLatestChannelInfo = MutableLiveData<PlayCompleteInfoUiModel>()
     private val _observableChannelErrorEvent = MutableLiveData<Event<Boolean>>()
-    private val _observableGetChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
+//    private val _observableGetChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
@@ -541,7 +541,7 @@ class PlayViewModel @Inject constructor(
                 )
                 _observableLatestChannelInfo.value = completeInfoUiModel
 
-                _observableGetChannelInfo.value = NetworkResult.Success(completeInfoUiModel.channelInfo)
+//                _observableGetChannelInfo.value = NetworkResult.Success(completeInfoUiModel.channelInfo)
 //                _observablePartnerInfo.value = completeInfoUiModel.channelInfo.partnerInfo
                 _observableTotalViews.value = completeInfoUiModel.totalView
                 _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
@@ -571,13 +571,13 @@ class PlayViewModel @Inject constructor(
                 if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
                 else if (it !is CancellationException) {
                     if (_observableLatestChannelInfo.value == null) doOnForbidden()
-                    _observableGetChannelInfo.value = NetworkResult.Fail(it)
+//                    _observableGetChannelInfo.value = NetworkResult.Fail(it)
                 }
             }
         }
 
         if (!isFreezeOrBanned) {
-            _observableGetChannelInfo.value = NetworkResult.Loading
+//            _observableGetChannelInfo.value = NetworkResult.Loading
             if (channelInfoJob?.isActive != true) getChannelInfoResponse(channelId)
         }
     }
