@@ -24,8 +24,8 @@ import com.tokopedia.usecase.RequestParams
 import okhttp3.Interceptor
 import javax.inject.Inject
 
-class DigitalAddToCartUseCase @Inject constructor(@DigitalCartQualifier authInterceptor: ArrayList<Interceptor>,
-                                                  @ApplicationContext context: Context)
+class DigitalAddToCartUseCase @Inject constructor(@DigitalCartQualifier val authInterceptor: ArrayList<Interceptor>,
+                                                  @ApplicationContext val context: Context)
     : RestRequestSupportInterceptorUseCase(authInterceptor, context) {
 
     override fun buildRequest(requestParams: RequestParams): MutableList<RestRequest> {
