@@ -23,7 +23,7 @@ class StickyActionButtonViewHolder(itemView: View,
         actionButton.setOnClickListener {
             val stickyActionButton = element.stickyActionButton?.firstOrNull()
             stickyActionButton?.invoiceRefNum?.let { invoiceRefNum ->
-                actionButtonClickListener.onStickyActionButtonCLicked(invoiceRefNum, stickyActionButton.replyText
+                actionButtonClickListener.onStickyActionButtonClicked(invoiceRefNum, stickyActionButton.replyText
                         ?: "")
             }
         }
