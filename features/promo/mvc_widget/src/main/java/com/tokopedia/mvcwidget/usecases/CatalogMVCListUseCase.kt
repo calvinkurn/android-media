@@ -16,13 +16,12 @@ class CatalogMVCListUseCase @Inject constructor(var gqlWrapper: GqlUseCaseWrappe
     private val PARAMS = TokopointsCatalogMVCParams
 
     suspend fun getResponse(map: HashMap<String, Any>): TokopointsCatalogMVCListResponse? {
-        return getFakeResponse()
-//        return gqlWrapper?.getResponse(getResponseClazz(), TokopointsCatalogMvcQuery.GQL_QUERY, map)
+        return gqlWrapper?.getResponse(getResponseClazz(), TokopointsCatalogMvcQuery.GQL_QUERY, map)
     }
 
     fun getQueryParams(shopId: String): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
-        variables[TokopointsCatalogMVCParams.SHOP_ID] = shopId.toString()
+        variables[TokopointsCatalogMVCParams.SHOP_ID] = shopId
         return variables
     }
 
@@ -41,11 +40,6 @@ class CatalogMVCListUseCase @Inject constructor(var gqlWrapper: GqlUseCaseWrappe
         val mvcRequest = GraphqlRequest(mvcQuery,
                 mvcUseCase.getResponseClazz(), mvcParams)
         return mvcRequest
-    }
-
-    suspend fun getFakeResponse(): TokopointsCatalogMVCListResponse {
-        delay(1000L)
-        return Gson().fromJson(FakeResponse.FakeTokopointsCatalogMVCListFirstFollowResponse, TokopointsCatalogMVCListResponse::class.java)
     }
 }
 

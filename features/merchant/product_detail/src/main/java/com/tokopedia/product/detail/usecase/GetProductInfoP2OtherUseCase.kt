@@ -65,7 +65,7 @@ class GetProductInfoP2OtherUseCase @Inject constructor(private val rawQueries: M
 
         //mvc
         val mvcUseCase =  CatalogMVCListUseCase(null)
-        val mvcRequest = mvcUseCase.getGraphqlRequest(shopId)
+        val mvcRequest = mvcUseCase.getGraphqlRequest(shopId.toString())
 
         val requests = mutableListOf(imageReviewRequest, helpfulReviewRequest, discussionMostHelpfulRequest, mvcRequest)
 
