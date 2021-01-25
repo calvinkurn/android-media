@@ -31,7 +31,7 @@
           "dimension56": "{{\\d+}}",
           "dimension11": "{{.*}}",
           "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "dimension84": "{{.*}}",
+          "dimension14": "{{.*}}",
           "dimension58": "{{true|false}}",
           "dimension57": "{{true|false}}",
           "dimension79": "{{\\d+}}",
@@ -52,7 +52,7 @@
           "dimension48": "{{\\d+}}"
         }
       ],
-      "eventLabel": "",
+      "eventLabel": "success",
       "checkout_option": "checkout page loaded"
     },
     {
@@ -74,7 +74,7 @@
           "dimension56": "{{\\d+}}",
           "dimension11": "{{.*}}",
           "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "dimension84": "{{.*}}",
+          "dimension14": "{{.*}}",
           "dimension58": "{{true|false}}",
           "dimension57": "{{true|false}}",
           "dimension79": "{{\\d+}}",
@@ -100,7 +100,7 @@
     },
     {
       "eventCategory": "courier selection",
-      "checkout_step": "2",
+      "checkout_step": "4",
       "currentSite": "tokopediamarketplace",
       "event": "checkout_progress",
       "eventAction": "click pilih metode pembayaran",
@@ -117,7 +117,7 @@
           "dimension56": "{{\\d+}}",
           "dimension11": "{{.*}}",
           "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "dimension84": "{{.*}}",
+          "dimension14": "{{.*}}",
           "dimension58": "{{true|false}}",
           "dimension57": "{{true|false}}",
           "dimension79": "{{\\d+}}",
