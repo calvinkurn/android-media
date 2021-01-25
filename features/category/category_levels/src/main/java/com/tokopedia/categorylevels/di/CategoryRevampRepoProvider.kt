@@ -3,14 +3,12 @@ package com.tokopedia.categorylevels.di
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.categorylevels.domain.repository.CategoryEmptyStateRepository
-import com.tokopedia.categorylevels.domain.repository.CategoryNavigationChipsRepository
 import com.tokopedia.categorylevels.domain.repository.CategoryGqlPageRepository
 import com.tokopedia.categorylevels.domain.usecase.CategoryTopAdsTrackingUseCase
 import com.tokopedia.categorylevels.view.activity.CATEGORY_LEVELS_PLT_NETWORK_METRICS
 import com.tokopedia.categorylevels.view.activity.CATEGORY_LEVELS_PLT_PREPARE_METRICS
 import com.tokopedia.categorylevels.view.activity.CATEGORY_LEVELS_PLT_RENDER_METRICS
 import com.tokopedia.common.RepositoryProvider
-import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
@@ -37,10 +35,6 @@ class CategoryRevampRepoProvider(val departmentName: String, val departmentId: S
 
     override fun provideQuickFilterRepository(): QuickFilterRepository {
         return DaggerCategoryRevampComponent.builder().build().getCategoryQuickFilterRepository()
-    }
-
-    override fun provideChildCategoryRepository(): ChildCategoryRepository {
-        return CategoryNavigationChipsRepository()
     }
 
     override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase {

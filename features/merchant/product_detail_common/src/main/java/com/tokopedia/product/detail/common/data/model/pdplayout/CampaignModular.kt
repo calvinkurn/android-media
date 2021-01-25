@@ -76,6 +76,6 @@ data class CampaignModular(
     val activeAndHasId
         get() = isActive && (campaignID.toIntOrNull() ?: 0) > 0
 
-    val getEndDataInt
-        get() = endDateUnix.toIntOrNull() ?: 0
+    val getEndDateLong
+        get() = endDateUnix.toLongOrNull() ?: 0
 }

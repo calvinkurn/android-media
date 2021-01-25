@@ -84,5 +84,6 @@ data class PlayWidgetMeta(
     @SerializedName("maxAutoplayCell") val maxAutoplayCell: Int = 0,
     @SerializedName("maxAutoplayWifi") val maxAutoplayWifi: Int = 0,
     @SerializedName("template") val template: String = "",
-    @SerializedName("isButtonVisible") val isButtonVisible: Boolean = true
+    @SerializedName("isButtonVisible") val isButtonVisible: Boolean = true,
+    @SerializedName("businessWidgetPosition") val businessWidgetPosition: Int = 0
 )

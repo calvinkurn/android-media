@@ -5,20 +5,20 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     tools:context=".view.activity.AllBrandsActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         app:elevation="@dimen/dp_0">
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             app:contentInsetLeft="@dimen/dp_0"
             app:contentInsetStart="@dimen/dp_0"
             app:contentInsetStartWithNavigation="@dimen/dp_0">
@@ -46,7 +46,7 @@
                     app:drawableRightCompat="@drawable/location_arrow_down"
                     android:gravity="center"
                     android:text="@string/deals_toolbar_title"
-                    android:textColor="@color/toolbar_title_color"
+                    android:textColor="@color/Unify_N700_44"
                     android:textSize="@dimen/sp_12"
                     app:layout_constraintLeft_toRightOf="@+id/backArraw"
                     app:layout_constraintBottom_toTopOf="@+id/tv_location_name"
@@ -60,7 +60,7 @@
                     android:layout_marginLeft="@dimen/dp_8"
                     android:gravity="top"
                     android:text="Jakarta"
-                    android:textColor="@color/clr_f531353b"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/backArraw"
@@ -84,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:background="@color/bottomnav_bg"
+            android:background="@color/Unify_N0"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -96,21 +96,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             app:layout_constraintTop_toBottomOf="@+id/search_input_view"
             app:layout_scrollFlags="scroll"
             app:tabGravity="fill"
-            app:tabIndicatorColor="@color/green_250"
+            app:tabIndicatorColor="@color/Unify_G400"
             app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/green_250"
+            app:tabSelectedTextColor="@color/Unify_G400"
             app:tabTextAppearance="@style/DealsTabLayoutTextStyle"
-            app:tabTextColor="@color/black_38" />
+            app:tabTextColor="@color/Unify_N700_32" />
 
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/grey_default_background"
+            android:background="@color/Unify_N50"
             />
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -3,7 +3,7 @@ package com.tokopedia.mvcwidget
 import androidx.annotation.StringDef
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.FIRST_FOLLOW
-import com.tokopedia.mvcwidget.FollowWidgetType.Companion.TOKOMEMBER
+import com.tokopedia.mvcwidget.FollowWidgetType.Companion.MEMBERSHIP_OPEN
 
 data class TokopointsCatalogMVCListResponse(
         @SerializedName("tokopointsCatalogMVCList") val data: TokopointsCatalogMVCList? = null
@@ -20,7 +20,8 @@ data class TokopointsCatalogMVCList(
 data class ResultStatus(
         @SerializedName("code") val code: String?,
         @SerializedName("message") val message: List<String?>?,
-        @SerializedName("status") val status: String?
+        @SerializedName("status") val status: String?,
+        @SerializedName("reason") val reason: String?
 )
 
 data class CatalogList(
@@ -43,9 +44,10 @@ data class FollowWidget(
         @SerializedName("isShown") val isShown: Boolean?,
         @FollowWidgetType @SerializedName("type") val type: String?,
         @SerializedName("content") val content: String?,
-        @SerializedName("IconURL") val iconURL: String?,
+        @SerializedName("iconURL") val iconURL: String?,
+        @SerializedName("membershipCardID") val membershipCardID: String?,
         @SerializedName("membershipHowTo") val membershipHowTo: List<MembershipHowTo?>?,
-)
+) : MvcListItem
 
 data class MembershipHowTo(
         @SerializedName("imageURL") val imageURL: String?,
@@ -92,12 +94,20 @@ data class Cta(
         @SerializedName("appLink") val appLink: String?
 )
 
+data class FollowShopResponse(
+        @SerializedName("followShop") val followShop: FollowShop? = null
+)
+
+data class FollowShop(
+        @SerializedName("success") val success: Boolean?
+)
+
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(FIRST_FOLLOW, TOKOMEMBER)
+@StringDef(FIRST_FOLLOW, MEMBERSHIP_OPEN)
 annotation class FollowWidgetType {
 
     companion object {
         const val FIRST_FOLLOW = "first_follow"
-        const val TOKOMEMBER = "tokomember"
+        const val MEMBERSHIP_OPEN = "membership_open"
     }
 }

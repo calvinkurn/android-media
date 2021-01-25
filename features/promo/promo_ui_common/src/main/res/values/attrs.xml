@@ -6,4 +6,9 @@
             <enum name="mvc" value="1"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="PromoRoundImageView">
+        <attr name="promo_round_radius" format="dimension" />
+    </declare-styleable>
+
 </resources>

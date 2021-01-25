@@ -9,7 +9,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
-open class BaseDiscoveryAnalytics(val pageType: String = EMPTY_STRING,
+open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                                   val pagePath: String = EMPTY_STRING,
                                   val pageIdentifier: String = EMPTY_STRING,
                                   val campaignCode: String = EMPTY_STRING,

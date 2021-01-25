@@ -31,6 +31,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
+import com.tokopedia.vouchergame.list.view.activity.VoucherGameListActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -72,6 +73,8 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    var rechargeProductFromSlice: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -83,6 +86,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
         arguments?.let {
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME)
                     ?: VoucherGameExtraParam()
+            rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA,"")
         }
     }
 
@@ -136,6 +140,11 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if(rechargeProductFromSlice.isNotEmpty()) {
+            rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
+            rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
+        }
+
         voucherGameExtraParam.categoryId.toIntOrNull()?.let {
             rechargeAnalytics.trackVisitRechargePushEventRecommendation(it)
         }
@@ -146,6 +155,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
                     voucherGameViewModel.createMenuDetailParams(it))
         }
         initView()
+        loadInitialData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -340,13 +350,16 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
         getComponent(VoucherGameListComponent::class.java).inject(this)
     }
 
-
     override fun loadInitialData() {
-        searchVoucherGame("", true)
+        search_input_view.searchBarTextField.setText("")
     }
 
     override fun loadData(page: Int) {
 
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
     }
 
     override fun onItemClicked(item: Visitable<VoucherGameListAdapterFactory>) {
@@ -434,10 +447,13 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
         const val REQUEST_VOUCHER_GAME_DETAIL = 300
 
-        fun newInstance(voucherGameExtraParam: VoucherGameExtraParam): Fragment {
+        private const val TITLE_PAGE = "voucher game"
+
+        fun newInstance(voucherGameExtraParam: VoucherGameExtraParam, rechargeProductFromSlice: String = ""): Fragment {
             val fragment = VoucherGameListFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM_VOUCHER_GAME, voucherGameExtraParam)
+            bundle.putString(RECHARGE_PRODUCT_EXTRA, rechargeProductFromSlice)
             fragment.arguments = bundle
             return fragment
         }

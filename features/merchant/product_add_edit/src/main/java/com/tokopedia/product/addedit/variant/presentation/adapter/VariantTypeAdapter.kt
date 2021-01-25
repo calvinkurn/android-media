@@ -33,6 +33,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     }
 
     override fun onVariantTypeSelected(position: Int) {
+        if (position < 0 || position > selectedItems.lastIndex) return
         // from normal to selected
         selectedItems[position] = VariantTypeViewHolder.ViewHolderState.SELECTED
         // disable unselected items when maximum selected items reached

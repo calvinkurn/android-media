@@ -17,7 +17,6 @@ import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import kotlinx.android.synthetic.main.holder_item_cart_error.view.*
@@ -40,7 +39,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
     private fun renderProductInfo(data: DisabledCartItemHolderData) {
         itemView.tv_product_name.text = data.productName
         itemView.text_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.productPrice, false).removeDecimalSuffix()
-        itemView.iv_image_product.loadImageRounded(data.productImage)
+        itemView.iu_image_product.setImageUrl(data.productImage)
         if (data.data?.originData?.variant?.isNotBlank() == true) {
             itemView.text_product_variant.text = data.data?.originData?.variant
             itemView.text_product_variant.show()
@@ -51,12 +50,12 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
         data.data?.let { cartItemData ->
             itemView.tv_product_name.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
-            itemView.iv_image_product.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
+            itemView.iu_image_product.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
         }
     }
 
     private fun renderSlashPrice(data: DisabledCartItemHolderData) {
-        if (data.data?.originData?.priceOriginal != 0) {
+        if (data.data?.originData?.priceOriginal != 0L) {
             var hasSlashPrice = false
             if (data.data?.originData?.slashPriceLabel?.isNotBlank() == true) {
                 itemView.text_slash_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.data?.originData?.priceOriginal
@@ -150,7 +149,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                     actionListener?.onSimilarProductUrlClicked(data.selectedUnavailableActionLink)
                 }
             }
-            setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
+            setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
             actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
             show()
         }
@@ -164,7 +163,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                     actionListener?.onTobaccoLiteUrlClicked(data.selectedUnavailableActionLink, data, actionData)
                 }
             }
-            setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
+            setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
             actionListener?.onShowTickerTobacco()
             show()
         }
@@ -174,13 +173,13 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
         itemView.text_move_to_wishlist?.apply {
             if (data.isWishlisted && actionData.id == ACTION_WISHLISTED) {
                 text = actionData.message
-                setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
+                setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_44))
                 setOnClickListener { }
             } else if (!data.isWishlisted && actionData.id == ACTION_WISHLIST) {
                 text = actionData.message
-                setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+                setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
                 setOnClickListener {
-                    itemView.iv_image_product?.let {
+                    itemView.iu_image_product?.let {
                         actionListener?.onAddDisabledItemToWishlist(data, it)
                     }
                 }

@@ -14,21 +14,24 @@ class GetDynamicChannelsUseCase @Inject constructor(
         private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper
 ) : UseCase<HomeChannelData>(){
     private val params = RequestParams.create()
+    private var doQueryHash = false
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(HomeChannelData::class.java)
     }
 
-    fun setParams(groupIds: String = "", token: String = "", numOfChannel: Int = 0){
+    fun setParams(groupIds: String = "", token: String = "", numOfChannel: Int = 0, doQueryHash: Boolean = false){
         params.parameters.clear()
         params.putString(GROUP_IDS, groupIds)
         params.putString(TOKEN, token)
         params.putInt(NUM_OF_CHANNEL, numOfChannel)
+        this@GetDynamicChannelsUseCase.doQueryHash = doQueryHash
     }
 
     override suspend fun executeOnBackground(): HomeChannelData {
         graphqlUseCase.clearCache()
+        graphqlUseCase.setQueryHashFlag(doQueryHash)
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }

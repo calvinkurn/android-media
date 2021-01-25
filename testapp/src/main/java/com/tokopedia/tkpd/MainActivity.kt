@@ -104,5 +104,7 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+//        RouteManager.route(this, "tokopedia://shop/479979")
+        startActivity(Intent(this, Class.forName("com.tokopedia.mvcwidget.DummyMvcActivity")))
     }
 }

@@ -62,9 +62,9 @@ android {
 }
 dependencies {
     implementation project(rootProject.ext.libraries.applink)
-    implementation (project(rootProject.ext.features.sessioncommon))
-    implementation (project(rootProject.ext.libraries.remoteConfig))
-    implementation (project(rootProject.ext.libraries.remoteResourceRequest))
+    implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
@@ -109,6 +109,7 @@ dependencies {
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
     //developer_options should not appear in compile-testapp-plugin.gradle if it is successfully excluded
     implementation project(rootProject.ext.features.developerOptions)
+    implementation project(rootProject.ext.features.promoMvcWidget)
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT

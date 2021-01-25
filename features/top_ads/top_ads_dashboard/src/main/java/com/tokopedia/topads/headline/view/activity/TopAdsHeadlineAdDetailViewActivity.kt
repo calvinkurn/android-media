@@ -14,10 +14,14 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -30,8 +34,10 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUST
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.IS_CHANGED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SEVEN_DAYS_RANGE_INDEX
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -52,8 +58,15 @@ import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineKeyFragment
+import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
+import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
 import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.*
+import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.app_bar_layout_2
+import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.hari_ini
+import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.header_toolbar
+import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.swipe_refresh_layout
+import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.tab_layout
 import kotlinx.android.synthetic.main.topads_dash_headline_detail_view_widget.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
@@ -78,6 +91,7 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
     internal var endDate: Date? = null
     private var priceDaily = 0
     private var groupTotal = 0
+    private var isDataChanged = false
 
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
 
@@ -131,6 +145,8 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
 
     private fun getViewPagerAdapter(): PagerAdapter {
         val list: MutableList<Fragment> = mutableListOf()
+        tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
+        tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
         list.add(TopAdsHeadlineKeyFragment.createInstance(bundle))
@@ -157,12 +173,19 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
             loadStatisticsData()
         }
         header_toolbar.setNavigationOnClickListener {
-            super.onBackPressed()
+            onBackPressed()
         }
         hari_ini?.date_image?.setImageDrawable(this.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         hari_ini?.next_image?.setImageDrawable(this.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         hari_ini?.setOnClickListener {
             showBottomSheet()
+        }
+        header_toolbar.addRightIcon(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon).setOnClickListener {
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
+                putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
+                putExtra(ParamObject.GROUP_ID, groupId.toString())
+            }
+            startActivityForResult(intent, EDIT_HEADLINE_REQUEST_CODE)
         }
         app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
@@ -186,6 +209,15 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
                 }
             }
         })
+    }
+
+    override fun onBackPressed() {
+        if(isDataChanged){
+            val intent = Intent()
+            intent.putExtra(IS_CHANGED, isDataChanged)
+            setResult(Activity.RESULT_OK, intent)
+        }
+        super.onBackPressed()
     }
 
     private fun loadData() {
@@ -227,9 +259,15 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == EDIT_GROUP_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK)
+        if(resultCode == Activity.RESULT_OK){
+            if(requestCode == EDIT_GROUP_REQUEST_CODE){
                 loadData()
+            }else if(requestCode == EDIT_HEADLINE_REQUEST_CODE){
+                isDataChanged = true
+                loadData()
+                loadStatisticsData()
+                renderTabAndViewPager()
+            }
         }
     }
 
@@ -376,7 +414,8 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
     }
 
     fun setKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_0)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
+//        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_0)
     }
 
     fun setNegKeywordCount(size: Int) {

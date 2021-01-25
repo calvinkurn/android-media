@@ -41,6 +41,8 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.url.Env;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
@@ -272,6 +274,11 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
+
+    }
+
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
 
     }
 

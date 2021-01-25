@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import java.util.*
 import kotlin.random.Random
 
 /**
@@ -149,7 +150,12 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 coverConfig = CoverConfigUiModel(
                         maxChars = 38
                 ),
-                countDown = 5
+                countDown = 5,
+                scheduleConfig = BroadcastScheduleConfigUiModel(
+                        minimum = Date(),
+                        maximum = Date(),
+                        default = Date()
+                )
         )
     }
 
@@ -168,6 +174,10 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return emptyList()
     }
 
+    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
+        return BroadcastScheduleUiModel.NoSchedule
+    }
+
     override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel {
         return PlayCoverUiModel.empty()
     }
@@ -184,8 +194,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         )
     }
 
-    override fun mapLiveDuration(duration: LiveDuration): DurationUiModel {
-        return DurationUiModel(3000, 10000, 7000)
+    override fun mapLiveDuration(duration: String): LiveDurationUiModel {
+        return LiveDurationUiModel(duration)
     }
 
     override fun mapIncomingChat(chat: Chat): PlayChatUiModel {
