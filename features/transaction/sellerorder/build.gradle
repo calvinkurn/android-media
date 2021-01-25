@@ -11,12 +11,21 @@ buildscript {
         jcenter()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
+
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
-android{
+android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+    }
+
     testOptions {
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
@@ -25,6 +34,8 @@ android{
 }
 
 dependencies {
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+
     implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)

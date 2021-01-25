@@ -25,7 +25,7 @@ class SomBottomSheetStockEmptyAdapter: RecyclerView.Adapter<SomBottomSheetStockE
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.iv_product.loadImageRounded(listProduct[position].thumbnail, holder.itemView.resources.getDimension(com.tokopedia.design.R.dimen.dp_8))
+        holder.itemView.iv_product.loadImageRounded(listProduct[position].thumbnail, holder.itemView.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
         holder.itemView.tv_product_name.text = listProduct[position].name
         holder.itemView.tv_product_price.text = listProduct[position].priceText
         holder.itemView.cb_product.setOnCheckedChangeListener { buttonView, isChecked ->

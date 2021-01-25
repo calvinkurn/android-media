@@ -30,21 +30,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tickerType="announcement" />
 
-    <com.tokopedia.design.text.SearchInputView
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchBarSomList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl2"
-        android:background="@drawable/bg_corner"
-        android:clickable="true"
-        android:focusable="true"
-        android:textColorHint="@color/Unify_N200"
-        android:textSize="@dimen/fontSize_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl3"
         app:layout_constraintTop_toBottomOf="@id/tickerSomList"
-        app:siv_search_hint="@string/hint_search_product"
-        app:siv_search_icon="@drawable/unify_search_ic" />
+        app:search_bar_placeholder="@string/hint_search_product"
+        app:search_bar_show_icon="false" />
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/sortFilterSomList"
