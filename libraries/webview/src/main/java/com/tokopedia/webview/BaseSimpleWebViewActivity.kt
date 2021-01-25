@@ -16,8 +16,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
+import com.tokopedia.webview.BaseSimpleWebViewActivity.DeeplinkIntent.APP_WHITELISTED_DOMAINS_URL
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 import timber.log.Timber
@@ -27,12 +29,14 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     protected lateinit var url: String
     var showTitleBar = true
     var pullToRefresh = false
-    private set
+        private set
     protected var allowOverride = true
     protected var needLogin = false
     var webViewTitle = ""
+    private var whiteListedDomains = emptyList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        getWhiteListedDomains()
         init(intent)
         super.onCreate(savedInstanceState)
         setupToolbar()
@@ -117,10 +121,10 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         reloadWebViewIfNeeded()
     }
 
-    private fun reloadWebViewIfNeeded(){
+    private fun reloadWebViewIfNeeded() {
         val needReload = try {
             PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             false
         }
         if (needReload) {
@@ -194,8 +198,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     private fun logWebViewApplink() {
         val domain = getDomainName(url)
-        if(domain.isNotEmpty()) {
-            if(!getBaseDomain(domain).equals(TOKOPEDIA_DOMAIN, ignoreCase = true) && !isDomainWhitelisted(domain)) {
+        if (domain.isNotEmpty()) {
+            if (!getBaseDomain(domain).equals(TOKOPEDIA_DOMAIN, ignoreCase = true) && !isDomainWhitelisted(domain)) {
                 Timber.w("P1#WEBVIEW_OPENED#webview;domain='$domain';url='$url'")
                 redirectToNativeBrowser()
             }
@@ -205,11 +209,17 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     private fun redirectToNativeBrowser() {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(browserIntent)
+        finish()
     }
 
     private fun isDomainWhitelisted(domain: String): Boolean {
-        // TO DO
-        return false
+        return whiteListedDomains.contains(domain)
+    }
+
+    private fun getWhiteListedDomains() {
+        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this.applicationContext)
+        val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
+        whiteListedDomains = whiteListedDomainsCsv.split(",".toRegex()).map { getBaseDomain(getDomainName(it)) }.filter { it.isNotEmpty() }
     }
 
     private fun getBaseDomain(host: String): String {
@@ -226,12 +236,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         const val TOKOPEDIA_DOMAIN = "tokopedia"
 
         fun getStartIntent(
-            context: Context,
-            url: String,
-            showToolbar: Boolean = true,
-            allowOverride: Boolean = true,
-            needLogin: Boolean = false,
-            title: String = ""
+                context: Context,
+                url: String,
+                showToolbar: Boolean = true,
+                allowOverride: Boolean = true,
+                needLogin: Boolean = false,
+                title: String = ""
         ): Intent {
             return Intent(context, BaseSimpleWebViewActivity::class.java).apply {
                 putExtra(KEY_URL, url.encodeOnce())
@@ -247,6 +257,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
         const val SELLERAPP_PACKAGE = "com.tokopedia.sellerapp"
         const val CUSTOMERAPP_PACKAGE = "com.tokopedia.tkpd"
+        const val APP_WHITELISTED_DOMAINS_URL = ""
 
         @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
         @JvmStatic
@@ -264,7 +275,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(
-                KEY_URL, TokopediaUrl.getInstance().WEB
+                    KEY_URL, TokopediaUrl.getInstance().WEB
             )
             var showToolbar: Boolean
             var needLogin: Boolean
