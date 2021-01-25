@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.os.Build
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -104,18 +105,22 @@ class BigGridInspirationCardViewHolder(
         )
 
         itemView.bigGridCardViewInspirationCard?.recyclerViewInspirationCardOptionList?.let {
-            it.layoutManager = createLayoutManager()
+            it.layoutManager = createLayoutManager(element)
             it.adapter = createAdapter(element.options)
             if (!element.isRelated())
                 it.addItemDecorationIfNotExists(spacingItemDecoration)
         }
     }
 
-    private fun createLayoutManager(): RecyclerView.LayoutManager {
-        return ChipsLayoutManager.newBuilder(itemView.context)
+    private fun createLayoutManager(element: InspirationCardViewModel): RecyclerView.LayoutManager {
+        return if (!element.isRelated()) {
+            ChipsLayoutManager.newBuilder(itemView.context)
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                     .build()
+        } else {
+            GridLayoutManager(itemView.context, 2, GridLayoutManager.VERTICAL, false)
+        }
     }
 
     private fun createAdapter(
