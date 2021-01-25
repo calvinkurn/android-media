@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.base.diffutil
 
+import android.view.View
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 
 /**
@@ -10,4 +11,6 @@ interface HomeNavListener {
     fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel)
     fun onMenuImpression(homeNavMenuDataModel: HomeNavMenuDataModel)
     fun getUserId(): String
+    fun onMenuBind(itemView: View, model: HomeNavMenuDataModel)
+    fun onHeaderBind(itemView: View)
 }

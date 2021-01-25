@@ -49,5 +49,7 @@ class HomeNavMenuViewHolder(
         } else {
             itemView.menu_notification.visibility = View.GONE
         }
+
+        listener.onMenuBind(itemView, element)
     }
 }

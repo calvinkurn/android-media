@@ -25,6 +25,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
@@ -70,7 +71,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     @Inject
     lateinit var viewModel: MainNavViewModel
     lateinit var recyclerView: RecyclerView
-    private var scrollView: ScrollView? = null
     lateinit var layoutManager: NpaLayoutManager
     lateinit var adapter: MainNavListAdapter
 
@@ -80,6 +80,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private val args: MainNavFragmentArgs by navArgs()
 
     private var pageSource = ""
+
+    //save view-reference for coachmark purpose
+    private var profileSectionView: View? = null
+    private var allTransactionView: View? = null
+    private var tokopediaCareView: View? = null
+    private var isOngoingShowOnboarding = false
+
 
     override fun getScreenName(): String {
         return ""
@@ -116,16 +123,15 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recycler_view)
-        scrollView = view.findViewById(R.id.scrollView)
-        scrollView?.viewTreeObserver?.addOnScrollChangedListener {
-            scrollView?.run {
-                if (scrollY > 100) {
-                    navToolbar?.showShadow(lineShadow = true)
-                } else {
-                    navToolbar?.hideShadow(lineShadow = true)
-                }
-            }
-        }
+//        scrollView?.viewTreeObserver?.addOnScrollChangedListener {
+//            scrollView?.run {
+//                if (scrollY > 100) {
+//                    navToolbar?.showShadow(lineShadow = true)
+//                } else {
+//                    navToolbar?.hideShadow(lineShadow = true)
+//                }
+//            }
+//        }
 
         if (recyclerView.itemDecorationCount == 0)
             recyclerView.addItemDecoration(MainNavSpacingDecoration(
@@ -149,8 +155,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             populateAdapterData(it)
         })
 
-        viewModel.onboardingListLiveData.observe(viewLifecycleOwner, Observer {
-            viewModel.setOnboardingSuccess(showNavigationPageOnboarding(it))
+        viewModel.allProcessFinished.observe(viewLifecycleOwner, Observer {
+            if (it.getContentIfNotHandled() == true) {
+                validateOnboarding()
+            }
         })
 
         viewModel.networkProcessLiveData.observe(viewLifecycleOwner, Observer { isFinished->
@@ -192,6 +200,23 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onErrorTransactionListClicked(position: Int) {
         viewModel.refreshTransactionListData()
+    }
+
+    override fun onMenuBind(itemView: View, model: HomeNavMenuDataModel) {
+        if (needToShowOnboarding()) {
+            when (model.id) {
+                ID_ALL_TRANSACTION -> {
+                    allTransactionView = itemView
+                }
+                ID_COMPLAIN -> {
+                    tokopediaCareView = itemView
+                }
+            }
+        }
+    }
+
+    override fun onHeaderBind(itemView: View) {
+        profileSectionView = itemView
     }
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
@@ -355,13 +380,25 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         return true
     }
 
-    //return is the function is success or not
-    private fun showNavigationPageOnboarding(list: List<Visitable<*>>): Boolean {
-        val profileSectionView = list.indexOf( list.find { it is AccountHeaderDataModel } ).getViewForThisPosition()
-        val allTransactionView = list.indexOf( list.find { it is HomeNavMenuDataModel && it.id == ID_ALL_TRANSACTION } ).getViewForThisPosition()
-        val complainSectionView = list.indexOf( list.find { it is HomeNavMenuDataModel && it.id == ID_COMPLAIN } ).getViewForThisPosition()
+    private fun needToShowOnboarding(): Boolean {
+        return isFirstViewNavigationNavPageP1() || isFirstViewNavigationNavPageP2()
+    }
 
-        if (allTransactionView == null || complainSectionView == null) return false
+    private fun validateOnboarding() {
+        if (needToShowOnboarding() &&
+                profileSectionView != null &&
+                allTransactionView != null &&
+                !isOngoingShowOnboarding) {
+            showNavigationPageOnboarding()
+            isOngoingShowOnboarding = true
+        }
+    }
+
+    //return is the function is success or not
+    private fun showNavigationPageOnboarding(): Boolean {
+        val profileSectionView = profileSectionView
+        val allTransactionView = allTransactionView
+        val complainSectionView = tokopediaCareView
 
         if (isFirstViewNavigationNavPageP1()) {
             //do the p1 onboarding
@@ -431,7 +468,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             coachMark.onFinishListener = {
                 saveFirstViewNavigationNavPagP1(false)
             }
-            if (coachMarkItem.isNotEmpty()) coachMark.showCoachMark(step = coachMarkItem, scrollView = scrollView)
+            if (coachMarkItem.isNotEmpty()) coachMark.showCoachMark(step = coachMarkItem)
         } else if (isFirstViewNavigationNavPageP2()) {
             //do the p2 onboarding
             val coachMarkItem = ArrayList<CoachMark2Item>()
@@ -448,16 +485,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 }
             }
             if (coachMarkItem.isNotEmpty()) {
-                coachMark.showCoachMark(step = coachMarkItem, scrollView = scrollView)
+                coachMark.showCoachMark(step = coachMarkItem)
                 saveFirstViewNavigationNavPagP2(false)
             }
         }
         return true
-    }
-
-    private fun Int.getViewForThisPosition(): View? {
-        if (this != -1) return recyclerView.findViewHolderForAdapterPosition(this)?.itemView
-        return null
     }
 
     private fun haveUserLogoutData(): Boolean {

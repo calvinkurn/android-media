@@ -74,6 +74,7 @@ class AccountHeaderViewHolder(itemView: View,
             AccountHeaderDataModel.LOGIN_STATE_LOGIN_AS -> renderLoginAs()
             else -> renderNonLoginState()
         }
+        mainNavListener.onHeaderBind(itemView)
     }
 
     private fun initViewHolder() {
