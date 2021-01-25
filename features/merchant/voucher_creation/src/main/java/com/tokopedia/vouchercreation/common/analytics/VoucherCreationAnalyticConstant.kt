@@ -12,6 +12,7 @@ object VoucherCreationAnalyticConstant {
         const val SCREEN_NAME = "screenName"
         const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
         const val CURRENT_SITE = "currentSite"
+        const val SHOP_ID = "shopId"
         const val USER_ID = "userId"
         const val BUSINESS_UNIT = "businessUnit"
         const val PAGE_SOURCE = "pageSource"
@@ -19,6 +20,7 @@ object VoucherCreationAnalyticConstant {
 
     object Values {
         const val TOKOPEDIA_SELLER = "tokopediaseller"
+        const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val PHYSICAL_GOODS = "physical goods"
     }
 
@@ -62,6 +64,7 @@ object VoucherCreationAnalyticConstant {
         const val VIEW_VOUCHER_DETAIL_IRIS = "viewVoucherDetailIris"
         const val CLICK_SHARE = "clickShare"
         const val CLICK_VOUCHER_DUPLICATE = "clickVoucherDuplicate"
+        const val CLICK_MERCHANT_VOUCHER = "clickMerchantVoucher"
     }
 
     object EventCategory {
@@ -71,6 +74,7 @@ object VoucherCreationAnalyticConstant {
             const val TYPE_BUDGET = "voucher creation - type & budget"
             const val PERIOD = "voucher creation - period"
             const val REVIEW = "voucher creation - review"
+            const val CREATE = "merchant voucher code - create"
         }
 
         object VoucherList {
@@ -221,6 +225,10 @@ object VoucherCreationAnalyticConstant {
 
         const val ENDED = "berakhir"
         const val CANCELLED = "dibatalkan"
+
+        const val WITH_RECOMMENDATION = "with recommendation - "
+        const val EDITED_RECOMMENDATION = "edited recommendation - "
+        const val NO_RECOMMENDATION = "no recommendation - "
     }
 
 }

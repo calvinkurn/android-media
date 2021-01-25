@@ -27,7 +27,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 @Module
-@TalkScope
 class TalkModule {
 
     @TalkScope

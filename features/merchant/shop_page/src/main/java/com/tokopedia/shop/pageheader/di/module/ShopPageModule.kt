@@ -28,7 +28,6 @@ import dagger.Provides
 import javax.inject.Named
 
 
-@ShopPageScope
 @Module(includes = [ShopViewModelModule::class])
 class ShopPageModule {
 
