@@ -8,7 +8,6 @@ import com.tokopedia.autocomplete.initialstate.data.InitialStateRepositoryImpl
 import dagger.Module
 import dagger.Provides
 
-@InitialStateScope
 @Module
 class InitialStateRepositoryModule {
 

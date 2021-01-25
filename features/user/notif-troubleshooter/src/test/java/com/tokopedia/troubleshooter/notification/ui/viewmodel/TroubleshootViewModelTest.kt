@@ -52,7 +52,7 @@ class TroubleshootViewModelTest {
     private val deviceSetting: Observer<Result<DeviceSettingState>> = mockk(relaxed = true)
     private val notificationRingtoneUri: Observer<Pair<Uri?, RingtoneState>> = mockk(relaxed = true)
     private val troubleshoot: Observer<Result<NotificationSendTroubleshoot>> = mockk(relaxed = true)
-    private val tokenObserver: Observer<String> = mockk(relaxed = true)
+    private val tokenObserver: Observer<Result<String>> = mockk(relaxed = true)
     private val dndMode: Observer<Boolean> = mockk(relaxed = true)
 
     private val dispatcherProvider = TestDispatcherProvider()
@@ -108,17 +108,18 @@ class TroubleshootViewModelTest {
 
     @Test fun `it should return new token`() {
         val token = "123"
+        val expectedValue = Success(token)
 
-        every { instanceManager.getNewToken(any()) } answers {
+        every { instanceManager.getNewToken(any(), any()) } answers {
             firstArg<(String) -> Unit>().invoke(token)
         }
 
         viewModel.getNewToken()
 
-        verify { instanceManager.getNewToken(any()) }
-        verify { tokenObserver.onChanged(token) }
+        verify { instanceManager.getNewToken(any(), any()) }
+        verify { tokenObserver.onChanged(expectedValue) }
 
-        viewModel.token isEqualsTo token
+        viewModel.token isEqualsTo expectedValue
     }
 
     @Test fun `it should update new token`() {

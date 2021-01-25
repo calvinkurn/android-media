@@ -24,7 +24,6 @@ import javax.inject.Named
 /**
  * @author sebastianuskh on 4/13/17.
  */
-@ShopScope
 @Module(includes = [ShopCommonModule::class])
 class ShopModule(val context: Context) {
 

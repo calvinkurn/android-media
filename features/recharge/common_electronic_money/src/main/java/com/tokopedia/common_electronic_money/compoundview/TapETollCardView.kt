@@ -47,7 +47,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showLoading() {
         textTitle.text = resources.getString(R.string.emoney_reading_card_label_title)
-        textTitle.setTextColor(resources.getColor(R.color.emoney_black))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textLabel.text = resources.getString(R.string.emoney_reading_card_label_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()
@@ -59,7 +59,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showInitialState() {
         textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textLabel.text = resources.getString(R.string.emoney_tap_card_instruction_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()
@@ -79,7 +79,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showErrorState(errorMessage: String) {
         textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
         textLabel.text = errorMessage
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
@@ -93,7 +93,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showErrorDeviceUnsupportedState(errorMessage: String) {
         textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
         textLabel.text = errorMessage
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
