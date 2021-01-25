@@ -15,17 +15,19 @@ import javax.inject.Inject
 
 abstract class GetPreferenceListUseCase(defaultDispatchers: CoroutineDispatcher = Dispatchers.Default, mainDispatchers: CoroutineDispatcher = Dispatchers.Main) : UseCase<PreferenceListResponseModel>(defaultDispatchers, mainDispatchers) {
 
-    fun generateRequestParams(paymentProfile: String = ""): RequestParams {
+    fun generateRequestParams(paymentProfile: String = "", fromFlow: String = ""): RequestParams {
         return RequestParams.create().apply {
             putString(PARAM_PAYMENT_PROFILE, paymentProfile)
+            putString(PARAM_FROM_FLOW, fromFlow)
         }
     }
 
     companion object {
         private const val PARAM_PAYMENT_PROFILE = "paymentProfile"
+        private const val PARAM_FROM_FLOW = "fromFlow"
         internal val QUERY = """
-            query get_preference_list(${"$"}paymentProfile: String) {
-                get_all_profiles_occ(payment_profile: ${"$"}paymentProfile) {
+            query get_preference_list(${"$"}paymentProfile: String, ${"$"}fromFlow: String) {
+                get_all_profiles_occ(payment_profile: ${"$"}paymentProfile, from_flow: ${"$"}fromFlow) {
                     error_message
                     status
                     data {
@@ -69,6 +71,7 @@ abstract class GetPreferenceListUseCase(defaultDispatchers: CoroutineDispatcher 
                                     service_id
                                     service_duration
                                     service_name
+                                    estimation
                             }
                         }
                     }

@@ -54,7 +54,7 @@ class PreferenceListBottomSheet(
             Timber.d(throwable)
             handleError(throwable)
             OccIdlingResource.decrement()
-        }, getPreferenceListUseCase.generateRequestParams(paymentProfile))
+        }, getPreferenceListUseCase.generateRequestParams(paymentProfile, "osp"))
     }
 
     private fun handleError(throwable: Throwable) {
