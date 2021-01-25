@@ -2,6 +2,7 @@ package com.tokopedia.gamification.giftbox.domain
 
 import com.google.gson.Gson
 import com.tokopedia.gamification.FAKE_GAMI_LUCKY_HOME
+import com.tokopedia.gamification.FAKE_GAMI_LUCKY_HOME_EMPTY
 import com.tokopedia.gamification.giftbox.data.di.GIFT_BOX_DAILY
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxEntity
 import com.tokopedia.gamification.pdp.data.GqlUseCaseWrapper
@@ -16,7 +17,7 @@ class GiftBoxDailyUseCase @Inject constructor(@Named(GIFT_BOX_DAILY) val querySt
     }
 
     suspend fun getFakeResponse(map: HashMap<String, Any>): GiftBoxEntity {
-        return  Gson().fromJson<GiftBoxEntity>(FAKE_GAMI_LUCKY_HOME, GiftBoxEntity::class.java)
+        return  Gson().fromJson<GiftBoxEntity>(FAKE_GAMI_LUCKY_HOME_EMPTY, GiftBoxEntity::class.java)
     }
 
     fun getRequestParams(pageName: String): HashMap<String, Any> {

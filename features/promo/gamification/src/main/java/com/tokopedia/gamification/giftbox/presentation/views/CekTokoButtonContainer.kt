@@ -8,7 +8,7 @@ import com.tokopedia.gamification.R
 
 class CekTokoButtonContainer @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr){
+) : LinearLayout(context, attrs, defStyleAttr) {
     val layout = R.layout.gami_cek_toko_btn_container
 
     var btnReminder: GiftBoxReminderButton
@@ -18,6 +18,11 @@ class CekTokoButtonContainer @JvmOverloads constructor(
         View.inflate(context, layout, this)
         btnReminder = findViewById(R.id.btnFirst)
         btnSecond = findViewById(R.id.btnSecond)
+        val isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
+        if (isTablet) {
+            btnReminder.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            btnSecond.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+        }
         val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         layoutParams = lp
         orientation = HORIZONTAL
@@ -27,7 +32,7 @@ class CekTokoButtonContainer @JvmOverloads constructor(
         btnSecond.setText(text)
     }
 
-    fun toggleReminderVisibility(show:Boolean){
+    fun toggleReminderVisibility(show: Boolean) {
         btnReminder.visibility = if (show) View.VISIBLE else View.GONE
     }
 }

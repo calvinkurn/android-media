@@ -343,11 +343,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 }
                                 TokenUserState.EMPTY -> {
                                     tokoButtonContainer.toggleReminderVisibility(true)
+                                    directGiftView.visibility = View.GONE
 //                                    reminderLayout.visibility = View.VISIBLE
                                     renderGiftBoxActive(giftBoxEntity)
                                     tvRewardFirstLine.visibility = View.GONE
                                     tvRewardSecondLine.visibility = View.GONE
-                                    tokoButtonContainer.visibility = View.GONE
+                                    tokoButtonContainer.btnSecond.visibility = View.GONE
+//                                    tokoButtonContainer.visibility = View.GONE
 //                                    btnAction.visibility = View.GONE
 
 //                                    tvReminderMessage.text = reminder?.text
@@ -804,11 +806,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun renderGiftBoxActive(entity: GiftBoxEntity) {
 
         tvTapHint.text = entity.gamiLuckyHome.tokensUser.title
-        directGiftView.setData(entity.gamiLuckyHome.prizeList,
-                entity.gamiLuckyHome.bottomSheetButtonText,
-                entity.gamiLuckyHome.prizeDetailList,
-                entity.gamiLuckyHome.prizeDetailListButton
-        )
+        if (tokenUserState == TokenUserState.ACTIVE) {
+            directGiftView.setData(entity.gamiLuckyHome.prizeList,
+                    entity.gamiLuckyHome.bottomSheetButtonText,
+                    entity.gamiLuckyHome.prizeDetailList,
+                    entity.gamiLuckyHome.prizeDetailListButton
+            )
+        }
+
 //        tvBenefits.text = entity.gamiLuckyHome.tokensUser.text //todo Rahul use from directGiftView
 
         if (tokenUserState == TokenUserState.EMPTY) {
@@ -837,7 +842,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         if (imageUrlList != null && imageUrlList.size > 2) {
             lidImages.addAll(imageUrlList.subList(2, imageUrlList.size))
         }
-
         if (!bgUrl.isNullOrEmpty())
             fadeInActiveStateViews(frontImageUrl, bgUrl, lidImages)
 //        }
@@ -908,16 +912,16 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 val tapHintAnim = ObjectAnimator.ofPropertyValuesHolder(tvTapHint, alphaProp)
                 val giftBoxAnim = ObjectAnimator.ofPropertyValuesHolder(giftBoxDailyView, alphaProp)
 //                val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(llBenefits, alphaProp)
-                val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(directGiftView, alphaProp)
 
                 val animatorSet = AnimatorSet()
                 if (tokenUserState == TokenUserState.EMPTY) {
                     val rewardAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardMessage, alphaProp)
 //                    val reminderAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(reminderLayout, alphaProp)
                     val reminderAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(tokoButtonContainer.btnReminder, alphaProp)
-                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim, rewardAlphaAnim, reminderAlphaAnim)
+                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, rewardAlphaAnim, reminderAlphaAnim)
 //                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, rewardAlphaAnim, reminderAlphaAnim)
                 } else {
+                    val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(directGiftView, alphaProp)
                     animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim)
 //                    animatorSet.playTogether(tapHintAnim, giftBoxAnim)
                 }
