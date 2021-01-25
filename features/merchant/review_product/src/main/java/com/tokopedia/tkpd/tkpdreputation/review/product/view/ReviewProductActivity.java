@@ -3,12 +3,14 @@ package com.tokopedia.tkpd.tkpdreputation.review.product.view;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.tkpd.tkpdreputation.R;
 
 import java.util.List;
 
@@ -47,5 +49,15 @@ public class ReviewProductActivity extends BaseSimpleActivity implements HasComp
     @Override
     public BaseAppComponent getComponent() {
         return ((BaseMainApplication) getApplication()).getBaseAppComponent();
+    }
+
+    @Override
+    protected int getParentViewResourceID() {
+        return R.id.review_product_parent_view;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_review_product;
     }
 }
