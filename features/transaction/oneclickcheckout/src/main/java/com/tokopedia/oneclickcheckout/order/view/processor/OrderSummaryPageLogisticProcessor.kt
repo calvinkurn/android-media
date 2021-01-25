@@ -5,6 +5,8 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.EstimatedTimeArrival
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceTextData
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -237,6 +239,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                         serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
                         insuranceData = selectedShippingCourierUiModel.productData.insurance,
                         serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
+                        serviceEta = getShippingServiceETA(selectedShippingDurationUiModel.serviceData.texts),
+                        shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                         serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
                         serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
                         shippingPrice = selectedShippingCourierUiModel.productData.price.price,
@@ -343,6 +347,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                         serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
                         insuranceData = selectedShippingCourierUiModel.productData.insurance,
                         serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
+                        serviceEta = getShippingServiceETA(selectedShippingDurationUiModel.serviceData.texts),
+                        shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                         serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
                         serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
                         shippingPrice = selectedShippingCourierUiModel.productData.price.price,
@@ -402,6 +408,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                         insuranceData = selectedShippingCourierUiModel.productData.insurance,
                         serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
                         serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
+                        serviceEta = getShippingServiceETA(selectedShippingDurationUiModel.serviceData.texts),
+                        shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                         serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
                         shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                         shippingRecommendationData = shippingRecommendationData),
@@ -415,6 +423,14 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         } else {
             shippingCourierViewModelList.firstOrNull { it.isSelected }
         } ?: shippingCourierViewModelList.first()
+    }
+
+    private fun getShippingCourierETA(eta: EstimatedTimeArrival?): String? {
+        return if (eta != null && eta.errorCode == 0) eta.textEta else null
+    }
+
+    private fun getShippingServiceETA(eta: ServiceTextData?): String? {
+        return if (eta != null && eta.errorCode == 0) eta.textEtaSummarize else null
     }
 
     suspend fun savePinpoint(address: OrderProfileAddress, longitude: String, latitude: String, userId: String, deviceId: String): OccGlobalEvent {
