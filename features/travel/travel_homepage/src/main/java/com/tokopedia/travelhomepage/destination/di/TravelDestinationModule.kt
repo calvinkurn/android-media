@@ -16,7 +16,6 @@ import dagger.Provides
 /**
  * @author by jessicasean on 12/23/2019
  */
-@TravelDestinationScope
 @Module
 class TravelDestinationModule {
 

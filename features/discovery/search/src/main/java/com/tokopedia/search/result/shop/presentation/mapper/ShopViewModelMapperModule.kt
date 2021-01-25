@@ -8,7 +8,6 @@ import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import dagger.Module
 import dagger.Provides
 
-@SearchScope
 @Module
 internal class ShopViewModelMapperModule {
 

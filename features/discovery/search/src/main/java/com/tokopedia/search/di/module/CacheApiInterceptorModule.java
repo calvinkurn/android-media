@@ -9,7 +9,6 @@ import com.tokopedia.search.di.scope.SearchScope;
 import dagger.Module;
 import dagger.Provides;
 
-@SearchScope
 @Module
 public class CacheApiInterceptorModule {
 

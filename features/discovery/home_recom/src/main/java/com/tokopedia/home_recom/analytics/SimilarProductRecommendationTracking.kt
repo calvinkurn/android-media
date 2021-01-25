@@ -47,6 +47,7 @@ object SimilarProductRecommendationTracking {
     private const val FIELD_PRODUCT_POSITION = "position"
     private const val FIELD_ACTION_FIELD = "actionField"
     private const val FIELD_ATTRIBUTE = "attribution"
+    private const val FIELD_DIMENSION_61 = "dimension61"
     private const val FIELD_DIMENSION_83 = "dimension83"
     private const val FIELD_DIMENSION_90 = "dimension90"
 
@@ -89,6 +90,7 @@ object SimilarProductRecommendationTracking {
                         FIELD_PRODUCT_LIST, list,
                         FIELD_PRODUCT_POSITION, position,
                         FIELD_ATTRIBUTE, VALUE_EMPTY,
+                        FIELD_DIMENSION_61, item.dimension61,
                         FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
                         FIELD_DIMENSION_90, internalRef
                 )
@@ -110,7 +112,8 @@ object SimilarProductRecommendationTracking {
                 FIELD_PRODUCT_LIST, list,
                 FIELD_PRODUCT_POSITION, position,
                 FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
-                FIELD_DIMENSION_90, internalRef
+                FIELD_DIMENSION_90, internalRef,
+                FIELD_DIMENSION_61, item.dimension61
         )
     }
 
@@ -263,13 +266,13 @@ object SimilarProductRecommendationTracking {
         getTracker().sendEnhanceEcommerceEvent(data)
     }
 
-    fun eventUserClickQuickFilterChip(userId: String) {
+    fun eventUserClickQuickFilterChip(userId: String, parameter: String) {
         val tracker = getTracker()
         val data = DataLayer.mapOf(
                 EVENT, EVENT_CLICK_RECOMMENDATION,
                 EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
                 EVENT_ACTION, EVENT_ACTION_CLICK_ANNOTATION_CHIP,
-                EVENT_LABEL, "",
+                EVENT_LABEL, parameter,
                 BUSINESS_UNIT, BU_HOME_AND_BROWSE,
                 CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                 USER_ID, userId
@@ -277,13 +280,13 @@ object SimilarProductRecommendationTracking {
         tracker.sendEnhanceEcommerceEvent(data)
     }
 
-    fun eventUserClickFullFilterChip(userId: String){
+    fun eventUserClickFullFilterChip(userId: String, param: String){
         val tracker = getTracker()
         val data = DataLayer.mapOf(
                 EVENT, EVENT_CLICK_RECOMMENDATION,
                 EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
                 EVENT_ACTION, EVENT_ACTION_CLICK_FULL_FILTER_CHIP,
-                EVENT_LABEL, "",
+                EVENT_LABEL, param,
                 BUSINESS_UNIT, BU_HOME_AND_BROWSE,
                 CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                 USER_ID, userId
@@ -291,13 +294,13 @@ object SimilarProductRecommendationTracking {
         tracker.sendEnhanceEcommerceEvent(data)
     }
 
-    fun eventUserClickShowProduct(userId: String){
+    fun eventUserClickShowProduct(userId: String, param: String){
         val tracker = getTracker()
         val data = DataLayer.mapOf(
                 EVENT, EVENT_CLICK_RECOMMENDATION,
                 EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
                 EVENT_ACTION, EVENT_ACTION_CLICK_SHOW_PRODUCT,
-                EVENT_LABEL, "",
+                EVENT_LABEL, param,
                 BUSINESS_UNIT, BU_HOME_AND_BROWSE,
                 CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                 USER_ID, userId
