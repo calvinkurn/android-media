@@ -78,7 +78,7 @@ class TopadsDailyBudgetRecomAdapter(private val onBudgetClicked: ((pos: Int) -> 
                         }
                         number.toInt() % BUDGET_MULTIPLE_FACTOR != 0 -> {
                             holder.view.editBudget?.setError(true)
-                            holder.view.editBudget?.setMessage(String.format(holder.view.context.getString(R.string.topads_common_error_multiple_50), BUDGET_MULTIPLE_FACTOR))
+                            holder.view.editBudget?.setMessage(String.format(holder.view.context.getString(com.tokopedia.topads.common.R.string.topads_common_error_multiple_50), BUDGET_MULTIPLE_FACTOR))
                             holder.view.buttonSubmitEdit.isEnabled = false
                         }
                         else -> {

@@ -19,6 +19,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_ADD_OPTION
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_SOURCE_RECOM
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.model.*
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupEditInput
@@ -35,7 +36,10 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import kotlinx.android.synthetic.main.topads_dash_recom_product_list.*
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
+import kotlin.collections.set
 
 /**
  * Created by Pika on 20/7/20.
@@ -67,7 +71,15 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-        adapter = TopadsProductRecomAdapter(::itemCheckedUnchecked)
+        adapter = TopadsProductRecomAdapter(::itemCheckedUnchecked, ::enableButton)
+        val dummyId: MutableList<Int> = mutableListOf()
+        val suggestions = ArrayList<DataSuggestions>()
+        suggestions.add(DataSuggestions(PRODUCT, dummyId))
+        topAdsDashboardPresenter.getBidInfo(suggestions, ::getMaxBid)
+    }
+
+    private fun getMaxBid(list: List<TopadsBidInfo.DataItem>) {
+        adapter.setMaxValue(list.firstOrNull()?.maxBid ?: 0)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -120,6 +132,10 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
 
     private fun onBudgetClicked() {
         (parentFragment as? TopAdsRecommendationFragment)?.setClick()
+    }
+
+    private fun enableButton(enable: Boolean) {
+        (parentFragment as? TopAdsRecommendationFragment)?.setEnable(enable)
     }
 
     private fun setEmptyState() {

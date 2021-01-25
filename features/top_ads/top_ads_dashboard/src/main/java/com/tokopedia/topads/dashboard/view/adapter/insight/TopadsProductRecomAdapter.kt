@@ -9,13 +9,14 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.RECOMMENDATION_PRODUCT_MAX_BID
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.BUDGET_MULTIPLE_FACTOR
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendation
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_dash_recon_product_item.view.*
 
-class TopadsProductRecomAdapter(var itemSelected: () -> Unit) : RecyclerView.Adapter<TopadsProductRecomAdapter.ViewHolder>() {
+class TopadsProductRecomAdapter(var itemSelected: () -> Unit, var enableButton: (enable: Boolean) -> Unit) : RecyclerView.Adapter<TopadsProductRecomAdapter.ViewHolder>() {
     var items: MutableList<ProductRecommendation> = mutableListOf()
+    private var maxBid = 0
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -38,10 +39,15 @@ class TopadsProductRecomAdapter(var itemSelected: () -> Unit) : RecyclerView.Ada
         return selectedItems
     }
 
-     fun setAllChecked(checked: Boolean) {
+    fun setAllChecked(checked: Boolean) {
         items.forEach {
             it.isChecked = checked
         }
+        notifyDataSetChanged()
+    }
+
+    fun setMaxValue(bid:Int){
+        maxBid = bid
         notifyDataSetChanged()
     }
 
@@ -66,18 +72,27 @@ class TopadsProductRecomAdapter(var itemSelected: () -> Unit) : RecyclerView.Ada
                     setCurrentBid = number.toInt()
                     when {
                         number < recomBid.toDouble() && number > minBid -> {
+                            enableButton.invoke(true)
                             holder.view.editBudget?.setError(false)
                             holder.view.editBudget?.setMessage(String.format(holder.view.context.getString(R.string.topads_dash_budget_recom_error), recomBid))
                         }
                         number < minBid -> {
+                            enableButton.invoke(false)
                             holder.view.editBudget?.setError(true)
                             holder.view.editBudget?.setMessage(holder.view.context.getString(R.string.topads_dash_product_recomm_min_budget_error))
                         }
-                        number > RECOMMENDATION_PRODUCT_MAX_BID ->{
+                        number >= maxBid -> {
+                            enableButton.invoke(false)
                             holder.view.editBudget?.setError(true)
                             holder.view.editBudget?.setMessage(holder.view.context.getString(R.string.topads_dash_product_recomm_max_budget_error))
                         }
+                        number.toInt() % BUDGET_MULTIPLE_FACTOR != 0 -> {
+                            enableButton.invoke(false)
+                            holder.view.editBudget?.setError(true)
+                            holder.view.editBudget?.setMessage(String.format(holder.view.context.getString(com.tokopedia.topads.common.R.string.topads_common_error_multiple_50), BUDGET_MULTIPLE_FACTOR))
+                        }
                         else -> {
+                            enableButton.invoke(true)
                             holder.view.editBudget?.setError(false)
                             holder.view.editBudget?.setMessage("")
                         }

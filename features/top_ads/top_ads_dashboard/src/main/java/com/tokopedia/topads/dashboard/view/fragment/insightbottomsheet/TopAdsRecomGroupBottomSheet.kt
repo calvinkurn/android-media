@@ -91,13 +91,14 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
         onButtonSubmit()
         contentSwitch?.setOnCheckedChangeListener { _, isChecked ->
             group_name_input?.textFieldInput?.text?.clear()
+            setEmptyNameError()
             if (!isChecked) {
                 submit_butt?.isEnabled = adapter.isChecked() != -1
                 group_name_input.gone()
                 search.visible()
                 recyclerView.visible()
             } else {
-                submit_butt?.isEnabled = group_name_input?.textFieldInput?.text?.isEmpty() == false
+                submit_butt?.isEnabled = false
                 group_name_input?.requestFocus()
                 group_name_input.visible()
                 search.gone()
@@ -132,17 +133,26 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val coroutineScope = CoroutineScope(Dispatchers.Main)
-                s?.let {
-                    coroutineScope.launch {
-                        delay(DEBOUNCE_CONST)
-                        val text = s.toString().trim()
-                        topAdsDashboardPresenter.validateGroup(text, ::onSuccessGroupName)
+                val text = s.toString()
+                if(text.isEmpty()){
+                    setEmptyNameError()
+                 }else {
+                    s?.let {
+                        coroutineScope.launch {
+                            delay(DEBOUNCE_CONST)
+                            topAdsDashboardPresenter.validateGroup(text, ::onSuccessGroupName)
+                        }
                     }
                 }
             }
         })
     }
 
+    fun setEmptyNameError(){
+        group_name_input?.setError(true)
+        submit_butt?.isEnabled = false
+        group_name_input?.setMessage(getString(R.string.topads_dash_name_empty_error))
+    }
 
     fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateName) {
         if (data.errors.isEmpty()) {

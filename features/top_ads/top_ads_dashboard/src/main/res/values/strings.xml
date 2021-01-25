@@ -338,6 +338,7 @@
     <string name="topads_dash_success_product_toast">%d Produk berhasil diiklankan!</string>
     <string name="topads_dash_grp_bs_search_hint">Cari grup</string>
     <string name="topads_dash_grp_bs_empty">Oops, pencarianmu tidak ditemukan!</string>
+    <string name="topads_dash_name_empty_error">Nama group tidak boleh kosong</string>
 
 
     <!-- HEADLINE -->
