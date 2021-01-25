@@ -6,11 +6,13 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListButton
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListItem
 import com.tokopedia.gamification.giftbox.data.entities.PrizeListItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class GamiDirectGiftView @JvmOverloads constructor(
@@ -33,7 +35,6 @@ class GamiDirectGiftView @JvmOverloads constructor(
         tvTitle = findViewById(R.id.tvTitle)
         tvMessage = findViewById(R.id.tvMessage)
         greenBtn = findViewById(R.id.greenBtn)
-//        btnContainer = findViewById(R.id.btnContainer)
     }
 
     fun setData(prizeList: List<PrizeListItem>?,
@@ -66,13 +67,41 @@ class GamiDirectGiftView @JvmOverloads constructor(
     }
 
     private fun showBmPrizeDetails(prizeDetailList: List<PrizeDetailListItem?>?, prizeDetailListButton: PrizeDetailListButton?) {
-        if (context is AppCompatActivity) {
-            val bmUnify = BottomSheetUnify()
-            val itemView = BmPrizeDetailView(context)
-            itemView.setData(prizeDetailList, prizeDetailListButton)
-            bmUnify.setChild(itemView)
-            bmUnify.setTitle("Hadiah yang Mungkin Didapat")
-            bmUnify.show((context as AppCompatActivity).supportFragmentManager, "gami_prize_detail")
+        val isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
+        val itemView = getDialogChildView(prizeDetailList, prizeDetailListButton)
+        if (isTablet) {
+            showTabletDialog(itemView)
+        } else {
+            showUnifyDialog(itemView)
         }
+
+    }
+
+    fun getDialogChildView(prizeDetailList: List<PrizeDetailListItem?>?, prizeDetailListButton: PrizeDetailListButton?): BmPrizeDetailView {
+        val itemView = BmPrizeDetailView(context)
+        itemView.setData(prizeDetailList, prizeDetailListButton)
+        return itemView
+    }
+
+    private fun showUnifyDialog(itemView: BmPrizeDetailView) {
+        val bmUnify = BottomSheetUnify()
+        bmUnify.setChild(itemView)
+        bmUnify.setTitle(context.getString(R.string.gami_hadiah_yang_mungkin_didapat))
+        bmUnify.show((context as AppCompatActivity).supportFragmentManager, "gami_prize_detail")
+    }
+
+    private fun showTabletDialog(itemView: BmPrizeDetailView) {
+        val dialog = DialogUnify(context, 0, 0)
+        dialog.setUnlockVersion()
+        dialog.setChild(itemView)
+        val width = context.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_rv_coupons_width) ?: 390.toPx().toFloat() + 20.toPx()
+        dialog.dialogMaxWidth = width.toInt()
+        dialog.setOverlayClose(false)
+        dialog.setOnShowListener {
+            itemView.imageClose?.setOnClickListener {
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
     }
 }

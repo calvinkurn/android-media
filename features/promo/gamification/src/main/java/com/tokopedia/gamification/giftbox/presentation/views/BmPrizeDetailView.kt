@@ -14,12 +14,12 @@ import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListItem
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 
-//TODO rahul cta button should have lower shadow - LATER
 class BmPrizeDetailView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
     val LAYOUT = R.layout.gami_prize_detail
     var image: AppCompatImageView
+    var imageClose: AppCompatImageView?=null
     var prizeListItemContainer: LinearLayout
     var btn: GreenGradientButton
 
@@ -27,6 +27,7 @@ class BmPrizeDetailView @JvmOverloads constructor(
         View.inflate(context, LAYOUT, this)
         orientation = LinearLayout.VERTICAL
         image = findViewById(R.id.image)
+        imageClose = findViewById(R.id.image_close)
         prizeListItemContainer = findViewById(R.id.prizeListItemContainer)
         btn = findViewById(R.id.greenBtn)
     }

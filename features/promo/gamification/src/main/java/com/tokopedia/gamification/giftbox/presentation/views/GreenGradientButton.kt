@@ -98,9 +98,9 @@ class GreenGradientButton @JvmOverloads constructor(
     fun roundedShadowPath() {
         shadowPath.reset()
         val left = shadowStartOffset
-        val top = 0f
         val right = width + shadowEndOffset
         val bottom = height + shadowBottomOffset
+        val top = bottom - 10.toPx()
         val rectF = RectF(left, top, right, bottom)
         shadowPath.addRoundRect(rectF, shadowRadius, shadowRadius, Path.Direction.CW)
     }

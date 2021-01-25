@@ -67,5 +67,6 @@
     <string name="gami_end_time">00:00:00</string>
     <string name="gami_end_time_minute">0</string>
     <string name="gami_info_label">Information</string>
+    <string name="gami_hadiah_yang_mungkin_didapat">Hadiah yang mungkin didapat</string>
 
 </resources>
