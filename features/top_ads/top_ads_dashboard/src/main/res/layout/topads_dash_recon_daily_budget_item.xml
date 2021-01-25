@@ -13,7 +13,8 @@
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_dash_folder_with_border" />
+        app:srcCompat="@drawable/topads_dash_folder_with_border"
+        tools:ignore="ContentDescription" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/groupName"
@@ -55,7 +56,9 @@
         app:layout_constraintEnd_toStartOf="@id/recom_budget"
         app:layout_constraintStart_toEndOf="@id/daily_budget_text"
         app:layout_constraintTop_toTopOf="@id/daily_budget_text"
-        app:srcCompat="@drawable/topads_arrow_green" />
+        app:srcCompat="@drawable/topads_arrow_green"
+        tools:ignore="ContentDescription" />
+
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/recom_budget_text"

@@ -30,7 +30,6 @@
             android:layout_width="@dimen/dp_80"
             android:layout_height="10dp"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginTop="@dimen/dp_4"
             app:corners="8"
             app:layout_constraintStart_toStartOf="parent"

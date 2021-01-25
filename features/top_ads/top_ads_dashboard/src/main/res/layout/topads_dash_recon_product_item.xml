@@ -41,7 +41,8 @@
         app:layout_constraintBottom_toBottomOf="@id/totalSearch"
         app:layout_constraintStart_toStartOf="@id/img_folder"
         app:layout_constraintTop_toTopOf="@id/total_search"
-        app:srcCompat="@drawable/topads_search_green" />
+        app:srcCompat="@drawable/topads_search_green"
+        tools:ignore="ContentDescription" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/total_search"
@@ -59,11 +60,12 @@
         android:id="@+id/up_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/totalSearch"
         app:layout_constraintStart_toStartOf="@id/total_search"
         app:layout_constraintTop_toBottomOf="@id/total_search"
         app:layout_constraintTop_toTopOf="@id/totalSearch"
-        app:layout_constraintBottom_toBottomOf="@id/totalSearch"
-        app:srcCompat="@drawable/topads_up" />
+        app:srcCompat="@drawable/topads_up"
+        tools:ignore="ContentDescription" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/totalSearch"
@@ -90,7 +92,8 @@
         app:layout_constraintBottom_toBottomOf="@id/recommendedBid"
         app:layout_constraintEnd_toStartOf="@id/recommended_bid_text"
         app:layout_constraintTop_toTopOf="@id/recommended_bid_text"
-        app:srcCompat="@drawable/topads_rp" />
+        app:srcCompat="@drawable/topads_rp"
+        tools:ignore="ContentDescription" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/recommended_bid_text"
