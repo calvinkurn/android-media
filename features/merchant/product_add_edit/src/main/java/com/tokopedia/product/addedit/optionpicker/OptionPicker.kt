@@ -17,11 +17,9 @@ import com.tokopedia.product.addedit.optionpicker.adapter.OptionTypeFactory
 import com.tokopedia.product.addedit.optionpicker.model.OptionModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipDividerItemDecoration
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.add_edit_product_specification_data_bottom_sheet_content.*
+import kotlinx.android.synthetic.main.bottom_sheet_list.*
 import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
-import kotlinx.android.synthetic.main.bottom_sheet_list.view.searchBarData
 import java.util.*
-import kotlin.collections.ArrayList
 
 class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
     private var selectedPosition: Int = -1

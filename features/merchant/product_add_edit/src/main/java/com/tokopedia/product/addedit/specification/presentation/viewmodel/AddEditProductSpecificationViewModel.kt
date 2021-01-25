@@ -40,7 +40,7 @@ class AddEditProductSpecificationViewModel @Inject constructor(
             })
             mAnnotationCategoryData.value = result.data.drogonAnnotationCategoryV2.data
         }, onError = {
-            mErrorMessage.value = it.localizedMessage
+            mErrorMessage.value = it.message
         })
     }
 
