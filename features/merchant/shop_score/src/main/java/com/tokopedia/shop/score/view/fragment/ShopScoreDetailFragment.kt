@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.view.fragment
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -13,6 +14,7 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -39,6 +41,11 @@ class ShopScoreDetailFragment : Fragment() {
     lateinit var viewModel: ShopScoreDetailViewModel
 
     private var adapter: ShopScoreDetailAdapter? = null
+
+    override fun onAttach(context: Context) {
+        SplitCompat.install(context)
+        super.onAttach(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
