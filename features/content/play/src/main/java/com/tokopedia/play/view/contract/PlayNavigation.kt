@@ -6,4 +6,8 @@ package com.tokopedia.play.view.contract
 interface PlayNavigation {
 
     fun onBackPressed(isSystemBack: Boolean)
+
+    fun requestEnableNavigation()
+
+    fun requestDisableNavigation()
 }

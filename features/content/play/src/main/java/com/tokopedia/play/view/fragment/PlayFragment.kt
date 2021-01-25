@@ -28,10 +28,12 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.custom.PlayUnifyLoader
@@ -109,6 +111,9 @@ class PlayFragment @Inject constructor(
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
+    private val playNavigation: PlayNavigation
+        get() = requireActivity() as PlayNavigation
 
     private var videoScalingManager: VideoScalingManager? = null
     private var videoBoundsManager: VideoBoundsManager? = null
@@ -448,6 +453,9 @@ class PlayFragment @Inject constructor(
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             buttonCloseViewOnStateChanged(bottomInsets = it)
+
+            if (it.isAnyShown) playNavigation.requestDisableNavigation()
+            else playNavigation.requestEnableNavigation()
         })
     }
 

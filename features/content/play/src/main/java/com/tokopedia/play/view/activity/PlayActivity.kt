@@ -234,6 +234,14 @@ class PlayActivity : BaseActivity(),
         } else super.onBackPressed()
     }
 
+    override fun requestEnableNavigation() {
+        swipeContainerView.setEnableSwiping(!orientation.isLandscape)
+    }
+
+    override fun requestDisableNavigation() {
+        swipeContainerView.setEnableSwiping(false)
+    }
+
     override fun onBackPressed() {
         onBackPressed(true)
     }
