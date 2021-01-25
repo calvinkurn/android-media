@@ -80,5 +80,6 @@
     <string name="admin_title_shop_setting">Pengaturan Toko</string>
     <string name="admin_title_statistic">Statistik Toko</string>
     <string name="admin_title_ads_and_promotion">Iklan dan Promosi</string>
+    <string name="admin_error_refresh_page">Refresh Halaman</string>
 
 </resources>

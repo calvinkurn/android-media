@@ -95,7 +95,16 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         adminLoadingView = findViewById(R.id.loader_admin_role)
         adminHelpText = findViewById(R.id.tv_admin_role_help)
 
+        setupGlobalError()
+
         viewModel.checkAccess(adminFeature)
+    }
+
+    private fun setupGlobalError() {
+        adminErrorView?.run {
+            errorSecondaryAction.visibility = View.GONE
+            setButtonFull(true)
+        }
     }
 
     private fun observeLiveData() {
@@ -160,8 +169,6 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
             errorDescription.text = desc
         }
         errorAction.text = context?.getString(R.string.admin_no_permission_back_to_seller_account)
-        errorSecondaryAction.visibility = View.GONE
-        setButtonFull(true)
 
         setActionClickListener {
             activity?.finish()
@@ -169,9 +176,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     }
 
     private fun GlobalError.showAdminError() {
-        setType(GlobalError.NO_CONNECTION)
-        errorSecondaryAction.visibility = View.GONE
-        setButtonFull(true)
+        setType(GlobalError.SERVER_ERROR)
 
         setActionClickListener {
             viewModel.checkAccess(adminFeature)
