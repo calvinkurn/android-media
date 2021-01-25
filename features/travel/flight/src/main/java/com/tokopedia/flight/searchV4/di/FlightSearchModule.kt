@@ -12,7 +12,6 @@ import javax.inject.Named
 /**
  * @author by furqan on 06/04/2020
  */
-@FlightSearchScope
 @Module
 class FlightSearchModule {
 

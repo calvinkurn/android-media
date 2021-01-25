@@ -14,7 +14,6 @@ import dagger.Provides
  * ade.hadian@tokopedia.com
  */
 
-@RegisterInitialScope
 @Module
 class RegisterInitialUseCaseModule{
 

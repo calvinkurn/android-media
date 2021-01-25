@@ -26,7 +26,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 @Module
-@SellerMenuScope
 class SellerMenuModule {
 
     @SellerMenuScope

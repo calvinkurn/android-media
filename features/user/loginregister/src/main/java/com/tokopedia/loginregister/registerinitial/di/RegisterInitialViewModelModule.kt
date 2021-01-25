@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  * ade.hadian@tokopedia.com
  */
 
-@RegisterInitialScope
 @Module
 abstract class RegisterInitialViewModelModule{
 

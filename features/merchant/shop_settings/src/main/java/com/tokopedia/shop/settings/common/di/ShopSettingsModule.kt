@@ -23,7 +23,6 @@ import dagger.Provides
 /**
  * @author by furqan on 21/03/18.
  */
-@ShopSettingsScope
 @Module(includes = [ImageUploaderModule::class, GmCommonModule::class, ShopSettingsInfoViewModelModule::class])
 class ShopSettingsModule {
 
