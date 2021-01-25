@@ -11,7 +11,6 @@ import dagger.Module
 import dagger.Provides
 
 
-@TravelSliceScope
 @Module
 class TravelSliceModule {
     @TravelSliceScope

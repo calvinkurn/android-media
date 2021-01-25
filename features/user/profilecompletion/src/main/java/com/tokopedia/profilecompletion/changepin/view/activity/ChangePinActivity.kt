@@ -7,13 +7,13 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.changepin.view.fragment.ChangePinFragment
@@ -61,7 +61,7 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@ChangePinActivity, com.tokopedia.unifyprinciples.R.color.Neutral_N0)))
+            setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this@ChangePinActivity, com.tokopedia.unifyprinciples.R.color.Unify_N0)))
         }
     }
 
@@ -77,7 +77,7 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+            window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
