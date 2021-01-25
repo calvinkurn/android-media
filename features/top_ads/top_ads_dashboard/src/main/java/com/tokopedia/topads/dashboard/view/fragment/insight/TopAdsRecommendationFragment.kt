@@ -120,14 +120,22 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             override fun onTabItemClick(position: Int) {
                 view_pager.currentItem = position
                 if (position == 0 && topAdsInsightTabAdapter?.getTab()?.get(position)?.contains(PRODUK) == true) {
+                    setPadding()
                     bottomInsight.visibility = View.VISIBLE
                 } else {
                     bottomInsight.visibility = View.GONE
+                    view_pager?.setPadding(0, 0, 0,  0)
                 }
             }
         })
         rvTabInsight.adapter = topAdsInsightTabAdapter
         view_pager.offscreenPageLimit = TopAdsDashboardConstant.OFFSCREEN_PAGE_LIMIT
+    }
+
+     fun setPadding() {
+        editProduct?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val height = editProduct?.measuredHeight
+        view_pager?.setPadding(0, 0, 0, height ?: 0)
     }
 
     private fun renderViewPager() {

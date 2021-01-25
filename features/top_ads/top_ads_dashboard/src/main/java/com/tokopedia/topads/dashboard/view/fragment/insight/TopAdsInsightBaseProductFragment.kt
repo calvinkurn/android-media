@@ -72,6 +72,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
         super.onCreate(savedInstanceState)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         adapter = TopadsProductRecomAdapter(::itemCheckedUnchecked, ::enableButton)
+        (parentFragment as TopAdsRecommendationFragment).setPadding()
         val dummyId: MutableList<Int> = mutableListOf()
         val suggestions = ArrayList<DataSuggestions>()
         suggestions.add(DataSuggestions(PRODUCT, dummyId))
@@ -105,6 +106,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
 
     private fun checkUnchekAll() {
         onCheckedChangeListener = { _, checked ->
+            enableButton(checked)
             adapter.setAllChecked(checked)
             selectedItems?.text = String.format(getString(R.string.topads_common_selected_product), adapter.getSelectedIds().size)
         }
@@ -291,9 +293,9 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
         cb_product_recom?.isChecked = selected == adapter.itemCount
         cb_product_recom?.setOnCheckedChangeListener(onCheckedChangeListener)
         if (selected == 0) {
-            (parentFragment as? TopAdsRecommendationFragment)?.setEnable(false)
+            enableButton(false)
         } else {
-            (parentFragment as? TopAdsRecommendationFragment)?.setEnable(true)
+            enableButton(true)
         }
     }
 }
