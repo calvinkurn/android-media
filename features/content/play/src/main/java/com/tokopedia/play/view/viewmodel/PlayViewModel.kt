@@ -280,7 +280,6 @@ class PlayViewModel @Inject constructor(
     private val videoBufferGovernor = videoBufferGovernorFactory.create(scope)
 
     init {
-        playVideoManager.addListener(videoManagerListener)
         videoStateProcessor.addStateListener(videoStateListener)
         channelStateProcessor.addStateListener(channelStateListener)
         videoBufferGovernor.startBufferGovernance()
@@ -444,14 +443,22 @@ class PlayViewModel @Inject constructor(
         _observableEventPiP.value = Event(PiPMode.StopPip)
     }
 
-    private fun initiateVideo(video: Video) {
+    private fun initiateVideo(videoStream: VideoStreamUiModel) {
         startVideoWithUrlString(
-                video.streamSource,
-                bufferControl = video.bufferControl?.let { mapBufferControl(it) }
-                        ?: PlayBufferControl()
+                videoStream.uriString,
+                videoStream.buffer
         )
-        playVideoManager.setRepeatMode(false)
+        playVideoManager.setRepeatMode(shouldRepeat = false)
     }
+
+//    private fun initiateVideo(video: Video) {
+//        startVideoWithUrlString(
+//                video.streamSource,
+//                bufferControl = video.bufferControl?.let { mapBufferControl(it) }
+//                        ?: PlayBufferControl()
+//        )
+//        playVideoManager.setRepeatMode(false)
+//    }
 
     private fun startVideoWithUrlString(urlString: String, bufferControl: PlayBufferControl) {
         try {
@@ -459,8 +466,12 @@ class PlayViewModel @Inject constructor(
         } catch (e: Exception) {}
     }
 
+    private fun playGeneralVideoStream(videoStream: VideoStreamUiModel) {
+        if (videoStream.isActive) initiateVideo(videoStream)
+    }
+
     private fun playGeneralVideoStream(channel: Channel) {
-        if (channel.configuration.active) initiateVideo(channel.video)
+//        if (channel.configuration.active) initiateVideo(channel.video)
     }
 
     private fun stopPlayer() {
@@ -469,7 +480,7 @@ class PlayViewModel @Inject constructor(
     }
     //endregion
 
-    fun processChannelInfo(channelData: PlayChannelData) {
+    fun createPage(channelData: PlayChannelData) {
         mChannelData = channelData
         handlePartnerInfo(channelData.partnerInfo)
         handleVideoMetaInfo(channelData.videoMetaInfo)
@@ -479,8 +490,27 @@ class PlayViewModel @Inject constructor(
         handleQuickReplyInfo(channelData.quickReplyInfo)
     }
 
-    fun updateChannelInfo(channelData: PlayChannelData) {
+    fun focusPage(channelData: PlayChannelData) {
+        focusVideoPlayer()
+        updateChannelInfo(channelData)
+    }
+
+    fun defocusPage() {
+        stopJob()
+        defocusVideoPlayer()
+    }
+
+    private fun focusVideoPlayer() {
+        playVideoManager.addListener(videoManagerListener)
+    }
+
+    private fun defocusVideoPlayer() {
+        playVideoManager.removeListener(videoManagerListener)
+    }
+
+    private fun updateChannelInfo(channelData: PlayChannelData) {
         updatePartnerInfo(channelData.partnerInfo.basicInfo)
+        updateVideoMetaInfo(channelData.videoMetaInfo)
         updateLikeInfo(channelData.likeInfo.param, channelData.id)
         updateCartInfo(channelData.cartInfo.shouldShow)
     }
@@ -699,7 +729,7 @@ class PlayViewModel @Inject constructor(
         )
     }
 
-    fun stopJob() {
+    private fun stopJob() {
         channelInfoJob?.cancel()
     }
 
@@ -752,6 +782,11 @@ class PlayViewModel @Inject constructor(
 
             })
         }
+    }
+
+    private fun updateVideoMetaInfo(videoMetaInfo: PlayVideoMetaInfoUiModel) {
+        if (videoMetaInfo.videoPlayer.isGeneral && videoMetaInfo.videoStream != null) playGeneralVideoStream(videoMetaInfo.videoStream)
+        else playVideoManager.release()
     }
 
     private fun updateLikeInfo(likeParamInfo: PlayLikeParamInfoUiModel, channelId: String) {
@@ -873,13 +908,6 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun mapBufferControl(bufferControl: Video.BufferControl) = PlayBufferControl(
-            minBufferMs = bufferControl.minBufferingSecond * MS_PER_SECOND,
-            maxBufferMs = bufferControl.maxBufferingSecond * MS_PER_SECOND,
-            bufferForPlaybackMs = bufferControl.bufferForPlayback * MS_PER_SECOND,
-            bufferForPlaybackAfterRebufferMs = bufferControl.bufferForPlaybackAfterRebuffer * MS_PER_SECOND
-    )
-
     private fun doOnForbidden() {
         destroy()
         stopPlayer()
@@ -898,8 +926,6 @@ class PlayViewModel @Inject constructor(
 
     companion object {
         private const val MAX_RETRY_CHANNEL_INFO = 3
-
-        private const val MS_PER_SECOND = 1000
 
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
     }

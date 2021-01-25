@@ -133,7 +133,7 @@ class VideoViewComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        mExoPlayer?.let { setPlayer(it) }
+//        mExoPlayer?.let { setPlayer(it) }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

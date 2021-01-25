@@ -7,12 +7,16 @@ import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 /**
  * Created by mzennis on 2020-03-06.
  */
 object PlayUiMapper {
+
+    private const val MS_PER_SECOND = 1000
 
     fun createCompleteInfoModel(
             channel: Channel,
@@ -121,6 +125,7 @@ object PlayUiMapper {
             uriString = video.streamSource,
             channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
             orientation = VideoOrientation.getByValue(video.orientation),
+            buffer = mapVideoBufferControl(video.bufferControl),
             backgroundUrl = config.roomBackground.imageUrl,
 //            channelType = PlayChannelType.Live,
 //            orientation = VideoOrientation.Horizontal(16, 9),
@@ -132,6 +137,17 @@ object PlayUiMapper {
         "live", "vod" -> General(exoPlayer)
         "youtube" -> YouTube(video.streamSource)
         else -> Unknown
+    }
+
+    private fun mapVideoBufferControl(bufferControl: Video.BufferControl?): PlayBufferControl {
+        return if (bufferControl != null) {
+            PlayBufferControl(
+                    minBufferMs = bufferControl.minBufferingSecond * MS_PER_SECOND,
+                    maxBufferMs = bufferControl.maxBufferingSecond * MS_PER_SECOND,
+                    bufferForPlaybackMs = bufferControl.bufferForPlayback * MS_PER_SECOND,
+                    bufferForPlaybackAfterRebufferMs = bufferControl.bufferForPlaybackAfterRebuffer * MS_PER_SECOND
+            )
+        } else PlayBufferControl()
     }
 
     fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() } )

@@ -29,7 +29,6 @@ import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
@@ -148,7 +147,7 @@ class PlayFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         stopPrepareMonitoring()
-        updateChannelInfo()
+        onPageFocused()
         view?.postDelayed({
             view?.let { registerKeyboardListener(it) }
         }, 200)
@@ -160,7 +159,7 @@ class PlayFragment @Inject constructor(
                 channelId,
                 playViewModel.latestCompleteChannelData
         )
-        playViewModel.stopJob()
+        onPageDefocused()
         super.onPause()
     }
 
@@ -284,11 +283,15 @@ class PlayFragment @Inject constructor(
     }
 
     private fun processChannelInfo() {
-        playViewModel.processChannelInfo(playParentViewModel.getLatestChannelStorageData(channelId))
+        playViewModel.createPage(playParentViewModel.getLatestChannelStorageData(channelId))
     }
 
-    private fun updateChannelInfo() {
-        playViewModel.updateChannelInfo(playParentViewModel.getLatestChannelStorageData(channelId))
+    private fun onPageFocused() {
+        playViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
+    }
+
+    private fun onPageDefocused() {
+        playViewModel.defocusPage()
     }
 
     private fun invalidateVideoTopBounds(

@@ -10,6 +10,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.player.PlayVideoManager
 
 /**
@@ -132,6 +133,7 @@ class PlayChannelDetailsWithRecomMapper(
     ) = VideoStreamUiModel(
             uriString = videoResponse.streamSource,
             channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
+            buffer = mapVideoBufferControl(videoResponse.bufferControl),
             orientation = VideoOrientation.getByValue(videoResponse.orientation),
             backgroundUrl = configResponse.roomBackground.imageUrl,
             isActive = configResponse.active
@@ -140,4 +142,19 @@ class PlayChannelDetailsWithRecomMapper(
     private fun mapMiscConfigInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayMiscConfigUiModel(
             shouldShowCart = configResponse.showCart
     )
+
+    private fun mapVideoBufferControl(bufferControl: ChannelDetailsWithRecomResponse.BufferControl?): PlayBufferControl {
+        return if (bufferControl != null) {
+            PlayBufferControl(
+                    minBufferMs = bufferControl.minBufferingSecond * MS_PER_SECOND,
+                    maxBufferMs = bufferControl.maxBufferingSecond * MS_PER_SECOND,
+                    bufferForPlaybackMs = bufferControl.bufferForPlayback * MS_PER_SECOND,
+                    bufferForPlaybackAfterRebufferMs = bufferControl.bufferForPlaybackAfterRebuffer * MS_PER_SECOND
+            )
+        } else PlayBufferControl()
+    }
+
+    companion object {
+        private const val MS_PER_SECOND = 1000
+    }
 }
