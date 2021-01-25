@@ -95,6 +95,8 @@ class DigitalCartViewModel @Inject constructor(
     val checkoutData: LiveData<PaymentPassData>
         get() = _checkoutData
 
+    private var cartId: String = ""
+
     fun getCart(digitalCheckoutPassData: DigitalCheckoutPassData,
                 errorNotLoginMessage: String = "") {
         if (!userSession.isLoggedIn) {
@@ -135,7 +137,6 @@ class DigitalCartViewModel @Inject constructor(
     fun processPatchOtpCart(digitalIdentifierParam: RequestBodyIdentifier,
                             digitalCheckoutPassData: DigitalCheckoutPassData,
                             errorNotLoginMessage: String = "") {
-        val cartId = _cartDigitalInfoData.value?.id ?: ""
         val attributes = RequestBodyOtpSuccess.Attributes(DeviceUtil.localIpAddress, DeviceUtil.userAgentForApiCall, digitalIdentifierParam)
         val requestBodyOtpSuccess = RequestBodyOtpSuccess("cart", cartId, attributes)
         val requestParams = digitalPatchOtpUseCase.createRequestParams(requestBodyOtpSuccess)
@@ -150,6 +151,8 @@ class DigitalCartViewModel @Inject constructor(
             val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
             analytics.eventAddToCart(mappedCartData, source)
             analytics.eventCheckout(mappedCartData)
+
+            cartId = mappedCartData.id ?: ""
 
             if (mappedCartData.isNeedOtp) {
                 _isNeedOtp.postValue(userSession.phoneNumber)
@@ -190,6 +193,8 @@ class DigitalCartViewModel @Inject constructor(
                 analytics.eventAddToCart(mappedCartData, source)
                 analytics.eventCheckout(mappedCartData)
 
+                cartId = mappedCartData.id ?: ""
+
                 if (mappedCartData.isNeedOtp) {
                     _isNeedOtp.postValue(userSession.phoneNumber)
                 } else {
@@ -209,6 +214,9 @@ class DigitalCartViewModel @Inject constructor(
         return object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
+                e.printStackTrace()
+                _showLoading.postValue(false)
+                errorHandler(e)
             }
 
             override fun onNext(typeRestResponseMap: Map<Type, RestResponse>) {
@@ -260,8 +268,8 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun onReceivedPromoCode(promoData: PromoData) {
-        resetVoucherCart()
+    fun onReceivedPromoCode(promoData: PromoData, inputPrice: Long, ) {
+        resetVoucherCart(inputPrice)
         if (promoData.amount > 0) {
             val additionals: MutableList<CartItemDigitalWithTitle> = ArrayList(_cartAdditionalInfoList.value
                     ?: listOf())
@@ -278,7 +286,7 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun resetVoucherCart() {
+    fun resetVoucherCart(inputPrice: Long) {
         val additionalInfos = cartAdditionalInfoList.value?.toMutableList() ?: mutableListOf()
         for ((i, additionalInfo) in additionalInfos.withIndex()) {
             if (additionalInfo.title.contains("Pembayaran")) {
@@ -287,7 +295,8 @@ class DigitalCartViewModel @Inject constructor(
             }
         }
         _cartAdditionalInfoList.value = additionalInfos
-        _totalPrice.value = cartDigitalInfoData.value?.attributes?.pricePlain ?: 0L
+        _totalPrice.value = if (inputPrice > 0) inputPrice else cartDigitalInfoData.value?.attributes?.pricePlain
+                ?: 0L
     }
 
     fun updateTotalPriceWithFintechProduct(isChecked: Boolean) {
@@ -327,6 +336,7 @@ class DigitalCartViewModel @Inject constructor(
             override fun onError(e: Throwable) {
                 e.printStackTrace()
                 _showLoading.postValue(false)
+                errorHandler(e)
             }
 
             override fun onNext(checkoutDigitalData: Map<Type, RestResponse>) {

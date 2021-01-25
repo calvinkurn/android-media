@@ -71,10 +71,13 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var digitalAnalytics: DigitalAnalytics
+
     @Inject
     lateinit var rechargeAnalytics: RechargeAnalytics
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -310,7 +313,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             data?.let { data ->
                 if (data.hasExtra(EXTRA_PROMO_DATA)) {
                     promoData = data.getParcelableExtra(EXTRA_PROMO_DATA)
-                    viewModel.resetVoucherCart()
+                    viewModel.resetVoucherCart(inputPriceHolderView.getPriceInput())
                     when (promoData.state) {
                         TickerCheckoutView.State.FAILED -> {
                             promoData.promoCode = ""
@@ -319,7 +322,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                         }
                         TickerCheckoutView.State.ACTIVE -> {
                             renderPromoTickerView()
-                            viewModel.onReceivedPromoCode(promoData)
+                            viewModel.onReceivedPromoCode(promoData, inputPriceHolderView.getPriceInput())
                             cartDetailInfoAdapter.isExpanded = true
                         }
                         TickerCheckoutView.State.EMPTY -> {
@@ -352,7 +355,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     private fun resetPromoTickerView() {
         promoData = PromoData()
         renderPromoTickerView()
-        viewModel.resetVoucherCart()
+        viewModel.resetVoucherCart(inputPriceHolderView.getPriceInput())
     }
 
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
