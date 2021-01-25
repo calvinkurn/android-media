@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -35,10 +36,10 @@ import javax.inject.Inject
  */
 class PlayYouTubeFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory
-): TkpdBaseV4Fragment(), PlayFragmentContract, YouTubeViewComponent.Listener {
+): TkpdBaseV4Fragment(), PlayFragmentContract, YouTubeViewComponent.Listener, YouTubeViewComponent.DataSource {
 
     private lateinit var containerYouTube: RoundedConstraintLayout
-    private val youtubeView by viewComponent { YouTubeViewComponent(it, R.id.fl_youtube_player, childFragmentManager, this) }
+    private val youtubeView by viewComponent { YouTubeViewComponent(it, R.id.fl_youtube_player, childFragmentManager, this, this) }
 
     private lateinit var playViewModel: PlayViewModel
 
@@ -104,6 +105,13 @@ class PlayYouTubeFragment @Inject constructor(
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation.getByInt(newConfig.orientation)
         youtubeView.setIsFullScreen(orientation.isLandscape)
+    }
+
+    /**
+     * YouTube View Component Data Source
+     */
+    override fun isEligibleToPlay(view: YouTubeViewComponent): Boolean {
+        return lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
     }
 
     /**

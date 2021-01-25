@@ -19,6 +19,7 @@ class YouTubeViewComponent(
         container: ViewGroup,
         @IdRes idRes: Int,
         fragmentManager: FragmentManager,
+        private val dataSource: DataSource,
         private val listener: Listener
 ) : ViewComponent(container, idRes) {
 
@@ -48,7 +49,7 @@ class YouTubeViewComponent(
         }
 
         override fun onLoaded(videoId: String?) {
-            if (mShouldPlayOnReady) play() else pause()
+            if (mShouldPlayOnReady && dataSource.isEligibleToPlay(this@YouTubeViewComponent)) play() else pause()
             youTubePlayer?.doSafe { setOnFullscreenListener(onFullscreenListener) }
         }
 
@@ -201,6 +202,11 @@ class YouTubeViewComponent(
         fun onExitFullscreen(view: YouTubeViewComponent)
 
         fun onVideoStateChanged(view: YouTubeViewComponent, state: PlayViewerVideoState)
+    }
+
+    interface DataSource {
+
+        fun isEligibleToPlay(view: YouTubeViewComponent): Boolean
     }
 
     private fun <R: Any?> YouTubePlayer.doSafe(doHandler: YouTubePlayer.() -> R): R? {
