@@ -96,12 +96,15 @@ class ShopHomeVoucherViewHolder(
                 merchantVoucherReload?.hide()
                 merchantVoucherUiModel = model
 
-                merchantVoucherWidget?.setData(MvcData(
-                        title = MethodChecker.fromHtml(model.data.titles?.firstOrNull()?.text ?: "").toString(),
-                        subTitle = model.data.subTitle ?: "",
-                        imageUrl = model.data.imageURL ?: ""
-                ))
-                merchantVoucherWidget?.shopId = model.data.shopId.toIntOrZero()
+                model.data.apply {
+                    merchantVoucherWidget?.setData(MvcData(
+                            title = titles?.firstOrNull()?.text ?: "",
+                            subTitle = model.data.subTitle ?: "",
+                            imageUrl = model.data.imageURL ?: ""
+                    ),
+                            shopId = model.data.shopId ?: "0"
+                    )
+                }
             }
         }
     }

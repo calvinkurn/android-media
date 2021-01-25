@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
+import com.bumptech.glide.Glide
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.setMargin
@@ -83,10 +84,10 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         tvSubTitle.text = mvcData.subTitle
         this.shopId = shopId
 
-//        Glide.with(imageCoupon)
-//                .load(mvcData.imageUrl)
-//                .dontAnimate()
-//                .into(imageCoupon)
+        Glide.with(imageCoupon)
+                .load(mvcData.imageUrl)
+                .dontAnimate()
+                .into(imageCoupon)
     }
 
 }
