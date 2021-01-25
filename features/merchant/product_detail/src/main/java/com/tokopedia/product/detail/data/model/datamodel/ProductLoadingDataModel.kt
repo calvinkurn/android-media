@@ -5,19 +5,22 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**
- * Created by Yehezkiel on 12/11/20
+ * Created by Yehezkiel on 04/01/21
  */
-data class ProductReportDataModel(
-        val type: String = "",
-        val name: String = ""
+data class ProductLoadingDataModel(
+        val name: String = "pdpLoading",
+        val type: String = "pdpLoading"
 ) : DynamicPdpDataModel {
     override fun type(): String = type
+
+    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+        return typeFactory.type(this)
+    }
+
     override fun name(): String = name
-    override val impressHolder: ImpressHolder = ImpressHolder()
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return newData is ProductReportDataModel
+        return newData is ProductLoadingDataModel
     }
 
     override fun newInstance(): DynamicPdpDataModel {
@@ -25,4 +28,7 @@ data class ProductReportDataModel(
     }
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? = null
+
+    override val impressHolder: ImpressHolder
+        get() = ImpressHolder()
 }
