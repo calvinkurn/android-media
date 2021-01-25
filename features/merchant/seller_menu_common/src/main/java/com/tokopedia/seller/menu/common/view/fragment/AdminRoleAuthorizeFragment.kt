@@ -96,6 +96,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         adminHelpText = findViewById(R.id.tv_admin_role_help)
 
         setupGlobalError()
+        setToolbarTitle(adminPermissionMapper.mapFeatureToToolbarTitle(context, adminFeature))
 
         viewModel.checkAccess(adminFeature)
     }
@@ -126,7 +127,6 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    setToolbarTitle(adminPermissionMapper.mapFeatureToToolbarTitle(context, adminFeature))
                     adminErrorView?.show(false)
                 }
             }
@@ -136,7 +136,6 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     private fun observeIsLoading() {
         viewModel.isLoadingLiveData.observe(viewLifecycleOwner) { isLoading ->
             adminLoadingView?.showWithCondition(isLoading)
-            adminErrorView?.showWithCondition(!isLoading)
         }
     }
 
