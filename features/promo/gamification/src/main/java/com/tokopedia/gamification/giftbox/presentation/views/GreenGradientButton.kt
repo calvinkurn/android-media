@@ -8,9 +8,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.gamification.R
-import com.tokopedia.promoui.common.CouponView
 import com.tokopedia.promoui.common.dpToPx
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
@@ -20,7 +18,7 @@ class GreenGradientButton @JvmOverloads constructor(
 
     val layout = R.layout.gami_green_gradient_button
     var btn: Typography
-    val shadowPadding = 6.toDp()
+    val shadowPadding = 4.toPx()
 
     //Paint props
     private var shadowPaint = Paint()
@@ -33,7 +31,7 @@ class GreenGradientButton @JvmOverloads constructor(
     var shadowRadius = 0f
     private var blurRadius = 0f
     private var porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
-    var blurMaskFilter: BlurMaskFilter?=null
+    var blurMaskFilter: BlurMaskFilter? = null
 
     init {
 
@@ -43,7 +41,6 @@ class GreenGradientButton @JvmOverloads constructor(
         val paddingTop = context.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_green_gradient_btn_top_padding)?.toInt() ?: 0
         val paddingSide = context.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_green_gradient_btn_side_padding)?.toInt() ?: 0
         val lp = FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-
         lp.apply {
             setPadding(paddingSide, paddingTop, paddingSide, paddingTop + shadowPadding)
         }
@@ -52,19 +49,17 @@ class GreenGradientButton @JvmOverloads constructor(
         initPaintProps()
     }
 
-    fun initPaintProps(){
-        shadowStrokeWidth = 3.toPx().toFloat()
-        shadowBottomOffset = 8.toPx().toFloat()
-        blurRadius = 16.toPx().toFloat()
+    fun initPaintProps() {
+        shadowStrokeWidth = 15.toPx().toFloat()
+        blurRadius = 10.toPx().toFloat()
         shadowColor = ContextCompat.getColor(context, com.tokopedia.promoui.common.R.color.promo_ui_com_shadow_color)
 
-        blurMaskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.OUTER)
+        blurMaskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL)
         setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
-        val commonOffset = blurRadius - dpToPx(1)
-        shadowBottomOffset = -commonOffset
-        shadowStartOffset = commonOffset
-        shadowEndOffset = -commonOffset
+        shadowBottomOffset = (-14).toPx().toFloat()
+        shadowStartOffset = (14).toPx().toFloat()
+        shadowEndOffset = (-14).toPx().toFloat()
     }
 
     fun getBg(): Drawable? {
@@ -81,7 +76,7 @@ class GreenGradientButton @JvmOverloads constructor(
         super.dispatchDraw(canvas)
     }
 
-    fun drawDrawable(canvas: Canvas){
+    fun drawDrawable(canvas: Canvas) {
         val bgDrawable = getBg()
         bgDrawable?.setBounds(0, 0, width, height)
         bgDrawable?.draw(canvas)
@@ -105,8 +100,8 @@ class GreenGradientButton @JvmOverloads constructor(
         val left = shadowStartOffset
         val top = 0f
         val right = width + shadowEndOffset
-        val bottom = height - shadowBottomOffset
-        val rectF = RectF(left.toFloat(), top, right, bottom.toFloat())
+        val bottom = height + shadowBottomOffset
+        val rectF = RectF(left, top, right, bottom)
         shadowPath.addRoundRect(rectF, shadowRadius, shadowRadius, Path.Direction.CW)
     }
 
