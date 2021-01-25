@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static com.tokopedia.imagepicker.common.util.ImageUtils.TOKOPEDIA_FOLDER_PREFIX;
 import static com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader.BUCKET_DISPLAY_NAME;
 
 /**
@@ -29,7 +28,7 @@ import static com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader.B
 
 public class AlbumLoader extends CursorLoader {
 
-
+    private static final String TOKOPEDIA_FOLDER_PREFIX = "Tokopedia";
     private static final String COLUMN_BUCKET_ID = "bucket_id";
     private static final String COLUMN_BUCKET_DISPLAY_NAME = "bucket_display_name";
     public static final String COLUMN_URI = "uri";

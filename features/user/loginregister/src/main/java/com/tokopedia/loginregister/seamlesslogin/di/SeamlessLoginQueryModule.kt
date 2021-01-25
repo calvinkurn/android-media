@@ -13,7 +13,6 @@ import dagger.multibindings.StringKey
  * ade.hadian@tokopedia.com
  */
 
-@SeamlessLoginScope
 @Module
 class SeamlessLoginQueryModule{
 

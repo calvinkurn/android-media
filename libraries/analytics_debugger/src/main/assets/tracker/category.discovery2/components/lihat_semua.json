@@ -1,0 +1,13 @@
+{
+  "readme": "Discovery Lihat Semua click Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "{{.*}}",
+      "eventAction": "click view all",
+      "event": "clickDiscovery",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

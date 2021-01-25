@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -19,7 +18,10 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
+import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragmentDiffutil
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -68,7 +70,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
     }
 
     private var isFromDeeplink = false
-    private var isFromAffiliate = false
+    private var isFromAffiliate: Boolean? = false
     private var shopDomain: String? = null
     private var productKey: String? = null
     private var productId: String? = null
@@ -79,6 +81,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
     private var deeplinkUrl: String? = null
     private var layoutId: String? = null
     private var userSessionInterface: UserSessionInterface? = null
+    var remoteConfig: RemoteConfig? = null
 
     //Performance Monitoring
     var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -91,34 +94,6 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
     private var performanceMonitoringFull: PerformanceMonitoring? = null
 
     var productDetailLoadTimeMonitoringListener: ProductDetailLoadTimeMonitoringListener? = null
-
-    object DeeplinkIntents {
-        @DeepLink(ApplinkConst.PRODUCT_INFO)
-        @JvmStatic
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            val intent = RouteManager.getIntent(context,
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    uri.lastPathSegment)
-
-            if (!uri.getQueryParameter(PARAM_LAYOUT_ID).isNullOrBlank()) {
-                intent.putExtra(PARAM_LAYOUT_ID, uri.getQueryParameter(PARAM_LAYOUT_ID))
-            }
-
-            return intent ?: Intent()
-        }
-
-        @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
-        @JvmStatic
-        fun getAffiliateIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            val intent = RouteManager.getIntent(context,
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    uri.lastPathSegment) ?: Intent()
-            intent.putExtra(IS_FROM_EXPLORE_AFFILIATE, true)
-            return intent
-        }
-    }
 
     fun stopMonitoringP1() {
         performanceMonitoringP1?.stopTrace()
@@ -172,6 +147,10 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
         finish()
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.product_detail_parent_view
+    }
+
     fun addNewFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().add(parentViewResourceID, fragment, PRODUCT_VIDEO_DETAIL_TAG)
                 .addToBackStack(PRODUCT_VIDEO_DETAIL_TAG)
@@ -217,15 +196,25 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
         return "" // need only on success load data? (it needs custom dimension)
     }
 
-    override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
-            productKey, isFromDeeplink,
-            isFromAffiliate, trackerAttribution,
-            trackerListName, affiliateString, deeplinkUrl, layoutId)
+    override fun getNewFragment(): Fragment {
+        return if (remoteConfig?.getBoolean(ProductDetailConstant.ENABLE_PDP_DIFFUTIL, true) == true) {
+            DynamicProductDetailFragmentDiffutil.newInstance(productId, warehouseId, shopDomain,
+                    productKey, isFromDeeplink,
+                    isFromAffiliate ?: false, trackerAttribution,
+                    trackerListName, affiliateString, deeplinkUrl, layoutId)
+        } else {
+            DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
+                    productKey, isFromDeeplink,
+                    isFromAffiliate ?: false, trackerAttribution,
+                    trackerListName, affiliateString, deeplinkUrl, layoutId)
+        }
+    }
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {
         userSessionInterface = UserSession(this)
+        remoteConfig = FirebaseRemoteConfigImpl(this)
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         val bundle = intent.extras
@@ -252,6 +241,7 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
             trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
             affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
+            isFromAffiliate = !uri.getQueryParameter(IS_FROM_EXPLORE_AFFILIATE).isNullOrEmpty()
         }
         bundle?.let {
             warehouseId = it.getString("warehouse_id")
@@ -275,11 +265,6 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
             if (affiliateString.isNullOrBlank()) {
                 affiliateString = it.getString(PARAM_AFFILIATE_STRING)
             }
-        }
-        isFromAffiliate = if (uri != null && uri.host == AFFILIATE_HOST) {
-            true
-        } else {
-            intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
         }
 
         if (productKey?.isNotEmpty() == true && shopDomain?.isNotEmpty() == true) {
@@ -312,8 +297,8 @@ class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityInterfa
     }
 
     private fun generateApplink(applink: String): String {
-        return if (applink.contains(getString(R.string.internal_scheme))) {
-            applink.replace(getString(R.string.internal_scheme), "tokopedia")
+        return if (applink.contains(getString(tokopedia.applink.R.string.internal_scheme))) {
+            applink.replace(getString(tokopedia.applink.R.string.internal_scheme), "tokopedia")
         } else {
             ""
         }

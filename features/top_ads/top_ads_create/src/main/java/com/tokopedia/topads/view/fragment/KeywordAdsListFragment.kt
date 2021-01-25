@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -15,13 +16,13 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.response.KeywordData
+import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.SearchData
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.sheet.TipSheetKeywordList
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
-import com.tokopedia.topads.data.response.KeywordData
-import com.tokopedia.topads.data.response.KeywordDataItem
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.KeywordSearchActivity
 import com.tokopedia.topads.view.activity.StepperActivity
@@ -34,7 +35,16 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.topads_create_keyword_search_layout.*
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.*
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.btn_next
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.emptyLayout
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.headlineList
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.keyword_list
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.selected_info
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.tip_btn
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.txtRecommendation
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_empty_tip.view.*
 import javax.inject.Inject
 
 /**
@@ -308,6 +318,10 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         shopID = UserSession(view.context).shopId
         startLoading(true)
         setStepLayout(View.GONE)
+        emptyLayout.ic_tip.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
+        emptyLayout.imageView2.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        emptyLayout.imageView3.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        emptyLayout.imageView4.setImageDrawable(view?.context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
         btn_next.setOnClickListener {
             if (btn_next.text == resources.getString(R.string.topads_common_keyword_list_step)) {
                 gotoNextStage()
@@ -316,7 +330,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
         val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
             tvToolTipText = this.findViewById(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.tip_biaya_iklan)
+            tvToolTipText?.text = getString(com.tokopedia.topads.common.R.string.topads_common_tip_memilih_kata_kunci)
 
             imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
             imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))

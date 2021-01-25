@@ -11,20 +11,19 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.HashMap
 
 @ExperimentalCoroutinesApi
-class RecommendationListCarouselComponentCallback(val homeViewModel: HomeViewModel,
-                                                  val homeCategoryListener: HomeCategoryListener): RecommendationListCarouselListener {
+class RecommendationListCarouselComponentCallback(val homeCategoryListener: HomeCategoryListener): RecommendationListCarouselListener {
     override fun onBuyAgainCloseChannelClick(channelModel: ChannelModel, position: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(RecommendationListTracking.getCloseClickOnDynamicListCarouselHomeComponent(channelModel, homeViewModel.getUserId()))
-        homeViewModel.onCloseBuyAgain(channelModel.id, position = position)
+        TrackApp.getInstance().gtm.sendGeneralEvent(RecommendationListTracking.getCloseClickOnDynamicListCarouselHomeComponent(channelModel, homeCategoryListener.getUserIdFromViewModel()))
+        homeCategoryListener.recommendationListOnCloseBuyAgain(channelModel.id, position = position)
     }
 
     override fun onRecommendationSeeMoreClick(channelModel: ChannelModel, applink: String) {
-        RecommendationListTracking.sendRecommendationListSeeAllClick(channelModel.id, channelModel.channelHeader.name, homeViewModel.getUserId())
+        RecommendationListTracking.sendRecommendationListSeeAllClick(channelModel.id, channelModel.channelHeader.name, homeCategoryListener.getUserIdFromViewModel())
         homeCategoryListener.onDynamicChannelClicked(applink)
     }
 
     override fun onRecommendationSeeMoreCardClick(channelModel: ChannelModel, applink: String) {
-        RecommendationListTracking.sendRecommendationListSeeAllCardClick(channelModel.id, channelModel.channelHeader.name, homeViewModel.getUserId())
+        RecommendationListTracking.sendRecommendationListSeeAllCardClick(channelModel.id, channelModel.channelHeader.name, homeCategoryListener.getUserIdFromViewModel())
         homeCategoryListener.onDynamicChannelClicked(applink)
     }
 
@@ -32,12 +31,12 @@ class RecommendationListCarouselComponentCallback(val homeViewModel: HomeViewMod
                                               channelGrid: ChannelGrid,
                                               position: Int,
                                               applink: String) {
-        RecommendationListTracking.sendRecommendationListHomeComponentClick(channelModel, channelGrid, position, homeViewModel.getUserId())
+        RecommendationListTracking.sendRecommendationListHomeComponentClick(channelModel, channelGrid, position, homeCategoryListener.getUserIdFromViewModel())
         homeCategoryListener.onSectionItemClicked(applink)
     }
 
     override fun onBuyAgainOneClickCheckOutClick(channelGrid: ChannelGrid, channelModel: ChannelModel, position: Int) {
-        homeViewModel.getOneClickCheckoutHomeComponent(channelModel, channelGrid, position)
+        homeCategoryListener.getOneClickCheckoutHomeComponent(channelModel, channelGrid, position)
     }
 
     override fun onRecommendationCarouselChannelImpression(channelModel: ChannelModel, parentPosition: Int) {

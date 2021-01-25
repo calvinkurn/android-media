@@ -13,7 +13,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module(includes = [ShopOpenRevampViewModelModule::class])
-@ShopOpenRevampScope
 class ShopOpenRevampModule {
 
     @ShopOpenRevampScope
