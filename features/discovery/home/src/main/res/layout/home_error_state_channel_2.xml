@@ -32,6 +32,7 @@
     </RelativeLayout>
 
     <ImageView
+        android:contentDescription="@string/content_desc_error_state_channel"
         android:layout_marginTop="@dimen/dp_16"
         android:scaleType="fitXY"
         android:layout_width="match_parent"

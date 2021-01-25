@@ -121,4 +121,7 @@
     <string name="content_desc_tokocash">Tokocash</string>
     <string name="content_desc_tokopoint">Tokopoint</string>
     <string name="content_desc_free_ongkir">Bebas Ongkir</string>
+    <string name="content_desc_error_state_icon">Image error</string>
+    <string name="content_desc_error_state_channel">Content error</string>
+    <string name="content_desc_home_background">Home background</string>
 </resources>
