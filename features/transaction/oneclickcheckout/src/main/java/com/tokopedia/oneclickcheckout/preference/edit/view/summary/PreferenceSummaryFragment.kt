@@ -32,6 +32,8 @@ import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemM
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity.Companion.FROM_FLOW_OSP
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity.Companion.FROM_FLOW_OSP_STRING
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethodFragment
@@ -143,8 +145,12 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private fun getPreferenceDetail() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            viewModel.getPreferenceDetail(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), parent.getPaymentProfile())
+            viewModel.getPreferenceDetail(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), parent.getPaymentProfile(), getFromFlowOsp(parent))
         }
+    }
+
+    private fun getFromFlowOsp(parent: PreferenceEditParent): String {
+        return if (parent.getFromFlow() == FROM_FLOW_OSP) FROM_FLOW_OSP_STRING else ""
     }
 
     private fun initViewModel() {
@@ -241,8 +247,13 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         tvAddressDetail?.text = addressModel.fullAddress
 
         val shipmentModel = data.shipmentModel
-        tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
-        tvShippingDuration?.text = getString(R.string.lbl_shipping_duration_prefix, shipmentModel.serviceDuration)
+        if (shipmentModel.estimation.isNotEmpty()) {
+            tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
+            tvShippingDuration?.text = shipmentModel.estimation
+        } else {
+            tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
+            tvShippingDuration?.text = getString(R.string.lbl_shipping_duration_prefix, shipmentModel.serviceDuration)
+        }
 
         val paymentModel = data.paymentModel
         ImageHandler.loadImageFitCenter(context, ivPayment, paymentModel.image)

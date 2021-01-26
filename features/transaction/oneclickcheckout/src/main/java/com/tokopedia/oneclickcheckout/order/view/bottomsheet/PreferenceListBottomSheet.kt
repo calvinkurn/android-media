@@ -14,6 +14,7 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.preference.PreferenceListResponseModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.list.view.PreferenceListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -54,7 +55,7 @@ class PreferenceListBottomSheet(
             Timber.d(throwable)
             handleError(throwable)
             OccIdlingResource.decrement()
-        }, getPreferenceListUseCase.generateRequestParams(paymentProfile, "osp"))
+        }, getPreferenceListUseCase.generateRequestParams(paymentProfile, PreferenceEditActivity.FROM_FLOW_OSP_STRING))
     }
 
     private fun handleError(throwable: Throwable) {
