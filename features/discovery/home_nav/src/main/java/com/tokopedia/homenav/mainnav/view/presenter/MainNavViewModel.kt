@@ -282,7 +282,10 @@ class MainNavViewModel @Inject constructor(
                 if (findExistingEndBuIndexPosition() == null) {
                     addWidgetList(result, findBuStartIndexPosition())
                 }
-                onlyForNonLoggedInUser { _allProcessFinished.postValue(Event(true)) }
+                onlyForNonLoggedInUser {
+                    delay(1000)
+                    _allProcessFinished.postValue(Event(true))
+                }
             } catch (e: Exception) {
                 //if bu cache is already exist in list
                 //then error state is not needed
@@ -299,7 +302,10 @@ class MainNavViewModel @Inject constructor(
                             _mainNavListVisitable.indexOf(it)
                     )
                 }
-                onlyForNonLoggedInUser { _allProcessFinished.postValue(Event(true)) }
+                onlyForNonLoggedInUser {
+                    delay(1000)
+                    _allProcessFinished.postValue(Event(true))
+                }
                 e.printStackTrace()
             }
         })
@@ -517,6 +523,36 @@ class MainNavViewModel @Inject constructor(
 
     private fun onlyForLoggedInUserUi(function: ()-> Unit) {
         if (userSession.get().isLoggedIn) function.invoke()
+    }
+
+    fun findComplainModelPosition(): Int? {
+        val findComplainModel = _mainNavListVisitable.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_TOKOPEDIA_CARE
+        }
+        findComplainModel?.let{
+            return _mainNavListVisitable.indexOf(it)
+        }
+        return null
+    }
+
+    fun findAllTransactionModelPosition(): Int? {
+        val findAllTransactionMenu = _mainNavListVisitable.find {
+            it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_ALL_TRANSACTION
+        }
+        findAllTransactionMenu?.let{
+            return _mainNavListVisitable.indexOf(it)
+        }
+        return null
+    }
+
+    fun findHeaderModelPosition(): Int? {
+        val findHeaderModel = _mainNavListVisitable.find {
+            it is AccountHeaderDataModel
+        }
+        findHeaderModel?.let{
+            return _mainNavListVisitable.indexOf(it)
+        }
+        return null
     }
 
     //bu menu start index should after back home button or position 1
