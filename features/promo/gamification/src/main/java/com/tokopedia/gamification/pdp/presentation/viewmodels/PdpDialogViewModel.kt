@@ -29,12 +29,11 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
                                              val removeWishListUseCase: RemoveWishListUseCase,
                                              val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
                                              val userSession: UserSessionInterface,
-                                             @Named(DispatcherModule.MAIN) val uiDispatcher: CoroutineDispatcher,
                                              @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher) : BaseViewModel(workerDispatcher) {
 
     val recommendationLiveData: MutableLiveData<LiveDataResult<GamingRecommendationParamResponse>> = MutableLiveData()
     val productLiveData: MutableLiveData<LiveDataResult<List<Recommendation>>> = MutableLiveData()
-    val titleLiveData: MutableLiveData<LiveDataResult<String>> = MutableLiveData()
+//    val titleLiveData: MutableLiveData<LiveDataResult<String>> = MutableLiveData()
 
     fun getRecommendationParams(pageName: String, shopId: String) {
         launchCatchError(block = {
@@ -57,9 +56,9 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
             val list = recommendationProductUseCase.mapper.recommWidgetToListOfVisitables(item)
 
             productLiveData.postValue(LiveDataResult.success(list))
-            if (titleLiveData.value == null) {
-                titleLiveData.postValue(LiveDataResult.success(item.title))
-            }
+//            if (titleLiveData.value == null) {
+//                titleLiveData.postValue(LiveDataResult.success(item.title))
+//            }
         }, onError = {
             productLiveData.postValue(LiveDataResult.error(it))
         })

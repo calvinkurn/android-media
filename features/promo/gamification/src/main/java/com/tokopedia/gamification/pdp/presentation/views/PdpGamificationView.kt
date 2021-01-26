@@ -2,7 +2,6 @@ package com.tokopedia.gamification.pdp.presentation.views
 
 import android.content.Context
 import android.os.Handler
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -153,40 +152,40 @@ class PdpGamificationView : LinearLayout {
 
     private fun setListeners() {
 
-        viewModel.titleLiveData.observe(context as AppCompatActivity, Observer {
-            when (it.status) {
-                LiveDataResult.STATUS.SUCCESS -> {
-                    if (!TextUtils.isEmpty(it.data)) {
-                        tvTitle.text = it.data
-                    }
-                }
-            }
-        })
+//        viewModel.titleLiveData.observe(context as AppCompatActivity, Observer {
+//            when (it.status) {
+//                LiveDataResult.STATUS.SUCCESS -> {
+//                    if (!TextUtils.isEmpty(it.data)) {
+//                        tvTitle.text = it.data
+//                    }
+//                }
+//            }
+//        })
 
         viewModel.productLiveData.observe(context as AppCompatActivity, Observer {
-            val handler = Handler()
-            handler.postDelayed({
-                when (it.status) {
-                    LiveDataResult.STATUS.SUCCESS -> {
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
 
-                        if (it.data != null && it.data.isNotEmpty()) {
+                    if (it.data != null && it.data.isNotEmpty()) {
 
-                            if (viewFlipper.displayedChild != CONTAINER_LIST) {
-                                viewFlipper.displayedChild = CONTAINER_LIST
-                            }
-                            val oldSize = dataList.size
-                            dataList.addAll(oldSize, it.data)
-                            adapter.notifyItemRangeInserted(oldSize, it.data.size)
-                            scrollListener.updateStateAfterGetData()
-
+                        if (viewFlipper.displayedChild != CONTAINER_LIST) {
+                            viewFlipper.displayedChild = CONTAINER_LIST
+                        }
+                        val oldSize = dataList.size
+                        val delay = if (oldSize == 0) 600L else 0L
+                        if (oldSize == 0) {
+                            val handler = Handler()
+                            handler.postDelayed({
+                                updateList(oldSize, it.data)
+                            }, delay)
                         }
                     }
-                    LiveDataResult.STATUS.ERROR -> {
-                        //Do nothing
-                        viewFlipper.displayedChild = CONTAINER_ERROR
-                    }
                 }
-            }, 500L)
+                LiveDataResult.STATUS.ERROR -> {
+                    //Do nothing
+                    viewFlipper.displayedChild = CONTAINER_ERROR
+                }
+            }
         })
 
         viewModel.recommendationLiveData.observe(context as AppCompatActivity, Observer {
@@ -201,6 +200,12 @@ class PdpGamificationView : LinearLayout {
             viewFlipper.displayedChild = CONTAINER_LOADING
             getRecommendationParams(pageName, shopId)
         }
+    }
+
+    fun updateList(oldSize: Int, list: List<Recommendation>) {
+        dataList.addAll(oldSize, list)
+        adapter.notifyItemRangeInserted(oldSize, list.size)
+        scrollListener.updateStateAfterGetData()
     }
 
     fun getRecommendationParams(pageName: String, shopId: String) {

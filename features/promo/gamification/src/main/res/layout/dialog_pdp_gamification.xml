@@ -29,6 +29,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTitle"
+                android:text="@string/gami_produk_rekomendasi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
