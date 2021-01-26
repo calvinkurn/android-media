@@ -25,7 +25,11 @@ class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<
         }
     }
 
-    override fun getLayoutRes(): Int = R.layout.recommendation_activity
+    override fun getParentViewResourceID(): Int = com.tokopedia.home_recom.R.id.recom_container
+
+    override fun getLayoutRes(): Int = com.tokopedia.home_recom.R.layout.recommendation_activity
+
+    override fun getToolbarResourceID(): Int = com.tokopedia.home_recom.R.id.recom_toolbar
 
     override fun getNewFragment(): Fragment? {
         return when {

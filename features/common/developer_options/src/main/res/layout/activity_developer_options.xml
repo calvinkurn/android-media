@@ -546,16 +546,51 @@
             android:id="@+id/resetOnboardingNavigation"
             android:text="RESET ONBOARDING NAVIGATION!" />
 
-        <Button
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginTop="@dimen/dp_10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/buttonAlwaysOldNavigation"
-            android:text="ALWAYS_OLD_NAVIGATION" />
+            android:text="Home and Navigation Revamp Switcher : "/>
 
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/buttonAlwaysNewNavigation"
-            android:text="ALWAYS_NEW_NAVIGATION" />
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysOldNavigation"
+                android:text="ALWAYS_OLD_NAVIGATION" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysNewNavigation"
+                android:text="ALWAYS_NEW_NAVIGATION" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysOldHome"
+                android:text="ALWAYS_OLD_HOME" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/buttonAlwaysNewHome"
+                android:text="ALWAYS_NEW_HOME" />
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

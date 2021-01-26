@@ -24,6 +24,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
 
+        private const val PARAM_ATC = "param"
         private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_QUANTITY = "quantity"
@@ -62,17 +63,19 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
 
     private fun getParams(addToCartRequestParams: AddToCartRequestParams): Map<String, Any> {
         return mapOf(
-                PARAM_PRODUCT_ID to addToCartRequestParams.productId,
-                PARAM_SHOP_ID to addToCartRequestParams.shopId,
-                PARAM_QUANTITY to addToCartRequestParams.quantity,
-                PARAM_NOTES to addToCartRequestParams.notes,
-                PARAM_LANG to addToCartRequestParams.lang,
-                PARAM_ATTRIBUTION to addToCartRequestParams.attribution,
-                PARAM_LIST_TRACKER to addToCartRequestParams.listTracker,
-                PARAM_UC_PARAMS to addToCartRequestParams.ucParams,
-                PARAM_WAREHOUSE_ID to addToCartRequestParams.warehouseId,
-                PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequestParams.atcFromExternalSource,
-                PARAM_IS_SCP to addToCartRequestParams.isSCP
+                PARAM_ATC to mapOf(
+                        PARAM_PRODUCT_ID to addToCartRequestParams.productId,
+                        PARAM_SHOP_ID to addToCartRequestParams.shopId,
+                        PARAM_QUANTITY to addToCartRequestParams.quantity,
+                        PARAM_NOTES to addToCartRequestParams.notes,
+                        PARAM_LANG to addToCartRequestParams.lang,
+                        PARAM_ATTRIBUTION to addToCartRequestParams.attribution,
+                        PARAM_LIST_TRACKER to addToCartRequestParams.listTracker,
+                        PARAM_UC_PARAMS to addToCartRequestParams.ucParams,
+                        PARAM_WAREHOUSE_ID to addToCartRequestParams.warehouseId,
+                        PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequestParams.atcFromExternalSource,
+                        PARAM_IS_SCP to addToCartRequestParams.isSCP
+                )
         )
     }
 

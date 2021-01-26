@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.report.R
 import kotlinx.android.synthetic.main.fragment_input_report_detail.*
@@ -27,6 +28,7 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         arguments?.let {
             minChar = it.getInt(ARG_MIN_CHAR)
             maxChar = it.getInt(ARG_MAX_CHAR)

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -40,7 +40,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
     @Override
     public Boolean call(Response<DigitalDataWrapper<PurchaseData>> response) {
         if (response != null && response.body() != null && response.body().getData() != null) {
-            PurchaseTracking.digital(MainApplication.getAppContext(), getMappedData(response.body().getData()));
+            PurchaseTracking.digital(CoreNetworkApplication.getAppContext(), getMappedData(response.body().getData()));
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
                     getTrackignBranchIOData(response.body().getData())));
             return true;

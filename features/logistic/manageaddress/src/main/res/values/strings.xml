@@ -22,6 +22,7 @@
     <string name="text_empty_search">Cek kata kuncimu dan coba lagi, ya.</string>
 
     <string name="tokopedia_note_delimeter">[Tokopedia Note:</string>
+    <string name="ubah_alamat">Ubah Alamat</string>
 
     <!--Checkout Address-->
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>

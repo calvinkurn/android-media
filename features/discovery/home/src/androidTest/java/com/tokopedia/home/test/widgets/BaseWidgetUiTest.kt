@@ -69,7 +69,6 @@ abstract class BaseWidgetUiTest{
             getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
             getBusinessWidgetTab = getBusinessWidgetTab,
             getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
-            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getKeywordSearchUseCase = getKeywordSearchUseCase,
             getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
             getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
@@ -95,6 +94,7 @@ abstract class BaseWidgetUiTest{
             playWidgetTools = playWidgetTools,
             getRecommendationUseCase = getRecommendationUseCase,
             getRecommendationFilterChips = getRecommendationFilterChips,
+            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
             bestSellerMapper = bestSellerMapper
     )

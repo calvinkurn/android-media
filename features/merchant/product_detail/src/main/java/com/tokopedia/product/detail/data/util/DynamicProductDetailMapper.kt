@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
-import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.variant_common.model.*
@@ -109,7 +108,7 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.MEDIA
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        val newDataWithMedia = contentData?.copy(media = mediaData.media, videos = mediaData.videos)
+        val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
                 ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
@@ -122,12 +121,12 @@ object DynamicProductDetailMapper {
         }
     }
 
-    fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {
+    fun hashMapLayout(data: List<DynamicPdpDataModel>): MutableMap<String, DynamicPdpDataModel> {
         return data.associateBy({
             it.name()
         }, {
             it
-        })
+        }).toMutableMap()
     }
 
     // Because the new variant data have several different type, we need to map this into the old one
@@ -211,7 +210,7 @@ object DynamicProductDetailMapper {
     }
 
     fun convertMediaToDataModel(media: MutableList<Media>): List<MediaDataModel> {
-        return media.map { it ->
+        return media.map {
             MediaDataModel(it.id, it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
         }
     }
@@ -293,7 +292,7 @@ object DynamicProductDetailMapper {
         val basic = productInfoP1?.basic
         return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
                 ?: "", data?.name ?: "", data?.getProductImageUrl()
-                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.videos
+                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
                 ?: listOf(), productInfoContent, forceRefresh)
     }
 }

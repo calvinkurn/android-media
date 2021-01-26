@@ -356,6 +356,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_LOGIN_PHONE_NUMBER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
         startActivityForResult(intent, REQUEST_LOGIN_PHONE)
     }
 
@@ -368,6 +369,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_REGISTER_PHONE_NUMBER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
         startActivityForResult(intent, REQUEST_REGISTER_PHONE)
     }
 
@@ -378,6 +380,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
         startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
     }
 

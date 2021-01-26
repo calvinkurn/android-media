@@ -16,6 +16,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -35,6 +36,7 @@ import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Co
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_TYPE
 import com.tokopedia.hotel.homepage.presentation.activity.mock.HotelHomepageMockResponseConfig
 import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
+import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
@@ -104,15 +106,17 @@ class HotelHomepageActivityTest {
     private fun clickOnChangeDestination() {
         Thread.sleep(4000)
         intending(hasComponent(HotelDestinationActivity::class.java.name)).respondWith(createDummyDestination())
-        onView(withId(R.id.tv_hotel_homepage_destination)).perform(ViewActions.click())
-        onView(withId(R.id.tv_hotel_homepage_destination)).check(matches(withText("Jakarta")))
+        onView(withTagStringValue(R.id.tv_hotel_homepage_destination.toString())).perform(ViewActions.click())
+        intended(AllOf.allOf(hasComponent(HotelDestinationActivity::class.java.name)))
+
+        onView(withTagStringValue(R.id.tv_hotel_homepage_destination.toString())).check(matches(withText("Jakarta")))
 
         Thread.sleep(2000)
     }
 
     private fun modifyGuestAndRoomCount() {
         Thread.sleep(1000)
-        onView(withId(R.id.tv_hotel_homepage_guest_info)).perform(ViewActions.click())
+        onView(withTagStringValue(R.id.tv_hotel_homepage_guest_info.toString())).perform(ViewActions.click())
         Thread.sleep(1000)
 
         onView(AllOf.allOf(withId(R.id.image_button_plus),
@@ -167,7 +171,7 @@ class HotelHomepageActivityTest {
 
     private fun changeDate() {
         Thread.sleep(3000)
-        onView(withId(R.id.tv_hotel_homepage_checkout_date)).perform(click())
+        onView(withTagStringValue(R.id.tv_hotel_homepage_checkout_date.toString())).perform(click())
 
         Thread.sleep(3000)
         val cal = Calendar.getInstance()
@@ -230,7 +234,7 @@ class HotelHomepageActivityTest {
                 try {
                     val nestedScrollView = findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView?
                     if (nestedScrollView != null) {
-                        nestedScrollView.scrollTo(0, view.top + view.measuredHeight)
+                        nestedScrollView.scrollTo(0, view.top + view.measuredHeight + 250)
                     } else {
                         throw java.lang.Exception("Unable to find NestedScrollView parent.")
                     }
