@@ -27,6 +27,13 @@
     <string name="shop_page_header_shop_not_active_description_seller">Toko Anda sudah tidak aktif lebih dari 30 hari.</string>
     <string name="new_shop_page_header_shop_not_active_description_seller">Toko Anda sudah tidak aktif lebih dari 30 hari. <![CDATA[<a href="">%1$s</a>]]></string>
 
+    <string name="shop_page_header_request_unmoderate_bottomsheet_title">Permintaan buka moderasi toko</string>
+    <string name="shop_page_header_request_unmoderate_option_1_text">Saya sudah mengikuti syarat &amp; ketentuan Tokopedia.</string>
+    <string name="shop_page_header_request_unmoderate_option_1_value">Following Rules</string>
+    <string name="shop_page_header_request_unmoderate_option_2_text">Saya sudah melakukan perbaikan toko.</string>
+    <string name="shop_page_header_request_unmoderate_option_2_value">Have Fixed</string>
+    <string name="shop_page_header_request_unmoderate_btn_send_text">Kirim</string>
+
     <string name="shop_page_bottom_sheet_reputation_title">Reputasi Toko</string>
     <string name="shop_page_bottom_sheet_product_quality_title">@string/shop_page_label_product_quality</string>
     <string name="shop_page_bottom_sheet_speed_title">"Kecepatan Toko"</string>
@@ -125,12 +132,6 @@
 
     <string name="dashboard_x_points">%1$s poin</string>
     <string name="total_point_format">(%1$s)</string>
-
-    <string name="moderate_shop_error">Oops… Request moderasi gagal</string>
-    <string name="moderate_shop_success">Request moderasi toko berhasil</string>
-    <string name="moderate_shop_title">Permintaan untuk membuka moderasi toko</string>
-    <string name="moderate_shop_option_1">Saya sudah mematuhi syarat &amp; ketentuan yang ditetapkan oleh Tokopedia.</string>
-    <string name="moderate_shop_option_2">Saya sudah memperbaiki konten yang ada di toko saya.</string>
 
     <string name="reputation_value_not_appear">Belum ada Nilai Reputasi</string>
     <string name="favorited_shop_title">Followers Toko</string>

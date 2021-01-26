@@ -11,7 +11,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -24,6 +23,7 @@ import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOper
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.extension.formatToSimpleNumber
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
+import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -65,7 +65,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             view.shop_page_main_profile_location_icon.setImageResource(locationImageIcon)
             view.shop_page_main_profile_location_icon.show()
             view.shop_page_main_profile_location.show()
-            TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_location, shopLocation, view.shop_page_main_profile_location.context.getString(R.string.content_desc_shop_page_main_profile_location));
+            TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_location, shopLocation, view.shop_page_main_profile_location.context.getString(R.string.content_desc_shop_page_main_profile_location))
         }else{
             view.shop_page_main_profile_location_icon.hide()
             view.shop_page_main_profile_location.hide()
@@ -205,6 +205,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.tickerShopStatus.setHtmlDescription(shopPageHeaderDataModel.statusMessage)
         view.tickerShopStatus.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                // set tracker data based on shop status
                 when (shopPageHeaderDataModel.shopStatus) {
                     ShopStatusDef.CLOSED -> {
                         shopPageTracking?.sendOpenShop()
@@ -224,7 +225,16 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                                 ))
                     }
                 }
-                listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
+                // set ticker click action based on shop status
+                when (shopPageHeaderDataModel.shopStatus) {
+                    ShopStatusDef.MODERATED -> {
+                        if(isMyShop) {
+                            // show request unmoderate bottomsheet
+                            listener.showShopUnmoderateRequestBottomSheet(ShopRequestUnmoderateBottomSheet.createInstance())
+                        }
+                    }
+                    else -> listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
+                }
             }
 
             override fun onDismiss() {}
@@ -317,6 +327,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
         fun openShopInfo()
         fun onStartLiveStreamingClicked()
+        fun showShopUnmoderateRequestBottomSheet(shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet)
     }
 
 
