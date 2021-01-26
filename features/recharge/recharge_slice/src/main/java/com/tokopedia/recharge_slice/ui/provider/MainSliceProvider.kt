@@ -58,7 +58,6 @@ class MainSliceProvider : SliceProvider() {
 
     var recommendationModel: List<Recommendation>? = null
 
-    var loadString: String? = ""
     var alreadyLoadData: Boolean = false
     var isError: Boolean = false
 
@@ -162,7 +161,11 @@ class MainSliceProvider : SliceProvider() {
                                                     product = Product(it.get(i).productId.toString(), it.get(i).title, rupiahFormatter(it.get(i).productPrice))
                                                     listProduct.add(i, product)
                                                 }
-                                                it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
+                                                if(!it?.get(i)?.productName.isNullOrEmpty()) {
+                                                    it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
+                                                } else {
+                                                    it?.get(i)?.categoryName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
+                                                }
                                                 it?.get(i)?.productPrice?.let { it1 -> setSubtitle(rupiahFormatter(it1)) }
                                             }
                                             primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, getClickProduct(recommendationModel?.get(i)))?.let {
@@ -275,7 +278,6 @@ class MainSliceProvider : SliceProvider() {
         contextNonNull = context?.applicationContext ?: return false
         remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
         LocalCacheHandler(context, APPLINK_DEBUGGER)
-        loadString = contextNonNull.resources.getString(R.string.slice_loading)
         return true
     }
 
@@ -295,8 +297,9 @@ class MainSliceProvider : SliceProvider() {
     }
 
     fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean {
-        remoteConfig = FirebaseRemoteConfigImpl(context)
-        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
+//        remoteConfig = FirebaseRemoteConfigImpl(context)
+//        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
+        return true
     }
 
     fun <T> allowReads(block: () -> T): T {
