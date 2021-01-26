@@ -13,8 +13,7 @@ import kotlinx.coroutines.Job
 import javax.inject.Inject
 import javax.inject.Named
 
-class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: CoroutineDispatcher,
-                                                @Named(IO) workerDispatcher: CoroutineDispatcher,
+class GiftBoxDailyViewModel @Inject constructor(@Named(IO) workerDispatcher: CoroutineDispatcher,
                                                 val giftBoxDailyUseCase: GiftBoxDailyUseCase,
                                                 val giftBoxDailyRewardUseCase: GiftBoxDailyRewardUseCase,
                                                 val couponDetailUseCase: CouponDetailUseCase,

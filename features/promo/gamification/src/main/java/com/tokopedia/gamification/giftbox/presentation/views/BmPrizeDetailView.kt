@@ -12,14 +12,13 @@ import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListButton
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListItem
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
-import com.tokopedia.unifyprinciples.Typography
 
 class BmPrizeDetailView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
     val LAYOUT = R.layout.gami_prize_detail
     var image: AppCompatImageView
-    var imageClose: AppCompatImageView?=null
+    var imageClose: AppCompatImageView? = null
     var prizeListItemContainer: LinearLayout
     var btn: GreenGradientButton
 
@@ -34,7 +33,7 @@ class BmPrizeDetailView @JvmOverloads constructor(
 
     fun setData(prizDetailList: List<PrizeDetailListItem?>?, prizeDetailListButton: PrizeDetailListButton?) {
         if (!prizDetailList.isNullOrEmpty()) {
-            val bigItem = prizDetailList.find { it?.text.isNullOrEmpty() }
+            val bigItem = prizDetailList.find { it?.isSpecial == true }
             if (bigItem != null && !bigItem.imageURL.isNullOrEmpty()) {
                 //todo Rahul check with loading read coupon
                 Glide.with(image)
@@ -46,7 +45,7 @@ class BmPrizeDetailView @JvmOverloads constructor(
 
             prizDetailList.forEach { item ->
                 if (item != null) {
-                    if (!item.text.isNullOrEmpty()) {
+                    if (!item.text.isNullOrEmpty() && item.isSpecial == false) {
                         val itemView = PrizeDetailListItemView(context)
                         val lp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                         lp.topMargin = dpToPx(12).toInt()

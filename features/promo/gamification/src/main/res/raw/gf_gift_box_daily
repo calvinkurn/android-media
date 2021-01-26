@@ -1,4 +1,4 @@
-query GamiLuckyHome($campaignSlug!, $page!) {
+query GamiLuckyHome($campaignSlug: String!, $page: String!) {
   gamiLuckyHome(campaignSlug: $campaignSlug, page: $page) {
     resultStatus {
       code
@@ -30,6 +30,17 @@ query GamiLuckyHome($campaignSlug!, $page!) {
       isSpecial
       imageURL
       text
+    }
+    bottomSheetButtonText
+    prizeDetailList {
+      isSpecial
+      imageURL
+      text
+    }
+    prizeDetailListButton {
+      text
+      url
+      applink
     }
     reminder {
       text

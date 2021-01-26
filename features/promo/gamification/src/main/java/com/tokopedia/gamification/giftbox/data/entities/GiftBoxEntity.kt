@@ -27,7 +27,7 @@ data class GamiLuckyHome(
 )
 
 data class PrizeDetailListItem(
-        @SerializedName("isSpecial") val isSpecial: Boolean,
+        @SerializedName("isSpecial") val isSpecial: Boolean?,
         @SerializedName("imageURL") val imageURL: String?,
         @SerializedName("text") val text: String?,
 )

@@ -45,4 +45,8 @@
         <attr name="gfRoundImageRadius" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="GamiCouponImageView">
+        <attr name="gami_corner_radius" format="dimension" />
+    </declare-styleable>
+
 </resources>

@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorGray"
+        app:gami_corner_radius="8dp"
         app:layout_constraintDimensionRatio="h,3:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
