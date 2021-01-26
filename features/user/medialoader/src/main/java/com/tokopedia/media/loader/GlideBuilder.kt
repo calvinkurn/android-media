@@ -110,13 +110,8 @@ object GlideBuilder {
                         return
                     }
 
-                    Loader.glideUrl(source).also { glideUrl ->
-                        source = glideUrl
-                        signatureKey = signatureKey.mediaSignature(glideUrl)
-                    }.apply {
-                        val imageUrl = this.toStringUrl()
-                        performanceMonitoring = getPerformanceMonitoring(imageUrl, context)
-                    }
+                    source = Loader.glideUrl(source)
+                    performanceMonitoring = getPerformanceMonitoring(source, context)
                 }
 
                 GlideApp.with(context).asBitmap().load(source).apply {
