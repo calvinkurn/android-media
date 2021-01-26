@@ -165,7 +165,8 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
      * @param remoteMessage
      */
     fun handlePushPayload(remoteMessage: RemoteMessage?) {
-        if (null == remoteMessage) return
+        if (remoteMessage == null) return
+
         val data = remoteMessage.data
         val dataString = data.toString()
 
@@ -177,14 +178,13 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
                 if (confirmationValue.equals(SOURCE_VALUE) && isInAppEnable) {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
                 } else if (isPushEnable) {
-                    val targeting = advanceTargetNotification(bundle)
-                    val validation = NotificationValidationManager(applicationContext, targeting)
-
                     aidlApiBundle?.let {
+                        val targeting = advanceTargetNotification(bundle)
+                        val validation = NotificationValidationManager(applicationContext, targeting)
                         validation.validate(it) {
-                            PushController(applicationContext).handleNotificationBundle(bundle)
+                            renderPushNotification(bundle)
                         }
-                    }
+                    }?: renderPushNotification(bundle)
                 } else if (!(confirmationValue.equals(SOURCE_VALUE) || confirmationValue.equals(FCM_EXTRA_CONFIRMATION_VALUE))){
                     Timber.w("${CMConstant.TimberTags.TAG}validation;reason='not_cm_source';data='${dataString.
                     take(CMConstant.TimberTags.MAX_LIMIT)}'")
@@ -194,7 +194,10 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
             Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
                     .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${dataString.take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
+    }
 
+    private fun renderPushNotification(bundle: Bundle) {
+        PushController(applicationContext).handleNotificationBundle(bundle)
     }
 
     companion object {
