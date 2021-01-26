@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
+import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -17,6 +18,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.Inspirat
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
+import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.*
 import kotlinx.android.synthetic.main.search_result_product_big_grid_inspiration_card_layout.view.*
 import kotlinx.android.synthetic.main.search_result_product_inspiration_card_layout.view.*
@@ -30,6 +32,7 @@ class BigGridInspirationCardViewHolder(
         @LayoutRes
         @JvmField
         val LAYOUT = R.layout.search_result_product_big_grid_inspiration_card_layout
+        private const val SPAN_COUNT = 2
     }
 
     override fun bind(element: InspirationCardViewModel) {
@@ -99,16 +102,10 @@ class BigGridInspirationCardViewHolder(
     }
 
     private fun bindContent(element: InspirationCardViewModel) {
-        val spacingItemDecoration = ChipSpacingItemDecoration(
-                itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
-        )
-
         itemView.bigGridCardViewInspirationCard?.recyclerViewInspirationCardOptionList?.let {
             it.layoutManager = createLayoutManager(element)
             it.adapter = createAdapter(element.options)
-            if (!element.isRelated())
-                it.addItemDecorationIfNotExists(spacingItemDecoration)
+            it.addItemDecorationIfNotExists(createItemDecoration(element))
         }
     }
 
@@ -119,17 +116,37 @@ class BigGridInspirationCardViewHolder(
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                     .build()
         } else {
-            GridLayoutManager(itemView.context, 2, GridLayoutManager.VERTICAL, false)
+            GridLayoutManager(itemView.context, SPAN_COUNT, GridLayoutManager.VERTICAL, false)
         }
     }
 
     private fun createAdapter(
             inspirationCarouselProductList: List<InspirationCardOptionViewModel>
     ): RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        val inspirationCardOptionAdapter = InspirationCardOptionAdapter(inspirationCardListener)
+        val inspirationCardOptionAdapter = InspirationCardOptionAdapter(inspirationCardListener, SPAN_COUNT)
         inspirationCardOptionAdapter.setItemList(inspirationCarouselProductList)
 
         return inspirationCardOptionAdapter
     }
 
+    private fun createItemDecoration(element: InspirationCardViewModel): RecyclerView.ItemDecoration {
+        val spacing = 8.toDp()
+
+        return if (!element.isRelated()) ChipSpacingItemDecoration(spacing, spacing)
+        else RelatedBigGridItemDecoration(spacing)
+    }
+
+    private class RelatedBigGridItemDecoration(
+            private val horizontalSpacing: Int,
+    ): RecyclerView.ItemDecoration() {
+
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            val childPosition = parent.getChildAdapterPosition(view)
+            val isLeftPosition = childPosition % SPAN_COUNT == 0
+            val isRightPosition = childPosition % SPAN_COUNT == 1
+
+            outRect.left = if (isRightPosition) this.horizontalSpacing else 0
+            outRect.right = if (isLeftPosition) this.horizontalSpacing else 0
+        }
+    }
 }

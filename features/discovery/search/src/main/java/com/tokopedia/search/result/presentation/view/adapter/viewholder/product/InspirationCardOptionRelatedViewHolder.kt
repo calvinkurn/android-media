@@ -22,7 +22,7 @@ class InspirationCardOptionRelatedViewHolder(
         val LAYOUT = R.layout.search_result_product_inspiration_card_option_related_layout
     }
 
-    fun bind(inspirationCardOptionViewModel: InspirationCardOptionViewModel) {
+    fun bind(inspirationCardOptionViewModel: InspirationCardOptionViewModel, spanCount: Int) {
         val container = itemView.findViewById<ConstraintLayout?>(R.id.inspirationCardRelatedContainer)
         val image = itemView.findViewById<ImageUnify?>(R.id.inspirationCardRelatedImage)
         val title = itemView.findViewById<Typography?>(R.id.inspirationCardRelatedTitle)
@@ -30,7 +30,9 @@ class InspirationCardOptionRelatedViewHolder(
 
         image?.urlSrc = inspirationCardOptionViewModel.img
         title?.text = inspirationCardOptionViewModel.text
-        separator?.showWithCondition(adapterPosition > 0)
+
+        val isTopOfRecyclerView = adapterPosition < spanCount
+        separator?.showWithCondition(!isTopOfRecyclerView)
 
         container?.setOnClickListener {
             inspirationCardListener.onInspirationCardOptionClicked(inspirationCardOptionViewModel)

@@ -9,7 +9,8 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 
 class InspirationCardOptionAdapter(
-        private val inspirationCardListener: InspirationCardListener
+        private val inspirationCardListener: InspirationCardListener,
+        private val spanCount: Int = 1,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val itemList = mutableListOf<InspirationCardOptionViewModel>()
@@ -39,7 +40,7 @@ class InspirationCardOptionAdapter(
                 holder.bind(inspirationCarouselOptionViewModel)
         }, {
             if (holder is InspirationCardOptionRelatedViewHolder)
-                holder.bind(inspirationCarouselOptionViewModel)
+                holder.bind(inspirationCarouselOptionViewModel, spanCount)
         })
     }
 
