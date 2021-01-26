@@ -663,9 +663,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 getActivity().finish();
             }
             return true;
-        } else if (url.contains(PLAY_GOOGLE_URL)) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(intent);
+        } else if (PLAY_GOOGLE_URL.equalsIgnoreCase(uri.getHost())) {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                return false;
+            }
             return true;
         } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) && !GlobalConfig.isSellerApp()) {
             //Avoid crash in app that doesn't support branch IO
