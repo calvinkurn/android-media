@@ -67,6 +67,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
     implementation rootProject.ext.debugToolsDependencies.chuck
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
 
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion

@@ -96,7 +96,7 @@ class DigitalCartViewModel @Inject constructor(
     val paymentPassData: LiveData<PaymentPassData>
         get() = _paymentPassData
 
-    private var requestCheckoutParam = DigitalCheckoutDataParameter()
+    var requestCheckoutParam = DigitalCheckoutDataParameter()
 
     fun getCart(digitalCheckoutPassData: DigitalCheckoutPassData,
                 errorNotLoginMessage: String = "") {
@@ -303,7 +303,7 @@ class DigitalCartViewModel @Inject constructor(
         requestCheckoutParam.isSubscriptionChecked = isChecked
     }
 
-    fun updateTotalPriceWithFintechProduct(isChecked: Boolean, userInputPrice: Long) {
+    fun updateTotalPriceWithFintechProduct(isChecked: Boolean) {
         requestCheckoutParam.isFintechProductChecked = isChecked
 
         cartDigitalInfoData.value?.attributes?.let { attributes ->

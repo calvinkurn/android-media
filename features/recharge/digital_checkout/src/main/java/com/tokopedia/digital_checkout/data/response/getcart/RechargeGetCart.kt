@@ -50,7 +50,7 @@ data class RechargeGetCart(
 
         @SerializedName("is_otp_required")
         @Expose
-        val isOtpRequired: Boolean = false,
+        var isOtpRequired: Boolean = false,
 
         @SerializedName("sms_state")
         @Expose
@@ -94,7 +94,7 @@ data class RechargeGetCart(
 
         @SerializedName("cross_selling_type")
         @Expose
-        val crossSellingType: Int = 0,
+        var crossSellingType: Int = 0,
 
         @SerializedName("cross_selling_config")
         @Expose

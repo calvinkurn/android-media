@@ -296,11 +296,15 @@ object DigitalCheckoutMapper {
         attributes.ipAddress = checkoutData.ipAddress
         attributes.userAgent = checkoutData.userAgent
         attributes.identifier = digitalIdentifierParam
-        val getTrackClientId: String = TrackApp.getInstance().gtm.clientIDString
-        attributes.clientId = getTrackClientId
-        attributes.appsFlyer = DeviceUtil.getAppsFlyerIdentifierParam(
-                TrackApp.getInstance().appsFlyer.uniqueId,
-                TrackApp.getInstance().appsFlyer.googleAdId)
+
+        try {
+            val getTrackClientId: String = TrackApp.getInstance().gtm.clientIDString
+            attributes.clientId = getTrackClientId
+
+            attributes.appsFlyer = DeviceUtil.getAppsFlyerIdentifierParam(
+                    TrackApp.getInstance().appsFlyer.uniqueId,
+                    TrackApp.getInstance().appsFlyer.googleAdId)
+        } catch (e: Throwable) { }
 
         attributes.subscribe = checkoutData.isSubscriptionChecked
 

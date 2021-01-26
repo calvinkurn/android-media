@@ -128,14 +128,14 @@ data class AttributesCart(
             var value: String? = null
     )
 
-    class AdditionalInfo {
+    data class AdditionalInfo (
         @SerializedName("title")
         @Expose
-        var title: String? = null
+        var title: String? = null,
 
         @SerializedName("detail")
         @Expose
         var detail: List<InfoDetail>? = null
-    }
+    )
 
 }

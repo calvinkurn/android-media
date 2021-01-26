@@ -12,6 +12,7 @@ import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase
 import com.tokopedia.common_digital.common.constant.DigitalUrl
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.digital_checkout.data.request.RequestBodyOtpSuccess
+import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
 import com.tokopedia.digital_checkout.di.DigitalCartQualifier
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.usecase.RequestParams
@@ -24,7 +25,7 @@ class DigitalPatchOtpUseCase @Inject constructor(@DigitalCartQualifier val authI
 
     override fun buildRequest(requestParams: RequestParams): MutableList<RestRequest> {
         val networkRequest = mutableListOf<RestRequest>()
-        val token = object : TypeToken<DataResponse<TkpdDigitalResponse>>() {}.type
+        val token = object : TypeToken<DataResponse<ResponsePatchOtpSuccess>>() {}.type
 
         val url = DigitalUrl.OTP
 

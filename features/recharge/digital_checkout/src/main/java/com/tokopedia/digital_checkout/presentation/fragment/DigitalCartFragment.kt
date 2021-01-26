@@ -444,7 +444,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                 } else {
                     digitalAnalytics.eventClickCrossSell(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
                 }
-                viewModel.updateTotalPriceWithFintechProduct(isChecked, inputPriceHolderView.getPriceInput())
+                viewModel.updateTotalPriceWithFintechProduct(isChecked)
             }
         }
 

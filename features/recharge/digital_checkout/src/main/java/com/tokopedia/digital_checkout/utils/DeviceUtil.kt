@@ -35,8 +35,8 @@ object DeviceUtil {
 
     private val deviceName: String
         private get() {
-            val manufacturer = Build.MANUFACTURER
-            val model = Build.MODEL
+            val manufacturer = Build.MANUFACTURER ?: ""
+            val model = Build.MODEL ?: ""
             return if (model.startsWith(manufacturer)) {
                 capitalize(model)
             } else capitalize(manufacturer) + " " + model
