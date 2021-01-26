@@ -82,12 +82,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private var pageSource = ""
 
-    //save view-reference for coachmark purpose
-    private var profileSectionView: View? = null
-    private var allTransactionView: View? = null
-    private var tokopediaCareView: View? = null
+    //for coachmark purpose
     private var isOngoingShowOnboarding = false
-
 
     override fun getScreenName(): String {
         return ""
@@ -202,23 +198,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onErrorTransactionListClicked(position: Int) {
         viewModel.refreshTransactionListData()
-    }
-
-    override fun onMenuBind(itemView: View, model: HomeNavMenuDataModel) {
-        if (needToShowOnboarding()) {
-            when (model.id) {
-                ID_ALL_TRANSACTION -> {
-                    allTransactionView = itemView
-                }
-                ID_COMPLAIN -> {
-                    tokopediaCareView = itemView
-                }
-            }
-        }
-    }
-
-    override fun onHeaderBind(itemView: View) {
-        profileSectionView = itemView
     }
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {

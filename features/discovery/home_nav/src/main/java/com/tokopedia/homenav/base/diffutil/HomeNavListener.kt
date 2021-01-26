@@ -11,6 +11,4 @@ interface HomeNavListener {
     fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel)
     fun onMenuImpression(homeNavMenuDataModel: HomeNavMenuDataModel)
     fun getUserId(): String
-    fun onMenuBind(itemView: View, model: HomeNavMenuDataModel)
-    fun onHeaderBind(itemView: View)
 }
