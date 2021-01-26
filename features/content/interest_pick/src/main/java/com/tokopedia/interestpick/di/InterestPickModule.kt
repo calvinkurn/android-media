@@ -9,7 +9,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-@InterestPickScope
 class InterestPickModule {
 
     @Provides

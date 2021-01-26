@@ -22,7 +22,10 @@ import com.tokopedia.activation.model.ActivationPageState
 import com.tokopedia.activation.model.ShippingEditorModel
 import com.tokopedia.activation.model.ShopFeatureModel
 import com.tokopedia.activation.model.UpdateFeatureModel
-import com.tokopedia.activation.util.*
+import com.tokopedia.activation.util.ActivationPageTouchListener
+import com.tokopedia.activation.util.COD_ACTIVE_MESSAGE
+import com.tokopedia.activation.util.COD_INACTIVE_MESSAGE
+import com.tokopedia.activation.util.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
