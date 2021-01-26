@@ -9,6 +9,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 
 interface HomeDynamicChannelVisitableFactory {
     fun buildVisitableList(homeChannelData: HomeChannelData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context): HomeDynamicChannelVisitableFactory
-    fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean): HomeDynamicChannelVisitableFactory
+    fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean, startPosition: Int): HomeDynamicChannelVisitableFactory
     fun build(): List<Visitable<*>>
 }

@@ -57,16 +57,25 @@ class TkpdAuthenticator(
                     val originalRequest = response.request()
                     val accessTokenRefresh = AccessTokenRefresh()
                     val newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, path)
-                    networkRouter.doRelogin(newAccessToken)
-                    updateRequestWithNewToken(originalRequest)
+                    if(newAccessToken.isNullOrEmpty()) {
+                        null
+                    } else {
+                        networkRouter.doRelogin(newAccessToken)
+                        updateRequestWithNewToken(originalRequest)
+                    }
                 } catch (ex: Exception) {
                     Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "failed_authenticate", userSession.accessToken, formatThrowable(ex), path)
-                    response.request()
+                    null
                 }
             else {
                 networkRouter.showForceLogoutTokenDialog("/")
                 Timber.w("P2#USER_AUTHENTICATOR#'%s'", "response_count")
-                return response.request()
+                return null
+            }
+        } else {
+            if(responseCount(response)!=0) {
+                Timber.w("P2#USER_AUTHENTICATOR#'%s'", "response_count")
+                return null
             }
         }
         return response.request()

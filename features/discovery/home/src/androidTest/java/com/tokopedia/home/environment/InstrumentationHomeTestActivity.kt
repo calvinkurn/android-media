@@ -13,6 +13,7 @@ import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMoni
 import com.tokopedia.analytics.performance.util.*
 import com.tokopedia.home.test.R
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
@@ -60,7 +61,7 @@ class InstrumentationHomeTestActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_test)
 
-        val homeFragment: Fragment = HomeFragment()
+        val homeFragment: Fragment = HomeRevampFragment()
         initializeFragmentFramePerformanceIndex(homeFragment)
         val fragmentTransaction = supportFragmentManager
                 .beginTransaction()
