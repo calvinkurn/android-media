@@ -3,19 +3,26 @@ package com.tokopedia.managename.view.fragment
 import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
+import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.managename.R
@@ -71,12 +78,7 @@ class AddNameFragment : BaseDaggerFragment() {
     }
 
     private fun initViews(){
-        val joinString = getString(R.string.detail_term_and_privacy) +
-                "<br>" + getString(R.string.link_term_condition) +
-                " serta " + getString(R.string.link_privacy_policy)
-
-        bottom_info?.text = MethodChecker.fromHtml(joinString)
-        bottom_info?.movementMethod = LinkMovementMethod.getInstance()
+        initTermPrivacyView()
         ViewUtil.stripUnderlines(bottom_info)
     }
 
@@ -104,6 +106,40 @@ class AddNameFragment : BaseDaggerFragment() {
             }
             false
         })
+    }
+
+    private fun initTermPrivacyView() {
+        context?.let {
+            val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
+            termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0)
+            termPrivacy.setSpan(privacyClickAction(), 61, 78, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.Unify_G500)), 34, 54, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.Unify_G500)), 61, 78, 0)
+
+            bottom_info.setText(termPrivacy, TextView.BufferType.SPANNABLE)
+            bottom_info.movementMethod = LinkMovementMethod.getInstance()
+            bottom_info.isSelected = false
+        }
+    }
+
+    private fun termConditionClickAction(): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION))
+                }
+            }
+        }
+    }
+
+    private fun privacyClickAction(): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY))
+                }
+            }
+        }
     }
 
     fun enableNextButton() {

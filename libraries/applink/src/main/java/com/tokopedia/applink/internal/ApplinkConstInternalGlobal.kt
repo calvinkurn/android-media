@@ -431,6 +431,17 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_RETURN_HOME = "return_to_home"
     @JvmField
     val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
+
+    /**
+     * TermPrivacyActivity
+     * @applink : tokopedia-android-internal://global/term-privacy/{page}/
+     **/
+    @JvmField
+    val TERM_PRIVACY = "$INTERNAL_GLOBAL/term-privacy/{page}/"
+    /** for param term privacy */
+    const val PAGE_TERM_AND_CONDITION = "term-condition"
+    const val PAGE_PRIVACY_POLICY = "privacy-policy"
+
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField

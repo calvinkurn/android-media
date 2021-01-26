@@ -8,6 +8,7 @@ import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.URLSpan
 import android.view.LayoutInflater
@@ -22,7 +23,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneAnalytics
@@ -150,7 +154,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         }
     }
 
-    private fun registerPhoneAndName(name: String, phoneNumber : String) {
+    private fun registerPhoneAndName(name: String, phoneNumber: String) {
         if (isValidate(name)) {
             presenter.registerPhoneNumberAndName(name, phoneNumber)
         }
@@ -175,14 +179,41 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
 
     private fun setView() {
         disableButton(btn_continue)
+        initTermPrivacyView()
+    }
 
-        val joinString = getString(R.string.detail_term_and_privacy) +
-                "<br>" + getString(R.string.link_term_condition) +
-                " serta " + getString(R.string.link_privacy_policy)
+    private fun initTermPrivacyView() {
+        context?.let {
+            val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
+            termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0)
+            termPrivacy.setSpan(privacyClickAction(), 61, 78, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.Unify_G500)), 34, 54, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.Unify_G500)), 61, 78, 0)
 
-        bottomInfo.text = MethodChecker.fromHtml(joinString)
-        bottomInfo.movementMethod = LinkMovementMethod.getInstance()
-        stripUnderlines(bottomInfo)
+            bottomInfo.setText(termPrivacy, TextView.BufferType.SPANNABLE)
+            bottomInfo.movementMethod = LinkMovementMethod.getInstance()
+            bottomInfo.isSelected = false
+        }
+    }
+
+    private fun termConditionClickAction(): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_TERM_AND_CONDITION))
+                }
+            }
+        }
+    }
+
+    private fun privacyClickAction(): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_PRIVACY_POLICY))
+                }
+            }
+        }
     }
 
     private fun hideValidationError() {
