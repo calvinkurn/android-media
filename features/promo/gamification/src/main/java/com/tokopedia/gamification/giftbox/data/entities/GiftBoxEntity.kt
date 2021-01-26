@@ -66,5 +66,10 @@ data class Reminder(
 
     @SerializedName("text") val text: String,
     @SerializedName("enableText") val enableText: String,
-    @SerializedName("disableText") val disableText: String
+    @SerializedName("disableText") val disableText: String,
+    @SerializedName("buttonSet") val buttonSet: String?,
+    @SerializedName("buttonUnset") val buttonUnset: String?,
+    @SerializedName("textSet") val textSet: String?,
+    @SerializedName("textUnset") val textUnset: String?,
+    @SerializedName("isShow") val isShow: Boolean?,
 )

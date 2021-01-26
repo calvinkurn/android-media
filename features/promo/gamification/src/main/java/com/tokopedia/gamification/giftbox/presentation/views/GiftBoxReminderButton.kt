@@ -62,8 +62,8 @@ class GiftBoxReminderButton @JvmOverloads constructor(
         tvReminderBtn.text = text
     }
 
-    fun setIcon(isEnabled: Boolean) {
-        if (isEnabled) {
+    fun setIcon(isReminderSet: Boolean) {
+        if (isReminderSet) {
             imageBell.setImageResource(R.drawable.gami_bell_ring)
         } else {
             imageBell.setImageResource(R.drawable.gami_bell_1)

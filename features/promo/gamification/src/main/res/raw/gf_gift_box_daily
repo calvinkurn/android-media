@@ -1,4 +1,4 @@
-query GamiLuckyHome($campaignSlug: String!, $page: String!) {
+query GamiLuckyHome($campaignSlug!, $page!) {
   gamiLuckyHome(campaignSlug: $campaignSlug, page: $page) {
     resultStatus {
       code
@@ -35,6 +35,11 @@ query GamiLuckyHome($campaignSlug: String!, $page: String!) {
       text
       enableText
       disableText
+      isShow
+      textSet
+      textUnset
+      buttonSet
+      buttonUnset
     }
     infoURL
   }

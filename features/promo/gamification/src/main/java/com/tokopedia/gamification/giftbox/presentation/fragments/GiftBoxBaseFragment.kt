@@ -1,14 +1,9 @@
 package com.tokopedia.gamification.giftbox.presentation.fragments
 
-import android.R.color
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.PorterDuff
-import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
@@ -18,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
@@ -53,7 +49,7 @@ open class GiftBoxBaseFragment : Fragment() {
     lateinit var imageToolbarIcon: AppCompatImageView
     lateinit var tvToolbarTitle: AppCompatTextView
     lateinit var fmParent: ViewGroup
-    var imageSound: AppCompatImageView?=null
+    var imageSound: AppCompatImageView? = null
 
     val CONTAINER_LOADER = 1
     val CONTAINER_GIFT_BOX = 0
@@ -241,9 +237,12 @@ open class GiftBoxBaseFragment : Fragment() {
                 }
         )
         snackbar.show()
-        val params = snackbar.view.layoutParams as FrameLayout.LayoutParams
-        params.gravity = Gravity.BOTTOM
-        params.width = FrameLayout.LayoutParams.MATCH_PARENT
+        val params = snackbar.view.layoutParams
+        when (params) {
+            is CoordinatorLayout.LayoutParams -> params.gravity = Gravity.BOTTOM
+            is FrameLayout.LayoutParams -> params.gravity = Gravity.BOTTOM
+        }
+        params.width = CoordinatorLayout.LayoutParams.MATCH_PARENT
         snackbar.view.layoutParams = params
 
         when (this) {

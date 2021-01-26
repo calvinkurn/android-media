@@ -497,7 +497,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     val reason = it.data?.gameRemindMe?.resultStatus?.reason
 
                     if (code == HTTP_STATUS_OK) {
-                        renderReminderButton(true)
+                        renderReminderButton(it.data.gameRemindMe.requestToSetReminder, true)
                     } else {
                         val messageList = it.data?.gameRemindMe?.resultStatus?.message
                         if (!messageList.isNullOrEmpty()) {
@@ -616,6 +616,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             if (!isReminderSet) {
                 viewModel.setReminder()
                 GtmEvents.clickReminderButton(userSession?.userId)
+            } else {
+                viewModel.unSetReminder()
             }
         }
     }
@@ -633,7 +635,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         if (isRemindMe != null) {
             tokoButtonContainer.toggleReminderVisibility(true)
 //            reminderLayout.visibility = View.VISIBLE
-            renderReminderButton(isRemindMe)
+            renderReminderButton(isRemindMe, false)
         } else {
             tokoButtonContainer.toggleReminderVisibility(false)
 //            reminderLayout.visibility = View.GONE
@@ -644,7 +646,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         if (gameRemindMeCheck != null) {
             val isRemindMe = gameRemindMeCheck?.isRemindMe
             if (isRemindMe != null)
-                renderReminderButton(isRemindMe)
+                renderReminderButton(isRemindMe, false)
         }
     }
 
@@ -670,21 +672,26 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
-    fun renderReminderButton(isUserReminded: Boolean) {
+    fun renderReminderButton(isUserReminded: Boolean, showToast: Boolean) {
         context?.let {
             if (isUserReminded) {
 //                fmReminder.background = ContextCompat.getDrawable(it, com.tokopedia.gamification.R.drawable.gf_bg_disabled_3d)
 //                tvReminderBtn.text = reminder?.disableText
-                tokoButtonContainer.btnReminder.setText(reminder?.disableText)
-                tokoButtonContainer.btnReminder.setIcon(false)
+                tokoButtonContainer.btnReminder.setText(reminder?.buttonUnset)
                 isReminderSet = true
+                if (showToast && !reminder?.textSet.isNullOrEmpty()) {
+                    CustomToast.show(context, reminder?.textSet!!)
+                }
             } else {
-                tokoButtonContainer.btnReminder.setText(reminder?.enableText)
-                tokoButtonContainer.btnReminder.setIcon(true)
+                tokoButtonContainer.btnReminder.setText(reminder?.buttonSet)
 //                tvReminderBtn.text = reminder?.enableText
 //                fmReminder.background = ContextCompat.getDrawable(it, com.tokopedia.gamification.R.drawable.gf_bg_green_3d)
                 isReminderSet = false
+                if (showToast && !reminder?.textUnset.isNullOrEmpty()) {
+                    CustomToast.show(context, reminder?.textUnset!!)
+                }
             }
+            tokoButtonContainer.btnReminder.setIcon(isUserReminded)
 //            tvReminderMessage.text = reminder?.text
         }
     }

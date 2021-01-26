@@ -74,6 +74,20 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
             reminderSetLiveData.postValue(LiveDataResult.loading())
             remindMeJob = launchCatchError(block = {
                 val response = remindMeUseCase.getRemindMeResponse(remindMeUseCase.getRequestParams(about))
+                response.gameRemindMe.requestToSetReminder = true
+                reminderSetLiveData.postValue(LiveDataResult.success(response))
+            }, onError = {
+                reminderSetLiveData.postValue(LiveDataResult.error(it))
+            })
+        }
+    }
+
+    fun unSetReminder() {
+        if (remindMeJob == null || remindMeJob!!.isCompleted) {
+            reminderSetLiveData.postValue(LiveDataResult.loading())
+            remindMeJob = launchCatchError(block = {
+                val response = remindMeUseCase.getUnSetRemindMeResponse(remindMeUseCase.getRequestParams(about))
+                response.gameRemindMe.requestToSetReminder = false
                 reminderSetLiveData.postValue(LiveDataResult.success(response))
             }, onError = {
                 reminderSetLiveData.postValue(LiveDataResult.error(it))

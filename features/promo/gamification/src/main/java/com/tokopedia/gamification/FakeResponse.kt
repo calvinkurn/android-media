@@ -79,6 +79,10 @@ const val FAKE_GAMI_LUCKY_HOME = """
         },
         "reminder": {
           "text": "Mau dapat hadiah lagi? Jangan lupa buka Kotak Kejutan besok!",
+          "textSet": "Kamu akan diingatkan lagi besok untuk buka Kotak Kejutan",
+          "textUnset": "Pengingat dihapus.",
+          "buttonSet": "Ingatkan Besok",
+          "buttonUnset": "Hapus Pengingat",
           "enableText": "Ingatkan Besok",
           "disableText": "Pengingat Terpasang"
         },
@@ -166,6 +170,10 @@ const val FAKE_GAMI_LUCKY_HOME_EMPTY = """
         },
         "reminder": {
           "text": "Mau dapat hadiah lagi? Jangan lupa buka Kotak Kejutan besok!",
+          "textSet": "Kamu akan diingatkan lagi besok untuk buka Kotak Kejutan",
+          "textUnset": "Pengingat dihapus.",
+          "buttonSet": "Ingatkan Besok",
+          "buttonUnset": "Hapus Pengingat",
           "enableText": "Ingatkan Besok",
           "disableText": "Pengingat Terpasang"
         },

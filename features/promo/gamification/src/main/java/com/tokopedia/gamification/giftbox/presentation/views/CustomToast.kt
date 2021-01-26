@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import com.tokopedia.gamification.R
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -14,15 +15,11 @@ class CustomToast {
 
     companion object {
 
-        private fun dpToPx(context: Context, dp: Int): Float {
-            return dp * (context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT).toFloat()
-        }
-
-        fun show(activityContext: Context, @NonNull text: String, duration: Int = Toast.LENGTH_LONG, isError: Boolean = false) {
+        fun show(activityContext: Context?, @NonNull text: String, duration: Int = Toast.LENGTH_LONG, isError: Boolean = false) {
             if (activityContext is Activity) {
 
-                val leftPadding = dpToPx(activityContext, 16).toInt()
-                val topPadding = dpToPx(activityContext, 8).toInt()
+                val leftPadding = 16.toPx()
+                val topPadding = 8.toPx()
                 val textView = Typography(activityContext)
                 textView.text = text
                 textView.setPadding(leftPadding, topPadding, leftPadding, topPadding)

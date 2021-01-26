@@ -61,6 +61,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.features.promoUiCommon)
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
