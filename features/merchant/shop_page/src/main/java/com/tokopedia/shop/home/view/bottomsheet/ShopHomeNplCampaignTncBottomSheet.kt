@@ -171,7 +171,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         })
 
         viewModel?.followUnfollowShopLiveData?.observe(viewLifecycleOwner, Observer {
-            btn_follow?.isLoading = false
+            showFollowText()
             when (it) {
                 is Success -> {
                     toggleFollowButton(it.data.followShop)
@@ -203,13 +203,10 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
     }
 
     private fun refreshButtonData(label: String?) {
-        tf_follow.bringToFront()
-        tf_follow.show()
         if(!label.isNullOrBlank()) {
             tf_follow.text = label
         }
         btn_follow?.apply {
-            isLoading = false
             if (isFollowShop) {
                 buttonVariant = UnifyButton.Variant.GHOST
                 tf_follow.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Green_G500))
@@ -220,9 +217,21 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun showFollowText() {
+        btn_follow?.isLoading = false
+        tf_follow.bringToFront()
+        tf_follow.show()
+    }
+
+    private fun showLoadingFollowButton() {
+        tf_follow.hide()
+        btn_follow?.isLoading = true
+    }
+
     private fun showFollowButton(followButton: FollowButton?) {
         layout_button_follow_container?.show()
 
+        showFollowText()
         val voucherUrl = followButton?.voucherIconURL
         followButton?.run { refreshButtonData(this.buttonLabel) }
 
@@ -236,8 +245,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
 
         btn_follow?.apply {
             setOnClickListener {
-                isLoading = true
-                tf_follow.hide()
+                showLoadingFollowButton()
                 val action = if (isFollowShop) {
                     ACTION_UNFOLLOW
                 } else {
