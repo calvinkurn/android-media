@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.reviewdetail.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +15,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -53,7 +51,6 @@ import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.fragment_seller_review_detail.*
 import kotlinx.android.synthetic.main.item_overall_review_detail.view.*
 import javax.inject.Inject
@@ -159,7 +156,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         viewModelProductReviewDetail?.setChipFilterDateText(chipFilterBundle)
         initToolbar()
-        initRecyclerView(view)
         initViewBottomSheet()
         startNetworkRequestPerformanceMonitoring()
         stopPreparePerformancePageMonitoring()
@@ -174,14 +170,16 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     override fun onItemClicked(t: Visitable<*>?) {}
 
-    override fun loadData(page: Int) {}
+    override fun loadData(page: Int) {
+        loadNextPage(page)
+    }
 
     override fun loadInitialData() {
         isLoadingInitialData = true
         reviewSellerDetailAdapter.clearAllElements()
         rvRatingDetail?.show()
         globalError_reviewDetail?.hide()
-        showPageLoading()
+        showLoading()
         viewModelProductReviewDetail?.getProductRatingDetail(
                 productID,
                 viewModelProductReviewDetail?.sortBy.orEmpty())
@@ -195,33 +193,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         return reviewSellerDetailAdapter
     }
 
-    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : DataEndlessScrollListener(linearLayoutManager, reviewSellerDetailAdapter) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                reviewSellerDetailAdapter.showLoading()
-                loadNextPage(page)
-            }
-
-            override fun isDataEmpty(): Boolean {
-                return reviewSellerDetailAdapter.list.isEmpty()
-            }
-        }
-    }
-
     override fun onDestroy() {
         viewModelProductReviewDetail?.productFeedbackDetail?.removeObservers(this)
         viewModelProductReviewDetail?.reviewInitialData?.removeObservers(this)
         viewModelProductReviewDetail?.flush()
         super.onDestroy()
-    }
-
-    private fun initRecyclerView(view: View) {
-        getRecyclerView(view).let {
-            it.clearOnScrollListeners()
-            it.layoutManager = linearLayoutManager
-            endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
-            it.addOnScrollListener(endlessRecyclerViewScrollListener)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -352,7 +328,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private fun observeLiveData() {
         viewModelProductReviewDetail?.reviewInitialData?.observe(viewLifecycleOwner, Observer {
             hideLoading()
-            hidePageLoading()
             when (it) {
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()
@@ -377,7 +352,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         })
 
         viewModelProductReviewDetail?.productFeedbackDetail?.observe(viewLifecycleOwner, Observer {
-            hidePageLoading()
+            reviewSellerDetailAdapter.hideLoading()
             when (it) {
                 is Success -> {
                     onSuccessGetFeedbackReviewListData(it.data)
@@ -639,7 +614,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             viewModelProductReviewDetail?.setFilterRatingDataText(getRatingFilterFromAdapter.ratingBarList)
             endlessRecyclerViewScrollListener?.resetState()
             reviewSellerDetailAdapter.removeReviewNotFound()
-            showPageLoading()
+            reviewSellerDetailAdapter.showLoading()
         }
     }
 
@@ -661,15 +636,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         viewModelProductReviewDetail?.updateSortAndFilterTopicData(topic to sortValue)
         endlessRecyclerViewScrollListener?.resetState()
         reviewSellerDetailAdapter.removeReviewNotFound()
-        showPageLoading()
-    }
-
-    private fun hidePageLoading() {
-        loading_reviewDetail.hide()
-    }
-
-    private fun showPageLoading() {
-        loading_reviewDetail.show()
+        reviewSellerDetailAdapter.showLoading()
     }
 
 }

@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @Module(includes = [BrandlistCategoryViewModelModule::class])
-@BrandlistCategoryScope
 class BrandlistCategoryModule {
 
     @BrandlistCategoryScope

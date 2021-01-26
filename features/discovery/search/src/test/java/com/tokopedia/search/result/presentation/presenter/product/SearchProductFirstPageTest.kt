@@ -116,8 +116,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
     private fun `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog: CapturingSlot<String>, exception: Exception) {
         verifyOrder {
             productListView.isAnyFilterActive
-
-            productListView.isAnyFilterActive
             productListView.isAnySortActive
 
             productListView.stopPreparePagePerformanceMonitoring()

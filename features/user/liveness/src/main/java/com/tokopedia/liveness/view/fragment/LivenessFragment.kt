@@ -23,8 +23,6 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.imagepicker.common.util.FileUtils
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.liveness.R
 import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
 import com.tokopedia.liveness.di.LivenessDetectionComponent
@@ -33,6 +31,8 @@ import com.tokopedia.liveness.view.BackgroundOverlay
 import com.tokopedia.liveness.view.OnBackListener
 import com.tokopedia.liveness.view.activity.LivenessActivity
 import com.tokopedia.liveness.view.activity.LivenessFailedActivity
+import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -318,7 +318,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     private fun writeImageToTkpdPath(bitmap: Bitmap): File {
-        val cacheDir = File(context?.externalCacheDir, FileUtils.generateUniqueFileName() + ImageUtils.JPG_EXT)
+        val cacheDir = File(context?.externalCacheDir, FileUtil.generateUniqueFileName() + ImageProcessingUtil.JPG_EXT)
         val cachePath = cacheDir.absolutePath
         val file = File(cachePath)
         if (file.exists()) {

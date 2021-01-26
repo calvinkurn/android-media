@@ -11,7 +11,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@CategoryNavigationScope
 @Module
 class CategoryUseCaseModule {
 

@@ -63,10 +63,9 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
             return
         }
         when (payloads[0] as Int) {
-            PAYLOAD_TOOGLE_FAVORITE -> toggleClickableFavoriteBtn(element.enableButtonFavorite)
+            PAYLOAD_TOOGLE_FAVORITE -> enableButton() //Will only invoke if fail follow shop
             else -> {
                 renderFollow(element.isFavorite)
-                toggleClickableFavoriteBtn(element.enableButtonFavorite)
             }
         }
     }
@@ -81,6 +80,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
         renderFollow(isFavorite)
 
         btn_follow.setOnClickListener {
+            btn_follow.isClickable = false
             listener.onShopInfoClicked(it.id, componentTrackDataModel)
         }
     }
@@ -93,6 +93,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
             btn_follow.text = getString(R.string.label_follow)
             btn_follow.buttonType = UnifyButton.Type.MAIN
         }
+        btn_follow.isClickable = true
     }
 
     private fun setupGoApotik(isGoApotik: Boolean) = with(view) {
@@ -179,8 +180,8 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
         shop_credibility_shimmering.show()
     }
 
-    private fun toggleClickableFavoriteBtn(enable: Boolean) = with(view) {
-        btn_follow.isClickable = enable
+    private fun enableButton() = with(view) {
+        btn_follow.isClickable = true
     }
 
     private fun getComponentTrackData(element: ProductShopCredibilityDataModel?) = ComponentTrackDataModel(element?.type

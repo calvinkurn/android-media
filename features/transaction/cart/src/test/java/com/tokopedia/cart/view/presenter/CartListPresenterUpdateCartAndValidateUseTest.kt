@@ -99,7 +99,7 @@ object CartListPresenterUpdateCartAndValidateUseTest : Spek({
             }
 
             Given("shop data list") {
-                every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
+                every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
             }
 
             When("process to update and validate use data") {
@@ -135,7 +135,7 @@ object CartListPresenterUpdateCartAndValidateUseTest : Spek({
         Scenario("failed update cart because data is empty") {
 
             Given("shop data list") {
-                every { view.getAllAvailableCartDataList() } answers { emptyList() }
+                every { view.getAllSelectedCartDataList() } answers { emptyList() }
             }
 
             When("process to update and validate use data") {
