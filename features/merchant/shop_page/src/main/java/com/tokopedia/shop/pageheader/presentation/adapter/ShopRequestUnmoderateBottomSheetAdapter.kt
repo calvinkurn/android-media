@@ -21,7 +21,7 @@ class ShopRequestUnmoderateBottomSheetAdapter(
     private val requestUnmoderateOptionList = listOf(
             ShopUnmoderateOption(
                     context?.getString(R.string.shop_page_header_request_unmoderate_option_1_text),
-                    context?.getString(R.string.shop_page_header_request_unmoderate_option_2_value)
+                    context?.getString(R.string.shop_page_header_request_unmoderate_option_1_value)
             ),
             ShopUnmoderateOption(
                     context?.getString(R.string.shop_page_header_request_unmoderate_option_2_text),
