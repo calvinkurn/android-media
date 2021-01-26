@@ -19,7 +19,7 @@ class ShopPageAnalyticValidatorHomeTabMockResponseConfig : MockModelConfig() {
         const val KEY_QUERY_SHOP_INFO_FAVORITE = "getShopInfoFavorite"
         const val KEY_QUERY_CHECK_WISHLIST = "CheckWishList"
         const val KEY_QUERY_GET_CAMPAIGN_NOTIFY_ME = "get_campaign_notify_me"
-        const val KEY_QUERY_MUTATION_ADD_TO_CART = "add_to_cart"
+        const val KEY_QUERY_MUTATION_ADD_TO_CART = "add_to_cart_v2"
         const val KEY_GET_MERCHANT_CAMPAIGN_TNC = "get_merchant_campaign_tnc"
         const val KEY_MUTATION_CHECK_CAMPAIGN_NOTIFY_ME = "check_campaign_notify_me"
         const val KEY_QUERY_GET_PUBLIC_MERCHANT_VOUCHER = "GetPublicMerchantVoucherList"
