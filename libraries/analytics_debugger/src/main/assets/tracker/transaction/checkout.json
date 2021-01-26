@@ -102,6 +102,7 @@
       "eventCategory": "courier selection",
       "checkout_step": "4",
       "currentSite": "tokopediamarketplace",
+      "payment_id": "{{\\d+}}",
       "event": "checkout_progress",
       "eventAction": "click pilih metode pembayaran",
       "sessionIris": "{{.*}}",
@@ -138,7 +139,7 @@
           "dimension48": "{{\\d+}}"
         }
       ],
-      "eventLabel": "",
+      "eventLabel": "success",
       "checkout_option": "click_payment option button"
     }
   ],

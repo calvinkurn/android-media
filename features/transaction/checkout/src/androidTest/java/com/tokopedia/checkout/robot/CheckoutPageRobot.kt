@@ -2,16 +2,19 @@ package com.tokopedia.checkout.robot
 
 import android.content.Context
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.checkout.InstrumentTestCheckoutActivity
 import com.tokopedia.checkout.R
 import org.junit.Assert
 
@@ -29,6 +32,20 @@ class CheckoutPageRobot {
         onView(ViewMatchers.withText("Bebas Ongkir")).perform(ViewActions.click())
     }
 
+    fun scrollToLastPosition(activityRule: IntentsTestRule<InstrumentTestCheckoutActivity>) {
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
+        val itemCount = recyclerView.adapter?.itemCount ?: 0
+
+        scrollRecyclerViewToPosition(activityRule, recyclerView, itemCount - 1)
+    }
+
+    private fun scrollRecyclerViewToPosition(activityRule: IntentsTestRule<InstrumentTestCheckoutActivity>,
+                                             recyclerView: RecyclerView,
+                                             position: Int) {
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
+    }
+
     private fun clickOnViewChild(viewId: Int) = object : ViewAction {
         override fun getConstraints() = null
 
@@ -39,6 +56,7 @@ class CheckoutPageRobot {
 
 
     infix fun choosePayment(func: ResultRobot.() -> Unit): ResultRobot {
+        onView(ViewMatchers.withText("Pilih Pembayaran")).perform(ViewActions.click())
         return ResultRobot().apply(func)
     }
 
