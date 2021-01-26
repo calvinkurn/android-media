@@ -48,8 +48,8 @@ class GiftBoxReminderButton @JvmOverloads constructor(
 
     fun performLoading() {
         loaderReminder.visibility = View.VISIBLE
-        tvReminderBtn.visibility = View.GONE
-        imageBell.visibility = View.GONE
+        tvReminderBtn.visibility = View.INVISIBLE
+        imageBell.visibility = View.INVISIBLE
     }
 
     fun stopLoading() {
