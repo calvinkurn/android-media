@@ -1,6 +1,5 @@
 package com.tokopedia.homenav.base.diffutil
 
-import android.view.View
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 
 /**

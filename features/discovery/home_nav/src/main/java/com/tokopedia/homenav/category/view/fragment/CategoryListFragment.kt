@@ -82,14 +82,6 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
     override fun onMenuImpression(homeNavMenuDataModel: HomeNavMenuDataModel) {
     }
 
-    override fun onHeaderBind(itemView: View) {
-
-    }
-
-    override fun onMenuBind(itemView: View, model: HomeNavMenuDataModel) {
-
-    }
-
     override fun getUserId(): String {
         return userSessionInterface.userId
     }
