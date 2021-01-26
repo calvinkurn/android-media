@@ -1140,8 +1140,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun setupSearchBarLayoutChangesListener() {
         (searchBarSomList?.searchBarTextField?.parent as? View)?.viewTreeObserver?.addOnPreDrawListener {
             val searchBarContainer = searchBarSomList?.searchBarTextField?.parent as? View
-            val horizontalPadding = resources.getDimension(R.dimen.spacing_lvl2).toInt()
-            val verticalPadding = resources.getDimension(R.dimen.spacing_lvl3).toInt()
+            val horizontalPadding = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt()
+            val verticalPadding = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toInt()
             if (searchBarContainer?.paddingBottom == 0) {
                 searchBarContainer?.setPadding(
                         horizontalPadding,
