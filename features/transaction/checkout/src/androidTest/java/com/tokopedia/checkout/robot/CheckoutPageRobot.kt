@@ -14,8 +14,8 @@ import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.checkout.InstrumentTestCheckoutActivity
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.view.ShipmentActivity
 import org.junit.Assert
 
 fun checkoutPage(func: CheckoutPageRobot.() -> Unit) = CheckoutPageRobot().apply(func)
@@ -36,14 +36,14 @@ class CheckoutPageRobot {
         onView(ViewMatchers.withText("Bebas Ongkir")).perform(ViewActions.click())
     }
 
-    fun scrollToLastPosition(activityRule: IntentsTestRule<InstrumentTestCheckoutActivity>) {
+    fun scrollToLastPosition(activityRule: IntentsTestRule<ShipmentActivity>) {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
         scrollRecyclerViewToPosition(activityRule, recyclerView, itemCount - 1)
     }
 
-    private fun scrollRecyclerViewToPosition(activityRule: IntentsTestRule<InstrumentTestCheckoutActivity>,
+    private fun scrollRecyclerViewToPosition(activityRule: IntentsTestRule<ShipmentActivity>,
                                              recyclerView: RecyclerView,
                                              position: Int) {
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager

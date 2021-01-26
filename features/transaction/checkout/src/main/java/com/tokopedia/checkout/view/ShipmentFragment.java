@@ -166,7 +166,6 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_N
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
 import static com.tokopedia.logisticcart.cod.view.CodActivity.EXTRA_COD_DATA;
-import static com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
@@ -400,11 +399,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void setHasRunningApiCall(boolean hasRunningApiCall) {
         this.hasRunningApiCall = hasRunningApiCall;
-    }
-
-    private boolean isTestingFlow() {
-        if (getArguments() != null) return getArguments().getBoolean(IS_TESTING_FLOW, false);
-        else return false;
     }
 
     @Override
@@ -839,8 +833,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutCartSuccess(CheckoutData checkoutData) {
-        if (isTestingFlow()) return;
-
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setRedirectUrl(checkoutData.getRedirectUrl());
         paymentPassData.setTransactionId(checkoutData.getTransactionId());

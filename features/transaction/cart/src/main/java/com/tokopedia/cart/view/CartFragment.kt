@@ -2664,9 +2664,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventViewErrorWhenCheckout(message)
         showToastMessageRed(message)
 
-        if (!isTestingFlow()) {
-            refreshCart()
-        }
+        refreshCart()
     }
 
     private fun renderGlobalErrorBottomsheet(message: String) {

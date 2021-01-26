@@ -30,7 +30,7 @@
             {
               "code": "WANTER",
               "success": true,
-              "unique_id": "2661965-0-2150769-101235710",
+              "unique_id": "2661965-0-7377294-123297113",
               "cart_id": 0,
               "order_id": 0,
               "shop_id": 2661965,
@@ -53,7 +53,7 @@
                   "code": "WANTER",
                   "type": "",
                   "order_id": 1,
-                  "unique_id": "2661965-0-2150769-101235710",
+                  "unique_id": "2661965-0-7377294-123297113",
                   "discount_amount": 20000,
                   "discount_details": [
                     {
@@ -128,7 +128,7 @@
             }
           },
           "ticker_info": {
-            "unique_id": "2661965-0-2150769-101235710",
+            "unique_id": "2661965-0-7377294-123297113",
             "status_code": 700002,
             "message": "Yay, sebagian ongkir untuk pesanan dalam transaksi ini ditanggung Tokopedia!"
           },

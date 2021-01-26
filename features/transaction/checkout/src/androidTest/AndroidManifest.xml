@@ -8,8 +8,5 @@
         android:label="Checkout Test"
         tools:replace="android:label">
 
-        <activity
-            android:name=".InstrumentTestCheckoutActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 </manifest>
