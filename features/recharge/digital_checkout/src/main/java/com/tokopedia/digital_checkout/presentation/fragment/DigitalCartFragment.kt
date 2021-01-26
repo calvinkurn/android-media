@@ -176,7 +176,9 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         })
 
         viewModel.totalPrice.observe(viewLifecycleOwner, Observer {
-            tvTotalPayment.text = getStringIdrFormat((it - promoData.amount).toDouble())
+            if (it != null) {
+                tvTotalPayment.text = getStringIdrFormat((it - promoData.amount).toDouble())
+            }
         })
 
         viewModel.showContentCheckout.observe(viewLifecycleOwner, Observer { showContent ->
@@ -209,6 +211,21 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
         if (cartInfo.attributes?.isEnableVoucher == true) {
             digitalPromoTickerView.visibility = View.VISIBLE
+
+            cartInfo.attributes?.autoApplyVoucher?.let {
+                if (it.isSuccess) {
+                    if (!(cartInfo.attributes?.isCouponActive == 0 && it.isCoupon == 1)) {
+                        promoData = PromoData(
+                                title = it.title ?: "",
+                                description = it.messageSuccess ?: "",
+                                promoCode = it.code ?: "",
+                                typePromo = it.isCoupon,
+                                state = TickerCheckoutView.State.ACTIVE
+                        )
+                        renderAutoApplyVoucher()
+                    }
+                }
+            }
         } else digitalPromoTickerView.visibility = View.GONE
 
         cartInfo.attributes?.postPaidPopupAttribute?.let { postPaidPopupAttribute ->
@@ -315,25 +332,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             data?.let { data ->
                 if (data.hasExtra(EXTRA_PROMO_DATA)) {
                     promoData = data.getParcelableExtra(EXTRA_PROMO_DATA)
-                    viewModel.resetVoucherCart()
-                    when (promoData.state) {
-                        TickerCheckoutView.State.FAILED -> {
-                            promoData.promoCode = ""
-                            renderPromoTickerView()
-                            cartDetailInfoAdapter.isExpanded = true
-                        }
-                        TickerCheckoutView.State.ACTIVE -> {
-                            renderPromoTickerView()
-                            viewModel.onReceivedPromoCode(promoData)
-                            cartDetailInfoAdapter.isExpanded = true
-                        }
-                        TickerCheckoutView.State.EMPTY -> {
-                            promoData.promoCode = ""
-                            renderPromoTickerView()
-                        }
-                        else -> {
-                        }
-                    }
+                    renderAutoApplyVoucher()
                 }
             }
         } else if (requestCode == REQUEST_CODE_OTP) {
@@ -581,6 +580,28 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         intent.putExtra(EXTRA_COUPON_ACTIVE, isCouponActive)
         intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
         startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
+    }
+
+    private fun renderAutoApplyVoucher() {
+        viewModel.resetVoucherCart()
+        when (promoData.state) {
+            TickerCheckoutView.State.FAILED -> {
+                promoData.promoCode = ""
+                renderPromoTickerView()
+                cartDetailInfoAdapter.isExpanded = true
+            }
+            TickerCheckoutView.State.ACTIVE -> {
+                renderPromoTickerView()
+                viewModel.onReceivedPromoCode(promoData)
+                cartDetailInfoAdapter.isExpanded = true
+            }
+            TickerCheckoutView.State.EMPTY -> {
+                promoData.promoCode = ""
+                renderPromoTickerView()
+            }
+            else -> {
+            }
+        }
     }
 
     companion object {
