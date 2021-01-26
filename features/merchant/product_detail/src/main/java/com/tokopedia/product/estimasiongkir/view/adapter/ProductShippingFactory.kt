@@ -1,0 +1,12 @@
+package com.tokopedia.product.estimasiongkir.view.adapter
+
+import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
+import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingServiceDataModel
+
+/**
+ * Created by Yehezkiel on 25/01/21
+ */
+interface ProductShippingFactory {
+    fun type(dataProduct: ProductShippingHeaderDataModel): Int
+    fun type(dataProduct: ProductShippingServiceDataModel): Int
+}

@@ -8,6 +8,7 @@
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_product_info">Informasi Produk</string>
     <string name="merchant_product_detail_label_product_detail">Detail Produk</string>
+    <string name="merchant_product_detail_shipping">Detail Pengiriman</string>
     <string name="label_pre_order">Waktu Preorder</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
     <string name="merchant_product_detail_label_selengkapnya">Selengkapnya</string>
@@ -265,4 +266,14 @@
     <string name="toaster_success_add_wishlist_from_button">Kamu akan dapat notifikasi ketika barang kembali tersedia. Bisa cek produknya di wishlist ya..</string>
     <string name="toaster_success_remove_wishlist">Sukses menghapus barang dari wishlist</string>
     <string name="pdp_video_divider"> / </string>
+
+    <string name="pdp_shipping_weight_checkout_label">Total ongkir akhir akan dihitung saat checkout.</string>
+    <string name="pdp_shipping_bebas_ongkir_label">Bebas Ongkir</string>
+    <string name="pdp_shipping_simulation_label">Simulasi Pengiriman</string>
+    <string name="pdp_shipping_available_cod_label">Bisa COD</string>
+    <string name="pdp_shipping_estimation_builder">Estimasi tiba %1s</string>
+    <string name="pdp_shipping_to_builder">Dikirim ke %1s</string>
+    <string name="pdp_shipping_from_builder">Dari %1s</string>
+    <string name="pdp_shipping_weight_builder"><![CDATA[Berat satuan: <b>%1s</b>]]></string>
+
 </resources>

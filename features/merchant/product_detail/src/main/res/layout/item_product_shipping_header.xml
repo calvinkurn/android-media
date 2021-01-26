@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_16"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pdp_shipping_header_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_border_pdp_small_radius"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/pdp_ic_location_from"
+            android:layout_width="@dimen/unify_space_24"
+            android:layout_height="@dimen/unify_space_24"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            app:icon_name="LOCATION"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_shipping_header_from"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/pdp_ic_location_from"
+            app:layout_constraintStart_toEndOf="@+id/pdp_ic_location_from"
+            app:layout_constraintTop_toTopOf="@+id/pdp_ic_location_from"
+            tools:text="Dari Jakarta Timur (Dilayani Oleh Tokopedia)" />
+
+        <View
+            android:id="@+id/pdp_shipping_header_separator"
+            android:layout_width="@dimen/spacing_lvl1"
+            android:layout_height="@dimen/spacing_lvl3"
+            android:background="@color/Unify_N75"
+            app:layout_constraintEnd_toEndOf="@+id/pdp_ic_location_from"
+            app:layout_constraintStart_toStartOf="@+id/pdp_ic_location_from"
+            app:layout_constraintTop_toBottomOf="@+id/pdp_ic_location_from" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/pdp_ic_location_to"
+            android:layout_width="@dimen/unify_space_24"
+            android:layout_height="@dimen/unify_space_24"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:icon_name="LOCATION"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pdp_shipping_header_separator" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_shipping_header_to"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_68"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/pdp_ic_location_to"
+            app:layout_constraintStart_toEndOf="@+id/pdp_ic_location_to"
+            app:layout_constraintTop_toTopOf="@+id/pdp_ic_location_to"
+            tools:text="Dikirim ke Karet, Jakarta Selatan" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_pdp_shipping_simulation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pdp_shipping_simulation_label"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pdp_shipping_header_container"
+        android:layout_marginTop="@dimen/dp_20"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_pdp_shipping_weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Berat satuan : 500 gram"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_pdp_shipping_simulation"
+        android:layout_marginTop="@dimen/spacing_lvl2"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_pdp_shipping_weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_96"
+        android:text="@string/pdp_shipping_weight_checkout_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipping_weight"
+        android:layout_marginTop="@dimen/spacing_lvl2"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_pdp_shipping_bo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pdp_shipping_bebas_ongkir_label"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_pdp_shipping_weight"
+        android:layout_marginTop="@dimen/spacing_lvl4"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_pdp_shipping_bo_estimation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Estimasi tiba 23-25 Nov"
+        android:textColor="@color/Unify_N700_68"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        app:typographyType="body_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_pdp_shipping_bo"/>
+
+    <ImageView
+        android:id="@+id/img_pdp_shipping_bo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_free_shipping"
+        app:layout_constraintTop_toTopOf="@+id/label_pdp_shipping_bo"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_pdp_shipping_bo_estimation"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

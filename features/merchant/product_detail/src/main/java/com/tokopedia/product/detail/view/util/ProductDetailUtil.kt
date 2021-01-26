@@ -70,7 +70,8 @@ object ProductDetailUtil {
 
 }
 
-fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, () -> Unit>): SpannableString {
+fun String.boldOrLinkText(isLink: Boolean, context: Context,
+                          vararg textToBold: Pair<String, () -> Unit>): SpannableString {
     val builder = SpannableString(this)
 
     if (this.isNotEmpty() || this.isNotBlank()) {
@@ -98,7 +99,8 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
                     override fun updateDrawState(ds: TextPaint) {
                         super.updateDrawState(ds)
                         ds.isUnderlineText = false
-                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                        val textColor = if (isLink) com.tokopedia.unifyprinciples.R.color.Unify_G500 else com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        ds.color = MethodChecker.getColor(context, textColor)
                     }
                 }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }

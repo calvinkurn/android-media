@@ -113,6 +113,8 @@ import com.tokopedia.product.detail.view.util.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.*
+import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
+import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
 import com.tokopedia.product.info.view.ProductFullDescriptionActivity
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
@@ -742,7 +744,8 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                         productP3Resp.addressModel?.postalCode ?: "",
                         productP3Resp.addressModel?.districtName ?: "",
                         viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                onShipmentClicked()
+//                onShipmentClicked()
+                openShipmentClickedBottomSheet()
             }
             ProductDetailConstant.TRADE_IN -> {
                 DynamicProductDetailTracking.Click.trackTradein(viewModel.tradeInParams.usedPrice, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
@@ -1865,6 +1868,26 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                         it, "TAG"
                 )
             }
+        }
+    }
+
+    private fun openShipmentClickedBottomSheet() {
+        viewModel.getDynamicProductInfoP1?.let {
+            if (sharedViewModel == null) {
+                sharedViewModel = ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
+            }
+            sharedViewModel?.setRequestData(RatesEstimateRequest(
+                    it.basic.weight.toFloat(),
+                    viewModel.getShopInfo().shopCore.domain,
+                    if (viewModel.getMultiOriginByProductId().isFulfillment)
+                        viewModel.getMultiOriginByProductId().getOrigin() else null,
+                    it.basic.shopID,
+                    it.basic.productID,
+                    it.basic.weightUnit,
+                    it.data.isFreeOngkir.isActive
+            ))
+            val shippingBs = ProductDetailShippingBottomSheet()
+            shippingBs.show(getProductFragmentManager())
         }
     }
 
