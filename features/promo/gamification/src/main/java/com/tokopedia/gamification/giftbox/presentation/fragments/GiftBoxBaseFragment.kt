@@ -394,7 +394,9 @@ open class GiftBoxBaseFragment : Fragment() {
 
     fun isConnectedToInternet(): Boolean {
         context?.let {
-            return DeviceConnectionInfo.isConnectCellular(it) || DeviceConnectionInfo.isConnectWifi(it)
+            return DeviceConnectionInfo.isConnectCellular(it) ||
+                    DeviceConnectionInfo.isConnectWifi(it) ||
+                    DeviceConnectionInfo.isConnectVpn(it)
         }
         return false
     }

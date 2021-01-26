@@ -82,11 +82,18 @@ object DeviceConnectionInfo {
         return isInternetAvailable(context, checkEthernet = true)
     }
 
+    //todo Rahul remove this code before merge/disucss to include this method using GlobalConfig.debug
+    @JvmStatic
+    fun isConnectVpn(context: Context): Boolean {
+        return isInternetAvailable(context, checkVpn = true)
+    }
+
     @JvmStatic
     fun isInternetAvailable(context: Context,
                             checkWifi: Boolean = false,
                             checkCellular: Boolean = false,
-                            checkEthernet: Boolean = false): Boolean {
+                            checkEthernet: Boolean = false,
+                            checkVpn:Boolean = false): Boolean {
         var result = false
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -98,11 +105,13 @@ object DeviceConnectionInfo {
                 checkWifi -> return actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
                 checkCellular -> return actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
                 checkEthernet -> return actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                checkVpn -> return actNw.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
                 else -> {
                     result = when {
                         actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
                         actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
                         actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                        actNw.hasTransport(NetworkCapabilities.TRANSPORT_VPN) -> true
                         else -> false
                     }
                 }
