@@ -70,7 +70,12 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 }
 
                 if (item.dataObject.tickerInfo.text.isNotEmpty() || item.dataObject.awbUploadProofText.isNotEmpty()) {
-                    setupTicker(ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo)
+                    val tickerContent = if (item.dataObject.tickerInfo.text.isNotEmpty()) {
+                        item.dataObject.tickerInfo.text
+                    } else {
+                        item.dataObject.awbUploadProofText
+                    }
+                    setupTicker(ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo, tickerContent)
                     ticker_detail_buyer_request_cancel?.show()
                 } else {
                     ticker_detail_buyer_request_cancel?.gone()
@@ -130,9 +135,9 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         }
     }
 
-    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo) {
+    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo, tickerContent: String) {
         tickerBuyerRequestCancel?.apply {
-            val tickerDescription = makeTickerDescription(context, tickerInfo)
+            val tickerDescription = makeTickerDescription(context, tickerInfo, tickerContent)
             setTextDescription(tickerDescription)
 
             setDescriptionClickEvent(object : TickerCallback {
@@ -149,8 +154,8 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         }
     }
 
-    private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo): String {
-        val message = Utils.getL2CancellationReason(tickerInfo.text, context.getString(R.string.som_header_detail_ticker_cancellation))
+    private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo, tickerContent: String): String {
+        val message = Utils.getL2CancellationReason(tickerContent, context.getString(R.string.som_header_detail_ticker_cancellation))
         val messageLink = tickerInfo.actionText
         val spannedMessage = SpannableStringBuilder()
                 .append(message)
