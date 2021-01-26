@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -289,7 +290,9 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void onSmoothScrollToReplyView(int adapterPosition) {
-        getRecyclerView(getView()).smoothScrollToPosition(adapterPosition);
+        if(adapterPosition != RecyclerView.NO_POSITION) {
+            getRecyclerView(getView()).smoothScrollToPosition(adapterPosition);
+        }
     }
 
     @Override
