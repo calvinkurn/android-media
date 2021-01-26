@@ -25,13 +25,11 @@ object Loader {
         remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
-    fun glideUrl(url: String?): GlideUrl {
+    fun glideUrl(url: String): String {
         val networkState = networkManagerState(context)
         return if (remoteConfig.getBoolean(KEY_ADAPTIVE_IMAGE)) {
             urlBuilder(networkState, settings.qualitySettings(), url)
-        } else {
-            GlideUrl(url)
-        }
+        } else url
     }
 
 }

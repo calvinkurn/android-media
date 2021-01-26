@@ -1,11 +1,6 @@
 package com.tokopedia.media.common.common
 
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
-import com.tokopedia.media.common.data.HEADER_ECT
-import com.tokopedia.media.common.data.HIGH_QUALITY
-import com.tokopedia.media.common.data.LOW_QUALITY
-import com.tokopedia.media.common.data.MediaSettingPreferences
+import com.tokopedia.media.common.data.*
 
 object UrlBuilder {
 
@@ -13,17 +8,13 @@ object UrlBuilder {
             networkState: String,
             qualitySettings: Int,
             url: String?
-    ): GlideUrl {
+    ): String {
         val connectionType = when(qualitySettings) {
-            1 -> LOW_QUALITY // (2g / 3g)
-            2 -> HIGH_QUALITY // (4g / wifi)
+            LOW_QUALITY_SETTINGS -> LOW_QUALITY // (2g / 3g)
+            HIGH_QUALITY_SETTINGS -> HIGH_QUALITY // (4g / wifi)
             else -> networkState
         }
-
-        return GlideUrl(url, LazyHeaders.Builder()
-                .addHeader(HEADER_ECT, connectionType)
-                .build()
-        )
+        return "$url?$HEADER_ECT=$connectionType"
     }
 
 }
