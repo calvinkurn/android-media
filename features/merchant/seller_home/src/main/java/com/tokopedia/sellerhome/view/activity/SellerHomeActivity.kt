@@ -64,6 +64,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     @Inject lateinit var userSession: UserSessionInterface
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var remoteConfig: SellerHomeRemoteConfig
+    @Inject lateinit var sellerReviewHelper: SellerReviewHelper
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
@@ -123,6 +124,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             RouteManager.route(this, ApplinkConst.CREATE_SHOP)
             finish()
         }
+
+        sellerReviewHelper.checkForReview(this, supportFragmentManager)
     }
 
     override fun onNewIntent(intent: Intent?) {
