@@ -237,7 +237,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
 
         showPasswordHint();
-        showEmailHint();
         showNameHint();
     }
 
@@ -408,7 +407,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                showEmailHint();
                 if (s.length() == 0) {
                     setWrapperErrorNew(wrapper, getString(R.string.error_field_required));
                 } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(wrapperEmail.getTextFieldInput().getText().toString()).matches()) {
@@ -538,7 +536,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         setWrapperErrorNew(wrapperName, null);
         setWrapperErrorNew(wrapperEmail, null);
         showPasswordHint();
-        showEmailHint();
         showNameHint();
     }
 
@@ -549,10 +546,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
     public void showNameHint() {
         setWrapperHint(wrapperName, "  ");
-    }
-
-    public void showEmailHint() {
-        setWrapperHint(wrapperEmail, getResources().getString(R.string.send_verif_to_email));
     }
 
     public void setActionsEnabled(boolean isEnabled) {
