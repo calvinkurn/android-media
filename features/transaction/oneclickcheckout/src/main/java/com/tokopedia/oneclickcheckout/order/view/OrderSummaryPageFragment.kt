@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
@@ -281,7 +282,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun initViewModel(savedInstanceState: Bundle?) {
-        viewModel.orderPreference.observe(viewLifecycleOwner, {
+        viewModel.orderPreference.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.FirstLoad -> {
                     orderPreference = it.data
@@ -341,7 +342,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         })
 
-        viewModel.orderShipment.observe(viewLifecycleOwner, {
+        viewModel.orderShipment.observe(viewLifecycleOwner, Observer {
             orderPreferenceCard.setShipment(it)
             newOrderPreferenceCard.setShipment(it)
             orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
@@ -350,20 +351,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         })
 
-        viewModel.orderPayment.observe(viewLifecycleOwner, {
+        viewModel.orderPayment.observe(viewLifecycleOwner, Observer {
             orderPreferenceCard.setPayment(it)
             newOrderPreferenceCard.setPayment(it)
         })
 
-        viewModel.orderTotal.observe(viewLifecycleOwner, {
+        viewModel.orderTotal.observe(viewLifecycleOwner, Observer {
             orderTotalPaymentCard.setupPayment(it, viewModel.isNewFlow)
         })
 
-        viewModel.orderPromo.observe(viewLifecycleOwner, {
+        viewModel.orderPromo.observe(viewLifecycleOwner, Observer {
             setupButtonPromo(it)
         })
 
-        viewModel.globalEvent.observe(viewLifecycleOwner, {
+        viewModel.globalEvent.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccGlobalEvent.Loading -> {
                     if (progressDialog == null) {
