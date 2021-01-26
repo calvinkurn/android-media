@@ -22,7 +22,7 @@ object FileUtil {
         if (isExternalWritable) {
             if (isCacheDir) {
                 val rootCacheDirectory = File(GlobalConfig.EXTERNAL_CACHE_DIR)
-                if (rootCacheDirectory.exists()) {
+                if (GlobalConfig.EXTERNAL_CACHE_DIR.isNotEmpty() || rootCacheDirectory.exists()) {
                     directory = File(rootCacheDirectory.absolutePath, relativePathFolder ?: "")
                 }
             } else {

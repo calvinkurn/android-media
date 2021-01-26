@@ -48,7 +48,11 @@ public abstract class MainApplication extends CoreNetworkApplication {
     public void initFileDirConfig(){
         GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
         GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
-        GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir().getAbsolutePath();
+        if (this.getExternalCacheDir() == null) {
+            GlobalConfig.EXTERNAL_CACHE_DIR = "";
+        } else {
+            GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir().getAbsolutePath();;
+        }
         GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null).getAbsolutePath();
     }
 
