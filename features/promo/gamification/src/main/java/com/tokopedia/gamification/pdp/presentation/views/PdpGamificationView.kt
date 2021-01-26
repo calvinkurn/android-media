@@ -88,7 +88,7 @@ class PdpGamificationView : LinearLayout {
         orientation = LinearLayout.VERTICAL
         val lp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         lp.gravity = Gravity.BOTTOM
-        background = ContextCompat.getDrawable(context, R.drawable.header_bottom_sheet_rounded_white)
+        background = ContextCompat.getDrawable(context, R.drawable.gami_bottom_sheet_rounded_white)
         layoutParams = lp
         initViews(v)
     }
