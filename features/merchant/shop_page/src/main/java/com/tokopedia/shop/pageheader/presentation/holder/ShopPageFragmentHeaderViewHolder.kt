@@ -22,8 +22,8 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
-import com.tokopedia.shop.common.util.UiUtil.loadLeftDrawable
-import com.tokopedia.shop.common.util.UiUtil.removeDrawable
+import com.tokopedia.shop.common.util.loadLeftDrawable
+import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.extension.formatToSimpleNumber
 import com.tokopedia.shop.pageheader.data.model.FollowShop
 import com.tokopedia.shop.pageheader.data.model.FollowStatus
@@ -136,7 +136,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         followButton.visibility = View.VISIBLE
         followButton.setOnClickListener {
             if (!followButton.isLoading) {
-                voucherUrl?.run { removeDrawable(followButton) }
+                voucherUrl?.run { followButton.removeDrawable() }
                 followButton.isLoading = true
                 listener.setFollowStatus(isShopFavorite)
             }
@@ -280,10 +280,9 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             voucherUrl = it.followButton?.voucherIconURL
             val coachMarkText = it.followButton?.coachmarkText
             if (!voucherUrl.isNullOrBlank()) {
-                loadLeftDrawable(
+                followButton.loadLeftDrawable(
                         context = context,
                         url = voucherUrl,
-                        button = followButton,
                         convertIntoSize = 50
                 )
             }

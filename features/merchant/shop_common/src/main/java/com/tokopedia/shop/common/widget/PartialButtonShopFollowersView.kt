@@ -120,15 +120,13 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
                     convertIntoSize = 50
             )
         }
-        followersBtn?.text = buttonLabel
         followersBtn?.run {
+            if (!buttonLabel.isNullOrBlank()) {
+                text = buttonLabel
+            }
             setOnClickListener {
                 if (!isLoading) {
-                    followersBtn?.isLoading = true
                     listener.onButtonFollowNplClick()
-                    if (!voucherIconUrl.isNullOrBlank()) {
-                        followersBtn?.removeDrawable()
-                    }
                 }
             }
         }

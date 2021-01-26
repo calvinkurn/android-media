@@ -21,8 +21,8 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.common.util.UiUtil.loadLeftDrawable
-import com.tokopedia.shop.common.util.UiUtil.removeDrawable
+import com.tokopedia.shop.common.util.loadLeftDrawable
+import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
@@ -205,7 +205,9 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
     private fun refreshButtonData(label: String?) {
         tf_follow.bringToFront()
         tf_follow.show()
-        tf_follow.text = label
+        if(!label.isNullOrBlank()) {
+            tf_follow.text = label
+        }
         btn_follow?.apply {
             isLoading = false
             if (isFollowShop) {
@@ -225,10 +227,9 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         followButton?.run { refreshButtonData(this.buttonLabel) }
 
         if (!voucherUrl.isNullOrBlank()) {
-            loadLeftDrawable(
+            tf_follow.loadLeftDrawable(
                     context = requireContext(),
                     url = voucherUrl,
-                    typography = tf_follow,
                     convertIntoSize = 50
             )
         }
@@ -243,7 +244,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
                     ACTION_FOLLOW
                 }
                 viewModel?.updateFollowStatus(shopId, action)
-                voucherUrl?.run { removeDrawable(tf_follow) }
+                voucherUrl?.run { tf_follow.removeDrawable() }
             }
         }
     }
