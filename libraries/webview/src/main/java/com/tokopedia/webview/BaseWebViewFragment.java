@@ -101,7 +101,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String SCHEME_INTENT = "intent";
-    private static final String SCHEME_SELLERAPP = "sellerapp";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
