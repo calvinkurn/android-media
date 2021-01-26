@@ -25,7 +25,9 @@ class ChatListViewComponent(
     private val rvChatList = findViewById<RecyclerView>(R.id.rv_chat_list)
     private val csDownView = findViewById<ChatScrollDownView>(R.id.csdown_view).apply {
         setOnClickListener {
-            if (rvChatList.canScrollDown) rvChatList.smoothScrollToPosition(chatAdapter.lastIndex)
+            if (rvChatList.canScrollDown) {
+                rvChatList.scrollToPosition(chatAdapter.lastIndex)
+            }
         }
     }
     private val scrollListener = object : RecyclerView.OnScrollListener() {
@@ -45,10 +47,9 @@ class ChatListViewComponent(
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             csDownView.showIndicatorRed(rvChatList.canScrollDown)
             if (!csDownView.isVisible) {
-                rvChatList.postDelayed({
-                    rvChatList.smoothScrollToPosition(chatAdapter.lastIndex)
-                    Timber.tag("ChatList").d("Smooth Scroll to Position ${chatAdapter.lastIndex}")
-                }, 100)
+                rvChatList.post {
+                    rvChatList.scrollToPosition(chatAdapter.lastIndex)
+                }
             }
         }
     }
