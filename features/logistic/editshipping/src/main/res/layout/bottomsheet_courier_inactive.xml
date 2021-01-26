@@ -38,6 +38,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <LinearLayout
+        android:id="@+id/btn_vertical_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
@@ -46,7 +47,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ticker_charge_bo">
+        app:layout_constraintTop_toBottomOf="@id/ticker_charge_bo"
+        android:visibility="gone">
 
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -71,6 +73,44 @@
             app:unifyButtonType="main"
             android:visibility="gone"
             app:unifyButtonVariant="ghost" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_horizonal_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ticker_charge_bo"
+        android:visibility="visible">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_primary_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_5"
+            android:layout_weight="1"
+            android:text="Simpan"
+            android:textStyle="bold"
+            app:unifyButtonType="main"
+            android:visibility="visible"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_secondary_horizonal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_5"
+            android:layout_weight="1"
+            android:text="Batalkan Atur Ulang"
+            android:textStyle="bold"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
 
     </LinearLayout>
 
