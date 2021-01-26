@@ -6,8 +6,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.pageheader.data.model.FollowStatusResponse
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import java.util.HashMap
 import javax.inject.Inject
 
 class GetFollowStatusUseCase @Inject constructor(
@@ -15,19 +15,26 @@ class GetFollowStatusUseCase @Inject constructor(
 ) : UseCase<FollowStatusResponse>() {
 
     companion object {
-        private const val PARAM_SHOP_ID = "shopId"
+        const val SOURCE_NPL_TNC = "npl-tnc"
+        const val SOURCE_PDP = "pdp"
+        private const val PARAM_INPUT = "input"
+        private const val PARAM_SHOP_ID = "shopID"
+        private const val PARAM_SOURCE = "source"
 
         @JvmStatic
-        fun createParams(
-                shopId: String
-        ): RequestParams = RequestParams.create().apply {
-            putObject(PARAM_SHOP_ID, shopId)
+        fun createParams(shopId: String, source: String = ""): HashMap<String, Any> {
+            return hashMapOf(
+                    PARAM_INPUT to hashMapOf(
+                            PARAM_SHOP_ID to shopId,
+                            PARAM_SOURCE to source
+                    )
+            )
         }
     }
 
     private val query = """
-            query followStatus(${'$'}shopId: String!) {
-                followStatus(input:{shopID:${'$'}shopId}) {
+            query followStatus(${'$'}input: ParamFollowStatus!) {
+                followStatus(input:${'$'}input}) {
                     status {
                       userIsFollowing
                       userNeverFollow
@@ -45,9 +52,9 @@ class GetFollowStatusUseCase @Inject constructor(
              }
         """
 
-    var params: RequestParams = RequestParams.EMPTY
+    var params: HashMap<String, Any> = HashMap()
     val request by lazy{
-        GraphqlRequest(query, FollowStatusResponse::class.java, params.parameters)
+        GraphqlRequest(query, FollowStatusResponse::class.java, params)
     }
 
     override suspend fun executeOnBackground(): FollowStatusResponse {

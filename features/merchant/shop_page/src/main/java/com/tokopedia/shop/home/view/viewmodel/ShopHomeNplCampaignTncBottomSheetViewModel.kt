@@ -81,7 +81,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
     }
 
    private suspend fun getFollowStatus(shopId: String): FollowStatus? {
-        getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId)
+        getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId, GetFollowStatusUseCase.SOURCE_NPL_TNC)
         return getFollowStatusUseCase.get().executeOnBackground().followStatus
     }
 

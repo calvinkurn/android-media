@@ -281,6 +281,7 @@
     <string name="shop_merchant_voucher_title_bottom_sheet">Daftar Kupon Toko</string>
     <string name="shop_merchant_voucher_tag_bottom_sheet">BottomSheet Tag</string>
     <string name="follow_button_label">Follow</string>
+    <string name="follow_button_label_npl">Follow Toko</string>
 
     <!-- shop share -->
     <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>
