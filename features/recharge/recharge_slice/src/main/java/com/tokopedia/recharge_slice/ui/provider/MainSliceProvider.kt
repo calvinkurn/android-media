@@ -16,6 +16,7 @@ import androidx.slice.SliceProvider
 import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.*
 import com.bumptech.glide.Glide
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.ApplinkConst
@@ -278,6 +279,7 @@ class MainSliceProvider : SliceProvider() {
         contextNonNull = context?.applicationContext ?: return false
         remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
         LocalCacheHandler(context, APPLINK_DEBUGGER)
+        SplitCompat.install(contextNonNull)
         return true
     }
 
