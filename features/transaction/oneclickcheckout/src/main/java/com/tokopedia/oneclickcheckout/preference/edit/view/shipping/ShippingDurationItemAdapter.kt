@@ -93,12 +93,26 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
         }
 
         fun bind(data: ServicesItemModel) {
-            itemShippingText.text = data.servicesName
-            if (data.texts?.textRangePrice?.isNotBlank() == true) {
-                itemShippingPrice.text = data.texts?.textRangePrice
+            if (data.texts?.textEta != null) {
+                if (data.texts?.textRangePrice?.isNotBlank() == true) {
+                    itemShippingText.text = "${data.servicesName} (${data.texts?.textRangePrice})"
+                } else {
+                    itemShippingText.text = data.servicesName
+                }
+                if (data.texts?.textEta?.isNotEmpty() == true) {
+                    itemShippingPrice.text = data.texts?.textEta
+                } else {
+                    itemShippingPrice.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
+                }
                 itemShippingPrice.visible()
             } else {
-                itemShippingPrice.gone()
+                itemShippingText.text = data.servicesName
+                if (data.texts?.textRangePrice?.isNotBlank() == true) {
+                    itemShippingPrice.text = data.texts?.textRangePrice
+                    itemShippingPrice.visible()
+                } else {
+                    itemShippingPrice.gone()
+                }
             }
             when {
                 data.errorMessage.isNotEmpty() && data.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED -> {

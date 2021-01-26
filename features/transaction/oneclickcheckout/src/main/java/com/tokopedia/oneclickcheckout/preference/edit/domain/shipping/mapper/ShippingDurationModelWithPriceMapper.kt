@@ -31,7 +31,9 @@ class ShippingDurationModelWithPriceMapper @Inject constructor() {
         return ServicesItemModel().apply {
             servicesId = data.serviceId
             servicesName = data.serviceName
-            texts = textItemModelMapper(data.texts)
+            texts = textItemModelMapper(data.texts).apply {
+
+            }
             errorMessage = data.error.errorMessage
             errorId = data.error.errorId
         }
@@ -41,6 +43,7 @@ class ShippingDurationModelWithPriceMapper @Inject constructor() {
         return TextsModel().apply {
             textRangePrice = data.textRangePrice
             textsServiceDesc = data.textServiceDesc
+            textEta = if (data.errorCode == 0) data.textEtaSummarize else null
         }
     }
 
