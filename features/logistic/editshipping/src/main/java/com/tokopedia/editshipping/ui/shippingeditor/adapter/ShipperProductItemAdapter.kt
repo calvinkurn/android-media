@@ -9,14 +9,9 @@ import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ShipperProductItemAdapter(private val listener: ShipperProductOnDemandItemListener): RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
+class ShipperProductItemAdapter(): RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
 
     private var shipperProduct = mutableListOf<ShipperProductModel>()
-
-    interface ShipperProductOnDemandItemListener {
-        fun onShipperProductChecked(shipperId: String, isChecked: Boolean)
-    }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShipperProductOnDemandViewHolder {
         return ShipperProductOnDemandViewHolder(parent.inflateLayout(R.layout.item_shipper_product_name))
@@ -30,6 +25,11 @@ class ShipperProductItemAdapter(private val listener: ShipperProductOnDemandItem
         holder.bindData(shipperProduct[position])
     }
 
+    override fun onViewRecycled(holder: ShipperProductOnDemandViewHolder) {
+        super.onViewRecycled(holder)
+        holder.shipperProductCb.setOnCheckedChangeListener(null)
+    }
+
     fun addData(data: List<ShipperProductModel>) {
         shipperProduct.addAll(data)
         notifyDataSetChanged()
@@ -40,24 +40,16 @@ class ShipperProductItemAdapter(private val listener: ShipperProductOnDemandItem
         notifyDataSetChanged()
     }
 
-    fun uncheckAll() {
+    fun updateChecked(checked: Boolean) {
         shipperProduct.forEach {
-            it.isActive = false
-        }
-        notifyDataSetChanged()
-    }
-
-    fun checkAll() {
-        shipperProduct.forEach {
-            it.isActive = true
+            it.isActive = checked
         }
         notifyDataSetChanged()
     }
 
     inner class ShipperProductOnDemandViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-
         private val shipperProductName = itemView.findViewById<Typography>(R.id.shipper_product_name)
-        private val shipperProductCb = itemView.findViewById<CheckboxUnify>(R.id.shipper_product_cb)
+        val shipperProductCb = itemView.findViewById<CheckboxUnify>(R.id.shipper_product_cb)
         private val divider = itemView.findViewById<View>(R.id.divider_shipment)
 
         fun bindData(data: ShipperProductModel) {
@@ -74,7 +66,7 @@ class ShipperProductItemAdapter(private val listener: ShipperProductOnDemandItem
             }
 
             shipperProductCb?.setOnCheckedChangeListener { _, isChecked ->
-                listener.onShipperProductChecked(data.shipperProductId, isChecked)
+                data.isActive = isChecked
             }
         }
     }

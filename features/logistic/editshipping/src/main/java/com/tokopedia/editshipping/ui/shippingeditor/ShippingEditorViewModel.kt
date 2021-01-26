@@ -85,6 +85,7 @@ class ShippingEditorViewModel @Inject constructor(
     }
 
     fun validateShippingEditor(shopId: Int, activatedSpIds: String) {
+        _shipperDetail.value  = ShippingEditorState.Loading
         viewModelScope.launch {
             val getValidateData = shippingEditorRepo.validateShippingEditor(shopId, activatedSpIds)
             _validateDataShipper.value = ShippingEditorState.Success(validateShippingMapper.mapShippingEditorData(getValidateData.ongkirShippingEditorPopup.data))
@@ -92,6 +93,7 @@ class ShippingEditorViewModel @Inject constructor(
     }
 
     fun saveShippingData(shopId: Int, activatedSpIds: String, featuresId: String) {
+        _shipperDetail.value  = ShippingEditorState.Loading
         viewModelScope.launch {
             val saveShippingEditor = shippingEditorRepo.saveShippingEditor(shopId, activatedSpIds, featuresId)
             _saveShippingData.value = ShippingEditorState.Success(saveShippingEditor.saveShippingEditor)

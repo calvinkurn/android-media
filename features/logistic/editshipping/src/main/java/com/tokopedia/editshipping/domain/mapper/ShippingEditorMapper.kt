@@ -16,14 +16,13 @@ class ShippingEditorMapper @Inject constructor() {
     fun mapShipperTickerList(response: GetShipperTickerResponse): ShipperTickerModel {
         val data = response.ongkirShippingEditorGetShipperTicker.data
         return ShipperTickerModel().apply {
-            headerTicker = mapHeaderTicker(data.headerTicker)
+            headerTicker = mapHeaderTicker(data.headerTicker, data.warehouses)
             courierTicker = mapCourierTicker(data.courierTicker, data.warehouses)
 //            warehouses = mapWarehousesTicker(data.warehouses)
         }
     }
 
     private fun mapShipper(response: Data): ShippersModel {
-//        val data = response.ongkirShippingEditor.data.shippers
         return ShippersModel().apply {
             onDemand = mapShipperOnDemand(response.shippers.onDemand)
             conventional = mapShipperConventional(response.shippers.conventional)
@@ -96,13 +95,13 @@ class ShippingEditorMapper @Inject constructor() {
         }
     }
 
-    private fun mapHeaderTicker(response: HeaderTicker): HeaderTickerModel {
+    private fun mapHeaderTicker(response: HeaderTicker, warehouses: List<Warehouses>): HeaderTickerModel {
         return HeaderTickerModel().apply {
             header = response.header
             body = response.body
             textLink = response.textLink
             urlLink = response.urlLink
-            warehouseIds = response.warehouseIds
+            warehouseModel = mapWarehouseModelBasedOnWarehouseId(response.warehouseIds, warehouses)
             isActive = response.isActive
         }
     }

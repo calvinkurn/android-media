@@ -89,15 +89,15 @@
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_dijemput_kurir_detail"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_12"
-                        android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         app:typographyType="body_3"
-                        android:text="Kurir akan menjemput pesanan di alamatmu untuk dianta ke pembeli"
+                        android:text="Kurir akan menjemput pesanan di alamatmu untuk diantar ke pembeli"
                         app:layout_constraintTop_toBottomOf="@id/tv_dijemput_kurir"
-                        app:layout_constraintStart_toStartOf="parent"/>
+                        app:layout_constraintStart_toStartOf="@id/tv_dijemput_kurir"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
                     <com.tokopedia.unifycomponents.ticker.Ticker
                         android:id="@+id/ticker_dijemput_kurir"
@@ -149,10 +149,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_12"
-                        android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         app:typographyType="body_3"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/tv_antar_ke_agen"
                         app:layout_constraintTop_toBottomOf="@id/tv_antar_ke_agen"
                         android:text="Bawa pesanan ke gerai terdekat dan minta resi dari petugas" />
 

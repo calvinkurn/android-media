@@ -11,7 +11,7 @@ data class HeaderTickerModel(
         var body: String = "",
         var textLink: String = "",
         var urlLink: String = "",
-        var warehouseIds: List<Int> = emptyList(),
+        var warehouseModel: List<WarehousesModel> = emptyList(),
         var isActive: Boolean = false
 )
 

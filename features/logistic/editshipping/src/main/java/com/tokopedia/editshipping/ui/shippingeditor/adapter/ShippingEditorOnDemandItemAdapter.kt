@@ -2,6 +2,7 @@ package com.tokopedia.editshipping.ui.shippingeditor.adapter
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,7 +11,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.OnDemandModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -19,7 +22,6 @@ import com.tokopedia.unifyprinciples.Typography
 class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItemAdapterListener): RecyclerView.Adapter<ShippingEditorOnDemandItemAdapter.ShippingEditorOnDemandViewHolder>() {
 
     var shipperOnDemandModel = mutableListOf<OnDemandModel>()
-    private var shipperProductChild: ShipperProductItemAdapter? = null
 
     interface ShippingEditorItemAdapterListener {
         fun onShipperInfoClicked()
@@ -39,6 +41,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
     }
 
     fun updateData(data: List<OnDemandModel>) {
+        shipperOnDemandModel.clear()
         shipperOnDemandModel.addAll(data)
         notifyDataSetChanged()
     }
@@ -55,8 +58,17 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         notifyDataSetChanged()
     }
 
-    fun getList(): List<OnDemandModel> {
-        return shipperOnDemandModel
+    fun getActiveSpIds(): String {
+        val activatedListIds = mutableListOf<String>()
+        shipperOnDemandModel.forEach { courier ->
+            courier.shipperProduct.forEach { product ->
+                if (product.isActive) {
+                    activatedListIds.add(product.shipperProductId)
+                }
+            }
+
+        }
+        return activatedListIds.joinToString().replace(" ", "")
     }
 
     fun clearData() {
@@ -64,8 +76,9 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         notifyDataSetChanged()
     }
 
-    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener): RecyclerView.ViewHolder(itemView), ShipperProductItemAdapter.ShipperProductOnDemandItemListener {
+    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener): RecyclerView.ViewHolder(itemView) {
         lateinit var onDemandModel: OnDemandModel
+        private var shipperProductChild = ShipperProductItemAdapter()
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)
         private val shipmentItemCb = itemView.findViewById<CheckboxUnify>(R.id.cb_shipment_item)
@@ -74,11 +87,12 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         private val tickerShipper = itemView.findViewById<Ticker>(R.id.ticker_shipper)
         private val couponLayout = itemView.findViewById<RelativeLayout>(R.id.layout_coupon)
         private val couponText = itemView.findViewById<Typography>(R.id.title_coupon)
-
+        private val childLayout = itemView.findViewById<FrameLayout>(R.id.item_child_layout)
 
         fun bindData(data: OnDemandModel) {
             onDemandModel = data
             setItemData(data)
+            setItemChecked(data)
         }
 
         private fun setItemData(data: OnDemandModel) {
@@ -86,7 +100,6 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
             var sb = StringBuilder()
 
             shipmentName.text = data.shipperName
-            shipmentItemCb.isChecked = data.isActive
             shipmentItemImage?.let {
                 ImageHandler.loadImageFitCenter(itemView.context, it, data.image)
             }
@@ -103,7 +116,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                 couponText.text = data.textPromo
             }
 
-            shipperProductChild = ShipperProductItemAdapter(this@ShippingEditorOnDemandViewHolder)
+            shipperProductChild = ShipperProductItemAdapter()
             shipmentProductRv.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = shipperProductChild
@@ -137,25 +150,27 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                 }
             }
 
-            shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    onDemandModel.listActivatedSpId.addAll(data.shipperProduct.map {
-                        it.shipperProductId
-                    })
-                    shipperProductChild?.checkAll()
-                } else {
-                    onDemandModel.listActivatedSpId.removeAll(data.shipperProduct.map {
-                        it.shipperProductId
-                    })
-                    shipperProductChild?.uncheckAll()
-                }
-            }
+
         }
 
-        override fun onShipperProductChecked(shipperId: String, isChecked: Boolean) {
-            if (isChecked) {
-                onDemandModel.listActivatedSpId.add(shipperId)
-            } else onDemandModel.listActivatedSpId.remove(shipperId)
+        private fun setItemChecked(data: OnDemandModel) {
+            shipmentItemCb.isChecked = data.isActive
+            if (shipmentItemCb.isChecked) {
+                childLayout.visible()
+            } else {
+                childLayout.gone()
+            }
+            shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
+                data.isActive = isChecked
+                shipperProductChild?.updateChecked(isChecked)
+                if (isChecked) {
+                    childLayout.visible()
+                } else {
+                    childLayout.gone()
+                }
+            }
+
+
         }
 
         /* private fun setListener(data: OnDemandModel) {
