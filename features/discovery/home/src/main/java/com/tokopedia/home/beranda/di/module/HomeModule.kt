@@ -20,6 +20,8 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
+import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
+import com.tokopedia.home.beranda.data.repository.HomeRevampRepositoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.util.HomeCommandProcessor
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -70,6 +72,25 @@ class HomeModule {
             dynamicChannelDataMapper,
             context,
             remoteConfig)
+
+    @HomeScope
+    @Provides
+    fun homeRevampRepository(geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
+                       homeRemoteDataSource: HomeRemoteDataSource,
+                       homeCachedDataSource: HomeCachedDataSource,
+                       homeDefaultDataSource: HomeDefaultDataSource,
+                       dynamicChannelDataMapper: HomeDynamicChannelDataMapper,
+                       @ApplicationContext context: Context,
+                       remoteConfig: RemoteConfig
+    ): HomeRevampRepository = HomeRevampRepositoryImpl(
+            homeCachedDataSource,
+            homeRemoteDataSource,
+            homeDefaultDataSource,
+            geolocationRemoteDataSource,
+            dynamicChannelDataMapper,
+            context,
+            remoteConfig)
+
 
     @HomeScope
     @Provides

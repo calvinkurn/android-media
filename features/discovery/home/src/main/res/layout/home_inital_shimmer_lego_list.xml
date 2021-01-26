@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_36">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_182"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_6"
+            app:loader_type="line"
+            android:layout_alignParentLeft="true"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            app:loader_type="rect"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_90"
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                app:loader_type="rect"/>
+            <View
+                android:layout_width="@dimen/dp_4"
+                android:layout_height="match_parent"/>
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                app:loader_type="rect"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_90"
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                app:loader_type="rect"/>
+            <View
+                android:layout_width="@dimen/dp_4"
+                android:layout_height="match_parent"/>
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                app:loader_type="rect"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

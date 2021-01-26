@@ -23,7 +23,6 @@ class UohListTrackingTest {
     companion object {
         private const val QUERY_SUMMARY_UOH = "tracker/transaction/uoh_summary.json"
         private const val KEY_UOH_ORDERS = "GetOrderHistory"
-        private const val IDLING_RESOURCE = "uoh_fake_login"
     }
 
     @get:Rule
@@ -66,11 +65,14 @@ class UohListTrackingTest {
             clickOrderCard()
             doSearch("product 17")
             clickFilterStatus()
-            doApplyFilterStatus()
+            selectFilterStatus()
+            doApplyFilter()
             clickFilterCategory()
-            doApplyFilterCategory()
+            selectFilterCategory()
+            doApplyFilter()
             clickFilterDate()
-            doApplyFilterDate()
+            selectFilterDate()
+            doApplyFilter()
         } submit {
             hasPassedAnalytics(gtmLogDBSource, query)
         }

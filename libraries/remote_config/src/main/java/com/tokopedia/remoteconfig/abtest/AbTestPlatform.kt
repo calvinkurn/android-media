@@ -201,6 +201,10 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
         const val NAVIGATION_VARIANT_REVAMP = "Navigation Revamp"
 
+        const val HOME_EXP = "Home Revamp 2021"
+        const val HOME_VARIANT_OLD = "Existing Home"
+        const val HOME_VARIANT_REVAMP = "home revamp"
+
         const val KEY_AB_INBOX_REVAMP = "Inbox Revamp"
         const val VARIANT_OLD_INBOX = ""
         const val VARIANT_NEW_INBOX = "Inbox Revamp"
