@@ -18,7 +18,6 @@ class SortListDiffUtil(private val oldList: List<SortItemUiModel>, private val n
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].isSelected == newList[newItemPosition].isSelected &&
-                oldList[oldItemPosition].title == newList[newItemPosition].title
+        return oldList[oldItemPosition].isSelected == newList[newItemPosition].isSelected
     }
 }

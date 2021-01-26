@@ -19,7 +19,6 @@ class TopicListDiffUtil(private val oldList: List<SortFilterItemWrapper>, privat
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].isSelected == newList[newItemPosition].isSelected &&
-                oldList[oldItemPosition].titleUnformated == newList[newItemPosition].titleUnformated
+        return oldList[oldItemPosition].isSelected == newList[newItemPosition].isSelected
     }
 }
