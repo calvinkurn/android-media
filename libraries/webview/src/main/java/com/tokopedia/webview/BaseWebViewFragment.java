@@ -100,7 +100,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String PRINT_AWB_URL = "tokopedia.com/shipping-label";
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
-    private static final String ONELINK_HOST = "sellerapp.onelink.me";
+    private static final String SCHEME_INTENT = "intent";
+    private static final String SCHEME_SELLERAPP = "sellerapp";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
@@ -682,17 +683,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } catch (ActivityNotFoundException e) {
                 e.printStackTrace();
             }
-        } else if (ONELINK_HOST.equalsIgnoreCase(uri.getHost()) && GlobalConfig.isSellerApp()) {
+        } else if (SCHEME_INTENT.equalsIgnoreCase(uri.getScheme()) && GlobalConfig.isSellerApp()) {
             try {
-                Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
-                System.out.println("AppLink : onelink url -> " + url);
-                if (intent != null) {
-                    startActivity(intent);
-                }
+                String newUrl = url.replaceFirst(SCHEME_INTENT, SCHEME_SELLERAPP);
+                Intent newIntent = RouteManager.getIntent(getActivity(), newUrl);
+                startActivity(newIntent);
             } catch (ActivityNotFoundException e) {
                 e.printStackTrace();
             }
         }
+
         if (url.contains(PARAM_EXTERNAL)) {
             try {
                 Intent destination = new Intent(Intent.ACTION_VIEW);
