@@ -44,7 +44,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:gravity="end"
         android:text="@string/lihat_semua"
-        android:textColor="@color/Unify_G400"
+        android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/fontSize_lvl3"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/play_widget_medium_title"
