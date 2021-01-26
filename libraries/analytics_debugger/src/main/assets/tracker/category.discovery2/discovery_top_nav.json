@@ -1,0 +1,39 @@
+{
+  "readme": "Discovery Top Nav Tracking",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickNavigationDrawer",
+      "eventCategory": "top nav - discovery page",
+      "eventAction": "{{.*}}",
+      "eventLabel": "",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.*}}",
+      "businessUnit": "home & browse",
+      "pageType": "{{.*}}",
+      "pagePath": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "{{.*}}",
+      "eventAction": "click search box",
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickDiscovery",
+      "eventCategory": "{{.*}}",
+      "eventAction": "click back button",
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickDiscovery",
+      "eventCategory": "{{.*}}",
+      "eventAction": "click social share",
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

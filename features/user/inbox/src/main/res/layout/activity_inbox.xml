@@ -12,10 +12,10 @@
 
         <com.tokopedia.searchbar.navigation_component.NavToolbar
             android:id="@+id/inbox_nav_toolbar"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="?actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
+            app:contentInsetLeft="@dimen/unify_space_0"
+            app:contentInsetStart="@dimen/unify_space_0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

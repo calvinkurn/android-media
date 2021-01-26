@@ -17,8 +17,11 @@ class HomeAtfErrorViewHolder(itemView: View, private val listener: HomeCategoryL
     }
 
     override fun bind(element: ErrorStateAtfModel) {
+        itemView.localload_error_state_atf.progressState = false
+
         itemView.localload_error_state_atf.refreshBtn?.setOnClickListener {
             listener?.refreshHomeData(forceRefresh = true)
+            itemView.localload_error_state_atf.progressState = true
         }
     }
 }

@@ -187,6 +187,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     override fun onDestroy() {
         super.onDestroy()
         InboxConfig.removeListener(this)
+        navigator?.cleanupNavigator()
     }
 
     override fun onRoleChanged(@RoleType role: Int) {

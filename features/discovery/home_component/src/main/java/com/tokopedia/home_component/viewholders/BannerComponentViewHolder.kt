@@ -20,6 +20,8 @@ import com.tokopedia.home_component.util.LinearCenterLayoutManager
 import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -210,16 +212,21 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     private fun setHeaderComponent(element: BannerDataModel) {
-        element.channelModel?.let {
-            itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
-                override fun onSeeAllClick(link: String) {
-                    bannerListener?.onPromoAllClick(link)
-                }
+        if (element.channelModel?.channelHeader?.name?.isNotEmpty() == true) {
+            element.channelModel.let {
+                itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+                    override fun onSeeAllClick(link: String) {
+                        bannerListener?.onPromoAllClick(link)
+                    }
 
-                override fun onChannelExpired(channelModel: ChannelModel) {
-                    homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
-                }
-            })
+                    override fun onChannelExpired(channelModel: ChannelModel) {
+                        homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                    }
+                })
+            }
+            itemView.home_component_header_view.visible()
+        } else {
+            itemView.home_component_header_view.gone()
         }
     }
 

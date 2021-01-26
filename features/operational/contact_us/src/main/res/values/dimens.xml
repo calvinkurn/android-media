@@ -79,5 +79,4 @@
     <dimen name="margin_med">20dp</dimen>
     <dimen name="margin_small">10dp</dimen>
     <dimen name="chat_widget_margin">236dp</dimen>
-
 </resources>

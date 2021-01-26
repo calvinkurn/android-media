@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -69,6 +70,10 @@ class NotificationTypeFactoryImpl constructor(
         return EmptyNotificationWithRecomViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: ErrorNetworkModel?): Int {
+        return NotificationErrorViewHolder.LAYOUT
+    }
+
     @LayoutRes
     override fun getItemViewType(
             visitables: List<Visitable<*>>,
@@ -113,6 +118,9 @@ class NotificationTypeFactoryImpl constructor(
 
     override fun createViewHolder(view: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
+            NotificationErrorViewHolder.LAYOUT -> NotificationErrorViewHolder(
+                    view, notificationListener
+            )
             SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
             NotificationTopAdsBannerViewHolder.LAYOUT -> NotificationTopAdsBannerViewHolder(view)

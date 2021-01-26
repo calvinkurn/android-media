@@ -46,15 +46,13 @@ class HomeRemoteDataSource(
                                       numOfChannel: Int = 0,
                                       params: String = "",
                                       doQueryHash: Boolean = false
-    ): HomeChannelData = withContext(dispatchers.io()) {
-        getHomeDynamicChannelsRepository.getDynamicChannelData(
-                GetHomeDynamicChannelsRepository.buildParams(
-                        groupIds = groupIds,
-                        token = token,
-                        numOfChannel = numOfChannel,
-                        queryParams = params,
-                        doQueryHash = doQueryHash
-                )
-        )
-    }
+    ): HomeChannelData = getHomeDynamicChannelsRepository.getDynamicChannelData(
+            GetHomeDynamicChannelsRepository.buildParams(
+                    groupIds = groupIds,
+                    token = token,
+                    numOfChannel = numOfChannel,
+                    queryParams = params,
+                    doQueryHash = doQueryHash
+            )
+    )
 }

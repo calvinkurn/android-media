@@ -31,7 +31,7 @@ data class ItemChatListPojo(
     val tag: String get() = attributes?.contact?.tag ?: ""
     val lastReplyTime: Long get() = attributes?.lastReplyTimestamp ?: 0
     val lastReplyTimeStr: String get() = attributes?.lastReplyTimeStr ?: ""
-    val lastReplyTimeSecond: Long get() = lastReplyTimeStr.toLongOrZero() / 1000
+    val lastReplyTimeMillis: Long get() = lastReplyTimeStr.toLongOrZero()
     val lastReplyMessage: String get() = attributes?.lastReplyMessage ?: ""
     val thumbnail: String get() = attributes?.contact?.thumbnail ?: ""
     val name: String get() = attributes?.contact?.contactName ?: ""

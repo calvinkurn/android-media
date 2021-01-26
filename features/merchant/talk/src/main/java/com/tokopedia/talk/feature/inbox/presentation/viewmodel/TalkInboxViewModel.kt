@@ -28,8 +28,8 @@ class TalkInboxViewModel @Inject constructor(
         get() = _inboxList
 
     private var shopId: String = ""
-    private var unreadCount: Int = 0
-    private var unrespondedCount: Int = 0
+    private var unreadCount: Long = 0
+    private var unrespondedCount: Long = 0
     private var type: String = ""
     private var filter: TalkInboxFilter = TalkInboxFilter.TalkInboxNoFilter()
     private val page = MutableLiveData<Int>()
@@ -44,11 +44,11 @@ class TalkInboxViewModel @Inject constructor(
         return shopId
     }
 
-    fun getUnreadCount(): Int {
+    fun getUnreadCount(): Long {
         return unreadCount
     }
 
-    fun getUnrespondedCount(): Int {
+    fun getUnrespondedCount(): Long {
         return unrespondedCount
     }
 

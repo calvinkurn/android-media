@@ -2,8 +2,7 @@ package com.tokopedia.inbox.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.inbox.common.InboxCoroutineDispatcher
+import androidx.lifecycle.ViewModel
 import com.tokopedia.inbox.domain.cache.InboxCacheManager
 import com.tokopedia.inbox.domain.data.notification.Notifications
 import com.tokopedia.inbox.domain.usecase.InboxNotificationUseCase
@@ -17,8 +16,7 @@ class InboxViewModel @Inject constructor(
         private val notificationUseCase: InboxNotificationUseCase,
         private val userSession: UserSessionInterface,
         private val cacheManager: InboxCacheManager,
-        dispatchers: InboxCoroutineDispatcher
-) : BaseViewModel(dispatchers.IO) {
+) : ViewModel() {
 
     private val keyPageVisited = "${userSession.userId}_inbox_activity"
     private val _notifications = MutableLiveData<Result<Notifications>>()

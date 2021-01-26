@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateAtfModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateChannelOneModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
@@ -150,6 +152,20 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         currentList.indexOfFirst { it is CarouselPlayWidgetDataModel }.let { position ->
             if (position == -1) return@let
             notifyItemChanged(position, totalViewUiModel)
+        }
+    }
+
+    fun resetChannelErrorState() {
+        currentList.indexOfFirst { it is ErrorStateChannelOneModel }.let { position ->
+            if (position == -1) return@let
+            notifyItemChanged(position)
+        }
+    }
+
+    fun resetAtfErrorState() {
+        currentList.indexOfFirst { it is ErrorStateAtfModel }.let { position ->
+            if (position == -1) return@let
+            notifyItemChanged(position)
         }
     }
 }

@@ -7,7 +7,6 @@ import dagger.Module
 import dagger.Provides
 import rx.functions.Func1
 
-@InitialStateScope
 @Module
 class InitialStateDataMapperModule {
 

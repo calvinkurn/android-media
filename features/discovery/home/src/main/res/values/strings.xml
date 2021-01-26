@@ -116,4 +116,12 @@
 
     <string name="error_state_atf_localload_title">Bagian ini gagal ditampilkan</string>
     <string name="error_state_atf_localload_description">Klik ikon sebelah untuk coba lagi</string>
+
+    <string name="content_desc_image_scan">Scan QR Code</string>
+    <string name="content_desc_tokocash">Tokocash</string>
+    <string name="content_desc_tokopoint">Tokopoint</string>
+    <string name="content_desc_free_ongkir">Bebas Ongkir</string>
+    <string name="content_desc_error_state_icon">Image error</string>
+    <string name="content_desc_error_state_channel">Content error</string>
+    <string name="content_desc_home_background">Home background</string>
 </resources>

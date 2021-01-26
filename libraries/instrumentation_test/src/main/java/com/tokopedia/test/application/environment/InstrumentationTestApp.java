@@ -332,11 +332,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     }
 
     @Override
-    public void sendRefreshTokenAnalytics(String errorMessage) {
-
-    }
-
-    @Override
     public void showForceLogoutTokenDialog(String response) {
 
     }
@@ -472,5 +467,4 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
 
     }
-
 }

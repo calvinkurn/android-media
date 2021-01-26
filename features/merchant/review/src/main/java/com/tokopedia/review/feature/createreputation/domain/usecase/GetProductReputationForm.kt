@@ -52,10 +52,10 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
             }
         """
 
-        fun createRequestParam(reputationId: Int, productId: Int): RequestParams {
+        fun createRequestParam(reputationId: Long, productId: Long): RequestParams {
             return RequestParams.create().apply {
-                putInt(REPUTATION_ID, reputationId)
-                putInt(PRODUCT_ID, productId)
+                putLong(REPUTATION_ID, reputationId)
+                putLong(PRODUCT_ID, productId)
             }
         }
     }

@@ -18,58 +18,81 @@ class RecommendationViewHolder constructor(
             R.id.notification_product_card
     )
 
+    override fun bind(element: RecommendationUiModel, payloads: MutableList<Any>) {
+        val isWishlisted = payloads.getOrNull(0) as? Boolean ?: return
+        element.recommendationItem.isWishlist = isWishlisted
+        productCard?.setThreeDotsOnClickListener {
+            recommendationListener?.onThreeDotsClick(element.recommendationItem, adapterPosition)
+        }
+    }
+
     override fun bind(element: RecommendationUiModel) {
-        productCard?.run {
-            setProductModel(
-                    ProductCardModel(
-                            slashedPrice = element.recommendationItem.slashedPrice,
-                            productName = element.recommendationItem.name,
-                            formattedPrice = element.recommendationItem.price,
-                            productImageUrl = element.recommendationItem.imageUrl,
-                            isTopAds = element.recommendationItem.isTopAds,
-                            discountPercentage = element.recommendationItem.discountPercentage,
-                            reviewCount = element.recommendationItem.countReview,
-                            ratingCount = element.recommendationItem.rating,
-                            shopLocation = element.recommendationItem.location,
-                            shopBadgeList = element.recommendationItem
-                                    .badgesUrl
-                                    .map {
-                                        ProductCardModel.ShopBadge(imageUrl = it
-                                                ?: "")
-                                    },
-                            freeOngkir = ProductCardModel.FreeOngkir(
-                                    isActive = element.recommendationItem.isFreeOngkirActive,
-                                    imageUrl = element.recommendationItem.freeOngkirImageUrl
-                            ),
-                            labelGroupList = element.recommendationItem
-                                    .labelGroupList
-                                    .map { recommendationLabel ->
-                                        ProductCardModel.LabelGroup(
-                                                position = recommendationLabel.position,
-                                                title = recommendationLabel.title,
-                                                type = recommendationLabel.type
-                                        )
-                                    },
-                            hasThreeDots = true
-                    )
-            )
-            setImageProductViewHintListener(element.recommendationItem, object : ViewHintListener {
-                override fun onViewHint() {
-                    recommendationListener?.onProductImpression(element.recommendationItem)
+        bindProductCardUi(element)
+        bindProductCardImpression(element)
+        bindProductCardClick(element)
+        bindProductCardThreeDotsClick(element)
+    }
+
+    private fun bindProductCardUi(element: RecommendationUiModel) {
+        productCard?.setProductModel(
+                ProductCardModel(
+                        slashedPrice = element.recommendationItem.slashedPrice,
+                        productName = element.recommendationItem.name,
+                        formattedPrice = element.recommendationItem.price,
+                        productImageUrl = element.recommendationItem.imageUrl,
+                        isTopAds = element.recommendationItem.isTopAds,
+                        discountPercentage = element.recommendationItem.discountPercentage,
+                        reviewCount = element.recommendationItem.countReview,
+                        ratingCount = element.recommendationItem.rating,
+                        shopLocation = element.recommendationItem.location,
+                        shopBadgeList = element.recommendationItem
+                                .badgesUrl
+                                .map {
+                                    ProductCardModel.ShopBadge(imageUrl = it
+                                            ?: "")
+                                },
+                        freeOngkir = ProductCardModel.FreeOngkir(
+                                isActive = element.recommendationItem.isFreeOngkirActive,
+                                imageUrl = element.recommendationItem.freeOngkirImageUrl
+                        ),
+                        labelGroupList = element.recommendationItem
+                                .labelGroupList
+                                .map { recommendationLabel ->
+                                    ProductCardModel.LabelGroup(
+                                            position = recommendationLabel.position,
+                                            title = recommendationLabel.title,
+                                            type = recommendationLabel.type
+                                    )
+                                },
+                        hasThreeDots = true
+                )
+        )
+    }
+
+    private fun bindProductCardImpression(element: RecommendationUiModel) {
+        productCard?.setImageProductViewHintListener(
+                element.recommendationItem,
+                object : ViewHintListener {
+                    override fun onViewHint() {
+                        recommendationListener?.onProductImpression(element.recommendationItem)
+                    }
                 }
-            })
+        )
+    }
 
-            setOnClickListener {
-                recommendationListener?.onProductClick(
-                        element.recommendationItem, null
-                )
-            }
+    private fun bindProductCardClick(element: RecommendationUiModel) {
+        productCard?.setOnClickListener {
+            recommendationListener?.onProductClick(
+                    element.recommendationItem, null
+            )
+        }
+    }
 
-            setThreeDotsOnClickListener {
-                recommendationListener?.onThreeDotsClick(
-                        element.recommendationItem, adapterPosition
-                )
-            }
+    private fun bindProductCardThreeDotsClick(element: RecommendationUiModel) {
+        productCard?.setThreeDotsOnClickListener {
+            recommendationListener?.onThreeDotsClick(
+                    element.recommendationItem, adapterPosition
+            )
         }
     }
 

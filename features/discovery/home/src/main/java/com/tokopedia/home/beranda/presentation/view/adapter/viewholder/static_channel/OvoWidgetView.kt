@@ -241,7 +241,7 @@ class OvoWidgetView: FrameLayout {
                                 }
                             }
                         } else {
-                            listener?.onRequestPendingCashBack()
+//                            listener?.onRequestPendingCashBack()
                         }
                     }
                 }

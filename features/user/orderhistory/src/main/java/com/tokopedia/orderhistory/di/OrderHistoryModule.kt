@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 
 
 @Module
-@OrderHistoryScope
 class OrderHistoryModule {
 
     @OrderHistoryScope

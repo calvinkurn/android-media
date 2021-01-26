@@ -16,7 +16,9 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -38,6 +40,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
@@ -83,9 +86,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
@@ -103,7 +104,6 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
-import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -114,7 +114,6 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
-import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
@@ -122,7 +121,6 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -138,6 +136,8 @@ import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -153,9 +153,11 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
-import com.tokopedia.unifycomponents.Toaster.make
+import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
@@ -170,7 +172,6 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import kotlin.Exception
 import kotlin.collections.ArrayList
 
 /**
@@ -233,6 +234,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
         private const val HOME_SOURCE = "home"
 
+        private const val BASE_URL = "https://ecs7.tokopedia.net/img/android/"
+        private const val BACKGROUND_LIGHT_1 = BASE_URL + "home/header/xxhdpi/home_header_light_1.png"
+        private const val BACKGROUND_LIGHT_2 = BASE_URL + "home/header/xxhdpi/home_header_light_2.png"
+        private const val BACKGROUND_DARK_1 = BASE_URL + "home/header/xxhdpi/home_header_dark_1.png"
+        private const val BACKGROUND_DARK_2 = BASE_URL + "home/header/xxhdpi/home_header_dark_2.png"
+
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
             val fragment = HomeRevampFragment()
@@ -243,6 +250,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private var errorToaster: Snackbar? = null
     override val eggListener: HomeEggListener
         get() = this
     override val childsFragmentManager: FragmentManager
@@ -279,6 +287,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var tickerDetail: TickerDetail
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private lateinit var backgroundViewImage: ImageView
     private var homeRecyclerView: NestedRecyclerView? = null
     private var oldToolbar: HomeMainToolbar? = null
     private var navToolbar: NavToolbar? = null
@@ -381,8 +390,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fragmentCreatedForFirstTime = true
-        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
-        startToTransitionOffset = homeMainToolbarHeight
+        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
+        startToTransitionOffset = resources.getDimensionPixelOffset(R.dimen.dp_1)
         registerBroadcastReceiverTokoCash()
     }
 
@@ -506,7 +515,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
+
+        backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
         homeRecyclerView?.setHasFixedSize(true)
+        homeRecyclerView?.itemAnimator?.moveDuration = 150
         initInboxAbTest()
         navAbTestCondition(
                 ifNavOld = {
@@ -522,7 +534,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         viewLifecycleOwner.lifecycle.addObserver(it)
                         homeRecyclerView?.addOnScrollListener(NavRecyclerViewScrollListener(
                                 navToolbar = it,
-                                startTransitionPixel = startToTransitionOffset,
+                                startTransitionPixel = homeMainToolbarHeight,
                                 toolbarTransitionRangePixel = searchBarTransitionRange,
                                 navScrollCallback = object: NavRecyclerViewScrollListener.NavScrollCallback {
                                     override fun onAlphaChanged(offsetAlpha: Float) {
@@ -538,13 +550,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                     }
 
                                     override fun onSwitchToLightToolbar() {
-                                        navAbTestCondition(
-                                                ifNavRevamp = {
-                                                    navToolbar?.showShadow()
-                                                }
-                                        )
+
                                     }
-                                }
+
+                                    override fun onYposChanged(yOffset: Int) {
+                                        backgroundViewImage.y = -(yOffset.toFloat())
+                                    }
+                                },
+                                fixedIconColor = TOOLBAR_LIGHT_TYPE
                         ))
                         val icons = IconBuilder(
                                 IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
@@ -657,16 +670,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun setupHomeRecyclerView() {
         homeRecyclerView?.setItemViewCacheSize(20)
-        if (homeRecyclerView?.itemDecorationCount == 0) {
-            homeRecyclerView?.addItemDecoration(HomeRecyclerDecoration(resources.getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)))
-        }
         homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                val offset = recyclerView.computeVerticalScrollOffset();
                 evaluateHomeComponentOnScroll(recyclerView)
                 //calculate transparency of homeMainToolbar based on rv offset
                 navAbTestCondition(
                         ifNavOld = {
+                            backgroundViewImage.y = -(offset.toFloat())
                             calculateSearchbarView(recyclerView.computeVerticalScrollOffset())
                         }
                 )
@@ -710,7 +722,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.showShadow()
                         }
-                    })
+                    }, ifNavRevamp = {
+                        navToolbar?.showShadow(lineShadow = true)
+            })
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView?.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
@@ -719,7 +733,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.hideShadow()
                         }
-                    }
+                    } , ifNavRevamp = {
+                navToolbar?.hideShadow(lineShadow = true)
+            }
             )
             showFeedSectionViewHolderShadow(true)
             homeRecyclerView?.setNestedCanScroll(true)
@@ -984,6 +1000,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if (status === Result.Status.ERROR_PAGINATION) {
                 hideLoading()
                 showNetworkError(getString(R.string.home_error_connection))
+            } else if (status === Result.Status.ERROR_ATF) {
+                hideLoading()
+                showNetworkError(getString(R.string.home_error_connection))
+                adapter?.resetChannelErrorState()
+                adapter?.resetAtfErrorState()
+            } else if(status == Result.Status.ERROR_GENERAL) {
+                NetworkErrorHelper.showEmptyState(activity, root, getString(R.string.home_error_connection)) { onRefresh() }
+                pageLoadTimeCallback?.invalidate()
             } else {
                 showLoading()
             }
@@ -1047,7 +1071,21 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        renderTopBackground()
         observeSearchHint()
+    }
+
+    private fun renderTopBackground() {
+        val backgroundUrl = if (requireContext().isDarkMode()) {
+            BACKGROUND_DARK_1
+        } else {
+            BACKGROUND_LIGHT_1
+        }
+        Glide.with(requireContext())
+                .load(backgroundUrl)
+                .fitCenter()
+                .dontAnimate()
+                .into(backgroundViewImage)
     }
 
     private fun observeSendLocation() {
@@ -1127,20 +1165,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
-            adjustTickerLayout()
-        }
-    }
-
-    private fun adjustTickerLayout() {
-        /**
-         * Mandatory! Because ticker height is depends on the highest message, we need to requestLayout()
-         * when there is ticker available. Otherwise, ticker component will get cut.
-         */
-        val tickerPosition = adapter?.currentList?.indexOfFirst { it is TickerDataModel }
-        tickerPosition?.let {
-            if (it != -1) {
-                adapter?.notifyItemChanged(it)
-            }
         }
     }
 
@@ -1161,7 +1185,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun calculateSearchbarView(offset: Int) {
+    private fun calculateSearchbarView(offset: Int, fixedIconColor: Int = FixedTheme.TOOLBAR_DARK_TYPE) {
         val endTransitionOffset = startToTransitionOffset + searchBarTransitionRange
         val maxTransitionOffset = endTransitionOffset - startToTransitionOffset
         //mapping alpha to be rendered per pixel for x height
@@ -1171,11 +1195,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             offsetAlpha = 0f
         }
         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+            when (fixedIconColor) {
+                FixedTheme.TOOLBAR_DARK_TYPE -> oldToolbar?.switchToDarkToolbar()
+                FixedTheme.TOOLBAR_LIGHT_TYPE -> oldToolbar?.switchToLightToolbar()
+            }
             if (offsetAlpha >= 150) {
-                oldToolbar?.switchToDarkToolbar()
                 if (isLightThemeStatusBar) requestStatusBarDark()
             } else {
-                oldToolbar?.switchToLightToolbar()
                 if (!isLightThemeStatusBar) requestStatusBarLight()
             }
         }
@@ -1188,6 +1214,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 setStatusBarAlpha(offsetAlpha)
             }
         }
+    }
+
+    private object FixedTheme {
+        const val TOOLBAR_DARK_TYPE = 0
+        const val TOOLBAR_LIGHT_TYPE = 1
     }
 
     private fun setStatusBarAlpha(alpha: Float) {
@@ -1256,7 +1287,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 CategoryNavigationCallback(context, this),
                 RechargeBUWidgetCallback(context, this),
                 BannerComponentCallback(context, this),
-                DynamicIconComponentCallback(this)
+                DynamicIconComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1570,6 +1601,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
+        getHomeViewModel().showTicker()
     }
 
     private fun remoteConfigIsShowOnboarding(): Boolean {
@@ -1802,11 +1834,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun showNetworkError(message: String) {
         if (isAdded && activity != null && adapter != null) {
-            if (adapter!!.itemCount > 0) {
-                showToaster(message, TYPE_ERROR)
-            } else {
-                NetworkErrorHelper.showEmptyState(activity, root, message) { onRefresh() }
-            }
+            showToaster(message, TYPE_ERROR)
         }
     }
 
@@ -2169,19 +2197,21 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override val homeMainToolbarHeight: Int
         get() {
             var height = 0
-            if (isNavOld()) {
-                if (oldToolbar != null) {
-                    height = oldToolbar?.height?:0
-                    oldToolbar?.let {
-                        if (!it.isShadowApplied()) {
-                            height += resources.getDimensionPixelSize(R.dimen.dp_8)
+            context?.let {
+                if (isNavOld()) {
+                    if (oldToolbar != null) {
+                        height = oldToolbar?.height ?: 0
+                        oldToolbar?.let {
+                            if (!it.isShadowApplied()) {
+                                height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                            }
                         }
                     }
-                }
-            } else if (isNavRevamp()) {
-                navToolbar?.let {
-                    height = navToolbar?.height?:0
-                    height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                } else if (isNavRevamp()) {
+                    navToolbar?.let {
+                        height = navToolbar?.height ?: 0
+                        height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                    }
                 }
             }
             return height
@@ -2352,7 +2382,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun refreshHomeData(forceRefresh: Boolean) {
-        refreshLayout.isRefreshing = true
+        if (!forceRefresh) refreshLayout.isRefreshing = true
         onNetworkRetry(forceRefresh)
     }
 
@@ -2386,7 +2416,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterWithAction(message: String, typeToaster: Int, actionText: String, clickListener: View.OnClickListener) {
-        make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
+        Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
+        errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
+        if (errorToaster?.isShown == false) {
+            errorToaster?.show()
+        }
     }
 
     private fun addRecyclerViewScrollImpressionListener(dynamicChannelDataModel: DynamicChannelDataModel, adapterPosition: Int) {

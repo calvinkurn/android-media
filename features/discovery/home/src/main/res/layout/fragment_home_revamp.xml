@@ -14,8 +14,16 @@
       android:animateLayoutChanges="true"
       android:background="@color/Unify_N0">
 
+    <ImageView
+        android:contentDescription="@string/content_desc_home_background"
+        android:id="@+id/view_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_130"
+        android:scaleType="fitXY"/>
+
     <com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
         android:id="@+id/home_fragment_recycler_view"
+        android:layout_marginTop="-8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:descendantFocusability="beforeDescendants"
@@ -68,6 +76,9 @@
         app:toolbarBackButton="none"
         app:toolbarAlwaysShowShadow="true"
         app:toolbarPageName="/"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInvertSearchBarColor="true"
+        app:toolbarInitialTheme="light"
         />
 
     <com.tokopedia.searchbar.HomeMainToolbar
@@ -77,6 +88,7 @@
         android:visibility="gone"
         android:gravity="top"
         android:minHeight="?actionBarSize"
+        app:toolbarInitialTheme="dark"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"/>
 

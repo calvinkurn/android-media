@@ -2,7 +2,6 @@ package com.tokopedia.inbox.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.inbox.common.TestInboxCoroutineDispatcher
 import com.tokopedia.inbox.domain.cache.InboxCacheManager
 import com.tokopedia.inbox.domain.data.notification.InboxNotificationResponse
 import com.tokopedia.inbox.domain.data.notification.Notifications
@@ -20,22 +19,24 @@ import kotlin.test.assertEquals
 
 class InboxViewModelTest {
 
-    @get:Rule val rule = InstantTaskExecutorRule()
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
     private val useCase: InboxNotificationUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val cacheManager: InboxCacheManager = mockk(relaxed = true)
-    private val dispatcher = TestInboxCoroutineDispatcher()
 
     private val notificationObserver: Observer<Result<Notifications>> = mockk(relaxed = true)
 
-    private val viewModel = InboxViewModel(useCase, userSession, cacheManager, dispatcher)
+    private val viewModel = InboxViewModel(useCase, userSession, cacheManager)
 
-    @Before fun setUp() {
+    @Before
+    fun setUp() {
         viewModel.notifications.observeForever(notificationObserver)
     }
 
-    @Test fun `getNotifications should return the data correctly`() {
+    @Test
+    fun `getNotifications should return the data correctly`() {
         // given
         val expectedValue = inboxCounter.notifications
 
@@ -53,7 +54,8 @@ class InboxViewModelTest {
         }
     }
 
-    @Test fun `getNotifications should throw the Fail state`() {
+    @Test
+    fun `getNotifications should throw the Fail state`() {
         // given
         val expectedValue = Throwable()
 
@@ -71,7 +73,8 @@ class InboxViewModelTest {
         }
     }
 
-    @Test fun `hasShowOnBoarding should return hasShownBuyer`() {
+    @Test
+    fun `hasShowOnBoarding should return hasShownBuyer`() {
         // given
         every { userSession.hasShop() } returns false
         every { cacheManager.loadCacheBoolean("key_onboarding_seller") } returns false
@@ -84,7 +87,8 @@ class InboxViewModelTest {
         assertEquals(true, actualValue)
     }
 
-    @Test fun `hasShowOnBoarding should return hasShownSeller`() {
+    @Test
+    fun `hasShowOnBoarding should return hasShownSeller`() {
         // given
         every { userSession.hasShop() } returns true
         every { cacheManager.loadCacheBoolean("key_onboarding_seller") } returns true
@@ -97,7 +101,8 @@ class InboxViewModelTest {
         assertEquals(true, actualValue)
     }
 
-    @Test fun `markFinishedBuyerOnBoarding should save the onboarding of buyer as true`() {
+    @Test
+    fun `markFinishedBuyerOnBoarding should save the onboarding of buyer as true`() {
         // given
         every { cacheManager.saveCacheBoolean("key_onboarding_buyer", true) } just runs
 
@@ -108,7 +113,8 @@ class InboxViewModelTest {
         verify(exactly = 1) { cacheManager.saveCacheBoolean(any(), any()) }
     }
 
-    @Test fun `markFinishedSellerOnBoarding should save the onboarding of seller as true`() {
+    @Test
+    fun `markFinishedSellerOnBoarding should save the onboarding of seller as true`() {
         // given
         every { cacheManager.saveCacheBoolean("key_onboarding_seller", true) } just runs
 
@@ -119,7 +125,8 @@ class InboxViewModelTest {
         verify(exactly = 1) { cacheManager.saveCacheBoolean(any(), any()) }
     }
 
-    @Test fun `hasBeenVisited should save as true the state of page visited`() {
+    @Test
+    fun `hasBeenVisited should save as true the state of page visited`() {
         // given
         every { cacheManager.loadCacheBoolean(any()) } returns true
 
@@ -130,7 +137,8 @@ class InboxViewModelTest {
         assertEquals(true, actualValue)
     }
 
-    @Test fun `hasBeenVisited should save as false the state of page visited`() {
+    @Test
+    fun `hasBeenVisited should save as false the state of page visited`() {
         // given
         every { cacheManager.loadCacheBoolean(any()) } returns false
 
@@ -141,7 +149,8 @@ class InboxViewModelTest {
         assertEquals(false, actualValue)
     }
 
-    @Test fun `markAsVisited should marking the page as visited`() {
+    @Test
+    fun `markAsVisited should marking the page as visited`() {
         // given
         every { cacheManager.saveCacheBoolean(any(), true) } just runs
 
