@@ -172,7 +172,7 @@ class SubmitPostService : JobIntentService() {
                 notificationManager?.onSuccessPost()
                 sendBroadcast()
                 postContentToOtherService(submitPostData.feedContentSubmit.meta.content)
-                addFlagOnPostFeedSuccess()
+                addFlagOnCreatePostSuccess()
             }
 
             override fun onCompleted() {
@@ -204,7 +204,7 @@ class SubmitPostService : JobIntentService() {
     }
 
 
-    private fun addFlagOnPostFeedSuccess() {
+    private fun addFlagOnCreatePostSuccess() {
         val cacheHandler = LocalCacheHandler(applicationContext, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
         cacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED, true)
         cacheHandler.applyEditor()
