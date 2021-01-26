@@ -22,6 +22,10 @@ fun checkoutPage(func: CheckoutPageRobot.() -> Unit) = CheckoutPageRobot().apply
 
 class CheckoutPageRobot {
 
+    fun waitForData() {
+        Thread.sleep(2000)
+    }
+
     fun openDurationBottomsheet() {
         onView(ViewMatchers.withId(R.id.rv_shipment))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
@@ -54,7 +58,6 @@ class CheckoutPageRobot {
         override fun perform(uiController: UiController, view: View) = ViewActions.click().perform(uiController, view.findViewById(viewId))
     }
 
-
     infix fun choosePayment(func: ResultRobot.() -> Unit): ResultRobot {
         onView(ViewMatchers.withText("Pilih Pembayaran")).perform(ViewActions.click())
         return ResultRobot().apply(func)
@@ -63,6 +66,10 @@ class CheckoutPageRobot {
 }
 
 class ResultRobot {
+
+    fun waitForData() {
+        Thread.sleep(2000)
+    }
 
     fun hasPassedAnalytics(gtmLogDBSource: GtmLogDBSource, context: Context, queryFileName: String) {
         Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, queryFileName), hasAllSuccess())

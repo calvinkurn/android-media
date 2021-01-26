@@ -43,7 +43,7 @@ class CartTrackingTest {
         activityRule.launchActivity(null)
 
         cartPage {
-            Thread.sleep(1000)
+            waitForData()
         } buy {
             hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
@@ -53,7 +53,7 @@ class CartTrackingTest {
     @After
     fun cleanup() {
         gtmLogDBSource.deleteAll().subscribe()
-        if (!activityRule.activity.isDestroyed) activityRule.finishActivity()
+        if (activityRule.activity?.isDestroyed == false) activityRule.finishActivity()
     }
 
     companion object {

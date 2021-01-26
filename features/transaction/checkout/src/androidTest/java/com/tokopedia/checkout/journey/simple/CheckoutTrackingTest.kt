@@ -45,14 +45,14 @@ class CheckoutTrackingTest {
         activityRule.launchActivity(null)
 
         checkoutPage {
-            Thread.sleep(5000)
+            waitForData()
             openDurationBottomsheet()
-            Thread.sleep(5000)
+            waitForData()
             selectFirstShippingDurationOption()
-            Thread.sleep(5000)
+            waitForData()
             scrollToLastPosition(activityRule)
         } choosePayment  {
-            Thread.sleep(5000)
+            waitForData()
             hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
     }

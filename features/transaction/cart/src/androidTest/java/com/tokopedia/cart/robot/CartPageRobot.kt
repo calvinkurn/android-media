@@ -48,6 +48,10 @@ class CartPageRobot {
 
     var cartListData: CartListData? = null
 
+    fun waitForData() {
+        Thread.sleep(2000)
+    }
+
     fun initData(context: Context) {
         val jsonString = InstrumentationMockHelper.getRawString(context, com.tokopedia.cart.test.R.raw.cart_happy_flow_response)
         val jsonArray: JsonArray = CommonUtils.fromJson(
