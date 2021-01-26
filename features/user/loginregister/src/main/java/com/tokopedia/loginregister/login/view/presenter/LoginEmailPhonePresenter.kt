@@ -136,7 +136,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                             { getUserInfo() },
                             view.onErrorLoginFacebook(email),
                             { view.showPopup().invoke(it.loginToken.popupError) },
-                            view.onGoToActivationPage(email),
+                            { view.onGoToActivationPage(email) },
                             view.onGoToSecurityQuestion(email)))
         }
     }
@@ -175,7 +175,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                             { getUserInfo() },
                             view.onErrorLoginGoogle(email),
                             { view.showPopup().invoke(it.loginToken.popupError) },
-                            view.onGoToActivationPage(email),
+                            { view.onGoToActivationPage(email) },
                             view.onGoToSecurityQuestion(email)))
         }
     }
@@ -205,7 +205,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                         { view.onSuccessLoginEmail(it) },
                         view.onErrorLoginEmail(email),
                         { view.showPopup().invoke(it.loginToken.popupError) },
-                        view.onGoToActivationPage(email),
+                        { view.onGoToActivationPage(email) },
                         view.onGoToSecurityQuestion(email),
                         onFinished = {
                             idlingResourceProvider?.decrement()
@@ -222,7 +222,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                     userSession, validateToken), LoginTokenSubscriber(userSession,
                     { view.onSuccessReloginAfterSQ(it) },
-                    view.onErrorReloginAfterSQ(validateToken),
+                    view.onErrorReloginAfterSQ(),
                     { view.showPopup().invoke(it.loginToken.popupError) },
                     view.onGoToActivationPageAfterRelogin(),
                     view.onGoToSecurityQuestionAfterRelogin()))
