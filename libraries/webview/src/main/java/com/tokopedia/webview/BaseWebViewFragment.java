@@ -100,6 +100,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String PRINT_AWB_URL = "tokopedia.com/shipping-label";
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
+    private static final String ONELINK_HOST = "sellerapp.onelink.me";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
@@ -675,6 +676,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             //Avoid crash in app that doesn't support branch IO
             try {
                 Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
+                if (intent != null) {
+                    startActivity(intent);
+                }
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else if (ONELINK_HOST.equalsIgnoreCase(uri.getHost()) && GlobalConfig.isSellerApp()) {
+            try {
+                Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
+                System.out.println("AppLink : onelink url -> " + url);
                 if (intent != null) {
                     startActivity(intent);
                 }
