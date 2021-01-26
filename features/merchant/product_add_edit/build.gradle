@@ -79,6 +79,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 
     implementation (rootProject.ext.firebase.crashlytics) {
