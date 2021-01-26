@@ -3,24 +3,27 @@ package com.tokopedia.recharge_credit_card.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.recharge_credit_card.data.CCRedirectUrl
-import com.tokopedia.recharge_credit_card.data.RechargeCCRepository
+import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrl
+import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrlResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
+import com.tokopedia.recharge_credit_card.usecase.RechargeSubmitCcUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.internal.http2.ConnectionShutdownException
 import java.io.InterruptedIOException
+import java.lang.reflect.Type
 import java.net.SocketException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
 class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                     private val dispatcher: CoroutineDispatcher,
-                                                    private val repository: RechargeCCRepository)
+                                                    private val submitCCUseCase: RechargeSubmitCcUseCase)
     : BaseViewModel(dispatcher) {
 
     private val _errorSubmitCreditCard = MutableLiveData<String>()
@@ -62,16 +65,18 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
     private fun submitCreditCard(mapParam: HashMap<String, String>) {
         launchCatchError(block = {
             val data = withContext(dispatcher) {
-                repository.postCreditCardNumber(mapParam)
+                submitCCUseCase.setMapParam(mapParam)
+                convertCCResponse(submitCCUseCase.executeOnBackground())
             }
 
-            if (data.redirectUrl != "") {
-                data.clientNumber = mapParam[PARAM_CLIENT_NUMBER] ?: ""
-                data.operatorId = mapParam[PARAM_OPERATOR_ID] ?: ""
-                data.productId = mapParam[PARAM_PRODUCT_ID] ?: ""
-                _redirectUrl.postValue(data)
+            val ccRedirectUrl = data.data
+            if (ccRedirectUrl.redirectUrl != "") {
+                ccRedirectUrl.clientNumber = mapParam[PARAM_CLIENT_NUMBER] ?: ""
+                ccRedirectUrl.operatorId = mapParam[PARAM_OPERATOR_ID] ?: ""
+                ccRedirectUrl.productId = mapParam[PARAM_PRODUCT_ID] ?: ""
+                _redirectUrl.postValue(ccRedirectUrl)
             } else {
-                _errorSubmitCreditCard.postValue(data.messageError)
+                _errorSubmitCreditCard.postValue(ccRedirectUrl.messageError)
             }
         }) {
             if (it is UnknownHostException ||
@@ -88,6 +93,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
     fun createMapParam(clientNumber: String, operatorId: String,
                        productId: String, userId: String): HashMap<String, String> {
         val mapParam = HashMap<String, String>()
+        mapParam[PARAM_ACTION] = VALUE_ACTION
         mapParam[PARAM_CLIENT_NUMBER] = clientNumber
         mapParam[PARAM_OPERATOR_ID] = operatorId
         mapParam[PARAM_PRODUCT_ID] = productId
@@ -97,12 +103,18 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
 
     companion object {
         private const val CATEGORY_ID = "categoryId"
-        private const val PARAM_CLIENT_NUMBER = "client_number"
-        private const val PARAM_OPERATOR_ID = "operator_id"
-        private const val PARAM_PRODUCT_ID = "product_id"
-        private const val PARAM_USER_ID = "user_id"
+        const val PARAM_CLIENT_NUMBER = "client_number"
+        const val PARAM_OPERATOR_ID = "operator_id"
+        const val PARAM_PRODUCT_ID = "product_id"
+        const val PARAM_USER_ID = "user_id"
+        const val PARAM_ACTION = "action"
+        const val VALUE_ACTION = "init_data"
         const val PARAM_PCIDSS = "pcidss_signature"
 
-        private const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
+        const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
+
+        fun convertCCResponse(typeRestResponseMap: Map<Type, RestResponse?>): CCRedirectUrlResponse {
+            return typeRestResponseMap[CCRedirectUrlResponse::class.java]?.getData() as CCRedirectUrlResponse
+        }
     }
 }

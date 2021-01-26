@@ -4,7 +4,6 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 
-@InitialStateScope
 @Module
 class InitialStateContextModule(private val context: Context) {
 

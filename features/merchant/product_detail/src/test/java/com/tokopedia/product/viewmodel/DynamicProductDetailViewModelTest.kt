@@ -29,7 +29,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.util.ProductDetailTestUtil
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
@@ -43,6 +42,7 @@ import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -473,6 +473,7 @@ class DynamicProductDetailViewModelTest {
         val listOfRecom = arrayListOf(recomWidget)
         val listOfFilter = listOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
         val pageName = "pdp3"
+
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
         } returns listOfRecom
@@ -481,9 +482,11 @@ class DynamicProductDetailViewModelTest {
             getRecommendationFilterChips.executeOnBackground().filterChip
         } returns listOfFilter
 
-        viewModel.loadRecommendation(pageName)
+        (1..2).forEach { _ ->
+            viewModel.loadRecommendation(pageName)
+        }
 
-        coVerify {
+        coVerify(exactly = 1) {
             getRecommendationUseCase.createObservable(any())
         }
 

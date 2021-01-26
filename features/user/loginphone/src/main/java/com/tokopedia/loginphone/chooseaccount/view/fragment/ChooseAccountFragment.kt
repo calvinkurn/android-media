@@ -323,7 +323,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                 //Login Event
                 LinkerManager.getInstance().sendEvent(
                         LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
-                loginEventAppsFlyer(userSessionInterface.userId, userSessionInterface.email)
+                loginEventAppsFlyer(userSessionInterface.userId, "")
             }
 
         } catch (e: Exception) {
