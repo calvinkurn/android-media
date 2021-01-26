@@ -342,6 +342,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     setClickEventOnReminder()
                                 }
                                 TokenUserState.EMPTY -> {
+                                    tokoButtonContainer.wrapButtons()
                                     tokoButtonContainer.toggleReminderVisibility(true)
                                     directGiftView.visibility = View.GONE
 //                                    reminderLayout.visibility = View.VISIBLE

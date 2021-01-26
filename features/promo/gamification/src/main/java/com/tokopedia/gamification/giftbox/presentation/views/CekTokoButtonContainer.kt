@@ -20,8 +20,7 @@ class CekTokoButtonContainer @JvmOverloads constructor(
         btnSecond = findViewById(R.id.btnSecond)
         val isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
         if (isTablet) {
-            btnReminder.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
-            btnSecond.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            wrapButtons()
         }
         val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         layoutParams = lp
@@ -34,5 +33,9 @@ class CekTokoButtonContainer @JvmOverloads constructor(
 
     fun toggleReminderVisibility(show: Boolean) {
         btnReminder.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
+    fun wrapButtons(){
+        this.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
     }
 }
