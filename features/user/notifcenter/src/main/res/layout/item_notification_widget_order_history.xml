@@ -94,9 +94,11 @@
         android:paddingEnd="@dimen/unify_space_48"
         android:paddingBottom="@dimen/unify_space_8"
         android:text="Sebelumnya"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_history"
-        app:typographyType="body_3" />
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
