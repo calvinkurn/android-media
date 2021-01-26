@@ -450,7 +450,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun selectFilter(filter: TalkInboxFilter) {
-        viewModel.setFilter(filter, isSellerView() && isNewNav() && isNewView())
+        viewModel.setFilter(filter)
         showFullPageLoading()
         clearAllData()
     }
@@ -523,9 +523,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun getCounterForTracking(): Long {
-        if(isSellerView() && isNewView() && isNewNav()) {
-            return viewModel.getUnrespondedCount()
-        }
         return viewModel.getUnreadCount()
     }
 
