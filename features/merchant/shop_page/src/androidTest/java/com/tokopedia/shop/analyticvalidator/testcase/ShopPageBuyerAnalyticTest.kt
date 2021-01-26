@@ -179,12 +179,15 @@ class ShopPageBuyerAnalyticTest {
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+        waitForData(5000)
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, CommonActions.clickChildViewWithId(R.id.imageThreeDots)))
+        waitForData(10000)
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, CommonActions.clickChildViewWithId(R.id.buttonAddToCart)))
+        waitForData(5000)
 
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.tvSeeAll),
