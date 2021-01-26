@@ -22,17 +22,22 @@ class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
     @Test
     fun `when getDiscussionAggregate should execute expected use case and get expected data`() {
         val response = DiscussionAggregateResponse()
+        val readingListResponse = DiscussionDataResponseWrapper()
         val productId = "15267029"
         val shopId = "480749"
 
         onGetDiscussionAggregate_thenReturn(response)
+        onGetDiscussionData_thenReturn(readingListResponse)
 
         viewModel.getDiscussionAggregate(productId, shopId)
 
         val expectedResponse = Success(response)
+        val expectedReadingListResponse = Success(readingListResponse)
 
         verifyGetDiscussionAggregateUseCaseExecuted()
+        verifyGetDiscussionDataUseCaseExecuted()
         verifyDiscussionAggregateEquals(expectedResponse)
+        verifyDiscussionDataEquals(expectedReadingListResponse)
     }
 
     @Test
