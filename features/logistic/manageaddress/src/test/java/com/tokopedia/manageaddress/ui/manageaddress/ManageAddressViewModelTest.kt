@@ -1,8 +1,8 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.logisticdata.domain.model.AddressListModel
-import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.domain.model.AddressListModel
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.domain.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.SetDefaultPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.model.ManageAddressState

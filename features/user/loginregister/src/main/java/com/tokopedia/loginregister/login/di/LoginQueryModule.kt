@@ -14,7 +14,6 @@ import dagger.multibindings.StringKey
  * ade.hadian@tokopedia.com
  */
 
-@LoginScope
 @Module
 class LoginQueryModule {
 

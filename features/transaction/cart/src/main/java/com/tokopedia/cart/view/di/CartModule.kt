@@ -85,7 +85,6 @@ class CartModule {
     }
 
     @Provides
-    @CartScope
     fun providesGraphqlUseCase(): GraphqlUseCase {
         return GraphqlUseCase()
     }
@@ -98,7 +97,6 @@ class CartModule {
     }
 
     @Provides
-    @CartScope
     fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
                                         graphqlUseCase: GraphqlUseCase,
                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
@@ -148,14 +146,13 @@ class CartModule {
 
     @Provides
     @CartScope
-    @Named("GetCartListSimplifiedUseCase")
-    fun provideGetCartListSimplifiedUseCase(cartSimplifiedMapper: CartSimplifiedMapper):
-            GetCartListSimplifiedUseCase = GetCartListSimplifiedUseCase(GraphqlUseCase(), cartSimplifiedMapper, IOSchedulers)
+    fun provideGetCartListSimplifiedUseCase(cartSimplifiedMapper: CartSimplifiedMapper): GetCartListSimplifiedUseCase =
+            GetCartListSimplifiedUseCase(GraphqlUseCase(), cartSimplifiedMapper, DefaultSchedulers)
 
     @Provides
     @CartScope
-    fun provideFollowShopUseCase(@Named(FollowShopUseCase.MUTATION_NAME) mutation: String):
-            FollowShopUseCase = FollowShopUseCase(mutation, GraphqlUseCase(), DefaultSchedulers)
+    fun provideSetCartlistCheckboxStateUseCase(): SetCartlistCheckboxStateUseCase =
+            SetCartlistCheckboxStateUseCase(GraphqlUseCase(), DefaultSchedulers)
 
     @Provides
     @CartScope
@@ -170,7 +167,7 @@ class CartModule {
                                   updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                   userSessionInterface: UserSessionInterface,
                                   clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-                                  getRecentViewUseCase: GetRecentViewUseCase,
+                                  getRecentViewUseCase: GetRecommendationUseCase,
                                   getWishlistUseCase: GetWishlistUseCase,
                                   getRecommendationUseCase: GetRecommendationUseCase,
                                   addToCartUseCase: AddToCartUseCase,

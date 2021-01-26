@@ -15,14 +15,20 @@ data class TableWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
+        override val isShowEmpty: Boolean,
         override var data: TableDataUiModel?,
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean,
+        override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<TableDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun copy(): BaseWidgetUiModel<TableDataUiModel> {
+        return TableWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
 }

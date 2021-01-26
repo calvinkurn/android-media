@@ -3,6 +3,24 @@
   "mode": "exact",
   "query": [
     {
+      "eventAction": "view widget broadcast",
+      "event": "clickShopPage",
+      "eventCategory": "shop page - seller",
+      "eventLabel": "{{\\d+}}",
+      "shopId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "pageType": "/shoppage"
+    },
+    {
+      "eventAction": "click widget broadcast",
+      "event": "clickShopPage",
+      "eventCategory": "shop page - seller",
+      "eventLabel": "{{\\d+}}",
+      "shopId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "pageType": "/shoppage"
+    },
+    {
       "event": "openScreen",
       "networkSpeed": "{{.*}}",
       "clientId": "{{.*}}",
@@ -30,6 +48,28 @@
     },
     {
       "eventAction": "click camera onboarding",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view syarat dan ketentuan",
+      "event": "viewSellerBroadcastIris",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click syarat dan ketentuan",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
       "eventLabel": "{{\\d+}}",
@@ -284,6 +324,17 @@
       "businessUnit": "play"
     },
     {
+      "eventAction": "click switch camera on add cover",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
       "eventAction": "click timer",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
@@ -462,28 +513,6 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "view popup message exit on preparation page",
-      "event": "viewSellerBroadcastIris",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "{{\\d+}}",
-      "sessionIris": "{{.*}}",
-      "currentSite": "{{.*}}",
-      "shopId": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "play"
-    },
-    {
-      "eventAction": "click keluar on preparation page",
-      "event": "clickSellerBroadcast",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "{{\\d+}}",
-      "sessionIris": "{{.*}}",
-      "currentSite": "{{.*}}",
-      "shopId": "{{.*}}",
-      "userId": "{{.*}}",
-      "businessUnit": "play"
-    },
-    {
       "eventAction": "error state on preparation page",
       "event": "viewSellerBroadcastIris",
       "eventCategory": "seller broadcast",
@@ -642,10 +671,10 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click selesai on report page",
-      "event": "clickSellerBroadcast",
+      "eventAction": "error state on report page",
+      "event": "viewSellerBroadcastIris",
       "eventCategory": "seller broadcast",
-      "eventLabel": "{{\\d+ - \\d+ - .+}}",
+      "eventLabel":"{{(.+) - (.+) - (.+) - (.+) - (.+)}}",
       "sessionIris": "{{.*}}",
       "currentSite": "{{.*}}",
       "shopId": "{{.*}}",
@@ -653,10 +682,131 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "error state on report page",
+      "eventAction": "click save vod",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click delete vod",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view confirm on pop up delete",
       "event": "viewSellerBroadcastIris",
       "eventCategory": "seller broadcast",
-      "eventLabel":"{{(.+) - (.+) - (.+) - (.+) - (.+)}}",
+      "eventLabel": "{{\\d+ - \\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click delete on pop up delete",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+ - \\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click add schedule",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click edit schedule",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click simpan jadwal",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view bottom sheet schedule",
+      "event": "viewSellerBroadcastIris",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click icon delete schedule",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click delete on pop up message",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view pop up delete confirmation",
+      "event": "viewSellerBroadcastIris",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "shopId": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view pop up message before start live",
+      "event": "viewSellerBroadcastIris",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "{{\\d+}}",
       "sessionIris": "{{.*}}",
       "currentSite": "{{.*}}",
       "shopId": "{{.*}}",

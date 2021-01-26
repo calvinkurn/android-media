@@ -4,17 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifyprinciples.Typography
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_event_checkout_tnc_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_margin="@dimen/spacing_lvl4"
         />
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

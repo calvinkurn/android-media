@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -23,7 +22,7 @@
         android:theme="@style/TextInputLayouts"
         app:hintTextAppearance="@style/TextInputLayoutHintText"
         >
-        <com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
+        <com.tokopedia.travel.passenger.presentation.widget.InstantAutoCompleteTextView
             android:id="@+id/ac_hotel_autocomplete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,7 +33,7 @@
             android:inputType="textNoSuggestions|textVisiblePassword|textFilter"
             android:maxLength="25"
             android:singleLine="true"
-            android:textColor="@color/Neutral_N700"
+            android:textColor="@color/Unify_N700"
             />
     </com.google.android.material.textfield.TextInputLayout>
 

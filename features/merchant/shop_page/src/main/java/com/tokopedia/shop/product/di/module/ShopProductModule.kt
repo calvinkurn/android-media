@@ -1,7 +1,6 @@
 package com.tokopedia.shop.product.di.module
 
 import android.content.Context
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
@@ -26,8 +25,8 @@ import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCase
-import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
-import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop.product.data.GQLQueryConstant
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
@@ -54,8 +53,6 @@ import com.tokopedia.wishlist.common.data.source.cloud.api.WishListCommonApi
 import com.tokopedia.wishlist.common.data.source.cloud.mapper.WishListProductListMapper
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase
 import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -64,7 +61,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Named
 
-@ShopProductScope
 @Module(includes = [ShopProductViewModelModule::class])
 class ShopProductModule {
     @ShopProductScope
@@ -472,18 +468,6 @@ class ShopProductModule {
         return GetWishListUseCase(wishListCommonRepository)
     }
 
-    @ShopProductScope
-    @Provides
-    fun provideAddToWishListUseCase(@ShopPageContext context: Context?): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideRemoveFromWishListUseCase(@ShopPageContext context: Context?): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
-    }
-
     // Product
     @Provides
     fun provideShopOfficialStoreAuthInterceptor(@ShopPageContext context: Context?,
@@ -592,7 +576,7 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun getCoroutineDispatcherProvider(): CoroutineDispatcherProvider {
-        return CoroutineDispatcherProviderImpl
+    fun getCoroutineDispatchers(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 }

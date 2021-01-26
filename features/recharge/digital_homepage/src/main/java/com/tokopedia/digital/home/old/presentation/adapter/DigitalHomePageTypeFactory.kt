@@ -1,12 +1,12 @@
-package com.tokopedia.digital.home.presentation.adapter
+package com.tokopedia.digital.home.old.presentation.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.digital.home.model.*
-import com.tokopedia.digital.home.presentation.adapter.viewholder.*
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.old.model.*
+import com.tokopedia.digital.home.old.presentation.adapter.viewholder.*
+import com.tokopedia.digital.home.old.presentation.listener.OnItemBindListener
 
 class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
                                  val transactionListener: DigitalHomePageTransactionViewHolder.TransactionListener?)

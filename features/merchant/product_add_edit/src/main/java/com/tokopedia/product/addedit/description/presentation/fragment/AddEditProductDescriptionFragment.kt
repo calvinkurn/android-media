@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.description.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -83,6 +82,7 @@ class AddEditProductDescriptionFragment:
         const val MAX_VIDEOS = 3
         const val MAX_DESCRIPTION_CHAR = 2000
         const val VIDEO_REQUEST_DELAY = 250L
+        const val VALIDATE_REQUEST_DELAY = 250L
     }
 
     private lateinit var userSession: UserSessionInterface
@@ -209,20 +209,21 @@ class AddEditProductDescriptionFragment:
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
-        textFieldDescription.setCounter(MAX_DESCRIPTION_CHAR)
-        textFieldDescription.textFieldInput.apply {
+        textFieldDescription?.setCounter(MAX_DESCRIPTION_CHAR)
+        textFieldDescription?.textFieldInput?.apply {
             isSingleLine = false
             imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
             afterTextChanged {
                 if (it.length >= MAX_DESCRIPTION_CHAR) {
-                    textFieldDescription.setMessage(getString(R.string.error_description_character_limit))
-                    textFieldDescription.setError(true)
+                    textFieldDescription?.setMessage(getString(R.string.error_description_character_limit))
+                    textFieldDescription?.setError(true)
                 } else {
-                    textFieldDescription.setMessage("")
-                    textFieldDescription.setError(false)
+                    textFieldDescription?.setMessage("")
+                    textFieldDescription?.setError(false)
                 }
+                validateDescriptionText(it)
             }
         }
 
@@ -290,6 +291,7 @@ class AddEditProductDescriptionFragment:
         hideKeyboardWhenTouchOutside()
 
         observeProductInputModel()
+        observeDescriptionValidation()
         observeProductVideo()
 
         // PLT Monitoring
@@ -429,6 +431,12 @@ class AddEditProductDescriptionFragment:
         })
     }
 
+    private fun observeDescriptionValidation() {
+        descriptionViewModel.descriptionValidationMessage.observe(viewLifecycleOwner, Observer {
+            updateDescriptionFieldErrorMessage(it)
+        })
+    }
+
     private fun updateVariantLayout() {
         if (descriptionViewModel.hasVariant) {
             tvEditVariant.visible()
@@ -520,11 +528,23 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    private fun applyEditMode() {
-        val description = descriptionViewModel.descriptionInputModel.productDescription
-        val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
+    private fun validateDescriptionText(it: String) {
+        view?.postDelayed({
+            descriptionViewModel.validateProductDescriptionInput(it)
+        }, VALIDATE_REQUEST_DELAY)
+    }
 
-        textFieldDescription.setText(description)
+    private fun updateDescriptionFieldErrorMessage(message: String) {
+        textFieldDescription?.setMessage(message)
+        textFieldDescription?.setError(message.isNotEmpty())
+        btnSave.isEnabled = message.isEmpty()
+    }
+
+    private fun applyEditMode() {
+        val description = descriptionViewModel.descriptionInputModel?.productDescription ?: ""
+        val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList ?: emptyList()
+
+        textFieldDescription?.setText(description)
         if (videoLinks.isNotEmpty()) {
             super.clearAllData()
             super.renderList(videoLinks)

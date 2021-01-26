@@ -28,10 +28,10 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click
@@ -41,25 +41,31 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
+import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst
+import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst.JPEG_EXT
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcError
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
-import com.tokopedia.vouchercreation.common.utils.SharingUtil
-import com.tokopedia.vouchercreation.common.utils.Socmed
+import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
+import com.tokopedia.vouchercreation.common.utils.shareVoucher
+import com.tokopedia.vouchercreation.common.utils.showDownloadActionTicker
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
-import com.tokopedia.vouchercreation.detail.view.fragment.VoucherDetailFragment
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
 import com.tokopedia.vouchercreation.voucherlist.model.ui.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel.*
+import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity.Companion.SUCCESS_VOUCHER_ID_KEY
+import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity.Companion.UPDATE_VOUCHER_KEY
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.VoucherListAdapter
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
@@ -72,7 +78,6 @@ import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.F
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBy
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBy
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.*
@@ -87,32 +92,27 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         VoucherViewHolder.Listener, DownloadHelper.DownloadHelperListener {
 
     companion object {
-        private const val KEY_IS_ACTIVE_VOUCHER = "is_active_voucher"
+        const val KEY_IS_ACTIVE_VOUCHER = "is_active_voucher"
         private val MENU_VOUCHER_ACTIVE_ID = R.id.menuMvcShowVoucherActive
         private val MENU_VOUCHER_HISTORY_ID = R.id.menuMvcShowVoucherHistory
-
-        private const val COPY_PROMO_CODE_LABEL = "list_promo_code"
 
         const val IS_SUCCESS_VOUCHER = "is_success"
         const val IS_UPDATE_VOUCHER = "is_update"
         const val VOUCHER_ID_KEY = "voucher_id"
 
-        private const val DOWNLOAD_REQUEST_CODE = 223
-        private const val SHARE_REQUEST_CODE = 224
+        private const val ERROR_GET_VOUCHER = "Error get voucher list"
+        private const val ERROR_STOP_VOUCHER = "Error stop voucher list"
 
-        fun newInstance(isActiveVoucher: Boolean): VoucherListFragment {
-            return VoucherListFragment().apply {
-                arguments = Bundle().apply {
-                    putBoolean(KEY_IS_ACTIVE_VOUCHER, isActiveVoucher)
-                }
-            }
-        }
+        fun newInstance(): VoucherListFragment = VoucherListFragment()
     }
 
     private var fragmentListener: Listener? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -157,8 +157,6 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private var voucherSort: String = VoucherSort.FINISH_TIME
     private var isInverted: Boolean = false
     private var isSortApplied: Boolean = false
-
-    private var downloadImagesAction: () -> Unit = {}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
@@ -283,7 +281,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                         isActive = isActiveVoucher,
                         userId = userSession.userId
                 )
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {
+                    putExtra(CreateMerchantVoucherStepsActivity.FROM_VOUCHER_LIST, true)
+                }
                 startActivityForResult(intent, CreateMerchantVoucherStepsActivity.REQUEST_CODE)
             }
         }
@@ -465,22 +465,14 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         loadInitialData()
     }
 
-    override fun onDownloadComplete() {}
+    override fun onDownloadComplete() {
+        view?.showDownloadActionTicker(true)
+    }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.size == 1 && requestCode == DOWNLOAD_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(activity, getString(R.string.mvc_storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
-            } else {
-                downloadImagesAction()
-                downloadImagesAction = {}
-            }
-        }
-        if (grantResults.size == 1 && requestCode == SHARE_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(activity, getString(R.string.mvc_storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
         }
     }
 
@@ -502,10 +494,14 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                     }
                 }
                 Activity.RESULT_OK -> {
-                    if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
-                        showSuccessCreateBottomSheet(successVoucherId)
-                    } else if (isNeedToShowSuccessUpdateDialog) {
-                        showSuccessUpdateToaster()
+                    data?.getIntExtra(SUCCESS_VOUCHER_ID_KEY, 0)?.let { voucherId ->
+                        data.getBooleanExtra(UPDATE_VOUCHER_KEY, false).let { isNeedToShowUpdateDialog ->
+                            if (voucherId != 0) {
+                                showSuccessCreateBottomSheet(voucherId)
+                            } else if (isNeedToShowUpdateDialog) {
+                                showSuccessUpdateToaster()
+                            }
+                        }
                     }
                 }
             }
@@ -538,6 +534,20 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             }
             else -> {}
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        childFragmentManager.dismissBottomSheetWithTags(
+                DownloadVoucherBottomSheet.TAG,
+                VoucherPeriodBottomSheet.TAG,
+                EditQuotaBottomSheet.TAG,
+                MoreMenuBottomSheet.TAG,
+                SuccessCreateBottomSheet.TAG,
+                FilterBottomSheet.TAG,
+                ShareVoucherBottomSheet.TAG,
+                SortBottomSheet.TAG
+        )
     }
 
     private fun duplicateVoucher(voucher: VoucherUiModel) {
@@ -585,92 +595,37 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         ShareVoucherBottomSheet.createInstance()
                 .setOnItemClickListener { socmedType ->
                     context?.run {
-                        if (socmedType != SocmedType.COPY_LINK || socmedType != SocmedType.LAINNYA) {
-                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                    requestPermissions(missingPermissions, SHARE_REQUEST_CODE)
-                                } else {
-                                    shareVoucher(socmedType, voucher)
-                                }
-                            } else {
-                                shareVoucher(socmedType, voucher)
-                            }
-                        }
+                        shopBasicData?.shareVoucher(this, socmedType, voucher, userSession.userId, userSession.shopId)
                     }
                 }
                 .show(childFragmentManager)
-    }
-
-    private fun shareVoucher(@SocmedType socmedType: Int,
-                             voucher: VoucherUiModel) {
-        context?.run {
-            shopBasicData?.let { shopData ->
-                val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopData.shopDomain}"
-                val shareMessage =
-                        if (voucher.isPublic) {
-                            StringBuilder().apply {
-                                append(String.format(
-                                        getString(R.string.mvc_share_message_public).toBlankOrString(),
-                                        voucher.typeFormatted,
-                                        shopData.shopName))
-                                append("\n")
-                                append(shareUrl)
-                            }.toString()
-                        } else {
-                            StringBuilder().apply {
-                                append(String.format(
-                                        getString(R.string.mvc_share_message_private).toBlankOrString(),
-                                        voucher.typeFormatted,
-                                        voucher.code,
-                                        shopData.shopName))
-                                append("\n")
-                                append(shareUrl)
-                            }.toString()
-                        }
-                when(socmedType) {
-                    SocmedType.COPY_LINK -> {
-                        SharingUtil.copyTextToClipboard(this, COPY_PROMO_CODE_LABEL, shareMessage)
-                    }
-                    SocmedType.INSTAGRAM -> {
-                        SharingUtil.shareToSocialMedia(Socmed.INSTAGRAM, this, voucher.imageSquare)
-                    }
-                    SocmedType.WHATSAPP -> {
-                        SharingUtil.shareToSocialMedia(Socmed.WHATSAPP, this, voucher.imageSquare, shareMessage)
-                    }
-                    SocmedType.LINE -> {
-                        SharingUtil.shareToSocialMedia(Socmed.LINE, this, voucher.imageSquare, shareMessage)
-                    }
-                    SocmedType.TWITTER -> {
-                        SharingUtil.shareToSocialMedia(Socmed.TWITTER, this, voucher.imageSquare, shareMessage)
-                    }
-                    SocmedType.LAINNYA -> {
-                        SharingUtil.otherShare(this, shareMessage)
-                    }
-                }
-            }
-            VoucherCreationTracking.sendShareClickTracking(
-                    socmedType = socmedType,
-                    userId = userSession.userId,
-                    isDetail = false
-            )
-        }
     }
 
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         DownloadVoucherBottomSheet.createInstance(voucher.image, voucher.imageSquare, userSession.userId)
                 .setOnDownloadClickListener { voucherList ->
-                    activity?.run {
-                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            requestPermissions(missingPermissions, VoucherDetailFragment.DOWNLOAD_REQUEST_CODE)
-                        } else {
-                            voucherList.forEach {
-                                downloadFiles(it.downloadVoucherType.imageUrl)
-                            }
-                        }
+                    context?.run {
+                        permissionCheckerHelper.checkPermission(this@VoucherListFragment,
+                                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                                object : PermissionCheckerHelper.PermissionCheckListener {
+                                    override fun onPermissionDenied(permissionText: String) {
+                                        permissionCheckerHelper.onPermissionDenied(this@run, permissionText)
+                                        view?.let { Toaster.make(it,getString(R.string.mvc_storage_permission_enabled_needed), Toast.LENGTH_LONG) }
+                                    }
+
+                                    override fun onNeverAskAgain(permissionText: String) {
+                                        permissionCheckerHelper.onNeverAskAgain(this@run, permissionText)
+                                    }
+
+                                    override fun onPermissionGranted() {
+                                        if (ActivityCompat.checkSelfPermission(this@run, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                                            voucherList.forEach {
+                                                downloadFiles(it.downloadVoucherType.imageUrl)
+                                            }
+                                        }
+                                    }
+                                })
                     }
                     VoucherCreationTracking.sendVoucherListClickTracking(
                             action = Click.DOWNLOAD_VOUCHER,
@@ -999,9 +954,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     }
 
     private fun setOnErrorGetVoucherList(throwable: Throwable) {
-        throwable.printStackTrace()
         clearAllData()
         renderList(listOf(ErrorStateUiModel()))
+        MvcErrorHandler.logToCrashlytics(throwable, ERROR_GET_VOUCHER)
     }
 
     private fun onSuccessUpdateVoucherPeriod() {
@@ -1040,6 +995,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                     if (result.throwable is VoucherCancellationException) {
                         showCancellationFailToaster(true, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
                     }
+                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_STOP_VOUCHER)
                 }
             }
         })
@@ -1054,57 +1010,62 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                     if (result.throwable is VoucherCancellationException) {
                         showCancellationFailToaster(false, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
                     }
+                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_STOP_VOUCHER)
                 }
             }
         })
         mViewModel.shopBasicLiveData.observe(viewLifecycleOwner, Observer { result ->
-            if (result is Success) {
-                shopBasicData = result.data
+            when(result) {
+                is Success -> shopBasicData = result.data
+                is Fail -> MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_GET_VOUCHER)
             }
         })
         mViewModel.successVoucherLiveData.observe(viewLifecycleOwner, Observer { result ->
-            if (result is Success) {
-                result.data.let { uiModel ->
-                    if (uiModel.isPublic) {
-                        view?.run {
-                            Toaster.make(this,
-                                    context?.getString(R.string.mvc_success_toaster).toBlankOrString(),
-                                    Toaster.LENGTH_LONG,
-                                    Toaster.TYPE_NORMAL,
-                                    context?.getString(R.string.mvc_oke).toBlankOrString(),
-                                    View.OnClickListener {})
-                        }
-                    } else {
-                        SuccessCreateBottomSheet.createInstance(uiModel)
-                                .setOnShareClickListener {
-                                    VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                            step = VoucherCreationStep.REVIEW,
-                                            action = Click.VOUCHER_SUCCESS_SHARE_NOW,
-                                            userId = userSession.userId
-                                    )
-                                    showShareBottomSheet(uiModel)
-                                }
-                                .setOnDownloadClickListener {
-                                    VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                            step = VoucherCreationStep.REVIEW,
-                                            action = Click.VOUCHER_SUCCESS_DOWNLOAD,
-                                            userId = userSession.userId
-                                    )
-                                    showDownloadBottomSheet(uiModel)
-                                }
-                                .apply {
-                                    setCloseClickListener {
+            when(result) {
+                is Success -> {
+                    result.data.let { uiModel ->
+                        if (uiModel.isPublic) {
+                            view?.run {
+                                Toaster.make(this,
+                                        context?.getString(R.string.mvc_success_toaster).toBlankOrString(),
+                                        Toaster.LENGTH_LONG,
+                                        Toaster.TYPE_NORMAL,
+                                        context?.getString(R.string.mvc_oke).toBlankOrString(),
+                                        View.OnClickListener {})
+                            }
+                        } else {
+                            SuccessCreateBottomSheet.createInstance(uiModel)
+                                    .setOnShareClickListener {
                                         VoucherCreationTracking.sendCreateVoucherClickTracking(
                                                 step = VoucherCreationStep.REVIEW,
-                                                action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
+                                                action = Click.VOUCHER_SUCCESS_SHARE_NOW,
                                                 userId = userSession.userId
                                         )
-                                        dismiss()
+                                        showShareBottomSheet(uiModel)
                                     }
-                                }
-                                .show(childFragmentManager)
+                                    .setOnDownloadClickListener {
+                                        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                                                step = VoucherCreationStep.REVIEW,
+                                                action = Click.VOUCHER_SUCCESS_DOWNLOAD,
+                                                userId = userSession.userId
+                                        )
+                                        showDownloadBottomSheet(uiModel)
+                                    }
+                                    .apply {
+                                        setCloseClickListener {
+                                            VoucherCreationTracking.sendCreateVoucherClickTracking(
+                                                    step = VoucherCreationStep.REVIEW,
+                                                    action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
+                                                    userId = userSession.userId
+                                            )
+                                            dismiss()
+                                        }
+                                    }
+                                    .show(childFragmentManager)
+                        }
                     }
                 }
+                is Fail -> MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_GET_VOUCHER)
             }
         })
     }
@@ -1195,26 +1156,23 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private fun downloadFiles(uri: String) {
         activity?.let {
             try {
-                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this@VoucherListFragment)
+                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString() + JPEG_EXT, this@VoucherListFragment)
                 helper.downloadFile { true }
-            } catch (iae: IllegalArgumentException) {
-                iae.printStackTrace()
             } catch (se: SecurityException) {
-                se.printStackTrace()
+                MvcErrorHandler.logToCrashlytics(se, MvcError.ERROR_SECURITY)
+                view?.showDownloadActionTicker(
+                        isSuccess = false,
+                        isInternetProblem = false
+                )
+            } catch (iae: IllegalArgumentException) {
+                MvcErrorHandler.logToCrashlytics(iae, MvcError.ERROR_URI)
+                view?.showDownloadActionTicker(
+                        isSuccess = false,
+                        isInternetProblem = false
+                )
             } catch (ex: Exception) {
-                ex.printStackTrace()
-            }
-        }
-    }
-
-    private fun setupDowloadAction(uri: String) {
-        downloadImagesAction = {
-            activity?.let {
-                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this@VoucherListFragment)
-                if (ActivityCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    return@let
-                }
-                helper.downloadFile { true }
+                MvcErrorHandler.logToCrashlytics(ex, MvcError.ERROR_DOWNLOAD)
+                view?.showDownloadActionTicker(false)
             }
         }
     }

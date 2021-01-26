@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -19,13 +18,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.sellerhome.R
 import com.tokopedia.seller.menu.common.analytics.*
-import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
+import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
+import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LocalLoad
@@ -60,9 +59,11 @@ class OtherMenuViewHolder(private val itemView: View,
                         saldoBalanceUiModel?.let { setSaldoBalance(it) }
                         topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
                         shopBadgeUiModel?.let { setShopBadge(it) }
-                        shopFollowersUiModel?.let { setShopTotalFollowers(it) }
+                        shopFollowersUiModel?.let {
+                            setShopTotalFollowers(it)
+                            setDotVisibility(it.shopFollowers)
+                        }
 
-                        findViewById<Typography>(R.id.dot)?.visible()
                         findViewById<LocalLoad>(R.id.localLoadOthers)?.gone()
                         findViewById<LinearLayout>(R.id.shopStatus)?.visible()
                         findViewById<LinearLayout>(R.id.saldoBalance)?.visible()
@@ -72,9 +73,11 @@ class OtherMenuViewHolder(private val itemView: View,
                         setupSuccessLayout()
                         shopStatusUiModel?.let { setShopStatusType(it) }
                         shopBadgeUiModel?.let { setShopBadge(it) }
-                        shopFollowersUiModel?.let { setShopTotalFollowers(it) }
+                        shopFollowersUiModel?.let {
+                            setShopTotalFollowers(it)
+                            setDotVisibility(it.shopFollowers)
+                        }
 
-                        findViewById<Typography>(R.id.dot)?.visible()
                         findViewById<LinearLayout>(R.id.shopStatus)?.visible()
                         findViewById<LocalLoad>(R.id.localLoadOthers)?.run {
                             setup()
@@ -140,7 +143,10 @@ class OtherMenuViewHolder(private val itemView: View,
 
     @SuppressLint("SetTextI18n")
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
+        val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
+        val followersVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
         itemView.shopInfoLayout.findViewById<Typography>(R.id.shopFollowers)?.run {
+            visibility = followersVisibility
             text = "${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}"
             setOnClickListener {
                 shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
@@ -149,12 +155,10 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    fun setupFreeShippingLayout(fm: FragmentManager?) {
+    fun setupFreeShippingLayout() {
         itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.apply {
-            val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
-
             setOnClickListener {
-                freeShippingBottomSheet.show(fm)
+                listener.onFreeShippingClicked()
                 freeShippingTracker.trackFreeShippingClick()
             }
             visibility = View.VISIBLE
@@ -165,6 +169,13 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun hideFreeShippingLayout() {
         itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.hide()
+    }
+
+    private fun setDotVisibility(shopFollowers: Long) {
+        val shouldShowFollowers = shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
+        val dotVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
+        val tvDot = itemView.shopInfoLayout.findViewById<Typography>(R.id.dot)
+        tvDot?.visibility = dotVisibility
     }
 
     private fun setupSuccessLayout() {
@@ -358,6 +369,7 @@ class OtherMenuViewHolder(private val itemView: View,
         fun onRefreshShopInfo()
         fun onStatusBarNeedDarkColor(isDefaultDark: Boolean)
         fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
+        fun onFreeShippingClicked()
     }
 
 }

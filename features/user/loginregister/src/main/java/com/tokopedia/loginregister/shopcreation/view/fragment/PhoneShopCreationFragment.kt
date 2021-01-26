@@ -10,10 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.util.LetUtil
@@ -162,6 +162,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initView() {
+        textFieldPhone.textFieldInput.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         textFieldPhone.textFieldInput.addTextChangedListener(object : PhoneNumberTextWatcher(textFieldPhone.textFieldInput) {
             override fun onTextChanged(s: CharSequence, cursorPosition: Int, before: Int, count: Int) {
                 super.onTextChanged(s, cursorPosition, before, count)
@@ -215,7 +216,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initObserver() {
-        shopCreationViewModel.addPhoneResponse.observe(this, Observer {
+        shopCreationViewModel.addPhoneResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessAddPhone()
@@ -225,7 +226,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         })
-        shopCreationViewModel.validateUserProfileResponse.observe(this, Observer {
+        shopCreationViewModel.validateUserProfileResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessValidateUserProfile(it.data)
@@ -235,7 +236,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         })
-        shopCreationViewModel.registerCheckResponse.observe(this, Observer {
+        shopCreationViewModel.registerCheckResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessRegisterCheck(it.data)
@@ -325,14 +326,14 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         errorMessage.text = message
         context?.let {
             errorMessage.text = message
-            errorMessage.setTextColor(ContextCompat.getColor(it, R.color.Red_R500))
+            errorMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
         }
     }
 
     private fun clearMessageFieldPhone() {
         context?.let {
             errorMessage.text = getString(R.string.desc_phone_shop_creation)
-            errorMessage.setTextColor(ContextCompat.getColor(it, R.color.Neutral_N500))
+            errorMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
         }
     }
 
@@ -355,6 +356,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_LOGIN_PHONE_NUMBER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
         startActivityForResult(intent, REQUEST_LOGIN_PHONE)
     }
 
@@ -367,6 +369,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_REGISTER_PHONE_NUMBER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
         startActivityForResult(intent, REQUEST_REGISTER_PHONE)
     }
 
@@ -377,6 +380,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
         startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
     }
 

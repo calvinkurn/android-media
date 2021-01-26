@@ -5,6 +5,7 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import kotlinx.coroutines.*
@@ -97,7 +98,7 @@ open class GetChatUseCase @Inject constructor(
 
     private fun generateFirstPageParam(messageId: String): Map<String, Any> {
         return mutableMapOf<String, Any>(
-                PARAM_MESSAGE_ID to messageId.toInt()
+                PARAM_MESSAGE_ID to messageId.toLongOrZero()
         ).apply {
             if (minReplyTime.isNotEmpty()) {
                 put(PARAM_BEFORE_REPLY_TIME, minReplyTime)
@@ -107,7 +108,7 @@ open class GetChatUseCase @Inject constructor(
 
     private fun generateBottomParam(messageId: String): Map<String, Any> {
         return mapOf(
-                PARAM_MESSAGE_ID to messageId.toInt(),
+                PARAM_MESSAGE_ID to messageId.toLongOrZero(),
                 PARAM_AFTER_REPLY_TIME to maxReplyTime
         )
     }
@@ -146,7 +147,7 @@ open class GetChatUseCase @Inject constructor(
 
     private fun generateTopParam(messageId: String): Map<String, Any> {
         return mapOf(
-                PARAM_MESSAGE_ID to messageId.toInt(),
+                PARAM_MESSAGE_ID to messageId.toLongOrZero(),
                 PARAM_BEFORE_REPLY_TIME to minReplyTime
         )
     }
@@ -218,6 +219,7 @@ open class GetChatUseCase @Inject constructor(
                   senderName
                   role
                   msg
+                  fraudStatus
                   replyTime
                   status
                   attachmentID

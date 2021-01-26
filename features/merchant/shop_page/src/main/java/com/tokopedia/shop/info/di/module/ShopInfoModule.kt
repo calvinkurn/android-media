@@ -9,8 +9,8 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
-import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
-import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop.info.data.GQLQueryStringConst
 import com.tokopedia.shop.info.di.scope.ShopInfoScope
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
@@ -23,7 +23,6 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 import javax.inject.Named
 
-@ShopInfoScope
 @Module(includes = [ShopInfoViewModelModule::class])
 class ShopInfoModule {
     @Provides
@@ -91,7 +90,7 @@ class ShopInfoModule {
 
     @ShopInfoScope
     @Provides
-    fun getCoroutineDispatcherProvider(): CoroutineDispatcherProvider {
-        return CoroutineDispatcherProviderImpl
+    fun getCoroutineDispatchers(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 }

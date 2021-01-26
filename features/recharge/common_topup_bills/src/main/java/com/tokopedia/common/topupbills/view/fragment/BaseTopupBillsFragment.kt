@@ -7,7 +7,6 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -39,6 +38,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -66,7 +66,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var promoCode: String = ""
     var isCoupon: Boolean = false
     open var categoryId: Int = 0
-    var productId: Int = 0
+    open var productId: Int = 0
     var price: Int = 0
     var pendingPromoNavigation: String = ""
 
@@ -210,8 +210,10 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                     pendingPromoNavigation = ""
                 }
                 REQUEST_CODE_CART_DIGITAL -> {
-                    data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let {
-                        NetworkErrorHelper.showSnackbar(activity, it)
+                    data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { message ->
+                        view?.let {
+                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+                        }
                     }
                 }
                 REQUEST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {

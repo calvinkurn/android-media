@@ -24,6 +24,7 @@ import com.tokopedia.network.interceptor.DeprecatedApiInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthenticator;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
@@ -90,9 +91,10 @@ public class GraphqlClient {
                 tkpdOkHttpBuilder,
                 new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession),
                 new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
-                new StringResponseConverter(),
-                new GsonBuilder());
-        sFingerprintManager = new FingerprintManager(userSession);
+                TkpdAuthenticator.Companion.createAuthenticator(context, (NetworkRouter) context.getApplicationContext(), userSession),
+                    new StringResponseConverter(),
+                    new GsonBuilder());
+            sFingerprintManager = new FingerprintManager(userSession);
 
         sGraphqlDatabase = GraphqlDatabase.getInstance(context);
 
@@ -125,6 +127,7 @@ public class GraphqlClient {
                 tkpdOkHttpBuilder,
                 new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession),
                 new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
+                new TkpdAuthenticator(context, (NetworkRouter) context.getApplicationContext(), userSession),
                 new StringResponseConverter(),
                 new GsonBuilder());
     }

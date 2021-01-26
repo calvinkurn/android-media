@@ -41,8 +41,9 @@ val registeredGqlFunctions = mapOf(
         "add_to_cart_occ" to "atcocc",
         "one_click_checkout" to "checkoutocc",
         "add_to_cart_transactional" to "atc",
-        "add_to_cart" to "atc",
+        "add_to_cart_v2" to "atc",
         "checkout" to "checkout",
+        "coupon_list_recommendation" to "clrecom",
         "hachikoRedeem" to "claimcoupon"
 )
 

@@ -3,7 +3,6 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragme
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -20,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -284,7 +284,6 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private fun initView() {
-        setBackgroundColor()
         initRecyclerView()
         setupPickerLayout()
         loadShowcaseList()
@@ -379,6 +378,13 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                     buttonAddShowcaseBottomSheet?.isLoading = true
                     createShowcase(textFieldAddShowcaseBottomSheet?.textFieldInput?.text.toString())
                 }
+
+                // on dismiss bottomsheet
+                setOnDismissListener {
+                    activity?.let {
+                        KeyboardHandler.hideSoftKeyboard(it)
+                    }
+                }
             })
             isKeyboardOverlap = false
         }
@@ -405,6 +411,9 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             }
             fragmentManager?.let {
                 addShowcaseBottomSheet?.show(it, "")
+                activity?.let { activity ->
+                    KeyboardHandler.showSoftKeyboard(activity)
+                }
             }
         }
     }
@@ -641,6 +650,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private fun showToaster(msg: String?, type: Int) {
+        hideSoftKeyboard()
         view?.let { view ->
             Toaster.make(view, msg ?: "", Snackbar.LENGTH_LONG, type)
         }
@@ -665,8 +675,10 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun setBackgroundColor() {
-        view?.setBackgroundColor(Color.WHITE)
+    private fun hideSoftKeyboard() {
+        activity?.run {
+            KeyboardHandler.hideSoftKeyboard(this)
+        }
     }
 
     private fun goToAddShowcase() {

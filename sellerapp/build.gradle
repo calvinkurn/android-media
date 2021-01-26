@@ -16,10 +16,6 @@ def allowDistribution() {
     return "false";
 }
 
-def allowProguard() {
-    return project.hasProperty('tkpdBuildType')
-}
-
 def getTkpdVersionCode() {
     return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
@@ -54,6 +50,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/**'
+        exclude "**/module-info.class"
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -107,11 +104,7 @@ android {
             zipAlignEnabled true
 //            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            if (allowProguard()) {
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            } else {
-                proguardFiles 'proguard-rules.txt'
-            }
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
         }
@@ -205,6 +198,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.libraries.deviceFingerprint)
+    implementation project(rootProject.ext.libraries.workManagerUtil)
+    implementation project(rootProject.ext.libraries.utils)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.features.developerOptions)
     } else {
@@ -213,6 +209,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.sellerorder)
+    implementation project(rootProject.ext.features.sellerAppWidget)
     implementation project(rootProject.ext.features.sellerHome)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
@@ -224,6 +221,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.topAdsCreate)
     implementation project(rootProject.ext.features.topAdsEdit)
+    implementation project(rootProject.ext.features.topAdsHeadline)
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
@@ -240,10 +238,11 @@ dependencies {
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.features.logisticaddaddress)
-    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.logisticorder)
     implementation project(rootProject.ext.features.editshipping)
     implementation project(rootProject.ext.features.topchat)
@@ -251,8 +250,8 @@ dependencies {
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
-    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.productManageCommon)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.categoryCommon)
@@ -267,8 +266,6 @@ dependencies {
     implementation project(rootProject.ext.features.sellerAction)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
-    implementation project(rootProject.ext.features.phoneVerification)
-    implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
@@ -287,6 +284,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
@@ -354,6 +352,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.robust
+    implementation rootProject.ext.miscDependencies.autopatchbase
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
@@ -362,6 +361,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.libraries.tokopatch)
 
+    // Warning: removing imageCropper lib might cause youtube library crash
+    // when load recommendation at the end of video
+    // Need to recheck
     implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
     }

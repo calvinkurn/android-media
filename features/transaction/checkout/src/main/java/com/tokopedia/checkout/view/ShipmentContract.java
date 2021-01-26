@@ -20,9 +20,9 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.Token;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.cod.Data;
@@ -92,16 +92,16 @@ public interface ShipmentContract {
 
         void renderChangeAddressFailed(boolean refreshCheckoutPageIfSuccess);
 
-        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff);
+        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff, boolean isForceReloadRates);
 
         void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff);
 
         void cancelAllCourierPromo();
 
         void updateCourierBottomssheetHasData(List<ShippingCourierUiModel> shippingCourierUiModels, int cartPosition,
-                                              ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
+                                              ShipmentCartItemModel shipmentCartItemModel);
 
-        void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
+        void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel);
 
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
@@ -149,6 +149,8 @@ public interface ShipmentContract {
         void resetCourier(ShipmentCartItemModel shipmentCartItemModel);
 
         void setHasRunningApiCall(boolean hasRunningApiCall);
+
+        void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc);
     }
 
     interface AnalyticsActionListener {
@@ -227,7 +229,7 @@ public interface ShipmentContract {
                              boolean isTradeInDropOff, String deviceId,
                              String cornerId, String leasingId);
 
-        void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest);
+        void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrderIndex, String cartString);
 
         void doValidateuseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
 
@@ -243,7 +245,8 @@ public interface ShipmentContract {
                                              List<ShopShipment> shopShipmentList,
                                              boolean isInitialLoad, ArrayList<Product> products,
                                              String cartString, boolean isTradeInDropOff,
-                                             RecipientAddressModel recipientAddressModel);
+                                             RecipientAddressModel recipientAddressModel,
+                                             boolean isForceReload, boolean skipMvc);
 
         RecipientAddressModel getRecipientAddressModel();
 
@@ -340,6 +343,8 @@ public interface ShipmentContract {
         void setLatValidateUseRequest(ValidateUsePromoRequest latValidateUseRequest);
 
         ValidateUsePromoRequest getLastValidateUseRequest();
+
+        String generateRatesMvcParam(String cartString);
     }
 
 }

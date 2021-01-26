@@ -65,7 +65,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         }
     }
 
-    private fun setListener(reputationId: Int, productId: Int, inboxReviewId: Int, seen: Boolean, isEligible: Boolean) {
+    private fun setListener(reputationId: Long, productId: Long, inboxReviewId: Long, seen: Boolean, isEligible: Boolean) {
         itemView.setOnClickListener {
             reviewPendingItemListener.trackCardClicked(reputationId, productId, isEligible)
             itemView.reviewPendingStars.renderInitialReviewWithData(5)
@@ -73,7 +73,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         }
     }
 
-    private fun setupStars(reputationId: Int, productId: Int, inboxReviewId: Int, seen: Boolean, isEligible: Boolean) {
+    private fun setupStars(reputationId: Long, productId: Long, inboxReviewId: Long, seen: Boolean, isEligible: Boolean) {
         itemView.reviewPendingStars.apply {
             resetStars()
             setListener(object : AnimatedRatingPickerReviewPendingView.AnimatedReputationListener {
@@ -98,8 +98,8 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         if (isEligible) {
             itemView.reviewPendingOvoIncentiveLabel.apply {
                 unlockFeature = UNLOCK_UNIFY_LABEL
-                fontColorByPass = getColorString(R.color.ovo_incentive_label_text)
-                setLabelType(getColorString(R.color.ovo_incentive_label))
+                fontColorByPass = getColorString(com.tokopedia.unifyprinciples.R.color.Unify_P600)
+                setLabelType(getColorString(com.tokopedia.unifyprinciples.R.color.Unify_N50))
                 val ovoIncentiveIcon = ContextCompat.getDrawable(context, R.drawable.ic_ovo_incentive_label)
                 ovoIncentiveIcon?.setBounds(0, 0, 16.toPx(), 16.toPx())
                 gravity = Gravity.CENTER_VERTICAL

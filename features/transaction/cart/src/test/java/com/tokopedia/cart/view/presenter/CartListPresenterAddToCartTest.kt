@@ -53,7 +53,7 @@ object CartListPresenterAddToCartTest : Spek({
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
     val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    val getRecentViewUseCase: GetRecentViewUseCase = mockk()
+    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
@@ -74,7 +74,7 @@ object CartListPresenterAddToCartTest : Spek({
                     getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
                     updateCartUseCase, compositeSubscription, addWishListUseCase,
                     addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
-                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecommendationUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
                     addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
                     updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,

@@ -42,13 +42,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     // Unify
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.principles
 
-    implementation project(rootProject.ext.libraries.tkpddesign)
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -78,4 +77,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.testCoreKtx
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics
     androidTestImplementation rootProject.ext.firebase.core
+    implementation project(rootProject.ext.libraries.tkpddesign)
+
+    implementation project(rootProject.ext.libraries.circularViewPager)
 }

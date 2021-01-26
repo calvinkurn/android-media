@@ -25,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.createpost.CREATE_POST_ERROR_MSG
 import com.tokopedia.createpost.DRAFT_ID
 import com.tokopedia.createpost.TYPE_AFFILIATE
@@ -49,7 +50,7 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.twitter_share.TwitterAuthenticator
@@ -228,7 +229,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_IMAGE_PICKER -> if (resultCode == Activity.RESULT_OK) {
-                val imageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS) ?: arrayListOf()
+                val imageList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
                 val images = imageList.map { MediaModel(it, MediaType.IMAGE) }
 
                 viewModel.fileImageList.removeAll { it.type == MediaType.IMAGE }
@@ -443,7 +444,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             affiliateAnalytics.onTambahTagButtonClicked()
         } else {
             view?.run {
-                Toaster.make(this, getString(com.tokopedia.attachproduct.R.string.string_attach_product_warning_max_product_format, viewModel.maxProduct.toString()), Snackbar.LENGTH_LONG,
+                Toaster.make(this, getString(R.string.string_attach_product_warning_max_product_format, viewModel.maxProduct.toString()), Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR, getString(com.tokopedia.resources.common.R.string.general_label_ok))
             }
         }
@@ -508,7 +509,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
                     dialog.setTitle(getString(R.string.cp_update_post))
                     dialog.setDesc(getString(R.string.cp_delete_warning_desc))
-                    dialog.setBtnOk(getString(com.tokopedia.imagepicker.R.string.cancel))
+                    dialog.setBtnOk(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
                     dialog.setBtnCancel(getString(com.tokopedia.design.R.string.title_delete))
                     dialog.setOnOkClickListener {
                         dialog.dismiss()
@@ -599,11 +600,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         val countVid = viewModel.fileImageList.size - imageOnly.size
         activity?.let {
             startActivityForResult(
-                    CreatePostImagePickerActivity.getInstance(
+                    CreatePostImagePickerNavigation.getIntent(
                             it,
                             ArrayList(imageOnly),
-                            viewModel.maxImage - countVid,
-                            viewModel.fileImageList.isEmpty()
+                            viewModel.maxImage - countVid
                     ),
                     REQUEST_IMAGE_PICKER)
         }
@@ -694,7 +694,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         if (isFormInvalid()) {
             return
         }
-
+        context?.let {
+            val input = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            input.hideSoftInputFromWindow(view?.applicationWindowToken, 0)
+        }
         if (affiliatePref.isFirstTimePost(userSession.userId) && !skipFirstTimeChecking) openShareBottomSheetDialog()
         else {
             submitPost()
@@ -714,10 +717,16 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
             hideLoading()
 
-            if (isTypeAffiliate()) {
-                goToProfile()
-            } else {
-                goToFeed()
+            when {
+                GlobalConfig.isSellerApp() -> {
+                    activity?.setResult(Activity.RESULT_OK)
+                }
+                isTypeAffiliate() -> {
+                    goToProfile()
+                }
+                else -> {
+                    goToFeed()
+                }
             }
 
             it.finish()

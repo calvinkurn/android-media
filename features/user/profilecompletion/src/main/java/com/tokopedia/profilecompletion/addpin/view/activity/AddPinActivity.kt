@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.view.fragment.AddPinFragment
@@ -73,7 +74,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
             setDisplayHomeAsUpEnabled(enableBackBtn)
             setDisplayShowTitleEnabled(false)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@AddPinActivity, R.color.Neutral_N0)))
+            setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this@AddPinActivity, com.tokopedia.unifyprinciples.R.color.Unify_N0)))
         }
     }
 
@@ -89,7 +90,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.Neutral_N0)
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

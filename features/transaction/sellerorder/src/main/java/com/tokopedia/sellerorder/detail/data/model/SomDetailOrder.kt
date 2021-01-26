@@ -1,8 +1,11 @@
 package com.tokopedia.sellerorder.detail.data.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
+import com.tokopedia.sellerorder.common.presenter.model.PopUp
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by fwidjaja on 2019-08-27.
@@ -29,6 +32,14 @@ data class SomDetailOrder(
                 @SerializedName("status_text")
                 @Expose
                 val statusText: String = "",
+
+                @SerializedName("status_text_color")
+                @Expose
+                val statusTextColor: String = "",
+
+                @SerializedName("status_indicator_color")
+                @Expose
+                val statusIndicatorColor: String = "",
 
                 @SerializedName("invoice")
                 @Expose
@@ -82,6 +93,10 @@ data class SomDetailOrder(
                 @Expose
                 val insurance: Insurance = Insurance(),
 
+                @SerializedName("warehouse")
+                @Expose
+                val warehouse: Warehouse = Warehouse(),
+
                 @SerializedName("label_info")
                 @Expose
                 val listLabelInfo: List<LabelInfo> = listOf(),
@@ -94,13 +109,9 @@ data class SomDetailOrder(
                 @Expose
                 val flagOrderMeta: FlagOrderMeta = FlagOrderMeta(),
 
-                @SerializedName("payment_method")
+                @SerializedName("logistic_info")
                 @Expose
-                val paymentMethod: List<PaymentMethod> = listOf(),
-
-                @SerializedName("payment_summary")
-                @Expose
-                val paymentSummary: PaymentSummary = PaymentSummary(),
+                val logisticInfo: LogisticInfo = LogisticInfo(),
 
                 @SerializedName("button")
                 @Expose
@@ -335,6 +346,15 @@ data class SomDetailOrder(
                     @Expose
                     val note: String = "")
 
+            data class Warehouse(
+                    @SerializedName("warehouse_id")
+                    @Expose
+                    val warehouseId: Int = 0,
+
+                    @SerializedName("fulfill_by")
+                    @Expose
+                    val fullFillBy: Int = 0)
+
             data class LabelInfo(
                     @SerializedName("flag_name")
                     @Expose
@@ -364,89 +384,87 @@ data class SomDetailOrder(
             data class FlagOrderMeta(
                     @SerializedName("is_free_shipping_campaign")
                     @Expose
-                    val flagFreeShipping: Boolean = false)
+                    val flagFreeShipping: Boolean = false,
 
-            data class PaymentMethod(
-                    @SerializedName("gateway_id")
+                    @SerializedName("is_topads")
                     @Expose
-                    val gatewayId: Int = 0,
+                    val isTopAds: Boolean = false,
 
-                    @SerializedName("gateway_name")
+                    @SerializedName("is_tokocabang")
                     @Expose
-                    val gatewayName: String = "",
+                    val isWareHouse: Boolean = false,
 
-                    @SerializedName("gateway_url")
+                    @SerializedName("is_shipping_printed")
                     @Expose
-                    val gatewayUrl: String = "")
+                    val isShippingPrinted: Boolean = false
+            )
 
-            data class PaymentSummary(
-                    @SerializedName("products_price_text")
+            data class LogisticInfo(
+                    @SerializedName("all")
                     @Expose
-                    val productsPriceText: String = "",
+                    val logisticInfoAllList: List<All> = listOf(),
+                    @SerializedName("priority")
+                    @Expose
+                    val logisticInfoPriorityList: Priority = Priority(),
+                    @SerializedName("others")
+                    @Expose
+                    val othersLogisticInfoList: List<Others> = listOf()
+            ) {
+                    @Parcelize
+                    data class All(
+                            @SerializedName("id")
+                            @Expose
+                            val id: String? = "",
+                            @SerializedName("priority")
+                            @Expose
+                            val priority: String? = "",
+                            @SerializedName("description")
+                            @Expose
+                            val description: String? = "",
+                            @SerializedName("info_text_short")
+                            @Expose
+                            val infoTextShort: String? = "",
+                            @SerializedName("info_text_long")
+                            @Expose
+                            val infoTextLong: String? = ""
+                    ): Parcelable
 
-                    @SerializedName("shipping_price_text")
-                    @Expose
-                    val shippingPriceText: String = "",
+                    data class Priority(
+                            @SerializedName("id")
+                            @Expose
+                            val id: String? = "",
+                            @SerializedName("priority")
+                            @Expose
+                            val priority: String? = "",
+                            @SerializedName("description")
+                            @Expose
+                            val description: String? = "",
+                            @SerializedName("info_text_short")
+                            @Expose
+                            val infoTextShort: String? = "",
+                            @SerializedName("info_text_long")
+                            @Expose
+                            val infoTextLong: String? = ""
+                    )
 
-                    @SerializedName("insurance_price")
-                    @Expose
-                    val insurancePrice: Int = 0,
-
-                    @SerializedName("insurance_price_text")
-                    @Expose
-                    val insurancePriceText: String = "",
-
-                    @SerializedName("additional_price")
-                    @Expose
-                    val additionalPrice: Int = 0,
-
-                    @SerializedName("additional_price_text")
-                    @Expose
-                    val additionalPriceText: String = "",
-
-                    @SerializedName("total_purchase_protection_fee")
-                    @Expose
-                    val totalPurchaseProtectionFee: Int = 0,
-
-                    @SerializedName("total_purchase_protection_fee_text")
-                    @Expose
-                    val totalPurchaseProtectionFeeText: String = "",
-
-                    @SerializedName("total_purchase_protection_quantity")
-                    @Expose
-                    val totalPurchaseProtectionQuantity: Int = 0,
-
-                    @SerializedName("total_readiness_insurance_fee")
-                    @Expose
-                    val totalReadinessInsuranceFee: Int = 0,
-
-                    @SerializedName("total_readiness_insurance_fee_text")
-                    @Expose
-                    val totalReadinessInsuranceFeeText: String = "",
-
-                    @SerializedName("total_readiness_insurance_quantity")
-                    @Expose
-                    val totalReadinessInsuranceQuantity: Int = 0,
-
-                    @SerializedName("cod_fee")
-                    @Expose
-                    val codFee: Int = 0,
-
-                    @SerializedName("cod_fee_text")
-                    @Expose
-                    val codFeeText: String = "",
-
-                    @SerializedName("total_item")
-                    @Expose
-                    val totalItem: Int = 0,
-
-                    @SerializedName("total_weight_text")
-                    @Expose
-                    val totalWeightText: String = "",
-
-                    @SerializedName("total_price_text")
-                    @Expose
-                    val totalPriceText: String = "")
+                    data class Others(
+                            @SerializedName("id")
+                            @Expose
+                            val id: String? = "",
+                            @SerializedName("priority")
+                            @Expose
+                            val priority: String? = "",
+                            @SerializedName("description")
+                            @Expose
+                            val description: String? = "",
+                            @SerializedName("info_text_short")
+                            @Expose
+                            val infoTextShort: String? = "",
+                            @SerializedName("info_text_long")
+                            @Expose
+                            val infoTextLong: String? = ""
+                    )
+            }
 
             data class Button(
                     @SerializedName("key")
@@ -511,34 +529,6 @@ data class SomDetailOrder(
                     @Expose
                     val penaltyRejectWording: String = ""
             )
-
-            data class PopUp(
-                    @SerializedName("title")
-                    @Expose
-                    val title: String = "",
-
-                    @SerializedName("body")
-                    @Expose
-                    val body: String = "",
-
-                    @SerializedName("actionButton")
-                    @Expose
-                    val actionButtons: List<ActionButton> = emptyList()
-            ) {
-                data class ActionButton(
-                        @SerializedName("displayName")
-                        @Expose
-                        val displayName: String = "",
-
-                        @SerializedName("color")
-                        @Expose
-                        val color: String = "",
-
-                        @SerializedName("type")
-                        @Expose
-                        val type: String = ""
-                )
-            }
         }
     }
 }

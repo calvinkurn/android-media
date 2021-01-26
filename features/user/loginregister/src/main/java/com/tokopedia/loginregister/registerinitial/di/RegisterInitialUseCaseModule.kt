@@ -17,7 +17,6 @@ import dagger.Provides
  * ade.hadian@tokopedia.com
  */
 
-@RegisterInitialScope
 @Module
 class RegisterInitialUseCaseModule{
 
@@ -28,10 +27,6 @@ class RegisterInitialUseCaseModule{
     @Provides
     fun provideRegisterRequestGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<RegisterRequestPojo> = GraphqlUseCase(graphqlRepository)
-
-    @Provides
-    fun provideActivateUserGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<ActivateUserPojo> = GraphqlUseCase(graphqlRepository)
 
     @Provides
     fun provideDynamicBannerUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): DynamicBannerUseCase {

@@ -57,4 +57,8 @@ class TopChatRoomFragmentStub : TopChatRoomFragment() {
             }
         }
     }
+
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {
+
+    }
 }

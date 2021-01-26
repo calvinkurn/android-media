@@ -47,6 +47,9 @@ object ApplinkConstInternalTopAds {
 
     //create-autoads
     @JvmField
+    val TOPADS_ADS_SELECTION = "${INTERNAL_TOPADS}/ad-selection"
+
+    @JvmField
     val TOPADS_AUTOADS_CREATE = "${INTERNAL_TOPADS}/create-autoads"
 
     //onboarding
@@ -61,5 +64,18 @@ object ApplinkConstInternalTopAds {
 
     @JvmField
     val TOPADS_AUTOADS_ONBOARDING = "${INTERNAL_TOPADS}/autoads-onboarding"
+
+    //headline
+    @JvmField
+    val TOPADS_HEADLINE_ADS_CREATION = "${INTERNAL_TOPADS}/headline-ad-creation"
+
+    @JvmField
+    val TOPADS_HEADLINE_DETAIL = "${INTERNAL_TOPADS}/headline-ad-detail"
+
+    @JvmField
+    val TOPADS_HEADLINE_ADS_EDIT = "${INTERNAL_TOPADS}/headline-ad-edit"
+
+    @JvmField
+    val TOPADS_NEGATIVE_KEYWORD_EDIT = "${INTERNAL_TOPADS}/edit-ads-negative-keyword"
 
 }

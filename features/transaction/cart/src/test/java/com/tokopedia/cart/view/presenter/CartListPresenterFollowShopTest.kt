@@ -47,7 +47,7 @@ object CartListPresenterFollowShopTest : Spek({
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
     val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
-    val getRecentViewUseCase: GetRecentViewUseCase = mockk()
+    val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
@@ -103,7 +103,7 @@ object CartListPresenterFollowShopTest : Spek({
             Then("should render success") {
                 verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageGreen(dataFollowShop.followShop.message, FollowShopSubscriber.CTA_WORDING)
+                    view.showToastMessageGreen(dataFollowShop.followShop.message)
                 }
             }
         }
@@ -125,7 +125,7 @@ object CartListPresenterFollowShopTest : Spek({
             Then("should show error") {
                 verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(exception, FollowShopSubscriber.CTA_WORDING)
+                    view.showToastMessageRed(exception)
                 }
             }
         }

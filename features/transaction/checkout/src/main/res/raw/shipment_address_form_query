@@ -236,6 +236,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       egold_attributes {
         eligible
         is_tiering
+        is_opt_in
         range {
           min
           max
@@ -399,6 +400,13 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
                 image_url
                 detail
                 message
+              }
+              promo_sp_ids {
+                unique_id
+                mvc_shipping_benefits {
+                  benefit_amount
+                  sp_id
+                }
               }
             }
             benefit_summary_info {

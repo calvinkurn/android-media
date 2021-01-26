@@ -65,16 +65,18 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
     }
 
     override fun navigateToNextPage(page: String, tag: String) {
-        if (page == PageNameConstant.SPLASH_SCREEN_PAGE) {
-            val fragmentSplashScreenPage = ShopOpenRevampSplashScreenFragment()
-            navigateToOtherFragment(fragmentSplashScreenPage, null)
-        } else if (page == PageNameConstant.QUISIONER_PAGE) {
-            val fragmentQuisionerPage = ShopOpenRevampQuisionerFragment()
-            navigateToOtherFragment(fragmentQuisionerPage, tag)
-        } else if (page == PageNameConstant.FINISH_SPLASH_SCREEN_PAGE) {
-            val fragmentFinishPage = ShopOpenRevampFinishFragment()
-            navigateToOtherFragment(fragmentFinishPage, tag)
-            shouldShowExitDialog = false
+        if( !isDestroyed && !isFinishing) {
+            if (page == PageNameConstant.SPLASH_SCREEN_PAGE) {
+                val fragmentSplashScreenPage = ShopOpenRevampSplashScreenFragment()
+                navigateToOtherFragment(fragmentSplashScreenPage, null)
+            } else if (page == PageNameConstant.QUISIONER_PAGE) {
+                val fragmentQuisionerPage = ShopOpenRevampQuisionerFragment()
+                navigateToOtherFragment(fragmentQuisionerPage, tag)
+            } else if (page == PageNameConstant.FINISH_SPLASH_SCREEN_PAGE) {
+                val fragmentFinishPage = ShopOpenRevampFinishFragment()
+                navigateToOtherFragment(fragmentFinishPage, tag)
+                shouldShowExitDialog = false
+            }
         }
     }
 
@@ -118,7 +120,7 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
         val window: Window = getWindow()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            getWindow().statusBarColor = resources.getColor(android.R.color.white)
+            getWindow().statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

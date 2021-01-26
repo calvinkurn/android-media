@@ -1,28 +1,16 @@
 package com.tokopedia.otp.verification.view.activity
 
-import android.annotation.SuppressLint
-import android.annotation.TargetApi
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpActivity
-import com.tokopedia.otp.common.di.OtpComponent
-import com.tokopedia.otp.common.di.OtpComponentBuilder
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.ModeListData
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.view.fragment.OnboardingMiscallFragment
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment
@@ -52,6 +40,7 @@ class VerificationActivity : BaseOtpActivity() {
 
     var isResetPin2FA = false
     private var otpData = OtpData()
+    private var isLoginRegisterFlow = false
 
     override fun getNewFragment(): Fragment? = null
 
@@ -94,11 +83,13 @@ class VerificationActivity : BaseOtpActivity() {
         otpData.userIdEnc = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, "").toEmptyStringIfNull()
 
         otpData.accessToken = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, "").toEmptyStringIfNull()
+        isLoginRegisterFlow = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, false)?: false
     }
 
     private fun createBundle(modeListData: ModeListData? = null): Bundle {
         val bundle = Bundle()
         bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, isLoginRegisterFlow)
         modeListData?.let {
             bundle.putParcelable(OtpConstant.OTP_MODE_EXTRA, it)
         }

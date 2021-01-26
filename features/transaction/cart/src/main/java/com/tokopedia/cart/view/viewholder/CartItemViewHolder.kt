@@ -7,12 +7,14 @@ import android.text.*
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.domain.model.cartlist.ActionData
@@ -23,17 +25,17 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISH
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME
 import com.tokopedia.purchase_platform.common.utils.QuantityWrapper
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.QuantityEditorUnify
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
 import rx.Observable
@@ -55,10 +57,9 @@ class CartItemViewHolder constructor(itemView: View,
     private var context: Context? = null
     private var viewHolderListener: ViewHolderListener? = null
 
-    private val llWarningAndError: LinearLayout
     private val flCartItemContainer: FrameLayout
-    private val cbSelectItem: CheckBox
-    private val ivProductImage: ImageView
+    private val cbSelectItem: CheckboxUnify
+    private val ivProductImage: ImageUnify
 
     private val textProductName: Typography
     private val textProductVariant: Typography
@@ -71,20 +72,13 @@ class CartItemViewHolder constructor(itemView: View,
 
     private val textMoveToWishlist: Typography
 
-    private val etQty: AppCompatEditText
-    private val btnQtyPlus: ImageView
-    private val btnQtyMinus: ImageView
+    private val qtyEditor: QuantityEditorUnify
     private val etRemark: AppCompatEditText
     private val tvLabelRemarkOption: TextView
-    private val btnDelete: ImageView
+    private val btnDelete: IconUnify
     private val tvErrorFormValidation: TextView
     private val tvErrorFormRemarkValidation: TextView
     private val tvLabelRemarkTitle: Typography
-
-    private val layoutError: LinearLayout
-    private val tickerError: Ticker
-    private val layoutWarning: LinearLayout
-    private val tickerWarning: Ticker
 
     private val tvNoteCharCounter: TextView
     private val tvRemark: TextView
@@ -93,6 +87,7 @@ class CartItemViewHolder constructor(itemView: View,
     private val llShopNoteSection: LinearLayout
 
     private var cartItemHolderData: CartItemHolderData? = null
+    private var quantityTextWatcher: QuantityTextWatcher? = null
     private var quantityTextwatcherListener: QuantityTextWatcher.QuantityTextwatcherListener? = null
     private var parentPosition: Int = 0
     private var dataSize: Int = 0
@@ -104,12 +99,11 @@ class CartItemViewHolder constructor(itemView: View,
     init {
         context = itemView.context
 
-        llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error)
         flCartItemContainer = itemView.findViewById(R.id.fl_cart_item_container)
         cbSelectItem = itemView.findViewById(R.id.cb_select_item)
         tvErrorFormValidation = itemView.findViewById(R.id.tv_error_form_validation)
         tvErrorFormRemarkValidation = itemView.findViewById(R.id.tv_error_form_remark_validation)
-        ivProductImage = itemView.findViewById(R.id.iv_image_product)
+        ivProductImage = itemView.findViewById(R.id.iu_image_product)
         textProductName = itemView.findViewById(R.id.text_product_name)
         textProductVariant = itemView.findViewById(R.id.text_product_variant)
         textQtyLeft = itemView.findViewById(R.id.text_qty_left)
@@ -118,17 +112,11 @@ class CartItemViewHolder constructor(itemView: View,
         textSlashPrice = itemView.findViewById(R.id.text_slash_price)
         textIncidentLabel = itemView.findViewById(R.id.text_incident)
         textMoveToWishlist = itemView.findViewById(R.id.text_move_to_wishlist)
-        etQty = itemView.findViewById(R.id.et_qty)
-        btnQtyPlus = itemView.findViewById(R.id.btn_qty_plus)
-        btnQtyMinus = itemView.findViewById(R.id.btn_qty_min)
+        qtyEditor = itemView.findViewById(R.id.qty_editor_cart)
         tvLabelRemarkOption = itemView.findViewById(R.id.tv_label_remark_option)
         etRemark = itemView.findViewById(R.id.et_remark)
         tvLabelRemarkTitle = itemView.findViewById(R.id.tv_label_remark_title)
         btnDelete = itemView.findViewById(R.id.btn_delete_cart)
-        layoutError = itemView.findViewById(R.id.layout_error)
-        tickerError = itemView.findViewById(R.id.ticker_error)
-        layoutWarning = itemView.findViewById(R.id.layout_warning)
-        tickerWarning = itemView.findViewById(R.id.ticker_warning)
         tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter)
         tvRemark = itemView.findViewById(R.id.tv_remark)
         divider = itemView.findViewById(R.id.holder_item_cart_divider)
@@ -188,7 +176,6 @@ class CartItemViewHolder constructor(itemView: View,
         this.dataSize = dataSize
 
         renderProductInfo(data, parentPosition)
-        renderWarningAndError(data)
         renderSelection(data, parentPosition)
         renderQuantity(data, parentPosition, viewHolderListener)
         renderDefaultActionState()
@@ -231,9 +218,10 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderSelection(data: CartItemHolderData, parentPosition: Int) {
         cbSelectItem.isEnabled = data.cartItemData?.isError == false
         cbSelectItem.isChecked = data.cartItemData?.isError == false && data.isSelected
+        cbSelectItem.skipAnimation()
 
         var prevIsChecked: Boolean = cbSelectItem.isChecked
-        cbSelectItem.setOnCheckedChangeListener { buttonView, isChecked ->
+        cbSelectItem.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
@@ -252,45 +240,6 @@ class CartItemViewHolder constructor(itemView: View,
                 }
             }
         }
-    }
-
-    private fun renderWarningAndError(data: CartItemHolderData) {
-        // Initial action state
-        rendercartItemActionOnNormalProduct()
-        if (data.cartItemData?.isParentHasErrorOrWarning == true) {
-            if (data.cartItemData?.isDisableAllProducts == false || data.cartItemData?.isError == true || data.cartItemData?.isWarning == true) {
-                renderErrorItemHeader(data)
-                renderWarningItemHeader(data)
-                setWarningAndErrorVisibility(data)
-            } else {
-                disableView(data)
-            }
-        } else {
-            if (data.cartItemData?.isSingleChild == false) {
-                renderErrorItemHeader(data)
-                renderWarningItemHeader(data)
-                setWarningAndErrorVisibility(data)
-            } else {
-                disableView(data)
-            }
-        }
-    }
-
-    private fun setWarningAndErrorVisibility(data: CartItemHolderData) {
-        if ((!TextUtils.isEmpty(data.cartItemData?.errorMessageTitle) || !TextUtils.isEmpty(data.cartItemData?.warningMessageTitle)) && (data.cartItemData?.isError == true || data.cartItemData?.isWarning == true)) {
-            llWarningAndError.visibility = View.VISIBLE
-        } else {
-            llWarningAndError.visibility = View.GONE
-        }
-    }
-
-    private fun disableView(data: CartItemHolderData) {
-        if (data.cartItemData?.isError == true) {
-            flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_disabled_item)
-        } else {
-            flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_enabled_item)
-        }
-        llWarningAndError.visibility = View.GONE
     }
 
     private fun renderProductInfo(data: CartItemHolderData, parentPosition: Int) {
@@ -314,10 +263,9 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderImage(data: CartItemHolderData) {
-        ImageHandler.loadImageRounded2(
-                this.itemView.context, this.ivProductImage,
-                data.cartItemData?.originData?.productImage
-        )
+        data.cartItemData?.originData?.productImage?.let {
+            ivProductImage.setImageUrl(it)
+        }
         ivProductImage.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
     }
 
@@ -357,8 +305,8 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun createProductInfoText(it: String): Typography {
         return Typography(itemView.context).apply {
-            setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
-            setType(Typography.SMALL)
+            setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
+            setType(Typography.BODY_3)
             text = if (layoutProductInfo.childCount > 0) ", $it" else it
         }
     }
@@ -388,15 +336,15 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderSlashPrice(data: CartItemHolderData) {
-        val hasPriceOriginal = data.cartItemData?.originData?.priceOriginal != 0
-        val hasWholesalePrice = data.cartItemData?.originData?.wholesalePrice != 0
+        val hasPriceOriginal = data.cartItemData?.originData?.priceOriginal != 0L
+        val hasWholesalePrice = data.cartItemData?.originData?.wholesalePrice != 0L
         val hasPriceDrop = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
-                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData?.originData?.pricePlan?.toInt() ?: 0
+                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData?.originData?.pricePlan?.toLong() ?: 0
         if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
             if (data.cartItemData?.originData?.slashPriceLabel?.isNotBlank() == true) {
                 // Slash price
                 renderSlashPriceFromCampaign(data)
-            } else if (data.cartItemData?.originData?.initialPriceBeforeDrop != 0) {
+            } else if (data.cartItemData?.originData?.initialPriceBeforeDrop != 0L) {
                 val wholesalePrice = data.cartItemData?.originData?.wholesalePrice ?: 0
                 if (wholesalePrice > 0 && wholesalePrice.toDouble() < data.cartItemData?.originData?.pricePlan ?: 0.0) {
                     // Wholesale
@@ -405,7 +353,7 @@ class CartItemViewHolder constructor(itemView: View,
                     // Price drop
                     renderSlashPriceFromPriceDrop(data)
                 }
-            } else if (data.cartItemData?.originData?.wholesalePrice != 0) {
+            } else if (data.cartItemData?.originData?.wholesalePrice != 0L) {
                 // Wholesale
                 renderSlashPriceFromWholesale(data)
             }
@@ -523,7 +471,7 @@ class CartItemViewHolder constructor(itemView: View,
 
                 setNotesWidth()
             }
-            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.light_G500))
+            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
         } else {
             // No notes at all
             this.etRemark.visibility = View.GONE
@@ -533,7 +481,7 @@ class CartItemViewHolder constructor(itemView: View,
             this.tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_add_note)
             this.tvLabelRemarkOption.visibility = View.VISIBLE
             this.etRemark.setText("")
-            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
             tvLabelRemarkOption.setPadding(0, 0, 0, 0)
         }
 
@@ -577,63 +525,49 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderQuantity(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
-        val quantity = data.cartItemData?.updatedData?.quantity.toString()
-        this.etQty.setText(data.cartItemData?.updatedData?.quantity.toString())
-        etQty.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                etQty.clearFocus()
-                KeyboardHandler.DropKeyboard(etQty.context, itemView)
-                true
-            } else false
+        if (quantityTextWatcher != null) {
+            // remove previous listener
+            qtyEditor.editText.removeTextChangedListener(quantityTextWatcher)
         }
 
-        if (quantity.isNotEmpty()) {
-            this.etQty.setSelection(quantity.length)
+        qtyEditor.autoHideKeyboard = true
+        qtyEditor.minValue = data.cartItemData?.originData?.minOrder ?: 0
+        qtyEditor.maxValue = data.cartItemData?.originData?.maxOrder ?: 0
+        // reset listener
+        qtyEditor.setValueChangedListener { _, _, _ -> /* no-op */ }
+        qtyEditor.setValue(data.cartItemData?.updatedData?.quantity ?: 0)
+        qtyEditor.setValueChangedListener { newValue, _, _ ->
+            cartItemHolderData?.cartItemData?.updatedData?.quantity = newValue
+            actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
+            cartItemHolderData?.let { handleRefreshType(it, viewHolderListener, parentPosition) }
         }
-        this.etQty.setOnClickListener { v ->
-            if (data.cartItemData?.isError == false) {
-                val qtyStr = (v as AppCompatEditText).text?.toString()
+        qtyEditor.setSubstractListener {
+            if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
+                actionListener?.onCartItemQuantityMinusButtonClicked(data, adapterPosition, parentPosition)
+            }
+        }
+        qtyEditor.setAddClickListener {
+            if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
+                actionListener?.onCartItemQuantityPlusButtonClicked(data, adapterPosition, parentPosition)
+            }
+        }
+        qtyEditor.editText.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                val qtyStr = (v as? AppCompatEditText)?.text?.toString()
                 actionListener?.onCartItemQuantityInputFormClicked(
                         if (!TextUtils.isEmpty(qtyStr)) qtyStr else ""
                 )
             }
         }
-
-        this.btnQtyPlus.setOnClickListener {
-            if (data.cartItemData?.isError == false) {
-                try {
-                    if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-                        actionListener?.onCartItemQuantityPlusButtonClicked(data, adapterPosition, parentPosition)
-                        validateWithAvailableQuantity(cartItemHolderData!!, Integer.parseInt(etQty.text.toString()
-                                ?: "0"))
-                        handleRefreshType(data, viewHolderListener, parentPosition)
-                    }
-                } catch (e: NumberFormatException) {
-                    e.printStackTrace()
-                }
-            }
+        qtyEditor.editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                KeyboardHandler.DropKeyboard(qtyEditor.editText.context, itemView)
+                true
+            } else false
         }
-
-        this.btnQtyMinus.setOnClickListener {
-            if (data.cartItemData?.isError == false) {
-                try {
-                    if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-                        actionListener?.onCartItemQuantityMinusButtonClicked(data, adapterPosition, parentPosition)
-                        validateWithAvailableQuantity(cartItemHolderData!!, Integer.parseInt(etQty.text.toString()))
-                        handleRefreshType(data, viewHolderListener, parentPosition)
-                    }
-                } catch (e: NumberFormatException) {
-                    e.printStackTrace()
-                }
-
-            }
-        }
-
-        if (!TextUtils.isEmpty(etQty.text.toString()) && cartItemHolderData != null) {
-            checkQtyMustDisabled(cartItemHolderData!!, Integer.parseInt(etQty.text.toString()))
-        }
-        this.etQty.addTextChangedListener(QuantityTextWatcher(quantityTextwatcherListener))
-        this.etQty.isEnabled = data.cartItemData?.isError == false
+        quantityTextWatcher = QuantityTextWatcher(quantityTextwatcherListener)
+        qtyEditor.editText.addTextChangedListener(quantityTextWatcher)
+        qtyEditor.editText.isEnabled = data.cartItemData?.isError == false
     }
 
     private fun handleRefreshType(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, parentPosition: Int) {
@@ -651,10 +585,10 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderActionWishlist(action: ActionData, data: CartItemHolderData) {
         if (data.cartItemData?.originData?.isWishlisted == true && action.id == ACTION_WISHLISTED) {
             textMoveToWishlist.text = action.message
-            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
+            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_44))
             textMoveToWishlist.setOnClickListener { }
         } else if (data.cartItemData?.originData?.isWishlisted == false && action.id == ACTION_WISHLIST) {
-            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
             textMoveToWishlist.setOnClickListener {
                 actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, data.cartItemData?.originData?.cartId
                         ?: 0, ivProductImage)
@@ -673,102 +607,6 @@ class CartItemViewHolder constructor(itemView: View,
         }
     }
 
-    private fun renderErrorItemHeader(data: CartItemHolderData) {
-        if (data.cartItemData?.isError == true) {
-            flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_disabled_item)
-
-            if (!TextUtils.isEmpty(data.cartItemData?.errorMessageTitle)) {
-                val errorDescription = data.cartItemData?.errorMessageDescription
-                if (!TextUtils.isEmpty(errorDescription)) {
-                    tickerError.tickerTitle = data.cartItemData?.errorMessageTitle
-                    tickerError.setTextDescription(errorDescription ?: "")
-                } else {
-                    tickerError.tickerTitle = null
-                    tickerError.setTextDescription(data.cartItemData?.errorMessageTitle ?: "")
-                }
-            }
-
-            tickerError.tickerType = Ticker.TYPE_ERROR
-            tickerError.tickerShape = Ticker.SHAPE_LOOSE
-            tickerError.closeButtonVisibility = View.GONE
-            tickerError.visibility = View.VISIBLE
-            tickerError.post {
-                tickerError.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                tickerError.requestLayout()
-            }
-            layoutError.visibility = View.VISIBLE
-        } else {
-            rendercartItemActionOnNormalProduct()
-            flCartItemContainer.foreground = ContextCompat.getDrawable(flCartItemContainer.context, R.drawable.fg_enabled_item)
-            layoutError.visibility = View.GONE
-        }
-    }
-
-    private fun renderWarningItemHeader(data: CartItemHolderData) {
-        if (data.cartItemData?.isWarning == true) {
-            val warningDescription = data.cartItemData?.warningMessageDescription
-            if (!TextUtils.isEmpty(warningDescription)) {
-                tickerWarning.tickerTitle = data.cartItemData?.warningMessageTitle
-                tickerWarning.setTextDescription(warningDescription ?: "")
-            } else {
-                tickerWarning.tickerTitle = null
-                tickerWarning.setTextDescription(data.cartItemData?.warningMessageTitle ?: "")
-            }
-            tickerWarning.tickerType = Ticker.TYPE_WARNING
-            tickerWarning.tickerShape = Ticker.SHAPE_LOOSE
-            tickerWarning.closeButtonVisibility = View.GONE
-            tickerWarning.visibility = View.VISIBLE
-            tickerWarning.post {
-                tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                tickerWarning.requestLayout()
-            }
-            layoutWarning.visibility = View.VISIBLE
-        } else {
-            tickerWarning.visibility = View.GONE
-            layoutWarning.visibility = View.GONE
-        }
-    }
-
-    private fun checkQtyMustDisabled(cartItemHolderData: CartItemHolderData, qty: Int) {
-        if (qty <= cartItemHolderData.cartItemData?.originData?.minOrder ?: 0 && qty >= cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0) {
-            btnQtyMinus.isEnabled = false
-            btnQtyPlus.isEnabled = false
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(btnQtyMinus.context, R.drawable.bg_button_counter_minus_checkout_disabled))
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.context, R.drawable.bg_button_counter_plus_checkout_disabled))
-        } else if (qty <= cartItemHolderData.cartItemData?.originData?.minOrder ?: 0) {
-            btnQtyMinus.isEnabled = false
-            btnQtyPlus.isEnabled = true
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(btnQtyMinus.context, R.drawable.bg_button_counter_minus_checkout_disabled))
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.context, R.drawable.bg_button_counter_plus_checkout))
-        } else if (qty >= cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0) {
-            btnQtyPlus.isEnabled = false
-            btnQtyMinus.isEnabled = true
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.context, R.drawable.bg_button_counter_plus_checkout_disabled))
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(btnQtyMinus.context, R.drawable.bg_button_counter_minus_checkout))
-        } else {
-            btnQtyPlus.isEnabled = true
-            btnQtyMinus.isEnabled = true
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.context, R.drawable.bg_button_counter_plus_checkout))
-            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(btnQtyMinus.context, R.drawable.bg_button_counter_minus_checkout))
-        }
-    }
-
-    private fun validateWithAvailableQuantity(data: CartItemHolderData, qty: Int): Boolean {
-        val maxOrder = data.cartItemData?.originData?.maxOrder ?: 0
-        val minOrder = data.cartItemData?.originData?.minOrder ?: 0
-        if (qty > maxOrder) {
-            etQty.setText(maxOrder.toString())
-            return false
-        } else if (qty < minOrder) {
-            etQty.setText(minOrder.toString())
-            return false
-        }
-
-        return true
-    }
-
     private fun itemNoteTextWatcherAction(editable: Editable) {
         if (cartItemHolderData != null) {
             cartItemHolderData?.cartItemData?.updatedData?.remark = editable.toString()
@@ -777,58 +615,15 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun itemQuantityTextWatcherAction(quantity: QuantityWrapper) {
         if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-            var needToUpdateView = quantity.qtyBefore.toString() != quantity.editable.toString()
-            if (quantity.editable.length != 0) {
-                var zeroCount = 0
-                for (i in 0 until quantity.editable.length) {
-                    if (quantity.editable[i] == '0') {
-                        zeroCount++
-                    } else {
-                        break
-                    }
-                }
-                if (zeroCount == quantity.editable.length) {
-                    actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition, needToUpdateView)
-                    if (needToUpdateView) {
-                        handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)
-                        needToUpdateView = false
-                    }
-                } else if (quantity.editable[0] == '0') {
-                    etQty.setText(quantity.editable.toString()
-                            .substring(zeroCount, quantity.editable.toString().length))
-                    etQty.setSelection(etQty.length())
-                    needToUpdateView = true
-                }
-            } else if (TextUtils.isEmpty(etQty.text)) {
-                actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition,
-                        quantity.qtyBefore.toString() != quantity.editable.toString())
-                if (needToUpdateView) {
-                    handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)
-                    needToUpdateView = false
-                }
-            }
-
-            var qty = 0
-            try {
-                qty = Integer.parseInt(quantity.editable.toString())
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
-            }
-
-            checkQtyMustDisabled(cartItemHolderData!!, qty)
-            cartItemHolderData!!.cartItemData!!.updatedData!!.quantity = qty
-            val tmpNeedToUpdateView = validateWithAvailableQuantity(cartItemHolderData!!, qty)
-            if (!tmpNeedToUpdateView) needToUpdateView = tmpNeedToUpdateView
+            val qty = quantity.editable.toString().replace(QUANTITY_REGEX.toRegex(), "").toIntOrZero()
+            val needToUpdateView = cartItemHolderData?.cartItemData?.updatedData?.quantity != qty
             if (needToUpdateView) {
-                actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
-                handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)
+                if (qty <= 0) {
+                    actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition, needToUpdateView)
+                }
+                qtyEditor.setValue(qty)
             }
         }
-    }
-
-    private fun rendercartItemActionOnNormalProduct() {
-        rlProductAction.visibility = View.VISIBLE
-        llShopNoteSection.visibility = View.VISIBLE
     }
 
     interface ViewHolderListener {
@@ -846,5 +641,7 @@ class CartItemViewHolder constructor(itemView: View,
 
         const val LABEL_CASHBACK = "cashback"
         const val LABEL_DISCOUNT = "label diskon"
+
+        private const val QUANTITY_REGEX = "[^0-9]"
     }
 }

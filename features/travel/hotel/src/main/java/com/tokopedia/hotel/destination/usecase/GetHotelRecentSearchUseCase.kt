@@ -19,8 +19,9 @@ class GetHotelRecentSearchUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ): UseCase<List<RecentSearch>>() {
 
+    var params = mapOf<String, Any>()
     override suspend fun executeOnBackground(): List<RecentSearch> {
-        val gqlRequest = GraphqlRequest(HotelDestinationQueries.GET_HOTEL_RECENT_SEARCH_QUERY, RecentSearch.Response::class.java)
+        val gqlRequest = GraphqlRequest(HotelDestinationQueries.GET_HOTEL_RECENT_SEARCH_QUERY, RecentSearch.Response::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`()).build())

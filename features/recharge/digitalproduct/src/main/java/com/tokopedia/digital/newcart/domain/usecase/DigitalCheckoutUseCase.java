@@ -1,9 +1,9 @@
 package com.tokopedia.digital.newcart.domain.usecase;
 
-import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
+import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.digital.newcart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.digital.newcart.domain.ICheckoutRepository;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
-import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

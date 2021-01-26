@@ -6,7 +6,6 @@ import com.tokopedia.review.feature.inboxreview.domain.response.InboxReviewRespo
 import com.tokopedia.review.feature.inboxreview.presentation.model.ListItemRatingWrapper
 import com.tokopedia.review.feature.inboxreview.presentation.model.SortFilterInboxItemWrapper
 import com.tokopedia.review.utils.verifyCoroutineFailEquals
-import com.tokopedia.review.utils.verifyErrorEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

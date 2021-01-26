@@ -8,8 +8,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.entity.address.UserAddress;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class RatesDataConverter {
                                                 ShipmentCartItemModel shipmentCartItemModel, String keroToken, String keroUnixTime) {
         ShipmentCartData shipmentCartData = new ShipmentCartData();
         initializeShipmentCartData(userAddress, groupShop, shipmentCartData, keroToken, keroUnixTime);
-        int orderValue = 0;
+        long orderValue = 0;
         int totalWeight = 0;
         int preOrderDuration = 0;
         if (shipmentCartItemModel.getCartItemModels() != null) {

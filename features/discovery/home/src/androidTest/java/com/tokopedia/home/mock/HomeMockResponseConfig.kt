@@ -9,6 +9,9 @@ class HomeMockResponseConfig: MockModelConfig() {
     companion object {
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL = "homeData"
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY = "dynamicHomeChannel"
+        const val KEY_QUERY_DYNAMIC_POSITION = "dynamicPosition"
+        const val KEY_QUERY_DYNAMIC_POSITION_ICON = "homeIcon"
+        const val KEY_QUERY_DYNAMIC_POSITION_TICKER = "homeTicker"
 
         const val KEY_QUERY_DYNAMIC_HOME_POPULAR_KEYWORD = "popular_keywords"
         const val KEY_QUERY_DYNAMIC_HOME_SUCCESS_OCC = "add_to_cart_occ"
@@ -18,6 +21,7 @@ class HomeMockResponseConfig: MockModelConfig() {
         const val KEY_CONTAINS_SUGGESTED_REVIEW = "suggestedProductReview"
         const val KEY_CONTAINS_PLAY_DC = "playGetLiveDynamicChannels"
         const val KEY_CONTAINS_RECHARGE = "rechargeRecommendation"
+        const val KEY_CONTAINS_RECHARGE_BU_WIDGET = "getBUWidget"
         const val KEY_CONTAINS_SALAM = "salamWidget"
     }
     override fun createMockModel(context: Context): MockModelConfig {
@@ -25,6 +29,21 @@ class HomeMockResponseConfig: MockModelConfig() {
                 KEY_QUERY_DYNAMIC_HOME_CHANNEL,
                 getRawString(context, R.raw.response_mock_data_dynamic_home_channel),
                 FIND_BY_QUERY_NAME)
+
+        addMockResponse(
+                KEY_QUERY_DYNAMIC_POSITION,
+                getRawString(context, R.raw.response_mock_data_dynamic_position),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_QUERY_DYNAMIC_POSITION,
+                getRawString(context, R.raw.response_mock_data_dynamic_position_icon),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_QUERY_DYNAMIC_POSITION,
+                getRawString(context, R.raw.response_mock_data_dynamic_position_ticker),
+                FIND_BY_CONTAINS)
 
         addMockResponse(
                 KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
@@ -74,6 +93,12 @@ class HomeMockResponseConfig: MockModelConfig() {
         addMockResponse(
                 KEY_CONTAINS_SALAM,
                 getRawString(context, R.raw.response_mock_data_salam_content),
+                FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+                KEY_CONTAINS_RECHARGE_BU_WIDGET,
+                getRawString(context, R.raw.response_mock_data_recharge_bu_widget),
                 FIND_BY_CONTAINS
         )
 

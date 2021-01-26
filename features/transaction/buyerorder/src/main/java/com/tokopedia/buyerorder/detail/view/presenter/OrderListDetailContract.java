@@ -7,8 +7,10 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
@@ -29,6 +31,7 @@ import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
 
 import java.util.List;
 
@@ -39,6 +42,8 @@ import java.util.List;
 public interface OrderListDetailContract {
 
     interface View extends CustomerView {
+        void setDetailsData(OrderDetails details);
+
         void setStatus(Status status);
 
         void setConditionalInfo(ConditionalInfo conditionalInfo);
@@ -113,27 +118,31 @@ public interface OrderListDetailContract {
 
         void clearDynamicViews();
 
-        void askPermission();
-
         void setRecommendation(Object object);
 
+        JsonArray generateInputQueryBuyAgain(List<Items> items);
+
+        void hitAnalyticsBuyAgain(List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct> listAtcProducts, Boolean isAtcMultiSuccess);
+
+        void setActionButtonLayoutClickable(Boolean isClickable);
+
+        void setActionButtonText(String txt);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString);
 
-        void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
+        void getActionButtonGql(String query, List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
 
-        void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText,RelativeLayout actionButtonLayout);
+        void hitEventEmail(ActionButton actionButton, String metadata);
 
-        List<ActionButton> getActionList();
+        void onBuyAgainItems(String query, List<Items> items, String eventActionLabel, String statusCode);
 
-        void onBuyAgainAllItems(String eventActionLabel, String statusCode);
+        void onLihatInvoiceButtonClick(String invoiceUrl);
 
-        void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode);
+        void onCopyButtonClick(String copiedValue);
 
-        void assignInvoiceDataTo(Intent intent);
-
+        void onActionButtonClick(String buttonId, String buttonName);
     }
 
     interface ActionInterface {

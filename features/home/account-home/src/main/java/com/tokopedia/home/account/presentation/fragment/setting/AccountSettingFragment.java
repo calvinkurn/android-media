@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
@@ -73,11 +74,17 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private View sampaiSeparator;
     private ProgressBar progressBar;
 
+    private boolean isFromNewAccount = false;
+
+    private LinearLayout accountSection;
+
     @Inject
     AccountSetting.Presenter presenter;
 
-    public static Fragment createInstance() {
-        return new AccountSettingFragment();
+    public static Fragment createInstance(Bundle bundle) {
+        Fragment fragment = new AccountSettingFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -104,6 +111,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         mainView = view.findViewById(R.id.main_view);
         progressBar = view.findViewById(R.id.progress_bar);
         kycSeparator = view.findViewById(R.id.separator_kyc);
+        accountSection = view.findViewById(R.id.fragment_account_setting_account_section);
         return view;
     }
 
@@ -113,6 +121,16 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         setMenuClickListener(view);
         getMenuToggle();
         showSignInNotif();
+        checkForNewAccount();
+    }
+
+    private void checkForNewAccount(){
+        if(getArguments() != null){
+            if(getArguments().containsKey(ApplinkConstInternalGlobal.PARAM_NEW_HOME_ACCOUNT)) {
+                isFromNewAccount = true;
+                accountSection.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -172,7 +190,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void setMenuClickListener(View view) {
-
         personalDataMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID));
         addressMenu.setOnClickListener(view1 ->
@@ -285,22 +302,30 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     @Override
     public void onSuccessGetConfig(AccountSettingConfig accountSettingConfig) {
-        personalDataMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                .isPeopleDataEnabled() ? View.VISIBLE : View.GONE);
-        addressMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                .isAddressEnabled() ? View.VISIBLE : View.GONE);
-        passwordMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                .isPasswordEnabled() ? View.VISIBLE : View.GONE);
-        kycSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                .isIdentityEnabled() ? View.VISIBLE : View.GONE);
-        kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                .isIdentityEnabled() ? View.VISIBLE : View.GONE);
-        sampaiMenu.setVisibility(accountSettingConfig.getAccountSettingConfig().
-                isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
-        sampaiSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig().
-                isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
+        if(isFromNewAccount){
+            kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isIdentityEnabled() ? View.VISIBLE : View.GONE);
+            kycSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isIdentityEnabled() ? View.VISIBLE : View.GONE);
+        }
+        else {
+            personalDataMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isPeopleDataEnabled() ? View.VISIBLE : View.GONE);
+            addressMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isAddressEnabled() ? View.VISIBLE : View.GONE);
+            passwordMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isPasswordEnabled() ? View.VISIBLE : View.GONE);
+            kycSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isIdentityEnabled() ? View.VISIBLE : View.GONE);
+            kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isIdentityEnabled() ? View.VISIBLE : View.GONE);
+            sampaiMenu.setVisibility(accountSettingConfig.getAccountSettingConfig().
+                    isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
+            sampaiSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig().
+                    isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
 
-        showSignInNotif();
+            showSignInNotif();
+        }
         hideLoading();
     }
 
@@ -339,7 +364,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
             dialog.setTitle(getString(R.string.account_home_add_phone_title));
             dialog.setDescription(getString(R.string.account_home_add_phone_message));
             dialog.setPrimaryCTAText(getString(R.string.account_home_add_phone_title));
-            dialog.setSecondaryCTAText(getString(R.string.cancel));
+            dialog.setSecondaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel));
 
             dialog.setPrimaryCTAClickListener(() -> {
                 goToPinOnboarding();
@@ -373,9 +398,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         });
         AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.colorSheetTitle));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
     }
 }

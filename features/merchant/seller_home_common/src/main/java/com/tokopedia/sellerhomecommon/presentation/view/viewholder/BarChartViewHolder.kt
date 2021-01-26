@@ -155,7 +155,7 @@ class BarChartViewHolder(
     private fun getBarChartTooltip(): ChartTooltip {
         return ChartTooltip(itemView.context, R.layout.shc_partial_chart_tooltip)
                 .setOnDisplayContent { view, data, x, y ->
-                    (data as? BarChartMetricValue)?.let {
+                    data?.let {
                         view.tvShcTooltipTitle.text = it.xLabel
                         view.tvShcTooltipValue.text = it.yLabel
                     }

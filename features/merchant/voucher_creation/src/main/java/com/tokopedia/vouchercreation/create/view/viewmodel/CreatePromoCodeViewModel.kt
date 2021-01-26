@@ -7,15 +7,15 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.PromoCodeValidationUseCase
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.PromoCodeValidation
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CreatePromoCodeViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
-        private val promoCodeValidationUseCase: PromoCodeValidationUseCase
+    private val dispatchers: CoroutineDispatchers,
+    private val promoCodeValidationUseCase: PromoCodeValidationUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val mPromoCodeValidationLiveData = MutableLiveData<Result<PromoCodeValidation>>()

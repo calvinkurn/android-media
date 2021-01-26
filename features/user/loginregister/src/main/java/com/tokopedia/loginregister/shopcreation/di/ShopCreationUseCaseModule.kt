@@ -13,7 +13,6 @@ import javax.inject.Named
  * ade.hadian@tokopedia.com
  */
 
-@ShopCreationScope
 @Module
 class ShopCreationUseCaseModule {
 

@@ -8,19 +8,22 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.list.constant.DRAFT_PRODUCT
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.feature.list.constant.DRAFT_PRODUCT
-import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_ADD_PRODUCT
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
@@ -71,8 +74,8 @@ class ProductManageSellerFragment : ProductManageFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         checkLogin()
         super.onViewCreated(view, savedInstanceState)
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         tvDraftProduct.visibility = View.GONE
-        searchBar?.setBackgroundColor(Color.TRANSPARENT)
         getDefaultKeywordOptionFromArguments()
         getDefaultFilterOptionsFromArguments()
         observeGetAllDraftCount()
@@ -143,7 +146,8 @@ class ProductManageSellerFragment : ProductManageFragment() {
             tvDraftProduct.text = MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount))
             tvDraftProduct.setOnClickListener {
                 ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
-                RouteManager.route(activity, ApplinkConst.PRODUCT_DRAFT)
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
+                startActivityForResult(intent, REQUEST_CODE_DRAFT_PRODUCT)
             }
             tvDraftProduct.visibility = View.VISIBLE
         }
@@ -168,7 +172,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
     private fun registerDraftReceiver() {
         draftBroadCastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                if (intent.action == TkpdState.ProductService.BROADCAST_ADD_PRODUCT) {
+                if (intent.action == BROADCAST_ADD_PRODUCT) {
                     productDraftListCountViewModel.getAllDraftCount()
                 }
             }
@@ -176,7 +180,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
         activity?.let {
             val intentFilters = IntentFilter().apply {
-                addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
+                addAction(BROADCAST_ADD_PRODUCT)
             }
             LocalBroadcastManager.getInstance(it).registerReceiver(draftBroadCastReceiver, intentFilters)
         }

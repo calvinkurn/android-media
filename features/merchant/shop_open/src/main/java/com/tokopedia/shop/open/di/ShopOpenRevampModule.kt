@@ -5,15 +5,14 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.shop.open.common.ShopOpenDispatcherProvider
-import com.tokopedia.shop.open.common.ShopOpenDispatcherProviderImpl
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
 @Module(includes = [ShopOpenRevampViewModelModule::class])
-@ShopOpenRevampScope
 class ShopOpenRevampModule {
 
     @ShopOpenRevampScope
@@ -30,7 +29,7 @@ class ShopOpenRevampModule {
 
     @ShopOpenRevampScope
     @Provides
-    fun provideDispatcherProvider(): ShopOpenDispatcherProvider = ShopOpenDispatcherProviderImpl()
+    fun provideDispatcherProvider(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @ShopOpenRevampScope
     @Provides

@@ -8,6 +8,8 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.logisticCommon.domain.mapper.AddressCornerMapper
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
@@ -66,6 +68,12 @@ open class OrderSummaryPageModule(private val activity: Activity) {
 
     @OrderSummaryPageScope
     @Provides
+    fun provideGetAddressCornerUseCase(context: Context, graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, mapper: AddressCornerMapper): GetAddressCornerUseCase {
+        return GetAddressCornerUseCase(context, graphqlUseCase, mapper)
+    }
+
+    @OrderSummaryPageScope
+    @Provides
     fun providesUpdateCartOccGraphqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<UpdateCartOccGqlResponse> = GraphqlUseCase(graphqlRepository)
 
     @OrderSummaryPageScope
@@ -99,8 +107,8 @@ open class OrderSummaryPageModule(private val activity: Activity) {
     @OrderSummaryPageScope
     @Provides
     fun provideGetRatesUseCase(context: Context, converter: ShippingDurationConverter,
-                               graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, schedulerProvider: SchedulerProvider): GetRatesUseCase {
-        return GetRatesUseCase(context, converter, graphqlUseCase, schedulerProvider)
+                               schedulerProvider: SchedulerProvider): GetRatesUseCase {
+        return GetRatesUseCase(context, converter, schedulerProvider)
     }
 
     @OrderSummaryPageScope

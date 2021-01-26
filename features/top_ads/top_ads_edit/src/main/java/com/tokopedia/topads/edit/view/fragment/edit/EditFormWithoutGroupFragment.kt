@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.text.watcher.NumberTextWatcher
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.SingleAd
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.param.DataSuggestions
-import com.tokopedia.topads.edit.data.response.ResponseBidInfo
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.groupId
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_edit_without_group_layout.*
 import java.util.*
 import javax.inject.Inject
@@ -71,7 +71,7 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adId = arguments?.getInt(groupId) ?: 0
-        viewModel.getSingleAdInfo(arguments?.getInt(groupId) ?: 0, ::onSuccessAdInfo)
+        viewModel.getSingleAdInfo(adId.toString(), ::onSuccessAdInfo)
         radio_group.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked == radio1.id) {
                 daily_budget.visibility = View.GONE
@@ -166,7 +166,7 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
         save_butt.isEnabled = validation1 == true && validation2 == true
     }
 
-    private fun onBidSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
+    private fun onBidSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         suggestBidPerClick = data[0].suggestionBid
         minBid = data[0].minBid
         maxBid = data[0].maxBid

@@ -5,7 +5,7 @@
     android:id="@+id/review_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:visibility="gone"
     tools:visibility="visible">
@@ -14,8 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_16"
         >
 
@@ -40,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lineSpacingExtra="7sp"
+                android:textColor="@color/Unify_N700_96"
                 android:maxLines="1"
                 android:text="@string/by"
                 style="@style/TextView.Small"
@@ -51,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lineSpacingExtra="7sp"
+                android:textColor="@color/Unify_N700_96"
                 android:maxLines="1"
                 style="@style/TextView.Small.Bold"
                 tools:text="Sarah Elizabeth"
@@ -65,7 +67,7 @@
             android:layout_below="@id/reviewer_name_layout"
             android:layout_marginTop="@dimen/dp_5"
             android:lineSpacingExtra="4sp"
-            android:textColor="@color/black_38"
+            android:textColor="@color/Unify_N700_32"
             style="@style/TextView.Micro.BlackDisabled"
             tools:text="31 Jul 2016, pukul 11:48"
             />
@@ -91,6 +93,7 @@
         android:textIsSelectable="true"
         android:paddingLeft="@dimen/dp_10"
         android:paddingRight="@dimen/dp_10"
+        android:textColor="@color/Unify_N700"
         style="@style/TextView.Small"
         tools:text="One morning, when Gregor Samsa woke from troubled dreams, he found himself…Selengkapnya"
         />
@@ -108,7 +111,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
         android:layout_marginTop="@dimen/dp_10"
-        android:background="@color/grey_300"/>
+        android:background="@color/Unify_N100"/>
 
     <LinearLayout
         android:id="@+id/helpful_layout"

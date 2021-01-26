@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:layout_height="match_parent">
 
         <com.tokopedia.unifycomponents.DividerUnify
@@ -18,7 +18,7 @@
             android:id="@+id/filterRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            android:background="@android:color/white"
+            android:background="@color/Unify_N0"
             android:paddingLeft="@dimen/layout_lvl2"
             android:paddingRight="@dimen/layout_lvl2"
             android:layout_below="@id/bottomsheet_title_divider"
@@ -36,7 +36,7 @@
             android:id="@+id/filter_bottom_sheet_button_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
+            android:background="@color/Unify_N0"
             android:paddingTop="@dimen/layout_lvl2"
             android:paddingBottom="@dimen/layout_lvl2"
             android:layout_alignParentBottom="true">

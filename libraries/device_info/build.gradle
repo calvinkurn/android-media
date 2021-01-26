@@ -20,6 +20,8 @@ android {
 
 dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.playServicesDependencies.ads
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
 }
 
 project.ext {

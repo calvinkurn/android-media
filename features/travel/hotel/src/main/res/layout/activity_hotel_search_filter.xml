@@ -30,7 +30,7 @@
             android:focusable="true"
             android:paddingLeft="@dimen/layout_lvl1"
             android:text="@string/hotel_filter_reset"
-            android:textColor="@color/Green_G500"
+            android:textColor="@color/Unify_G500"
             app:typographyType="body_1" />
 
     </androidx.appcompat.widget.Toolbar>

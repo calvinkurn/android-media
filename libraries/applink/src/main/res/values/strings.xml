@@ -48,6 +48,7 @@
 
     <string name="title_module_attachinvoice">Lampirkan Invoice</string>
     <string name="title_module_attachvoucher">Lampirkan Voucher</string>
+    <string name="title_module_attachproduct">Lampirkan Product</string>
 
     <!--Seller Order Management-->
     <string name="som_title">Seller Order Management</string>
@@ -117,4 +118,10 @@
     <string name="title_review_inbox">Review Inbox</string>
     <string name="title_review_detail">Review Detail</string>
     <string name="title_create_review">Create Review</string>
+  
+    <!-- Inactive Phone -->
+    <string name="title_update_inactive_phone">Inactive Phone</string>
+
+    <!-- Product Detail -->
+    <string name="title_product_detail">Product Detail</string>
 </resources>

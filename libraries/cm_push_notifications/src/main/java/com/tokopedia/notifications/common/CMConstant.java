@@ -27,6 +27,9 @@ public interface CMConstant {
     String GADSID_CACHE_KEY = "gadsid_cache";
     String UNIQUE_APP_ID_CACHE_KEY = "unique_app_id__cache";
     String APP_VERSION_CACHE_KEY = "app_version_cache_key";
+    String INAPP_DISPLAY_COUNTER = "inapp_display_counter";
+    String MAX_INAPP_DISPLAY_COUNT = "max_inapp_display_count";
+    String NEXT_INAPP_DISPLAY_TIME = "next_inapp_display_time";
     String EXTRA_CAMPAIGN_ID = "extra_campaign_id";
     String EXTRA_PRE_DEF_ACTION = "extra_pre_def_action";
     String HTTP = "http";
@@ -189,10 +192,12 @@ public interface CMConstant {
 
     interface CouponCodeExtra {
         String COUPON_CODE = "coupon_code";
+        String GRATIFICATION_ID = "gratificationId";
     }
 
     interface CustomValuesKeys {
         String COUPON_CODE = "coupon_code";
+        String GRATIFICATION_ID = "gratificationId";
     }
 
     interface TimberTags {

@@ -1,0 +1,23 @@
+[
+  {
+    "data": {
+      "login_token": {
+        "acc_sid": "",
+        "access_token": "LXh/eIz5fbxtPhbWLhCmvTheYyPvkzNZ+5vxly5OkOcE24pBt4U/el6I4CN6rDc0",
+        "expires_in": 5184000,
+        "refresh_token": "orG1ydvWS4Ss4L8vXjJZPg",
+        "sid": "",
+        "token_type": "Bearer",
+        "sq_check": false,
+        "action": 0,
+        "errors": [],
+        "event_code": "SuccessLoginFb",
+        "popup_error": {
+          "header": "",
+          "body": "",
+          "action": ""
+        }
+      }
+    }
+  }
+]

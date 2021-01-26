@@ -19,8 +19,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationReposit
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
-import com.tokopedia.tkpd.tkpdreputation.network.shop.FaveShopActService;
-import com.tokopedia.tkpd.tkpdreputation.network.shop.ShopService;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase;
@@ -29,12 +27,8 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewPro
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
-import kotlinx.coroutines.CoroutineDispatcher;
-import kotlinx.coroutines.Dispatchers;
 
 /**
  * @author by nisie on 8/11/17.
@@ -46,14 +40,6 @@ public class ReputationModule {
     @ReputationScope
     @Provides
     GraphqlRepository provideGraphqlRepository() { return GraphqlInteractor.getInstance().getGraphqlRepository(); }
-
-    @ReputationScope
-    @Provides
-    @Named("Main")
-    CoroutineDispatcher provideMainDispatcher() {
-        return Dispatchers.getMain();
-    }
-
 
     @ReputationScope
     @Provides
@@ -103,26 +89,6 @@ public class ReputationModule {
     @Provides
     ReviewProductService provideReviewProductService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
         return new ReviewProductService(
-                context,
-                networkRouter,
-                userSession
-        );
-    }
-
-    @ReputationScope
-    @Provides
-    ShopService provideShopService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
-        return new ShopService(
-                context,
-                networkRouter,
-                userSession
-        );
-    }
-
-    @ReputationScope
-    @Provides
-    FaveShopActService provideFaveShopActService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
-        return new FaveShopActService(
                 context,
                 networkRouter,
                 userSession

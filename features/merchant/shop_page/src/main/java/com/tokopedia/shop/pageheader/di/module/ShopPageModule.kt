@@ -5,13 +5,13 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.GqlQueryConstant
-import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
-import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
-import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.di.scope.ShopPageScope
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
@@ -28,7 +28,6 @@ import dagger.Provides
 import javax.inject.Named
 
 
-@ShopPageScope
 @Module(includes = [ShopViewModelModule::class])
 class ShopPageModule {
 
@@ -195,8 +194,7 @@ class ShopPageModule {
             @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT) queryShopInfoTopContent: String,
             @Named(ShopPageHeaderConstant.SHOP_PAGE_GET_HOME_TYPE) queryShopHomeType: String,
             @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS) queryShopInfoCoreAssets: String,
-            @Named(ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST) queryShopFeedWhitelist: String,
-            @Named(GQLQueryConstant.SHOP_PRODUCT) queryShopProduct: String
+            @Named(ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST) queryShopFeedWhitelist: String
     ): Map<String, String> {
         return mapOf(
                 GQLQueryNamedConstant.GET_IS_OFFICIAL to queryGetIsOfficial,
@@ -204,14 +202,19 @@ class ShopPageModule {
                 GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT to queryShopInfoTopContent,
                 ShopPageHeaderConstant.SHOP_PAGE_GET_HOME_TYPE to queryShopHomeType,
                 GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS to queryShopInfoCoreAssets,
-                ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST to queryShopFeedWhitelist,
-                GQLQueryConstant.SHOP_PRODUCT to queryShopProduct
+                ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST to queryShopFeedWhitelist
         )
     }
 
     @ShopPageScope
     @Provides
-    fun getCoroutineDispatcherProvider(): CoroutineDispatcherProvider {
-        return CoroutineDispatcherProviderImpl
+    fun getCoroutineDispatcherProvider(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
+    }
+
+    @ShopPageScope
+    @Provides
+    fun provideFirebaseRemoteConfig(@ApplicationContext context: Context) : RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }

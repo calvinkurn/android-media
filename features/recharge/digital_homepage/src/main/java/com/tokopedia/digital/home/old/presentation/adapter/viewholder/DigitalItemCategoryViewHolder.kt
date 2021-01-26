@@ -1,11 +1,11 @@
-package com.tokopedia.digital.home.presentation.adapter.viewholder
+package com.tokopedia.digital.home.old.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.presentation.adapter.adapter.DigitalItemSubMenuCategoryAdapter
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
+import com.tokopedia.digital.home.old.presentation.adapter.adapter.DigitalItemSubMenuCategoryAdapter
+import com.tokopedia.digital.home.old.presentation.listener.OnItemBindListener
 import kotlinx.android.synthetic.main.layout_digital_home_category_item.view.*
 
 class DigitalItemCategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

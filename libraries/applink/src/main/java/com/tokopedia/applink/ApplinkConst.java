@@ -8,6 +8,7 @@ package com.tokopedia.applink;
 
 public interface ApplinkConst {
     String APPLINK_CUSTOMER_SCHEME = "tokopedia";
+    String HOME_NAVIGATION = "tokopedia://navigation/main";
     String HOME = "tokopedia://home";
     String HOME_FEED = "tokopedia://home/feed";
     String HOME_ACCOUNT = "tokopedia://home/account";
@@ -59,8 +60,10 @@ public interface ApplinkConst {
     String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
     String REPUTATION = "tokopedia://review";
     String REPUTATION_DETAIL = "tokopedia://review/{reputation_id}";
+    String REVIEW_DETAIL = "tokopedia://review/detail/{feedback_id}";
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
+    String SELLER_REVIEW = "tokopedia://seller-review-detail";
     String WEBVIEW = "tokopedia://webview";
     String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
     String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
@@ -113,8 +116,6 @@ public interface ApplinkConst {
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String CHAT_BOT = "tokopedia://chatbot";
-    String GROUPCHAT_LIST = "tokopedia://groupchat";
-    String GROUPCHAT_DETAIL = "tokopedia://groupchat/{channel_id}";
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
     String REFERRAL = "tokopedia://referral";
     String WALLET_HOME = "tokopedia://wallet";
@@ -148,12 +149,14 @@ public interface ApplinkConst {
     String EVENTS_ORDER = "tokopedia://events/order";
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
+    String TRAIN_ORDER = "tokopedia://kereta/order";
     String GIFT_CARDS_ORDER = "tokopedia://giftcards/order";
     String INSURANCE_ORDER = "tokopedia://insurance/order";
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL = "tokopedia://hotel";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
+    String TRAVEL_SUBHOMEPAGE_HOME = "tokopedia://travelentertainment/home";
 
     String OMS_ORDER_DETAIL = "tokopedia://order/";
     String MARKETPLACE_ORDER = "tokopedia://marketplace/order";
@@ -224,6 +227,7 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
 
     String SELLER_PURCHASE_CANCELED = "tokopedia://seller/cancelled";
+    String SELLER_PURCHASE_CANCELLATION_REQUEST = "tokopedia://seller/cancellationrequest";
     String SELLER_PURCHASE_WAITING_PICKUP = "tokopedia://seller/waitingpickup";
     String SELLER_PURCHASE_WAITING_AWB = "tokopedia://seller/waitingawb";
     String SELLER_PURCHASE_AWB_INVALID = "tokopedia://seller/awbinvalid";
@@ -328,6 +332,8 @@ public interface ApplinkConst {
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
 
+    String ACCOUNT = "tokopedia://account";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
@@ -383,6 +389,9 @@ public interface ApplinkConst {
         String TOPADS_PRODUCT_CREATE = "sellerapp://topads/create";
         String TOPADS_CREATE_ADS = "sellerapp://topads/create-ads";
         String TOPADS_CREATE_ONBOARDING = "sellerapp://topads/creation-onboard";
+        String TOPADS_HEADLINE_CREATE = "sellerapp://topads/headline-ad-creation";
+        String TOPADS_HEADLINE_EDIT = "sellerapp://topads/headline-ad-edit";
+        String TOPADS_HEADLINE_DETAIL = "sellerapp://topads/headline-ad-detail";
         String TOPADS_CREATE_AUTO_ADS = "sellerapp://topads/create-autoads";
         String TOPADS_EDIT_AUTO_ADS = "sellerapp://topads/edit-autoads";
         String TOPADS_CREDIT_HISTORY = "sellerapp://topads/history-credit";
@@ -401,6 +410,9 @@ public interface ApplinkConst {
         String SELLER_SEARCH = "sellerapp://seller-search";
         String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
         String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
+        String SHOP_FEED = "sellerapp://shop/{shop_id}/feed";
+        String CONTENT_CREATE_POST = "sellerapp://content/create_post";
+        String SELLER_SHIPPING_EDITOR = "sellerapp://setting/shipping-editor";
     }
 
     interface Query {
@@ -475,11 +487,14 @@ public interface ApplinkConst {
         String PARAM_SHOP_ID = "shop_id";
     }
 
-    interface Play {
-        String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
-        String PARAM_HAS_TITLEBAR = "titlebar";
-        String PARAM_URL = "url";
-        String HOST = "groupchat";
+    interface AttachProduct {
+        String TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY = "TKPD_ATTACH_PRODUCT_SHOP_ID";
+        String TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY = "TKPD_ATTACH_PRODUCT_IS_SELLER";
+        String TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY = "TKPD_ATTACH_PRODUCT_SHOP_NAME";
+        String TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED = "TKPD_ATTACH_PRODUCT_MAX_CHECKED";
+        String TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY = "TKPD_ATTACH_PRODUCT_SOURCE";
+        String TOKOPEDIA_ATTACH_PRODUCT_HIDDEN = "TKPD_ATTACH_PRODUCT_HIDDEN";
+        String TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY = "TKPD_ATTACH_PRODUCT_RESULTS";
     }
 
     interface Notification {
@@ -564,5 +579,9 @@ public interface ApplinkConst {
         interface Reward {
             String REWARDS = "rewards";
         }
+    }
+
+    interface Navigation{
+        String MAIN_NAV = "tokopedia://navigation/main";
     }
 }

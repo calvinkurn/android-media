@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.firebase.crashlytics'
+//apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
 apply from: '../tools/set_debug_tools.gradle'
 
 kapt {
@@ -63,9 +63,9 @@ android {
 }
 dependencies {
     implementation project(rootProject.ext.libraries.applink)
-    implementation (project(rootProject.ext.features.sessioncommon))
-    implementation (project(rootProject.ext.libraries.remoteConfig))
-    implementation (project(rootProject.ext.libraries.remoteResourceRequest))
+    implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
