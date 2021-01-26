@@ -176,7 +176,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     override fun onInboxItemClicked(talkInboxUiModel: TalkInboxUiModel?, talkInboxOldUiModel: TalkInboxOldUiModel?, position: Int) {
         talkInboxUiModel?.inboxDetail?.let {
-            talkInboxTracking.eventClickThreadEcommerce(viewModel.getType(), it.questionID,  viewModel.getUserId(), position, !it.isUnread)
+            talkInboxTracking.eventClickThreadEcommerce(viewModel.getType(), it.questionID,  viewModel.getUserId(), position, it.isUnread)
             goToReply(it.questionID)
             if(it.isUnread || it.state.isUnresponded || it.state.hasProblem) {
                 containerListener?.decreaseDiscussionUnreadCounter()
