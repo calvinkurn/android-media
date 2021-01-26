@@ -59,7 +59,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     warehouseLabel.hide()
                 }
 
-                if(item.dataObject.statusIndicatorColor.isNotBlank()) {
+                if (item.dataObject.statusIndicatorColor.isNotBlank()) {
                     somOrderDetailIndicator.background = Utils.getColoredIndicator(context, item.dataObject.statusIndicatorColor)
                 }
 
@@ -75,7 +75,14 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     } else {
                         item.dataObject.awbUploadProofText
                     }
-                    setupTicker(ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo, tickerContent)
+                    val isAwb = item.dataObject.tickerInfo.text.isEmpty()
+                    val tickerUrl = if (item.dataObject.tickerInfo.actionUrl.isNotEmpty()) {
+                        item.dataObject.tickerInfo.actionUrl
+                    } else {
+                        item.dataObject.awbUploadUrl
+                    }
+
+                    setupTicker(ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo, tickerContent, tickerUrl, isAwb)
                     ticker_detail_buyer_request_cancel?.show()
                 } else {
                     ticker_detail_buyer_request_cancel?.gone()
@@ -135,15 +142,15 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         }
     }
 
-    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo, tickerContent: String) {
+    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo, tickerContent: String, tickerUrl: String, isAwb: Boolean) {
         tickerBuyerRequestCancel?.apply {
-            val tickerDescription = makeTickerDescription(context, tickerInfo, tickerContent)
+            val tickerDescription = makeTickerDescription(context, tickerInfo, tickerContent, isAwb)
             setTextDescription(tickerDescription)
 
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     if (tickerInfo.actionUrl.isNotBlank()) {
-                        RouteManager.route(context, String.format("%s?=url", ApplinkConst.WEBVIEW, tickerInfo.actionUrl))
+                        RouteManager.route(context, String.format("%s?=url", ApplinkConst.WEBVIEW, tickerUrl))
                     }
                 }
 
@@ -154,26 +161,48 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         }
     }
 
-    private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo, tickerContent: String): String {
-        val message = Utils.getL2CancellationReason(tickerContent, context.getString(R.string.som_header_detail_ticker_cancellation))
-        val messageLink = tickerInfo.actionText
-        val spannedMessage = SpannableStringBuilder()
-                .append(message)
-                .append(" $messageLink")
+    private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo, tickerContent: String, isAwb: Boolean): String {
+        val message = Utils.getL2CancellationReason(tickerInfo.actionText, context.getString(R.string.som_header_detail_ticker_cancellation))
+        val additionalInvalidResi = itemView.context.getString(R.string.additional_invalid_resi)
 
-        if (messageLink.isNotBlank()) {
+        val spannedMessage = if (isAwb) {
+            SpannableStringBuilder()
+                    .append(tickerContent)
+                    .append(" $additionalInvalidResi")
+        } else {
+            SpannableStringBuilder()
+                    .append(message)
+                    .append(" ${tickerInfo.actionText}")
+        }
+
+        if(isAwb) {
             spannedMessage.setSpan(
-                    UrlSpanNoUnderline(messageLink),
+                    UrlSpanNoUnderline(additionalInvalidResi),
                     message.length + 2,
-                    message.length + messageLink.length,
+                    message.length + additionalInvalidResi.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             spannedMessage.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)),
                     message.length + 2,
-                    message.length + messageLink.length,
+                    message.length + additionalInvalidResi.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
+        } else {
+            if (tickerInfo.actionText.isNotBlank()) {
+                spannedMessage.setSpan(
+                        UrlSpanNoUnderline(tickerInfo.actionText),
+                        message.length + 2,
+                        message.length + tickerInfo.actionText.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                spannedMessage.setSpan(
+                        ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)),
+                        message.length + 2,
+                        message.length + tickerInfo.actionText.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
         }
 
         return spannedMessage.toString()
