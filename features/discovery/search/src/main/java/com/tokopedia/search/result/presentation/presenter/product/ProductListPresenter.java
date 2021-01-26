@@ -19,6 +19,7 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
@@ -171,6 +172,7 @@ final class ProductListPresenter
     private boolean hasFullThreeDotsOptions = false;
     @Nullable private CpmModel cpmModel = null;
     @Nullable private List<CpmData> cpmDataList = null;
+    private boolean isABTestNavigationRevamp = false;
 
     @Inject
     ProductListPresenter(
@@ -209,6 +211,19 @@ final class ProductListPresenter
         super.attachView(view);
 
         hasFullThreeDotsOptions = getHasFullThreeDotsOptions();
+        isABTestNavigationRevamp = isABTestNavigationRevamp();
+    }
+
+    private boolean isABTestNavigationRevamp() {
+        try {
+            return getView().getABTestRemoteConfig()
+                    .getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
+                    .equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private boolean getHasFullThreeDotsOptions() {
@@ -236,10 +251,6 @@ final class ProductListPresenter
     @Override
     public String getDeviceId() {
         return userSession.getDeviceId();
-    }
-
-    private Map<String, String> getAdditionalParamsMap() {
-        return UrlParamUtils.getParamMap(additionalParams);
     }
 
     @Override
@@ -290,6 +301,7 @@ final class ProductListPresenter
     @Override
     public void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded) {
         if (isViewVisible) {
+            getView().setupSearchNavigation();
             getView().trackScreenAuthenticated();
 
             if (isViewAdded && !hasLoadData) {
@@ -308,12 +320,11 @@ final class ProductListPresenter
     private void searchProductLoadMore(Map<String, Object> searchParameter) {
         checkViewAttached();
 
-        Map<String, String> additionalParams = getAdditionalParamsMap();
-        if (searchParameter == null || additionalParams == null) return;
+        if (searchParameter == null) return;
 
         RequestParams requestParams = createInitializeSearchParam(searchParameter);
         enrichWithRelatedSearchParam(requestParams);
-        enrichWithAdditionalParams(requestParams, additionalParams);
+        enrichWithAdditionalParams(requestParams);
 
         RequestParams useCaseRequestParams = createSearchProductRequestParams(requestParams);
 
@@ -471,6 +482,8 @@ final class ProductListPresenter
                     .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
+
+            additionalParams = productViewModel.getAdditionalParams();
 
             if (productViewModel.getProductList().isEmpty()) {
                 getViewToProcessEmptyResultDuringLoadMore(searchProductModel.getSearchProduct());
@@ -634,16 +647,12 @@ final class ProductListPresenter
         setNavSource(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.NAVSOURCE));
         setPageId(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SRP_PAGE_ID));
         setPageTitle(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SRP_PAGE_TITLE));
+        resetAdditionalParams();
 
-        Map<String, String> additionalParams = getAdditionalParamsMap();
-        if (searchParameter == null || additionalParams == null) return;
+        if (searchParameter == null) return;
 
         RequestParams requestParams = createInitializeSearchParam(searchParameter);
         enrichWithRelatedSearchParam(requestParams);
-
-        if (checkShouldEnrichWithAdditionalParams(additionalParams)) {
-            enrichWithAdditionalParams(requestParams, additionalParams);
-        }
 
         RequestParams useCaseRequestParams = createSearchProductRequestParams(requestParams);
 
@@ -667,8 +676,8 @@ final class ProductListPresenter
         this.pageTitle = pageTitle;
     }
 
-    private boolean checkShouldEnrichWithAdditionalParams(Map<String, String> additionalParams) {
-        return getView().isAnyFilterActive() && additionalParams != null;
+    private void resetAdditionalParams() {
+        this.additionalParams = "";
     }
 
     private Subscriber<SearchProductModel> getLoadDataSubscriber(final Map<String, Object> searchParameter) {
@@ -761,6 +770,7 @@ final class ProductListPresenter
         doInBackground(productViewModel, this::sendTrackingNoSearchResult);
 
         getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
+        getView().setDefaultLayoutType(productViewModel.getDefaultView());
 
         if (productViewModel.getProductList().isEmpty()) {
             getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel, searchParameter);
@@ -1050,9 +1060,9 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        int changeViewPosition = list.size();
-        list.add(new SearchProductCountViewModel(changeViewPosition, searchProduct.getHeader().getTotalDataText()));
-        getView().setDefaultLayoutType(changeViewPosition, productViewModel.getDefaultView());
+        if (isABTestNavigationRevamp) {
+            list.add(new SearchProductCountViewModel(list.size(), searchProduct.getHeader().getTotalDataText()));
+        }
 
         addPageTitle(list);
 
@@ -1092,9 +1102,7 @@ final class ProductListPresenter
 
         processHeadlineAds(searchParameter, list);
 
-        if (!textIsEmpty(productViewModel.getAdditionalParams())) {
-            additionalParams = productViewModel.getAdditionalParams();
-        }
+        additionalParams = productViewModel.getAdditionalParams();
 
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
         processInspirationCarouselPosition(searchParameter, list);
@@ -1545,12 +1553,15 @@ final class ProductListPresenter
     }
 
     private void sendGeneralSearchTracking(ProductViewModel productViewModel) {
+        String query = getView().getQueryKey();
+
+        if (textIsEmpty(query)) return;
+
         JSONArray afProdIds = new JSONArray();
         HashMap<String, String> moengageTrackingCategory = new HashMap<>();
         Set<String> categoryIdMapping = new HashSet<>();
         Set<String> categoryNameMapping = new HashSet<>();
         ArrayList<String> prodIdArray = new ArrayList<>();
-        String query = getView().getQueryKey();
 
         if (productViewModel.getProductList().size() > 0) {
             for (int i = 0; i < productViewModel.getProductList().size(); i++) {
@@ -1705,9 +1716,13 @@ final class ProductListPresenter
         requestParams.putBoolean(SearchApiConst.RELATED, true);
     }
 
-    protected void enrichWithAdditionalParams(RequestParams requestParams,
-                                              Map<String, String> additionalParams) {
+    protected void enrichWithAdditionalParams(RequestParams requestParams) {
+        Map<String, String> additionalParams = getAdditionalParamsMap();
         requestParams.putAllString(additionalParams);
+    }
+
+    private Map<String, String> getAdditionalParamsMap() {
+        return UrlParamUtils.getParamMap(additionalParams);
     }
 
     @Override
@@ -1886,12 +1901,6 @@ final class ProductListPresenter
         RequestParams requestParams = createInitializeSearchParam(new HashMap<>(mapParameter));
 
         enrichWithRelatedSearchParam(requestParams);
-
-        Map<String, String> additionalParams = getAdditionalParamsMap();
-
-        if (checkShouldEnrichWithAdditionalParams(additionalParams)) {
-            enrichWithAdditionalParams(requestParams, additionalParams);
-        }
 
         requestParams.putString(SearchApiConst.ROWS, "0");
 

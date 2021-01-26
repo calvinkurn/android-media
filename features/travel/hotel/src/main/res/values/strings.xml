@@ -13,6 +13,8 @@
     <string name="hotel_facility_title">Fasilitas</string>
     <string name="hotel_policy_title">Kebijakan</string>
 
+    <string name="hotel_ticker_desc">\u0020&lt;a href=&quot;%1$s&quot;&gt;Lihat detail&lt;/a&gt;</string>
+
     <string name="hotel_search_result_applink_format">tokopedia://hotel/result?type=%1$s&amp;id=%2$s&amp;name=%3$s</string>
     <string name="hotel_search_result_change">Ubah</string>
     <string name="hotel_search_filter_label">Filter</string>

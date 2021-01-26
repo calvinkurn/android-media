@@ -99,7 +99,7 @@ class DataViewMapper @Inject constructor(
             } else {
                 val item = CommonDataView(
                         title = wallet.cashBalance.toEmptyStringIfNull(),
-                        body = getString(context, R.string.account_title_points_item) + wallet.pointBalance.toEmptyStringIfNull(),
+                        body = getString(context, R.string.account_title_points_item) + " " + wallet.pointBalance.toEmptyStringIfNull(),
                         type = CommonViewHolder.TYPE_DEFAULT,
                         applink = wallet.applink.toEmptyStringIfNull(),
                         icon = R.drawable.ic_account_ovo

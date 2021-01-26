@@ -21,6 +21,8 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.TkpdIdlingResource
+import com.tokopedia.thankyou_native.TkpdIdlingResourceProvider
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.DaggerThankYouPageComponent
@@ -32,18 +34,16 @@ import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCal
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+var idlingResource: TkpdIdlingResource? = null
 
 
 const val SCREEN_NAME = "Finish Transaction"
 const val ARG_PAYMENT_ID = "payment_id"
 const val ARG_MERCHANT = "merchant"
 
-private const val EXP_NAME = "Navigation Revamp"
-private const val VARIANT_OLD = "existing navigation"
-private const val VARIANT_REVAMP = "navigation revamp"
 private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
 
-
+private const val KEY_CONFIG_NEW_NAVIGATION = "app_flag_thankyou_new_navigation"
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
         ThankYouPageDataLoadCallback {
@@ -69,6 +69,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         super.onCreate(savedInstanceState)
         updateTitle("")
         component.inject(this)
+        idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
+        idlingResource?.increment()
     }
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
@@ -97,9 +99,10 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
             supportFragmentManager.beginTransaction()
                     .replace(parentViewResourceID, fragmentByPaymentMode.fragment, tagFragment)
                     .commit()
+            decideDialogs(it.fragment, thanksPageData)
         } ?: run { gotoHomePage() }
-        decideDialogs(fragment, thanksPageData)
         postEventOnThankPageDataLoaded(thanksPageData)
+        idlingResource?.decrement()
     }
 
     private fun decideDialogs(selectedFragment: Fragment?, thanksPageData: ThanksPageData) {
@@ -133,6 +136,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun onInvalidThankYouPage() {
         gotoHomePage()
+        idlingResource?.decrement()
         finish()
     }
 
@@ -206,8 +210,13 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     private fun isGlobalNavEnable(): Boolean {
-        getAbTestPlatform()?.let {
-            return it.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
+        val isNewNavigationEnabled = FirebaseRemoteConfigImpl(this).getBoolean(KEY_CONFIG_NEW_NAVIGATION,
+                false)
+        if(isNewNavigationEnabled) {
+            getAbTestPlatform()?.let {
+                return (it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
+                        == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+            }
         }
         return false
     }

@@ -19,7 +19,6 @@ import dagger.Provides
 import javax.inject.Named
 import dagger.Lazy as daggerLazy
 
-@SearchScope
 @Module(includes = [
     SearchShopUseCaseModule::class,
     GetDynamicFilterCoroutineUseCaseModule::class,

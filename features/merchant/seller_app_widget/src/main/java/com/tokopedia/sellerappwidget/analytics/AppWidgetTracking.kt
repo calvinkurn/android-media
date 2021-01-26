@@ -2,6 +2,7 @@ package com.tokopedia.sellerappwidget.analytics
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -32,7 +33,7 @@ class AppWidgetTracking(context: Context) {
         UserSession(context)
     }
     private val cacheHandler: LocalCacheHandler by lazy {
-        LocalCacheHandler(context, Const.SHARED_PREF_NAME)
+        AppWidgetHelper.getCacheHandler(context)
     }
 
     fun sendEventImpressionSuccessStateChatWidget() {
@@ -208,7 +209,7 @@ class AppWidgetTracking(context: Context) {
 
     private fun createImpressionOrderWidget(action: String): MutableMap<String, Any> {
         return createMap(
-                TrackingConstant.Event.VIEW_ORDER_WIDGET,
+                TrackingConstant.Event.VIEW_CHAT_WIDGET,
                 TrackingConstant.Category.ORDER_WIDGET,
                 action,
                 ""
@@ -217,7 +218,7 @@ class AppWidgetTracking(context: Context) {
 
     private fun createClickOrderWidget(action: String): MutableMap<String, Any> {
         return createMap(
-                TrackingConstant.Event.CLICK_ORDER_WIDGET,
+                TrackingConstant.Event.CLICK_CHAT_WIDGET,
                 TrackingConstant.Category.ORDER_WIDGET,
                 action,
                 ""
@@ -276,6 +277,7 @@ class AppWidgetTracking(context: Context) {
         val isWidgetEnabled = cacheHandler.getBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, false)
         if ((lastSend.plus(oneDayMillis) <= nowMillis || lastSend == nowMillis) && isWidgetEnabled) {
             cacheHandler.putLong(actionKey, nowMillis)
+            cacheHandler.applyEditor()
             callback()
         }
     }
@@ -292,6 +294,7 @@ class AppWidgetTracking(context: Context) {
         val isWidgetEnabled = cacheHandler.getBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
         if ((lastSend.plus(oneDayMillis) <= nowMillis || lastSend == nowMillis) && isWidgetEnabled) {
             cacheHandler.putLong(actionKey, nowMillis)
+            cacheHandler.applyEditor()
             callback()
         }
     }

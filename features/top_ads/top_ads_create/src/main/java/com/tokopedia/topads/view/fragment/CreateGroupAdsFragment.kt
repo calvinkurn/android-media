@@ -16,7 +16,6 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
-import com.tokopedia.topads.data.response.ResponseGroupValidateName.TopAdsGroupValidateName
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.CreateGroupAdsViewModel
@@ -145,7 +144,7 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             error_text?.text = t.message
     }
 
-    private fun onSuccess(data: TopAdsGroupValidateName.Data) {
+    private fun onSuccess() {
         errorTextVisibility(false)
         gotoNextPage()
     }

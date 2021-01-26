@@ -40,6 +40,7 @@ class VerificationActivity : BaseOtpActivity() {
 
     var isResetPin2FA = false
     private var otpData = OtpData()
+    private var isLoginRegisterFlow = false
 
     override fun getNewFragment(): Fragment? = null
 
@@ -82,11 +83,13 @@ class VerificationActivity : BaseOtpActivity() {
         otpData.userIdEnc = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, "").toEmptyStringIfNull()
 
         otpData.accessToken = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, "").toEmptyStringIfNull()
+        isLoginRegisterFlow = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, false)?: false
     }
 
     private fun createBundle(modeListData: ModeListData? = null): Bundle {
         val bundle = Bundle()
         bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, isLoginRegisterFlow)
         modeListData?.let {
             bundle.putParcelable(OtpConstant.OTP_MODE_EXTRA, it)
         }

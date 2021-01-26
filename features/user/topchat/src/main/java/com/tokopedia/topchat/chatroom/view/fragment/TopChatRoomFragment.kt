@@ -35,7 +35,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -940,7 +939,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun pickImageToUpload() {
         activity?.let {
-            val builder = ImagePickerBuilder.getOriginalImageBuilder(it).apply {
+            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
+                    .withSimpleMultipleSelection(maxPick = 1).apply {
                 maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
             }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
@@ -1748,6 +1748,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         )
         reviewRequest.push(reviewRequestResult)
         startActivityForResult(intent, REQUEST_REVIEW)
+    }
+
+    override fun trackReviewCardImpression(element: ReviewUiModel) {
+        analytics.trackReviewCardImpression(element, isSeller(), session.userId)
+    }
+
+    override fun trackReviewCardClick(element: ReviewUiModel) {
+        analytics.trackReviewCardClick(element, isSeller(), session.userId)
     }
 
     companion object {

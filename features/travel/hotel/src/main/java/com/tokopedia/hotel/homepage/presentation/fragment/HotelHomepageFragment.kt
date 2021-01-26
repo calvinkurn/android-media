@@ -3,6 +3,7 @@ package com.tokopedia.hotel.homepage.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -101,7 +102,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         }
 
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
-            hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)
+            hotelHomepageModel = savedInstanceState.getParcelable<HotelHomepageModel>(EXTRA_HOTEL_MODEL)
                     ?: HotelHomepageModel()
         } else if (arguments != null) {
             //for applink with param searchId and searchType
@@ -177,6 +178,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         // last search need to reload every time user back to homepage
         hideHotelLastSearchContainer()
         loadRecentSearchData()
+        renderView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -258,7 +260,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        hotelHomepageTicker.setHtmlDescription(travelTickerModel.message)
+        if (travelTickerModel.title.isNotEmpty()) hotelHomepageTicker.tickerTitle = travelTickerModel.title
+        var message = travelTickerModel.message
+        if (travelTickerModel.url.isNotEmpty()) message += getString(R.string.hotel_ticker_desc, travelTickerModel.url)
+        hotelHomepageTicker.setHtmlDescription(message)
         hotelHomepageTicker.tickerType = Ticker.TYPE_WARNING
         hotelHomepageTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -356,30 +361,31 @@ class HotelHomepageFragment : HotelBaseFragment(),
         tv_hotel_homepage_destination.textFieldInput.isFocusable = false
         tv_hotel_homepage_destination.textFieldWrapper.isHelperTextEnabled = false
         tv_hotel_homepage_destination.textFieldInput.setOnClickListener { onDestinationChangeClicked() }
+        tv_hotel_homepage_destination.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
         tv_hotel_homepage_checkin_date.textFieldInput.tag = R.id.tv_hotel_homepage_checkin_date.toString()
         tv_hotel_homepage_checkin_date.textFieldInput.isClickable = true
         tv_hotel_homepage_checkin_date.textFieldInput.isFocusable = false
         tv_hotel_homepage_checkin_date.textFieldWrapper.isHelperTextEnabled = false
         tv_hotel_homepage_checkin_date.textFieldInput.setOnClickListener { configAndRenderCheckInDate() }
+        tv_hotel_homepage_checkin_date.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
         tv_hotel_homepage_checkout_date.textFieldInput.tag = R.id.tv_hotel_homepage_checkout_date.toString()
         tv_hotel_homepage_checkout_date.textFieldInput.isClickable = true
         tv_hotel_homepage_checkout_date.textFieldInput.isFocusable = false
         tv_hotel_homepage_checkout_date.textFieldWrapper.isHelperTextEnabled = false
         tv_hotel_homepage_checkout_date.textFieldInput.setOnClickListener { configAndRenderCheckOutDate() }
+        tv_hotel_homepage_checkout_date.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
         tv_hotel_homepage_guest_info.textFieldInput.tag = R.id.tv_hotel_homepage_guest_info.toString()
         tv_hotel_homepage_guest_info.textFieldInput.isClickable = true
         tv_hotel_homepage_guest_info.textFieldInput.isFocusable = false
         tv_hotel_homepage_guest_info.textFieldWrapper.isHelperTextEnabled = false
         tv_hotel_homepage_guest_info.textFieldInput.setOnClickListener { onGuestInfoClicked() }
-
+        tv_hotel_homepage_guest_info.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
         btn_hotel_homepage_search.setOnClickListener { onSearchButtonClicked() }
         tv_hotel_homepage_all_promo.setOnClickListener { RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_PROMO_LIST) }
-
-        renderView()
     }
 
     private fun checkCheckInAndCheckOutDate() {
@@ -746,7 +752,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
-        const val HOMEPAGE_BG_IMAGE_URL = "https://ecs7.tokopedia.net/android/res/singleDpi/bg_hotel_homepage_tiny.png"
+        const val HOMEPAGE_BG_IMAGE_URL = "https://ecs7.tokopedia.net/img/android/res/singleDpi/bg_hotel_homepage_background.png"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 

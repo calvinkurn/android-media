@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.shopcreation.di
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.shopcreation.domain.usecase.RegisterCheckUseCase
 import com.tokopedia.loginregister.shopcreation.domain.usecase.ShopInfoUseCase
 import dagger.Module
@@ -13,7 +14,6 @@ import javax.inject.Named
  * ade.hadian@tokopedia.com
  */
 
-@ShopCreationScope
 @Module
 class ShopCreationUseCaseModule {
 
@@ -22,14 +22,14 @@ class ShopCreationUseCaseModule {
     fun provideRegisterCheckUseCase(
             @Named(ShopCreationQueryConstant.MUTATION_REGISTER_CHECK) query: String,
             graphqlRepository: GraphqlRepository,
-            @Named(ShopCreationQueryConstant.DISPATCHERS_IO) dispatcher: CoroutineDispatcher
-    ): RegisterCheckUseCase = RegisterCheckUseCase(query, graphqlRepository, dispatcher)
+            dispatcherProvider: DispatcherProvider
+    ): RegisterCheckUseCase = RegisterCheckUseCase(query, graphqlRepository, dispatcherProvider)
 
     @ShopCreationScope
     @Provides
     fun provideShopInfoUseCase(
             @Named(ShopCreationQueryConstant.QUERY_SHOP_INFO) query: String,
             graphqlRepository: GraphqlRepository,
-            @Named(ShopCreationQueryConstant.DISPATCHERS_IO) dispatcher: CoroutineDispatcher
-    ): ShopInfoUseCase = ShopInfoUseCase(query, graphqlRepository, dispatcher)
+            dispatcherProvider: DispatcherProvider
+    ): ShopInfoUseCase = ShopInfoUseCase(query, graphqlRepository, dispatcherProvider)
 }

@@ -14,6 +14,8 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.view.*
 import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -65,6 +67,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
@@ -109,6 +112,7 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetS
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -126,10 +130,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_canceled
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_confirmed
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.tf_cancel_notes
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order_penalty.view.*
+import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
@@ -268,6 +269,8 @@ class SomDetailFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressBar = view.findViewById(R.id.progress_bar)
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        setupToolbar()
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
@@ -564,18 +567,18 @@ class SomDetailFragment : BaseDaggerFragment(),
                     receiverStreet = receiver.street,
                     receiverDistrict = receiver.district + ", " + receiver.city + " " + receiver.postal,
                     receiverProvince = receiver.province,
-                    flagOrderMeta.flagFreeShipping,
-                    bookingInfo.driver.photo,
-                    bookingInfo.driver.name,
-                    bookingInfo.driver.phone,
-                    dropshipper.name,
-                    dropshipper.phone,
-                    bookingInfo.driver.licenseNumber,
-                    bookingInfo.onlineBooking.bookingCode,
-                    bookingInfo.onlineBooking.state,
-                    bookingInfo.onlineBooking.message,
-                    bookingInfo.onlineBooking.messageArray,
-                    bookingInfo.onlineBooking.barcodeType,
+                    isFreeShipping = flagOrderMeta.flagFreeShipping,
+                    driverPhoto = bookingInfo.driver.photo,
+                    driverName = bookingInfo.driver.name,
+                    driverPhone = bookingInfo.driver.phone,
+                    dropshipperName = dropshipper.name,
+                    dropshipperPhone = dropshipper.phone,
+                    driverLicense = bookingInfo.driver.licenseNumber,
+                    onlineBookingCode = bookingInfo.onlineBooking.bookingCode,
+                    onlineBookingState = bookingInfo.onlineBooking.state,
+                    onlineBookingMsg = bookingInfo.onlineBooking.message,
+                    onlineBookingMsgArray = bookingInfo.onlineBooking.messageArray,
+                    onlineBookingType = bookingInfo.onlineBooking.barcodeType,
                     isRemoveAwb = onlineBooking.isRemoveInputAwb,
                     awb = shipment.awb,
                     awbTextColor = shipment.awbTextColor,
@@ -630,6 +633,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                             buttonResp.key.equals(KEY_RESPOND_TO_CANCELLATION, true) -> onShowBuyerRequestCancelReasonBottomSheet(buttonResp)
                             buttonResp.key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
                             buttonResp.key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
+                            buttonResp.key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orZero().toString()), true)
                         }
                     }
                 }
@@ -820,6 +824,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
+                    key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orZero().toString()), true)
                 }
             }
         }
@@ -1473,5 +1478,15 @@ class SomDetailFragment : BaseDaggerFragment(),
         somGlobalError?.hide()
         setLoadingIndicator(false)
         refreshHandler?.finishRefresh()
+    }
+
+    private fun setupToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(som_detail_toolbar)
+                som_detail_toolbar?.title = getString(R.string.title_som_detail)
+            }
+        }
     }
 }

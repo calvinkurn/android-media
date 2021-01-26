@@ -7,8 +7,7 @@ import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.*
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase
+import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.common.HomeAceApi
 import dagger.Module
 import dagger.Provides
@@ -17,8 +16,27 @@ import dagger.Provides
 class HomeDataSourceModule {
     @HomeScope
     @Provides
-    fun provideHomeRemoteDataSource(graphqlRepository: GraphqlRepository, dispatcher: HomeDispatcherProvider,
-    getDynamicChannelsUseCase: GetDynamicChannelsUseCase, getHomeDataUseCase: GetHomeDataUseCase) = HomeRemoteDataSource(dispatcher, getDynamicChannelsUseCase, getHomeDataUseCase)
+    fun provideHomeRemoteDataSource(
+            graphqlRepository: GraphqlRepository,
+            dispatcher: HomeDispatcherProvider,
+            getHomeDynamicChannelsRepository: GetHomeDynamicChannelsRepository,
+            getHomeDataUseCase: GetHomeDataUseCase,
+            getHomeAtfUseCase: GetHomeAtfUseCase,
+            getHomeFlagUseCase: GetHomeFlagUseCase,
+            getHomeTickerRepository: GetHomeTickerRepository,
+            getHomeIconRepository: GetHomeIconRepository,
+            getHomePageBannerUseCase: GetHomePageBannerUseCase
+    )
+            = HomeRemoteDataSource(
+            dispatcher,
+            getHomeDynamicChannelsRepository,
+            getHomeDataUseCase,
+            getHomeAtfUseCase,
+            getHomeFlagUseCase,
+            getHomePageBannerUseCase,
+            getHomeIconRepository,
+            getHomeTickerRepository
+    )
 
     @Provides
     fun provideHomeCachedDataSource(homeDao: HomeDao) = HomeCachedDataSource(homeDao)

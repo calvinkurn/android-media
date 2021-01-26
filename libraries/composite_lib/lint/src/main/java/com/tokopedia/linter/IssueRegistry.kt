@@ -7,6 +7,7 @@ import com.tokopedia.linter.detectors.VectorDrawableDetector
 import com.tokopedia.linter.detectors.gradle.BannedDependencyDetector.DEPENDENCY_BANNED
 import com.tokopedia.linter.detectors.gradle.DeprecatedDependencyDetector.DEPENDENCY_DEPRECATED
 import com.tokopedia.linter.detectors.sourcescanner.elements.ImportDetector.CLASS_IMPORT
+import com.tokopedia.linter.detectors.sourcescanner.elements.annotation.ServerResponseDataTypeDetector.WRONG_DATA_TYPE
 import com.tokopedia.linter.detectors.sourcescanner.method.MethodCallDetector
 import com.tokopedia.linter.unify.UnifyDetector
 
@@ -17,6 +18,7 @@ class IssueRegistry : IssueRegistry() {
                 DEPENDENCY_BANNED,
                 DEPENDENCY_DEPRECATED,
                 CLASS_IMPORT,
+                WRONG_DATA_TYPE,
                 VectorDrawableDetector.ISSUE,
                 MethodCallDetector.METHOD_CALL_PROHIBITED_ISSUE,
                 AnimatedVectorDetector.JAVA_ISSUE,

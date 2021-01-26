@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.variant.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.variant_common.util.VariantItemDecorator
@@ -38,7 +38,7 @@ class ProductVariantViewHolder(val view: View,
                     containerAdapter = VariantContainerAdapter(variantListener)
                     rvContainerVariant.adapter = containerAdapter
                     if (rvContainerVariant.itemDecorationCount == 0) {
-                        rvContainerVariant.addItemDecoration(VariantItemDecorator(MethodChecker.getDrawable(view.context, R.drawable.bg_separator_variant)))
+                        rvContainerVariant.addItemDecoration(VariantItemDecorator(MethodChecker.getDrawable(view.context, com.tokopedia.variant_common.R.drawable.bg_separator_variant)))
                     }
                     rvContainerVariant.itemAnimator = null
                     containerAdapter?.setData(it)

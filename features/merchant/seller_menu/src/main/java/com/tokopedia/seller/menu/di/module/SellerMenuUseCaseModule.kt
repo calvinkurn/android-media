@@ -14,7 +14,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-@SellerMenuScope
 class SellerMenuUseCaseModule {
 
     @SellerMenuScope

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:dither="true"
     android:shape="rectangle" >
-    <solid android:color="@color/Neutral_N0" />
+    <solid android:color="@color/Unify_N0" />
 
     <corners android:radius="@dimen/shake_landing_dp_3" />
 
@@ -14,6 +14,6 @@
         android:top="@dimen/spacing_lvl3" />
 
     <stroke
-        android:color="@color/shake_black_36"
+        android:color="@color/Unify_N700_32"
         android:width="1px"/>
 </shape>
