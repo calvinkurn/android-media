@@ -16,7 +16,6 @@ import dagger.Provides
  * ade.hadian@tokopedia.com
  */
 
-@LoginScope
 @Module
 class LoginUseCaseModule {
 

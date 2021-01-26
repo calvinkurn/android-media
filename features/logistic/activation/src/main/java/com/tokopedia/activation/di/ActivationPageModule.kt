@@ -17,7 +17,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-@ActivationPageScope
 class ActivationPageModule {
 
     @ActivationPageScope
