@@ -382,11 +382,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 val coachMarkConfig = buildP1LoggedInCoachmarkConfig()
                 val coachMark = CoachMark2(requireContext()).buildCoachmarkFromConfig(coachMarkConfig)
                 coachMark.showCoachMark(step = coachMarkConfig.items)
+                coachMarkConfig.onFinish.invoke()
             }
             else {
                 val coachMarkConfig = buildP1NonLoggedInCoachmarkConfig()
                 val coachMark = CoachMark2(requireContext()).buildCoachmarkFromConfig(coachMarkConfig)
                 coachMark.showCoachMark(step = coachMarkConfig.items)
+                coachMarkConfig.onFinish.invoke()
             }
         }
         else if (isFirstViewNavigationNavPageP2()) {
@@ -394,6 +396,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 val coachMarkConfig = buildP2LoggedInCoachmarkConfig()
                 val coachMark = CoachMark2(requireContext()).buildCoachmarkFromConfig(coachMarkConfig)
                 coachMark.showCoachMark(step = coachMarkConfig.items)
+                coachMarkConfig.onFinish.invoke()
             }
         }
         return true
@@ -474,8 +477,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 }
             })
         }
-
-        coachMark.onFinishListener = coachmarkRecyclerViewConfig.onFinish
         return coachMark
     }
 
