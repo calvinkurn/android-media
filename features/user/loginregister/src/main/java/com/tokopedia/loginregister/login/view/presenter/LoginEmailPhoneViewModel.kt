@@ -49,8 +49,11 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.coroutines.CoroutineContext
 
 class LoginEmailPhoneViewModel @Inject constructor(
         private val registerCheckUseCase: RegisterCheckUseCase,
@@ -62,13 +65,15 @@ class LoginEmailPhoneViewModel @Inject constructor(
         private val tickerInfoUseCase: TickerInfoUseCase,
         private val statusPinUseCase: StatusPinUseCase,
         private val dynamicBannerUseCase: DynamicBannerUseCase,
-        private val statusFingerprintUseCase: StatusFingerprintUseCase,
-        private val fingerprintPreferenceHelper: FingerprintSetting,
-        private var cryptographyUtils: Cryptography?,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val dispatcherProvider: DispatcherProvider
 ): BaseViewModel(dispatcherProvider.ui()) {
+
+    private var job: Job = SupervisorJob()
+
+    override val coroutineContext: CoroutineContext
+        get() = dispatcherProvider.io() + job
 
     var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("LOGIN")
 
@@ -84,8 +89,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val activateResponse: LiveData<Result<ActivateUserData>>
         get() = mutableActivateResponse
 
-    private val mutableLoginTokenResponse = MutableLiveData<Result<LoginToken>>()
-    val loginTokenResponse: LiveData<Result<LoginToken>>
+    private val mutableLoginTokenResponse = MutableLiveData<Result<LoginTokenPojo>>()
+    val loginTokenResponse: LiveData<Result<LoginTokenPojo>>
         get() = mutableLoginTokenResponse
 
     private val mutableProfileResponse = MutableLiveData<Result<ProfilePojo>>()
@@ -100,24 +105,24 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val loginTokenFacebookResponse: LiveData<Result<LoginToken>>
         get() = mutableLoginTokenFacebookResponse
 
-    private val mutableLoginTokenFacebookPhoneResponse = MutableLiveData<Result<LoginToken>>()
-    val loginTokenFacebookPhoneResponse: LiveData<Result<LoginToken>>
+    private val mutableLoginTokenFacebookPhoneResponse = MutableLiveData<Result<LoginTokenPojo>>()
+    val loginTokenFacebookPhoneResponse: LiveData<Result<LoginTokenPojo>>
         get() = mutableLoginTokenFacebookPhoneResponse
 
     private val mutableShowPopup = MutableLiveData<PopupError>()
     val showPopup: LiveData<PopupError>
         get() = mutableShowPopup
 
-    private val mutableGoToActivationPage = MutableLiveData<MessageErrorException>()
-    val goToActivationPage: LiveData<MessageErrorException>
+    private val mutableGoToActivationPage = MutableLiveData<String>()
+    val goToActivationPage: LiveData<String>
         get() = mutableGoToActivationPage
 
     private val mutableGoToSecurityQuestion = MutableLiveData<String>()
     val goToSecurityQuestion: LiveData<String>
         get() = mutableGoToSecurityQuestion
 
-    private val mutableLoginTokenGoogleResponse = MutableLiveData<Result<LoginToken>>()
-    val loginTokenGoogleResponse: LiveData<Result<LoginToken>>
+    private val mutableLoginTokenGoogleResponse = MutableLiveData<Result<LoginTokenPojo>>()
+    val loginTokenGoogleResponse: LiveData<Result<LoginTokenPojo>>
         get() = mutableLoginTokenGoogleResponse
 
     private val mutableGoToActivationPageAfterRelogin = MutableLiveData<MessageErrorException>()
@@ -128,12 +133,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val goToSecurityQuestionAfterRelogin: LiveData<String>
         get() = mutableGoToSecurityQuestionAfterRelogin
 
-    private val mutableValidateToken = MutableLiveData<String>()
-    val validateToken: LiveData<String>
-        get() = mutableValidateToken
-
-    private val mutableLoginTokenAfterSQResponse = MutableLiveData<Result<LoginToken>>()
-    val loginTokenAfterSQResponse: LiveData<Result<LoginToken>>
+    private val mutableLoginTokenAfterSQResponse = MutableLiveData<Result<LoginTokenPojo>>()
+    val loginTokenAfterSQResponse: LiveData<Result<LoginTokenPojo>>
         get() = mutableLoginTokenAfterSQResponse
 
     private val mutableGetTickerInfoResponse = MutableLiveData<Result<List<TickerInfoPojo>>>()
@@ -205,10 +206,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
          loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
              accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
              LoginTokenSubscriber(userSession,
-                     { getUserInfo() },
+                     { onSuccessLoginTokenFacebook(it) },
                      { onFailedLoginTokenFacebook(it) },
                      { showPopup(it.loginToken.popupError) },
-                     { onGoToActivationPage(it) },
+                     { onGoToActivationPage(email) },
                      { onGoToSecurityQuestion(email) }
              ))
     }
@@ -218,7 +219,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
                 LoginTokenFacebookSubscriber(userSession,
-                        { mutableLoginTokenFacebookPhoneResponse.value = Success(it.loginToken) },
+                        { mutableLoginTokenFacebookPhoneResponse.value = Success(it) },
                         { mutableLoginTokenFacebookPhoneResponse.value = Fail(it) },
                         { showPopup(it.loginToken.popupError) },
                         { onGoToSecurityQuestion("") }
@@ -231,15 +232,15 @@ class LoginEmailPhoneViewModel @Inject constructor(
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken, LoginTokenUseCase.SOCIAL_TYPE_GOOGLE),
                 LoginTokenSubscriber(userSession,
-                        { getUserInfo() },
+                        { mutableLoginTokenGoogleResponse.value = Success(it) },
                         { mutableLoginTokenGoogleResponse.value = Fail(it) },
                         { showPopup(it.loginToken.popupError) },
-                        { onGoToActivationPage(it) },
+                        { onGoToActivationPage(email) },
                         { onGoToSecurityQuestion(email) }
                 ))
     }
 
-    fun loginEmail(email: String, password: String, isSmartLock: Boolean) {
+    fun loginEmail(email: String, password: String, isSmartLock: Boolean = false) {
         if (isSmartLock) {
             userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
         } else {
@@ -248,10 +249,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
         idlingResourceProvider?.increment()
         loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
                 email, password), LoginTokenSubscriber(userSession,
-                { mutableLoginTokenResponse.value = Success(it.loginToken) },
+                { mutableLoginTokenResponse.value = Success(it) },
                 { mutableLoginTokenResponse.value = Fail(it) },
                 { showPopup(it.loginToken.popupError) },
-                { onGoToActivationPage(it) },
+                { onGoToActivationPage(email) },
                 { onGoToSecurityQuestion(email) },
                 { idlingResourceProvider?.decrement() }
         ))
@@ -260,10 +261,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
     fun reloginAfterSQ(validateToken: String) {
         loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                 userSession, validateToken), LoginTokenSubscriber(userSession,
-                { mutableLoginTokenAfterSQResponse.value = Success(it.loginToken) },
+                { mutableLoginTokenAfterSQResponse.value = Success(it) },
                 { mutableLoginTokenAfterSQResponse.value = Fail(it) },
                 { showPopup(it.loginToken.popupError) },
-                { onGoToActivationPageAfterRelogin(validateToken, it) },
+                { onGoToActivationPageAfterRelogin(it) },
                 { onGoToSecurityQuestionAfterRelogin("") })
         )
     }
@@ -347,8 +348,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
         mutableShowPopup.value = popupError
     }
 
-    private fun onGoToActivationPage(messageErrorException: MessageErrorException) {
-        mutableGoToActivationPage.value = messageErrorException
+    private fun onGoToActivationPage(email: String) {
+        mutableGoToActivationPage.value = email
         idlingResourceProvider?.decrement()
     }
 
@@ -357,8 +358,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
         idlingResourceProvider?.decrement()
     }
 
-    private fun onGoToActivationPageAfterRelogin(validateToken: String, messageErrorException: MessageErrorException) {
-        mutableValidateToken.value = validateToken
+    private fun onGoToActivationPageAfterRelogin(messageErrorException: MessageErrorException) {
         mutableGoToActivationPageAfterRelogin.value = messageErrorException
     }
 
@@ -366,4 +366,15 @@ class LoginEmailPhoneViewModel @Inject constructor(
         mutableGoToSecurityQuestionAfterRelogin.value = email
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        job.children.map {
+            it.cancel()
+        }
+        tickerInfoUseCase.unsubscribe()
+        discoverUseCase.unsubscribe()
+        loginTokenUseCase.unsubscribe()
+        getProfileUseCase.unsubscribe()
+        dynamicBannerUseCase.cancelJobs()
+    }
 }
