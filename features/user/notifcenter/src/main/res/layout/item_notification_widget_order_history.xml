@@ -47,6 +47,34 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_notification_title"
         tools:text="@string/lorem" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_progress_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="iv_mark_seen, view_bottom_line" />
+
+    <ImageView
+        android:id="@+id/iv_mark_seen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/notif_dp_22"
+        android:layout_marginBottom="@dimen/unify_space_24"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toTopOf="@id/rv_history"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_notifcenter_on_progress_mark" />
+
+    <View
+        android:id="@+id/view_bottom_line"
+        android:layout_width="@dimen/notif_dp_1"
+        android:layout_height="@dimen/unify_space_24"
+        android:background="@color/Unify_N100"
+        app:layout_constraintBottom_toTopOf="@+id/rv_history"
+        app:layout_constraintEnd_toEndOf="@+id/iv_mark_seen"
+        app:layout_constraintStart_toStartOf="@+id/iv_mark_seen"
+        app:layout_constraintTop_toBottomOf="@+id/iv_mark_seen" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_history"
         android:layout_width="0dp"

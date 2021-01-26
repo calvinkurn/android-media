@@ -8,4 +8,6 @@ data class TrackHistory(
     val createTimeUnix: Long = 0,
     @SerializedName("title")
     val title: String = ""
-)
+) {
+    val createTimeUnixMillis: Long get() = createTimeUnix * 1000
+}

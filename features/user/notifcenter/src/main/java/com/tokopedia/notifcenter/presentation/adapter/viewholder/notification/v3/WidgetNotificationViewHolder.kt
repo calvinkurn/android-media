@@ -3,22 +3,28 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.TrackHistory
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.time.TimeHelper
 
 class WidgetNotificationViewHolder(
         itemView: View?, listener: NotificationItemListener?
 ) : BaseNotificationViewHolder(itemView, listener) {
 
     private val historyBtn: Typography? = itemView?.findViewById(R.id.tp_history)
+    private val progressIndicator: Group? = itemView?.findViewById(
+            R.id.group_progress_indicator
+    )
     private val historyTimeLine: RecyclerView? = itemView?.findViewById(R.id.rv_history)
     private val historyAdapter: HistoryAdapter = HistoryAdapter()
 
@@ -28,6 +34,8 @@ class WidgetNotificationViewHolder(
 
     private fun initRecyclerView() {
         historyTimeLine?.apply {
+            setHasFixedSize(true)
+            isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(itemView.context)
             adapter = historyAdapter
         }
@@ -36,16 +44,18 @@ class WidgetNotificationViewHolder(
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindTrackHistory(element)
-        bindHistoryBtnClick(element)
+        bindHistoryBtnClick()
+        bindProgressIndicator()
     }
 
     private fun bindTrackHistory(element: NotificationUiModel) {
         historyAdapter.updateHistories(element)
     }
 
-    private fun bindHistoryBtnClick(element: NotificationUiModel) {
+    private fun bindHistoryBtnClick() {
         historyBtn?.setOnClickListener {
             toggleTimeLineVisibility()
+            bindProgressIndicator()
         }
     }
 
@@ -54,6 +64,14 @@ class WidgetNotificationViewHolder(
             historyTimeLine.hide()
         } else {
             historyTimeLine?.show()
+        }
+    }
+
+    private fun bindProgressIndicator() {
+        if (historyTimeLine?.isVisible == true) {
+            progressIndicator?.show()
+        } else {
+            progressIndicator?.hide()
         }
     }
 
@@ -67,7 +85,10 @@ class WidgetNotificationViewHolder(
     }
 }
 
-class HistoryAdapter: RecyclerView.Adapter<TimeLineViewHolder>() {
+/**
+ * Adapter for [WidgetNotificationViewHolder] only
+ */
+class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>(), TimeLineViewHolder.Listener {
 
     val histories: ArrayList<TrackHistory> = arrayListOf()
 
@@ -75,7 +96,7 @@ class HistoryAdapter: RecyclerView.Adapter<TimeLineViewHolder>() {
         val layout = LayoutInflater.from(parent.context).inflate(
                 TimeLineViewHolder.LAYOUT, parent, false
         )
-        return TimeLineViewHolder(layout)
+        return TimeLineViewHolder(layout, this)
     }
 
     override fun getItemCount(): Int {
@@ -90,12 +111,59 @@ class HistoryAdapter: RecyclerView.Adapter<TimeLineViewHolder>() {
         histories.addAll(element.trackHistory)
         notifyDataSetChanged()
     }
+
+    override fun isLastItem(item: TrackHistory): Boolean {
+        return histories.isNotEmpty() && histories.last() == item
+    }
+
+    override fun isFirstItem(item: TrackHistory): Boolean {
+        return histories.isNotEmpty() && histories.first() == item
+    }
 }
 
-class TimeLineViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+/**
+ * ViewHolder for [TimeLineViewHolder] only
+ */
+class TimeLineViewHolder(
+        itemView: View,
+        private val listener: Listener
+) : RecyclerView.ViewHolder(itemView) {
+
+    interface Listener {
+        fun isLastItem(item: TrackHistory): Boolean
+        fun isFirstItem(item: TrackHistory): Boolean
+    }
+
+    private val title: Typography? = itemView.findViewById(R.id.tp_timeline_title)
+    private val desc: Typography? = itemView.findViewById(R.id.tp_timeline_desc)
+    private val bottomLine: View? = itemView.findViewById(R.id.view_bottom_line)
+    private val topLine: View? = itemView.findViewById(R.id.view_top_line)
 
     fun bind(trackHistory: TrackHistory) {
+        bindTitle(trackHistory)
+        bindDesc(trackHistory)
+        bindTopLine(trackHistory)
+        bindBottomLine(trackHistory)
+    }
 
+    private fun bindTitle(trackHistory: TrackHistory) {
+        title?.text = trackHistory.title
+    }
+
+    private fun bindDesc(trackHistory: TrackHistory) {
+        desc?.text = TimeHelper.getRelativeTimeFromNow(trackHistory.createTimeUnixMillis)
+    }
+
+    private fun bindTopLine(trackHistory: TrackHistory) {
+        if (listener.isFirstItem(trackHistory)) {
+            topLine?.setBackgroundResource(com.tokopedia.unifycomponents.R.color.Unify_N100)
+        } else {
+            topLine?.setBackgroundResource(com.tokopedia.unifycomponents.R.color.Unify_G400)
+        }
+    }
+
+    private fun bindBottomLine(trackHistory: TrackHistory) {
+        bottomLine?.showWithCondition(!listener.isLastItem(trackHistory))
     }
 
     companion object {

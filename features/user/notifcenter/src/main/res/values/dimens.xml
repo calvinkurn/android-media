@@ -4,6 +4,7 @@
     <dimen name="notif_image_height">55dp</dimen>
     <dimen name="notif_dp_0_5">0.5dp</dimen>
     <dimen name="notif_dp_0">0dp</dimen>
+    <dimen name="notif_dp_1">1dp</dimen>
     <dimen name="notif_dp_2">2dp</dimen>
     <dimen name="notif_dp_3">3dp</dimen>
     <dimen name="notif_dp_4">4dp</dimen>
@@ -11,9 +12,11 @@
     <dimen name="notif_dp_8">8dp</dimen>
     <dimen name="notif_dp_10">10dp</dimen>
     <dimen name="notif_dp_12">12dp</dimen>
+    <dimen name="notif_dp_14">14dp</dimen>
     <dimen name="notif_dp_16">16dp</dimen>
     <dimen name="notif_dp_18">18dp</dimen>
     <dimen name="notif_dp_20">20dp</dimen>
+    <dimen name="notif_dp_22">22dp</dimen>
     <dimen name="notif_dp_24">24dp</dimen>
     <dimen name="notif_dp_26">26dp</dimen>
     <dimen name="notif_dp_28">28dp</dimen>
