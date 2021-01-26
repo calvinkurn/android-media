@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/dp_16"
     android:lineSpacingExtra="@dimen/sp_6"
-    android:textColor="@color/clr_f531353b"
+    android:textColor="@color/Unify_N700_96"
     app:typographyType="heading_3"
     app:typographyWeight="bold"
     tools:text="@string/product_report_header"/>

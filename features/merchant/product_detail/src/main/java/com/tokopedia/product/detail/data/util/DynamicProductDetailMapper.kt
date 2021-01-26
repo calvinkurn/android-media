@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
-import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.variant_common.model.*
@@ -122,12 +121,12 @@ object DynamicProductDetailMapper {
         }
     }
 
-    fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {
+    fun hashMapLayout(data: List<DynamicPdpDataModel>): MutableMap<String, DynamicPdpDataModel> {
         return data.associateBy({
             it.name()
         }, {
             it
-        })
+        }).toMutableMap()
     }
 
     // Because the new variant data have several different type, we need to map this into the old one
@@ -211,7 +210,7 @@ object DynamicProductDetailMapper {
     }
 
     fun convertMediaToDataModel(media: MutableList<Media>): List<MediaDataModel> {
-        return media.map { it ->
+        return media.map {
             MediaDataModel(it.id, it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
         }
     }

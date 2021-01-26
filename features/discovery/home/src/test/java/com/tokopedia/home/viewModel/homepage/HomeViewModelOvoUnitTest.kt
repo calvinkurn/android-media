@@ -4,15 +4,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
-import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
-import com.tokopedia.home.beranda.data.model.TokopointsDrawerList
-import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutineWalletBalanceUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsDataUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
@@ -34,7 +30,6 @@ class HomeViewModelOvoUnitTest{
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
     private val getHomeTokopointsDataUseCase = mockk<GetHomeTokopointsDataUseCase>(relaxed = true)
-    private val getHomeTokopointsListDataUseCase = mockk<GetHomeTokopointsListDataUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeViewModel
 
     private val getCoroutineWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase>(relaxed = true)
@@ -47,12 +42,6 @@ class HomeViewModelOvoUnitTest{
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
         every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getHomeTokopointsDataUseCase.executeOnBackground() } returns TokopointsDrawerHomeData()
-        coEvery { getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData(
-                tokopointsDrawerList = TokopointsDrawerList(
-                        drawerList = listOf(TokopointsDrawer(), TokopointsDrawer())
-                )
-        )
-
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
                         list = listOf(headerDataModel)
@@ -61,8 +50,7 @@ class HomeViewModelOvoUnitTest{
         homeViewModel = createHomeViewModel(
                 userSessionInterface = userSessionInterface,
                 getHomeUseCase = getHomeUseCase,
-                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
-                getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
@@ -351,11 +339,6 @@ class HomeViewModelOvoUnitTest{
         val headerDataModel = HeaderDataModel()
         every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getHomeTokopointsDataUseCase.executeOnBackground() } returns TokopointsDrawerHomeData()
-        coEvery { getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData(
-                tokopointsDrawerList = TokopointsDrawerList(
-                        drawerList = listOf(TokopointsDrawer(), TokopointsDrawer())
-                )
-        )
 
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
@@ -365,8 +348,7 @@ class HomeViewModelOvoUnitTest{
         homeViewModel = createHomeViewModel(
                 userSessionInterface = userSessionInterface,
                 getHomeUseCase = getHomeUseCase,
-                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
-                getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
         homeViewModel.homeLiveData.observeForever(observerHome)
 

@@ -50,7 +50,6 @@
     <string name="campaign_expired_title">Waktu sudah berakhir</string>
     <string name="campaign_expired_descr">Periode promo telah selesai. Harga produk kembali menjadi harga normal</string>
     <string name="courier_title">Kurir</string>
-    <string name="template_last_update_price">Perubahan Harga Terakhir : %1$s</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
     <string name="title_buyer_review">Ulasan Pembeli</string>
     <string name="title_most_helpful_review">Ulasan Paling Membantu</string>
@@ -265,4 +264,5 @@
     <string name="toaster_success_add_wishlist_from_fab">Sukses menambah ke wishlist. Kamu akan dapat notifikasi ketika barang kembali tersedia.</string>
     <string name="toaster_success_add_wishlist_from_button">Kamu akan dapat notifikasi ketika barang kembali tersedia. Bisa cek produknya di wishlist ya..</string>
     <string name="toaster_success_remove_wishlist">Sukses menghapus barang dari wishlist</string>
+    <string name="pdp_video_divider"> / </string>
 </resources>

@@ -1,21 +1,8 @@
 <resources>
     <string name="activity_checkout_title">Checkout</string>
-    <string name="promo_button_text">Lihat Semua Promo</string>
-    <string name="search">Search</string>
-    <string name="daftar_transaksi">Daftar Transaksi</string>
-    <string name="title_activity_deals">Deals</string>
-    <string name="help_text">Tokopedia Care</string>
-    <string name="promo">Promo</string>
     <string name="trending_deals">Trending Deals</string>
     <string name="search_input_hint_deals">Cari Deals atau Brand</string>
-    <string name="search_input_hint_deals_location">Lokasi hits, wilayah, atau kota</string>
     <string name="search_input_hint_deals_outlets">Cari Lokasi</string>
-    <string name="search_input_hint_location">Cari Kota</string>
-    <string name="empty_search_text_upper">Hasil pencarian Anda tidak dapat ditemukan.</string>
-    <string name="empty_search_text_lower">Silakan lakukan pencarian dengan kata kunci / filter lain</string>
-    <string name="empty_search_brand_text_lower">Silakan lakukan pencarian dengan kata kunci lain</string>
-    <string name="search_sort_label">Urutkan</string>
-    <string name="search_filter_label">Filter</string>
 
     <string name="show_tnc"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="bigcontent"><![CDATA[Tepat lebih dari dua dekade sejak era 1990-an, era keemasan musik, film, permainan, makanan, serta segala hal yang dirindu pada era Konser 90an siap dibawa kembali. Mesin waktu menuju masa 90an siap dibuka di The 90\'s Festival. Segala hal tentang 90an maupun musisi-musisi 90an baik internasional dan nasional akan kembali reuni mengisi ruang-ruang nostalgia di The 90\'s Festival. Setelah sukses pada gelaran pertama dan keduanya kini The 90\'s Festival, sebagai salah satu festival nostalgia terbesar, bersiap hadir kembali untuk ketiga kalinya. Mulai dari Sixpence None The Richer hingga penampilan spesial reuni band-band tahun 90an lainnya, seperti Kla Project Dewa 19 feat Ari Lasso Neo Potret Reza Artamevia Stinky P Project Warna Shaden T-five Yana Yulio Wayang Voodoo DOT dan masih banyak lagi keseruan lainnya. Tokopedia yang berperan sebagai Official Ticket Partner The 90s Festival akan memberikan harga termurah. Beli tiket Presale Konser 90s Festival lebih murah & terpercaya. Yuk temukan banyak promo tiket 90s festival hanya di Tokopedia!]]></string>
@@ -23,20 +10,9 @@
     <string name="recommended_deals">Deals Rekomendasi</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="payment_option">Pilih Metode Pembayaran</string>
-    <string name="empty_deals_list_text_upper">Deals Tidak Tersedia</string>
-    <string name="empty_deal_list_text_lower">Silakan temukan deals di tempat lain.</string>
     <string name="empty_location_list_text_upper">Hasil pencarian Anda tidak dapat ditemukan.</string>
     <string name="empty_location_list_text_lower">Silakan lakukan pencarian dengan kata  kunci lain</string>
-    <string name="title_activity_all_brands">Brands</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <string name="tab_text_3">Tab 3</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
     <string name="hot_deal">HOT DEAL</string>
-    <string name="text_trending_deals">Pilihan Deals terbaik</string>
-    <string name="text_trending_promos">Hemat dengan promo Deals</string>
-    <string name="text_all_deals">Semua Deals</string>
     <string name="favourite">Favourite Deals</string>
     <string name="collapse">Sembunyikan</string>
     <string name="expand">Selengkapnya</string>
@@ -46,15 +22,6 @@
     <string name="number_of_items"> (%d)</string>
     <string name="see_all_locations">Lihat Semua Lokasi</string>
 
-    <string name="select_location_first">Please select a location first.</string>
-    <string name="title_activity_select_locations">Pilih Kota</string>
-    <string name="deals_search_location_result">Hasil Pencarian untuk ‘%1$s’</string>
-    <string name="change_location">Ubah Lokasi</string>
-    <string name="popular_deals_in_location">%1$s di %2$s\u0020</string>
-    <string name="popular_brand">Brand populer</string>
-    <string name="all_brands">Semua</string>
-    <string name="search_input_hint_brand">Cari Brand</string>
-    <string name="search_input_hint_category">Cari %1$s favoritmu</string>
     <string name="see_on_map">Lihat Peta</string>
     <string name="location_changed_to">Lokasi Anda telah berubah menjadi:\u0020</string>
     <string name="see_how_to_redeem_voucher">Lihat Cara Redeem Voucher</string>
@@ -66,9 +33,7 @@
     <string name="select_number_of_voucher">Pilih Jumlah Voucher</string>
     <string name="quantity_of_deals">%d</string>
     <string name="number_of_vouchers">%d x Vouchers</string>
-    <string name="text_voucher_code">Kode Voucher:\u0020</string>
-    <string name="cashback_amount">Potensi Cashback Tokocash sebesar %1$s</string>
-    <string name="title_activity_checkout">Checkout</string>
+
     <string name="voucher_delivery_destination">Tujuan pengiriman Voucher</string>
     <string name="email">Email</string>
     <string name="ubah">Ubah</string>
@@ -77,19 +42,16 @@
     <string name="cannot_find_application">Cannot find an application to show location</string>
     <string name="text_service_fees">Biaya Layanan</string>
     <string name="available_locations">Dapat ditukar di\u0020</string>
-    <string name="redeem_coupon_promo">Gunakan Kode Promo atau Kupon</string>
-    <string name="category_voucher">Kategori Voucher</string>
-    <string name="popular_location">KOTA POPULER</string>
+
     <string name="terdapat_di">Terdapat di</string>
     <string name="number_of_locations">%d Lokasi</string>
-    <string name="brands">Brands</string>
-    <string name="brand_category">Brand %s</string>
+
     <string name="empty_deals_text">Deals belum tersedia di kota Anda</string>
     <string name="deals_brand_detail_location">Deals di Sekitar %s\u0020</string>
     <string name="phone_number">Nomor Telepon</string>
     <string name="text_discount_promo">Diskon Promo</string>
     <string name="title_activity_login">Masuk</string>
-    <string name="see_all">Lihat Semua</string>
+
     <string name="button_continue">Lanjutkan</string>
     <string name="text_deals">Deals</string>
     <string name="text_available_locations">Tersedia di\u0020%d\u0020Lokasi</string>
@@ -98,38 +60,10 @@
     <string name="deals_all_indonesia">Seluruh Indonesia</string>
     <string name="location_bottomsheet_title">Pilih Deals di kota yang kamu mau</string>
     <string name="select_location_bottomsheet_title">Ganti lokasi</string>
-    <string name="category_title">Pilih Kategori Deals</string>
-    <string name="sell_all_category">Semua\nKategori</string>
-    <string name="deals_toolbar_title">Lokasi Deals</string>
-    <string name="selected_location_text">(Terpilih)</string>
-    <string name="brands_title_search">PILIHAN BRAND</string>
-    <string name="products_title_search" formatted="false">DEALS POPULER DI %s</string>
-    <string name="products_title_search_default">PILIHAN DEALS</string>
-    <string name="location_text_search">Lokasi</string>
-    <string name="no_brand_text">Yaah, Deals yang kamu cari nggak ketemu</string>
-    <string name="no_brand_subtext">Coba cari lagi pakai kata kunci lain, yuk!</string>
-    <string name="brand_count_text">Lihat brand lain terkait \'%1$s\' (%2$d)</string>
-    <string name="coachicon_title_location">Bebas pilih lokasi Deals</string>
-    <string name="coachicon_description_location">Berburu Deals di mall favorit sampai tempat nongkrong andalan jadi makin gampang!</string>
-    <string name="coachicon_title_searchbar">Temukan beragam brand menarik</string>
-    <string name="coachicon_title_promo">Beli Deals jadi makin hemat</string>
-    <string name="coachicon_description_searchbar">Jangan lewatkan Deals dari banyak brand favorit</string>
-    <string name="coachicon_description_promo">Ingin makan enak atau santai di spa dengan harga lebih murah? Cek koleksi promonya</string>
-    <string name="coachicon_next">></string>
-    <string name="coachicon_previous">&lt;</string>
-    <string name="voucher">Voucher</string>
-    <string name="location_search_hint">Lokasi hits, wilayah, atau kota</string>
-    <string name="location_deals_changed_toast">Kamu sedang melihat pilihan Deals di</string>
-    <string name="location_deals_changed_toast_oke">Oke</string>
+
     <string name="share_link">Bagikan Produk Ini</string>
     <string name="deals_disable_buy_now">Stok Produk Kosong</string>
-    <string name="deals_use_current_location">Tokopedia Would Like To Use Your Current Location</string>
-    <string name="deals_use_open_location_text_2">Biarkan Tokopedia mengakses lokasimu untuk menampilkan Deals terdekat.</string>
-    <string name="deals_use_open_location_text_1">Lokasimu nggak terdeteksi</string>
-    <string name="location_error_message">Belum ada Deals di lokasimu. Lokasi Deals dialihkan ke Jakarta</string>
-    <string name="detect_current_location">Gunakan lokasi saya saat ini</string>
     <string name="ticker_desc">Kamu bisa cek status pembelian dan e-voucher lewat halaman Daftar Transaksi</string>
 
     <string name="how_to_redeem_error">Cara untuk redeem voucher belum dapat ditemukan, silakan coba lagi nanti.</string>
-
 </resources>

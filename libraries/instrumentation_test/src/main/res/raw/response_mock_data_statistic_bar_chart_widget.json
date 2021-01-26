@@ -1,0 +1,66 @@
+[
+  {
+    "data": {
+      "fetchBarChartWidgetData": {
+        "data": [
+          {
+            "dataKey": "orderRejectByCategorization",
+            "data": {
+              "summary": {
+                "value": 0,
+                "valueFmt": "0 pesanan",
+                "diffPercentage": 0,
+                "diffPercentageFmt": "\u003cspan style=color:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu"
+              },
+              "metrics": [
+                {
+                  "name": "Ditolak oleh",
+                  "value": [
+                    {
+                      "value": 0,
+                      "valueFmt": "0",
+                      "color": "#4FBA68"
+                    },
+                    {
+                      "value": 0,
+                      "valueFmt": "0",
+                      "color": "#4FBA68"
+                    },
+                    {
+                      "value": 0,
+                      "valueFmt": "0",
+                      "color": "#4FBA68"
+                    }
+                  ]
+                }
+              ],
+              "axes": {
+                "yLabel": [
+                  {
+                    "value": 0,
+                    "valueFmt": "0"
+                  }
+                ],
+                "xLabel": [
+                  {
+                    "value": 1,
+                    "valueFmt": "Dibatalkan otomatis"
+                  },
+                  {
+                    "value": 2,
+                    "valueFmt": "Ditolak seller"
+                  },
+                  {
+                    "value": 3,
+                    "valueFmt": "Permintaan pembeli"
+                  }
+                ]
+              }
+            },
+            "errorMsg": ""
+          }
+        ]
+      }
+    }
+  }
+]

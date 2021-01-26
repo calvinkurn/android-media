@@ -7,6 +7,7 @@ import android.util.Log
 import com.tokopedia.analytics.performance.PerformanceAnalyticsUtil
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.config.GlobalConfig
+import timber.log.Timber
 
 open class PageLoadTimePerformanceCallback(
         val tagPrepareDuration: String,
@@ -157,6 +158,12 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun invalidate() {
+        if (!isPrepareDone || !isRenderDone || !isNetworkDone) {
+            overallDuration = 0
+            preparePageDuration = 0
+            requestNetworkDuration = 0
+            renderDuration = 0
+        }
         performanceMonitoring = null
         isPrepareDone = true
         isNetworkDone = true
@@ -180,7 +187,8 @@ open class PageLoadTimePerformanceCallback(
         if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             for(item in GlobalConfig.DEBUG_TRACE_NAME){
                 if(item.equals(traceName)){
-                    Log.i("PageLoadTimePerformanceCallback" , "startMethodTracing ==> "+traceName)
+                    Timber.i("PLTCallback: startMethodTracing  ==> "+traceName)
+                    Timber.i("PLTCallback: startMethodTracing ==> " +traceName)
                     Debug.startMethodTracingSampling(traceName , 50 * 1024 * 1024 , 500);
                     break
                 }
@@ -192,11 +200,15 @@ open class PageLoadTimePerformanceCallback(
         if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             for(item in GlobalConfig.DEBUG_TRACE_NAME){
                 if(item.equals(traceName)){
-                    Log.i("PageLoadTimePerformanceCallback" , "stopMethodTracing ==> "+traceName)
+                    Log.i("PLTCallback" , "stopMethodTracing ==> "+traceName)
                     Debug.stopMethodTracing();
                     break
                 }
             }
         }
+    }
+
+    override fun getAttribution(): HashMap<String, String> {
+        return attributionValue
     }
 }

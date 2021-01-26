@@ -2,10 +2,8 @@ package com.tokopedia.product.detail.view.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
-import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.*
@@ -14,9 +12,6 @@ import com.tokopedia.variant_common.view.ProductVariantListener
 class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener,
                                              private val variantListener: ProductVariantListener)
     : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
-    override fun type(data: ProductLastSeenDataModel): Int {
-        return ProductLastSeenViewHolder.LAYOUT
-    }
 
     override fun type(data: ProductRecommendationDataModel): Int {
         return ProductRecommendationViewHolder.LAYOUT
@@ -47,10 +42,6 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
 
     override fun type(data: ProductShopInfoDataModel): Int {
         return ProductShopInfoViewHolder.LAYOUT
-    }
-
-    override fun type(viewModel: LoadingModel): Int {
-        return ProductShimmeringViewHolder.LAYOUT
     }
 
     override fun type(data: PageErrorDataModel): Int {
@@ -105,9 +96,12 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductReportViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductLoadingDataModel): Int {
+        return ProductShimmeringViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ProductLastSeenViewHolder.LAYOUT -> ProductLastSeenViewHolder(view)
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
             ProductMerchantVoucherViewHolder.LAYOUT -> ProductMerchantVoucherViewHolder(view, listener)
             ProductShopInfoViewHolder.LAYOUT -> ProductShopInfoViewHolder(view, listener)

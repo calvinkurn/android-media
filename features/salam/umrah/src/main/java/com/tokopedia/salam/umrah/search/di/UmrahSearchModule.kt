@@ -6,5 +6,4 @@ import dagger.Module
  * @author by furqan on 18/10/2019
  */
 @Module
-@UmrahSearchScope
 class UmrahSearchModule

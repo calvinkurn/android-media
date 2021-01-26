@@ -12,7 +12,6 @@ import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.P
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Header
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
-import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.data.*
@@ -20,7 +19,7 @@ import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrappe
 import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
 import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
 import com.tokopedia.product.manage.feature.list.data.model.Header
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.Active
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel.Active
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
@@ -307,7 +306,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             viewModel.getProductList(shopId)
 
             val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
-            val productViewModelList = listOf(createProductViewModel(
+            val productViewModelList = listOf(createProductUiModel(
                 name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice, topAds = topAdsInfo))
             val expectedProductList = Success(productViewModelList)
 

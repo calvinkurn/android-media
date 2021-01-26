@@ -3,6 +3,7 @@ package com.tokopedia.notifications.factory.ui
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
 import com.tokopedia.notifications.R
@@ -13,7 +14,7 @@ import com.tokopedia.notifications.factory.BaseNotificationContract
 import com.tokopedia.notifications.model.ActionButton
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.ProductInfo
-import com.tokopedia.notifications.util.onlyOne
+import com.tokopedia.notifications.utils.onlyOne
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC as TYPE_ATC
 import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC as TYPE_OCC
@@ -31,8 +32,15 @@ internal open class ProductWidget(
     private val userSession by lazy { UserSession(context) }
     private val packageName = context.applicationContext.packageName
 
-    val collapsedView by lazy { RemoteViews(packageName, R.layout.cm_layout_collapsed) }
-    val expandedView by lazy { RemoteViews(packageName, R.layout.cm_layout_product_expand) }
+    val collapsedView by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            RemoteViews(packageName, R.layout.cm_layout_collapsed)
+        else RemoteViews(packageName, R.layout.cm_layout_collapsed_pre_dark_mode)
+    }
+    val expandedView by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            RemoteViews(packageName, R.layout.cm_layout_product_expand)
+        else RemoteViews(packageName, R.layout.cm_layout_product_expand_pre_dark_mode) }
 
     val product: ProductInfo = model.productInfoList[model.carouselIndex]
     val productImage: Bitmap? = loadImage(product.productImage)
@@ -71,7 +79,7 @@ internal open class ProductWidget(
         // set notification icon
         productImage?.let {
             view.setImageViewBitmap(R.id.iv_productImage, it)
-        }?: view.setImageViewBitmap(R.id.iv_productImage, base.defaultIcon())
+        } ?: view.setImageViewBitmap(R.id.iv_productImage, base.defaultIcon())
 
         // set common product card of expanded
         view.setTextViewText(R.id.tv_productTitle, spanStr(product.productTitle))
@@ -153,11 +161,11 @@ internal open class ProductWidget(
 
         view.setViewVisibility(R.id.widget_review, View.VISIBLE)
         view.setTextViewText(R.id.txt_review, product.reviewScore.toString())
-        view.setTextViewText(R.id.txt_count_review, "(${product.reviewNumber?: "0"})")
+        view.setTextViewText(R.id.txt_count_review, "(${product.reviewNumber ?: "0"})")
 
         loadImage(product.reviewIcon)?.let {
             view.setImageViewBitmap(R.id.img_star, it)
-        }?: base.loadResourceAsBitmap(R.drawable.cm_ic_star_review) {
+        } ?: base.loadResourceAsBitmap(R.drawable.cm_ic_star_review) {
             view.setImageViewBitmap(R.id.img_star, it)
         }
     }
