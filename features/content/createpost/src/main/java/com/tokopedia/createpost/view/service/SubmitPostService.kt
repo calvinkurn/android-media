@@ -7,7 +7,9 @@ import android.content.Intent
 import android.text.TextUtils
 import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.Content
@@ -170,6 +172,7 @@ class SubmitPostService : JobIntentService() {
                 notificationManager?.onSuccessPost()
                 sendBroadcast()
                 postContentToOtherService(submitPostData.feedContentSubmit.meta.content)
+                addFlagOnPostFeedSuccess()
             }
 
             override fun onCompleted() {
@@ -198,5 +201,12 @@ class SubmitPostService : JobIntentService() {
         GlobalScope.launchCatchError(Dispatchers.IO, block = {
             twitterManager.postTweet(content.description)
         }) { Timber.d(it) }
+    }
+
+
+    private fun addFlagOnPostFeedSuccess() {
+        val cacheHandler = LocalCacheHandler(applicationContext, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
+        cacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED, true)
+        cacheHandler.applyEditor()
     }
 }
