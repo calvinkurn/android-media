@@ -3,6 +3,7 @@ package com.tokopedia.appaidl.data
 import com.tokopedia.config.GlobalConfig
 
 const val CUSTOMER_APP = "com.tokopedia.tkpd"
+const val MAIN_APP = "com.tokopedia.tkpd"
 const val SELLER_APP = "com.tokopedia.sellerapp"
 
 /*

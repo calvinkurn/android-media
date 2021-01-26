@@ -2,6 +2,7 @@ package com.tokopedia.notifications.utils
 
 import android.content.Context
 import android.os.Bundle
+import com.tokopedia.appaidl.data.MAIN_APP
 import com.tokopedia.appaidl.data.SELLER_APP
 import com.tokopedia.appaidl.data.UserKey
 import com.tokopedia.appaidl.utils.isInstalled
@@ -23,30 +24,63 @@ class NotificationValidationManager(
     * @param(notify): a callback for a valid type to rendering the notification
     * */
     fun validate(bundle: Bundle?, notify: () -> Unit) {
+        if (data.priorityType is NotificationPriorityType.Both) {
+            notify()
+            return
+        }
+
         if (data.isAdvanceTarget) {
             notify()
         } else {
-            when (data.priorityType) {
-                is NotificationPriorityType.SellerApp -> {
-                    if (GlobalConfig.isSellerApp()) {
-                        notify()
-                    }
-                }
-                is NotificationPriorityType.MainApp -> {
-                    if (GlobalConfig.isSellerApp()) return
+            if (!GlobalConfig.isSellerApp()) {
+                val isSellerAppInstalled = context.isInstalled(SELLER_APP)
+                val isSellerAppLogged = bundle?.getBoolean(UserKey.IS_LOGIN)?: false
+                val sellerAppUserId = bundle?.getString(UserKey.USER_ID)?: ""
 
-                    val isSellerAppInstalled = context.isInstalled(SELLER_APP)
-                    val isSellerAppLogged = bundle?.getBoolean(UserKey.IS_LOGIN)?: false
-                    val sellerAppUserId = bundle?.getString(UserKey.USER_ID)?: ""
-
-                    if (isSellerAppInstalled && isSellerAppLogged && userSession.userId == sellerAppUserId) {
-                        notify()
-                    }
+                if (!isSellerAppInstalled || !isSellerAppLogged
+                        || userSession.userId != sellerAppUserId
+                        || data.priorityType is NotificationPriorityType.MainApp) {
+                    notify()
                 }
-                is NotificationPriorityType.Both -> notify()
+            } else {
+                val isMainAppInstalled = context.isInstalled(MAIN_APP)
+                val isMainAppLogged = bundle?.getBoolean(UserKey.IS_LOGIN)?: false
+                val mainAppUserId = bundle?.getString(UserKey.USER_ID)?: ""
+
+                if (!isMainAppInstalled || !isMainAppLogged
+                        || userSession.userId != mainAppUserId
+                        || data.priorityType is NotificationPriorityType.SellerApp) {
+                    notify()
+                }
             }
         }
     }
+
+//    fun validate(bundle: Bundle?, notify: () -> Unit) {
+//        if (data.isAdvanceTarget) {
+//            notify()
+//        } else {
+//            when (data.priorityType) {
+//                is NotificationPriorityType.SellerApp -> {
+//                    if (GlobalConfig.isSellerApp()) {
+//                        notify()
+//                    }
+//                }
+//                is NotificationPriorityType.MainApp -> {
+//                    if (GlobalConfig.isSellerApp()) return
+//
+//                    val isSellerAppInstalled = context.isInstalled(SELLER_APP)
+//                    val isSellerAppLogged = bundle?.getBoolean(UserKey.IS_LOGIN)?: false
+//                    val sellerAppUserId = bundle?.getString(UserKey.USER_ID)?: ""
+//
+//                    if (isSellerAppInstalled && isSellerAppLogged && userSession.userId == sellerAppUserId) {
+//                        notify()
+//                    }
+//                }
+//                is NotificationPriorityType.Both -> notify()
+//            }
+//        }
+//    }
 
     sealed class NotificationPriorityType {
         object SellerApp: NotificationPriorityType()
