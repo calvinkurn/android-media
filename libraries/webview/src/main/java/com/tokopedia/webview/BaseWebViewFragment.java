@@ -683,10 +683,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } catch (ActivityNotFoundException e) {
                 e.printStackTrace();
             }
-        } else if (SCHEME_INTENT.equalsIgnoreCase(uri.getScheme()) && GlobalConfig.isSellerApp()) {
+        } else if (SCHEME_INTENT.equalsIgnoreCase(uri.getScheme())) {
             try {
-                String newUrl = url.replaceFirst(SCHEME_INTENT, SCHEME_SELLERAPP);
-                Intent newIntent = RouteManager.getIntent(getActivity(), newUrl);
+                Intent newIntent = RouteManager.getIntent(getActivity(), url);
                 startActivity(newIntent);
             } catch (ActivityNotFoundException e) {
                 e.printStackTrace();
