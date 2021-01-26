@@ -669,7 +669,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                return false;
+                Timber.w(e);
             }
             return true;
         } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) && !GlobalConfig.isSellerApp()) {
@@ -687,7 +687,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 Intent newIntent = RouteManager.getIntent(getActivity(), url);
                 startActivity(newIntent);
             } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
+                Timber.w(e);
             }
         }
 
