@@ -56,22 +56,22 @@ class ShopProductResultPageAnalyticTest {
 
     @Before
     fun beforeTest() {
-//        val remoteConfig = FirebaseRemoteConfigImpl(context)
-//        remoteConfig.setString(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, "true")
-//        gtmLogDBSource.deleteAll().toBlocking().first()
-//        InstrumentationAuthHelper.loginInstrumentationTestUser1()
-//        setupGraphqlMockResponse(ShopProductResultPageMockResponseConfig(TYPE_NORMAL_PRODUCT))
-//        activityRule.launchActivity(Intent().apply {
-//            putExtra(ShopParamConstant.EXTRA_SHOP_ID, SAMPLE_SHOP_ID)
-//        })
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        remoteConfig.setString(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, "true")
+        gtmLogDBSource.deleteAll().toBlocking().first()
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        setupGraphqlMockResponse(ShopProductResultPageMockResponseConfig(TYPE_NORMAL_PRODUCT))
+        activityRule.launchActivity(Intent().apply {
+            putExtra(ShopParamConstant.EXTRA_SHOP_ID, SAMPLE_SHOP_ID)
+        })
     }
 
     @Test
     fun testShopPageProductResultJourney() {
-//        waitForData(5000)
-//        testClickSortButton()
-//        testProductCard()
-//        validateTracker()
+        waitForData(5000)
+        testClickSortButton()
+        testProductCard()
+        validateTracker()
     }
 
     private fun validateTracker() {

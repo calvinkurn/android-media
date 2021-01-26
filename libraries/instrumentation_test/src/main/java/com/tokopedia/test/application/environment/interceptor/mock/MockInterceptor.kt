@@ -1,5 +1,6 @@
 package com.tokopedia.test.application.environment.interceptor.mock
 
+import android.util.Log
 import com.tokopedia.network.BuildConfig
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_QUERY_NAME
@@ -26,7 +27,9 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
                 var responseString = ""
                 responseConfig.getResponseList().forEach {
                     if (it.value.findType == FIND_BY_CONTAINS) {
+                        Log.i("SHOP_PAGE_TEST", requestString)
                         if (requestString.contains(it.key)) {
+                            Log.i("SHOP_PAGE_TEST", "Match ${it.key}")
                             responseString = it.value.value
                             return mockResponse(requestBody.newBuilder().build(), responseString)
                         }

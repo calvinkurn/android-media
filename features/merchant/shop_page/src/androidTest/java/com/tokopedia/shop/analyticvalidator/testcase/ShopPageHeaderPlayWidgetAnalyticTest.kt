@@ -70,14 +70,14 @@ class ShopPageHeaderPlayWidgetAnalyticTest {
 
     @Before
     fun setup() {
-//        GlobalConfig.APPLICATION_TYPE = 2
-//
-//        IdlingPolicies.setMasterPolicyTimeout(1, TimeUnit.MINUTES)
-//        IdlingPolicies.setIdlingResourceTimeout(1, TimeUnit.MINUTES)
-//
-//        gtmLogDbSource.deleteAll().toBlocking().first()
-//
-//        mockLogin()
+        GlobalConfig.APPLICATION_TYPE = 2
+
+        IdlingPolicies.setMasterPolicyTimeout(1, TimeUnit.MINUTES)
+        IdlingPolicies.setIdlingResourceTimeout(1, TimeUnit.MINUTES)
+
+        gtmLogDbSource.deleteAll().toBlocking().first()
+
+        mockLogin()
     }
 
     @Test
