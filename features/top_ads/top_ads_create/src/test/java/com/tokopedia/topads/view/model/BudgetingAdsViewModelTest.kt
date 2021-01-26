@@ -32,12 +32,13 @@ class BudgetingAdsViewModelTest {
     private lateinit var repository: GraphqlRepository
     private lateinit var context: Context
     private val bidInfoUseCase:BidInfoUseCase = mockk(relaxed = true)
+    private val bidInfoUseCaseDefault:BidInfoUseCase = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         repository = mockk()
         context = mockk(relaxed = true)
-        viewModel = spyk(BudgetingAdsViewModel(rule.dispatchers, bidInfoUseCase))
+        viewModel = spyk(BudgetingAdsViewModel(rule.dispatchers, bidInfoUseCase, bidInfoUseCaseDefault))
     }
 
 
@@ -105,7 +106,7 @@ class BudgetingAdsViewModelTest {
 
         }
         every {
-            bidInfoUseCase.executeQuerySafeMode(captureLambda(), any())
+            bidInfoUseCaseDefault.executeQuerySafeMode(captureLambda(), any())
         } answers {
             onSuccess.invoke(bidInfoData.topadsBidInfo.data)
         }

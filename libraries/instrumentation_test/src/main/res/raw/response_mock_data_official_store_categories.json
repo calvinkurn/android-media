@@ -1,0 +1,117 @@
+[
+  {
+    "data": {
+      "OfficialStoreCategories": {
+        "categories": [
+          {
+            "id": 10,
+            "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/7/38490084/38490084_1fb60912-b0be-4a53-8a7b-32aa59b1b4a1.png",
+            "name": "Auto Hobbies",
+            "prefixUrl": "os-",
+            "url": "lainnya",
+            "fullUrl": "https://www.tokopedia.com/official-store/lainnya",
+            "categories": [
+              63,
+              8,
+              54,
+              55,
+              57,
+              62,
+              642
+            ],
+            "imageInactiveURL": "https://cdn.tokopedia.net/img/official_store/category-alias/img/os-icon-grey/group136.png"
+          },
+          {
+            "id": 6,
+            "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/7/38490084/38490084_cefad270-f5be-471d-b259-5e78d798e6c5.png",
+            "name": "Home & Living",
+            "prefixUrl": "os-",
+            "url": "rumah-tangga",
+            "fullUrl": "https://www.tokopedia.com/official-store/rumah-tangga",
+            "categories": [
+              983,
+              984,
+              4029
+            ],
+            "imageInactiveURL": "https://cdn.tokopedia.net/img/official_store/category-alias/img/os-icon-grey/group137.png"
+          },
+          {
+            "id": 3,
+            "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/7/38490084/38490084_198fdacb-d7a7-4154-970c-3c6bf653e416.png",
+            "name": "Fashion",
+            "prefixUrl": "os-",
+            "url": "fashion",
+            "fullUrl": "https://www.tokopedia.com/official-store/fashion",
+            "categories": [
+              1758,
+              1759,
+              1760,
+              78,
+              53
+            ],
+            "imageInactiveURL": "https://ecs7.tokopedia.net/img/official_store/category-alias/img/os-icon-grey/group131.png"
+          },
+          {
+            "id": 7,
+            "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/7/38490084/38490084_7ed44226-4c8e-485e-8e98-f0c47fd397fd.png",
+            "name": "Electronics",
+            "prefixUrl": "os-",
+            "url": "elektronik",
+            "fullUrl": "https://www.tokopedia.com/official-store/elektronik",
+            "categories": [
+              65,
+              20,
+              60,
+              288,
+              297,
+              578,
+              2099
+            ],
+            "imageInactiveURL": "https://cdn.tokopedia.net/img/official_store/category-alias/img/os-icon-grey/group135.png"
+          },
+          {
+            "id": 8,
+            "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/7/38490084/38490084_3af030e0-07ab-4da3-9424-e3f3adbb7b7c.png",
+            "name": "Groceries",
+            "prefixUrl": "os-",
+            "url": "kuliner",
+            "fullUrl": "https://www.tokopedia.com/official-store/kuliner",
+            "categories": [
+              35,
+              56
+            ],
+            "imageInactiveURL": "https://cdn.tokopedia.net/img/official_store/category-alias/img/os-icon-grey/group134.png"
+          },
+          {
+            "id": 5,
+            "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/7/38490084/38490084_a11eedcc-1b64-4d96-8b7a-ec9ad3fbf05e.png",
+            "name": "Health Beauty",
+            "prefixUrl": "os-",
+            "url": "cantik-sehat",
+            "fullUrl": "https://www.tokopedia.com/official-store/cantik-sehat",
+            "categories": [
+              61,
+              2133,
+              715
+            ],
+            "imageInactiveURL": "https://cdn.tokopedia.net/img/official_store/category-alias/img/os-icon-grey/group132.png"
+          },
+          {
+            "id": 61,
+            "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/6/29/38490084/38490084_1be3458a-5539-4752-96c2-14ed7349c482.png",
+            "name": "Mom & Baby",
+            "prefixUrl": "os-",
+            "url": "ibu-bayi",
+            "fullUrl": "https://www.tokopedia.com/official-store/ibu-bayi",
+            "categories": [
+              56,
+              78
+            ],
+            "imageInactiveURL": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/6/29/38490084/38490084_ddf3cc57-e398-4d5d-a721-6007983ce8b9.png"
+          }
+        ],
+        "total": 7
+      }
+    }
+  }
+]

@@ -44,6 +44,8 @@ class VideoPictureView @JvmOverloads constructor(
         }
 
         if (videoPictureAdapter == null || shouldRenderViewPager) {
+            //Media changed, so reset video
+            listener?.getProductVideoCoordinator()?.onDestroy()
             setupViewPager(media)
             renderVideoAtFirstPosition()
             setPageControl(media)

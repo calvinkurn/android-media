@@ -61,7 +61,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val editReviewResult: LiveData<ReviewViewState<Boolean>>
         get() = _editReviewResult
 
-    fun submitReview(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+    fun submitReview(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                      reviewText: String, isAnonymous: Boolean, utmSource: String) {
         _submitReviewResult.postValue(LoadingView())
         if (imageData.isEmpty()) {
@@ -71,7 +71,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun editReview(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+    fun editReview(feedbackId: Long, reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                    reviewText: String, isAnonymous: Boolean) {
         _submitReviewResult.postValue(LoadingView())
         if (imageData.isEmpty()) {
@@ -81,7 +81,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getReviewDetails(feedbackId: Int) {
+    fun getReviewDetails(feedbackId: Long) {
         _reviewDetails.value = LoadingView()
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
@@ -162,7 +162,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         return result
     }
 
-    fun getProductReputation(productId: Int, reputationId: Int) {
+    fun getProductReputation(productId: Long, reputationId: Long) {
         launchCatchError(block = {
             val data = withContext(coroutineDispatcherProvider.io) {
                 getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(reputationId, productId))
@@ -173,7 +173,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getProductIncentiveOvo(productId: Int = 0, reputationId: Int = 0) {
+    fun getProductIncentiveOvo(productId: Long = 0, reputationId: Long = 0) {
         launchCatchError(block = {
             val data = withContext(coroutineDispatcherProvider.io) {
                 getProductIncentiveOvo.getIncentiveOvo(productId, reputationId)
@@ -197,7 +197,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         return (incentiveOvo.value as? com.tokopedia.usecase.coroutines.Success)?.data?.productrevIncentiveOvo != null
     }
 
-    private fun sendReviewWithoutImage(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+    private fun sendReviewWithoutImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                                        reviewText: String, isAnonymous: Boolean, utmSource: String) {
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
@@ -217,7 +217,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    private fun sendReviewWithImage(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+    private fun sendReviewWithImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                                     reviewText: String, isAnonymous: Boolean, listOfImages: List<String>, utmSource: String) {
         val uploadIdList: ArrayList<String> = ArrayList()
         launchCatchError(block = {
@@ -245,7 +245,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    private fun editReviewWithoutImage(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+    private fun editReviewWithoutImage(feedbackId: Long, reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                                        reviewText: String, isAnonymous: Boolean) {
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
@@ -264,7 +264,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    private fun editReviewWithImage(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+    private fun editReviewWithImage(feedbackId: Long, reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                                     reviewText: String, isAnonymous: Boolean, listOfImages: List<String>) {
         val uploadIdList: ArrayList<String> = ArrayList()
         launchCatchError(block = {

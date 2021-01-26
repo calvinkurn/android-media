@@ -37,7 +37,6 @@ import retrofit2.Retrofit;
  */
 
 @Module
-@SellerReputationScope
 public class SellerReputationModule {
 
     @SellerReputationScope

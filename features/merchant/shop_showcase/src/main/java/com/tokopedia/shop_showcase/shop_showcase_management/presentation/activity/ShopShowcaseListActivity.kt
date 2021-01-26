@@ -1,10 +1,6 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity
 
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
@@ -16,7 +12,6 @@ import com.tokopedia.shop_showcase.common.PageNameConstant
 import com.tokopedia.shop_showcase.common.ShopShowcaseFragmentNavigation
 import com.tokopedia.shop_showcase.common.ShopShowcaseListParam
 import com.tokopedia.shop_showcase.common.ShopType
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment.ShopShowcaseListFragment
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment.ShopShowcaseListReorderFragment
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment.ShopShowcasePickerFragment
@@ -71,6 +66,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
         }
 
         getShopType()
+        setBackgroundColor()
 
         super.onCreate(savedInstanceState)
     }
@@ -131,17 +127,6 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
         }
     }
 
-    override fun setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = ContextCompat.getColor(this, android.R.color.white)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
-    }
-
     /**
      * @return shopId from deeplink query param.
      * @return userSession.shopId, if shopId is null or blank or = 0
@@ -173,6 +158,12 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
                 ShopType.REGULAR
             }
         }
+    }
+
+    private fun setBackgroundColor() {
+        window.decorView.setBackgroundColor(
+                androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        )
     }
 
 }

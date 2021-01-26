@@ -92,7 +92,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
             putExtra(ParamObject.GROUP_ID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
         }
-        startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
+        startActivityForResult(intent, TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE)
     }
 
 

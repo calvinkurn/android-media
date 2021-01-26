@@ -17,7 +17,6 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
-@TopAdsDashboardScope
 @Module
 class TopAdsDashboardNetworkModule {
 
