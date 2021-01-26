@@ -250,7 +250,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         tvAddressDetail?.text = addressModel.fullAddress
 
         val shipmentModel = data.shipmentModel
-        if (shipmentModel.estimation.isNotEmpty()) {
+        if (isNewFlow && shipmentModel.estimation.isNotEmpty()) {
             tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
             tvShippingDuration?.text = shipmentModel.estimation
         } else {
