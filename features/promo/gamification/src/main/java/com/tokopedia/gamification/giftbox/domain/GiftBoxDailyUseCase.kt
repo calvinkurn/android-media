@@ -16,10 +16,10 @@ class GiftBoxDailyUseCase @Inject constructor(@Named(GIFT_BOX_DAILY) val querySt
         return gqlWrapper.getResponse(GiftBoxEntity::class.java, queryString, map)
     }
 
-    suspend fun getFakeResponse(map: HashMap<String, Any>): GiftBoxEntity {
-        val response = FAKE_GAMI_LUCKY_HOME_EMPTY
-        return  Gson().fromJson<GiftBoxEntity>(response, GiftBoxEntity::class.java)
-    }
+//    suspend fun getFakeResponse(map: HashMap<String, Any>): GiftBoxEntity {
+//        val response = FAKE_GAMI_LUCKY_HOME_EMPTY
+//        return  Gson().fromJson<GiftBoxEntity>(response, GiftBoxEntity::class.java)
+//    }
 
     fun getRequestParams(pageName: String): HashMap<String, Any> {
         val map = HashMap<String, Any>()

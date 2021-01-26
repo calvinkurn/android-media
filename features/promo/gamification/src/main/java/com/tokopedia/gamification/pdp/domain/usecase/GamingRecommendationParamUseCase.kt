@@ -15,15 +15,13 @@ class GamingRecommendationParamUseCase @Inject constructor(
         return gqlWrapper.getResponse(GamingRecommendationParamResponse::class.java, queryString, map)
     }
 
-    fun getRequestParams(pageName: String, shopId:String): HashMap<String, Any> {
+    fun getRequestParams(pageName: String): HashMap<String, Any> {
         val map = HashMap<String, Any>()
         map[Params.PAGE_NAME] = pageName
-        map[Params.SHOP_ID] = shopId
         return map
     }
 
     object Params {
         const val PAGE_NAME = "pageName"
-        const val SHOP_ID = "shopId"
     }
 }

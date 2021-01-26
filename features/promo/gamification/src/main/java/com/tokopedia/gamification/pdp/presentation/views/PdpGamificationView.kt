@@ -57,7 +57,7 @@ class PdpGamificationView : LinearLayout {
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private lateinit var dataList: ArrayList<Visitable<*>>
     var pageName = ""
-    var shopId = ""
+    var shopId = 0L
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -173,12 +173,10 @@ class PdpGamificationView : LinearLayout {
                         }
                         val oldSize = dataList.size
                         val delay = if (oldSize == 0) 600L else 0L
-                        if (oldSize == 0) {
-                            val handler = Handler()
-                            handler.postDelayed({
-                                updateList(oldSize, it.data)
-                            }, delay)
-                        }
+                        val handler = Handler()
+                        handler.postDelayed({
+                            updateList(oldSize, it.data)
+                        }, delay)
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
@@ -208,10 +206,11 @@ class PdpGamificationView : LinearLayout {
         scrollListener.updateStateAfterGetData()
     }
 
-    fun getRecommendationParams(pageName: String, shopId: String) {
+    fun getRecommendationParams(pageName: String, shopId: Long) {
         this.pageName = pageName
         this.shopId = shopId
-        viewModel.getRecommendationParams(pageName, shopId)
+        viewModel.shopId = shopId
+        viewModel.getRecommendationParams(pageName)
     }
 
 

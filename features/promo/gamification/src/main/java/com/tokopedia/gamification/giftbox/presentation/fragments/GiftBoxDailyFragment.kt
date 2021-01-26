@@ -540,7 +540,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             if (show && !recommendation.pageName.isNullOrEmpty() && !recommendation.shopId.isNullOrEmpty()) {
                 rewardContainer.postDelayed({
                     setupBottomSheet(true)
-                    pdpGamificationView.getRecommendationParams(recommendation.pageName, recommendation.shopId)
+                    pdpGamificationView.getRecommendationParams(recommendation.pageName, recommendation.shopId.toLong())
                 }, 1000L)
 
             }
@@ -918,7 +918,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //        animatorSet.playTogether(tapHintAnim, infoAnim, prizeListContainerAnim)
         animatorSet.playTogether(tapHintAnim, prizeListContainerAnim)
         animatorSet.duration = 300L
-
+        animatorSet.addListener(onEnd = { directGiftView.visibility = View.GONE })
         animatorSet.start()
     }
 

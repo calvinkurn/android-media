@@ -13,12 +13,12 @@ import javax.inject.Named
 class GiftBoxDailyRewardUseCase @Inject constructor(@Named(GIFT_BOX_DAILY_REWARD) val queryString: String, val gqlWrapper: GqlUseCaseWrapper) {
 
     suspend fun getResponse(map: HashMap<String, Any>): GiftBoxRewardEntity {
-        return getFakeResponse()
-//        return gqlWrapper.getResponse(GiftBoxRewardEntity::class.java, queryString, map)
+//        return getFakeResponse()
+        return gqlWrapper.getResponse(GiftBoxRewardEntity::class.java, queryString, map)
     }
-    suspend fun getFakeResponse(): GiftBoxRewardEntity {
-        return Gson().fromJson<GiftBoxRewardEntity>(FAKE_GAMI_CRACK, GiftBoxRewardEntity::class.java)
-    }
+//    suspend fun getFakeResponse(): GiftBoxRewardEntity {
+//        return Gson().fromJson<GiftBoxRewardEntity>(FAKE_GAMI_CRACK, GiftBoxRewardEntity::class.java)
+//    }
 
     fun getRequestParams(campaignSlug: String, uniqueCode: String): HashMap<String, Any> {
         val map = HashMap<String, Any>()

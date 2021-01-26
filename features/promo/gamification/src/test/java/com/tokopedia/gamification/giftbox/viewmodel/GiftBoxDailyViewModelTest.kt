@@ -33,7 +33,7 @@ class GiftBoxDailyViewModelTest {
     }
 
     private fun getRealViewModel(): GiftBoxDailyViewModel {
-        return (GiftBoxDailyViewModel(dispatcher, dispatcher, giftBoxDailyUseCase, giftBoxDailyRewardUseCase, couponDetailUseCase, remindMeUseCase, autoApplyUseCase))
+        return (GiftBoxDailyViewModel(dispatcher, giftBoxDailyUseCase, giftBoxDailyRewardUseCase, couponDetailUseCase, remindMeUseCase, autoApplyUseCase))
     }
 
     private fun prepareViewModel() {
