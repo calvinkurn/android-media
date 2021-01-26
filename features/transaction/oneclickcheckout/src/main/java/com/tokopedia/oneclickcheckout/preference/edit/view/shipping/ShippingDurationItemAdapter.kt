@@ -99,6 +99,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
                 } else {
                     itemShippingText.text = data.servicesName
                 }
+                itemShippingText.setType(Typography.BODY_2)
                 if (data.texts?.textEta?.isNotEmpty() == true) {
                     itemShippingPrice.text = data.texts?.textEta
                 } else {
@@ -107,6 +108,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
                 itemShippingPrice.visible()
             } else {
                 itemShippingText.text = data.servicesName
+                itemShippingText.setType(Typography.BODY_1)
                 if (data.texts?.textRangePrice?.isNotBlank() == true) {
                     itemShippingPrice.text = data.texts?.textRangePrice
                     itemShippingPrice.visible()

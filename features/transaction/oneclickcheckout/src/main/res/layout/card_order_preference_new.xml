@@ -270,7 +270,7 @@
 
             <!--price in old view, duration in ETA-->
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_new_shipping_price_or_duration"
+                android:id="@+id/tv_new_shipping_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
@@ -282,13 +282,27 @@
                 app:typographyType="body_3"
                 tools:ignore="RtlSymmetry" />
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_new_shipping_courier_eta"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_16"
+                android:visibility="gone"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintEnd_toStartOf="@+id/btn_new_change_courier"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_new_shipping_price"
+                app:typographyType="body_3"
+                tools:ignore="RtlSymmetry" />
+
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_new_change_courier"
                 android:layout_width="@dimen/layout_lvl2"
                 android:layout_height="0dp"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 app:icon_name="CHEVRON_RIGHT"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_new_shipping_price_or_duration"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_new_shipping_courier_eta"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_new_shipping_courier" />
 
@@ -302,7 +316,7 @@
                 android:textColor="@color/Unify_R600"
                 app:layout_constraintEnd_toStartOf="@+id/icon_new_reload_shipping"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_new_shipping_price_or_duration"
+                app:layout_constraintTop_toBottomOf="@+id/tv_new_shipping_courier_eta"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler" />
 

@@ -31,9 +31,7 @@ class ShippingDurationModelWithPriceMapper @Inject constructor() {
         return ServicesItemModel().apply {
             servicesId = data.serviceId
             servicesName = data.serviceName
-            texts = textItemModelMapper(data.texts).apply {
-
-            }
+            texts = textItemModelMapper(data.texts)
             errorMessage = data.error.errorMessage
             errorId = data.error.errorId
         }

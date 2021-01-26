@@ -223,6 +223,9 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 if (!isNewFlow && preferenceIndex.isNotEmpty()) {
                     tvPreferenceName?.text = preferenceIndex
                     tvPreferenceName?.visible()
+                } else if (preferenceIndex.isNotEmpty()) {
+                    tvPreferenceName?.text = "Template ${preferenceIndex.replace("[^0-9]".toRegex(), "")}"
+                    tvPreferenceName?.visible()
                 }
             }
         } else {
