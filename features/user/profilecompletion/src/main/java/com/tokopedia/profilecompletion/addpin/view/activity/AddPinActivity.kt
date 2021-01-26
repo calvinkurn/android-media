@@ -2,6 +2,7 @@ package com.tokopedia.profilecompletion.addpin.view.activity
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.app.Activity
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
@@ -20,7 +21,6 @@ import com.tokopedia.profilecompletion.addpin.view.fragment.AddPinFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
-import android.app.Activity
 
 /**
  * Created by Ade Fulki on 2019-08-30.
@@ -56,14 +56,6 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
             bundle.putAll(intent.extras)
         }
         return AddPinFragment.createInstance(bundle)
-    }
-
-    private fun onSkip2FA(){
-        if (getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true
-                && enableBackBtn) {
-            setResult(Activity.RESULT_OK)
-            finish()
-        }
     }
 
     override fun onBackPressed() {
