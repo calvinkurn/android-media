@@ -18,7 +18,6 @@ import dagger.Provides
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-@ExternalRegisterScope
 @Module
 class ExternalRegisterUseCaseModules {
 

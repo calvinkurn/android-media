@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
  */
 
 @Module
-@ExternalRegisterScope
 class ExternalRegisterModules(val context: Context) {
     @Provides
     @ExternalRegisterContext
