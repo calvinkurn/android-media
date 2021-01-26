@@ -16,7 +16,6 @@ import dagger.multibindings.IntoMap
  * Created by nabillasabbaha on 10/05/19.
  */
 @Module
-@DigitalTelcoScope
 abstract class DigitalTelcoViewModelModule {
 
     @DigitalTelcoScope

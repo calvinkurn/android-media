@@ -35,6 +35,11 @@ class AttachmentPreviewAdapter(
         holder.bind(attachments[position])
     }
 
+    fun clear() {
+        attachments.clear()
+        notifyDataSetChanged()
+    }
+
     fun updateAttachments(attachmentPreview: ArrayList<SendablePreview>) {
         attachments = attachmentPreview
         notifyDataSetChanged()

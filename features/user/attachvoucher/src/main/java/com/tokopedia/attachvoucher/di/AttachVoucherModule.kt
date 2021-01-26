@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 
 
 @Module
-@AttachVoucherScope
 class AttachVoucherModule {
 
     @AttachVoucherScope

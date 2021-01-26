@@ -74,7 +74,7 @@ class OtherMenuViewModelTest {
     fun `success get all setting shop info data`() = runBlocking {
         val partialShopInfoSuccess = PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
                 ShopType.OfficialStore,
-                anyInt(),
+                anyLong(),
                 anyString()
         )
         val partialTopAdsSuccess = PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo(

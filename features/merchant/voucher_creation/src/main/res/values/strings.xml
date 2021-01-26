@@ -157,6 +157,10 @@
     <string name="mvc_share_on_messenger_group_desription">Jangan lupa manfaatkan jaringan pribadimu! Walau terdengar konvensional, tapi cara ini ampuh juga loh! Ingat, pilih grup sesuai konteks jualanmu.</string>
     <string name="mvc_private_voucher_tips_trick_info"><![CDATA[Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.]]></string>
     <string name="mvc_public_voucher_tips_trick_info"><![CDATA[Kode promo akan tampil ditokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.]]></string>
+    <string name="mvc_voucher_recommendation_title">Rekomendasi terbaik buat voucher tokomu</string>
+    <string name="mvc_voucher_recommendation">Yuk, tingkatkan minat pembeli dengan\npakai rekomendasi voucher dibawah ini.</string>
+    <string name="mvc_voucher_recommendation_cta_title">Yuk, Gunakan Rekomendasi Voucher</string>
+    <string name="mvc_voucher_recommendation_cta">Nggak pakai ribet, tarik banyak pembeli\ndengan rekomendasi dari kami. Terapkan</string>
 
     <!-- common -->
     <string name="mvc_create_set_period">Tentukan periode voucher aktif</string>
