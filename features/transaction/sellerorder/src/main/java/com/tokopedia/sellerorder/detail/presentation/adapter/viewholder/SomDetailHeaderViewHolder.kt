@@ -162,7 +162,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
     }
 
     private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo, tickerContent: String, isAwb: Boolean): String {
-        val message = Utils.getL2CancellationReason(tickerInfo.actionText, context.getString(R.string.som_header_detail_ticker_cancellation))
+        val message = Utils.getL2CancellationReason(tickerInfo.text, context.getString(R.string.som_header_detail_ticker_cancellation))
         val additionalInvalidResi = itemView.context.getString(R.string.additional_invalid_resi)
 
         val spannedMessage = if (isAwb) {
@@ -178,14 +178,14 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         if(isAwb) {
             spannedMessage.setSpan(
                     UrlSpanNoUnderline(additionalInvalidResi),
-                    message.length + 2,
-                    message.length + additionalInvalidResi.length,
+                    tickerContent.length + 2,
+                    tickerContent.length + additionalInvalidResi.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             spannedMessage.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)),
-                    message.length + 2,
-                    message.length + additionalInvalidResi.length,
+                    tickerContent.length + 2,
+                    tickerContent.length + additionalInvalidResi.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         } else {
