@@ -18,7 +18,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.Inspirat
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
-import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.search_result_product_big_grid_curated_inspiration_card_layout.view.*
 import kotlinx.android.synthetic.main.search_result_product_big_grid_inspiration_card_layout.view.*
 import kotlinx.android.synthetic.main.search_result_product_inspiration_card_layout.view.*
@@ -130,7 +130,7 @@ class BigGridInspirationCardViewHolder(
     }
 
     private fun createItemDecoration(element: InspirationCardViewModel): RecyclerView.ItemDecoration {
-        val spacing = 8.toDp()
+        val spacing = 8.toPx()
 
         return if (!element.isRelated()) ChipSpacingItemDecoration(spacing, spacing)
         else RelatedBigGridItemDecoration(spacing)
