@@ -27,4 +27,8 @@ data class MultiLineGraphWidgetUiModel(
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun copy(): BaseWidgetUiModel<MultiLineGraphDataUiModel> {
+        return MultiLineGraphWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+    }
 }

@@ -257,7 +257,7 @@ class ShopSettingsEtalaseListFragment :
                         setTitle(getString(R.string.title_dialog_delete_shop_etalase))
                         setDesc(getString(R.string.desc_dialog_delete_shop_etalase, shopEtalaseViewModel.name))
                         setBtnOk(getString(R.string.action_delete))
-                        setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
+                        setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
                         setOnOkClickListener {
                             shopEtalaseIdToDelete = shopEtalaseViewModel.id
                             shopEtalaseNameToDelete = shopEtalaseViewModel.name

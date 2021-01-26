@@ -10,7 +10,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@SearchScope
 @Module
 class GetDynamicFilterCoroutineUseCaseModule {
 

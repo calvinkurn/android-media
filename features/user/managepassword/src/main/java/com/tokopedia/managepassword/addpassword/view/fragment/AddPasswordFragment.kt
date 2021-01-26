@@ -164,6 +164,7 @@ class AddPasswordFragment : BaseDaggerFragment() {
 
     private fun onSuccessAdd() {
         activity?.let {
+            userSession.setHasPassword(true)
             tracker.onSuccessAddPassword()
             it.setResult(Activity.RESULT_OK)
             it.finish()

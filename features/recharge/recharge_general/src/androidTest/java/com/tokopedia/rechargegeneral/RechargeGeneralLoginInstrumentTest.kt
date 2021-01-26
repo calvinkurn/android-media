@@ -10,10 +10,10 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
@@ -23,6 +23,7 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActiv
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralInputViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -30,6 +31,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,27 +43,25 @@ class RechargeGeneralLoginInstrumentTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
-    var mActivityRule: IntentsTestRule<RechargeGeneralActivity> = object : IntentsTestRule<RechargeGeneralActivity>(RechargeGeneralActivity::class.java) {
-        override fun getActivityIntent(): Intent {
-            val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-            return Intent(targetContext, RechargeGeneralActivity::class.java).apply {
-                putExtra(RechargeGeneralActivity.PARAM_MENU_ID, 127)
-                putExtra(RechargeGeneralActivity.PARAM_CATEGORY_ID, 22)
-            }
-        }
-
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().subscribe()
-
-            setupGraphqlMockResponse(RechargeGeneralLoginMockResponseConfig())
-        }
-    }
+    var mActivityRule = ActivityTestRule(RechargeGeneralActivity::class.java, false, false)
 
     @Before
     fun stubAllExternalIntents() {
+        Intents.init()
+        graphqlCacheManager.deleteAll()
+        gtmLogDBSource.deleteAll().toBlocking().first()
+        setupGraphqlMockResponse(RechargeGeneralLoginMockResponseConfig())
+
+        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = Intent(targetContext, RechargeGeneralActivity::class.java).apply {
+            putExtra(RechargeGeneralActivity.PARAM_MENU_ID, 127)
+            putExtra(RechargeGeneralActivity.PARAM_CATEGORY_ID, 22)
+        }
+        mActivityRule.launchActivity(intent)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
@@ -83,7 +83,6 @@ class RechargeGeneralLoginInstrumentTest {
     @Test
     fun validate_login() {
         stubSearchNumber()
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         Thread.sleep(3000)
         validate_favorite_number()
@@ -93,7 +92,7 @@ class RechargeGeneralLoginInstrumentTest {
                 hasAllSuccess())
     }
 
-    fun validate_recent_transaction() {
+    private fun validate_recent_transaction() {
         onView(withId(R.id.recent_transaction_widget)).check(matches(isDisplayed()))
         onView(AllOf.allOf(
                 withId(R.id.recycler_view_menu_component),
@@ -112,7 +111,7 @@ class RechargeGeneralLoginInstrumentTest {
         onView(withId(R.id.recent_transaction_widget)).check(matches(isDisplayed()))
     }
 
-    fun validate_favorite_number() {
+    private fun validate_favorite_number() {
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
                         1, click()
@@ -122,8 +121,8 @@ class RechargeGeneralLoginInstrumentTest {
         onView(withId(R.id.recharge_general_enquiry_button)).check(matches(isEnabled()))
     }
 
-    fun validate_promo() {
-        onView(withId(R.id.tab_layout)).check(matches(isDisplayed())).perform(CommonActions.selectTabLayoutPosition(1))
+    private fun validate_promo() {
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(click())
         Thread.sleep(1000)
         onView(withId(R.id.promo_list_widget)).check(matches(isDisplayed()))
         onView(AllOf.allOf(
@@ -135,6 +134,11 @@ class RechargeGeneralLoginInstrumentTest {
                 )
         )
         Thread.sleep(1000)
+    }
+
+    @After
+    fun cleanUp() {
+        Intents.release()
     }
 
     companion object {

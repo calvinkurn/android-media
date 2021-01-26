@@ -10,7 +10,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@InitialSearchScope
 @Module(includes = [InitialSearchViewModelModule::class])
 class InitialSearchModule {
 

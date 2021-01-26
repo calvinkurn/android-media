@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:paddingBottom="@dimen/dp_16">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -17,7 +17,7 @@
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/sp_6"
         android:maxLines="2"
-        android:textColor="@color/promo_checkout_catalogtitle_color"
+        android:textColor="@color/Unify_N700_96"
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
         android:layout_marginTop="@dimen/dp_4"
         android:lineSpacingExtra="@dimen/sp_6"
         app:typographyType="body_3"
-        android:textColor="@color/promo_checkout_catalogsubtitle_color"
+        android:textColor="@color/Unify_N700_68"
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="@+id/text_title"
         app:layout_constraintStart_toStartOf="@+id/text_title"

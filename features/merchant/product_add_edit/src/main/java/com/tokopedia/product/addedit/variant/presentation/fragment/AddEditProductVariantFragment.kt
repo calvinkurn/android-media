@@ -3,9 +3,11 @@ package com.tokopedia.product.addedit.variant.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -18,11 +20,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.imagepicker.common.util.FileUtils
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
@@ -35,9 +38,6 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXT
 import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
-import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerAddProductActivity
-import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerEditPhotoActivity
-import com.tokopedia.product.addedit.imagepicker.view.activity.VariantPhotoPickerActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
@@ -93,8 +93,7 @@ class AddEditProductVariantFragment :
         VariantDataValuePicker.OnVariantUnitPickerClickListener,
         VariantPhotoAdapter.OnItemClickListener,
         VariantDataValuePicker.OnVariantUnitValuePickListener,
-        AddEditProductPerformanceMonitoringListener
-{
+        AddEditProductPerformanceMonitoringListener {
 
     companion object {
         private const val TAG_VARIANT_UNIT_PICKER = "VARIANT_UNIT_PICKER"
@@ -126,6 +125,7 @@ class AddEditProductVariantFragment :
     private var isLoggedin = ""
     private var userId = ""
     private var shopId = ""
+
     // start PLT monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -211,7 +211,7 @@ class AddEditProductVariantFragment :
 
         // button "tambah" variant values level 1 on click listener
         linkAddVariantValueLevel1.setOnClickListener {
-            if(variantDataValuePicker?.isVisible == true) return@setOnClickListener
+            if (variantDataValuePicker?.isVisible == true) return@setOnClickListener
             val variantData: VariantDetail = viewModel.getVariantData(VARIANT_VALUE_LEVEL_ONE_POSITION)
             val selectedVariantUnitValues = mutableListOf<UnitValue>()
             if (variantData.units.isEmpty()) showCustomVariantInputForm(VARIANT_VALUE_LEVEL_ONE_POSITION, variantData, Unit(), listOf(), selectedVariantUnitValues)
@@ -227,7 +227,7 @@ class AddEditProductVariantFragment :
 
         // button "tambah" variant values level 2 on click listener
         linkAddVariantValueLevel2.setOnClickListener {
-            if(variantDataValuePicker?.isVisible == true) return@setOnClickListener
+            if (variantDataValuePicker?.isVisible == true) return@setOnClickListener
             val variantData: VariantDetail = viewModel.getVariantData(VARIANT_VALUE_LEVEL_TWO_POSITION)
             val selectedVariantUnitValues = mutableListOf<UnitValue>()
             if (variantData.units.isEmpty()) showCustomVariantInputForm(VARIANT_VALUE_LEVEL_TWO_POSITION, variantData, Unit(), listOf(), selectedVariantUnitValues)
@@ -607,7 +607,7 @@ class AddEditProductVariantFragment :
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_SIZECHART_IMAGE -> {
-                    val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS).orEmpty()
+                    val imageUrlOrPathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
                     imageUrlOrPathList.forEach {
                         viewModel.updateSizechart(it)
                     }
@@ -753,11 +753,19 @@ class AddEditProductVariantFragment :
     }
 
     private fun showPhotoVariantPicker() {
-        context?.apply {
-            val isEditMode = viewModel.isEditMode.value ?: false
-            val intent = VariantPhotoPickerActivity.getIntent(this, isEditMode)
-            startActivityForResult(intent, REQUEST_CODE_VARIANT_PHOTO_IMAGE)
+        val ctx = context ?: return
+        val isEditMode = viewModel.isEditMode.value ?: false
+        val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
+                .withSimpleEditor()
+        builder.imagePickerEditorBuilder?.convertToWebp = true
+        ImagePickerGlobalSettings.onImageEditorContinue = ImagePickerCallback(ctx) { it, _ ->
+            val shopId = UserSession(it).shopId ?: ""
+            if (isEditMode) ProductEditVariantTracking.pickProductVariantPhotos(shopId)
+            else ProductAddVariantTracking.pickProductVariantPhotos(shopId)
         }
+        val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
+        intent.putImagePickerBuilder(builder);
+        startActivityForResult(intent, REQUEST_CODE_VARIANT_PHOTO_IMAGE)
     }
 
     private fun onSizechartClicked() {
@@ -1067,36 +1075,56 @@ class AddEditProductVariantFragment :
     private fun removeSizechart() {
         val url = viewModel.variantSizechart.value?.urlOriginal.orEmpty()
         viewModel.updateSizechart("")
-        FileUtils.deleteFileInTokopediaFolder(url)
     }
 
     private fun showSizechartPicker() {
-        context?.apply {
-            val isEditMode = viewModel.isEditMode.value ?: false
-            val intent = SizechartPickerAddProductActivity.getIntent(this, isEditMode)
-            startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
+        val ctx = context ?: return
+        val isEditMode = viewModel.isEditMode.value ?: false
+        val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
+                .withSimpleEditor()
+        builder.imagePickerEditorBuilder?.convertToWebp = true
+        ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
+        val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
+        intent.putImagePickerBuilder(builder)
+        startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
+    }
+
+    private fun onImagePickerEditContinue(context: Context, isInEditMode: Boolean): ImagePickerCallback {
+        return ImagePickerCallback(context) { it, _ ->
+            val shopId = UserSession(it).shopId.orEmpty()
+            if (isInEditMode)
+                ProductEditVariantTracking.pickSizeChartImage(shopId)
+            else
+                ProductAddVariantTracking.pickSizeChartImage(shopId)
         }
     }
 
     private fun showEditorSizechartPicker() {
-        val urlOrPath = viewModel.variantSizechart.value?.urlOriginal
+        val ctx = context ?: return
+        val urlOrPath = viewModel.variantSizechart.value?.urlOriginal ?: ""
 
-        context?.apply {
-            val isEditMode = viewModel.isEditMode.value ?: false
-            val editorIntent = SizechartPickerEditPhotoActivity.createIntent(this, urlOrPath, isEditMode)
-            startActivityForResult(editorIntent, REQUEST_CODE_SIZECHART_IMAGE)
-        }
+        val isEditMode = viewModel.isEditMode.value ?: false
+        val builder = ImageEditorBuilder(
+                imageUrls = arrayListOf(urlOrPath),
+                defaultRatio = ImageRatioType.RATIO_1_1,
+                convertToWebp = true
+        )
+        val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_EDITOR)
+        intent.putImageEditorBuilder(builder)
+        ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
+        startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
     }
 
     private fun showGetVariantCategoryCombinationErrorToast(errorMessage: String) {
         view?.let {
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
-                    actionText = getString(com.tokopedia.imagepicker.R.string.title_try_again),
+                    actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
                         val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId
-                        val selections = viewModel.productInputModel.value?.variantInputModel?.selections?: listOf()
+                        val selections = viewModel.productInputModel.value?.variantInputModel?.selections
+                                ?: listOf()
                         categoryId?.let { id ->
                             val paramId = id.toIntOrNull()
                             paramId?.run { viewModel.getVariantCategoryCombination(this, selections) }
