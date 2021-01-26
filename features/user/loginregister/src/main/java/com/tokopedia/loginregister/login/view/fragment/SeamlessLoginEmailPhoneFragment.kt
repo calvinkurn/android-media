@@ -122,11 +122,11 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                         if (data.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false) == true) {
                             onGoToSecurityQuestion("").invoke()
                         } else {
-                            presenter.getUserInfo()
+                            viewModel.getUserInfo()
                         }
                     }
                 } else {
-                    presenter.getUserInfo()
+                    viewModel.getUserInfo()
                 }
             }
             else {
@@ -137,7 +137,7 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                 && data != null) {
             data.extras?.let {
                 val validateToken = it.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                presenter.reloginAfterSQ(validateToken)
+                viewModel.reloginAfterSQ(validateToken)
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
