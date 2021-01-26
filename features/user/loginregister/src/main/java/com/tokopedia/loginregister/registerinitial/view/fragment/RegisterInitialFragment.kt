@@ -51,8 +51,10 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
+import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -69,6 +71,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
@@ -122,6 +126,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private var isShowBanner: Boolean = false
     private var isHitRegisterPushNotif: Boolean = false
     private var activityShouldEnd: Boolean = true
+    private var enableOvoRegister: Boolean = false
 
     @field:Named(SESSION_MODULE)
     @Inject
@@ -132,6 +137,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     @Inject
     lateinit var registerAnalytics: RegisterAnalytics
+
+    @Inject
+    lateinit var ovoCreationAnalytics: OvoCreationAnalytics
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -179,6 +187,12 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     override fun getScreenName(): String {
         return RegisterAnalytics.SCREEN_REGISTER_INITIAL
     }
+
+    private fun getAbTestingRemoteConfig(): RemoteConfig {
+        return RemoteConfigInstance.getInstance().abTestPlatform
+    }
+
+    private fun useOvoRegister(): Boolean = enableOvoRegister
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -288,6 +302,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             isShowTicker = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
             isShowBanner = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_BANNER_REGISTER, false)
             isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
+            enableOvoRegister = firebaseRemoteConfig.getBoolean(ExternalRegisterConstants.CONFIG_EXTERNAL_REGISTER, false)
         }
     }
 
@@ -504,7 +519,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             } else {
                 phoneNumber?.run {
-                    showProceedWithPhoneDialog(this)
+                    goToRegisterWithPhoneNumber(this)
                 }
             }
         }
@@ -518,50 +533,41 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     fun showRegisterOvoDialog() {
         activity?.let {
+            ovoCreationAnalytics.trackViewOvoRegisterDialog()
             phoneNumber?.run {
-                OvoAccountDialog.showRegisterDialogUnify(this, it, object: BaseDialogConnectAccListener {
+                OvoAccountDialog.showRegisterDialogUnify(it, this, object: BaseDialogConnectAccListener {
                     override fun onDialogPositiveBtnClicked() {
+                        ovoCreationAnalytics.trackClickCreateOvo()
                         goToOvoAddName(this@run)
                     }
 
                     override fun onDialogNegativeBtnClicked() {
-                        showProceedWithPhoneDialog(phoneNumber ?: "")
+                        phoneNumber?.run {
+                            ovoCreationAnalytics.trackClickRegTkpdOnly()
+                            goToRegisterWithPhoneNumber(this)
+                        }
                     }
                 })
             }
-
-//            OvoAccountDialog.showRegisterOvoDialog(this, object: BaseDialogConnectAccListener {
-//                override fun onDialogPositiveBtnClicked() {
-//                    goToOvoAddName()
-//                }
-//
-//                override fun onDialogNegativeBtnClicked() {
-//                    doRegisterCheck()
-//                }
-//            })
         }
     }
 
     fun showConnectOvoDialog() {
         activity?.run {
+            ovoCreationAnalytics.trackViewOvoConnectDialog()
             OvoAccountDialog.showConnectDialogUnify(this, object: BaseDialogConnectAccListener {
                 override fun onDialogPositiveBtnClicked() {
+                    ovoCreationAnalytics.trackClickConnectOvo()
                     goToOvoAddName(phoneNumber ?: "")
                 }
 
                 override fun onDialogNegativeBtnClicked() {
-                    showProceedWithPhoneDialog(phoneNumber ?: "")
+                    phoneNumber?.run {
+                        ovoCreationAnalytics.trackClickConnectTkpdOnly()
+                        goToRegisterWithPhoneNumber(this)
+                    }
                 }
             })
-//            OvoAccountDialog.showConnectOvoDialog(this, object: BaseDialogConnectAccListener {
-//                override fun onDialogPositiveBtnClicked() {
-//
-//                }
-//
-//                override fun onDialogNegativeBtnClicked() {
-//
-//                }
-//            })
         }
     }
 
@@ -570,7 +576,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             val formattedPhone = removeSymbolPhone(phone)
             val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.OVO_ADD_NAME)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, formattedPhone)
-            startActivity(intent)
+            startActivityForResult(intent, ExternalRegisterConstants.REQUEST_OVO_REGISTER)
         }
     }
 
@@ -768,8 +774,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 setTempPhoneNumber(registerCheckData.view)
                 if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
-                } else {
+                } else if(registerCheckData.isShowRegisterOvo && useOvoRegister()){
                     registerInitialViewModel.checkHasOvoAccount(registerCheckData.view)
+                } else {
+                    showProceedWithPhoneDialog(registerCheckData.view)
                 }
             }
             EMAIL_TYPE -> {
@@ -976,7 +984,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
                 it.setResult(Activity.RESULT_CANCELED)
-            } else {
+            } else if(requestCode == ExternalRegisterConstants.REQUEST_OVO_REGISTER && resultCode == Activity.RESULT_CANCELED){
+
+            }
+            else {
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
@@ -1538,14 +1549,14 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         private val REQUEST_CREATE_PASSWORD = 102
         private val REQUEST_SECURITY_QUESTION = 103
         private val REQUEST_VERIFY_PHONE_REGISTER_PHONE = 105
-        private val REQUEST_ADD_NAME_REGISTER_PHONE = 107
+        val REQUEST_ADD_NAME_REGISTER_PHONE = 107
         private val REQUEST_VERIFY_PHONE_TOKOCASH = 108
         private val REQUEST_CHOOSE_ACCOUNT = 109
-        private val REQUEST_CHANGE_NAME = 111
+        val REQUEST_CHANGE_NAME = 111
         private val REQUEST_LOGIN_GOOGLE = 112
         private val REQUEST_OTP_VALIDATE = 113
         private val REQUEST_PENDING_OTP_VALIDATE = 114
-        private val REQUEST_ADD_PIN = 115
+        const val REQUEST_ADD_PIN = 115
 
         private const val OTP_TYPE_ACTIVATE = 143
         private const val OTP_TYPE_REGISTER = 126
@@ -1568,10 +1579,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
         private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
         private const val REMOTE_CONFIG_KEY_BANNER_REGISTER = "android_user_banner_register"
-        private const val REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF = "android_user_register_otp_push_notif_register_page"
+        const val REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF = "android_user_register_otp_push_notif_register_page"
 
-        private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
-        private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
+        const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
+        const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
 

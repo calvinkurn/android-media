@@ -1,6 +1,14 @@
 package com.tokopedia.loginregister.external_register.ovo.view
 
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
+import com.tokopedia.loginregister.external_register.base.di.DaggerExternalRegisterComponent
+import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterComponent
+import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterModules
+import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterUseCaseModules
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 
 /**
@@ -8,8 +16,20 @@ import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitial
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class OvoRegisterInitialActivity: RegisterInitialActivity() {
+class OvoRegisterInitialActivity: BaseSimpleActivity(), HasComponent<ExternalRegisterComponent> {
+
+    override fun getComponent(): ExternalRegisterComponent {
+        val loginRegister = DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
+        return DaggerExternalRegisterComponent
+                .builder()
+                .loginRegisterComponent(loginRegister)
+                .externalRegisterModules(ExternalRegisterModules(this))
+                .externalRegisterUseCaseModules(ExternalRegisterUseCaseModules())
+                .build()
+    }
+
     override fun getNewFragment(): Fragment? {
-        return OvoRegisterInitialFragment.createInstance()
+        val i = intent
+        return OvoRegisterInitialFragment.createInstance(intent.extras)
     }
 }

@@ -11,6 +11,19 @@ object QueryCheckHasOvoAcc {
     private const val clientId = "\$client_id"
     private const val name = "\$name"
     private const val date = "\$date"
+    private const val regType = "\$reg_type"
+
+    private const val type = "\$type"
+    private const val fullname = "\$fullname"
+    private const val email = "\$email"
+    private const val password = "\$password"
+    private const val osType = "\$os_type"
+    private const val validateToken = "\$validate_token"
+    private const val goalKey = "\$goal_key"
+    private const val authCode = "\$auth_code"
+    private const val typeName = "\$accounts_type_name"
+
+    private const val msisdn = "\$phone"
 
     val checkHasOvoQuery: String = """
         query check_ovo_phone($phoneNo: String!){
@@ -45,20 +58,30 @@ object QueryCheckHasOvoAcc {
     """.trimIndent()
 
     val registerOvoQuery: String = """
-        query activate_ovo($phoneNo: String!, $clientId: String!, $name: String!, $date: String!){
-          activateInitRegis(
-            client_id: $clientId
-            phone: $phoneNo
-            name: $name
-            date: $date) {
-            activationUrl
-            goalKey
-            errors{
-              code
-              title
-              message
+        mutation register($regType: String!, $fullname: String!, $msisdn: String!, $goalKey: String!, $authCode: String){
+            register(
+                input: {
+                    goal_key: $goalKey
+                    auth_code: $authCode
+                    reg_type: $regType
+                    fullname: $fullname
+                    phone: $msisdn
+                }
+            ) {
+                user_id
+                sid
+                access_token
+                refresh_token
+                token_type
+                is_active
+                action
+                enable_2fa
+                enable_skip_2fa
+                errors {
+                    name
+                    message
+                }
             }
-          }
         }
     """.trimIndent()
 

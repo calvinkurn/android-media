@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
+import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.ovo.data.ActivateOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.ActivateOvoUseCase
 import com.tokopedia.notifications.common.launchCatchError
@@ -20,6 +21,7 @@ import javax.inject.Inject
 
 open class OvoAddNameViewModel @Inject constructor(
         private val activateOvoUseCase: ActivateOvoUseCase,
+        private val externalRegisterPreference: ExternalRegisterPreference,
         dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
 
     private val mutableActivateOvoResponse = MutableLiveData<Result<ActivateOvoResponse>>()
@@ -30,6 +32,9 @@ open class OvoAddNameViewModel @Inject constructor(
         launchCatchError(block = {
             activateOvoUseCase.setParams(phoneNumber = phoneNumber, name = name, clientId = ExternalRegisterConstants.KEY.CLIENT_ID)
             activateOvoUseCase.executeOnBackground().run {
+                externalRegisterPreference.saveGoalKey(this.activateOvoData.goalKey)
+                externalRegisterPreference.saveName(name)
+                externalRegisterPreference.savePhone(phoneNumber)
                 mutableActivateOvoResponse.postValue(Success(this))
             }
         }, onError = {

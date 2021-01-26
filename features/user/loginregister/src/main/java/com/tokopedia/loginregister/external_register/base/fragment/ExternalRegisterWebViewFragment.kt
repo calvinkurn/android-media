@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import kotlinx.android.synthetic.main.fragment_base_web_view.*
@@ -36,11 +39,23 @@ class ExternalRegisterWebViewFragment: BaseDaggerFragment() {
 
     fun setupWebview(url: String){
         base_web_view?.run {
-            webViewClient = WebViewClient()
+            webViewClient = object: WebViewClient() {
+                override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                    val response = if(url?.contains("authCode") == true) url else ""
+                    if(url?.startsWith(ApplinkConstInternalGlobal.OVO_REG_INIT) == true && response.isNotEmpty()){
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OVO_REG_INIT)
+                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY, response)
+                        startActivity(intent)
+                        activity?.finish()
+                    }
+                    return super.shouldOverrideUrlLoading(view, url)
+                }
+            }
             settings.javaScriptEnabled = true
             loadUrl(url)
         }
     }
+
 
     companion object {
         fun createInstance(data: Bundle?): Fragment {

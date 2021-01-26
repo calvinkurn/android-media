@@ -181,6 +181,8 @@ public interface ApplinkConst {
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
+    String OVO_REGISTER_INIT = "tokopedia://global/ovo-reg-init";
+
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
     String FLIGHT = "tokopedia://pesawat";

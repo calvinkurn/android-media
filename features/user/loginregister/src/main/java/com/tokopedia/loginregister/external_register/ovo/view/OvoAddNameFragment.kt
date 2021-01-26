@@ -44,6 +44,9 @@ class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
     override fun onNextButtonClicked() {
         if(mPhone.isNotEmpty()){
             addNameViewModel.activateOvo(name = getInputText(), phoneNumber = mPhone)
+            startButtonLoading()
+        } else {
+            activity?.finish()
         }
     }
 
@@ -55,6 +58,7 @@ class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
 
     override fun initObserver() {
         addNameViewModel.activateOvoResponse.observe(this, Observer {
+            stopButtonLoading()
             when(it){
                 is Success -> onSuccessActivateOvo(it.data.activateOvoData)
                 is Fail -> onErrorActivateOvo(it.throwable)
@@ -72,11 +76,21 @@ class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
     }
 
     fun onSuccessActivateOvo(data: ActivateOvoData){
-        goToExternalWebView(data.activationUrl)
+        goToExternalWebView("${data.activationUrl}?k=${data.goalKey}")
+        activity?.finish()
     }
 
     fun onErrorActivateOvo(error: Throwable) {
+        goToErrorPage()
+    }
 
+    fun goToErrorPage(){
+        val intent = OvoFinalPageActivity.createIntentError(activity)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        activity?.finish()
     }
 
     companion object {
