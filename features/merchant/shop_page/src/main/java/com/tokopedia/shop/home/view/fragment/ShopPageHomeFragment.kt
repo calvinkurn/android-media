@@ -1242,6 +1242,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         if (isLogin) {
+            Log.i("TEST_LOG_SHOP", "CLICK ADD CART")
             shopHomeProductViewModel?.let { product ->
                 viewModel?.addProductToCart(
                         product,
@@ -1250,6 +1251,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             onSuccessAddToCart(it, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
                         },
                         {
+                            Log.i("TEST_LOG_SHOP", it.stackTraceToString())
                             onErrorAddToCart(it)
                         }
                 )
