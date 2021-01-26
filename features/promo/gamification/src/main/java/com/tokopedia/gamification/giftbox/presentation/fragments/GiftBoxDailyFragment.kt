@@ -7,6 +7,7 @@ import android.animation.PropertyValuesHolder
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,8 @@ import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -342,13 +345,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     setClickEventOnReminder()
                                 }
                                 TokenUserState.EMPTY -> {
-                                    tokoButtonContainer.wrapButtons()
                                     tokoButtonContainer.toggleReminderVisibility(true)
                                     directGiftView.visibility = View.GONE
 //                                    reminderLayout.visibility = View.VISIBLE
                                     renderGiftBoxActive(giftBoxEntity)
                                     tvRewardFirstLine.visibility = View.GONE
-                                    tvRewardSecondLine.visibility = View.GONE
+//                                    tvRewardSecondLine.visibility = View.GONE
                                     tokoButtonContainer.btnSecond.visibility = View.GONE
 //                                    tokoButtonContainer.visibility = View.GONE
 //                                    btnAction.visibility = View.GONE
@@ -813,11 +815,22 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     entity.gamiLuckyHome.prizeDetailList,
                     entity.gamiLuckyHome.prizeDetailListButton
             )
+            if (isTablet) {
+//                tvRewardFirstLine.setTextSize(TypedValue.COMPLEX_UNIT_PX, 20.toPx().toFloat())
+//                tvRewardSecondLine.setTextSize(TypedValue.COMPLEX_UNIT_PX, 24.toPx().toFloat())
+                tvRewardFirstLine.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
+                tvRewardSecondLine.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26f)
+                tokoButtonContainer.wrapButtons()
+            }
         }
 
-//        tvBenefits.text = entity.gamiLuckyHome.tokensUser.text //todo Rahul use from directGiftView
-
         if (tokenUserState == TokenUserState.EMPTY) {
+            tokoButtonContainer.wrapButtons()
+            val sideMargin = 8.toPx()
+            val topMargin = 32.toPx()
+            tvRewardSecondLine.setMargin(sideMargin, topMargin, sideMargin, topMargin)
+            tvRewardSecondLine.text = entity.gamiLuckyHome.tokensUser.text
+            tvRewardSecondLine.setTextSize(TypedValue.COMPLEX_UNIT_PX, 20.toPx().toFloat())
 //            tvBenefits.setType(Typography.HEADING_2)
 //            tvBenefits.setWeight(Typography.BOLD)
 //            tvBenefits.translationY = tvBenefits.dpToPx(5)

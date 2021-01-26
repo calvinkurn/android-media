@@ -19,10 +19,7 @@ class CekTokoButtonContainer @JvmOverloads constructor(
         btnReminder = findViewById(R.id.btnFirst)
         btnSecond = findViewById(R.id.btnSecond)
         val isTablet = context.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet) ?: false
-        if (isTablet) {
-            wrapButtons()
-        }
-        val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val lp = LayoutParams( if (isTablet) LayoutParams.WRAP_CONTENT else LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         layoutParams = lp
         orientation = HORIZONTAL
     }
@@ -36,6 +33,6 @@ class CekTokoButtonContainer @JvmOverloads constructor(
     }
 
     fun wrapButtons(){
-        this.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+        this.layoutParams.width = LayoutParams.WRAP_CONTENT
     }
 }
