@@ -83,6 +83,8 @@ class NotificationTypeFactoryImpl constructor(
         val item = visitables.getOrNull(position)
         if (item is NotificationUiModel) {
             return when {
+                // TODO: Adjust with type_link
+                item.hasWidget() -> WidgetNotificationViewHolder.LAYOUT
                 item.isTypeDefault() -> NormalNotificationViewHolder.LAYOUT
                 item.isTypeSingleProduct() -> SingleProductNotificationViewHolder.LAYOUT
                 item.isCarouselProduct() -> CarouselProductNotificationViewHolder.LAYOUT
@@ -118,6 +120,9 @@ class NotificationTypeFactoryImpl constructor(
 
     override fun createViewHolder(view: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
+            WidgetNotificationViewHolder.LAYOUT -> WidgetNotificationViewHolder(
+                    view, notificationListener
+            )
             NotificationErrorViewHolder.LAYOUT -> NotificationErrorViewHolder(
                     view, notificationListener
             )

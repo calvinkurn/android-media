@@ -135,6 +135,10 @@ data class NotificationUiModel(
         return readStatus != STATUS_UNREAD
     }
 
+    fun hasWidget(): Boolean {
+        return widgetType == 1
+    }
+
     companion object {
         const val STATUS_UNREAD = 1
         const val STATUS_READ = 2

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/notification_container"
+    style="@style/BaseNotification_Container"
+    android:paddingBottom="@dimen/unify_space_0">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        style="@style/BaseNotification_Icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_notification_type"
+        style="@style/BaseNotification_Type"
+        app:layout_constraintStart_toEndOf="@+id/iv_icon"
+        app:layout_constraintTop_toTopOf="@+id/iv_icon"
+        tools:text="Promo" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_notification_time"
+        style="@style/BaseNotification_Time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="23 Jam" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_notification_title"
+        style="@style/BaseNotification_Title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_icon"
+        app:layout_constraintTop_toBottomOf="@+id/txt_notification_type"
+        tools:text="Semakin lancar dengan Power Merchant" />
+
+    <!-- TODO: Change to actual viewgroup -->
+    <View
+        android:id="@+id/view_notification_desc"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:background="@color/Unify_G500_44"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_icon"
+        app:layout_constraintTop_toBottomOf="@+id/txt_notification_title"
+        tools:text="@string/lorem" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_history"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_notification_desc" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_history"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/unify_space_48"
+        android:paddingTop="@dimen/unify_space_8"
+        android:paddingEnd="@dimen/unify_space_48"
+        android:paddingBottom="@dimen/unify_space_8"
+        android:text="Sebelumnya"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_history"
+        app:typographyType="body_3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
