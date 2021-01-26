@@ -7,9 +7,8 @@
 
     <com.tokopedia.gamification.giftbox.presentation.views.GiftBoxReminderButton
         android:id="@+id/btnFirst"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        style="@style/GiftBoxReminderButton"
+        android:layout_height="wrap_content" />
 
     <View
         android:layout_width="@dimen/gami_space_between_reminde_btn_cek_tp_btn"
@@ -18,7 +17,6 @@
 
     <com.tokopedia.gamification.giftbox.presentation.views.GreenGradientButton
         android:id="@+id/btnSecond"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        style="@style/GiftBoxReminderButton"
+        android:layout_height="wrap_content" />
 </merge>

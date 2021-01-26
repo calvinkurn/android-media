@@ -19,4 +19,8 @@
         <item name="android:layout_width">448dp</item>
     </style>
 
+    <style name="GiftBoxReminderButton">
+        <item name="android:layout_width">350dp</item>
+    </style>
+
 </resources>
