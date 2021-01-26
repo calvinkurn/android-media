@@ -74,7 +74,7 @@ class RechargeBUWidgetProductCardViewHolder(
                     }
                     show()
                 } else {
-                    hide()
+                    invisible()
                 }
             }
 
@@ -85,7 +85,7 @@ class RechargeBUWidgetProductCardViewHolder(
                     text = productName
                     show()
                 } else {
-                    hide()
+                    invisible()
                 }
             }
 
@@ -111,7 +111,7 @@ class RechargeBUWidgetProductCardViewHolder(
                     }
                     show()
                 } else {
-                    hide()
+                    invisible()
                 }
             }
 
