@@ -190,6 +190,8 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private var userNotAllowedDialog: DialogUnify? = null
 
+    private var menu: Menu? = null
+
     private val connectionMonitor by lazy { context?.run { SomConnectionMonitor(this) } }
 
     companion object {
@@ -284,6 +286,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        this.menu = menu
         inflater.inflate(R.menu.chat_menu, menu)
     }
 
@@ -452,11 +455,13 @@ class SomDetailFragment : BaseDaggerFragment(),
             when (result) {
                 is Success -> {
                     result.data.let { (isSomDetailEligible, isReplyChatEligible) ->
+                        setChatButtonEnabled(isReplyChatEligible)
                         if (isSomDetailEligible) {
                             onUserAllowedToViewSOM()
                         } else {
                             onUserNotAllowedToViewSOM()
                         }
+
                     }
                 }
                 is Fail -> {
@@ -488,6 +493,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     private fun onUserNotAllowedToViewSOM() {
         context?.run {
             if (userNotAllowedDialog == null) {
+                // TODO: Change to latest dialog
                 Utils.createUserNotAllowedDialog(this)
             }
             userNotAllowedDialog?.show()
@@ -1479,5 +1485,9 @@ class SomDetailFragment : BaseDaggerFragment(),
                 som_detail_toolbar?.title = getString(R.string.title_som_detail)
             }
         }
+    }
+
+    private fun setChatButtonEnabled(isEnabled: Boolean) {
+        menu?.findItem(R.id.som_action_chat)?.isVisible = isEnabled
     }
 }
