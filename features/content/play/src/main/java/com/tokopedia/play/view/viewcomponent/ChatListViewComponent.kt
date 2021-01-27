@@ -34,14 +34,15 @@ class ChatListViewComponent(
             }
         }
     }
+
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            if (recyclerView.canScrollDown) {
+            if (recyclerView.canScrollDown && recyclerView.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
                 val offset = recyclerView.computeVerticalScrollOffset()
                 val range = recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollExtent()
                 if (offset + SCROLL_OFFSET_INDICATOR < range - 1) csDownView.show()
                 else csDownView.hide()
-            } else {
+            } else if (recyclerView.scrollState != RecyclerView.SCROLL_STATE_SETTLING) {
                 csDownView.apply { showIndicatorRed(false) }.hide()
             }
         }
@@ -91,6 +92,6 @@ class ChatListViewComponent(
         get() = canScrollVertically(1)
 
     companion object {
-        private const val SCROLL_OFFSET_INDICATOR = 50
+        private const val SCROLL_OFFSET_INDICATOR = 90
     }
 }
