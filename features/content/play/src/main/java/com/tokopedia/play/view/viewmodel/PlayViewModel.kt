@@ -29,7 +29,7 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -41,7 +41,7 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayViewModel @Inject constructor(
-        private val playVideoManager: PlayVideoManager,
+        private val playVideoBuilder: PlayVideoWrapper.Builder,
         videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
         channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
         videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
@@ -154,7 +154,7 @@ class PlayViewModel @Inject constructor(
             val videoMetaInfo = (_observableVideoMeta.value ?: mChannelData?.videoMetaInfo)
             val videoStream = videoMetaInfo?.videoStream
             val newVideoMeta = videoMetaInfo?.copy(
-                    videoStream = videoStream?.copy(lastMillis = playVideoManager.getCurrentPosition())
+                    videoStream = videoStream?.copy(lastMillis = playVideoPlayer.getCurrentPosition())
             )
 
             return PlayChannelData(
@@ -262,7 +262,7 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private val videoManagerListener = object : PlayVideoManager.Listener {
+    private val videoManagerListener = object : PlayVideoWrapper.Listener {
         override fun onVideoPlayerChanged(player: ExoPlayer) {
             scope.launch(dispatchers.immediate) {
                 if (!videoPlayer.isYouTube) {
@@ -273,6 +273,8 @@ class PlayViewModel @Inject constructor(
             }
         }
     }
+    
+    private val playVideoPlayer = playVideoBuilder.build()
 
     /**
      * DO NOT CHANGE THIS TO LAMBDA
@@ -281,7 +283,7 @@ class PlayViewModel @Inject constructor(
         override fun onChanged(t: Unit?) {}
     }
 
-    private val videoStateProcessor = videoStateProcessorFactory.create(scope) { channelType }
+    private val videoStateProcessor = videoStateProcessorFactory.create(playVideoPlayer, scope) { channelType }
     private val channelStateProcessor = channelStateProcessorFactory.create(scope) { channelType }
     private val videoBufferGovernor = videoBufferGovernorFactory.create(scope)
 
@@ -316,7 +318,7 @@ class PlayViewModel @Inject constructor(
         stateHandler.removeObserver(stateHandlerObserver)
         destroy()
         if (!isInPiPMode) stopPlayer()
-        playVideoManager.removeListener(videoManagerListener)
+        playVideoPlayer.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
         channelStateProcessor.removeStateListener(channelStateListener)
     }
@@ -430,11 +432,11 @@ class PlayViewModel @Inject constructor(
 
     //region video player
     fun startCurrentVideo() {
-        if (!videoPlayer.isYouTube) playVideoManager.resume()
+        if (!videoPlayer.isYouTube) playVideoPlayer.resume()
     }
 
     fun getVideoDuration(): Long {
-        return playVideoManager.getVideoDuration()
+        return playVideoPlayer.getVideoDuration()
     }
 
     fun watchInPiP() {
@@ -455,7 +457,7 @@ class PlayViewModel @Inject constructor(
                 bufferControl = videoStream.buffer,
                 lastPosition = if (videoStream.channelType.isLive) null else videoStream.lastMillis
         )
-        playVideoManager.setRepeatMode(shouldRepeat = false)
+        playVideoPlayer.setRepeatMode(shouldRepeat = false)
     }
 
 //    private fun initiateVideo(video: Video) {
@@ -464,12 +466,12 @@ class PlayViewModel @Inject constructor(
 //                bufferControl = video.bufferControl?.let { mapBufferControl(it) }
 //                        ?: PlayBufferControl()
 //        )
-//        playVideoManager.setRepeatMode(false)
+//        playVideoPlayer.setRepeatMode(false)
 //    }
 
     private fun startVideoWithUrlString(urlString: String, bufferControl: PlayBufferControl, lastPosition: Long?) {
         try {
-            playVideoManager.playUri(uri = Uri.parse(urlString), bufferControl = bufferControl, startPosition = lastPosition)
+            playVideoPlayer.playUri(uri = Uri.parse(urlString), bufferControl = bufferControl, startPosition = lastPosition)
         } catch (e: Exception) {}
     }
 
@@ -482,8 +484,8 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun stopPlayer() {
-        if (playVideoManager.isVideoLive() || channelType.isLive || isFreezeOrBanned) playVideoManager.release()
-        else playVideoManager.stop()
+        if (playVideoPlayer.isVideoLive() || channelType.isLive || isFreezeOrBanned) playVideoPlayer.release()
+        else playVideoPlayer.stop()
     }
     //endregion
 
@@ -508,11 +510,13 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun focusVideoPlayer() {
-        playVideoManager.addListener(videoManagerListener)
+        playVideoPlayer.addListener(videoManagerListener)
+        playVideoPlayer.resume()
     }
 
     private fun defocusVideoPlayer() {
-        playVideoManager.removeListener(videoManagerListener)
+        playVideoPlayer.pause(preventLoadingBuffer = true)
+        playVideoPlayer.removeListener(videoManagerListener)
     }
 
     private fun updateChannelInfo(channelData: PlayChannelData) {
@@ -537,7 +541,7 @@ class PlayViewModel @Inject constructor(
                 val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
                         channel = channel,
                         isBanned = _observableEvent.value?.isBanned ?: false,
-                        exoPlayer = playVideoManager.videoPlayer
+                        exoPlayer = playVideoPlayer.videoPlayer
                 )
                 _observableLatestChannelInfo.value = completeInfoUiModel
 
@@ -560,7 +564,7 @@ class PlayViewModel @Inject constructor(
                 startWebSocket(channelId)
 
                 if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
-                else playVideoManager.release()
+                else playVideoPlayer.release()
 
 //                if (completeInfoUiModel.channelInfo.partnerInfo.type == PartnerType.Shop) {
 //                    getFollowStatus(completeInfoUiModel.channelInfo)
@@ -722,19 +726,19 @@ class PlayViewModel @Inject constructor(
         })
     }
 
-    fun getStateHelper(orientation: ScreenOrientation): StateHelperUiModel {
-        val pinned = _observablePinned.value
-        val bottomInsets = _observableBottomInsetsState.value
-        return StateHelperUiModel(
-                shouldShowPinned = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
-                channelType = channelType,
-                videoPlayer = videoPlayer,
-                bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
-                screenOrientation = orientation,
-                videoOrientation = videoOrientation,
-                videoState = playVideoManager.getVideoState()
-        )
-    }
+//    fun getStateHelper(orientation: ScreenOrientation): StateHelperUiModel {
+//        val pinned = _observablePinned.value
+//        val bottomInsets = _observableBottomInsetsState.value
+//        return StateHelperUiModel(
+//                shouldShowPinned = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
+//                channelType = channelType,
+//                videoPlayer = videoPlayer,
+//                bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
+//                screenOrientation = orientation,
+//                videoOrientation = videoOrientation,
+//                videoState = playVideoPlayer.getVideoState()
+//        )
+//    }
 
     private fun stopJob() {
         channelInfoJob?.cancel()
@@ -793,7 +797,7 @@ class PlayViewModel @Inject constructor(
 
     private fun updateVideoMetaInfo(videoMetaInfo: PlayVideoMetaInfoUiModel) {
         if (videoMetaInfo.videoPlayer.isGeneral && videoMetaInfo.videoStream != null) playGeneralVideoStream(videoMetaInfo.videoStream)
-        else playVideoManager.release()
+        else playVideoPlayer.release()
     }
 
     private fun updateLikeInfo(likeParamInfo: PlayLikeParamInfoUiModel, channelId: String) {

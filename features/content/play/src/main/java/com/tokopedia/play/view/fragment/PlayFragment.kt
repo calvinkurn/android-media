@@ -542,7 +542,7 @@ class PlayFragment @Inject constructor(
 
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
-                if (!playViewModel.getStateHelper(orientation).bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
+                if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
             }
         })
     }

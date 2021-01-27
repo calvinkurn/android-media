@@ -12,6 +12,7 @@ import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelResponseMapper
 import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
 import com.tokopedia.play_common.player.creator.ExoPlayerCreator
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
@@ -117,5 +118,11 @@ class PlayModule(val mContext: Context) {
     @Provides
     fun providePlayChannelResponseMapper(): PlayChannelResponseMapper {
         return PlayChannelDetailsWithRecomMapper(mContext)
+    }
+
+    @PlayScope
+    @Provides
+    fun providePlayVideoWrapperBuilder(@ApplicationContext context: Context): PlayVideoWrapper.Builder {
+        return PlayVideoWrapper.Builder(context)
     }
 }
