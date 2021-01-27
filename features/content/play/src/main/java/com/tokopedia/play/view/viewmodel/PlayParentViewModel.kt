@@ -7,8 +7,10 @@ import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelResponseMapper
+import com.tokopedia.play_common.model.result.PageInfo
+import com.tokopedia.play_common.model.result.PageResult
+import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -44,14 +46,14 @@ class PlayParentViewModel constructor(
     /**
      * LiveData
      */
-    val observableChannelIdList: LiveData<List<String>>
-        get() = _observableChannelIdList
-    private val _observableChannelIdList = MutableLiveData<List<String>>()
+    val observableChannelIdsResult: LiveData<PageResult<List<String>>>
+        get() = _observableChannelIdsResult
+    private val _observableChannelIdsResult = MutableLiveData<PageResult<List<String>>>()
 
     private var mNextKey: ChannelDetailNextKey = ChannelDetailNextKey.ChannelId(handle[PLAY_KEY_CHANNEL_ID] ?: error("Channel ID must be provided"))
 
     init {
-        getChannelDetailsWithRecom(mNextKey)
+        loadNextPage()
     }
 
     fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId)
@@ -63,7 +65,13 @@ class PlayParentViewModel constructor(
         playChannelStateStorage.setData(channelId, data)
     }
 
+    fun loadNextPage() {
+        getChannelDetailsWithRecom(mNextKey)
+    }
+
     private fun getChannelDetailsWithRecom(nextKey: ChannelDetailNextKey) {
+        _observableChannelIdsResult.value = PageResult.Loading(playChannelStateStorage.getChannelList())
+
         viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
                 val response = getChannelDetailsWithRecomUseCase.apply {
@@ -80,9 +88,15 @@ class PlayParentViewModel constructor(
                 }
             }
 
-            _observableChannelIdList.value = playChannelStateStorage.getChannelList()
+            _observableChannelIdsResult.value = PageResult(
+                    currentValue = playChannelStateStorage.getChannelList(),
+                    state = PageResultState.Success(pageInfo = PageInfo.Unknown)
+            )
         }, onError = {
-
+            _observableChannelIdsResult.value = PageResult(
+                    currentValue = playChannelStateStorage.getChannelList(),
+                    state = PageResultState.Fail(it)
+            )
         })
     }
 
