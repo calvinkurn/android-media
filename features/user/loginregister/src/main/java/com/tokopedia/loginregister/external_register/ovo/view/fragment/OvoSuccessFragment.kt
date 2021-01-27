@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.external_register.ovo.view
+package com.tokopedia.loginregister.external_register.ovo.view.fragment
 
 import android.os.Bundle
 import android.view.View

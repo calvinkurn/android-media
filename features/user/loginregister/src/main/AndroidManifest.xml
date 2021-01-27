@@ -161,7 +161,7 @@
         </activity>
 
         <activity
-            android:name=".external_register.ovo.view.OvoAddNameActivity"
+            android:name=".external_register.ovo.view.activity.OvoAddNameActivity"
             android:label="@string/title_external_register"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
@@ -180,14 +180,14 @@
         </activity>
 
         <activity
-            android:name=".external_register.ovo.view.OvoAddPhoneActivity"
+            android:name=".external_register.ovo.view.activity.OvoAddPhoneActivity"
             android:label="@string/title_external_register"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
-            android:name=".external_register.ovo.view.OvoRegisterInitialActivity"
+            android:name=".external_register.ovo.view.activity.OvoRegisterInitialActivity"
             android:label="@string/title_external_register"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
@@ -217,7 +217,7 @@
         </activity>
 
         <activity
-            android:name=".external_register.ovo.view.OvoFinalPageActivity"
+            android:name=".external_register.ovo.view.activity.OvoFinalPageActivity"
             android:label="@string/title_external_register"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

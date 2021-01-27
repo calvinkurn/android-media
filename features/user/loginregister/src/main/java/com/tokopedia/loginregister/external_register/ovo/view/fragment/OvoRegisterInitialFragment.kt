@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.external_register.ovo.view
+package com.tokopedia.loginregister.external_register.ovo.view.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -12,6 +12,7 @@ import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterP
 import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterComponent
 import com.tokopedia.loginregister.external_register.base.fragment.ExternalRegisterInitialFragment
 import com.tokopedia.loginregister.external_register.base.viewmodel.ExternalRegisterViewModel
+import com.tokopedia.loginregister.external_register.ovo.view.activity.OvoFinalPageActivity
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -73,7 +74,7 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
         externalRegisterViewModel.registerRequestResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> onSuccessOvoRegister(it.data.register)
-                is Fail -> onFailedOvoRegister()
+                is Fail -> goToErrorPage()
             }
         })
         externalRegisterViewModel.getUserInfoResponse.observe(viewLifecycleOwner, Observer {
@@ -95,9 +96,7 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
 
     fun goToErrorPage(){
         val intent = OvoFinalPageActivity.createIntentError(activity)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
         startActivity(intent)
         activity?.finish()
     }
@@ -135,12 +134,6 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
         else {
             super.onActivityResult(requestCode, resultCode, data)
         }
-    }
-
-    fun onFailedOvoRegister(){
-        val intent = OvoFinalPageActivity.createIntentError(activity)
-        startActivity(intent)
-        activity?.finish()
     }
 
     companion object {

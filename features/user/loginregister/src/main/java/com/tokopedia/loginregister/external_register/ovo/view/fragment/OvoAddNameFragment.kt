@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.external_register.ovo.view
+package com.tokopedia.loginregister.external_register.ovo.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,6 +13,7 @@ import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterCom
 import com.tokopedia.loginregister.external_register.base.fragment.BaseAddNameFragment
 import com.tokopedia.loginregister.external_register.base.listener.BaseAddNameListener
 import com.tokopedia.loginregister.external_register.ovo.data.ActivateOvoData
+import com.tokopedia.loginregister.external_register.ovo.view.activity.OvoFinalPageActivity
 import com.tokopedia.loginregister.external_register.ovo.viewmodel.OvoAddNameViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -86,9 +87,7 @@ class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
 
     fun goToErrorPage(){
         val intent = OvoFinalPageActivity.createIntentError(activity)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
         startActivity(intent)
         activity?.finish()
     }

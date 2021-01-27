@@ -53,8 +53,8 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
-import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
+import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -985,7 +985,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
                 it.setResult(Activity.RESULT_CANCELED)
             } else if(requestCode == ExternalRegisterConstants.REQUEST_OVO_REGISTER && resultCode == Activity.RESULT_CANCELED){
-
+                phoneNumber?.run {
+                    goToRegisterWithPhoneNumber(this)
+                }
             }
             else {
                 super.onActivityResult(requestCode, resultCode, data)

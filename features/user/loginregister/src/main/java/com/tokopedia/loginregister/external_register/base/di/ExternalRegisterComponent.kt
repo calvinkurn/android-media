@@ -2,9 +2,9 @@ package com.tokopedia.loginregister.external_register.base.di
 
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.external_register.base.fragment.ExternalAccountFinalFragment
-import com.tokopedia.loginregister.external_register.ovo.view.OvoAddNameFragment
-import com.tokopedia.loginregister.external_register.ovo.view.OvoAddPhoneFragment
-import com.tokopedia.loginregister.external_register.ovo.view.OvoRegisterInitialFragment
+import com.tokopedia.loginregister.external_register.ovo.view.fragment.OvoAddNameFragment
+import com.tokopedia.loginregister.external_register.ovo.view.fragment.OvoAddPhoneFragment
+import com.tokopedia.loginregister.external_register.ovo.view.fragment.OvoRegisterInitialFragment
 import dagger.Component
 
 /**

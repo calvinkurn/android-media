@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.external_register.ovo.view
+package com.tokopedia.loginregister.external_register.ovo.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,7 +13,8 @@ import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterCom
 import com.tokopedia.loginregister.external_register.base.fragment.BaseAddPhoneEmailFragment
 import com.tokopedia.loginregister.external_register.base.listener.BaseAddPhoneListener
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
-import com.tokopedia.loginregister.external_register.ovo.viewmodel.OvoAddNameViewModel
+import com.tokopedia.loginregister.external_register.ovo.view.activity.OvoAddNameActivity
+import com.tokopedia.loginregister.external_register.ovo.view.activity.OvoFinalPageActivity
 import com.tokopedia.loginregister.external_register.ovo.viewmodel.OvoAddPhoneViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.external_register.ovo.view
+package com.tokopedia.loginregister.external_register.ovo.view.activity
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -9,6 +9,7 @@ import com.tokopedia.loginregister.external_register.base.di.DaggerExternalRegis
 import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterComponent
 import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterModules
 import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterUseCaseModules
+import com.tokopedia.loginregister.external_register.ovo.view.fragment.OvoRegisterInitialFragment
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 
 /**
