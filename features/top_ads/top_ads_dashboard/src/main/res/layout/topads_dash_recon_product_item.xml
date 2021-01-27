@@ -41,7 +41,7 @@
         app:layout_constraintBottom_toBottomOf="@id/totalSearch"
         app:layout_constraintStart_toStartOf="@id/img_folder"
         app:layout_constraintTop_toTopOf="@id/total_search"
-        app:srcCompat="@drawable/topads_search_green"
+        app:srcCompat="@drawable/topads_search"
         tools:ignore="ContentDescription" />
 
     <com.tokopedia.unifyprinciples.Typography
