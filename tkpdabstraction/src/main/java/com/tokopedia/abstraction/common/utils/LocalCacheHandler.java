@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class LocalCacheHandler {
 
@@ -28,6 +29,10 @@ public class LocalCacheHandler {
 
     public void putString(String key, String value) {
         editor.putString(key, value);
+    }
+
+    public void putStringSet(String key, Set<String> stringSet) {
+        editor.putStringSet(key, stringSet);
     }
 
     public void putInt(String key, int value) {
@@ -56,6 +61,14 @@ public class LocalCacheHandler {
 
     public String getString(String key, String defValue) {
         return sharedPrefs.getString(key, defValue);
+    }
+
+    public Set<String> getStringSet(String key) {
+        return sharedPrefs.getStringSet(key, null);
+    }
+
+    public Set<String> getStringSet(String key, Set<String> defValue) {
+        return sharedPrefs.getStringSet(key, defValue);
     }
 
     public Long getLong(String key) {
