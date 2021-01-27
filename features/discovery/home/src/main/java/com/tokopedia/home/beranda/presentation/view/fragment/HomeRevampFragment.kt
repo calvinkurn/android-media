@@ -240,6 +240,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val BACKGROUND_DARK_1 = BASE_URL + "home/header/xxhdpi/home_header_dark_1.png"
         private const val BACKGROUND_DARK_2 = BASE_URL + "home/header/xxhdpi/home_header_dark_2.png"
 
+        private const val MARGIN_BOTTOM_TOASTER_RESET_PASSWORD = 32
+        private const val DELAY_TOASTER_RESET_PASSWORD = 60000
+
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
             val fragment = HomeRevampFragment()
@@ -777,6 +780,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             val floatingEggButtonFragment = floatingEggButtonFragment
             floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
         })
+
+        if (isSuccessReset()) showSuccessResetPasswordDialog()
+
         getHomeViewModel().setRollanceNavigationType(
                 if (isNavRevamp()) {
                     AbTestPlatform.NAVIGATION_VARIANT_REVAMP
@@ -2574,5 +2580,37 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         catch(throwable: Throwable) {
             ""
         }
+    }
+
+    private fun isSuccessReset(): Boolean {
+        context?.let {
+            val isResetPasswordSuccess = it.getSharedPreferences(ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD, Context.MODE_PRIVATE).getBoolean(ConstantKey.ResetPassword.IS_SUCCESS_RESET, false)
+            if (isResetPasswordSuccess) {
+                saveStateReset(false)
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun saveStateReset(state: Boolean) {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD, Context.MODE_PRIVATE)
+            sharedPrefs.run {
+                edit().putBoolean(ConstantKey.ResetPassword.IS_SUCCESS_RESET, state).apply()
+            }
+        }
+    }
+
+    private fun showSuccessResetPasswordDialog() {
+        Toaster.toasterCustomBottomHeight = MARGIN_BOTTOM_TOASTER_RESET_PASSWORD
+        Toaster.build(root,
+                getString(R.string.text_dialog_success_reset_password),
+                DELAY_TOASTER_RESET_PASSWORD,
+                TYPE_NORMAL,
+                getString(R.string.cta_dialog_success_reset_password),
+                View.OnClickListener {
+                    saveStateReset(false)
+                }).show()
     }
 }
