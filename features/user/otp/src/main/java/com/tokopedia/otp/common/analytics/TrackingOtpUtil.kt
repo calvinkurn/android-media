@@ -74,7 +74,6 @@ class TrackingOtpUtil @Inject constructor() {
         ))
     }
 
-    //R41
     fun trackClickVerificationRegisterEmailButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_ACTIVATION,
@@ -146,13 +145,21 @@ class TrackingOtpUtil @Inject constructor() {
         ))
     }
 
-    //R42
     fun trackClickResendRegisterEmailOtpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_ACTIVATION,
                 Category.CATEGORY_ACTIVATION_PAGE,
                 Action.ACTION_CLICK_KIRIM_ULANG,
                 Label.LABEL_CLICK
+        ))
+    }
+
+    fun trackClickBackRegisterEmailOtp() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_ACTIVATION,
+                Category.CATEGORY_ACTIVATION_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_BACK,
+                Label.LABEL_EMPTY
         ))
     }
 
@@ -182,7 +189,6 @@ class TrackingOtpUtil @Inject constructor() {
                 otpType.toString()))
     }
 
-    //Probably R40 - or not
     fun trackClickBackRegisterPhoneOtp() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_REGISTER,

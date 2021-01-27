@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification.stub
+package com.tokopedia.otp.verification.email.stub
 
 import android.content.Context
 import com.tokopedia.otp.test.R

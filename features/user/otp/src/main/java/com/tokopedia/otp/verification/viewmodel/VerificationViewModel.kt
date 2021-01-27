@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.common.DispatcherProvider
+import com.tokopedia.otp.common.idling_resource.TkpdIdlingResourceProvider
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
@@ -50,6 +51,8 @@ class VerificationViewModel @Inject constructor(
     var done = false
     var isLoginRegisterFlow = false
 
+    var idlingResourceOtpMethodPhone = TkpdIdlingResourceProvider.provideIdlingResource("OTP_PICK_METHOD_PHONE")
+
     fun getVerificationMethod2FA(
             otpType: String,
             validateToken: String,
@@ -82,23 +85,28 @@ class VerificationViewModel @Inject constructor(
             msisdn: String = "",
             email: String = ""
     ) {
-        launchCatchError(coroutineContext, {
+        launchCatchError(block = {
+            idlingResourceOtpMethodPhone?.increment()
             val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email)
 
             val data = getVerificationMethodUseCase.getData(params).data
             when {
                 data.success -> {
                     _getVerificationMethodResult.value = Success(data)
+                    idlingResourceOtpMethodPhone?.decrement()
                 }
                 data.errorMessage.isNotEmpty() -> {
-                    _getVerificationMethodResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                    _getVerificationMethodResult.value = Fail(MessageErrorException(data.errorMessage))
+                    idlingResourceOtpMethodPhone?.decrement()
                 }
                 else -> {
-                    _getVerificationMethodResult.postValue(Fail(Throwable()))
+                    _getVerificationMethodResult.value = Fail(Throwable())
+                    idlingResourceOtpMethodPhone?.decrement()
                 }
             }
-        }, {
-            _getVerificationMethodResult.postValue(Fail(it))
+        }, onError = {
+            _getVerificationMethodResult.value = Fail(it)
+            idlingResourceOtpMethodPhone?.decrement()
         })
     }
 

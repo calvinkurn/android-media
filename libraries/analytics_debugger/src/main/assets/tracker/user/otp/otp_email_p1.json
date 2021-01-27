@@ -1,5 +1,5 @@
 {
-  "readme": "P1#OTP - OTP EMAIL",
+  "readme": "P1#OTP - OTP EMAIL REGISTER",
   "mode": "subset",
   "query": [
     {
@@ -25,6 +25,13 @@
       "eventCategory": "activation page",
       "eventAction": "click on button aktivasi",
       "eventLabel": "click",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickActivation",
+      "eventCategory": "activation page",
+      "eventAction": "click on button back",
+      "eventLabel": "",
       "sessionIris": "{{.*}}"
     }
   ]

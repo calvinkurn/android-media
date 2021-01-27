@@ -198,6 +198,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         analytics.trackClickBackOtpPage(otpData.otpType)
         if (otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
             analytics.trackClickBackRegisterPhoneOtp()
+        } else if (otpData.otpType == OtpConstant.OtpType.REGISTER_EMAIL) {
+            analytics.trackClickBackRegisterEmailOtp()
         }
         return true
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification
+package com.tokopedia.otp.verification.email
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -20,8 +20,8 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.otp.common.idling_resource.TkpdIdlingResourceProvider
 import com.tokopedia.otp.verification.common.ViewActionSpannable
-import com.tokopedia.otp.verification.stub.OTPEmailMockResponse
-import com.tokopedia.otp.verification.stub.VerificationActivityStub
+import com.tokopedia.otp.verification.email.stub.OTPEmailMockResponse
+import com.tokopedia.otp.verification.email.stub.VerificationActivityStub
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.otp.test.R
 import kotlinx.coroutines.Dispatchers
@@ -62,7 +62,7 @@ class OTPEmailTest {
     }
 
     private fun setupIdlingResource() {
-        idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
+        idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("OTP_REGISTER_EMAIL")
         if (idlingResource != null)
             IdlingRegistry.getInstance().register(idlingResource?.countingIdlingResource)
         else
@@ -75,6 +75,7 @@ class OTPEmailTest {
 
         checkClickOnKirimUlang()
         checkClickOnVerficationButton()
+        checkClickOnBackPress()
 
         ViewMatchers.assertThat(
                 getAnalyticsWithQuery(gtmLogDBSource, context, trackerPath),
@@ -84,10 +85,6 @@ class OTPEmailTest {
 
     private fun checkClickOnVerficationButton() {
         Thread.sleep(1000)
-//        Espresso.onView(ViewMatchers.withId(R.id.pin)).perform(ViewActions.typeText("9999"))
-//        Espresso.onView(ViewMatchers.withId(R.id.pin)).perform(closeSoftKeyboard())
-//        Espresso.onView(ViewMatchers.withText("Verifikasi"))
-//                .perform(ViewActions.click())
         Espresso.onView(allOf(ViewMatchers.withId(R.id.pin_text_field), isDescendantOfA(ViewMatchers.withId(R.id.pin))))
                 .check(matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.typeText("9999"))
@@ -98,6 +95,12 @@ class OTPEmailTest {
         Espresso.onView(ViewMatchers.withText(endsWith("Kirim ulang")))
                 .check(matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActionSpannable.clickClickableSpan("Kirim ulang"))
+    }
+
+    private fun checkClickOnBackPress() {
+        Thread.sleep(1000)
+        Espresso.closeSoftKeyboard()
+        Espresso.pressBackUnconditionally()
     }
 
     @After
