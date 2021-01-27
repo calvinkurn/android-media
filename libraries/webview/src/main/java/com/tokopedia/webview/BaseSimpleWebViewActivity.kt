@@ -199,7 +199,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     private fun logWebViewApplink() {
         val domain = getDomainName(url)
         if (domain.isNotEmpty()) {
-            if (!getBaseDomain(domain).equals(TOKOPEDIA_DOMAIN, ignoreCase = true) && !isDomainWhitelisted(domain)) {
+            val baseDomain = getBaseDomain(domain)
+            if (!baseDomain.equals(TOKOPEDIA_DOMAIN, ignoreCase = true) && !isDomainWhitelisted(baseDomain)) {
                 Timber.w("P1#WEBVIEW_OPENED#webview;domain='$domain';url='$url'")
                 redirectToNativeBrowser()
             }
@@ -213,7 +214,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun isDomainWhitelisted(domain: String): Boolean {
-        return whiteListedDomains.contains(domain)
+        whiteListedDomains.forEach {
+            if(it.contains(domain)) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun getWhiteListedDomains() {
