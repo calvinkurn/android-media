@@ -10,10 +10,7 @@ import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_DETAILS
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_HEADER
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_INFO
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_SHOP
-import com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder.SnapshotDetailsViewHolder
-import com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder.SnapshotHeaderViewHolder
-import com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder.SnapshotInfoViewHolder
-import com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder.SnapshotShopViewHolder
+import com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder.*
 
 /**
  * Created by fwidjaja on 1/15/21.
@@ -73,8 +70,7 @@ class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>(
     }
 
     override fun getItemCount(): Int {
-        println("++ size = "+listTypeData.size)
-        return listTypeData.size
+        return 1
     }
 
     override fun getItemViewType(position: Int): Int {

@@ -96,9 +96,10 @@ class SnapshotFragment : BaseDaggerFragment() {
         snapshotViewModel.snapshotResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    // lanjut dsini untuk rendering page nya
                     val listPage = arrayListOf<SnapshotTypeData>()
                     listPage.add(SnapshotTypeData(it.data.productImageSecondary, SnapshotConsts.TYPE_HEADER))
+                    listPage.add(SnapshotTypeData())
+
 
                     val msg = StringUtils.convertListToStringDelimiter(it.data.atcMulti.buyAgainData.message, ",")
                     if (it.data.atcMulti.buyAgainData.success == 1) {

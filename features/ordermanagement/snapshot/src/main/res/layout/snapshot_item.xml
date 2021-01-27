@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/snapshot_main_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/snapshot_header_view_pager"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/snapshot_page_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:indicator_type="CIRCLE"
+        app:layout_constraintBottom_toBottomOf="@id/snapshot_header_view_pager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/snapshot_header_view_pager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tickerShapeType="full"
+        app:closeButtonVisibility="gone"
+        app:tickerType="information"
+        app:descriptionText="Ini adalah tampilan detail produk pada dipesan tanggal 12 Des 2020; 14:32"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/snapshot_main_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ticker_info"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        android:text="Rp.500000000000000000000000"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_16"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/snapshot_label_disc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/snapshot_main_price"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_12"
+        app:labelType="general_light_red"
+        android:text="20%"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/snapshot_harga_coret"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/snapshot_label_disc"
+        app:layout_constraintTop_toTopOf="@id/snapshot_label_disc"
+        android:layout_marginStart="@dimen/dp_8"
+        app:typographyType="body_2"
+        android:textColor="@color/Neutral_N700_68"
+        android:text="Rp300.000"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/snapshot_product_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/snapshot_label_disc"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:typographyType="body_1"
+        android:text="iPhone X 64GB Original Garansi Resmi iBox Apple Indonesia - Putih"/>
+
+    <View
+        android:id="@+id/divider_info"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        app:layout_constraintTop_toBottomOf="@id/snapshot_product_name"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@color/Neutral_N50"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/snapshot_shop_logo"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_16"
+        android:scaleType="centerCrop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_info"
+        tools:ignore="ContentDescription"
+        tools:src="@color/Unify_G400" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/snapshot_shop_badge"
+        android:layout_width="@dimen/dp_14"
+        android:layout_height="@dimen/dp_14"
+        android:layout_marginStart="@dimen/dp_12"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/snapshot_shop_logo"
+        app:layout_constraintTop_toTopOf="@id/snapshot_shop_logo"
+        app:layout_constraintBottom_toBottomOf="@id/snapshot_shop_logo"
+        tools:ignore="ContentDescription"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/snapshot_shop_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:lines="1"
+        android:maxLines="1"
+        app:layout_constraintTop_toTopOf="@id/snapshot_shop_logo"
+        app:layout_constraintStart_toEndOf="@id/snapshot_shop_badge"
+        app:layout_constraintBottom_toBottomOf="@id/snapshot_shop_logo"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        android:text="SHOP NAME Shop name Shop name Shop name SHOP 12" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@id/snapshot_shop_logo"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@color/Neutral_N50"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,17 +29,16 @@ class SnapshotHeaderViewHolder(itemView: View) : SnapshotAdapter.BaseViewHolder<
                 indicator.visible()
                 val imgViewPagerAdapter = SnapshotImageViewPagerAdapter()
 
-                item.dataObject.forEach {
-                    // mentok dsini
-                    // val productImg: SnapshotResponse.Data.GetOrderSnapshot.ProductImageSecondaryItem =
-                }
-                val obj: SnapshotResponse.Data.GetOrderSnapshot.ProductImageSecondaryItem = item.dataObject
-
                 val arrayListImg = arrayListOf<String>()
-                arrayListImg.add("https://ecs7.tokopedia.net/img/VqbcmM/2020/11/24/6b48441e-6808-4ac2-9810-c79f58e9f2e7.jpg")
+                item.dataObject.forEach {
+                    val productImg = it as SnapshotResponse.Data.GetOrderSnapshot.ProductImageSecondaryItem
+                    arrayListImg.add(productImg.imageUrl)
+                }
+
+                /*arrayListImg.add("https://ecs7.tokopedia.net/img/VqbcmM/2020/11/24/6b48441e-6808-4ac2-9810-c79f58e9f2e7.jpg")
                 arrayListImg.add("https://ecs7.tokopedia.net/img/VqbcmM/2020/9/17/dfc97e7a-92c3-4e6e-a161-7854dd31bda0.jpg")
                 arrayListImg.add("https://ecs7.tokopedia.net/img/product-1/2020/10/7/106506101/106506101_afb65409-e18c-4c65-af05-5cede1647728_1080_1080")
-                arrayListImg.add("https://ecs7.tokopedia.net/img/VqbcmM/2020/10/13/7a252f47-4b70-46ba-b0aa-9d3fed713d98.jpg")
+                arrayListImg.add("https://ecs7.tokopedia.net/img/VqbcmM/2020/10/13/7a252f47-4b70-46ba-b0aa-9d3fed713d98.jpg")*/
                 imgViewPagerAdapter.listImg = arrayListImg
                 viewPager2.adapter = imgViewPagerAdapter
 
@@ -47,8 +46,9 @@ class SnapshotHeaderViewHolder(itemView: View) : SnapshotAdapter.BaseViewHolder<
                 viewPager2.gone()
                 indicator.gone()
                 ivHeader.visible()
-                ivHeader.loadImageWithoutPlaceholder("https://ecs7.tokopedia.net/img/product-1/2019/7/9/8967046/8967046_5246bec9-f10a-4189-b7ad-1b07579fa8e0_836_836")
-                itemView.findViewById<PageControl>(R.id.snapshot_page_indicator).gone()
+                val productImg = item.dataObject.firstOrNull() as SnapshotResponse.Data.GetOrderSnapshot.ProductImageSecondaryItem
+                // ivHeader.loadImageWithoutPlaceholder("https://ecs7.tokopedia.net/img/product-1/2019/7/9/8967046/8967046_5246bec9-f10a-4189-b7ad-1b07579fa8e0_836_836")
+                ivHeader.loadImageWithoutPlaceholder(productImg.imageUrl)
             }
         }
     }
