@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
@@ -97,10 +96,12 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
             SharedPreferencesUtil.setFirstTimeSpecification(requireActivity(), true)
         }
 
-        tickerSpecification.isVisible = !isInfoDisplayed
         tickerSpecification.setHtmlDescription(htmlDescription)
         tickerSpecification.setOnClickListener {
-            tickerSpecification.gone()
+            newUserSpecificationBottomSheet.show(requireFragmentManager())
+        }
+
+        if (!isInfoDisplayed) {
             newUserSpecificationBottomSheet.show(requireFragmentManager())
         }
     }
