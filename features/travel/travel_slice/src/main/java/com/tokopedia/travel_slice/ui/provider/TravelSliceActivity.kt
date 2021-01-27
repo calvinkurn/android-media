@@ -1,10 +1,10 @@
 package com.tokopedia.travel_slice.ui.provider
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
@@ -18,7 +18,7 @@ import javax.inject.Inject
  * @author by jessica on 01/12/20
  */
 
-class TravelSliceActivity : Activity() {
+class TravelSliceActivity : BaseActivity() {
 
     @Inject
     lateinit var analytics: TravelSliceAnalytics
