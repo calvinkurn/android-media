@@ -1168,6 +1168,21 @@ object DynamicProductDetailTracking {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
         }
 
+        fun eventAddToCartRecommendationWishlist(product: RecommendationItem, isSessionActive: Boolean, isAddWishlist: Boolean) {
+            val valueActionPostfix = if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
+            else ""
+            val valueActionPrefix = if (isAddWishlist) "add"
+            else "remove"
+
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.Action.RECOMMENDATION_CLICK,
+                    ProductTrackingConstant.Category.PDP_AFTER_ATC,
+                    valueActionPrefix + ProductTrackingConstant.Action.ACTION_WISHLIST_ON_PRODUCT_RECOMMENDATION + valueActionPostfix,
+                    product.header
+            )
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
+        }
+
     }
 
     object Iris {
@@ -1653,60 +1668,6 @@ object DynamicProductDetailTracking {
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
-        fun eventAddToCartRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String, mainProductId: String, trackingQueue: TrackingQueue) {
-            val valueLoginOrNotLogin = if (!isSessionActive)
-                " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
-            else ""
-            val listValue = ProductTrackingConstant.Tracking.LIST_PRODUCT_AFTER_ATC + pageName + ProductTrackingConstant.Tracking.LIST_RECOMMENDATION + valueLoginOrNotLogin +
-                    product.recommendationType + (if (product.isTopAds) " - product topads - $mainProductId" else " - $mainProductId")
-            val valueActionPostfix = if (!isSessionActive)
-                " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
-            else ""
-
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.Action.PRODUCT_VIEW,
-                    ProductTrackingConstant.Category.PDP_AFTER_ATC,
-                    ProductTrackingConstant.Action.TOPADS_IMPRESSION + valueActionPostfix,
-                    pageTitle
-            )
-
-            with(ProductTrackingConstant.Tracking) {
-                val impressions = DataLayer.listOf(DataLayer.mapOf(
-                        PROMO_NAME, product.name,
-                        ID, product.productId.toString(),
-                        PRICE, removeCurrencyPrice(product.price),
-                        BRAND, DEFAULT_VALUE,
-                        CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
-                        VARIANT, DEFAULT_VALUE,
-                        LIST, listValue,
-                        PROMO_POSITION, position,
-                        KEY_DIMENSION_83, if (product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
-                ))
-
-                mapEvent[KEY_ECOMMERCE] = DataLayer.mapOf(
-                        CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
-                        IMPRESSIONS, impressions
-                )
-            }
-
-            trackingQueue.putEETracking(mapEvent as HashMap<String, Any>?)
-        }
-
-        fun eventAddToCartRecommendationWishlist(product: RecommendationItem, isSessionActive: Boolean, isAddWishlist: Boolean) {
-            val valueActionPostfix = if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
-            else ""
-            val valueActionPrefix = if (isAddWishlist) "add"
-            else "remove"
-
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.Action.RECOMMENDATION_CLICK,
-                    ProductTrackingConstant.Category.PDP_AFTER_ATC,
-                    valueActionPrefix + ProductTrackingConstant.Action.ACTION_WISHLIST_ON_PRODUCT_RECOMMENDATION + valueActionPostfix,
-                    product.header
-            )
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
-        }
-
         fun eventViewHelpPopUpWhenAtc() {
             TrackApp.getInstance().gtm.sendGeneralEvent(
                     ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
@@ -1762,6 +1723,47 @@ object DynamicProductDetailTracking {
         }
     }
 
+    object Recommendation {
+
+        fun eventAddToCartRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String, mainProductId: String, trackingQueue: TrackingQueue) {
+            val valueLoginOrNotLogin = if (!isSessionActive)
+                " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
+            else ""
+            val listValue = ProductTrackingConstant.Tracking.LIST_PRODUCT_AFTER_ATC + pageName + ProductTrackingConstant.Tracking.LIST_RECOMMENDATION + valueLoginOrNotLogin +
+                    product.recommendationType + (if (product.isTopAds) " - product topads - $mainProductId" else " - $mainProductId")
+            val valueActionPostfix = if (!isSessionActive)
+                " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
+            else ""
+
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.Action.PRODUCT_VIEW,
+                    ProductTrackingConstant.Category.PDP_AFTER_ATC,
+                    ProductTrackingConstant.Action.TOPADS_IMPRESSION + valueActionPostfix,
+                    pageTitle
+            )
+
+            with(ProductTrackingConstant.Tracking) {
+                val impressions = DataLayer.listOf(DataLayer.mapOf(
+                        PROMO_NAME, product.name,
+                        ID, product.productId.toString(),
+                        PRICE, removeCurrencyPrice(product.price),
+                        BRAND, DEFAULT_VALUE,
+                        CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
+                        VARIANT, DEFAULT_VALUE,
+                        LIST, listValue,
+                        PROMO_POSITION, position,
+                        KEY_DIMENSION_83, if (product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                ))
+
+                mapEvent[KEY_ECOMMERCE] = DataLayer.mapOf(
+                        CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
+                        IMPRESSIONS, impressions
+                )
+            }
+
+            trackingQueue.putEETracking(mapEvent as HashMap<String, Any>?)
+        }
+    }
 
     object ProductDetailSheet {
         fun onVariantGuideLineBottomSheetClicked(productInfo: DynamicProductInfoP1?, userId: String) {
