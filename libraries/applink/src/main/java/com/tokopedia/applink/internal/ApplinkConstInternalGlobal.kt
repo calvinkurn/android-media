@@ -8,95 +8,45 @@ import com.tokopedia.applink.constant.DeeplinkConstant
  */
 object ApplinkConstInternalGlobal {
 
-    @JvmField
-    val HOST_GLOBAL = "global"
+    const val HOST_GLOBAL = "global"
+    const val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
 
     //Extras
-    @JvmField
-    val PARAM_UUID = "uuid"
-    @JvmField
-    val PARAM_MSISDN = "msisdn"
-    @JvmField
-    val PARAM_PHONE = "phone"
-    @JvmField
-    val PARAM_BOD = "bod"
-    @JvmField
-    val PARAM_BOD_TITLE = "bodTitle"
-    @JvmField
-    val PARAM_CIPF_USER_ID = "userId"
-    @JvmField
-    val PARAM_CIPF_OLD_PHONE = "oldPhone"
-    @JvmField
-    val PARAM_EMAIL = "email"
-    @JvmField
-    val PARAM_SOURCE = "source"
-    @JvmField
-    val PARAM_NAME = "name"
-    @JvmField
-    val PARAM_PASS = "pass"
-    @JvmField
-    val PARAM_TOKEN = "token"
-    @JvmField
-    val PARAM_ACTION = "action"
-    @JvmField
-    val PARAM_IS_SMART_LOGIN = "isSmartLogin"
-    @JvmField
-    val PARAM_IS_PENDING = "isPending"
-    @JvmField
-    val PARAM_LOGIN_TYPE = "loginType"
-    @JvmField
-    val PARAM_IS_SQ_CHECK = "isSqCheck"
-    @JvmField
-    val PARAM_KTP_PATH = "ktpPath"
-    @JvmField
-    val PARAM_FACE_PATH = "facePath"
-    @JvmField
-    val PARAM_CTA_TYPE = "ctaType"
-    @JvmField
-    val PARAM_IMG_LINK = "imglink"
-    @JvmField
-    val PARAM_MESSAGE_TITLE = "messageTitle"
-    @JvmField
-    val PARAM_MESSAGE_BODY = "messageBody"
-    @JvmField
-    val PARAM_STATUS = "status"
-
-    @JvmField
-    val PARAM_IS_FROM_2FA = "isFromTwoFactor"
-
-    @JvmField
-    val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
-
-    @JvmField
-    val PARAM_USER_ID_ENC = "userIdEncrypted"
-    @JvmField
-    val PARAM_USER_ACCESS_TOKEN = "accessToken"
-    @JvmField
-    val PARAM_USER_ID = "userId"
-
-    //VerificationActivity Param
-    @JvmField
-    val PARAM_CAN_USE_OTHER_METHOD = "can_use_other_method"
-    @JvmField
-    val PARAM_IS_SHOW_CHOOSE_METHOD = "is_show_choose_method"
-    @JvmField
-    val PARAM_OTP_TYPE = "otp_type"
-    @JvmField
-    val PARAM_REQUEST_OTP_MODE = "request_otp_mode"
-    @JvmField
-    val PARAM_OTP_CODE = "otp_code"
-    @JvmField
-    val PARAM_IS_SKIP_OTP = "is_skip_otp"
-    @JvmField
-    val PARAM_TWO_FACTOR_TYPE = "two_factor_type"
-
-    @JvmField
-    val PARAM_ENABLE_2FA = "enable_2fa"
-    @JvmField
-    val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
-
-    @JvmField
-    val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
+    const val PARAM_UUID = "uuid"
+    const val PARAM_MSISDN = "msisdn"
+    const val PARAM_PHONE = "phone"
+    const val PARAM_BOD = "bod"
+    const val PARAM_BOD_TITLE = "bodTitle"
+    const val PARAM_EMAIL = "email"
+    const val PARAM_SOURCE = "source"
+    const val PARAM_NAME = "name"
+    const val PARAM_TOKEN = "token"
+    const val PARAM_ACTION = "action"
+    const val PARAM_IS_SMART_LOGIN = "isSmartLogin"
+    const val PARAM_IS_PENDING = "isPending"
+    const val PARAM_LOGIN_TYPE = "loginType"
+    const val PARAM_IS_SQ_CHECK = "isSqCheck"
+    const val PARAM_KTP_PATH = "ktpPath"
+    const val PARAM_FACE_PATH = "facePath"
+    const val PARAM_CTA_TYPE = "ctaType"
+    const val PARAM_IMG_LINK = "imglink"
+    const val PARAM_MESSAGE_TITLE = "messageTitle"
+    const val PARAM_MESSAGE_BODY = "messageBody"
+    const val PARAM_STATUS = "status"
+    const val PARAM_IS_FROM_2FA = "isFromTwoFactor"
+    const val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
+    const val PARAM_USER_ID_ENC = "userIdEncrypted"
+    const val PARAM_USER_ACCESS_TOKEN = "accessToken"
+    const val PARAM_USER_ID = "userId"
+    const val PARAM_CAN_USE_OTHER_METHOD = "can_use_other_method"
+    const val PARAM_IS_SHOW_CHOOSE_METHOD = "is_show_choose_method"
+    const val PARAM_OTP_TYPE = "otp_type"
+    const val PARAM_REQUEST_OTP_MODE = "request_otp_mode"
+    const val PARAM_OTP_CODE = "otp_code"
+    const val PARAM_IS_SKIP_OTP = "is_skip_otp"
+    const val PARAM_ENABLE_2FA = "enable_2fa"
+    const val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
+    const val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
 
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
@@ -400,11 +350,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/saldo-intro
     @JvmField
     val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
-
-    // ChangeEmailActivity
-    // tokopedia-android-internal://global/change-email-register
-    @JvmField
-    val CHANGE_EMAIL_REGISTER = "$INTERNAL_GLOBAL/change-email-register"
 
     // RegisterInitialActivity
     // tokopedia-android-internal://global/init-register

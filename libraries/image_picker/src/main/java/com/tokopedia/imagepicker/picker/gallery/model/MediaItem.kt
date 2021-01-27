@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import com.tokopedia.utils.image.ImageUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 
 class MediaItem(val id: Long,
                 @Deprecated("should use content Uri instead")
@@ -31,7 +31,7 @@ class MediaItem(val id: Long,
 
     private fun calculateWidthAndHeight(context: Context) {
         if (_width == 0L || _height == 0L) {
-            val widthHeight: Pair<Int, Int> = ImageUtil.getWidthAndHeight(context, contentUri)
+            val widthHeight: Pair<Int, Int> = ImageProcessingUtil.getWidthAndHeight(context, contentUri)
             _width = widthHeight.first.toLong()
             _height = widthHeight.second.toLong()
         }

@@ -41,7 +41,6 @@ import retrofit2.Retrofit;
  * Created by zulfikarrahman on 4/2/18.
  */
 
-@FingerprintScope
 @Module
 public class FingerprintModule {
     public static final int READ_TIMEOUT = 60;

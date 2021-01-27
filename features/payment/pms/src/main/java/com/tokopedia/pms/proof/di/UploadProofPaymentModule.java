@@ -11,7 +11,6 @@ import dagger.Provides;
  * Created by zulfikarrahman on 6/21/18.
  */
 
-@UploadProofPaymentScope
 @Module(includes = ImageUploaderModule.class)
 public class UploadProofPaymentModule {
 

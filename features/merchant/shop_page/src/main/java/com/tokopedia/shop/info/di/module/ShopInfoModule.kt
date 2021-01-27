@@ -23,7 +23,6 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 import javax.inject.Named
 
-@ShopInfoScope
 @Module(includes = [ShopInfoViewModelModule::class])
 class ShopInfoModule {
     @Provides

@@ -184,7 +184,7 @@ class OfficialStoreTracking(context: Context) {
                 )
             )
         )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
+        tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
     }
 
     fun eventImpressionBanner(categoryName: String, bannerPosition: Int,
@@ -265,7 +265,7 @@ class OfficialStoreTracking(context: Context) {
                 )
             )
         )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
+        tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
     }
 
     fun eventImpressionFeatureBrand(
@@ -345,8 +345,8 @@ class OfficialStoreTracking(context: Context) {
         val headerName = channelData.header?.name ?: ""
         val impressionBody = DataLayer.listOf()
 
-        channelData.grids?.forEachIndexed { index, grid ->
-            grid?.run {
+        channelData.grids.forEachIndexed { index, grid ->
+            grid.run {
                 impressionBody.add(DataLayer.mapOf(
                         "name", name,
                         "id", id.toString(10),
@@ -589,10 +589,11 @@ class OfficialStoreTracking(context: Context) {
                 ECOMMERCE, DataLayer.mapOf(
                 CLICK, DataLayer.mapOf(
                 FIELD_ACTION_FIELD, DataLayer.mapOf(
-                FIELD_PRODUCT_LIST, getListProductClickInsideActionField(categoryName, item.recommendationType),
+                    FIELD_PRODUCT_LIST, getListProductClickInsideActionField(categoryName, item.recommendationType),
+                ),
                 FIELD_PRODUCTS, DataLayer.listOf(
                 convertRecommendationItemToDataImpressionObject(item, isLogin, position)
-        )))))
+        ))))
         tracker.sendEnhanceEcommerceEvent(data)
     }
 
@@ -849,7 +850,7 @@ class OfficialStoreTracking(context: Context) {
                         )
                 )
         )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
+        tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
     }
 
     fun flashSaleCardClickedComponent(
@@ -891,7 +892,7 @@ class OfficialStoreTracking(context: Context) {
         )
         )
         )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
+        tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
     }
 
     fun seeAllMixFlashSaleClicked(categoryName: String, channel: Channel) {

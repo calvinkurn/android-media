@@ -51,16 +51,15 @@
             app:layout_constraintStart_toEndOf="@+id/tv_card_header"
             app:layout_constraintTop_toTopOf="@id/view_card_header" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_edit_preference"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/layout_lvl3"
             android:layout_height="0dp"
             android:layout_marginEnd="@dimen/dp_16"
+            app:icon_name="SETTING"
             app:layout_constraintBottom_toBottomOf="@+id/view_card_header"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/view_card_header"
-            app:srcCompat="@drawable/ic_system_action_gear_normal_24"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="@+id/view_card_header" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_address_name"
@@ -72,9 +71,9 @@
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view_card_header"
-            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
