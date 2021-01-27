@@ -209,7 +209,7 @@ class AppWidgetTracking(context: Context) {
 
     private fun createImpressionOrderWidget(action: String): MutableMap<String, Any> {
         return createMap(
-                TrackingConstant.Event.VIEW_ORDER_WIDGET,
+                TrackingConstant.Event.VIEW_CHAT_WIDGET,
                 TrackingConstant.Category.ORDER_WIDGET,
                 action,
                 ""
@@ -218,7 +218,7 @@ class AppWidgetTracking(context: Context) {
 
     private fun createClickOrderWidget(action: String): MutableMap<String, Any> {
         return createMap(
-                TrackingConstant.Event.CLICK_ORDER_WIDGET,
+                TrackingConstant.Event.CLICK_CHAT_WIDGET,
                 TrackingConstant.Category.ORDER_WIDGET,
                 action,
                 ""

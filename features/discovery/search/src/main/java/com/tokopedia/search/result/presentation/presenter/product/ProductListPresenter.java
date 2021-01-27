@@ -253,10 +253,6 @@ final class ProductListPresenter
         return userSession.getDeviceId();
     }
 
-    private Map<String, String> getAdditionalParamsMap() {
-        return UrlParamUtils.getParamMap(additionalParams);
-    }
-
     @Override
     public void onPriceFilterTickerDismissed() {
         this.isTickerHasDismissed = true;
@@ -324,12 +320,11 @@ final class ProductListPresenter
     private void searchProductLoadMore(Map<String, Object> searchParameter) {
         checkViewAttached();
 
-        Map<String, String> additionalParams = getAdditionalParamsMap();
-        if (searchParameter == null || additionalParams == null) return;
+        if (searchParameter == null) return;
 
         RequestParams requestParams = createInitializeSearchParam(searchParameter);
         enrichWithRelatedSearchParam(requestParams);
-        enrichWithAdditionalParams(requestParams, additionalParams);
+        enrichWithAdditionalParams(requestParams);
 
         RequestParams useCaseRequestParams = createSearchProductRequestParams(requestParams);
 
@@ -487,6 +482,8 @@ final class ProductListPresenter
                     .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, pageTitle);
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
+
+            additionalParams = productViewModel.getAdditionalParams();
 
             if (productViewModel.getProductList().isEmpty()) {
                 getViewToProcessEmptyResultDuringLoadMore(searchProductModel.getSearchProduct());
@@ -650,16 +647,12 @@ final class ProductListPresenter
         setNavSource(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.NAVSOURCE));
         setPageId(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SRP_PAGE_ID));
         setPageTitle(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SRP_PAGE_TITLE));
+        resetAdditionalParams();
 
-        Map<String, String> additionalParams = getAdditionalParamsMap();
-        if (searchParameter == null || additionalParams == null) return;
+        if (searchParameter == null) return;
 
         RequestParams requestParams = createInitializeSearchParam(searchParameter);
         enrichWithRelatedSearchParam(requestParams);
-
-        if (checkShouldEnrichWithAdditionalParams(additionalParams)) {
-            enrichWithAdditionalParams(requestParams, additionalParams);
-        }
 
         RequestParams useCaseRequestParams = createSearchProductRequestParams(requestParams);
 
@@ -683,8 +676,8 @@ final class ProductListPresenter
         this.pageTitle = pageTitle;
     }
 
-    private boolean checkShouldEnrichWithAdditionalParams(Map<String, String> additionalParams) {
-        return getView().isAnyFilterActive() && additionalParams != null;
+    private void resetAdditionalParams() {
+        this.additionalParams = "";
     }
 
     private Subscriber<SearchProductModel> getLoadDataSubscriber(final Map<String, Object> searchParameter) {
@@ -1109,9 +1102,7 @@ final class ProductListPresenter
 
         processHeadlineAds(searchParameter, list);
 
-        if (!textIsEmpty(productViewModel.getAdditionalParams())) {
-            additionalParams = productViewModel.getAdditionalParams();
-        }
+        additionalParams = productViewModel.getAdditionalParams();
 
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
         processInspirationCarouselPosition(searchParameter, list);
@@ -1725,9 +1716,13 @@ final class ProductListPresenter
         requestParams.putBoolean(SearchApiConst.RELATED, true);
     }
 
-    protected void enrichWithAdditionalParams(RequestParams requestParams,
-                                              Map<String, String> additionalParams) {
+    protected void enrichWithAdditionalParams(RequestParams requestParams) {
+        Map<String, String> additionalParams = getAdditionalParamsMap();
         requestParams.putAllString(additionalParams);
+    }
+
+    private Map<String, String> getAdditionalParamsMap() {
+        return UrlParamUtils.getParamMap(additionalParams);
     }
 
     @Override
@@ -1906,12 +1901,6 @@ final class ProductListPresenter
         RequestParams requestParams = createInitializeSearchParam(new HashMap<>(mapParameter));
 
         enrichWithRelatedSearchParam(requestParams);
-
-        Map<String, String> additionalParams = getAdditionalParamsMap();
-
-        if (checkShouldEnrichWithAdditionalParams(additionalParams)) {
-            enrichWithAdditionalParams(requestParams, additionalParams);
-        }
 
         requestParams.putString(SearchApiConst.ROWS, "0");
 

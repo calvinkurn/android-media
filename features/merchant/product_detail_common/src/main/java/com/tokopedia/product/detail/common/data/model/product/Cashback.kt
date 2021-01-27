@@ -4,7 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.data.model.constant.TimeUnitTypeDef
 
 data class Cashback(
         @SerializedName("percentage")
@@ -19,11 +18,7 @@ data class PreOrder(
 
         @SerializedName("isActive")
         @Expose
-        val isActive: Boolean = false,
-
-        @SerializedName("timeUnit")
-        @Expose
-        val timeUnit: String = TimeUnitTypeDef.UNKNOWN
+        val isActive: Boolean = false
 ) {
     fun isPreOrderActive(): Boolean {
         return (isActive && duration > 0)

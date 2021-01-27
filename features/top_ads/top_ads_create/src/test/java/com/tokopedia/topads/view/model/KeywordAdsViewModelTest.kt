@@ -61,7 +61,7 @@ class KeywordAdsViewModelTest {
             }
         }
         every {
-            suggestionKeywordUseCase.execute(captureLambda(), any())
+            suggestionKeywordUseCase.executeQuerySafeMode(captureLambda(), any())
         } answers {
             onSuccess.invoke(data)
         }
@@ -82,7 +82,7 @@ class KeywordAdsViewModelTest {
             actual = it
         }
         every {
-            suggestionKeywordUseCase.execute(captureLambda(), any())
+            suggestionKeywordUseCase.executeQuerySafeMode(captureLambda(), any())
         } answers {
             onSuccess.invoke(expected)
         }

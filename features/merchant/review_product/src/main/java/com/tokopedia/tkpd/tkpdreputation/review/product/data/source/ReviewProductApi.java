@@ -4,7 +4,6 @@ import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.tkpd.tkpdreputation.constant.ReputationBaseURL;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
-import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
 
 import java.util.Map;
@@ -22,9 +21,6 @@ public interface ReviewProductApi {
 
     @GET(ReputationBaseURL.PATH_GET_REVIEW_PRODUCT_LIST)
     Observable<Response<DataResponse<DataResponseReviewProduct>>> getReviewProductList(@QueryMap Map<String, String> params);
-
-    @GET(ReputationBaseURL.PATH_GET_REVIEW_SHOP_LIST)
-    Observable<Response<DataResponse<DataResponseReviewShop>>> getReviewShopList(@QueryMap Map<String, String> params);
 
     @GET(ReputationBaseURL.PATH_GET_REVIEW_HELPFUL_LIST)
     Observable<Response<DataResponse<DataResponseReviewHelpful>>> getReviewHelpfulList(@QueryMap Map<String, String> params);

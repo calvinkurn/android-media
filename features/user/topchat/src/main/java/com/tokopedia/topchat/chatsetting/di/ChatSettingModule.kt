@@ -10,7 +10,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-@ChatSettingScope
 class ChatSettingModule(val context: Context) {
 
     @Provides
