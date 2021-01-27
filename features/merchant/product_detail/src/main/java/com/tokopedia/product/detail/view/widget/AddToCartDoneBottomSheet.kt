@@ -34,7 +34,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
-import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneAdapter
@@ -74,8 +73,6 @@ open class AddToCartDoneBottomSheet :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var productDetailTracking: ProductDetailTracking
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var addToCartDoneViewModel: AddToCartDoneViewModel
     private lateinit var atcDoneAdapter: AddToCartDoneAdapter
@@ -398,7 +395,7 @@ open class AddToCartDoneBottomSheet :
             }
         }
         addedProductDataModel?.productId?.let {
-            productDetailTracking.eventAddToCartRecommendationImpression(
+            DynamicProductDetailTracking.Impression.eventAddToCartRecommendationImpression(
                     item.position,
                     item,
                     addToCartDoneViewModel.isLoggedIn(),
@@ -416,7 +413,7 @@ open class AddToCartDoneBottomSheet :
         } else {
             addToCartDoneViewModel.removeWishList(item.productId.toString(), callback)
         }
-        productDetailTracking.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
+        DynamicProductDetailTracking.Impression.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
     }
 
     override fun onRecommendationItemSelected(dataModel: AddToCartDoneRecommendationItemDataModel, position: Int) {
@@ -439,7 +436,7 @@ open class AddToCartDoneBottomSheet :
                 addToCartButton.isLoading = true
                 addToCartDoneViewModel.addToCart(dataModel)
                 addedProductDataModel?.productId?.let {
-                    productDetailTracking.eventAddToCartRecommendationATCClick(
+                    DynamicProductDetailTracking.Click.eventAddToCartRecommendationATCClick(
                             item,
                             item.position,
                             addToCartDoneViewModel.isLoggedIn(),
@@ -453,7 +450,7 @@ open class AddToCartDoneBottomSheet :
     }
 
     override fun onButtonGoToCartClicked() {
-        productDetailTracking.eventAtcClickLihat(addedProductDataModel?.productId ?: "")
+        DynamicProductDetailTracking.Click.eventAtcClickLihat(addedProductDataModel?.productId ?: "")
         goToCart()
     }
 
