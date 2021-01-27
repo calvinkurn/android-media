@@ -9,8 +9,10 @@ import com.tokopedia.otp.common.DispatcherProvider
 import com.tokopedia.otp.notif.domain.pojo.ChangeStatusPushNotifData
 import com.tokopedia.otp.notif.domain.pojo.DeviceStatusPushNotifData
 import com.tokopedia.otp.notif.domain.pojo.VerifyPushNotifData
+import com.tokopedia.otp.notif.domain.pojo.VerifyPushNotifExpData
 import com.tokopedia.otp.notif.domain.usecase.ChangeStatusPushNotifUseCase
 import com.tokopedia.otp.notif.domain.usecase.DeviceStatusPushNotifUseCase
+import com.tokopedia.otp.notif.domain.usecase.VerifyPushNotifExpUseCase
 import com.tokopedia.otp.notif.domain.usecase.VerifyPushNotifUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -21,6 +23,7 @@ class NotifViewModel @Inject constructor(
         private val changeStatusPushNotifUseCase: ChangeStatusPushNotifUseCase,
         private val deviceStatusPushNotifUseCase: DeviceStatusPushNotifUseCase,
         private val verifyPushNotifUseCase: VerifyPushNotifUseCase,
+        private val verifyPushNotifExpUseCase: VerifyPushNotifExpUseCase,
         dispatcherProvider: DispatcherProvider
 ) : BaseViewModel(dispatcherProvider.ui()) {
 
@@ -35,6 +38,10 @@ class NotifViewModel @Inject constructor(
     private val _verifyPushNotifResult = MutableLiveData<Result<VerifyPushNotifData>>()
     val verifyPushNotifResult: LiveData<Result<VerifyPushNotifData>>
         get() = _verifyPushNotifResult
+
+    private val _verifyPushNotifExpResult = MutableLiveData<Result<VerifyPushNotifExpData>>()
+    val verifyPushNotifExpResult: LiveData<Result<VerifyPushNotifExpData>>
+        get() = _verifyPushNotifExpResult
 
     fun changeStatusPushNotif(status: Boolean) {
         launchCatchError(coroutineContext, {
@@ -103,6 +110,27 @@ class NotifViewModel @Inject constructor(
             }
         }, {
             _verifyPushNotifResult.postValue(Fail(it))
+        })
+    }
+
+    fun verifyPushNotifExp(
+            challengeCode: String,
+            signature: String,
+            status: String
+    ) {
+        launchCatchError(coroutineContext, {
+            val params = verifyPushNotifExpUseCase.getParams(challengeCode, signature, status)
+            val data = verifyPushNotifExpUseCase.getData(params).data
+            when {
+                data.success -> {
+                    _verifyPushNotifExpResult.value = Success(data)
+                }
+                data.errorMessage.isNotEmpty() -> {
+                    _verifyPushNotifExpResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                }
+            }
+        }, {
+            _verifyPushNotifExpResult.postValue(Fail(it))
         })
     }
 }

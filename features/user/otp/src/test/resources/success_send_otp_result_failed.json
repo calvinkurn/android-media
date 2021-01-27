@@ -1,8 +1,0 @@
-{
-  "OTPRequest": {
-    "success": false,
-    "message": "Failed",
-    "errorMessage": "Failed",
-    "prefixMisscall": ""
-  }
-}

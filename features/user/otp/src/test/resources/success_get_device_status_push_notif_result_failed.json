@@ -1,9 +1,0 @@
-{
-  "DeviceStatusPushnotif": {
-    "success": false,
-    "errorMessage": "Failed",
-    "isTrusted": false,
-    "isActive": false,
-    "listDevices": []
-  }
-}
