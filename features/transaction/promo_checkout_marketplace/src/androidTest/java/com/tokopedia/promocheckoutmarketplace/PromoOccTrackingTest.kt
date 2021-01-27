@@ -63,6 +63,14 @@ class PromoOccTrackingTest {
 
             clickPromoWithTitle("Cashback Rp25.000")
 
+            interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_with_input_code_response.json"
+
+            typePromoCode("TESTCODE")
+
+            clickTerapkanPromoCode()
+
+            clickPilihPromoRecommendation()
+
             interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_ineligible_response.json"
 
             pullSwipeRefresh()

@@ -60,6 +60,41 @@
       "eventAction": "deselect kupon",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.+}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "select promo",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.+}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "deselect promo",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.+}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "click terapkan promo",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.+}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "click pilih promo recommendation",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.+}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "click pakai promo",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.+}}"
     }
   ]
 }
