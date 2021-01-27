@@ -188,6 +188,8 @@ class SomDetailFragment : BaseDaggerFragment(),
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
 
+    private var userNotAllowedDialog: DialogUnify? = null
+
     private val connectionMonitor by lazy { context?.run { SomConnectionMonitor(this) } }
 
     companion object {
@@ -241,6 +243,14 @@ class SomDetailFragment : BaseDaggerFragment(),
         startActivity(intent)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (arguments != null) {
+            orderId = arguments?.getString(PARAM_ORDER_ID).toString()
+            checkUserRole()
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_som_detail, container, false)
     }
@@ -257,6 +267,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         observingRejectOrder()
         observingEditAwb()
         observingSetDelivered()
+        observingUserRoles()
         observeRejectCancelOrder()
     }
 
@@ -276,6 +287,15 @@ class SomDetailFragment : BaseDaggerFragment(),
         inflater.inflate(R.menu.chat_menu, menu)
     }
 
+    private fun checkUserRole() {
+        showLoading()
+        if (connectionMonitor?.isConnected == true) {
+            somDetailViewModel.getAdminPermission()
+        } else {
+            showErrorState(GlobalError.NO_CONNECTION)
+        }
+    }
+
     private fun prepareLayout() {
         refreshHandler = RefreshHandler(swipe_refresh_layout, this)
         refreshHandler?.setPullEnabled(true)
@@ -287,7 +307,11 @@ class SomDetailFragment : BaseDaggerFragment(),
             adapter = somDetailAdapter
         }
         somGlobalError?.setActionClickListener {
-            loadDetail()
+            if (isUserRoleFetched(somDetailViewModel.somDetailChatEligibility.value)) {
+                loadDetail()
+            } else {
+                checkUserRole()
+            }
         }
     }
 
@@ -423,6 +447,27 @@ class SomDetailFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun observingUserRoles() {
+        somDetailViewModel.somDetailChatEligibility.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    result.data.let { (isSomDetailEligible, isReplyChatEligible) ->
+                        if (isSomDetailEligible) {
+                            onUserAllowedToViewSOM()
+                        } else {
+                            onUserNotAllowedToViewSOM()
+                        }
+                    }
+                }
+                is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, PAGE_NAME))
+                    result.throwable.showErrorToaster()
+                    result.throwable.showGlobalError()
+                }
+            }
+        })
+    }
+
     private fun observeRejectCancelOrder() {
         somDetailViewModel.rejectCancelOrderResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -438,6 +483,19 @@ class SomDetailFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun onUserNotAllowedToViewSOM() {
+        context?.run {
+            if (userNotAllowedDialog == null) {
+                Utils.createUserNotAllowedDialog(this)
+            }
+            userNotAllowedDialog?.show()
+        }
+    }
+
+    private fun onUserAllowedToViewSOM() {
+        loadDetail()
     }
 
     private fun renderDetail() {
@@ -1320,12 +1378,18 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onRefresh(view: View?) {
-        loadDetail()
+        if (isUserRoleFetched(somDetailViewModel.somDetailChatEligibility.value)) {
+            loadDetail()
+        } else {
+            checkUserRole()
+        }
     }
 
     private fun openWebview(url: String) {
         startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
     }
+
+    private fun isUserRoleFetched(value: Result<Pair<Boolean, Boolean>>?): Boolean = value is Success
 
     private fun Throwable.showGlobalError() {
         val type = if (this is UnknownHostException || this is SocketTimeoutException) {
