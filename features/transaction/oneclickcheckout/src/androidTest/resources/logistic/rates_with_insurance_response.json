@@ -31,7 +31,7 @@
                 "text_notes": "",
                 "text_service_desc": "",
                 "text_eta_summarize": "",
-                "error_code": 0
+                "error_code": 1
               },
               "order_priority": {
                 "is_now": false,
@@ -110,7 +110,7 @@
                   },
                   "eta": {
                     "text_eta": "",
-                    "error_code": 0
+                    "error_code": 1
                   }
                 },
                 {
@@ -168,7 +168,7 @@
                   },
                   "eta": {
                     "text_eta": "",
-                    "error_code": 0
+                    "error_code": 1
                   }
                 }
               ]
@@ -206,7 +206,7 @@
             },
             "eta": {
               "text_eta": "",
-              "error_code": 0
+              "error_code": 1
             }
           },
           "info": {
