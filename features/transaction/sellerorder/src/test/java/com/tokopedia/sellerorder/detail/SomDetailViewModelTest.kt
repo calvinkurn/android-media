@@ -57,9 +57,6 @@ class SomDetailViewModelTest {
     lateinit var somSetDeliveredUseCase: SomSetDeliveredUseCase
 
     @RelaxedMockK
-    lateinit var somGetUserRoleUseCase: SomGetUserRoleUseCase
-
-    @RelaxedMockK
     lateinit var somRejectCancelOrderUseCase: SomRejectCancelOrderUseCase
 
     @RelaxedMockK
@@ -70,8 +67,7 @@ class SomDetailViewModelTest {
         MockKAnnotations.init(this)
         somDetailViewModel = SomDetailViewModel(dispatcher, userSessionInterface, somGetOrderDetailUseCase,
                 somAcceptOrderUseCase, somReasonRejectUseCase, somRejectOrderUseCase,
-                somEditRefNumUseCase, somSetDeliveredUseCase, somGetUserRoleUseCase,
-                somRejectCancelOrderUseCase)
+                somEditRefNumUseCase, somSetDeliveredUseCase, somRejectCancelOrderUseCase)
 
         val product1 = SomDetailOrder.Data.GetSomDetail.Products(123)
         listProducts = arrayListOf(product1).toMutableList()
@@ -351,34 +347,6 @@ class SomDetailViewModelTest {
         //then
         assert(somDetailViewModel.setDelivered.value is Success)
         assert((somDetailViewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.message.first() == "msg1")
-    }
-
-    @Test
-    fun loadUserRoles_shouldReturnSuccess() {
-        //given
-        coEvery {
-            somGetUserRoleUseCase.execute()
-        } returns Success(SomGetUserRoleUiModel())
-
-        //when
-        somDetailViewModel.loadUserRoles(123456)
-
-        //then
-        assert(somDetailViewModel.userRoleResult.value is Success)
-    }
-
-    @Test
-    fun loadUserRoles_shouldReturnFail() {
-        //given
-        coEvery {
-            somGetUserRoleUseCase.execute()
-        } returns Fail(Throwable())
-
-        //when
-        somDetailViewModel.loadUserRoles(123456)
-
-        //then
-        assert(somDetailViewModel.userRoleResult.value is Fail)
     }
 
     @Test
