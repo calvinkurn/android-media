@@ -126,6 +126,7 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
     override fun onHighlightItemClicked(data: ItemHighlightSearchUiModel, position: Int) {
         viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
         startActivityFromAutoComplete(data.appUrl.orEmpty())
+        SellerSearchTracking.clickOnItemSearchHighlights(userId)
     }
 
     private fun observeInsertSearch() {
