@@ -58,7 +58,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         notifyDataSetChanged()
     }
 
-    fun getActiveSpIds(): String {
+    fun getActiveSpIds(): List<String> {
         val activatedListIds = mutableListOf<String>()
         shipperOnDemandModel.forEach { courier ->
             courier.shipperProduct.forEach { product ->
@@ -68,7 +68,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
             }
 
         }
-        return activatedListIds.joinToString().replace(" ", "")
+        return activatedListIds
     }
 
     fun clearData() {

@@ -316,6 +316,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             setDataCourierNotCovered(data)
         } else if (data.state == 6) {
             setDataBoAndCourierNotCovered(data)
+        } else if (data.state == 0) {
+            viewModel.saveShippingData(userSession?.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), data.featureId.toString())
         }
     }
 
@@ -364,7 +366,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         tickerChargeBoCourierInactive = child.findViewById(R.id.ticker_charge_bo)
         btnVerticalLayout = child.findViewById(R.id.btn_vertical_layout)
         btnPrimaryVertical = child.findViewById(R.id.btn_primary)
-        btnPrimaryHorizontal = child.findViewById(R.id.btn_secondary)
+        btnSecondaryVertical = child.findViewById(R.id.btn_secondary)
         btnHorizontalLayout = child.findViewById(R.id.btn_horizonal_layout)
         btnPrimaryHorizontal = child.findViewById(R.id.btn_primary_horizontal)
         btnSecondaryHorizontal = child.findViewById(R.id.btn_secondary_horizonal)
@@ -511,8 +513,11 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         viewModel.validateShippingEditor(userSession?.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()))
     }
 
-    private fun getListActivatedSpIds(onDemandList: String, conventionalList: String): String {
-        return onDemandList + conventionalList
+    private fun getListActivatedSpIds(onDemandList: List<String>, conventionalList: List<String>): String {
+        val activatedListShipperIds = mutableListOf<String>()
+        activatedListShipperIds.addAll(onDemandList)
+        activatedListShipperIds.addAll(conventionalList)
+        return activatedListShipperIds.joinToString().replace(" ", "")
     }
 
     private fun handleError(throwable: Throwable) {

@@ -62,7 +62,7 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
         notifyDataSetChanged()
     }
 
-    fun getActiveSpIds(): String {
+    fun getActiveSpIds(): List<String> {
         val activatedListIds = mutableListOf<String>()
         shipperConventionalModel.forEach { courier ->
             courier.shipperProduct.forEach { product ->
@@ -72,7 +72,7 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
             }
 
         }
-        return activatedListIds.joinToString().replace(" ", "")
+        return activatedListIds
     }
 
     fun clearData() {

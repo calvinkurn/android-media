@@ -23,7 +23,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.di.shopeditaddress.ShopEditAddressComponent
-import com.tokopedia.editshipping.util.*
+import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_LAT
+import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_LONG
+import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_IS_EDIT_WAREHOUSE
+import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_IS_FULL_FLOW
+import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_LAT
+import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_LONG
+import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_WAREHOUSE_DATA
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
