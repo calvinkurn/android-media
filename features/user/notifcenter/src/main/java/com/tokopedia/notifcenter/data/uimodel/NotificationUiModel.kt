@@ -90,6 +90,8 @@ data class NotificationUiModel(
     val product: ProductData? get() = productData.getOrNull(0)
     val expireTimeUnixMillis: Long get() = expireTimeUnix * 1000
     val createTimeUnixMillis: Long get() = createTimeUnix * 1000
+    var isHistoryVisible = false
+        private set
 
     override fun type(typeFactory: NotificationTypeFactory): Int {
         return typeFactory.type(this)
@@ -137,6 +139,10 @@ data class NotificationUiModel(
 
     fun hasWidget(): Boolean {
         return widgetType == 1
+    }
+
+    fun toggleHistoryVisibility() {
+        isHistoryVisible = !isHistoryVisible
     }
 
     companion object {

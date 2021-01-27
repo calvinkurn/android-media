@@ -7,18 +7,20 @@ import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.TrackHistory
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
+import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.time.TimeHelper
 
-class WidgetNotificationViewHolder(
-        itemView: View?, listener: NotificationItemListener?
+class WidgetNotificationViewHolder constructor(
+        itemView: View?,
+        listener: NotificationItemListener?,
+        private val adapterListener: NotificationAdapterListener?
 ) : BaseNotificationViewHolder(itemView, listener) {
 
     private val historyBtn: Typography? = itemView?.findViewById(R.id.tp_history)
@@ -32,10 +34,12 @@ class WidgetNotificationViewHolder(
         initRecyclerView()
     }
 
+    // TODO: How to inflate once and when only expanded ?
     private fun initRecyclerView() {
         historyTimeLine?.apply {
             setHasFixedSize(true)
             isNestedScrollingEnabled = false
+            setRecycledViewPool(adapterListener?.getWidgetTimelineViewPool())
             layoutManager = LinearLayoutManager(itemView.context)
             adapter = historyAdapter
         }
@@ -44,40 +48,38 @@ class WidgetNotificationViewHolder(
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindTrackHistory(element)
-        bindHistoryBtnClick()
-        bindProgressIndicator()
+        bindTimeLineVisibility(element)
+        bindProgressIndicator(element)
+        bindHistoryBtnClick(element)
+        bindProgressIndicator(element)
     }
 
     private fun bindTrackHistory(element: NotificationUiModel) {
         historyAdapter.updateHistories(element)
     }
 
-    private fun bindHistoryBtnClick() {
+    private fun bindHistoryBtnClick(element: NotificationUiModel) {
         historyBtn?.setOnClickListener {
-            toggleTimeLineVisibility()
-            bindProgressIndicator()
+            element.toggleHistoryVisibility()
+            bindTimeLineVisibility(element)
+            bindProgressIndicator(element)
         }
     }
 
-    private fun toggleTimeLineVisibility() {
-        if (historyTimeLine?.isVisible == true) {
-            historyTimeLine.hide()
-        } else {
+    private fun bindTimeLineVisibility(element: NotificationUiModel) {
+        if (element.isHistoryVisible) {
             historyTimeLine?.show()
+        } else {
+            historyTimeLine?.hide()
         }
     }
 
-    private fun bindProgressIndicator() {
-        if (historyTimeLine?.isVisible == true) {
+    private fun bindProgressIndicator(element: NotificationUiModel) {
+        if (element.isHistoryVisible) {
             progressIndicator?.show()
         } else {
             progressIndicator?.hide()
         }
-    }
-
-    override fun onViewRecycled() {
-        historyAdapter.histories.clear()
-        historyAdapter.notifyDataSetChanged()
     }
 
     companion object {
@@ -108,6 +110,9 @@ class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>(), TimeLineViewH
     }
 
     fun updateHistories(element: NotificationUiModel) {
+        if (histories.isNotEmpty()) {
+            histories.clear()
+        }
         histories.addAll(element.trackHistory)
         notifyDataSetChanged()
     }

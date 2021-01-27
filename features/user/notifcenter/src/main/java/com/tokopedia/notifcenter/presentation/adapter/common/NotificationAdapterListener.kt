@@ -8,4 +8,5 @@ import androidx.recyclerview.widget.RecyclerView
 interface NotificationAdapterListener {
     fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool
     fun isPreviousItemNotification(adapterPosition: Int): Boolean
+    fun getWidgetTimelineViewPool(): RecyclerView.RecycledViewPool
 }

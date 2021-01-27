@@ -104,15 +104,18 @@ class NotificationTypeFactoryImpl constructor(
             adapterListener: Any
     ): AbstractViewHolder<out Visitable<*>> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        val notifAdapterListener = adapterListener as? NotificationAdapterListener
         return when (viewType) {
             CarouselProductNotificationViewHolder.LAYOUT -> CarouselProductNotificationViewHolder(
                     view, notificationListener,
                     adapterListener as? CarouselProductNotificationViewHolder.Listener,
-                    adapterListener as? NotificationAdapterListener
+                    notifAdapterListener
             )
             BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(
-                    view,
-                    adapterListener as? NotificationAdapterListener
+                    view, notifAdapterListener
+            )
+            WidgetNotificationViewHolder.LAYOUT -> WidgetNotificationViewHolder(
+                    view, notificationListener, notifAdapterListener
             )
             else -> createViewHolder(view, viewType)
         }
@@ -120,9 +123,6 @@ class NotificationTypeFactoryImpl constructor(
 
     override fun createViewHolder(view: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            WidgetNotificationViewHolder.LAYOUT -> WidgetNotificationViewHolder(
-                    view, notificationListener
-            )
             NotificationErrorViewHolder.LAYOUT -> NotificationErrorViewHolder(
                     view, notificationListener
             )
