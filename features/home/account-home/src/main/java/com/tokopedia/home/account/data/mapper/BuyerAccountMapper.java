@@ -257,7 +257,7 @@ public class BuyerAccountMapper implements Func1<AccountDataModel, BuyerViewMode
         return buyerCardViewModel;
     }
 
-    private Boolean useUoh() {
+    private boolean useUoh() {
         try {
             String remoteConfigRollenceValue = RemoteConfigInstance.getInstance().getABTestPlatform().getString(UOH_AB_TEST_KEY, "");
 
