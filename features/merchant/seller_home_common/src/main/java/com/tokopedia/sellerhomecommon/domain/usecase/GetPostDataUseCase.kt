@@ -66,6 +66,11 @@ class GetPostDataUseCase(
                     subtitle
                     featuredMediaURL
                   }
+                  cta{
+                    text
+                    url
+                    applink
+                  }
                   error
                   errorMsg
                 }

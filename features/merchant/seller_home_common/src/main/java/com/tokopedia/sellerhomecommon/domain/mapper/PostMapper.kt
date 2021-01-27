@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.sellerhomecommon.domain.model.PostDataModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostCtaDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostUiModel
 import javax.inject.Inject
@@ -24,6 +25,10 @@ class PostMapper @Inject constructor() {
                                 postItem.subtitle.orEmpty()
                         )
                     }.orEmpty(),
+                    cta = PostCtaDataUiModel(
+                            text = it.cta?.text.orEmpty(),
+                            appLink = it.cta?.text.orEmpty()
+                    ),
                     error = it.error.orEmpty(),
                     isFromCache = isFromCache
             )
