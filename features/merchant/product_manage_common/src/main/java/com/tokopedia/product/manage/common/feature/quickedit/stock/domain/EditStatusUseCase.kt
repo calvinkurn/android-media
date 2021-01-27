@@ -8,7 +8,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class EditStockUseCase @Inject constructor(repository: GraphqlRepository) : GraphqlUseCase<ProductUpdateV3Response>(repository) {
+class EditStatusUseCase @Inject constructor(repository: GraphqlRepository) : GraphqlUseCase<ProductUpdateV3Response>(repository) {
 
     companion object {
         const val PARAM_INPUT = "input"
@@ -31,12 +31,11 @@ class EditStockUseCase @Inject constructor(repository: GraphqlRepository) : Grap
         setTypeClass(ProductUpdateV3Response::class.java)
     }
 
-    fun setParams(shopId: String, productId: String, stock: Int, status: ProductStatus) {
+    fun setParams(shopId: String, productId: String, status: ProductStatus) {
         val requestParams = RequestParams.create()
         val productEditStockParam = ProductEditStockParam()
         productEditStockParam.shop.shopId = shopId
         productEditStockParam.productId = productId
-        productEditStockParam.stock = stock
         productEditStockParam.status = status.name
         requestParams.putObject(PARAM_INPUT, productEditStockParam)
         setRequestParams(requestParams.parameters)

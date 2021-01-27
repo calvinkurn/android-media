@@ -38,9 +38,10 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         onSetCampaignStock_thenReturn(getStockAllocationData)
         onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
 
-        viewModel.getStockAllocation(listOf(productId))
         viewModel.setShopId(shopId)
+        viewModel.getStockAllocation(listOf(productId))
 
+        verifyGetWarehouseIdCalled()
         verifyGetCampaignStockAllocationCalled()
         verifyGetOtherCampaignStockDataCalled()
 
@@ -70,8 +71,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         onGetProductVariant_thenReturn(getProductVariantResponse)
         onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
 
-        viewModel.getStockAllocation(listOf(productId))
         viewModel.setShopId(shopId)
+        viewModel.getStockAllocation(listOf(productId))
 
         verifyGetCampaignStockAllocationCalled()
         verifyGetProductVariantCalled()
@@ -118,6 +119,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         }
 
         verifyEditStockCalled()
+        verifyEditStatusCalled()
 
         val totalStock = 2
         val expectedResult = Success(UpdateCampaignStockResult(
@@ -125,8 +127,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
                 productName,
                 totalStock,
                 ProductStatus.INACTIVE,
-                editStockResponse.productUpdateV3Data.isSuccess,
-                editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+                true
         ))
 
         verifyProductUpdateResponseResult(expectedResult)
@@ -511,7 +512,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
     private fun onEditStock_thenReturn(productUpdateV3Response: ProductUpdateV3Response) {
         coEvery {
-            editStockUseCase.executeOnBackground()
+            editStatusUseCase.executeOnBackground()
         } returns productUpdateV3Response
     }
 
@@ -539,9 +540,15 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         }
     }
 
+    private fun verifyEditStatusCalled() {
+        coVerify {
+            editStatusUseCase.executeOnBackground()
+        }
+    }
+
     private fun verifyEditStockCalled() {
         coVerify {
-            editStockUseCase.executeOnBackground()
+            editStockUseCase.execute(any())
         }
     }
 
@@ -560,6 +567,12 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
     private fun verifyGetProductVariantCalled() {
         coVerify {
             getProductVariantUseCase.execute(any())
+        }
+    }
+
+    private fun verifyGetWarehouseIdCalled() {
+        coVerify {
+            getAdminInfoShopLocationUseCase.execute(any())
         }
     }
 

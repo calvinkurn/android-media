@@ -419,14 +419,8 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
         product.title?.let { product.minPrice?.price?.let { price -> viewModel.editPrice(product.id, price, it) } }
     }
 
-    override fun onFinishEditStock(modifiedProduct: ProductUiModel) {
-        with(modifiedProduct) {
-            viewModel.editStock(id, stock ?: return, title ?: return, status ?: return)
-        }
-    }
-
-    override fun onFinishEditStock(productId: String, productName: String, productStatus: ProductStatus, stock: Int) {
-        viewModel.editStock(productId, stock, productName, productStatus)
+    override fun onFinishEditStock(productId: String, productName: String, stock: Int?, status: ProductStatus?) {
+        viewModel.editStock(productId, productName, stock, status)
     }
 
     override fun getEmptyDataViewModel(): EmptyModel {
@@ -944,29 +938,33 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
     }
 
     private fun onErrorEditPrice(editPriceResult: EditPriceResult) {
-        val message = if (editPriceResult.error is NetworkErrorException) {
-            getString(editPriceResult.error.message.toIntOrZero())
-        } else {
-            editPriceResult.error?.message
-        }
-        message?.let {
-            val retryMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
-            showErrorToast(it, retryMessage) {
-                viewModel.editPrice(editPriceResult.productId, editPriceResult.price, editPriceResult.productName)
+        with(editPriceResult) {
+            val message = if (error is NetworkErrorException) {
+                getString(error.message.toIntOrZero())
+            } else {
+                error?.message
+            }
+            message?.let {
+                val retryMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
+                showErrorToast(it, retryMessage) {
+                    viewModel.editPrice(productId, price, productName)
+                }
             }
         }
     }
 
     private fun onErrorEditStock(editStockResult: EditStockResult) {
-        val message = if (editStockResult.error is NetworkErrorException) {
-            getString(editStockResult.error?.message.toIntOrZero())
-        } else {
-            editStockResult.error?.message
-        }
-        message?.let {
-            val retryMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
-            showErrorToast(it, retryMessage) {
-                viewModel.editStock(editStockResult.productId, editStockResult.stock, editStockResult.productName, editStockResult.status)
+        with(editStockResult) {
+            val message = if (error is NetworkErrorException) {
+                getString(error?.message.toIntOrZero())
+            } else {
+                error?.message
+            }
+            message?.let {
+                val retryMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
+                showErrorToast(it, retryMessage) {
+                    viewModel.editStock(productId, productName, stock, status)
+                }
             }
         }
     }
@@ -978,7 +976,7 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
         productManageListAdapter.updatePrice(productId, price)
     }
 
-    private fun onSuccessEditStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
+    private fun onSuccessEditStock(productId: String, productName: String, stock: Int?, status: ProductStatus?) {
         Toaster.build(coordinatorLayout, getString(
                 com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_stock_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
@@ -1907,7 +1905,11 @@ open class ProductManageFragment : BaseListFragment<ProductUiModel, ProductManag
     private fun observeEditStock() {
         observe(viewModel.editStockResult) {
             when (it) {
-                is Success -> onSuccessEditStock(it.data.productId, it.data.stock, it.data.productName, it.data.status)
+                is Success -> {
+                    with(it.data) {
+                        onSuccessEditStock(productId, productName, stock, status)
+                    }
+                }
                 is Fail -> {
                     onErrorEditStock(it.throwable as EditStockResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)

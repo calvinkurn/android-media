@@ -10,7 +10,7 @@ import com.tokopedia.product.manage.common.feature.list.data.model.ProductManage
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper.mapProductManageOwnerAccess
-import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
+import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStatusUseCase
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
@@ -24,19 +24,23 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.Upd
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.VariantStockAllocationResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
+import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 class CampaignStockViewModel @Inject constructor(
         private val campaignStockAllocationUseCase: CampaignStockAllocationUseCase,
         private val otherCampaignStockDataUseCase: OtherCampaignStockDataUseCase,
         private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val editStockUseCase: EditStockUseCase,
+        private val editStatusUseCase: EditStatusUseCase,
+        private val editStockUseCase: UpdateProductStockWarehouseUseCase,
         private val editProductVariantUseCase: EditProductVariantUseCase,
         private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
         private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
@@ -49,10 +53,14 @@ class CampaignStockViewModel @Inject constructor(
 
     private var shopId: String = ""
     private var productId: String = ""
+    private var warehouseId: String = ""
 
     private var nonVariantStock: Int = 0
     private var nonVariantReservedStock = 0
-    private var nonVariantIsActive = false
+    private var nonVariantStatus = ProductStatus.INACTIVE
+
+    private var currentNonVariantStock: Int = 0
+    private var currentNonVariantStatus = ProductStatus.INACTIVE
 
     private var editVariantResult: EditVariantResult = EditVariantResult()
     private val mProductManageAccess = MutableLiveData<ProductManageAccess>()
@@ -112,7 +120,11 @@ class CampaignStockViewModel @Inject constructor(
     }
 
     fun updateNonVariantIsActive(isActive: Boolean) {
-        nonVariantIsActive = isActive
+        nonVariantStatus = if(isActive) {
+            ProductStatus.ACTIVE
+        } else {
+            ProductStatus.INACTIVE
+        }
     }
 
     fun updateVariantStockCount(productId: String, stockCount: Int) {
@@ -154,28 +166,76 @@ class CampaignStockViewModel @Inject constructor(
     private fun updateNonVariantData() {
         launchCatchError(
             block = {
-                mProductUpdateResponseLiveData.value = Success(withContext(dispatchers.io) {
-                    val status = if (nonVariantIsActive) {
-                        ProductStatus.ACTIVE
-                    } else {
-                        ProductStatus.INACTIVE
-                    }
-                    editStockUseCase.setParams(shopId, productId, nonVariantStock, status)
-                    val editStockResponse = editStockUseCase.executeOnBackground()
-                    UpdateCampaignStockResult(
-                        productId,
-                        campaignProductName,
-                        nonVariantStock + nonVariantReservedStock,
-                        status,
-                        editStockResponse.productUpdateV3Data.isSuccess,
-                        editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
-                    )
-                })
+                var result: Success<UpdateCampaignStockResult> = Success(UpdateCampaignStockResult(
+                    productId,
+                    campaignProductName,
+                    currentNonVariantStock + nonVariantReservedStock,
+                    currentNonVariantStatus,
+                    true
+                ))
+
+                if(nonVariantStatus != currentNonVariantStatus) {
+                    result = editProductStatus(nonVariantStatus)
+                }
+
+                if(nonVariantStock != currentNonVariantStock) {
+                    result = editProductStock(nonVariantStock)
+                }
+
+                mProductUpdateResponseLiveData.value = result
             },
             onError = {
                 mProductUpdateResponseLiveData.value = Fail(it)
             }
         )
+    }
+
+    private suspend fun editProductStock(nonVariantStock: Int): Success<UpdateCampaignStockResult> {
+        return withContext(dispatchers.io) {
+            val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
+                shopId,
+                productId,
+                getWarehouseId(shopId),
+                nonVariantStock.toString()
+            )
+            val response = editStockUseCase.execute(requestParams)
+            val status = response.getProductStatus() ?: currentNonVariantStatus
+
+            Success(UpdateCampaignStockResult(
+                productId,
+                campaignProductName,
+                nonVariantStock + nonVariantReservedStock,
+                status,
+                true
+            ))
+        }
+    }
+
+    private suspend fun editProductStatus(status: ProductStatus): Success<UpdateCampaignStockResult> {
+        return withContext(dispatchers.io) {
+            editStatusUseCase.setParams(shopId, productId, status)
+            val response = editStatusUseCase.executeOnBackground()
+
+            val productUpdateV3Data = response.productUpdateV3Data
+            val errorMessage = productUpdateV3Data.header.errorMessage
+            val isSuccess = productUpdateV3Data.isSuccess
+
+            val message = when {
+                errorMessage.isNotEmpty() -> errorMessage.last()
+                !isSuccess -> com.tokopedia.product.manage.common.R.string
+                        .product_stock_reminder_toaster_failed_desc.toString()
+                else -> null
+            }
+
+            Success(UpdateCampaignStockResult(
+                productId,
+                campaignProductName,
+                nonVariantStock + nonVariantReservedStock,
+                status,
+                isSuccess,
+                message
+            ))
+        }
     }
 
     private fun updateVariantData() {
@@ -218,9 +278,13 @@ class CampaignStockViewModel @Inject constructor(
         otherCampaignStockDataUseCase.params = OtherCampaignStockDataUseCase.createRequestParams(productId)
 
         val otherCampaignStockData = otherCampaignStockDataUseCase.executeOnBackground()
+        val stock = stockAllocationData.summary.sellableStock.toIntOrZero()
+        val status = ProductStatus.valueOf(otherCampaignStockData.status.toUpperCase(Locale.ROOT))
 
-        nonVariantStock = otherCampaignStockData.stock
-        nonVariantIsActive = otherCampaignStockData.getIsActive()
+        nonVariantStock = stock
+        nonVariantStatus = status
+        currentNonVariantStock = nonVariantStock
+        currentNonVariantStatus = nonVariantStatus
 
         val productManageAccess = async {
             if(userSession.isShopOwner) {
@@ -290,7 +354,12 @@ class CampaignStockViewModel @Inject constructor(
     }
 
     private suspend fun getWarehouseId(shopId: String): String {
-        val response = getAdminInfoShopLocationUseCase.execute(shopId.toIntOrZero())
-        return response.firstOrNull { it.isMainLocation() } ?.locationId.toString()
+        return if(warehouseId.isEmpty()) {
+            val response = getAdminInfoShopLocationUseCase.execute(shopId.toIntOrZero())
+            warehouseId = response.firstOrNull { it.isMainLocation() } ?.locationId.toString()
+            warehouseId
+        } else {
+            warehouseId
+        }
     }
 }

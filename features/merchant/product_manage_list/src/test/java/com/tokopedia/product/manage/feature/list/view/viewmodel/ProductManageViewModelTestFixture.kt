@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
+import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStatusUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
@@ -14,7 +14,9 @@ import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProduc
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -28,7 +30,10 @@ open class ProductManageViewModelTestFixture {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var editStockUseCase: EditStockUseCase
+    lateinit var editStatusUseCase: EditStatusUseCase
+
+    @RelaxedMockK
+    lateinit var editStockUseCase: UpdateProductStockWarehouseUseCase
 
     @RelaxedMockK
     lateinit var editPriceUseCase: EditPriceUseCase
@@ -72,6 +77,9 @@ open class ProductManageViewModelTestFixture {
     @RelaxedMockK
     lateinit var getProductManageAccessUseCase: GetProductManageAccessUseCase
 
+    @RelaxedMockK
+    lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
+
     protected lateinit var viewModel: ProductManageViewModel
 
     @Before
@@ -87,6 +95,7 @@ open class ProductManageViewModelTestFixture {
                 popupManagerAddProductUseCase,
                 getProductListUseCase,
                 setFeaturedProductUseCase,
+                editStatusUseCase,
                 editStockUseCase,
                 deleteProductUseCase,
                 multiEditProductUseCase,
@@ -94,6 +103,7 @@ open class ProductManageViewModelTestFixture {
                 getProductManageAccessUseCase,
                 editProductVariantUseCase,
                 getProductVariantUseCase,
+                getAdminInfoShopLocationUseCase,
                 CoroutineTestDispatchersProvider
         )
     }

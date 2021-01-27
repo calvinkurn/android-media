@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.campaignstock
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
-import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
+import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStatusUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.OtherCampaignStockDataUseCase
@@ -11,9 +11,13 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.Sto
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
+import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
+import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ShopLocationResponse
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.After
@@ -35,13 +39,19 @@ open class CampaignStockViewModelTestFixture {
     lateinit var getProductVariantUseCase: GetProductVariantUseCase
 
     @RelaxedMockK
-    lateinit var editStockUseCase: EditStockUseCase
+    lateinit var editStatusUseCase: EditStatusUseCase
+
+    @RelaxedMockK
+    lateinit var editStockUseCase: UpdateProductStockWarehouseUseCase
 
     @RelaxedMockK
     lateinit var editProductVariantUseCase: EditProductVariantUseCase
 
     @RelaxedMockK
     lateinit var getProductManageAccessUseCase: GetProductManageAccessUseCase
+
+    @RelaxedMockK
+    lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -58,15 +68,22 @@ open class CampaignStockViewModelTestFixture {
             campaignStockAllocationUseCase,
             otherCampaignStockDataUseCase,
             getProductVariantUseCase,
+            editStatusUseCase,
             editStockUseCase,
             editProductVariantUseCase,
             getProductManageAccessUseCase,
+            getAdminInfoShopLocationUseCase,
             userSession,
             CoroutineTestDispatchersProvider
         ).also {
             it.getStockAllocationData.observeForever(getStockAllocationLiveDataObserver)
         }
 
+        val locationList = listOf(
+            ShopLocationResponse(1, MAIN_LOCATION),
+            ShopLocationResponse(2, OTHER_LOCATION)
+        )
+        onGetWarehouseId_thenReturn(locationList)
         onGetIsShopOwner_thenReturn(true)
     }
 
@@ -77,5 +94,16 @@ open class CampaignStockViewModelTestFixture {
 
     protected fun onGetIsShopOwner_thenReturn(isShopOwner: Boolean) {
         every { userSession.isShopOwner } returns isShopOwner
+    }
+
+    private fun onGetWarehouseId_thenReturn(locationList: List<ShopLocationResponse>) {
+        coEvery {
+            getAdminInfoShopLocationUseCase.execute(any())
+        } returns locationList
+    }
+
+    companion object LocationType {
+        private const val MAIN_LOCATION = 1
+        private const val OTHER_LOCATION = 99
     }
 }

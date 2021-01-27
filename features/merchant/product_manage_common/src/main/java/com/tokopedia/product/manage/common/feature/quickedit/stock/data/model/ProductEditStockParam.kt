@@ -9,9 +9,6 @@ data class ProductEditStockParam(
         @SerializedName("productID")
         @Expose
         var productId: String = "",
-        @SerializedName("stock")
-        @Expose
-        var stock: Int = 0,
         @SerializedName("status")
         @Expose
         var status: String = ProductStatus.ACTIVE.name,
