@@ -279,7 +279,7 @@ class MainSliceProvider : SliceProvider() {
         contextNonNull = context?.applicationContext ?: return false
         remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
         LocalCacheHandler(context, APPLINK_DEBUGGER)
-        SplitCompat.install(contextNonNull)
+        SplitCompat.installActivity(contextNonNull)
         return true
     }
 
