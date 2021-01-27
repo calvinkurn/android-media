@@ -1,5 +1,9 @@
 package com.tokopedia.paylater.presentation.viewholder
 
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +24,7 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
         val imageUrl: String?
         view.apply {
             setOnClickListener { clickListener(payLaterItemProductData, payLaterApplicationDataForPartner) }
+
             ivPartnerLogo.layoutParams.height = context.dpToPx(18).toInt()
             ivPartnerLogo.layoutParams.width = context.dpToPx(48).toInt()
             if (context.isDarkMode())
@@ -32,9 +37,24 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
                         R.drawable.ic_loading_image)
 
             tvTitlePaymentPartner.text = payLaterItemProductData.partnerName ?: ""
-            tvDescription.text = payLaterApplicationDataForPartner?.payLaterStatusContent?.verificationContentSubHeader
-                    ?: context.getString(R.string.pay_later_default_subtitle)
+
             payLaterApplicationDataForPartner?.let {
+                if (it.payLaterStatusContent?.verificationContentSubHeader.isNullOrEmpty()) {
+                    tvDescription.text = context.getString(R.string.pay_later_default_subtitle)
+                } else {
+                    if (it.payLaterExpirationDate.isNullOrEmpty())
+                        tvDescription.text = it.payLaterStatusContent?.verificationContentSubHeader
+                                ?: context.getString(R.string.pay_later_default_subtitle)
+                    else {
+                        val subHeader = it.payLaterStatusContent?.verificationContentSubHeader ?: ""
+                        val builder = SpannableStringBuilder()
+                        builder.append(subHeader)
+                        builder.append(it.payLaterExpirationDate)
+                        builder.setSpan(StyleSpan(Typeface.BOLD), subHeader.length, builder.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        tvDescription.text = builder
+                    }
+                }
+
                 it.payLaterApplicationStatusLabelStringId.also { resId ->
                     if (resId != 0) {
                         paymentOfferLabel.visible()

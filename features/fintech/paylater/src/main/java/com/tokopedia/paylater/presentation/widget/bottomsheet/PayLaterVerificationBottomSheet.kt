@@ -1,6 +1,10 @@
 package com.tokopedia.paylater.presentation.widget.bottomsheet
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
@@ -47,17 +51,26 @@ class PayLaterVerificationBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         applicationDetail?.payLaterStatusContent?.let {
             tvPopUpDetail.text = it.verificationContentPopUpDetail
+
             if (!it.verificationContentInfo.isNullOrEmpty()) {
-                tvAdditionalInfo.text = it.verificationContentInfo
-            }
-            else  tvAdditionalInfo.gone()
+                if (applicationDetail?.payLaterExpirationDate.isNullOrEmpty()) {
+                    tvAdditionalInfo.text = it.verificationContentInfo
+                } else {
+                    val builder = SpannableStringBuilder()
+                    builder.append(it.verificationContentInfo)
+                    builder.append(applicationDetail?.payLaterExpirationDate)
+                    builder.setSpan(StyleSpan(Typeface.BOLD), it.verificationContentInfo.length, builder.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    tvAdditionalInfo.text = builder
+                }
+            } else tvAdditionalInfo.gone()
+
             if (!it.verificationContentPhoneNumber.isNullOrEmpty()) {
                 tvPhone.text = it.verificationContentPhoneNumber
             } else {
                 tvPhone.gone()
                 ivPhone.gone()
             }
-            if(!it.verificationContentEmail.isNullOrEmpty()) {
+            if (!it.verificationContentEmail.isNullOrEmpty()) {
                 tvEmail.text = it.verificationContentEmail
             } else {
                 tvEmail.gone()
@@ -82,7 +95,6 @@ class PayLaterVerificationBottomSheet : BottomSheetUnify() {
         showHeader = true
         customPeekHeight = (getScreenHeight() / 2).toDp()
     }
-
 
 
     companion object {
