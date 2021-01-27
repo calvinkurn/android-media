@@ -44,7 +44,7 @@ class SomListViewModel @Inject constructor(
         private val authorizeSomListAccessUseCase: AuthorizeAccessUseCase,
         private val authorizeMultiAcceptAccessUseCase: AuthorizeAccessUseCase
 ) : SomOrderBaseViewModel(dispatcher.io(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
-        somEditRefNumUseCase, somRejectCancelOrderRequest) {
+        somEditRefNumUseCase, somRejectCancelOrderRequest, authorizeSomListAccessUseCase, authorizeMultiAcceptAccessUseCase) {
 
     companion object {
         private const val MAX_RETRY_GET_ACCEPT_ORDER_STATUS = 20
@@ -295,35 +295,13 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getAdminPermission() {
-        when {
-            userSession.isShopOwner -> {
-                _isOrderManageEligible.postValue(Success(true to true))
-                _canShowOrderData.postValue(true)
-            }
-            userSession.isShopAdmin -> {
-                launchCatchError(
-                        block = {
-                            val somListRequestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST)
-                            val multiAccessRequestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_MULTI_ACCEPT)
-                            async {
-                                authorizeSomListAccessUseCase.execute(somListRequestParams)
-                            }.let { isSomListEligibleDeferred ->
-                                async {
-                                    authorizeMultiAcceptAccessUseCase.execute(multiAccessRequestParams)
-                                }.let { isMultiAcceptEligibleDeferred ->
-                                    _isOrderManageEligible.postValue(
-                                            Success(isSomListEligibleDeferred.await() to isMultiAcceptEligibleDeferred.await()))
-                                }
-                            }
-                        },
-                        onError = {
-                            _isOrderManageEligible.postValue(Fail(it))
-                        }
-                )
-            }
-            else -> {
-                _isOrderManageEligible.postValue(Success(false to false))
-            }
-        }
+        launchCatchError(
+                block = {
+                    _isOrderManageEligible.postValue(getAdminAccessEligibilityPair(AccessId.SOM_LIST, AccessId.SOM_MULTI_ACCEPT))
+                },
+                onError = {
+                    _isOrderManageEligible.postValue(Fail(it))
+                }
+        )
     }
 }
