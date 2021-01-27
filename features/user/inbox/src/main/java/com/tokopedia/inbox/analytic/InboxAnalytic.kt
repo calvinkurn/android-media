@@ -31,6 +31,7 @@ class InboxAnalytic @Inject constructor(
             const val CLICK_SWITCH_ACCOUNT = "click switch inbox at header"
             const val CHOOSE_SWITCH_ACCOUNT = "click switch inbox role at bottom sheet"
             const val VIEW_INBOX_ONBOARDING = "view new inbox onboarding"
+            const val CLICK_INBOX_ONBOARDING = "click new inbox onboarding"
         }
     }
 
@@ -130,6 +131,21 @@ class InboxAnalytic @Inject constructor(
                         eventCategory = EventCategory.INBOX_PAGE,
                         eventAction = EventAction.VIEW_INBOX_ONBOARDING,
                         eventLabel = "${getRoleStringOnBoarding(role)} - ${currentIndex + 1}",
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId
+                )
+        )
+    }
+
+    fun trackClickOnBoardingCta(role: Int, previousIndex: Int, direction: String) {
+        val eventLabel = "${getRoleStringOnBoarding(role)} - ${previousIndex + 1} - $direction"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                createGeneralEvent(
+                        event = Event.CLICK_INBOX_CHAT,
+                        eventCategory = EventCategory.INBOX_PAGE,
+                        eventAction = EventAction.CLICK_INBOX_ONBOARDING,
+                        eventLabel = eventLabel,
                         businessUnit = BusinessUnit.COMMUNICATION,
                         currentSite = CurrentSite.MARKETPLACE,
                         userId = userSession.userId
