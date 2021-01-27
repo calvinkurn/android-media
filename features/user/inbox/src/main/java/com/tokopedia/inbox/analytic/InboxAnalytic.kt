@@ -32,6 +32,7 @@ class InboxAnalytic @Inject constructor(
             const val CHOOSE_SWITCH_ACCOUNT = "click switch inbox role at bottom sheet"
             const val VIEW_INBOX_ONBOARDING = "view new inbox onboarding"
             const val CLICK_INBOX_ONBOARDING = "click new inbox onboarding"
+            const val CLOSE_INBOX_ONBOARDING = "click close new inbox"
         }
     }
 
@@ -146,6 +147,21 @@ class InboxAnalytic @Inject constructor(
                         eventCategory = EventCategory.INBOX_PAGE,
                         eventAction = EventAction.CLICK_INBOX_ONBOARDING,
                         eventLabel = eventLabel,
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId
+                )
+        )
+    }
+
+    fun trackDismissOnBoarding(role: Int, currentIndex: Int?) {
+        if (currentIndex == null) return
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                createGeneralEvent(
+                        event = Event.CLICK_INBOX_CHAT,
+                        eventCategory = EventCategory.INBOX_PAGE,
+                        eventAction = EventAction.CLOSE_INBOX_ONBOARDING,
+                        eventLabel = "${getRoleStringOnBoarding(role)} - ${currentIndex + 1}",
                         businessUnit = BusinessUnit.COMMUNICATION,
                         currentSite = CurrentSite.MARKETPLACE,
                         userId = userSession.userId

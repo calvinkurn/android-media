@@ -272,6 +272,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         onBoardingCoachMark?.onDismissListener = {
             viewModel.markFinishedSellerOnBoarding()
             switcher?.setShowListener { }
+            analytic.trackDismissOnBoarding(role, onBoardingCoachMark?.currentIndex)
         }
         analytic.trackShowOnBoardingOnStep(role, 0)
         onBoardingCoachMark?.setStepListener(InboxOnBoardingListener(
