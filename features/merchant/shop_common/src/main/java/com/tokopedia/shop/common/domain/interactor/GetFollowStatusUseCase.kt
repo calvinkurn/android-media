@@ -22,7 +22,15 @@ class GetFollowStatusUseCase @Inject constructor(
         private const val PARAM_SOURCE = "source"
 
         @JvmStatic
-        fun createParams(shopId: String, source: String = ""): HashMap<String, Any> {
+        fun createParams(shopId: String): HashMap<String, Any> {
+            return hashMapOf(
+                    PARAM_INPUT to hashMapOf(
+                            PARAM_SHOP_ID to shopId
+                    )
+            )
+        }
+
+        fun createParams(shopId: String, source: String): HashMap<String, Any> {
             return hashMapOf(
                     PARAM_INPUT to hashMapOf(
                             PARAM_SHOP_ID to shopId,
