@@ -408,7 +408,6 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                                     }
                                 }
                             }
-                            nextButtonUiModel.isEnabled = !validation.getIsHaveError()
                         }
                         is Fail -> {
                             val error = result.throwable.message.toBlankOrString()
@@ -453,7 +452,6 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                                     }
                                 }
                             }
-                            nextButtonUiModel.isEnabled = !validation.getIsHaveError()
                         }
                         is Fail -> {
                             val error = result.throwable.message.toBlankOrString()
@@ -599,6 +597,10 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     private fun onSetErrorMessage(isError: Boolean, errorMessage: String?, type: PromotionType) {
         (type as? PromotionType.Cashback)?.let {
             viewModel.addErrorPair(isError, errorMessage.toBlankOrString(), it)
+        }
+        nextButtonUiModel.isEnabled = !isError
+        adapter.run {
+            notifyItemChanged(data.indexOf(nextButtonUiModel))
         }
     }
 
