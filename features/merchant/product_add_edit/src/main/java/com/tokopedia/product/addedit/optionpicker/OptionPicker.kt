@@ -28,11 +28,13 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
     private var isDividerVisible: Boolean = false
     private var isSearchable: Boolean = false
     private var listAdapter: BaseListAdapter<OptionModel, OptionTypeFactory>? = null
+    private var tempSearchData: List<OptionModel> = mutableListOf()
 
     init {
         val optionTypeFactory = OptionTypeFactory()
         optionTypeFactory.setOnItemClickListener(this)
         listAdapter = BaseListAdapter(optionTypeFactory)
+        isKeyboardOverlap = false
         setCloseClickListener {
             dismiss()
         }
@@ -91,11 +93,12 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
         searchBarData.searchBarPlaceholder = getString(R.string.label_specification_search) +
                 " " + bottomSheetTitle.text.toString().toLowerCase(locale)
         searchBarData.searchBarTextField.afterTextChanged { text ->
-            val filteredElements = listAdapter?.data?.filter {
+            val filteredElements = tempSearchData.filter {
                 it.text.toLowerCase(locale).startsWith(text)
-            }.orEmpty()
+            }
             listAdapter?.setElements(filteredElements)
         }
+        isFullpage = true
     }
 
     private fun initChildLayout() {
@@ -122,6 +125,8 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
         data.forEachIndexed { index, it ->
             listAdapter?.addElement(OptionModel(it, index == selectedPosition))
         }
+        tempSearchData = listAdapter?.data.orEmpty()
+
     }
 
     fun setSelectedPosition(selectedPosition: Int){
