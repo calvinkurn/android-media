@@ -1,7 +1,6 @@
 package com.tokopedia.cart.robot
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -23,7 +22,6 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.model.cartlist.CartListData
-import com.tokopedia.cart.journey.simple.CartTrackingTest
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartShopViewHolder
 import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
@@ -38,7 +36,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
-import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.allOf
 import org.junit.Assert
 
@@ -94,7 +91,6 @@ class CartPageRobot {
 
     fun assertFirstCartShopViewHolder(view: View,
                                       position: Int) {
-        Log.d("CartHappyFlowTest", "Start Test First shop item")
         val shopIndex = position - 1 // Represent shop index on cartListData
         onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartShopViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "performing assertion action on first CartShopViewHolder"
@@ -102,7 +98,6 @@ class CartPageRobot {
             override fun getConstraints(): Matcher<View>? = null
 
             override fun perform(uiController: UiController?, view: View) {
-                Log.d("CartHappyFlowTest", "Start Assert First shop item")
                 Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.shopName
                         ?: "", view.findViewById<Typography>(R.id.tv_shop_name).text)
                 Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.fulfillmentName
@@ -139,9 +134,7 @@ class CartPageRobot {
                             override fun getConstraints(): Matcher<View>? = null
 
                             override fun perform(uiController: UiController?, view: View) {
-                                Log.d("CartHappyFlowTest", "Start Assert cart item")
                                 Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.cartItemDataList?.get(i)?.cartItemData?.originData?.productName, view.findViewById<Typography>(R.id.text_product_name).text.toString())
-                                Log.d("CartHappyFlowTest", "Done Assert cart item")
                             }
                         }))
 
@@ -153,7 +146,6 @@ class CartPageRobot {
     }
 
     infix fun buy(func: ResultRobot.() -> Unit): ResultRobot {
-        Log.d("CartHappyFlowTest", "Do buy")
         onView(withId(R.id.go_to_courier_page_button)).perform(ViewActions.click())
         return ResultRobot().apply(func)
     }

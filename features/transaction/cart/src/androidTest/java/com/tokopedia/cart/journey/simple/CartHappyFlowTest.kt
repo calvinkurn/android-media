@@ -1,7 +1,6 @@
 package com.tokopedia.cart.journey.simple
 
 import android.content.Intent
-import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -45,17 +44,14 @@ class CartHappyFlowTest {
         activityRule.launchActivity(createIntent())
         Thread.sleep(10000)
 
-        Log.d("CartHappyFlowTest", "Start Test")
         val cartRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_cart)
         val itemCount = cartRecyclerView.adapter?.itemCount ?: 0
-        Log.d("CartHappyFlowTest", "Item Count : " + itemCount)
 
         cartPage {
             initData(context)
             assertMainContent()
 
             for (i in 0 until itemCount) {
-                Log.d("CartHappyFlowTest", "Check position : " + i)
                 scrollCartRecyclerViewToPosition(cartRecyclerView, i)
                 val breakLoop = checkItemType(cartRecyclerView, i, this)
                 if (breakLoop) break
@@ -69,19 +65,15 @@ class CartHappyFlowTest {
                 return true
             }
             is TickerAnnouncementViewHolder -> {
-                Log.d("CartHappyFlowTest", "TickerAnnouncementViewHolder")
                 cartPageRobot.assertTickerAnnouncementViewHolder(position)
             }
             is CartTickerErrorViewHolder -> {
-                Log.d("CartHappyFlowTest", "CartTickerErrorViewHolder")
                 val message = String.format(context.getString(com.tokopedia.cart.R.string.cart_error_message), 2)
                 cartPageRobot.assertCartTickerErrorViewHolder(position, message)
             }
             is CartShopViewHolder -> {
-                Log.d("CartHappyFlowTest", "CartShopViewHolder, position : " + position)
                 when (position) {
                     POSITION_FIRST_CART_SHOP_VIEW_HOLDER -> {
-                        Log.d("CartHappyFlowTest", "CartShopViewHolder: 1")
                         cartPageRobot.assertFirstCartShopViewHolder(
                                 view = activityRule.activity.findViewById(R.id.parent_view_cart),
                                 position = position
