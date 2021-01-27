@@ -6,7 +6,7 @@
       "eventCategory": "order summary",
       "event": "view_item",
       "eventAction": "view available promo list",
-      "sessionIris": "YW5kcm9pZC10b2tvcGVkaWE=:0F39320D0D924F5A81CD4D8339171097:1611223439822",
+      "sessionIris": "{{.*}}",
       "eventLabel": "eligible promo",
       "promotions": [
         {
@@ -18,27 +18,16 @@
           "promo_id": "",
           "category": "",
           "creative_url": ""
-        },
-        {
-          "creative_name": "",
-          "creative_slot": "",
-          "item_id": "",
-          "item_name": "",
-          "promo_code": "",
-          "promo_id": "",
-          "category": "",
-          "creative_url": ""
-        },
-        {
-          "creative_name": "",
-          "creative_slot": "",
-          "item_id": "",
-          "item_name": "",
-          "promo_code": "",
-          "promo_id": "",
-          "category": "",
-          "creative_url": ""
-        },
+        }
+      ]
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "view_item",
+      "eventAction": "view available promo list",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "ineligible product",
+      "promotions": [
         {
           "creative_name": "",
           "creative_slot": "",
@@ -50,6 +39,27 @@
           "creative_url": ""
         }
       ]
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "viewCheckoutExpressIris",
+      "eventAction": "view available promo list",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "no promo"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "select kupon",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.+}}"
+    },
+    {
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
+      "eventAction": "deselect kupon",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.+}}"
     }
   ]
 }
