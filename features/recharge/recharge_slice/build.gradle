@@ -30,6 +30,7 @@ dependencies {
     annotationProcessor rootProject.ext.networkDependencies.glideProcessor
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.playServicesDependencies.core
+    implementation rootProject.ext.firebase.crashlytics
 
 }
 

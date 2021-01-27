@@ -17,9 +17,9 @@ import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.*
 import com.bumptech.glide.Glide
 import com.google.android.play.core.splitcompat.SplitCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.recharge_slice.R
 import com.tokopedia.recharge_slice.data.Data
 import com.tokopedia.recharge_slice.data.Recommendation
@@ -101,7 +101,7 @@ class MainSliceProvider : SliceProvider() {
             contextNonNull,
             0,
             allowReads {
-                RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+                RouteManager.getIntent(contextNonNull, RECHARGE_NEW_HOME_PAGE)
                         .putExtra(RECHARGE_HOME_PAGE_EXTRA, true)
             },
             0
@@ -279,7 +279,13 @@ class MainSliceProvider : SliceProvider() {
         contextNonNull = context?.applicationContext ?: return false
         remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
         LocalCacheHandler(context, APPLINK_DEBUGGER)
-        SplitCompat.installActivity(contextNonNull)
+        try {
+            SplitCompat.install(contextNonNull)
+        } catch (e: Exception){
+            e.message?.let {
+                FirebaseCrashlytics.getInstance().log(it)
+            }
+        }
         return true
     }
 
@@ -324,6 +330,7 @@ class MainSliceProvider : SliceProvider() {
         const val RECHARGE_SLICE_DEVICE_ID = "device_id"
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
+        const val RECHARGE_NEW_HOME_PAGE = "tokopedia://recharge/home?platform_id=31"
         private val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
     }
 }
