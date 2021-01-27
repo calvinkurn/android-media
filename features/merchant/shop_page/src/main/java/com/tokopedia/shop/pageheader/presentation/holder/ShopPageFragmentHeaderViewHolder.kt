@@ -25,8 +25,8 @@ import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.util.loadLeftDrawable
 import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.extension.formatToSimpleNumber
-import com.tokopedia.shop.pageheader.data.model.FollowShop
-import com.tokopedia.shop.pageheader.data.model.FollowStatus
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker

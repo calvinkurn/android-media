@@ -29,10 +29,10 @@ import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeCampaignNplTncAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeNplCampaignTncBottomSheetViewModel
-import com.tokopedia.shop.pageheader.data.model.FollowButton
-import com.tokopedia.shop.pageheader.data.model.FollowShop
-import com.tokopedia.shop.pageheader.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_FOLLOW
-import com.tokopedia.shop.pageheader.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowButton
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
+import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_FOLLOW
+import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton

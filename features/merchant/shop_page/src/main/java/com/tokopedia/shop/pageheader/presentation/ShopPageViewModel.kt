@@ -40,14 +40,14 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.pageheader.data.model.FollowShopResponse
-import com.tokopedia.shop.pageheader.data.model.FollowStatusResponse
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
-import com.tokopedia.shop.pageheader.domain.interactor.GetFollowStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
-import com.tokopedia.shop.pageheader.domain.interactor.UpdateFollowStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -64,7 +64,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import rx.Subscriber
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi

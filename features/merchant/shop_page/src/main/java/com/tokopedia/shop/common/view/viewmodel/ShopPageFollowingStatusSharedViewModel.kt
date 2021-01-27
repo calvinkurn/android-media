@@ -3,7 +3,7 @@ package com.tokopedia.shop.common.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.shop.pageheader.data.model.FollowShop
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 
 class ShopPageFollowingStatusSharedViewModel : ViewModel() {
 

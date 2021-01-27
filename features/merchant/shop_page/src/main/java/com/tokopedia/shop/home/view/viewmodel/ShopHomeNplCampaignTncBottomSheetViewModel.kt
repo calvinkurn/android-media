@@ -10,10 +10,10 @@ import com.tokopedia.shop.home.domain.GetShopHomeCampaignNplTncUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
-import com.tokopedia.shop.pageheader.data.model.FollowShopResponse
-import com.tokopedia.shop.pageheader.data.model.FollowStatus
-import com.tokopedia.shop.pageheader.domain.interactor.GetFollowStatusUseCase
-import com.tokopedia.shop.pageheader.domain.interactor.UpdateFollowStatusUseCase
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
+import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

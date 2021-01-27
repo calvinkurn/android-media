@@ -1,11 +1,11 @@
-package com.tokopedia.shop.pageheader.domain.interactor
+package com.tokopedia.shop.common.domain.interactor
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.pageheader.data.model.FollowShopResponse
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import java.util.HashMap
 import javax.inject.Inject
@@ -13,6 +13,7 @@ import javax.inject.Inject
 class UpdateFollowStatusUseCase @Inject constructor(
         private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<FollowShopResponse>() {
+
     companion object {
         const val ACTION_FOLLOW = "follow"
         const val ACTION_UNFOLLOW = "unfollow"
