@@ -395,7 +395,7 @@ open class AddToCartDoneBottomSheet :
             }
         }
         addedProductDataModel?.productId?.let {
-            DynamicProductDetailTracking.Impression.eventAddToCartRecommendationImpression(
+            DynamicProductDetailTracking.Recommendation.eventAddToCartRecommendationImpression(
                     item.position,
                     item,
                     addToCartDoneViewModel.isLoggedIn(),
@@ -413,7 +413,7 @@ open class AddToCartDoneBottomSheet :
         } else {
             addToCartDoneViewModel.removeWishList(item.productId.toString(), callback)
         }
-        DynamicProductDetailTracking.Impression.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
+        DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
     }
 
     override fun onRecommendationItemSelected(dataModel: AddToCartDoneRecommendationItemDataModel, position: Int) {
