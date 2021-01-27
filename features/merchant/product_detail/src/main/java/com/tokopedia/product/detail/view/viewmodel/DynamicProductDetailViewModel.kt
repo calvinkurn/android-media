@@ -31,7 +31,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -191,6 +190,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
+    private var alreadyHitRecom:MutableList<String> = mutableListOf()
 
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
@@ -322,13 +322,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "", isUseOldNav: Boolean = false) {
         launchCatchError(dispatcher.io, block = {
+            alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
 
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "", productParams.warehouseId
                     ?: "", layoutId).also {
-                addStaticComponent(it)
+
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
                 }
@@ -372,10 +373,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }) {
             _addToCartLiveData.value = it.cause?.asFail() ?: it.asFail()
         }
-    }
-
-    private fun addStaticComponent(it: ProductDetailDataModel) {
-        it.listOfLayout.add(ProductLastSeenDataModel())
     }
 
     private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
@@ -563,10 +560,19 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun loadRecommendation(pageName: String) {
-        launch {
+        launch(dispatcher.main) {
             if (!GlobalConfig.isSellerApp()) {
+
+                if (!alreadyHitRecom.contains(pageName)) {
+                    alreadyHitRecom.add(pageName)
+                } else {
+                    return@launch
+                }
+
                 try {
-                    withContext(dispatcher.io) {
+                    val recomData = withContext(dispatcher.io) {
+                        var recomWidget = RecommendationWidget()
+
                         val productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID
                                 ?: "")
                         val productIdsString = TextUtils.join(",", productIds) ?: ""
@@ -588,13 +594,19 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         )).toBlocking().first()
 
                         if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
-                            val recomWidget = recomData.first().copy(
-                                    recommendationFilterChips = recomFilterList
+                            recomWidget = recomData.first().copy(
+                                    recommendationFilterChips = recomFilterList,
+                                    pageName = pageName
                             )
-                            _loadTopAdsProduct.postValue(recomWidget.asSuccess())
-                        } else {
-                            _loadTopAdsProduct.postValue(Throwable(pageName).asFail())
                         }
+
+                        recomWidget
+                    }
+
+                    if (recomData.recommendationItemList.isNotEmpty()) {
+                        _loadTopAdsProduct.value = recomData.asSuccess()
+                    } else {
+                        _loadTopAdsProduct.value = Throwable(pageName).asFail()
                     }
                 } catch (e: Throwable) {
                     _loadTopAdsProduct.value = Throwable(pageName).asFail()

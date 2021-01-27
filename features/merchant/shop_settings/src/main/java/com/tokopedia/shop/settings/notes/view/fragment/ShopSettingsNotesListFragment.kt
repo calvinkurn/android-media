@@ -200,7 +200,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
                         setTitle(getString(R.string.title_dialog_delete_shop_note))
                         setDesc(getString(R.string.desc_dialog_delete_shop_note, shopNoteUiModel.title))
                         setBtnOk(getString(R.string.action_delete))
-                        setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
+                        setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
                         setOnOkClickListener {
                             shopNoteIdToDelete = shopNoteUiModel.id
                             showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))

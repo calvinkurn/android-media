@@ -390,6 +390,7 @@ public interface ApplinkConst {
         String TOPADS_CREATE_ADS = "sellerapp://topads/create-ads";
         String TOPADS_CREATE_ONBOARDING = "sellerapp://topads/creation-onboard";
         String TOPADS_HEADLINE_CREATE = "sellerapp://topads/headline-ad-creation";
+        String TOPADS_HEADLINE_EDIT = "sellerapp://topads/headline-ad-edit";
         String TOPADS_HEADLINE_DETAIL = "sellerapp://topads/headline-ad-detail";
         String TOPADS_CREATE_AUTO_ADS = "sellerapp://topads/create-autoads";
         String TOPADS_EDIT_AUTO_ADS = "sellerapp://topads/edit-autoads";
@@ -411,6 +412,7 @@ public interface ApplinkConst {
         String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
         String SHOP_FEED = "sellerapp://shop/{shop_id}/feed";
         String CONTENT_CREATE_POST = "sellerapp://content/create_post";
+        String SELLER_SHIPPING_EDITOR = "sellerapp://setting/shipping-editor";
     }
 
     interface Query {

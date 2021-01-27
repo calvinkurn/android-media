@@ -22,7 +22,6 @@ import rx.functions.Func1;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_SEARCH_TDN;
 
-@SearchScope
 @Module(includes = {
         SearchProductMapperModule.class
 })

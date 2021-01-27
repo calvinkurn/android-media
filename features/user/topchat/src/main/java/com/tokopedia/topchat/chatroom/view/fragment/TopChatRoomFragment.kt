@@ -939,7 +939,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun pickImageToUpload() {
         activity?.let {
-            val builder = ImagePickerBuilder.getOriginalImageBuilder(it).apply {
+            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
+                    .withSimpleMultipleSelection(maxPick = 1).apply {
                 maxFileSizeInKB = MAX_SIZE_IMAGE_PICKER
             }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)

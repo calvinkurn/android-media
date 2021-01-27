@@ -17,7 +17,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-@OtpScope
 @Module
 class OtpModule (val context: Context) {
 

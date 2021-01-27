@@ -2,16 +2,14 @@ package com.tokopedia.topads.view.model
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.topads.data.response.BidInfoDataItem
-import com.tokopedia.topads.data.response.ResponseBidInfo
-import com.tokopedia.topads.data.response.TopadsBidInfo
-import com.tokopedia.topads.view.RequestHelper
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.user.session.UserSession
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
@@ -33,18 +31,14 @@ class BudgetingAdsViewModelTest {
 
     private lateinit var repository: GraphqlRepository
     private lateinit var context: Context
-    private lateinit var userSession: UserSession
-
+    private val bidInfoUseCase:BidInfoUseCase = mockk(relaxed = true)
+    private val bidInfoUseCaseDefault:BidInfoUseCase = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         repository = mockk()
         context = mockk(relaxed = true)
-        userSession = mockk(relaxed = true)
-        viewModel = spyk(BudgetingAdsViewModel(context, userSession, rule.dispatchers, repository))
-        mockkObject(RequestHelper)
-        every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
-        every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
+        viewModel = spyk(BudgetingAdsViewModel(rule.dispatchers, bidInfoUseCase, bidInfoUseCaseDefault))
     }
 
 
@@ -52,27 +46,25 @@ class BudgetingAdsViewModelTest {
     fun `check onEmpty invocation in getBidInfo`() {
         val expected = "empty"
         var actual = ""
-        val data = ResponseBidInfo.Result()
-        val response: GraphqlResponse = mockk(relaxed = true)
-
-        every { userSession.shopId } returns "2"
-
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.getReseponse(any(), any()) } returns response
-        every { response.getError(ResponseBidInfo.Result::class.java) } returns listOf()
-        every { response.getData<ResponseBidInfo.Result>(ResponseBidInfo.Result::class.java) } returns data
-
+        val data = listOf<TopadsBidInfo.DataItem>()
+        val onEmpty:() -> Unit = {
+            actual = "empty"
+        }
+        val onSuccess:(List<TopadsBidInfo.DataItem>) -> Unit = {
+            if (it.isEmpty()) {
+                onEmpty()
+            }
+        }
+        every {
+            bidInfoUseCase.executeQuerySafeMode(captureLambda(), any())
+        } answers {
+            onSuccess.invoke(data)
+        }
         viewModel.getBidInfo(
                 suggestions = listOf(),
-                onSuccess = {
-
-                },
-                onEmpty = {
-                    actual = "empty"
-                }
+                onSuccess = onSuccess,
+                onEmpty = onEmpty
         )
-
         Assert.assertEquals(expected, actual)
     }
 
@@ -81,22 +73,21 @@ class BudgetingAdsViewModelTest {
     fun `check onSuccess invocation in getBidInfo`() {
         val expected = 1000
         var actual = 0
-        val data = ResponseBidInfo.Result(TopadsBidInfo(listOf(BidInfoDataItem(suggestionBid = expected))))
-        val response: GraphqlResponse = mockk(relaxed = true)
+        val bidInfoData: ResponseBidInfo.Result = ResponseBidInfo.Result(TopadsBidInfo(data =
+        listOf(TopadsBidInfo.DataItem(suggestionBid = expected))))
+        val onSuccess:(List<TopadsBidInfo.DataItem>) -> Unit = {
+            actual = it[0].suggestionBid
 
-        every { userSession.shopId } returns "2"
-
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.getReseponse(any(), any()) } returns response
-        every { response.getError(ResponseBidInfo.Result::class.java) } returns listOf()
-        every { response.getData<ResponseBidInfo.Result>(ResponseBidInfo.Result::class.java) } returns data
+        }
+        every {
+            bidInfoUseCase.executeQuerySafeMode(captureLambda(), any())
+        } answers {
+            onSuccess.invoke(bidInfoData.topadsBidInfo.data)
+        }
 
         viewModel.getBidInfo(
                 suggestions = listOf(),
-                onSuccess = {
-                    actual = it[0].suggestionBid
-                },
+                onSuccess = onSuccess,
                 onEmpty = {
                 }
         )
@@ -108,20 +99,22 @@ class BudgetingAdsViewModelTest {
     fun `check onSuccess invocation in getBidInfoDefault`() {
         val expected = 1000
         var actual = 0
-        val data = ResponseBidInfo.Result(TopadsBidInfo(listOf(BidInfoDataItem(suggestionBid = expected))))
-        val response: GraphqlResponse = mockk(relaxed = true)
-
-        every { userSession.shopId } returns "2"
-
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.getReseponse(any(), any()) } returns response
-        every { response.getError(ResponseBidInfo.Result::class.java) } returns listOf()
-        every { response.getData<ResponseBidInfo.Result>(ResponseBidInfo.Result::class.java) } returns data
-
-        viewModel.getBidInfoDefault(listOf()) {
+        val bidInfoData: ResponseBidInfo.Result = ResponseBidInfo.Result(TopadsBidInfo(data =
+        listOf(TopadsBidInfo.DataItem(suggestionBid = expected))))
+        val onSuccess:(List<TopadsBidInfo.DataItem>) -> Unit = {
             actual = it[0].suggestionBid
+
         }
+        every {
+            bidInfoUseCaseDefault.executeQuerySafeMode(captureLambda(), any())
+        } answers {
+            onSuccess.invoke(bidInfoData.topadsBidInfo.data)
+        }
+
+        viewModel.getBidInfoDefault(
+                suggestions = listOf(),
+                onSuccess = onSuccess
+        )
 
         Assert.assertEquals(expected, actual)
     }

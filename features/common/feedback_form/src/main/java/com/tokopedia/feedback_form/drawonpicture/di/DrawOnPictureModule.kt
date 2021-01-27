@@ -8,7 +8,6 @@ import dagger.Provides
 /**
  * @author by furqan on 01/10/2020
  */
-@DrawOnPictureScope
 @Module
 class DrawOnPictureModule {
     @Provides
