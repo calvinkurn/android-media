@@ -91,7 +91,6 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
     lateinit var cartDetailInfoAdapter: DigitalCartDetailInfoAdapter
 
-    private var isCouponActive = false
     private var promoData = PromoData()
 
     override fun getScreenName(): String? = null
@@ -377,11 +376,10 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     }
 
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
-        val dialog = DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+        val dialog = DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(postPaidPopupAttribute.title)
         dialog.setDescription(postPaidPopupAttribute.content ?: "")
         dialog.setPrimaryCTAText(postPaidPopupAttribute.confirmButtonTitle ?: "")
-        dialog.setImageUrl(postPaidPopupAttribute.imageUrl ?: "")
         dialog.show()
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
@@ -393,7 +391,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
         //if user has subscribe, hide subscriptionWidget
         if (digitalSubscriptionParams.isSubscribed) {
-            subscriptionWidget.visibility = View.GONE
+            subscriptionWidget.disableCheckBox()
         } else {
             subscriptionWidget.setTitle(crossSellingConfig.bodyTitle ?: "")
 
@@ -420,11 +418,13 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     }
 
     private fun showMyBillsSubscriptionView(show: Boolean) {
+        myBillsSeperator.visibility = View.VISIBLE
         if (show) subscriptionWidget.visibility = View.VISIBLE
         else subscriptionWidget.visibility = View.GONE
     }
 
     private fun renderFintechProductWidget(fintechProduct: FintechProduct) {
+        myBillsSeperator.visibility = View.VISIBLE
         fintechProductWidget.setTitle(fintechProduct.info.title)
         fintechProductWidget.setDescription(fintechProduct.info.subtitle)
         fintechProductWidget.hasMoreInfo(true)
@@ -558,9 +558,10 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         if (promoCode.isNotEmpty()) {
             val requestCode: Int
             if (promoData.typePromo == PromoData.TYPE_VOUCHER) {
+                val couponActive = viewModel.cartDigitalInfoData.value?.attributes?.isCouponActive == 1
                 intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
                 intent.putExtra(EXTRA_PROMO_CODE, promoCode)
-                intent.putExtra(EXTRA_COUPON_ACTIVE, isCouponActive)
+                intent.putExtra(EXTRA_COUPON_ACTIVE, couponActive)
                 requestCode = REQUEST_CODE_PROMO_LIST
             } else {
                 intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
@@ -576,8 +577,9 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     }
 
     private fun navigateToPromoListPage() {
+        val couponActive = viewModel.cartDigitalInfoData.value?.attributes?.isCouponActive == 1
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
-        intent.putExtra(EXTRA_COUPON_ACTIVE, isCouponActive)
+        intent.putExtra(EXTRA_COUPON_ACTIVE, couponActive)
         intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
         startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
     }

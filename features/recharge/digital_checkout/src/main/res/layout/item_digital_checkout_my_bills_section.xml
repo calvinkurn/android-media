@@ -33,6 +33,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_3"
+                app:layout_goneMarginRight="@dimen/spacing_lvl4"
                 tools:text="Bayar Otomatis Bayar Bayar Otomatis Otomatis Bayar Otomatis Bayar Otomatis Bayar Otomatis" />
 
 
@@ -45,7 +46,8 @@
                 app:layout_constraintEnd_toStartOf="@id/checkBoxCheckoutMyBills"
                 app:layout_constraintStart_toEndOf="@id/tvCheckoutMyBillsHeaderTitle"
                 app:layout_constraintTop_toTopOf="@id/tvCheckoutMyBillsHeaderTitle"
-                app:srcCompat="@drawable/ic_system_status_additional_info_normal_40" />
+                app:srcCompat="@drawable/ic_system_status_additional_info_normal_40"
+                />
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/checkBoxCheckoutMyBills"
