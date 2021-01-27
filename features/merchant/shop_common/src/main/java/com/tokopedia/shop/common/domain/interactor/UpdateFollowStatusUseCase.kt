@@ -15,11 +15,13 @@ class UpdateFollowStatusUseCase @Inject constructor(
 ) : UseCase<FollowShopResponse>() {
 
     companion object {
+        const val SOURCE_NPL_TNC = "npl-tnc"
         const val ACTION_FOLLOW = "follow"
         const val ACTION_UNFOLLOW = "unfollow"
         private const val PARAM_INPUT = "input"
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_ACTION = "action"
+        private const val PARAM_SOURCE = "src"
 
         @JvmStatic
         fun createParams(shopId: String, action: String): HashMap<String, Any> {
@@ -27,6 +29,17 @@ class UpdateFollowStatusUseCase @Inject constructor(
                     PARAM_INPUT to hashMapOf(
                             PARAM_SHOP_ID to shopId,
                             PARAM_ACTION to action
+                    )
+            )
+        }
+
+        @JvmStatic
+        fun createParams(shopId: String, action: String, src: String): HashMap<String, Any> {
+            return hashMapOf(
+                    PARAM_INPUT to hashMapOf(
+                            PARAM_SHOP_ID to shopId,
+                            PARAM_ACTION to action,
+                            PARAM_SOURCE to src
                     )
             )
         }

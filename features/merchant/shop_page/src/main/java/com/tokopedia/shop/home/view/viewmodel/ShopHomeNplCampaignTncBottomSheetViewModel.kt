@@ -98,7 +98,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
         }
 
         launchCatchError(dispatcherProvider.io, block = {
-            updateFollowStatusUseCase.params = UpdateFollowStatusUseCase.createParams(shopId, action)
+            updateFollowStatusUseCase.params = UpdateFollowStatusUseCase.createParams(shopId, action, UpdateFollowStatusUseCase.SOURCE_NPL_TNC)
             _followUnfollowShopLiveData.postValue(Success(updateFollowStatusUseCase.executeOnBackground()))
         }, onError = {
             _followUnfollowShopLiveData.postValue(Fail(it))
