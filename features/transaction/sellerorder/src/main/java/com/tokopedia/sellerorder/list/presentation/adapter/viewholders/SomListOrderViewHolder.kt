@@ -141,8 +141,8 @@ class SomListOrderViewHolder(
     private fun setupOrderCard(element: SomListOrderUiModel) {
         itemView.cardSomOrder.alpha = if (listener.isMultiSelectEnabled() && element.cancelRequest != 0) 0.5f else 1f
         itemView.setOnClickListener {
-            if (!listener.isMultiSelectEnabled()) listener.onOrderClicked(element)
-            else touchCheckBox(element)
+            if (listener.isMultiSelectEnabled()) touchCheckBox(element)
+            else listener.onOrderClicked(element)
         }
     }
 
