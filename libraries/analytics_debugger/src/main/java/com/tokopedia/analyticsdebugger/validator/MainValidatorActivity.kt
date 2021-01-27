@@ -3,16 +3,28 @@ package com.tokopedia.analyticsdebugger.validator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.validator.core.GtmLogUi
 import com.tokopedia.analyticsdebugger.validator.detail.ValidatorDetailFragment
 import com.tokopedia.analyticsdebugger.validator.list.ValidatorListFragment
 import com.tokopedia.analyticsdebugger.validator.main.MainValidatorFragment
+import com.tokopedia.analyticsdebugger.validator.main.ValidatorViewModel
 
 class MainValidatorActivity : AppCompatActivity(), MainValidatorFragment.Listener, ValidatorListFragment.Listener {
+
+    val viewModel: ValidatorViewModel by lazy {
+        application?.let {
+            ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(it))
+                    .get(ValidatorViewModel::class.java)
+        } ?: throw IllegalArgumentException("Requires activity, fragment should be attached")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,6 +32,11 @@ class MainValidatorActivity : AppCompatActivity(), MainValidatorFragment.Listene
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         toolbar.subtitle = "Tokopedia Client Analytics Validator"
+
+        val parentView = findViewById<View>(R.id.parent)
+        viewModel.snackBarMessage.observe(this, Observer {
+            Snackbar.make(parentView, it, Snackbar.LENGTH_SHORT).show()
+        })
 
         supportFragmentManager.beginTransaction()
                 .replace(R.id.container, ValidatorListFragment.newInstance())

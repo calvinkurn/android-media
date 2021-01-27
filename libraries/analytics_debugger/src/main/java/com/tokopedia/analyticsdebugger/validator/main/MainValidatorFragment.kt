@@ -23,7 +23,7 @@ class MainValidatorFragment : Fragment() {
 
     val viewModel: ValidatorViewModel by lazy {
         activity?.application?.let {
-            ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(it))
+            ViewModelProvider(activity!!, ViewModelProvider.AndroidViewModelFactory(it))
                     .get(ValidatorViewModel::class.java)
         } ?: throw IllegalArgumentException("Requires activity, fragment should be attached")
     }

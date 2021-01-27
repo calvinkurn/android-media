@@ -11,17 +11,27 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.validator.Utils
+import com.tokopedia.analyticsdebugger.validator.main.ValidatorViewModel
 import timber.log.Timber
 
 class ValidatorListFragment : Fragment() {
 
     private var listener: Listener? = null
+
+    val viewModel: ValidatorViewModel by lazy {
+        activity?.application?.let {
+            ViewModelProvider(activity!!, ViewModelProvider.AndroidViewModelFactory(it))
+                    .get(ValidatorViewModel::class.java)
+        } ?: throw IllegalArgumentException("Requires activity, fragment should be attached")
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_validator_list, container, false)
@@ -81,6 +91,10 @@ class ValidatorListFragment : Fragment() {
         }
 
         listingAdapter.setItems(listTests)
+
+        view.findViewById<ImageView>(R.id.iv_delete).setOnClickListener {
+            viewModel.delete()
+        }
     }
 
     private fun clearSearchBarFocus(editText: EditText) {

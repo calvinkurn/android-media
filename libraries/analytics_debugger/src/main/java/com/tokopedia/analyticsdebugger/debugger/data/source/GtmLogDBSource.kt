@@ -79,10 +79,4 @@ constructor(context: Context) {
         }
     }
 
-    suspend fun delete() {
-        withContext(Dispatchers.IO) {
-            gtmLogDao.deleteAll()
-        }
-    }
-
 }
