@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -272,8 +271,10 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
             viewModel.markFinishedSellerOnBoarding()
             switcher?.setShowListener { }
         }
+        analytic.trackShowOnBoardingOnStep(role, 0)
         onBoardingCoachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                analytic.trackShowOnBoardingOnStep(role, currentIndex)
                 if (currentIndex == 2) {
                     onBoardingCoachMark?.isDismissed = true
                     switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
