@@ -57,7 +57,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                                              private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
                                                              private val restrictionEngineNplUseCase: RestrictionEngineNplUseCase,
                                                              private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
-                                                             private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>
+                                                             private val getFollowStatusUseCase: GetFollowStatusUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
@@ -124,9 +124,9 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     }
 
     private suspend fun getFollowStatusAsync(shopId: String): Deferred<FollowStatus?> {
-        getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId)
+        getFollowStatusUseCase.params = GetFollowStatusUseCase.createParams(shopId)
         return asyncCatchError(dispatcherProvider.io, block = {
-            getFollowStatusUseCase.get().executeOnBackground().followStatus
+            getFollowStatusUseCase.executeOnBackground().followStatus
         }, onError = {
             _restrictionEngineData.postValue(Fail(it))
             null

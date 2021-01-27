@@ -18,15 +18,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import dagger.Lazy
 import javax.inject.Inject
 
 class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
         private val dispatcherProvider: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
         private val getCampaignNplTncUseCase: GetShopHomeCampaignNplTncUseCase,
-        private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
-        private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
+        private val updateFollowStatusUseCase: UpdateFollowStatusUseCase,
+        private val getFollowStatusUseCase: GetFollowStatusUseCase,
 ) : BaseViewModel(dispatcherProvider.main) {
 
     val userSessionShopId: String
@@ -81,8 +80,8 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
     }
 
    private suspend fun getFollowStatus(shopId: String): FollowStatus? {
-        getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId, GetFollowStatusUseCase.SOURCE_NPL_TNC)
-        return getFollowStatusUseCase.get().executeOnBackground().followStatus
+        getFollowStatusUseCase.params = GetFollowStatusUseCase.createParams(shopId, GetFollowStatusUseCase.SOURCE_NPL_TNC)
+        return getFollowStatusUseCase.executeOnBackground().followStatus
     }
 
     private suspend fun getTncResponse(campaignId: String): ShopHomeCampaignNplTncUiModel {
@@ -99,8 +98,8 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
         }
 
         launchCatchError(dispatcherProvider.io, block = {
-            updateFollowStatusUseCase.get().params = UpdateFollowStatusUseCase.createParams(shopId, action)
-            _followUnfollowShopLiveData.postValue(Success(updateFollowStatusUseCase.get().executeOnBackground()))
+            updateFollowStatusUseCase.params = UpdateFollowStatusUseCase.createParams(shopId, action)
+            _followUnfollowShopLiveData.postValue(Success(updateFollowStatusUseCase.executeOnBackground()))
         }, onError = {
             _followUnfollowShopLiveData.postValue(Fail(it))
         })
