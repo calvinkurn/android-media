@@ -48,7 +48,7 @@ class MainValidatorActivity : AppCompatActivity(), MainValidatorFragment.Listene
         }
     }
 
-    override fun runTest(filepath: String) {
+    override fun goToTestPage(filepath: String) {
         supportFragmentManager.beginTransaction()
                 .addToBackStack("runner")
                 .replace(R.id.container, MainValidatorFragment.newInstance(filepath))

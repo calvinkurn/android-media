@@ -2,6 +2,8 @@ package com.tokopedia.analyticsdebugger.validator.core
 
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import rx.Observable
 
 class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
@@ -25,11 +27,13 @@ class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
 
     suspend fun computeCo(testCases: List<Validator>, mode: String = "exact"): List<Validator> {
         setMode(mode)
-        
-        return compute(testCases, dao.getLogs())
+
+        return withContext(Dispatchers.IO) {
+            compute(testCases, dao.getLogs())
+        }
     }
 
-    fun compute(testCases: List<Validator>, logs: List<GtmLogDB>): List<Validator> {
+    private fun compute(testCases: List<Validator>, logs: List<GtmLogDB>): List<Validator> {
         var ordering: Long = 0
         val newResult: MutableList<Validator> = mutableListOf()
         testCases.forEach { case ->

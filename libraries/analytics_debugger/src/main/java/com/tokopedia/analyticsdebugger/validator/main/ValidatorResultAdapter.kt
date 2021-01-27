@@ -17,16 +17,15 @@ class ValidatorResultAdapter(private val listener: (Validator) -> Unit)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_test_case, parent, false)
-        return ResultItemViewHolder(view)
+        return ResultItemViewHolder(view).apply {
+            itemView.setOnClickListener { listener.invoke(mData[adapterPosition]) }
+        }
     }
 
-    override fun getItemCount(): Int {
-        return mData.size
-    }
+    override fun getItemCount(): Int = mData.size
 
     override fun onBindViewHolder(holder: ResultItemViewHolder, position: Int) {
         holder.bind(mData[position], position)
-        holder.itemView.setOnClickListener { listener.invoke(mData[position]) }
     }
 
     fun setData(list: List<Validator>) {

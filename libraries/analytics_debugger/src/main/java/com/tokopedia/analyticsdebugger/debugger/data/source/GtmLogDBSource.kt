@@ -19,11 +19,7 @@ import javax.inject.Inject
 class GtmLogDBSource @Inject
 constructor(context: Context) {
 
-    private val gtmLogDao: GtmLogDao
-
-    init {
-        gtmLogDao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
-    }
+    private val gtmLogDao: GtmLogDao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
 
     fun deleteAll(): Observable<Boolean> {
         return Observable.unsafeCreate { subscriber ->

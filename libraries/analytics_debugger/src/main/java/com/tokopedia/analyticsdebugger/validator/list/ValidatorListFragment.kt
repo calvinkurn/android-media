@@ -33,10 +33,13 @@ class ValidatorListFragment : Fragment() {
         Timber.d("List files: %s", listTests)
 
         val rv = view.findViewById<RecyclerView>(R.id.rv)
-        val listingAdapter = FileListingAdapter()
+        val listingAdapter = FileListingAdapter().also {
+            it.setOnItemClickListener { listener?.goToTestPage(it) }
+        }
 
         with(rv) {
             layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             adapter = listingAdapter
         }
@@ -77,7 +80,6 @@ class ValidatorListFragment : Fragment() {
             listingAdapter.setItems(listTests)
         }
 
-        listingAdapter.setOnItemClickListener { listener?.runTest(it) }
         listingAdapter.setItems(listTests)
     }
 
@@ -92,7 +94,7 @@ class ValidatorListFragment : Fragment() {
     }
 
     interface Listener {
-        fun runTest(filepath: String)
+        fun goToTestPage(filepath: String)
     }
 
     companion object {
