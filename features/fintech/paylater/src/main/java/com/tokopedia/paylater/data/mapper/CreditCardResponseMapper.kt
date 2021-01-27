@@ -3,6 +3,7 @@ package com.tokopedia.paylater.data.mapper
 import com.google.gson.Gson
 import com.tokopedia.paylater.*
 import com.tokopedia.paylater.domain.model.CreditCardPdpMetaData
+import com.tokopedia.paylater.domain.model.PdpCreditCardSimulation
 import com.tokopedia.paylater.domain.model.PdpInfoTableItem
 
 object CreditCardResponseMapper {
@@ -27,5 +28,21 @@ object CreditCardResponseMapper {
                 }
             }
         }
+    }
+
+    fun handleSimulationResponse(pdpCreditCardSimulationData: PdpCreditCardSimulation?): Pair<Boolean, Boolean> {
+        pdpCreditCardSimulationData?.let {
+            it.creditCardGetSimulationResult?.let { simulationResult ->
+                if (simulationResult.creditCardInstallmentList.isNullOrEmpty()) {
+                    return Pair(first = false, second = false)
+                } else {
+                    val isCreditCardSimulationAvailable = simulationResult.creditCardInstallmentList.any { installment ->
+                        installment.isDisabled == false
+                    }
+                    simulationResult.creditCardInstallmentList[0].isSelected = true
+                    return Pair(true, isCreditCardSimulationAvailable)
+                }
+            } ?: return Pair(first = false, second = false)
+        } ?: return Pair(first = false, second = false)
     }
 }

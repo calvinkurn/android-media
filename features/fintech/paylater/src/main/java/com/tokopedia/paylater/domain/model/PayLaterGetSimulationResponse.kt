@@ -24,7 +24,7 @@ data class PayLaterSimulationGatewayItem(
         @SerializedName("img_dark_url")
         val imgDarkUrl: String?,
         @SerializedName("simulation_detail")
-        val simulationDetailList: ArrayList<SimulationItemDetail>,
+        val simulationDetailList: ArrayList<SimulationItemDetail>?,
         // To have a map of tenure to installment item aiding in setting in table
         var installmentMap: HashMap<PayLaterSimulationTenureType, SimulationItemDetail>,
         var isRecommended: Boolean,

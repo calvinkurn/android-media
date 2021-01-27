@@ -36,13 +36,12 @@ class PayLaterViewModel @Inject constructor(
     // invoke only when amount in 10000..30000000
     fun getPayLaterSimulationData(amount: Int) {
         payLaterSimulationDataUseCase.cancelJobs()
-        if (amount in 10000..25000000)
-            payLaterSimulationDataUseCase.getSimulationData(
-                    ::onPayLaterSimulationDataSuccess,
-                    ::onPayLaterSimulationDataError,
-                    amount
-            )
-        else onPayLaterSimulationDataError(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
+        payLaterSimulationDataUseCase.getSimulationData(
+                ::onPayLaterSimulationDataSuccess,
+                ::onPayLaterSimulationDataError,
+                amount
+        )
+        //onPayLaterSimulationDataError(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
     }
 
     fun getPayLaterProductData() {
@@ -66,12 +65,17 @@ class PayLaterViewModel @Inject constructor(
 
     private fun onPayLaterSimulationDataSuccess(payLaterGetSimulationResponse: PayLaterGetSimulationResponse?) {
         launchCatchError(block = {
-            val payLaterGatewayList = withContext(ioDispatcher) {
+            val mapperResponse = withContext(ioDispatcher) {
                 return@withContext PayLaterSimulationResponseMapper.handleSimulationResponse(payLaterGetSimulationResponse)
             }
-            if (payLaterGatewayList.isNotEmpty())
-                payLaterSimulationResultLiveData.value = Success(payLaterGatewayList)
-            else onPayLaterSimulationDataError(PdpSimulationException.PayLaterNullDataException(SIMULATION_DATA_FAILURE))
+            if (!mapperResponse.first) {
+                onPayLaterSimulationDataError(PdpSimulationException.PayLaterNullDataException(SIMULATION_DATA_FAILURE))
+            } else if (!mapperResponse.second) {
+                onPayLaterSimulationDataError(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
+            } else {
+                payLaterSimulationResultLiveData.value = Success(payLaterGetSimulationResponse?.payLaterGetSimulationGateway?.payLaterGatewayList!!)
+            }
+
         }, onError = {
             onPayLaterSimulationDataError(it)
         })

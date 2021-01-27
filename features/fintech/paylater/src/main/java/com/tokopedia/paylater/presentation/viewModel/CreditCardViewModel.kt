@@ -32,17 +32,15 @@ class CreditCardViewModel @Inject constructor(
     fun getCreditCardSimulationData(amount: Float) {
         creditCardSimulationUseCase.cancelJobs()
         if (creditCardSimulationResultLiveData.value !is Success) {
-            if (isCreditCardSimulationApplicable())
-                creditCardSimulationUseCase.getCreditCardSimulationData(
-                        ::onCreditCardSimulationSuccess,
-                        ::onCreditCardSimulationError,
-                        amount
-                ) else onCreditCardSimulationError(PdpSimulationException.CreditCardSimulationNotAvailableException(CREDIT_CARD_NOT_AVAILABLE))
+            creditCardSimulationUseCase.getCreditCardSimulationData(
+                    ::onCreditCardSimulationSuccess,
+                    ::onCreditCardSimulationError,
+                    amount
+            )
+            //onCreditCardSimulationError(PdpSimulationException.CreditCardSimulationNotAvailableException(CREDIT_CARD_NOT_AVAILABLE))
         }
     }
 
-    //@Todo logic will be done at backend
-    private fun isCreditCardSimulationApplicable() = true
 
     fun getCreditCardTncData() {
         creditCardPdpMetaInfoUseCase.cancelJobs()
@@ -64,10 +62,20 @@ class CreditCardViewModel @Inject constructor(
 
 
     private fun onCreditCardSimulationSuccess(pdpCreditCardSimulationData: PdpCreditCardSimulation?) {
-        if (pdpCreditCardSimulationData?.creditCardGetSimulationResult != null) {
-            pdpCreditCardSimulationData.creditCardGetSimulationResult.creditCardInstallmentList?.getOrNull(0)?.isSelected = true
-            creditCardSimulationResultLiveData.value = Success(pdpCreditCardSimulationData.creditCardGetSimulationResult)
-        } else onCreditCardSimulationError(PdpSimulationException.CreditCardNullDataException(SIMULATION_DATA_FAILURE))
+        launchCatchError(block = {
+            val mapperResponse = withContext(ioDispatcher) {
+                return@withContext CreditCardResponseMapper.handleSimulationResponse(pdpCreditCardSimulationData)
+            }
+            if (!mapperResponse.first) {
+                onCreditCardSimulationError(PdpSimulationException.CreditCardNullDataException(SIMULATION_DATA_FAILURE))
+            } else if (!mapperResponse.second) {
+                onCreditCardSimulationError(PdpSimulationException.CreditCardSimulationNotAvailableException(CREDIT_CARD_NOT_AVAILABLE))
+            } else
+                creditCardSimulationResultLiveData.value = Success(pdpCreditCardSimulationData?.creditCardGetSimulationResult!!)
+
+        }, onError = {
+            onCreditCardSimulationError(it)
+        })
     }
 
     private fun onCreditCardSimulationError(throwable: Throwable) {

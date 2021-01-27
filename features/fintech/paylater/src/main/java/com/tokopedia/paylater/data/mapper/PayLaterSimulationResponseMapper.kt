@@ -1,7 +1,6 @@
 package com.tokopedia.paylater.data.mapper
 
 import com.tokopedia.paylater.domain.model.PayLaterGetSimulationResponse
-import com.tokopedia.paylater.domain.model.PayLaterSimulationGatewayItem
 import com.tokopedia.paylater.domain.model.SimulationItemDetail
 
 const val ONE_MONTH_TENURE = 1
@@ -21,28 +20,32 @@ object EmptyInstallment : PayLaterSimulationTenureType(EMPTY_TENURE)
 
 object PayLaterSimulationResponseMapper {
 
-    fun handleSimulationResponse(payLaterSimulationResponse: PayLaterGetSimulationResponse?): ArrayList<PayLaterSimulationGatewayItem> {
+    fun handleSimulationResponse(payLaterSimulationResponse: PayLaterGetSimulationResponse?): Pair<Boolean, Boolean> {
         payLaterSimulationResponse?.also {
             it.payLaterGetSimulationGateway?.also { gatewayResponse ->
                 if (gatewayResponse.payLaterGatewayList.isNullOrEmpty()) {
-                    arrayListOf<PayLaterSimulationGatewayItem>()
+                    return Pair(first = false, second = false)
                 } else {
+                    var isPayLaterApplicable = false
                     for (gatewayItem in gatewayResponse.payLaterGatewayList) {
                         val tenureMap = HashMap<PayLaterSimulationTenureType, SimulationItemDetail>()
                         var isRecommended = false
-                        for (itemDetail in gatewayItem.simulationDetailList) {
-                            val tenureType = getSimulationTenureType(itemDetail.tenure)
-                            if (itemDetail.isRecommended == true) isRecommended = true
-                            tenureMap[tenureType] = itemDetail
+                        if (!gatewayItem.simulationDetailList.isNullOrEmpty()) {
+                            isPayLaterApplicable = true
+                            for (itemDetail in gatewayItem.simulationDetailList) {
+                                val tenureType = getSimulationTenureType(itemDetail.tenure)
+                                if (itemDetail.isRecommended == true) isRecommended = true
+                                tenureMap[tenureType] = itemDetail
+                            }
                         }
                         gatewayItem.isRecommended = isRecommended
                         gatewayItem.installmentMap = tenureMap
                     }
-                    return gatewayResponse.payLaterGatewayList
+                    return Pair(true, isPayLaterApplicable)
                 }
-            } ?: return arrayListOf()
-        } ?: return arrayListOf()
-        return arrayListOf()
+            } ?: return Pair(first = false, second = false)
+        } ?: return Pair(first = false, second = false)
+        return Pair(first = false, second = false)
     }
 
     fun getSimulationTenureType(tenure: Int?): PayLaterSimulationTenureType {
