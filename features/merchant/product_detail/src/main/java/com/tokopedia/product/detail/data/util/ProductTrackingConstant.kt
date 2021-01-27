@@ -181,6 +181,10 @@ object ProductTrackingConstant {
         const val CLICK_SHARE_FROM_CONTENT= "click - share product button on pdp"
         const val VIEW_TICKER_OOS = "view - ticker on pdp"
         const val CLICK_BUTTON_OOS = "click - %s on pdp"
+
+        const val CLICK_FULLSCREEN_VIDEO = "click - fullscreen on video"
+        const val CLICK_INTERACTION_VIDEO = "click - video on product image"
+        const val CLICK_MUTE_VIDEO = "click - mute on video"
     }
 
 
@@ -192,6 +196,10 @@ object ProductTrackingConstant {
         const val DISCUSSION_DETAIL = "talk id:%s;count thread:%s;"
         const val TICKER_OOS = "ticker type:%s;ticker title:%s;ticker message:%s;"
         const val BUTTON_OOS = "fitur : OOS; is_variant:%s;"
+        const val VIDEO_STATE = "state:"
+        const val VIDEO_DURATION = "duration:"
+        const val VIDEO_LAST_STOP_TIME = "stop time:"
+        const val VIDEO_AUTO_PLAY = "auto play:"
     }
 
     object Report {

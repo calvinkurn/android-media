@@ -32,7 +32,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         return DiscoveryResponse(
                 components = getCategoryComponents(data),
                 pageInfo = PageInfo(
-                        identifier = departmentId, name = data.name, type = "", path = data.url,
+                        identifier = departmentId, name = data.name, type = "", path = data.url, id = data.id ?: 0,
                         searchApplink = SEARCH_APPLINK,
                         redirectionUrl = data.appRedirectionURL,
                         isAdult = data.isAdult,

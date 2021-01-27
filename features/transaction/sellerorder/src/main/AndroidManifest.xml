@@ -13,7 +13,7 @@
             android:theme="@style/Theme.White">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -123,7 +123,7 @@
             android:theme="@style/Theme.White">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -178,6 +178,12 @@
             android:label="@string/title_som_waiting_payment"
             android:screenOrientation="portrait"
             android:theme="@style/WaitingPaymentOrderTheme" />
+
+        <activity
+            android:name=".common.presenter.activities.SomPrintAwbActivity"
+            android:configChanges="uiMode"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
 
     </application>
 </manifest>

@@ -10,6 +10,7 @@ import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.model.response.LocationData
 import io.mockk.coEvery
 import io.mockk.mockk
+import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -75,6 +76,18 @@ class DealsBaseViewModelTest {
         // then
         val location = viewModel.observableCurrentLocation.value as Location
         assert(location == DUMMY_LOCATION)
+    }
+
+    @Test
+    fun getCurrentLocation_locationData_locationContainsData(){
+        //given
+        val location = Location()
+
+        //when
+        viewModel.setCurrentLocation(location)
+
+        //then
+        assertEquals(location, viewModel.observableCurrentLocation.value)
     }
 
     companion object {

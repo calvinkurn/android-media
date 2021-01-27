@@ -75,8 +75,8 @@ class TroubleshootViewModel @Inject constructor(
     private val _troubleshoot = MutableLiveData<Result<NotificationSendTroubleshoot>>()
     val troubleshoot: LiveData<Result<NotificationSendTroubleshoot>> get() = _troubleshoot
 
-    private val _token = MediatorLiveData<String>()
-    val token: LiveData<String> get() = _token
+    private val _token = MediatorLiveData<Result<String>>()
+    val token: LiveData<Result<String>> get() = _token
 
     private val _tickerItems = mutableListOf<TickerItemUIView>()
     val tickerItems: List<TickerItemUIView> get() = _tickerItems
@@ -187,9 +187,11 @@ class TroubleshootViewModel @Inject constructor(
     }
 
     override fun getNewToken() {
-        instanceManager.getNewToken { token ->
-            _token.value = token
-        }
+        instanceManager.getNewToken({ token ->
+            _token.value = Success(token)
+        }, {
+            _token.value = Fail(it)
+        })
     }
 
     private fun notificationSetting(result: UserNotificationResponse): UserSettingUIView {

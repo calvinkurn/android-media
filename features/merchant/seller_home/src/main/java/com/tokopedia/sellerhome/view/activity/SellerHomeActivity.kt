@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.view.activity
 
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -10,7 +9,6 @@ import android.os.Handler
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -60,6 +58,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
 
         private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
+        private const val ACTION_GET_ALL_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
     }
 
     @Inject lateinit var userSession: UserSessionInterface
@@ -110,11 +109,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
+        fetchSellerAppWidget()
     }
 
     override fun onResume() {
         super.onResume()
-        clearNotification()
         homeViewModel.getNotifications()
 
         if (!userSession.isLoggedIn) {
@@ -180,6 +179,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     override fun menuReselected(position: Int, id: Int) {
 
+    }
+
+    private fun fetchSellerAppWidget() {
+        val broadcastIntent = Intent().apply {
+            action = ACTION_GET_ALL_APP_WIDGET_DATA
+            setPackage(packageName)
+        }
+        sendBroadcast(broadcastIntent)
     }
 
     fun attachCallback(callback: StatusBarCallback) {
@@ -299,13 +306,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         when (page.type) {
             FragmentType.PRODUCT -> lastProductManagePage = PageFragment(FragmentType.PRODUCT)
             FragmentType.ORDER -> lastSomTab = PageFragment(FragmentType.ORDER)
-        }
-    }
-
-    private fun clearNotification() {
-        if (remoteConfig.isNotificationTrayClear()) {
-            (getSystemService(NOTIFICATION_SERVICE) as? NotificationManager)?.cancelAll()
-            NotificationManagerCompat.from(this).cancelAll()
         }
     }
 
