@@ -107,6 +107,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_S
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
+import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
@@ -148,6 +149,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     @Inject
     lateinit var session: UserSessionInterface
+
+    @Inject
+    lateinit var sellerReviewHelper: TopChatSellerReviewHelper
 
     private lateinit var fpm: PerformanceMonitoring
     private lateinit var alertDialog: Dialog
@@ -890,6 +894,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             analytics.eventSendMessage()
             getViewState().scrollToBottom()
             clearEditText()
+            sellerReviewHelper.hasRepliedChat = true
         }
     }
 
@@ -1016,6 +1021,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 } else {
                     presenter.startCompressImages(model)
                 }
+                sellerReviewHelper.hasRepliedChat = true
             }
         }
     }
@@ -1041,12 +1047,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (data == null || resultCode != RESULT_OK) return
         initInvoicePreview(data.extras)
         presenter.initAttachmentPreview()
+        sellerReviewHelper.hasRepliedChat = true
     }
 
     private fun onAttachVoucherSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
         initVoucherPreview(data.extras)
         presenter.initAttachmentPreview()
+        sellerReviewHelper.hasRepliedChat = true
     }
 
     private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
@@ -1087,6 +1095,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         val resultProducts: ArrayList<ResultProduct> = data.getParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
         presenter.initProductPreviewFromAttachProduct(resultProducts)
+        sellerReviewHelper.hasRepliedChat = true
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
@@ -1307,6 +1316,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         super.onDestroy()
         presenter.detachView()
         toolTip.dismiss()
+        sellerReviewHelper.saveMessageId(messageId)
     }
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
