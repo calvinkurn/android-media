@@ -20,14 +20,14 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        updateTitle(SCREEN_NAME)
+        updateTitle(getString(R.string.pdp_simulation_header_title))
     }
 
     override fun getLayoutRes() = R.layout.activity_pdp_simulation
 
-    override fun getToolbarResourceID() = R.id.paylaterHeader
+    override fun getToolbarResourceID() = R.id.pdpSimulationHeader
 
-    override fun getParentViewResourceID(): Int = R.id.paylaterParentView
+    override fun getParentViewResourceID(): Int = R.id.pdpSimulationParentView
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()

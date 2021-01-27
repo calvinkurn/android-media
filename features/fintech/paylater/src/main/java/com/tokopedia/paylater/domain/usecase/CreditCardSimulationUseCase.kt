@@ -34,6 +34,7 @@ class CreditCardSimulationUseCase @Inject constructor(
     }
 
     private fun getRequestParams(amount: Float): Map<String, Float> {
+        //@Todo remove hardcoded value to amount
         return mapOf(PARAM_PRODUCT_AMOUNT to 10000000.0f)
     }
 

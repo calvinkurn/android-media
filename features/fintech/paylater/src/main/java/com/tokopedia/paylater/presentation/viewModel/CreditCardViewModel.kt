@@ -41,6 +41,7 @@ class CreditCardViewModel @Inject constructor(
         }
     }
 
+    //@Todo logic will be done at backend
     private fun isCreditCardSimulationApplicable() = true
 
     fun getCreditCardTncData() {

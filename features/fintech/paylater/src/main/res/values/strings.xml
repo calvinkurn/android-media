@@ -2,6 +2,7 @@
     <string name="app_name">paylater</string>
 
     <!--Content Switcher Headings -->
+    <string name="pdp_simulation_header_title">PayLater &amp; Cicilan</string>
     <string name="pay_later_content_switcher_heading">PayLater</string>
     <string name="pay_later_credit_content_switcher_heading">Kartu Credit</string>
 

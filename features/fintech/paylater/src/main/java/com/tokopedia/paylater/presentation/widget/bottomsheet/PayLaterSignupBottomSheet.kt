@@ -138,7 +138,7 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
         const val PAY_LATER_PARTNER_DATA = "payLaterPartnerData"
         const val PAY_LATER_APPLICATION_DATA = "payLaterApplicationData"
 
-        const val TAG = "FT_TAG"
+        const val TAG = "PL_TAG"
         fun getInstance(bundle: Bundle): PayLaterSignupBottomSheet {
             return PayLaterSignupBottomSheet().apply {
                 arguments = bundle

@@ -34,7 +34,7 @@ import com.tokopedia.paylater.presentation.widget.bottomsheet.CreditCardsListBot
 import com.tokopedia.paylater.presentation.widget.bottomsheet.PayLaterSignupBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_paylater.*
+import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
 import javax.inject.Inject
 
 class PdpSimulationFragment : BaseDaggerFragment(),
@@ -42,6 +42,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         PayLaterOffersFragment.PayLaterOfferCallback,
         CreditCardSimulationFragment.CreditCardSimulationCallback,
         CreditCardTncFragment.CreditCardTnCCallback,
+        PayLaterSignupBottomSheet.Listener,
         CreditCardRegistrationBottomSheet.Listener,
         TabLayout.OnTabSelectedListener,
         ViewPager.OnPageChangeListener,
@@ -59,7 +60,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(CreditCardViewModel::class.java)
     }
-
 
     private val productPrice: Int by lazy {
         arguments?.getInt(PRODUCT_PRICE) ?: 0
@@ -82,7 +82,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.fragment_paylater, container, false)
+        return inflater.inflate(R.layout.fragment_pdp_simulation, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -114,15 +114,12 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun observeViewModel() {
-        payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(
-                viewLifecycleOwner,
-                {
-                    when (it) {
-                        is Success -> onApplicationStatusLoaded(it.data)
-                        is Fail -> onApplicationStatusLoadingFail(it.throwable)
-                    }
-                },
-        )
+        payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> onApplicationStatusLoaded(it.data)
+                is Fail -> onApplicationStatusLoadingFail(it.throwable)
+            }
+        })
     }
 
     private fun onApplicationStatusLoadingFail(throwable: Throwable) {
@@ -134,12 +131,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         applicationStatusList = data.applicationDetailList ?: arrayListOf()
     }
 
-    override fun showRegisterWidget() {
-        if (isPayLaterSimulationPage())
-            daftarGroup.visible()
-        else daftarGroup.gone()
-    }
-
     private fun isPayLaterSimulationPage(): Boolean {
         return (payLaterViewPager.currentItem == SIMULATION_TAB_INDEX &&
                 paymentMode == PayLater)
@@ -149,7 +140,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         paylaterDaftarWidget.setOnClickListener {
             onRegisterPayLaterClicked()
         }
-        //modeSwitcher.setOnTouchListener(this)
         modeSwitcher.setOnCheckedChangeListener(this)
         paylaterTabLayout.tabLayout.addOnTabSelectedListener(this)
         payLaterViewPager.addOnPageChangeListener(this)
@@ -198,16 +188,18 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         return fragmentList
     }
 
+    override fun showRegisterWidget() {
+        if (isPayLaterSimulationPage())
+            daftarGroup.visible()
+        else daftarGroup.gone()
+    }
+
     override fun onRegisterPayLaterClicked() {
         if (payLaterDataList.isNotEmpty()) {
             val bottomSheet = PayLaterSignupBottomSheet.getInstance(
                     populatePayLaterBundle())
             bottomSheet.also {
-                it.setActionListener(object : PayLaterSignupBottomSheet.Listener {
-                    override fun onPayLaterSignupClicked(productItemData: PayLaterItemProductData, partnerApplicationDetail: PayLaterApplicationDetail?) {
-                        PayLaterHelper.openBottomSheet(context, childFragmentManager, productItemData, partnerApplicationDetail)
-                    }
-                })
+                it.setActionListener(this)
                 it.show(childFragmentManager, PayLaterSignupBottomSheet.TAG)
             }
         }
@@ -218,6 +210,10 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             it.setActionListener(this)
             it.show(childFragmentManager, CreditCardRegistrationBottomSheet.TAG)
         }
+    }
+
+    override fun onPayLaterSignupClicked(productItemData: PayLaterItemProductData, partnerApplicationDetail: PayLaterApplicationDetail?) {
+        PayLaterHelper.openBottomSheet(context, childFragmentManager, productItemData, partnerApplicationDetail)
     }
 
     override fun showCreditCardList(arrayList: ArrayList<CreditCardItem>, bankName: String?, bankSlug: String?) {
@@ -283,7 +279,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     companion object {
         const val SIMULATION_TAB_INDEX = 0
-        const val PAY_LATER_PRODUCT_DETAIL_TAB_INDEX = 1
 
         @JvmStatic
         fun newInstance(bundle: Bundle): PdpSimulationFragment {

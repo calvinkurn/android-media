@@ -139,7 +139,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        const val TAG = "FT_TAG"
+        const val TAG = "CC_TAG"
         fun getInstance() = CreditCardRegistrationBottomSheet()
     }
 
