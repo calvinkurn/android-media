@@ -62,10 +62,6 @@ public class PushNotification {
         PushNotification.aidlApiApp.unbindService();
     }
 
-    public static void setIsChatBotWindowOpen(boolean isChatBotWindowOpen) {
-        PushNotification.isChatBotWindowOpen = isChatBotWindowOpen;
-    }
-
     public static void notify(Context context, Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
         Bundle aidlBundle = PushNotification.aidlApiBundle;
@@ -132,6 +128,10 @@ public class PushNotification {
                     .getInstance(context)
                     .trackDeliveredNotification(applinkNotificationModel, STATUS_DROPPED);
         }
+    }
+
+    public static void setIsChatBotWindowOpen(boolean isChatBotWindowOpen) {
+        PushNotification.isChatBotWindowOpen = isChatBotWindowOpen;
     }
 
     private static void fetchSellerAppWidgetData(Context context, int notificationId) {
