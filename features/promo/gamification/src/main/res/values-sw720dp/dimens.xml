@@ -21,4 +21,5 @@
    <integer name="gami_direct_view_tvMessage_typography">7</integer>
    <dimen name="gami_direct_view_cta_top_margin">24dp</dimen>
    <dimen name="gami_direct_view_bottom_margin">105dp</dimen>
+   <dimen name="gami_ll_reward_message_top_margin">100dp</dimen>
 </resources>

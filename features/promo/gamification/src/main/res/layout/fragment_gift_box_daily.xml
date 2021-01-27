@@ -49,6 +49,7 @@
                         android:id="@+id/ll_reward_message"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/gami_ll_reward_message_top_margin"
                         android:layout_marginBottom="@dimen/gami_dp_70"
                         android:gravity="center_horizontal"
                         android:orientation="vertical"
