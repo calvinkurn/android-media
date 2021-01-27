@@ -211,6 +211,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                                 }
                                 hasNextPage = pair.second
                                 renderList(mapDataModel(recommendationItems), pair.second)
+                                if(!hasNextPage) showToastSuccess(getString(R.string.recom_msg_empty_next_page))
                             }else{
                                 hideLoading()
                                 hasNextPage = false
