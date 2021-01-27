@@ -8,4 +8,5 @@ object SnapshotConsts {
     const val TYPE_INFO = "info"
     const val TYPE_SHOP = "shop"
     const val TYPE_DETAILS = "details"
+    const val PARAM_INPUT = "input"
 }
