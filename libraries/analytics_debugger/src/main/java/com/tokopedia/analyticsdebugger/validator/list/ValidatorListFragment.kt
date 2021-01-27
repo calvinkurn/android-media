@@ -42,12 +42,16 @@ class ValidatorListFragment : Fragment() {
         val listTests = Utils.listAssetFiles(context!!, "tracker")
         Timber.d("List files: %s", listTests)
 
-        val rv = view.findViewById<RecyclerView>(R.id.rv)
         val listingAdapter = FileListingAdapter().also {
+            it.setItems(listTests)
             it.setOnItemClickListener { listener?.goToTestPage(it) }
         }
 
-        with(rv) {
+        view.findViewById<ImageView>(R.id.iv_delete).setOnClickListener {
+            viewModel.delete()
+        }
+
+        with(view.findViewById<RecyclerView>(R.id.rv)) {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -88,12 +92,6 @@ class ValidatorListFragment : Fragment() {
             searchBarClearButton.visibility = View.GONE
             clearSearchBarFocus(searchBarTextField)
             listingAdapter.setItems(listTests)
-        }
-
-        listingAdapter.setItems(listTests)
-
-        view.findViewById<ImageView>(R.id.iv_delete).setOnClickListener {
-            viewModel.delete()
         }
     }
 
