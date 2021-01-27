@@ -2,8 +2,9 @@ package com.tokopedia.sellerorder.list.domain.mapper
 
 import com.tokopedia.sellerorder.list.domain.model.SomListFilterResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
+import javax.inject.Inject
 
-object FilterResultMapper {
+class FilterResultMapper @Inject constructor() {
     fun mapResponseToUiModel(resultFilterList: SomListFilterResponse.Data.OrderFilterSom): SomListFilterUiModel {
         return SomListFilterUiModel(statusList = mapStatusList(resultFilterList.statusList))
     }

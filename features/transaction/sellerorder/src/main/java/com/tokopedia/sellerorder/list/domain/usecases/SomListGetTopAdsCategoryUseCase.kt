@@ -1,22 +1,25 @@
 package com.tokopedia.sellerorder.list.domain.usecases
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerorder.list.domain.model.SomListGetShopTopAdsCategoryResponse
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class SomListGetTopAdsCategoryUseCase @Inject constructor(
-        private val useCase: GraphqlUseCase<SomListGetShopTopAdsCategoryResponse.Data>
-) : BaseGraphqlUseCase() {
+        private val gqlRepository: GraphqlRepository
+) : BaseGraphqlUseCase<Int>(gqlRepository) {
 
-    init {
-        useCase.setGraphqlQuery(QUERY)
-    }
+    override suspend fun executeOnBackground(): Int {
+        val gqlRequest = GraphqlRequest(QUERY, SomListGetShopTopAdsCategoryResponse.Data::class.java, params.parameters)
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
-    suspend fun execute(): Success<Int> {
-        useCase.setTypeClass(SomListGetShopTopAdsCategoryResponse.Data::class.java)
-        useCase.setRequestParams(params.parameters)
-        return Success(useCase.executeOnBackground().topAdsGetShopInfo.data.category)
+        val errors = gqlResponse.getError(SomListGetShopTopAdsCategoryResponse.Data::class.java)
+        if (errors.isNullOrEmpty()) {
+            val response = gqlResponse.getData<SomListGetShopTopAdsCategoryResponse.Data>()
+            return response.topAdsGetShopInfo.data.category
+        } else {
+            throw RuntimeException(errors.joinToString(", ") { it.message })
+        }
     }
 
     fun setParams(shopId: Int) {
