@@ -123,28 +123,26 @@ class SingleProductRecommendationEntity {
         }
     }
 
-    class RecommendationData {
-
-        @SerializedName("tID")
-        var tid: String? = ""
-        @SerializedName("source")
-        var source: String? = ""
-        @SerializedName("title")
-        var title: String? = ""
-        @SerializedName("foreignTitle")
-        var foreignTitle: String? = ""
-        @SerializedName("widgetUrl")
-        var widgetUrl: String? = ""
-        @SerializedName("pageName")
-        var pageName: String? = ""
-        @SerializedName("layoutType")
-        var layoutType: String? = ""
-        @SerializedName("seeMoreAppLink")
-        var seeMoreAppLink: String? = ""
-        @SerializedName("pagination")
-        var pagination: Pagination = Pagination()
-        @SerializedName("recommendation")
-        var recommendation: List<Recommendation>? = listOf()
-
-    }
+    data class RecommendationData(
+            @SerializedName("tID")
+            val tid: String = "",
+            @SerializedName("source")
+            val source: String = "",
+            @SerializedName("title")
+            val title: String = "",
+            @SerializedName("foreignTitle")
+            val foreignTitle: String = "",
+            @SerializedName("widgetUrl")
+            val widgetUrl: String = "",
+            @SerializedName("pageName")
+            val pageName: String = "",
+            @SerializedName("layoutType")
+            val layoutType: String = "",
+            @SerializedName("seeMoreAppLink")
+            val seeMoreAppLink: String = "",
+            @SerializedName("pagination")
+            val pagination: Pagination = Pagination(),
+            @SerializedName("recommendation")
+            val recommendation: List<Recommendation> = listOf()
+    )
 }
