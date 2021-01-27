@@ -1,43 +1,28 @@
 package com.tokopedia.home_wishlist.activity
 
 import android.content.Context
-import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.coachmark.CoachMarkPreference
-import com.tokopedia.home_wishlist.component.HasComponent
-import com.tokopedia.home_wishlist.di.DaggerWishlistComponent
-import com.tokopedia.home_wishlist.di.WishlistComponent
 import com.tokopedia.home_wishlist.mock.WishlistMockData
 import com.tokopedia.home_wishlist.test.R
-import com.tokopedia.home_wishlist.view.fragment.WishlistFragment
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.COACH_MARK_TAG
 import com.tokopedia.home_wishlist.view.viewholder.WishlistItemViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.clearUserSession
-import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestUser1
-import com.tokopedia.test.application.util.RestMockUtil
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.test.application.util.setupRestMockResponse
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -60,20 +45,11 @@ class CassavaWishlistTest {
             disableCoachMark()
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(WishlistMockData())
-            setupMockFromRestResponse()
         }
     }
 
     private fun login() {
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
-    }
-
-    private fun setupMockFromRestResponse() {
-        setupRestMockResponse {
-            addMockResponse(WishlistMockData.KEY_CONTAINS_BANNER,
-                    RestMockUtil.getJsonFromResource("response_mock_data_wishlist_banner.json"),
-                    MockModelConfig.FIND_BY_CONTAINS)
-        }
     }
 
     private fun disableCoachMark(){
