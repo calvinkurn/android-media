@@ -89,8 +89,8 @@
     <string name="path_internal_feedback">/internal-feedback</string>
 
     <!-- Ovo Register -->
-    <string name="path_ovo_add_name" translatable="false">/ovo-add-name</string>
-    <string name="path_ovo_final_page" translatable="false">/ovo-final-page</string>
-    <string name="path_ovo_regis_init" translatable="false">/ovo-reg-init</string>
+    <string name="path_ovo_add_name">/ovo-add-name</string>
+    <string name="path_ovo_final_page">/ovo-final-page</string>
+    <string name="path_ovo_regis_init">/ovo-reg-init</string>
 
 </resources>
