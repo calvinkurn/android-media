@@ -381,7 +381,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         if (sectionIds.isNotEmpty()) {
             startActivity(DigitalHomePageSearchActivity.getCallingIntent(
                     requireContext(), platformId, enablePersonalize,
-                    sectionIds, getString(R.string.travel_entertainment_home_search_view_hint)))
+                    sectionIds))
         }
     }
 

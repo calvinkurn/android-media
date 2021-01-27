@@ -28,10 +28,9 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Recharg
         val platformId = bundle?.getInt(PARAM_PLATFORM_ID)
         val enablePersonalize = bundle?.getBoolean(PARAM_ENABLE_PERSONALIZE) ?: true
         val sectionId = bundle?.getIntegerArrayList(PARAM_SECTION_ID) ?: arrayListOf()
-        val searchBarPlaceHolder = bundle?.getString(PARAM_SEARCHBAR_PLACEHOLDER) ?: ""
 
         return if (platformId != null && sectionId.isNotEmpty()) {
-            DigitalHomepageSearchByDynamicIconsFragment.newInstance(platformId, enablePersonalize, sectionId, searchBarPlaceHolder)
+            DigitalHomepageSearchByDynamicIconsFragment.newInstance(platformId, enablePersonalize, sectionId)
         } else {
             DigitalHomePageSearchFragment.getInstance()
         }
@@ -48,18 +47,15 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Recharg
         private const val PARAM_PLATFORM_ID = "platform_id"
         private const val PARAM_ENABLE_PERSONALIZE = "personalize"
         private const val PARAM_SECTION_ID = "section_id"
-        private const val PARAM_SEARCHBAR_PLACEHOLDER = "searchbar_placeholder"
 
         fun getCallingIntent(context: Context): Intent = Intent(context, DigitalHomePageSearchActivity::class.java)
 
         fun getCallingIntent(context: Context, platformID: Int,
-                             enablePersonalize: Boolean = true, sectionId: ArrayList<Int>,
-                             searchBarPlaceHolder: String): Intent {
+                             enablePersonalize: Boolean = true, sectionId: ArrayList<Int>): Intent {
             val intent = Intent(context, DigitalHomePageSearchActivity::class.java)
             intent.putExtra(PARAM_PLATFORM_ID, platformID)
             intent.putExtra(PARAM_ENABLE_PERSONALIZE, enablePersonalize)
             intent.putIntegerArrayListExtra(PARAM_SECTION_ID, sectionId)
-            intent.putExtra(PARAM_SEARCHBAR_PLACEHOLDER, searchBarPlaceHolder)
             return intent
         }
     }

@@ -20,8 +20,6 @@ class DigitalHomepageSearchByDynamicIconsFragment: DigitalHomePageSearchFragment
             platformId = it.getInt(EXTRA_PLATFORM_ID, 0)
             enablePersonalized = it.getBoolean(EXTRA_ENABLE_PERSONALIZE, true)
             sectionId = it.getIntegerArrayList(EXTRA_SECTION_ID) ?: arrayListOf()
-
-            digital_homepage_search_view_search_bar.searchBarPlaceholder = it.getString(EXTRA_SEARCHBAR_PLACEHOLDER, "")
         }
     }
 
@@ -33,17 +31,14 @@ class DigitalHomepageSearchByDynamicIconsFragment: DigitalHomePageSearchFragment
         private const val EXTRA_PLATFORM_ID = "platform_id"
         private const val EXTRA_ENABLE_PERSONALIZE = "personalize"
         private const val EXTRA_SECTION_ID = "section_id"
-        private const val EXTRA_SEARCHBAR_PLACEHOLDER = "searchbar_placeholder"
 
-        fun newInstance(platformId: Int, enablePersonalize: Boolean = false, sectionId: ArrayList<Int>,
-        searchBarPlaceHolder: String)
+        fun newInstance(platformId: Int, enablePersonalize: Boolean = false, sectionId: ArrayList<Int>)
                 : DigitalHomepageSearchByDynamicIconsFragment {
             val fragment = DigitalHomepageSearchByDynamicIconsFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PLATFORM_ID, platformId)
             bundle.putBoolean(EXTRA_ENABLE_PERSONALIZE, enablePersonalize)
             bundle.putIntegerArrayList(EXTRA_SECTION_ID, sectionId)
-            bundle.putString(EXTRA_SEARCHBAR_PLACEHOLDER, searchBarPlaceHolder)
             fragment.arguments = bundle
             return fragment
         }
