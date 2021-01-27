@@ -260,10 +260,9 @@ public class BuyerAccountMapper implements Func1<AccountDataModel, BuyerViewMode
     private Boolean useUoh() {
         try {
             String remoteConfigRollenceValue = RemoteConfigInstance.getInstance().getABTestPlatform().getString(UOH_AB_TEST_KEY, "");
-            Boolean rollence = remoteConfigRollenceValue.equalsIgnoreCase(UOH_AB_TEST_VALUE);
 
-            Boolean remoteConfigFirebase = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH);
-            return (rollence && remoteConfigFirebase);
+            boolean remoteConfigFirebase = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH);
+            return (remoteConfigRollenceValue.equalsIgnoreCase(UOH_AB_TEST_VALUE) && remoteConfigFirebase);
 
         } catch (Exception e) {
             return false;
