@@ -7,7 +7,7 @@ import kotlinx.android.synthetic.main.view_recharge_home_search.*
 /**
  * @author by jessica on 21/01/21
  */
-class TravelEntertainmentSearchFragment: DigitalHomePageSearchFragment() {
+class DigitalHomepageSearchByDynamicIconsFragment: DigitalHomePageSearchFragment() {
 
     private var platformId: Int = 0
     private var enablePersonalized: Boolean = true
@@ -37,8 +37,8 @@ class TravelEntertainmentSearchFragment: DigitalHomePageSearchFragment() {
 
         fun newInstance(platformId: Int, enablePersonalize: Boolean = false, sectionId: ArrayList<Int>,
         searchBarPlaceHolder: String)
-                : TravelEntertainmentSearchFragment {
-            val fragment = TravelEntertainmentSearchFragment()
+                : DigitalHomepageSearchByDynamicIconsFragment {
+            val fragment = DigitalHomepageSearchByDynamicIconsFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PLATFORM_ID, platformId)
             bundle.putBoolean(EXTRA_ENABLE_PERSONALIZE, enablePersonalize)

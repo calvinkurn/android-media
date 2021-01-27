@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.di.RechargeHomepageComponentInstance
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageSearchFragment
-import com.tokopedia.digital.home.presentation.fragment.TravelEntertainmentSearchFragment
+import com.tokopedia.digital.home.presentation.fragment.DigitalHomepageSearchByDynamicIconsFragment
 import com.tokopedia.graphql.data.GraphqlClient
 
 class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<RechargeHomepageComponent> {
@@ -31,7 +31,7 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Recharg
         val searchBarPlaceHolder = bundle?.getString(PARAM_SEARCHBAR_PLACEHOLDER) ?: ""
 
         return if (platformId != null && sectionId.isNotEmpty()) {
-            TravelEntertainmentSearchFragment.newInstance(platformId, enablePersonalize, sectionId, searchBarPlaceHolder)
+            DigitalHomepageSearchByDynamicIconsFragment.newInstance(platformId, enablePersonalize, sectionId, searchBarPlaceHolder)
         } else {
             DigitalHomePageSearchFragment.getInstance()
         }

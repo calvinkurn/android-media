@@ -138,10 +138,6 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     private fun initSearchView() {
         digital_homepage_search_view.setFocusChangeListener(this)
-
-        when (platformId) {
-            PLATFORM_ID_TRAVEL_ENTERTAINMENT -> digital_homepage_search_view.setSearchHint(getString(R.string.travel_entertainment_home_search_view_hint))
-        }
     }
 
     private fun hideStatusBar() {
@@ -376,14 +372,11 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             digital_homepage_search_view.getSearchTextView()?.let { it.clearFocus() }
             rechargeHomepageAnalytics.eventClickSearchBox(userSession.userId)
 
-            when (platformId) {
-                PLATFORM_ID_TRAVEL_ENTERTAINMENT -> redirectToTravelEntertainmentSearchPage()
-                else -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(requireContext()))
-            }
+            redirectToSearchByDynamicIconsFragment()
         }
     }
 
-    private fun redirectToTravelEntertainmentSearchPage() {
+    private fun redirectToSearchByDynamicIconsFragment() {
         val sectionIds = viewModel.getDynamicIconsSectionIds()
         if (sectionIds.isNotEmpty()) {
             startActivity(DigitalHomePageSearchActivity.getCallingIntent(
@@ -409,8 +402,6 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16
-
-        const val PLATFORM_ID_TRAVEL_ENTERTAINMENT = 34
 
         fun newInstance(platformId: Int, enablePersonalize: Boolean = false, sliceOpenApp: Boolean = false): RechargeHomepageFragment {
             val fragment = RechargeHomepageFragment()
