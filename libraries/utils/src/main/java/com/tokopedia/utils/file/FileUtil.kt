@@ -22,12 +22,12 @@ object FileUtil {
         if (isExternalWritable) {
             if (isCacheDir) {
                 val rootCacheDirectory = File(GlobalConfig.EXTERNAL_CACHE_DIR)
-                if (rootCacheDirectory.exists() || GlobalConfig.EXTERNAL_CACHE_DIR.isNotEmpty()) {
+                if (GlobalConfig.EXTERNAL_CACHE_DIR.isNotEmpty() && rootCacheDirectory.exists()) {
                     directory = File(rootCacheDirectory.absolutePath, relativePathFolder ?: "")
                 }
             } else {
                 val rootFileDirectory = File(GlobalConfig.EXTERNAL_FILE_DIR)
-                if (rootFileDirectory.exists() || GlobalConfig.EXTERNAL_FILE_DIR.isNotEmpty()) {
+                if (GlobalConfig.EXTERNAL_FILE_DIR.isNotEmpty() && rootFileDirectory.exists()) {
                     directory = File(rootFileDirectory.absolutePath, relativePathFolder ?: "")
                 }
             }
