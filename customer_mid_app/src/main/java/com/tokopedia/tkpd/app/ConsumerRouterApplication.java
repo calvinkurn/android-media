@@ -67,6 +67,7 @@ import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
+import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -167,6 +168,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         if (cmPushNotificationManager != null) {
             cmPushNotificationManager.getAidlApiApp().unbindService();
             cmPushNotificationManager = null;
+            PushNotification.unbind();
         }
     }
 
@@ -556,6 +558,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void initCMPushNotification() {
         cmPushNotificationManager = CMPushNotificationManager.getInstance();
         cmPushNotificationManager.init(ConsumerRouterApplication.this);
+        PushNotification.init(getApplicationContext());
 
         List<String> excludeScreenList = new ArrayList<>();
         excludeScreenList.add(CmInAppConstant.ScreenListConstants.SPLASH);
