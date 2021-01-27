@@ -15,6 +15,7 @@ object UpdateProductStockWarehouse {
             "      warehouse_id\n" +
             "      stock\n" +
             "      shop_id\n" +
+            "      status\n" +
             "    }\n" +
             "  }\n" +
             "}"
