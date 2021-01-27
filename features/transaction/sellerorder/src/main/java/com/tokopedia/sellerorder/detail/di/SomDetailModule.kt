@@ -18,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
  * Created by fwidjaja on 10/05/20.
  */
 @Module
-@SomDetailScope
 class SomDetailModule {
     @SomDetailScope
     @Provides

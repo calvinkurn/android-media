@@ -20,11 +20,13 @@ import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.Matchers
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -38,6 +40,7 @@ class FlightHomepageActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
     var activityRule = ActivityTestRule<FlightHomepageActivity>(FlightHomepageActivity::class.java, false, false)
@@ -45,7 +48,8 @@ class FlightHomepageActivityTest {
     @Before
     fun setup() {
         Intents.init()
-        gtmLogDBSource.deleteAll().subscribe()
+        graphqlCacheManager.deleteAll()
+        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_CONTAINS_HOMEPAGE_BANNER,
@@ -74,6 +78,11 @@ class FlightHomepageActivityTest {
         activityRule.launchActivity(intent)
 
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    @After
+    fun cleanUp() {
+        Intents.release()
     }
 
     @Test
