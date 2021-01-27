@@ -373,7 +373,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 }
                             }
 
-                            renderUiForReminderCheck(remindMeCheckEntity)
+                            renderUiForReminderCheck(remindMeCheckEntity, reminder?.isShow ?: false)
                         } else {
                             tokoButtonContainer.toggleReminderVisibility(false)
 //                            reminderLayout.visibility = View.GONE
@@ -626,13 +626,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         // Don't want to play sound
     }
 
-    fun renderUiForReminderCheck(remindMeCheckEntity: RemindMeCheckEntity) {
+    fun renderUiForReminderCheck(remindMeCheckEntity: RemindMeCheckEntity, showReminder: Boolean) {
         this.gameRemindMeCheck = remindMeCheckEntity?.gameRemindMeCheck
         tokoButtonContainer.btnReminder.stopLoading()
 //        loaderReminder.visibility = View.GONE
 //        tvReminderBtn.visibility = View.VISIBLE
         val isRemindMe = gameRemindMeCheck?.isRemindMe
-        if (isRemindMe != null) {
+        if (isRemindMe != null && showReminder) {
             tokoButtonContainer.toggleReminderVisibility(true)
 //            reminderLayout.visibility = View.VISIBLE
             renderReminderButton(isRemindMe, false)

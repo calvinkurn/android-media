@@ -78,6 +78,7 @@ const val FAKE_GAMI_LUCKY_HOME = """
           "applink": "tokopedia://giftbox/pelajari"
         },
         "reminder": {
+          "isShow": true,
           "text": "Mau dapat hadiah lagi? Jangan lupa buka Kotak Kejutan besok!",
           "textSet": "Kamu akan diingatkan lagi besok untuk buka Kotak Kejutan",
           "textUnset": "Pengingat dihapus.",
@@ -234,7 +235,7 @@ const val FAKE_GAMI_CRACK="""
         ],
         "actionButton": [
           {
-            "text": "Pakai TokoPoints",
+            "text": "Cek TokoPoints",
             "url": "https://tokopedia.com/tokopoints",
             "applink": "tokopedia://webview?url\u003dhttps%3A%2F%2Fm.tokopedia.com%2Ftokopoints%2Fmobile\u0026title\u003dTokoPoints",
             "type": "redirect",
