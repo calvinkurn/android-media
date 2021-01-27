@@ -22,11 +22,12 @@ public class TkpdCache {
         public static final String MESSAGE = "message";
     }
 
-    public class SellerInAppReview {
+    public static class SellerInAppReview {
         public static final String PREFERENCE_NAME = "CACHE_SELLER_IN_APP_REVIEW";
         public static final String KEY_HAS_ADDED_PRODUCT = "KEY_SIR_HAS_ADDED_PRODUCT";
         public static final String KEY_HAS_POSTED_FEED = "KEY_SIR_HAS_POSTED_FEED";
-        public static final String KEY_NUMBER_OF_CHATS_REPLIED_TO = "KEY_SIR_NUMBER_OF_CHATS_REPLIED_TO";
+        public static final String KEY_CHATS_REPLIED_TO = "KEY_SIR_CHATS_REPLIED_TO";
+        public static final String KEY_HAS_OPENED_REVIEW = "KEY_SIR_HAS_OPENED_REVIEW";
         public static final String KEY_LAST_REVIEW_ASKED = "KEY_SIR_LAST_REVIEW_ASKED";
     }
 }
