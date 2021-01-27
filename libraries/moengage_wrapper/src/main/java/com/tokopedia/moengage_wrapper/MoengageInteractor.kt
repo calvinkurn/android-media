@@ -48,6 +48,9 @@ object MoengageInteractor {
                         .build()
                 MoEngage.initialise(moEngage)
                 isMoengageInitialised = true
+                println("MoengageInteractor: Moengage Initialized")
+                println("MoengageInteractor: $smallIcon $largeIcon")
+                println("MoengageInteractor: MoengageKey $keyMoengage ")
                 return true
             }
         }
@@ -58,8 +61,10 @@ object MoengageInteractor {
         val moengageValidator = MoengageValidator()
         initialiseMoengageIfEnabled(moengageValidator)
         val checkIfMoengageUserAttributesEnabled = moengageValidator.checkIfMoengageUserAttributesEnabled(context)
-        if (checkIfMoengageUserAttributesEnabled)
+        if (checkIfMoengageUserAttributesEnabled) {
             MoEHelper.getInstance(context).setExistingUser(isLoggedIn)
+            println("MoengageInteractor: sendExistingUserAndInstallTrackingEvent")
+        }
     }
 
     fun setUserData(value: Map<String?, Any?>) {
@@ -102,6 +107,8 @@ object MoengageInteractor {
                 helper.setUserAttribute(Constants.MOENGAGE.SHOP_SCORE, (value[Constants.MOENGAGE.SHOP_SCORE] as String?)!!)
             if (checkNull(value[MoEHelperConstants.USER_ATTRIBUTE_USER_GENDER]))
                 helper.setGender(if (value[MoEHelperConstants.USER_ATTRIBUTE_USER_GENDER] == "1") "male" else "female")
+
+            println("MoengageInteractor: setUserData $value")
         }
     }
 
@@ -122,6 +129,7 @@ object MoengageInteractor {
             helper.setFullName(fullName)
             helper.setUniqueId(customerId)
             helper.setEmail(emailAddress)
+            println("MoengageInteractor: setMoengageUserProfile $customerWrapper")
         }
     }
 
@@ -130,6 +138,7 @@ object MoengageInteractor {
         initialiseMoengageIfEnabled(moengageValidator)
         if (moengageValidator.checkIfMoengageUserAttributesEnabled(context)) {
             MoEHelper.getInstance(context).setUserAttribute(Constants.EventMoEngage.PUSH_PREFERENCE, status)
+            println("MoengageInteractor: setPushPreference $status")
         }
     }
 
@@ -138,6 +147,7 @@ object MoengageInteractor {
         initialiseMoengageIfEnabled(moengageValidator)
         if (moengageValidator.checkIfMoengageUserAttributesEnabled(context)) {
             MoEHelper.getInstance(context).setUserAttribute(Constants.EventMoEngage.EMAIL_PREFERENCE, status)
+            println("MoengageInteractor: setNewsletterEmailPref $status")
         }
     }
 
@@ -251,6 +261,7 @@ object MoengageInteractor {
 
     private fun trackEvent(data: JSONObject, eventName: String) {
         MoEHelper.getInstance(context).trackEvent(eventName, data)
+        println("MoengageInteractor: trackEvent $data")
     }
 
     private fun initialiseMoengageIfEnabled(moengageValidator: MoengageValidator) {
@@ -272,6 +283,7 @@ object MoengageInteractor {
 
     fun logoutEvent() {
         MoEHelper.getInstance(context).logoutUser()
+        println("MoengageInteractor: logoutEvent")
     }
 
     fun refreshToken(token: String?) {
@@ -279,6 +291,7 @@ object MoengageInteractor {
         initialiseMoengageIfEnabled(moengageValidator)
         if (moengageValidator.checkIfMoengageEnabled(context)) {
             PushManager.getInstance().refreshToken(context, token)
+            println("MoengageInteractor: refreshToken $token")
         }
     }
 
@@ -287,6 +300,7 @@ object MoengageInteractor {
         initialiseMoengageIfEnabled(moengageValidator)
         if (moengageValidator.checkIfMoengageEnabled(context)) {
             PushManager.getInstance().pushHandler?.handlePushPayload(context, token)
+            println("MoengageInteractor: handlePushPayload $token")
         }
     }
 
@@ -295,6 +309,7 @@ object MoengageInteractor {
         initialiseMoengageIfEnabled(moengageValidator)
         if (moengageValidator.checkIfMoengageEnabled(context)) {
             PushManager.getInstance().setMessageListener(CustomPushListener(listener))
+            println("MoengageInteractor: setMessageListener")
         }
     }
 
@@ -303,6 +318,7 @@ object MoengageInteractor {
         initialiseMoengageIfEnabled(moengageValidator)
         if (moengageValidator.checkIfMoengageEnabled(context)) {
             InAppManager.getInstance().setInAppListener(MoengageInAppListenerImpl(listener, context))
+            println("MoengageInteractor: setInAppListener")
         }
     }
 
@@ -311,6 +327,7 @@ object MoengageInteractor {
         initialiseMoengageIfEnabled(moengageValidator)
         if (moengageValidator.checkIfMoengageEnabled(context)) {
             MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(MoengagePushListenerImpl(listener))
+            println("MoengageInteractor: setPushListener")
         }
     }
 
