@@ -1,0 +1,80 @@
+[
+    {
+        "data": {
+            "dynamicHomeIcon": {
+                "dynamicIcon": [
+                    {
+                        "applinks": "tokopedia://category-explore?type=2&tab=1",
+                        "brand_id": "",
+                        "bu_identifier": "PG_PG_Lihat Semua",
+                        "campaignCode": "",
+                        "category_persona": "",
+                        "galaxy_attribution": "PG",
+                        "id": 496,
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/iEWsxH/2020/8/25/7f81e225-894f-4514-a2b8-dc03383d42c2.png.webp",
+                        "name": "Lihat Semua",
+                        "persona": "",
+                        "url": "https://m.tokopedia.com/kategori-lainnya",
+                        "withBackground": true
+                    },
+                    {
+                        "applinks": "tokopedia://category-explore?type=1",
+                        "brand_id": "",
+                        "bu_identifier": "PG_PG_Kategori",
+                        "campaignCode": "",
+                        "category_persona": "",
+                        "galaxy_attribution": "PG",
+                        "id": 500,
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/iEWsxH/2020/8/25/a72fdfa3-58c8-4883-a5c2-1c8a16d07e60.png.webp",
+                        "name": "Kategori",
+                        "persona": "",
+                        "url": "https://m.tokopedia.com/kategori-belanja",
+                        "withBackground": true
+                    },
+                    {
+                        "applinks": "tokopedia://recharge/home?platform_id=31",
+                        "brand_id": "",
+                        "bu_identifier": "DG_DG_Top-Up & Tagihan",
+                        "campaignCode": "",
+                        "category_persona": "",
+                        "galaxy_attribution": "DG",
+                        "id": 542,
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/iEWsxH/2020/10/2/0df5d3c3-ebcf-4575-bd38-6381366eb6f7.png.webp",
+                        "name": "Top-Up & Tagihan",
+                        "persona": "",
+                        "url": "https://m.tokopedia.com/top-up-tagihan",
+                        "withBackground": true
+                    },
+                    {
+                        "applinks": "tokopedia://discovery/waktu-indonesia-belanja",
+                        "brand_id": "",
+                        "bu_identifier": "PG_PG_WIB",
+                        "campaignCode": "cen00008025_wib december_18december20-31december20",
+                        "category_persona": "",
+                        "galaxy_attribution": "PG",
+                        "id": 539,
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/iEWsxH/2020/9/24/957c6f41-b12f-4fbc-961d-d4651f5df452.png.webp",
+                        "name": "WIB",
+                        "persona": "",
+                        "url": "https://www.tokopedia.com/discovery/waktu-indonesia-belanja",
+                        "withBackground": true
+                    },
+                    {
+                        "applinks": "tokopedia://discovery/keuangan",
+                        "brand_id": "",
+                        "bu_identifier": "FT_FT_Keuangan",
+                        "campaignCode": "",
+                        "category_persona": "",
+                        "galaxy_attribution": "",
+                        "id": 450,
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/100-square/iEWsxH/2020/8/25/879d76ac-4355-4bb6-acf0-0e2ae6cc0c04.png.webp",
+                        "name": "Keuangan",
+                        "persona": "",
+                        "url": "https://m.tokopedia.com/discovery/keuangan",
+                        "withBackground": true
+                    }
+                ]
+            }
+        }
+    }
+]

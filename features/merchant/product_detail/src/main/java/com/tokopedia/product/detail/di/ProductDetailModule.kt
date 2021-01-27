@@ -24,7 +24,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@ProductDetailScope
 @Module (includes = [ProductRestModule::class, AffiliateCommonModule::class])
 class ProductDetailModule {
 
