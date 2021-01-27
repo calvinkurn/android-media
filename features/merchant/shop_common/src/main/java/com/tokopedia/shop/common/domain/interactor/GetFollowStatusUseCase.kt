@@ -30,6 +30,7 @@ class GetFollowStatusUseCase @Inject constructor(
             )
         }
 
+        @JvmStatic
         fun createParams(shopId: String, source: String): HashMap<String, Any> {
             return hashMapOf(
                     PARAM_INPUT to hashMapOf(
