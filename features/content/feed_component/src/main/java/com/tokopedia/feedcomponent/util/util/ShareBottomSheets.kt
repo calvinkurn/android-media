@@ -23,7 +23,6 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.videoplayer.utils.showToast
 
@@ -282,16 +281,12 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
             startActivity(type.intent)
             sendTracker(type.key)
         } catch (ex: PackageManager.NameNotFoundException) {
-            showErrorToast(getString(R.string.error_apps_not_installed))
+            showToast(getString(R.string.error_apps_not_installed))
             ex.printStackTrace()
         } catch (ex: Exception) {
-            showErrorToast(getString(R.string.error_occurred))
+            showToast(getString(R.string.error_occurred))
             ex.printStackTrace()
         }
-    }
-
-    private fun showErrorToast(message: String) {
-        view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
     }
 
     private fun doActionShare(type: ShareType.ActionShare) {
