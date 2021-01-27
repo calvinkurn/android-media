@@ -18,7 +18,6 @@ import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 
 @Module(includes = [AddEditProductDescriptionViewModelModule::class])
-@AddEditProductDescriptionScope
 class AddEditProductDescriptionModule {
 
     @Provides

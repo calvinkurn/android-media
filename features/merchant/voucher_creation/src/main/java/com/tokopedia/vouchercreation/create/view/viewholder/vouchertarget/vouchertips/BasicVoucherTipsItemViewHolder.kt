@@ -17,8 +17,8 @@ class BasicVoucherTipsItemViewHolder(itemView: View) : AbstractViewHolder<BasicV
 
     override fun bind(element: BasicVoucherTipsItemUiModel) {
         itemView.run {
-            voucherTipsBasicTitle?.text = resources?.getString(element.titleRes).toBlankOrString()
-            voucherTipsBasicDesc?.text = resources?.getString(element.descRes).toBlankOrString()
+            expensesEstimationTicker?.tickerTitle = resources?.getString(element.titleRes).toBlankOrString()
+            expensesEstimationTicker?.setTextDescription(resources?.getString(element.titleRes).toBlankOrString())
         }
     }
 }

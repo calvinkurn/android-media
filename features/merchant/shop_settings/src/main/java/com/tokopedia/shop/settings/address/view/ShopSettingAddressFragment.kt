@@ -171,7 +171,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLoc
                 setTitle(getString(R.string.title_dialog_delete_shop_address))
                 setDesc(getString(R.string.desc_dialog_delete_shop_address, item.name))
                 setBtnOk(getString(R.string.action_delete))
-                setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
+                setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
                 setOnOkClickListener { presenter.deleteItem(item); dismiss() }
                 setOnCancelClickListener { dismiss() }
                 show()

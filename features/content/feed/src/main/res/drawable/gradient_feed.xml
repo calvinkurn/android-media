@@ -5,6 +5,6 @@
         android:gradientRadius="100%p"
         android:centerX="-0.2"
         android:centerY="0.1"
-        android:startColor="@color/feed_gradient_1"
-        android:endColor="@color/feed_gradient_2" />
+        android:startColor="@color/Unify_G300"
+        android:endColor="@color/Unify_B500" />
 </shape>
