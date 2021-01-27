@@ -15,7 +15,7 @@ private const val VIEW_SHIMMER = 0
 private const val VIEW_GROUP = 1
 private const val DEFAULT_SHIMMER_COUNT = 5
 
-class TopadsRecomGroupBsAdapter(val onGroupSelect: ((pos: Int) -> Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TopadsRecomGroupBsAdapter(private val onGroupSelect: (() -> Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items: MutableList<GroupListDataItem> = mutableListOf()
     private var list: List<CountDataItem> = listOf()
     private var showShimmer = true
@@ -84,7 +84,7 @@ class TopadsRecomGroupBsAdapter(val onGroupSelect: ((pos: Int) -> Unit)) : Recyc
             it.radio.isChecked = items[holder.adapterPosition].isSelected
             it.groupDesc.text = String.format(it.itemView.desc_group.context.getString(R.string.topads_dash_grp_bs_item_desc), list[holder.adapterPosition].totalAds, list[holder.adapterPosition].totalKeywords)
             it.itemView.setOnClickListener { v ->
-                onGroupSelect.invoke(holder.adapterPosition)
+                onGroupSelect.invoke()
                 items[holder.adapterPosition].isSelected = true
                 setOtherFalse(holder.adapterPosition)
                 v.radio_button.isChecked = true

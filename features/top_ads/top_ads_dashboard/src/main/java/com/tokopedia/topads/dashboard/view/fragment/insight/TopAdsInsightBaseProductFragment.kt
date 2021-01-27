@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
@@ -29,6 +30,7 @@ import com.tokopedia.topads.dashboard.data.model.ProductRecommendation
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationData
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendationModel
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsProductRecomAdapter
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsRecomGroupBottomSheet
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
@@ -45,7 +47,7 @@ import kotlin.collections.set
  * Created by Pika on 20/7/20.
  */
 
-class TopAdsInsightBaseProductFragment(private val productRecommendData: ProductRecommendationData?) : BaseDaggerFragment() {
+class TopAdsInsightBaseProductFragment(private val productRecommendData: ProductRecommendationData?, val height: Int?) : BaseDaggerFragment() {
 
     private lateinit var adapter: TopadsProductRecomAdapter
     private var onCheckedChangeListener: (CompoundButton, Boolean) -> Unit = { _, _ -> }
@@ -70,9 +72,8 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         adapter = TopadsProductRecomAdapter(::itemCheckedUnchecked, ::enableButton)
-        (parentFragment as TopAdsRecommendationFragment).setPadding()
         val dummyId: MutableList<Int> = mutableListOf()
         val suggestions = ArrayList<DataSuggestions>()
         suggestions.add(DataSuggestions(PRODUCT, dummyId))
@@ -92,6 +93,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        rvProductRecom.setMargin(0, 0, 0, height ?: 0)
         swipeRefreshLayout?.setOnRefreshListener {
             loadData()
         }
@@ -100,16 +102,15 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
         } else {
             setAdapterData(productRecommendData?.products)
         }
-        onBudgetClicked()
         checkUnchekAll()
     }
 
     private fun checkUnchekAll() {
         onCheckedChangeListener = { _, checked ->
-            enableButton(checked)
             adapter.setAllChecked(checked)
             selectedItems?.text = String.format(getString(R.string.topads_common_selected_product), adapter.getSelectedIds().size)
         }
+        cb_product_recom?.setOnCheckedChangeListener(onCheckedChangeListener)
     }
 
     private fun calculateSetTitle(products: List<ProductRecommendation>?): Int {
@@ -132,12 +133,11 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
         selectedItems?.text = String.format(getString(R.string.topads_common_selected_product), adapter.itemCount)
     }
 
-    private fun onBudgetClicked() {
-        (parentFragment as? TopAdsRecommendationFragment)?.setClick()
-    }
-
     private fun enableButton(enable: Boolean) {
-        (parentFragment as? TopAdsRecommendationFragment)?.setEnable(enable)
+        if (adapter.getSelectedIds().size == 0)
+            (activity as TopAdsDashboardActivity).enableRecommButton(false)
+        else
+            (activity as TopAdsDashboardActivity).enableRecommButton(enable)
     }
 
     private fun setEmptyState() {
@@ -152,7 +152,8 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
         product_recom_desc?.gone()
         cb_product_recom?.gone()
         selectedItems?.gone()
-        (parentFragment as TopAdsRecommendationFragment).setEmpty()
+        (activity as TopAdsDashboardActivity).hideButton(true)
+
     }
 
     private fun loadData() {
@@ -162,6 +163,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     private fun setAdapter() {
         rvRecomProduct?.adapter = adapter
         rvRecomProduct?.layoutManager = LinearLayoutManager(context)
+        rvRecomProduct?.isNestedScrollingEnabled = false
     }
 
     private fun onSuccessProductRecommendation(productRecommendationModel: ProductRecommendationModel) {

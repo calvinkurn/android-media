@@ -50,8 +50,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
 
     private fun initialState() {
         group_name_input?.textFieldInput?.text?.clear()
-        group_name_input?.setError(false)
-        group_name_input?.setMessage("")
+        setEmptyNameError()
         if (groupList.isEmpty()) {
             group_name_input.visible()
             contentSwitch?.gone()
@@ -72,7 +71,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
         setTitle(getString(R.string.topads_headline_recom_grp_bs_title))
     }
 
-    private fun onGroupSelect(pos: Int) {
+    private fun onGroupSelect() {
         submit_butt?.isEnabled = true
     }
 

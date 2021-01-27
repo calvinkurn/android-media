@@ -18,6 +18,7 @@ import com.tokopedia.topads.dashboard.data.model.TopadsGetDailyBudgetRecommendat
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
@@ -40,8 +41,13 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private var countBid = 0
 
     companion object {
-        fun createInstance(): TopAdsRecommendationFragment {
-            return TopAdsRecommendationFragment()
+        const val HEIGHT = "addp_bar_height"
+        fun createInstance(height: Int?): TopAdsRecommendationFragment {
+            val bundle = Bundle()
+            bundle.putInt(HEIGHT,height?:0)
+            val fragment = TopAdsRecommendationFragment()
+            fragment.arguments = bundle
+            return fragment
         }
     }
 
@@ -67,6 +73,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as TopAdsDashboardActivity?)?.hideButton(true)
         topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
         topAdsDashboardPresenter.getProductRecommendation(::onSuccessProductRecommendation)
         topAdsDashboardPresenter.getDailyBudgetRecommendation(::onSuccessBudgetRecommendation)
@@ -95,10 +102,10 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         if (productRecommendData == null || keywordRecommendData == null || dailyBudgetRecommendData == null)
             return
         if (countProduct == 0 && countBid == 0 && countKey == 0) {
+            (activity as TopAdsDashboardActivity?)?.hideButton(true)
             setEmptyView()
         } else {
-            if (countProduct != 0)
-                bottomInsight.visibility = View.VISIBLE
+            (activity as TopAdsDashboardActivity?)?.hideButton(countProduct == 0)
             initInsightTabAdapter()
             renderViewPager()
             topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, countBid, countKey)
@@ -120,22 +127,14 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             override fun onTabItemClick(position: Int) {
                 view_pager.currentItem = position
                 if (position == 0 && topAdsInsightTabAdapter?.getTab()?.get(position)?.contains(PRODUK) == true) {
-                    setPadding()
-                    bottomInsight.visibility = View.VISIBLE
+                    (activity as TopAdsDashboardActivity?)?.hideButton(false)
                 } else {
-                    bottomInsight.visibility = View.GONE
-                    view_pager?.setPadding(0, 0, 0,  0)
+                    (activity as TopAdsDashboardActivity?)?.hideButton(true)
                 }
             }
         })
         rvTabInsight.adapter = topAdsInsightTabAdapter
         view_pager.offscreenPageLimit = TopAdsDashboardConstant.OFFSCREEN_PAGE_LIMIT
-    }
-
-     fun setPadding() {
-        editProduct?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val height = editProduct?.measuredHeight
-        view_pager?.setPadding(0, 0, 0, height ?: 0)
     }
 
     private fun renderViewPager() {
@@ -155,7 +154,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private fun getViewPagerAdapter(): TopAdsDashInsightPagerAdapter? {
         val list: ArrayList<Fragment> = arrayListOf()
         if (countProduct != 0)
-            list.add(TopAdsInsightBaseProductFragment(productRecommendData))
+            list.add(TopAdsInsightBaseProductFragment(productRecommendData, arguments?.getInt(HEIGHT)))
         if (countBid != 0)
             list.add(TopAdsInsightBaseBidFragment(dailyBudgetRecommendData))
         if (countKey != 0)
@@ -165,20 +164,10 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         return pagerAdapter
     }
 
-    fun setEmpty() {
-        bottomInsight?.visibility = View.GONE
-    }
-
-    fun setEnable(enable: Boolean) {
-        editProduct?.isEnabled = enable
-    }
-
     fun setClick() {
-        editProduct.setOnClickListener {
-            val fragments = (view_pager?.adapter as? TopAdsDashInsightPagerAdapter)?.listFrag
-            if (fragments?.get(0) is TopAdsInsightBaseProductFragment) {
-                (fragments[0] as TopAdsInsightBaseProductFragment).openBottomSheet()
-            }
+        val fragments = (view_pager?.adapter as? TopAdsDashInsightPagerAdapter)?.listFrag
+        if (fragments?.firstOrNull() is TopAdsInsightBaseProductFragment?) {
+            (fragments?.get(0) as TopAdsInsightBaseProductFragment).openBottomSheet()
         }
     }
 }

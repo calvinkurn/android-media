@@ -60,6 +60,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:itemCount="8"
             tools:listitem="@layout/topads_dash_recon_product_item" />
 
