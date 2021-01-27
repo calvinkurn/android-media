@@ -18,11 +18,13 @@ import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.tokopedia.abstraction.aidl.PushNotificationApi
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
+import com.tokopedia.appaidl.AidlApi
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -60,7 +62,7 @@ import javax.inject.Inject
  * default is 'false', set 'true' if you just wan to clear data only
  */
 
-class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
+class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent>, AidlApi.ReceiverListener {
 
     lateinit var userSession: UserSessionInterface
 
@@ -74,6 +76,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private var tetraDebugger: TetraDebugger? = null
+    private var notificationApi: PushNotificationApi? = null
 
     override fun getNewFragment(): Fragment? = null
 
@@ -90,6 +93,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
         component.inject(this)
         userSession = UserSession(this)
+        PushNotificationApi.bindService(applicationContext)
 
         getParams()
 
@@ -105,6 +109,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         } else {
             logoutViewModel.doLogout()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        PushNotificationApi.unbindService()
     }
 
     private fun getParams() {
@@ -236,6 +245,10 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
             cookieManager.removeAllCookies {}
         }
     }
+
+    override fun onAidlReceive(tag: String, bundle: Bundle?) {}
+
+    override fun onAidlError() {}
 
     companion object {
         private const val STICKY_LOGIN_PREF = "sticky_login_widget.pref"
