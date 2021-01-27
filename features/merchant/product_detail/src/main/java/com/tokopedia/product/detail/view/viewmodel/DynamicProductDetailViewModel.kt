@@ -31,7 +31,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -174,6 +173,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageViewModel>>>
         get() = _topAdsImageView
 
+    var videoTrackerData : Pair<Long,Long>? = null
+
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var tradeInParams: TradeInParams = TradeInParams()
@@ -189,6 +190,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
+    private var alreadyHitRecom:MutableList<String> = mutableListOf()
 
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
@@ -236,6 +238,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addToCartOcsUseCase.get().unsubscribe()
         toggleNotifyMeUseCase.get().cancelJobs()
         discussionMostHelpfulUseCase.get().cancelJobs()
+    }
+
+    fun updateVideoTrackerData(stopDuration: Long, videoDuration: Long) {
+        videoTrackerData = stopDuration to videoDuration
     }
 
     fun clearCacheP2Data() {
@@ -316,13 +322,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "", isUseOldNav: Boolean = false) {
         launchCatchError(dispatcher.io, block = {
+            alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
 
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "", productParams.warehouseId
                     ?: "", layoutId).also {
-                addStaticComponent(it)
+
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
                 }
@@ -368,10 +375,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun addStaticComponent(it: ProductDetailDataModel) {
-        it.listOfLayout.add(ProductLastSeenDataModel())
-    }
-
     private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
         withContext(dispatcher.io) {
             val result = addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
@@ -413,10 +416,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         getDynamicProductInfoP1?.let {
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
-                        it.basic.getProductId())
+                        it.basic.productID)
             } else null
             val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession)
-            val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.getProductId(), it.basic.getShopId())
+            val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
 
             p2DataDeffered.await()?.let {
                 _p2Data.postValue(it)
@@ -557,10 +560,19 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun loadRecommendation(pageName: String) {
-        launch {
+        launch(dispatcher.main) {
             if (!GlobalConfig.isSellerApp()) {
+
+                if (!alreadyHitRecom.contains(pageName)) {
+                    alreadyHitRecom.add(pageName)
+                } else {
+                    return@launch
+                }
+
                 try {
-                    withContext(dispatcher.io) {
+                    val recomData = withContext(dispatcher.io) {
+                        var recomWidget = RecommendationWidget()
+
                         val productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID
                                 ?: "")
                         val productIdsString = TextUtils.join(",", productIds) ?: ""
@@ -582,13 +594,19 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         )).toBlocking().first()
 
                         if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
-                            val recomWidget = recomData.first().copy(
-                                    recommendationFilterChips = recomFilterList
+                            recomWidget = recomData.first().copy(
+                                    recommendationFilterChips = recomFilterList,
+                                    pageName = pageName
                             )
-                            _loadTopAdsProduct.postValue(recomWidget.asSuccess())
-                        } else {
-                            _loadTopAdsProduct.postValue(Throwable(pageName).asFail())
                         }
+
+                        recomWidget
+                    }
+
+                    if (recomData.recommendationItemList.isNotEmpty()) {
+                        _loadTopAdsProduct.value = recomData.asSuccess()
+                    } else {
+                        _loadTopAdsProduct.value = Throwable(pageName).asFail()
                     }
                 } catch (e: Throwable) {
                     _loadTopAdsProduct.value = Throwable(pageName).asFail()
@@ -716,7 +734,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 })
     }
 
-    fun toggleTeaserNotifyMe(campaignId: Int, productId: Int, source: String) {
+    fun toggleTeaserNotifyMe(campaignId: Long, productId: Long, source: String) {
         launchCatchError(block = {
             toggleNotifyMeUseCase.get().createParams(campaignId, productId, notifyMeAction, source)
             val isSuccess = toggleNotifyMeUseCase.get().executeOnBackground().result.isSuccess
@@ -779,13 +797,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         tradeInParams.widgetString = validateTradeIn.widgetString
     }
 
-    private fun getProductInfoP2OtherAsync(productId: Int, shopId: Int): Deferred<ProductInfoP2Other> {
+    private fun getProductInfoP2OtherAsync(productId: String, shopId: Int): Deferred<ProductInfoP2Other> {
         return async {
             getProductInfoP2OtherUseCase.get().executeOnBackground(GetProductInfoP2OtherUseCase.createParams(productId, shopId), forceRefresh)
         }
     }
 
-    private fun getProductInfoP2LoginAsync(shopId: Int, productId: Int): Deferred<ProductInfoP2Login> {
+    private fun getProductInfoP2LoginAsync(shopId: Int, productId: String): Deferred<ProductInfoP2Login> {
         return async {
             getProductInfoP2LoginUseCase.get().requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId, isShopOwner())
             getProductInfoP2LoginUseCase.get().executeOnBackground()

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
@@ -68,6 +69,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
@@ -87,6 +89,7 @@ import com.tokopedia.search.result.presentation.view.listener.SearchNavigationLi
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
+import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
@@ -103,6 +106,7 @@ import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 
@@ -141,7 +145,8 @@ public class ProductListFragment
         QuickFilterElevation,
         SortFilterBottomSheet.Callback,
         SearchInTokopediaListener,
-        SearchNavigationClickListener {
+        SearchNavigationClickListener,
+        TopAdsImageViewListener  {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -149,7 +154,7 @@ public class ProductListFragment
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
     private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
-    private static final String SEARCH_RESULT_PRODUCT_FILTER_ONBOARDING_TAG = "SEARCH_RESULT_PRODUCT_FILTER_ONBOARDING_TAG";
+    private static final String SEARCH_RESULT_PRODUCT_ONBOARDING_TAG = "SEARCH_RESULT_PRODUCT_ONBOARDING_TAG";
     private static final int REQUEST_CODE_LOGIN = 561;
     private static final String SHOP = "shop";
     private static final int DEFAULT_SPAN_COUNT = 2;
@@ -315,7 +320,8 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this,
-                this, this, this, this, this,
+                this, this, this,
+                this, this, this,
                 topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
@@ -1385,8 +1391,12 @@ public class ProductListFragment
     }
 
     @Override
-    public void onInspirationCarouselGridBannerClicked(@NotNull InspirationCarouselViewModel.Option product) {
-        redirectionStartActivity(product.getBannerApplinkUrl(), product.getBannerLinkUrl());
+    public void onInspirationCarouselGridBannerClicked(@NotNull InspirationCarouselViewModel.Option option) {
+        redirectionStartActivity(option.getBannerApplinkUrl(), option.getBannerLinkUrl());
+
+        SearchTracking.trackEventClickInspirationCarouselGridBanner(
+                option.getInspirationCarouselType(), getQueryKey(), option.getBannerDataLayer(getQueryKey()), getUserId()
+        );
     }
 
     @Override
@@ -1444,20 +1454,20 @@ public class ProductListFragment
 
     @Override
     public void showMessageSuccessWishlistAction(boolean isWishlisted) {
-        if (isWishlisted) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
-        }
+        if (getView() == null) return;
+
+        if (isWishlisted)
+            Toaster.build(getView(), getString(R.string.msg_add_wishlist), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+        else Toaster.build(getView(), getString(R.string.msg_remove_wishlist), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
     }
 
     @Override
-    public void showMessageFailedWishlistAction(boolean isWishlisited) {
-        if (isWishlisited) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist_failed));
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist_failed));
-        }
+    public void showMessageFailedWishlistAction(boolean isWishlisted) {
+        if (getView() == null) return;
+
+        if (isWishlisted)
+            Toaster.build(getView(), getString(R.string.msg_add_wishlist_failed), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show();
+        else Toaster.build(getView(), getString(R.string.msg_remove_wishlist_failed), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show();
     }
 
     @Override
@@ -1625,19 +1635,16 @@ public class ProductListFragment
         recyclerView.post(() -> {
             View threeDots = showThreeDotsOnBoarding ? getThreeDotsOfFirstProductItem(firstProductPosition) : null;
 
-            if (searchSortFilter == null) return;
-
             if (firstProductPosition > 0 && threeDots != null)
                 recyclerView.smoothScrollToPosition(firstProductPosition);
 
-            ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(
-                    searchSortFilter.getSortFilterPrefix(),
-                    threeDots
-            );
+            recyclerView.postDelayed(() -> {
+                ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(threeDots);
 
-            CoachMarkBuilder builder = new CoachMarkBuilder();
-            builder.allowPreviousButton(false);
-            builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_FILTER_ONBOARDING_TAG, coachMarkItemList);
+                CoachMarkBuilder builder = new CoachMarkBuilder();
+                builder.allowPreviousButton(false);
+                builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_ONBOARDING_TAG, coachMarkItemList);
+            }, 200);
         });
     }
 
@@ -1653,21 +1660,12 @@ public class ProductListFragment
             return null;
     }
 
-    private ArrayList<CoachMarkItem> createCoachMarkItemList(View sortFilterPrefix, @Nullable View threeDots) {
+    private ArrayList<CoachMarkItem> createCoachMarkItemList(@Nullable View threeDots) {
         ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
 
-        coachMarkItemList.add(createFilterOnBoarding(sortFilterPrefix));
         if (threeDots != null) coachMarkItemList.add(createThreeDotsOnBoarding(threeDots));
 
         return coachMarkItemList;
-    }
-
-    private CoachMarkItem createFilterOnBoarding(View sortFilterPrefix) {
-        return new CoachMarkItem(
-                sortFilterPrefix,
-                getString(R.string.search_product_filter_onboarding_title),
-                getString(R.string.search_product_filter_onboarding_description)
-        );
     }
 
     private CoachMarkItem createThreeDotsOnBoarding(View threeDotsButton) {
@@ -1821,5 +1819,28 @@ public class ProductListFragment
 
         staggeredGridLayoutManager.setSpanCount(2);
         adapter.changeSearchNavigationDoubleGridView(position);
+    }
+
+    @Override
+    public void onTopAdsImageViewImpressed(
+            String className,
+            @NotNull SearchProductTopAdsImageViewModel searchTopAdsImageViewModel
+    ) {
+        if (className == null || getContext() == null) return;
+
+        new TopAdsUrlHitter(getContext()).hitImpressionUrl(
+                className,
+                searchTopAdsImageViewModel.getTopAdsImageViewModel().getAdViewUrl(),
+                "",
+                "",
+                searchTopAdsImageViewModel.getTopAdsImageViewModel().getImageUrl()
+        );
+    }
+
+    @Override
+    public void onTopAdsImageViewClick(@NotNull SearchProductTopAdsImageViewModel searchTopAdsImageViewModel) {
+        if (getContext() == null) return;
+
+        RouteManager.route(getContext(), searchTopAdsImageViewModel.getTopAdsImageViewModel().getApplink());
     }
 }

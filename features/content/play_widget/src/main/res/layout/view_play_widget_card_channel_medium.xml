@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/play_widget_light_gray">
+        android:background="@color/Unify_N100">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/play_widget_thumbnail"
@@ -88,7 +88,8 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            />
 
         <include
             android:id="@+id/play_widget_badge_total_view"
@@ -99,7 +100,8 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toEndOf="@+id/play_widget_badge_live"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginStart="@dimen/spacing_lvl3" />
+            app:layout_goneMarginStart="@dimen/spacing_lvl3"
+            />
 
         <include
             android:id="@+id/play_widget_badge_promo"
@@ -109,13 +111,14 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toTopOf="@+id/play_widget_info_container"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            />
 
         <LinearLayout
             android:id="@+id/play_widget_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/play_widget_info_container_white"
+            android:background="@color/Unify_N0_68"
             android:orientation="vertical"
             android:paddingTop="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent">
@@ -128,7 +131,7 @@
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Yellow_Y500"
+                android:textColor="@color/Unify_Y500"
                 android:visibility="visible"
                 android:textSize="@dimen/fontSize_lvl2"
                 tools:text="10 January 2020 - 17.00" />
@@ -141,7 +144,7 @@
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:lines="2"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/fontSize_lvl3"
                 tools:text="Google Assistant Google Assistant" />
@@ -155,7 +158,7 @@
                 android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/fontSize_lvl2"
                 app:layout_constraintBottom_toBottomOf="parent"

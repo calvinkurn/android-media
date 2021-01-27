@@ -249,7 +249,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun initializeSwipeRefreshLayout() {
         activity?.let {
-            swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, com.tokopedia.abstraction.R.color.tkpd_main_green))
+            swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400))
         }
         swipeRefreshLayout?.setOnRefreshListener {
             reloadData()
@@ -392,10 +392,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 activity?.let {
                     if (lastHeaderUiModel?.uiState?.hasSelectedPromoItem == true) {
                         sectionLabelPromoListHeaderSubTitle?.text = it.getString(R.string.label_subtitle_promo_selected)
-                        sectionLabelPromoListHeaderSubTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.light_T500))
+                        sectionLabelPromoListHeaderSubTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_T500))
                     } else {
                         sectionLabelPromoListHeaderSubTitle?.text = it.getString(R.string.label_subtitle_only_one_promo)
-                        sectionLabelPromoListHeaderSubTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.purchase_platform.common.R.color.n_700_44))
+                        sectionLabelPromoListHeaderSubTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
                     }
                 }
 

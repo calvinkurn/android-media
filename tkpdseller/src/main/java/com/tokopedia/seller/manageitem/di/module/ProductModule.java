@@ -13,7 +13,6 @@ import dagger.Provides;
 /**
  * @author sebastianuskh on 4/13/17.
  */
-@ProductScope
 @Module
 public class ProductModule {
     @ProductScope

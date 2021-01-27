@@ -37,6 +37,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsMacroInsurance;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
+import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
@@ -53,6 +54,8 @@ import com.tokopedia.checkout.view.di.CheckoutModule;
 import com.tokopedia.checkout.view.di.DaggerCheckoutComponent;
 import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener;
 import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
+import com.tokopedia.checkout.view.helper.CartProtectionInfoBottomSheetHelper;
+import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
@@ -63,6 +66,13 @@ import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.logisticCommon.data.analytics.CodAnalytics;
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
+import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.Token;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
@@ -76,13 +86,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticCommon.data.analytics.CodAnalytics;
-import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
-import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticCommon.data.entity.address.Token;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
@@ -231,6 +234,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     UserSessionInterface userSessionInterface;
     @Inject
     CheckoutTradeInAnalytics checkoutTradeInAnalytics;
+    @Inject
+    CheckoutEgoldAnalytics checkoutEgoldAnalytics;
 
     SaveInstanceCacheManager saveInstanceCacheManager;
     TickerAnnouncementHolderData savedTickerAnnouncementModel;
@@ -667,8 +672,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void showToastNormal(String message) {
         if (getView() != null && getActivity() != null) {
-            Toaster.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getActivity().getString(R.string.label_action_snackbar_close), view -> {
-            });
+            initializeToasterLocation();
+            View.OnClickListener listener = view -> {
+            };
+            String actionText = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok);
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, actionText, listener)
+                    .show();
         }
     }
 
@@ -676,15 +685,37 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void showToastError(String message) {
         if (getView() != null && getActivity() != null) {
+            initializeToasterLocation();
             if (TextUtils.isEmpty(message)) {
-                message = getActivity().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown);
+                message = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_error_global_message);
             }
             if (shipmentAdapter == null || shipmentAdapter.getItemCount() == 0) {
                 renderErrorPage(message);
             } else {
-                Toaster.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getActivity().getString(R.string.label_action_snackbar_close), view -> {
-                });
+                View.OnClickListener listener = view -> {
+                };
+                String actionText = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok);
+                Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, actionText, listener)
+                        .show();
             }
+        }
+    }
+
+    public void initializeToasterLocation() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) rvShipment.getLayoutManager();
+        if (layoutManager == null) {
+            return;
+        }
+        int lastItemPosition = layoutManager.findLastVisibleItemPosition();
+        if (lastItemPosition == RecyclerView.NO_POSITION ||
+                shipmentAdapter.getShipmentDataList() == null ||
+                lastItemPosition >= shipmentAdapter.getShipmentDataList().size()) {
+            return;
+        }
+        if (shipmentAdapter.getShipmentDataList().get(lastItemPosition) instanceof ShipmentButtonPaymentModel) {
+            Utils.setToasterCustomBottomHeight(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_48));
+        } else {
+            Utils.setToasterCustomBottomHeight(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
         }
     }
 
@@ -1836,6 +1867,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onEgoldChecked(boolean checked) {
         shipmentAdapter.updateEgold(checked);
+        checkoutEgoldAnalytics.eventClickEgoldRoundup(checked);
         if (isTradeIn()) {
             checkoutTradeInAnalytics.eventTradeInClickEgoldOption(isTradeInByDropOff(), checked);
         }
@@ -2226,9 +2258,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void navigateToProtectionMore(String url) {
         mTrackerPurchaseProtection.eventClickOnPelajari(url);
-        Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url,
-                getString(R.string.title_activity_checkout_webview));
-        startActivity(intent);
+        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this,getActivityContext(), url, getString(R.string.title_activity_checkout_webview));
     }
 
     @Override
@@ -2982,11 +3012,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
-                rvShipment.smoothScrollToPosition(position);
-
                 if (isTriggeredByPaymentButton) {
                     showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected));
                 }
+
+                rvShipment.smoothScrollToPosition(position);
             } else {
                 int notSelectCourierCount = 0;
                 int firstFoundPosition = 0;
@@ -3006,8 +3036,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
-                rvShipment.smoothScrollToPosition(firstFoundPosition);
-
                 if (isTriggeredByPaymentButton && notSelectCourierCount > 0) {
                     if (notSelectCourierCount == 1) {
                         showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected));
@@ -3016,6 +3044,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
+                rvShipment.smoothScrollToPosition(firstFoundPosition);
             }
         }
     }

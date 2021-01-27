@@ -35,6 +35,7 @@
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
     <string name="path_product_detail" translatable="false">/product-detail/.*\\/</string>
     <string name="path_product_detail_domain" translatable="false">/product-detail/.*\\/.*\\/</string>
+    <string name="path_product_detail_affiliate" translatable="false">/product-detail/affiliate/.*\\/</string>
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
     <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*\\/</string>
@@ -68,6 +69,7 @@
     <string name="path_review_report" translatable="false">/review-report</string>
 
     <string name="path_seller_review_page" translatable="false">/seller-review-page</string>
+    <string name="path_seller_review_detail_page" translatable="false">/seller-review-detail</string>
 
     <string name="path_shop_settings_address" translatable="false">/shop-settings-address</string>
     <string name="path_shop_settings_info" translatable="false">/shop-settings-info</string>

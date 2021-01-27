@@ -32,6 +32,7 @@ import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
+import com.tokopedia.digital.newcart.presentation.model.cart.AttributesDigital;
 import com.tokopedia.digital.newcart.presentation.model.cart.CartAdditionalInfo;
 import com.tokopedia.digital.newcart.presentation.model.cart.CartAutoApplyVoucher;
 import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
@@ -66,7 +67,7 @@ import rx.Subscriber;
 public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.View> extends BaseDaggerPresenter<T>
         implements DigitalBaseContract.Presenter<T> {
     private final int COUPON_ACTIVE = 1;
-    private DigitalAnalytics digitalAnalytics;
+    protected DigitalAnalytics digitalAnalytics;
     private RechargeAnalytics rechargeAnalytics;
     private ICartDigitalInteractor cartDigitalInteractor;
     private UserSessionInterface userSession;
@@ -157,8 +158,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
         attributes.setUserId(Integer.parseInt(userSession.getUserId()));
         attributes.setProductId(getView().getProductId());
-        int orderId = getView().getOrderId();
-        if (orderId > 0) attributes.setOrderId(orderId);
+        long orderId = getView().getOrderId();
+        if (orderId > 0L) attributes.setOrderId(orderId);
         attributes.setFields(fieldList);
         if (GlobalConfig.isSellerApp()) {
             attributes.setReseller(true);
@@ -453,6 +454,35 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         kursIndonesia.setDecimalFormatSymbols(formatRp);
 
         return kursIndonesia.format(value).replace(",", ".");
+    }
+
+    @Override
+    public void onClickPromoButton() {
+        AttributesDigital attributes = getView().getCartInfoData().getAttributes();
+        if (attributes != null
+                && attributes.getCategoryName() != null
+                && attributes.getOperatorName() != null) {
+            digitalAnalytics.eventclickUseVoucher(attributes.getCategoryName());
+            digitalAnalytics.eventClickPromoButton(
+                    attributes.getCategoryName(),
+                    attributes.getOperatorName(),
+                    userSession.getUserId()
+            );
+        }
+    }
+
+    @Override
+    public void onClickPromoDetail() {
+        AttributesDigital attributes = getView().getCartInfoData().getAttributes();
+        if (attributes != null
+                && attributes.getCategoryName() != null
+                && attributes.getOperatorName() != null) {
+            digitalAnalytics.eventClickPromoButton(
+                    attributes.getCategoryName(),
+                    attributes.getOperatorName(),
+                    userSession.getUserId()
+            );
+        }
     }
 
     @Override

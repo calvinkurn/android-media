@@ -61,7 +61,7 @@
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/lbl_osp_header"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/layout_new_occ_onboarding"
                     app:typographyType="heading_4"
@@ -76,7 +76,7 @@
                     android:id="@+id/divider_top"
                     android:layout_width="0dp"
                     android:layout_height="6dp"
-                    android:background="@color/Neutral_N75"
+                    android:background="@color/Unify_N75"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/space_note" />
@@ -88,7 +88,7 @@
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_12"
                     android:layout_marginEnd="@dimen/dp_16"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +103,7 @@
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_4"
                     android:layout_marginEnd="@dimen/dp_16"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -166,7 +166,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0.5dp"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:background="@color/Neutral_N75"
+                    android:background="@color/Unify_N75"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/empty_preference_card" />
@@ -187,24 +187,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/lbl_shipping_insurance"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     app:layout_constraintBottom_toBottomOf="@+id/cb_insurance"
                     app:layout_constraintStart_toEndOf="@+id/cb_insurance"
                     app:layout_constraintTop_toTopOf="@+id/cb_insurance"
                     app:typographyType="body_3"
                     app:typographyWeight="reguler" />
 
-                <ImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/img_bt_insurance_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/dp_8"
-                    android:paddingRight="@dimen/dp_8"
-                    android:src="@drawable/info_icon"
+                    android:layout_width="@dimen/layout_lvl3"
+                    android:layout_height="@dimen/layout_lvl3"
+                    android:paddingStart="@dimen/spacing_lvl2"
+                    android:paddingEnd="@dimen/spacing_lvl2"
+                    app:icon_name="INFORMATION"
                     app:layout_constraintBottom_toBottomOf="@+id/cb_insurance"
                     app:layout_constraintStart_toEndOf="@+id/tv_insurance"
-                    app:layout_constraintTop_toTopOf="@+id/cb_insurance"
-                    tools:ignore="ContentDescription" />
+                    app:layout_constraintTop_toTopOf="@+id/cb_insurance" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_insurance_price"
@@ -213,7 +212,7 @@
                     android:layout_marginEnd="@dimen/dp_16"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     app:layout_constraintBottom_toBottomOf="@+id/cb_insurance"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/img_bt_insurance_info"
@@ -227,7 +226,7 @@
                     android:layout_height="0.5dp"
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/Neutral_N75"
+                    android:background="@color/Unify_N75"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cb_insurance" />

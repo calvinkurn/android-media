@@ -485,9 +485,7 @@ public class ExploreFragment
         if (getContext() != null && isCanDoAction) {
             Intent intent = RouteManager.getIntent(
                     getContext(),
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL, model.getProductId()
-            );
-            intent.putExtra("is_from_explore_affiliate", true);
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE, model.getProductId(), "isAffiliate");
             startActivityForResult(intent, REQUEST_CREATE_POST);
         }
         isCanDoAction = false;

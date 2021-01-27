@@ -7,7 +7,6 @@ import com.tokopedia.autocomplete.suggestion.data.SuggestionRepositoryImpl
 import dagger.Module
 import dagger.Provides
 
-@SuggestionScope
 @Module
 class SuggestionRepositoryModule {
 

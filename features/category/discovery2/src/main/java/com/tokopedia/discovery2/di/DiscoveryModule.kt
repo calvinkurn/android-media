@@ -8,7 +8,6 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
-import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponRestRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponGqlRepository
@@ -26,6 +25,8 @@ import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRe
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRestRepository
+import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterGQLRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
@@ -96,11 +97,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
-    fun provideChildCategoryRepository(): ChildCategoryRepository {
-        return repoProvider.provideChildCategoryRepository()
-    }
-
-    @Provides
     fun provideProductCardsRestRepository(): ProductCardsRepository {
         return repoProvider.provideProductCardsRepository()
     }
@@ -146,6 +142,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideEmptyStateRepository() : EmptyStateRepository {
         return  repoProvider.provideEmptyStateRepository()
+    }
+
+    @Provides
+    fun provideQuickFilterGQLRepository(): IQuickFilterGqlRepository {
+        return QuickFilterGQLRepository()
     }
 
     @DiscoveryScope

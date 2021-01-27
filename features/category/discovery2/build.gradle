@@ -13,6 +13,10 @@ buildscript {
 }
 
 android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
@@ -76,6 +80,8 @@ dependencies {
 
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 

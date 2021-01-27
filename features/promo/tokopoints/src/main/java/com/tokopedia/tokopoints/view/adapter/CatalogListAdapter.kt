@@ -18,10 +18,8 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity.Companion.getCatalogDetail
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.model.section.CountDownInfo
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TIMER_RED_BACKGROUND_HEX
-import com.tokopedia.tokopoints.view.util.ImageUtil
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
 import kotlin.collections.HashMap
@@ -59,7 +57,12 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
     }
 
     inner class TimerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var timerUnifySingle: TimerUnifySingle = view.findViewById(R.id.timerunify_catalog)
+        var timerUnifySingle : TimerUnifySingle = view.findViewById(R.id.timerunify_catalog)
+
+        fun onDetach() {
+            timerUnifySingle.timer?.cancel()
+            timerUnifySingle.timer = null
+        }
     }
 
     private fun setData(holder: ViewHolder, rawItem: Any?, position: Int) {
@@ -164,7 +167,7 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         if (holder.timerUnifySingle.timer != null) {
             holder.timerUnifySingle.timer!!.cancel()
         }
-        val timerValue = countDownInfo.countdownUnix
+        var timerValue = countDownInfo.countdownUnix
         val timerFlagType = countDownInfo.backgroundColor
         if (timerFlagType == TIMER_RED_BACKGROUND_HEX) {
             holder.timerUnifySingle.timerVariant = TimerUnifySingle.VARIANT_MAIN
@@ -173,20 +176,10 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         }
         holder.timerUnifySingle.timerText = countDownInfo.label
         if (countDownInfo.type == 1) {
-            val seconds = timerValue?.rem(60)
-            val minutes = (timerValue?.rem((60 * 60)))?.div(60)
-            val hours = timerValue?.div((60 * 60))
-            val cal = Calendar.getInstance()
-            if (hours != null) {
-                cal.add(Calendar.HOUR, hours.toInt())
+            if (timerValue != null) {
+                val timeToExpire = convertSecondsToHrMmSs(timerValue)
+                holder.timerUnifySingle.targetDate = timeToExpire
             }
-            if (minutes != null) {
-                cal.add(Calendar.MINUTE, minutes.toInt())
-            }
-            if (seconds != null) {
-                cal.add(Calendar.SECOND, seconds.toInt())
-            }
-            holder.timerUnifySingle?.targetDate = cal
         } else {
             holder.timerUnifySingle.timerFormat = TimerUnifySingle.FORMAT_DAY
             val timerString = countDownInfo.countdownStr
@@ -201,6 +194,9 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         holder.timerUnifySingle.apply {
             onFinish = {
                 holder.timerUnifySingle.hide()
+            }
+            onTick = {
+                countDownInfo.countdownUnix = it / 1000
             }
         }
     }
@@ -280,6 +276,21 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
             setData(holder, list[position], position)
         } else if (holder is TimerViewHolder) {
             setDataTimer(holder, list[VIEW_TYPE_TIMER] as CountDownInfo)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is TimerViewHolder) {
+            holder.onDetach()
+        }
+    }
+
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+        if (holder is TimerViewHolder){
+            holder.onDetach()
         }
     }
 

@@ -19,6 +19,11 @@
             <enum name="dark" value="0"/>
             <enum name="light" value="1"/>
         </attr>
+        <attr name="toolbarInitialFillColor" format="enum">
+            <enum name="transparent" value="0"/>
+            <enum name="filled" value="1"/>
+        </attr>
+        <attr name="toolbarInvertSearchBarColor" format="boolean"/>
         <attr name="toolbarAlwaysShowShadow" format="boolean"/>
         <attr name="toolbarTitle" format="string"/>
         <attr name="toolbarDefaultHint" format="string"/>

@@ -16,10 +16,6 @@ class SomBottomSheetStockEmptyAdapter: RecyclerView.Adapter<SomBottomSheetStockE
     var listProduct = mutableListOf<SomDetailOrder.Data.GetSomDetail.Products>()
     var listToBeEmptied = ArrayList<SomDetailOrder.Data.GetSomDetail.Products>()
 
-    interface ActionListener {
-        fun onSetProductsEmpty(listProduct: List<SomDetailOrder.Data.GetSomDetail.Products>)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bottomsheet_empty_product_item, parent, false))
     }

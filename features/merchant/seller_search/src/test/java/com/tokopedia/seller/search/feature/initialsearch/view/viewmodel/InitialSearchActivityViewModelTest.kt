@@ -2,7 +2,7 @@ package com.tokopedia.seller.search.feature.initialsearch.view.viewmodel
 
 import org.junit.Test
 
-class InitialSearchActivityViewModelTest: InitialSearchActivityViewModelTestFixture() {
+class InitialSearchActivityViewModelTest : InitialSearchActivityViewModelTestFixture() {
 
     @Test
     fun `when get placeholder success should set live data success`() {
@@ -25,4 +25,21 @@ class InitialSearchActivityViewModelTest: InitialSearchActivityViewModelTestFixt
 
         verifyGetSearchPlaceholderError(expectedError = error)
     }
+
+    @Test
+    fun `when get typing search success should set live data success`() {
+        coroutineTestRule.runBlockingTest {
+            val resultKeyword = "baju baru"
+            val expectedKeywordList = listOf("ba", "baju", "baju ba", "baju baru")
+
+            for (keyword in expectedKeywordList) {
+                viewModel.getTypingSearch(keyword)
+            }
+
+            advanceTimeBy(300)
+
+            verifyGetTypingSearchSuccess(resultKeyword)
+        }
+    }
+
 }

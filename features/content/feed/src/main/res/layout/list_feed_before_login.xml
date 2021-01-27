@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/dp_32"
     android:paddingBottom="@dimen/dp_32"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:id="@+id/partial_empty_feed"
     android:layout_marginBottom="@dimen/dp_8">
 
@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_empty_state_cactus"
         android:adjustViewBounds="true"
+        android:contentDescription="null"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_40"
@@ -27,7 +28,7 @@
         android:layout_height="wrap_content"
         android:text="@string/feed_non_login_title"
         android:fontFamily="sans-serif"
-        android:textColor="@color/grey_550"
+        android:textColor="@color/Unify_N400"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         android:gravity="center"

@@ -1,21 +1,10 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.content.Context;
-import android.text.TextUtils;
-import android.util.Base64;
 
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.core.analytics.fingerprint.Utilities;
-import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
-import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
-import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerprintUseCase;
-import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
-import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -26,12 +15,6 @@ import javax.inject.Inject;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 /**
  * Created by ricoharisin on 3/10/17.
@@ -48,31 +31,13 @@ public class FingerprintInterceptor implements Interceptor {
     private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
     private static final String BEARER = "Bearer ";
     private static final String KEY_ADSID = "X-GA-ID";
-    private Context context;
-    private UserSessionInterface userSession;
+    private final Context context;
+    private final UserSessionInterface userSession;
 
     @Inject
     public FingerprintInterceptor(Context context) {
         this.context = context;
         userSession = new UserSession(context);
-    }
-
-    static String trimGoogleAdId(String googleAdsId) {
-        StringBuilder sb = new StringBuilder(googleAdsId.length());//we know this is the capacity so we initialise with it:
-        for (int i = 0; i < googleAdsId.length(); i++) {
-            char c = googleAdsId.charAt(i);
-            switch (c) {
-                case '\u2013':
-                case '\u2014':
-                case '\u2015':
-                    sb.append('-');
-                    break;
-                default:
-                    sb.append(c);
-                    break;
-            }
-        }
-        return sb.toString();
     }
 
     @Override
@@ -84,107 +49,27 @@ public class FingerprintInterceptor implements Interceptor {
     }
 
     private Request.Builder addFingerPrint(final Request.Builder newRequest) {
-        String json = getFingerPrintJson();
+        FingerprintModel fpModel;
+        Context appContext = context.getApplicationContext();
+        if (appContext instanceof NetworkRouter) {
+            fpModel = ((NetworkRouter)appContext).getFingerprintModel();
+        } else {
+            return newRequest;
+        }
+        String json64 = fpModel.getFingerprintHash();
 
-        newRequest.addHeader(KEY_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(context));
+        newRequest.addHeader(KEY_SESSION_ID, fpModel.getRegistrarionId());
         if (userSession.isLoggedIn()) {
             newRequest.addHeader(KEY_USER_ID, userSession.getUserId());
-            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + userSession.getUserId()));
+            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json64 + "+" + userSession.getUserId()));
         } else {
             newRequest.addHeader(KEY_USER_ID, "0");
-            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + "0"));
+            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json64 + "+" + "0"));
         }
         newRequest.addHeader(KEY_ACC_AUTH, BEARER + userSession.getAccessToken());
-        newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
-        String adsId = getGoogleAdId(context);
-        if (!TextUtils.isEmpty(adsId)) {
-            adsId = trimGoogleAdId(getGoogleAdId(context));
-        } else {
-            adsId = "";
-        }
-        newRequest.addHeader(KEY_ADSID, adsId);
-
+        newRequest.addHeader(KEY_FINGERPRINT_DATA, json64);
+        newRequest.addHeader(KEY_ADSID, fpModel.getAdsId());
         return newRequest;
     }
 
-    private String getFingerPrintJson() {
-        String json = "";
-        Timber.d("Fingerpint is running");
-        try {
-            GetFingerprintUseCase getFingerprintUseCase;
-            FingerprintRepository fpRepo = new FingerprintDataRepository(context);
-            getFingerprintUseCase = new CacheGetFingerprintUseCase(context, fpRepo);
-            json = getFingerprintUseCase.createObservable(RequestParams.EMPTY)
-                    .map(new Func1<String, String>() {
-                        @Override
-                        public String call(String s) {
-                            try {
-                                return Utilities.toBase64(s, Base64.NO_WRAP);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                return "";
-                            }
-
-                        }
-                    }).doOnError(new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            throwable.printStackTrace();
-                        }
-                    }).onErrorReturn(new Func1<Throwable, String>() {
-                        @Override
-                        public String call(Throwable throwable) {
-                            return throwable.toString();
-                        }
-                    }).toBlocking().single();
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-
-        return json;
-    }
-
-    /**
-     * This function first try to fetch the Google Ad ID from cache and if not found in cache, it fetches from system and save into the cache
-     *
-     * @param context
-     * @return
-     */
-    private String getGoogleAdId(final Context context) {
-        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, ADVERTISINGID);
-
-        String adsId = localCacheHandler.getString(KEY_ADVERTISINGID);
-        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
-            return adsId;
-        }
-
-        return (Observable.just("").subscribeOn(Schedulers.newThread())
-                .map(new Func1<String, String>() {
-                    @Override
-                    public String call(String string) {
-                        AdvertisingIdClient.Info adInfo = null;
-                        try {
-                            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
-                        } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
-                            e.printStackTrace();
-                        }
-                        return adInfo.getId();
-                    }
-                }).onErrorReturn(new Func1<Throwable, String>() {
-                    @Override
-                    public String call(Throwable throwable) {
-                        return "";
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<String>() {
-                    @Override
-                    public void call(String adID) {
-                        if (!TextUtils.isEmpty(adID)) {
-                            localCacheHandler.putString(KEY_ADVERTISINGID, adID);
-                            localCacheHandler.applyEditor();
-                        }
-                    }
-                })).toBlocking().single();
-    }
 }

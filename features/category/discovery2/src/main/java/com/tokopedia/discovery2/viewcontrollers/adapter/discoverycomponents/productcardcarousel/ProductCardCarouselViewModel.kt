@@ -3,13 +3,11 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoveryPageData
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -28,8 +26,9 @@ import kotlin.coroutines.CoroutineContext
 
 private const val PRODUCT_PER_PAGE = 10
 private const val RESET_HEIGHT = 0
+
 class ProductCardCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
-    private val productCarouselHeaderData: MutableLiveData<ComponentsItem> = MutableLiveData()
+    private val productCarouselHeaderData: MutableLiveData<ComponentsItem?> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val maxHeightProductCard: MutableLiveData<Int> = MutableLiveData()
     private val productLoadError: MutableLiveData<Boolean> = MutableLiveData()
@@ -40,26 +39,31 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     fun getProductCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> = productCarouselList
     fun getProductCardMaxHeight(): LiveData<Int> = maxHeightProductCard
-    fun getProductCardHeaderData(): LiveData<ComponentsItem> = productCarouselHeaderData
+    fun getProductCardHeaderData(): LiveData<ComponentsItem?> = productCarouselHeaderData
     fun getProductLoadState(): LiveData<Boolean> = productLoadError
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-
-    init {
-        components.lihatSemua?.run {
-            val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
-            val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
-                    creativeName = components.creativeName)
-            productCarouselHeaderData.value = lihatSemuaComponentData
-        }
-    }
-
-
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        handleLihatSemuaHeader()
         fetchProductCarouselData()
+    }
+
+    private fun handleLihatSemuaHeader() {
+        var lihatSemuaComponentData: ComponentsItem? = null
+        components.lihatSemua?.let {
+            it.run {
+                val lihatSemuaDataItem = DataItem(title = header,
+                        subtitle = subheader, btnApplink = applink)
+                lihatSemuaComponentData = ComponentsItem(
+                        name = ComponentsList.ProductCardCarousel.componentName,
+                        data = listOf(lihatSemuaDataItem),
+                        creativeName = components.creativeName)
+            }
+        }
+        productCarouselHeaderData.value = lihatSemuaComponentData
     }
 
     private fun fetchProductCarouselData() {
@@ -76,15 +80,20 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         getProductList()?.let {
             if (it.isNotEmpty()) {
                 productLoadError.value = false
-                if (components.name == ComponentsList.ProductCardCarousel.componentName) {
-                    getMaxHeightProductCard(it)
-                }
+                reSyncProductCardHeight(it)
                 productCarouselList.value = addLoadMore(it)
                 syncData.value = true
             } else {
                 maxHeightProductCard.value = RESET_HEIGHT
                 productLoadError.value = true
             }
+        }
+    }
+
+    private suspend fun reSyncProductCardHeight(list: java.util.ArrayList<ComponentsItem>) {
+        if (components.name == ComponentsList.ProductCardCarousel.componentName
+                || components.name == ComponentsList.ProductCardSprintSaleCarousel.componentName) {
+            getMaxHeightProductCard(list)
         }
     }
 
@@ -105,6 +114,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)) {
                 getProductList()?.let {
                     isLoading = false
+                    reSyncProductCardHeight(it)
                     productCarouselList.value = addLoadMore(it)
                     syncData.value = true
                 }

@@ -286,7 +286,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
             lastCollapseHeight = checkoutHolderView.getVoucherViewHeight() +
                     checkoutHolderView.getCheckoutViewHeight() +
                     containerCategoryLabel.getMeasuredHeight() +
-                    getResources().getDimensionPixelOffset(R.dimen.dp_6);
+                    getResources().getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1);
         }
 
         final int targetHeight = lastCollapseHeight == 0 || lastCollapseHeight >= currentHeight ?
@@ -310,7 +310,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT
                         );
-                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0, 0);
+                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1), 0, 0);
                         containerLayout.setLayoutParams(
                                 layoutParams
                         );
@@ -333,7 +333,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void renderIconToExpand() {
         if (getContext() != null) {
             expandCollapseView.setImageDrawable(
-                    ContextCompat.getDrawable(getContext(), com.tokopedia.design.R.drawable.ic_arrow_up_grey)
+                    ContextCompat.getDrawable(getContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_gray_24)
             );
         }
     }
@@ -342,7 +342,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void renderIconToCollapse() {
         if (getContext() != null) {
             expandCollapseView.setImageDrawable(
-                    ContextCompat.getDrawable(getContext(), com.tokopedia.design.R.drawable.ic_arrow_down_grey)
+                    ContextCompat.getDrawable(getContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_gray_24)
             );
         }
     }

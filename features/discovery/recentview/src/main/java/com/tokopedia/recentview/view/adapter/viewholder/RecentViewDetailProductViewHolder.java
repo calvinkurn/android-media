@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.kotlin.extensions.view.ViewExtKt;
 import com.tokopedia.recentview.R;
 import com.tokopedia.recentview.view.adapter.LabelsAdapter;
 import com.tokopedia.recentview.view.listener.RecentView;
@@ -112,17 +114,9 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
             iconLocation.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.resources.common.R.drawable.ic_icon_location_grey));
         }
 
-        mainView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToProductDetail(
-                        String.valueOf(element.getProductId()),
-                        element.getName(),
-                        element.getPrice(),
-                        element.getImageSource()
-                );
-                viewListener.sendRecentViewClickTracking(element);
-            }
+        mainView.setOnClickListener(v -> {
+            viewListener.sendRecentViewClickTracking(element);
+            RouteManager.route(v.getContext(), element.getProductLink());
         });
     }
 

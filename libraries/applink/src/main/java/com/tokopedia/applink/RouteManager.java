@@ -14,6 +14,8 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.config.GlobalConfig;
@@ -43,13 +45,15 @@ public class RouteManager {
     public static final String KEY_REDIRECT_TO_SELLER_APP = "redirect_to_sellerapp";
     private static final String SELLER_APP_PACKAGE_NAME = "com.tokopedia.sellerapp";
 
+    public static final String INTERNAL_VIEW = "com.tokopedia.internal.VIEW";
+
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
      */
     private static Intent buildInternalImplicitIntent(@NonNull Context context, @NonNull String deeplink) {
         ApplinkLogger.getInstance(context).appendTrace("Building implicit intent...");
         Uri uri = Uri.parse(deeplink);
-        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Intent intent = new Intent(INTERNAL_VIEW);
         intent.setData(uri);
         intent.setPackage(context.getPackageName());
         intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -134,7 +138,7 @@ public class RouteManager {
     /**
      * Create intent redirect to sellerapp
      * If sellerapp not installed yet then open sellerapp on google playstore
-     * */
+     */
     private static Intent getIntentRedirectSellerApp(Context context, Uri uri) {
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME);
         if (null != intent) {
@@ -151,6 +155,21 @@ public class RouteManager {
         } catch (ActivityNotFoundException e) {
             return new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName));
         }
+    }
+
+    /**
+     * Create a new instance of a Fragment with the given class name.
+     *
+     * @param activity
+     * @param className
+     * @return
+     */
+    public static Fragment instantiateFragment(@NonNull AppCompatActivity activity, @NonNull String className, @Nullable Bundle extras) {
+        Fragment fragment = activity.getSupportFragmentManager().getFragmentFactory().instantiate(ClassLoader.getSystemClassLoader(), className);
+        if (extras != null) {
+            fragment.setArguments(extras);
+        }
+        return fragment;
     }
 
     /**
@@ -250,7 +269,7 @@ public class RouteManager {
         return false;
     }
 
-    private static void logErrorOpenDeeplink(Context context, String uriString){
+    private static void logErrorOpenDeeplink(Context context, String uriString) {
         try {
             String sourceClass = "";
             String referrer = "";

@@ -15,15 +15,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIconSectionViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.*
@@ -63,7 +61,9 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val playWidgetCoordinator: PlayWidgetCoordinator,
                          private val bestSellerListener: RecommendationWidgetListener,
                          private val categoryNavigationListener: CategoryNavigationListener,
-                         private val rechargeBUWidgetListener: RechargeBUWidgetListener
+                         private val rechargeBUWidgetListener: RechargeBUWidgetListener,
+                         private val bannerComponentListener: BannerComponentListener,
+                         private val dynamicIconComponentListener: DynamicIconComponentListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -219,7 +219,55 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CategoryNavigationViewHolder.LAYOUT
     }
 
+    override fun type(bannerDataModel: BannerDataModel): Int {
+        return BannerComponentViewHolder.LAYOUT
+    }
+
     //end of Home-Component section
+
+    override fun type(emptyBannerDataModel: EmptyBannerDataModel): Int {
+        return EmptyBannerViewHolder.LAYOUT
+    }
+
+    override fun type(homeHeaderOvoDataModel: HomeHeaderOvoDataModel): Int {
+        return HomeHeaderOvoViewHolder.LAYOUT
+    }
+
+    override fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int {
+        return HomeInitialShimmerViewHolder.LAYOUT
+    }
+
+    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int {
+        return DynamicIconViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateIconModel: ErrorStateIconModel): Int {
+        return ErrorStateIconViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateChannelOneModel: ErrorStateChannelOneModel): Int {
+        return ErrorStateChannelOneViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateChannelTwoModel: ErrorStateChannelTwoModel): Int {
+        return ErrorStateChannelTwoViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateChannelThreeModel: ErrorStateChannelThreeModel): Int {
+        return ErrorStateChannelThreeViewHolder.LAYOUT
+    }
+
+    override fun type(shimmeringChannelDataModel: ShimmeringChannelDataModel): Int {
+        return ShimmeringChannelViewHolder.LAYOUT
+    }
+
+    override fun type(shimmeringIconDataModel: ShimmeringIconDataModel): Int {
+        return ShimmeringIconViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateAtfModel: ErrorStateAtfModel): Int {
+        return HomeAtfErrorViewHolder.LAYOUT
+    }
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
@@ -276,6 +324,9 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
+            EmptyBannerViewHolder.LAYOUT -> viewHolder = EmptyBannerViewHolder(view, listener)
+            HomeHeaderOvoViewHolder.LAYOUT -> viewHolder = HomeHeaderOvoViewHolder(view, listener)
+            HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
             DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, parentRecycledViewPool)
             ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, parentRecycledViewPool)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
@@ -350,9 +401,20 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             CategoryNavigationViewHolder.LAYOUT -> viewHolder = CategoryNavigationViewHolder(view, categoryNavigationListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> viewHolder = CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(view, playWidgetCoordinator), listener)
             RechargeBUWidgetMixLeftViewHolder.LAYOUT -> viewHolder =
-                    RechargeBUWidgetMixLeftViewHolder(view, rechargeBUWidgetListener, parentRecycledViewPool)
+                    RechargeBUWidgetMixLeftViewHolder(view, rechargeBUWidgetListener)
             RechargeBUWidgetMixTopViewHolder.LAYOUT -> viewHolder =
                     RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
+            BannerComponentViewHolder.LAYOUT -> viewHolder =
+                    BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
+            DynamicIconViewHolder.LAYOUT -> viewHolder = DynamicIconViewHolder(view, dynamicIconComponentListener)
+            ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)
+            ErrorStateChannelOneViewHolder.LAYOUT -> viewHolder = ErrorStateChannelOneViewHolder(view, listener)
+            ErrorStateChannelTwoViewHolder.LAYOUT -> viewHolder = ErrorStateChannelTwoViewHolder(view, listener)
+            ErrorStateChannelThreeViewHolder.LAYOUT -> viewHolder = ErrorStateChannelThreeViewHolder(view, listener)
+            HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
+            ShimmeringChannelViewHolder.LAYOUT -> viewHolder = ShimmeringChannelViewHolder(view, listener)
+            ShimmeringIconViewHolder.LAYOUT -> viewHolder = ShimmeringIconViewHolder(view, listener)
+            HomeAtfErrorViewHolder.LAYOUT -> viewHolder = HomeAtfErrorViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

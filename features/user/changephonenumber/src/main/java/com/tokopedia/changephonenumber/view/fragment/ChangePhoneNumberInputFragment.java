@@ -209,7 +209,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         nextButton.setEnabled(false);
         nextButton.setBackground(MethodChecker.getDrawable(getContext(), com.tokopedia.resources.common.R.drawable
                 .grey_button_rounded));
-        nextButton.setTextColor(MethodChecker.getColor(getContext(), com.tokopedia.abstraction.R.color.black_12));
+        nextButton.setTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_20));
     }
 
     @Override

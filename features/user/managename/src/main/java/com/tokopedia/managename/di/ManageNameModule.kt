@@ -16,7 +16,6 @@ import dagger.Provides
 import javax.inject.Named
 
 
-@ManageNameScope
 @Module
 class ManageNameModule(val context: Context) {
 

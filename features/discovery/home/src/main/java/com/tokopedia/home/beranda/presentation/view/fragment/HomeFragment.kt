@@ -123,6 +123,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
+import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
@@ -534,11 +535,11 @@ open class HomeFragment : BaseDaggerFragment(),
                                     }
 
                                     override fun onSwitchToLightToolbar() {
-                                        navAbTestCondition(
-                                                ifNavRevamp = {
-                                                    navToolbar?.showShadow()
-                                                }
-                                        )
+
+                                    }
+
+                                    override fun onYposChanged(yOffset: Int) {
+
                                     }
                                 }
                         ))
@@ -573,6 +574,7 @@ open class HomeFragment : BaseDaggerFragment(),
             val bottomSheet = BottomSheetUnify()
             val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
             onboardingView.onboarding_button.setOnClickListener {
+                bottomSheet.dismiss()
                 showCoachMark(bottomSheet)
             }
 
@@ -618,7 +620,6 @@ open class HomeFragment : BaseDaggerFragment(),
         //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
         //will be removed along the coachmark removal in the future
         try {
-            bottomSheet.dismiss()
             if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
                 coachMark.showCoachMark(step = coachMarkItem, index = 0)
             }
@@ -696,6 +697,8 @@ open class HomeFragment : BaseDaggerFragment(),
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.showShadow()
                         }
+                    }, ifNavRevamp = {
+                navToolbar?.showShadow(lineShadow = true)
             })
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView?.setNestedCanScroll(false)
@@ -705,7 +708,9 @@ open class HomeFragment : BaseDaggerFragment(),
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.hideShadow()
                         }
-                    }
+                    } , ifNavRevamp = {
+                navToolbar?.hideShadow(lineShadow = true)
+            }
             )
             showFeedSectionViewHolderShadow(true)
             homeRecyclerView?.setNestedCanScroll(true)
@@ -911,6 +916,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 adapter?.resetImpressionHomeBanner()
             }
         })
+        getHomeViewModel().setRollanceNavigationType(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
     }
 
     private fun observeHomeRequestNetwork() {
@@ -1224,20 +1230,22 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
-                HomeComponentCallback(getHomeViewModel()),
+                HomeComponentCallback(this),
                 DynamicLegoBannerComponentCallback(context, this),
-                RecommendationListCarouselComponentCallback(getHomeViewModel(), this),
+                RecommendationListCarouselComponentCallback(this),
                 MixLeftComponentCallback(this),
                 MixTopComponentCallback(this),
-                HomeReminderWidgetCallback(RechargeRecommendationCallback(context,getHomeViewModel(),this),
-                        SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())),
+                HomeReminderWidgetCallback(RechargeRecommendationCallback(context,this),
+                        SalamWidgetCallback(context,this, getUserSession())),
                 ProductHighlightComponentCallback(this),
                 Lego4AutoBannerComponentCallback(context, this),
                 FeaturedShopComponentCallback(context, this),
                 playWidgetCoordinator,
                 this,
                 CategoryNavigationCallback(context, this),
-                RechargeBUWidgetCallback(context, getHomeViewModel(), this)
+                RechargeBUWidgetCallback(context, this),
+                BannerComponentCallback(context, this),
+                DynamicIconComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1819,6 +1827,42 @@ open class HomeFragment : BaseDaggerFragment(),
         return getHomeViewModel().currentTopAdsBannerToken
     }
 
+    override fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int) {
+        getHomeViewModel().getDynamicChannelData(visitable, channelModel, channelPosition)
+    }
+
+    override fun getUserIdFromViewModel(): String {
+        return getHomeViewModel().getUserId()
+    }
+
+    override fun recommendationListOnCloseBuyAgain(id: String, position: Int) {
+        getHomeViewModel().onCloseBuyAgain(id, position)
+    }
+
+    override fun getOneClickCheckoutHomeComponent(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
+        getHomeViewModel().getOneClickCheckoutHomeComponent(channelModel, channelGrid, position)
+    }
+
+    override fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {
+        getHomeViewModel().declineRechargeRecommendationItem(requestParams)
+    }
+
+    override fun getRechargeRecommendation() {
+        getHomeViewModel().getRechargeRecommendation()
+    }
+
+    override fun declineSalamItem(requestParams: Map<String, Int>) {
+        getHomeViewModel().declineSalamItem(requestParams)
+    }
+
+    override fun getSalamWidget() {
+        getHomeViewModel().getSalamWidget()
+    }
+
+    override fun getRechargeBUWidget(source: WidgetSource) {
+        getHomeViewModel().getRechargeBUWidget(source)
+    }
+
     override fun onDynamicChannelRetryClicked() {
         getHomeViewModel().onDynamicChannelRetryClicked()
     }
@@ -2293,7 +2337,7 @@ open class HomeFragment : BaseDaggerFragment(),
         impressionScrollListeners.clear()
     }
 
-    override fun refreshHomeData() {
+    override fun refreshHomeData(forceRefresh: Boolean) {
         refreshLayout.isRefreshing = true
         onNetworkRetry()
     }
@@ -2484,11 +2528,10 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun playWidgetOnVisibilityChanged(
             isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
-            isUserVisibleHint: Boolean = userVisibleHint,
-            isParentHidden: Boolean = parentFragment?.isHidden ?: true
+            isUserVisibleHint: Boolean = userVisibleHint
     ) {
         if (::playWidgetCoordinator.isInitialized) {
-            val isViewVisible = isViewResumed && isUserVisibleHint && !isParentHidden
+            val isViewVisible = isViewResumed && isUserVisibleHint
 
             if (isViewVisible) playWidgetCoordinator.onResume()
             else playWidgetCoordinator.onPause()

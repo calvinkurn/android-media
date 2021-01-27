@@ -11,10 +11,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
+import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
@@ -86,6 +88,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                         setDiscoveryLiveState(it.pageInfo)
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
+                            findCustomTopChatComponentsIfAny(it.components)
                             findBottomTabNavDataComponentsIfAny(it.components)
                         }
                         setPageInfo(it)
@@ -107,7 +110,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     private fun setPageInfo(discoPageData: DiscoveryPageData?) {
         discoPageData?.pageInfo?.let { pageInfoData ->
-            pageType = pageInfoData.type ?: ""
+            pageType = if(pageInfoData.type.isNullOrEmpty()) DISCOVERY_DEFAULT_PAGE_TYPE else pageInfoData.type
             pagePath = pageInfoData.path ?: ""
             pageInfoData.additionalInfo = discoPageData.additionalInfo
             campaignCode = pageInfoData.campaignCode ?: ""
@@ -201,9 +204,20 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
                 PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
                 PIN_PRODUCT to bundle?.getString(PIN_PRODUCT, ""),
-                CATEGORY_ID to bundle?.getString(CATEGORY_ID, ""),
+                CATEGORY_ID to getCategoryId(bundle),
                 EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, "")
         )
+    }
+
+    private fun getCategoryId(bundle: Bundle?): String? {
+        discoComponentQuery?.let {
+            return if (it[CATEGORY_ID].isNullOrEmpty()) {
+                bundle?.getString(CATEGORY_ID, "") ?: ""
+            } else {
+                it[CATEGORY_ID]
+            }
+        }
+        return bundle?.getString(CATEGORY_ID, "") ?: ""
     }
 
     private fun findBottomTabNavDataComponentsIfAny(components: List<ComponentsItem>?) {

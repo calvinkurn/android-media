@@ -10,13 +10,13 @@
             android:name="com.tokopedia.topads.common.activity.SuccessActivity"
             android:label="Buat Iklan Otomatis"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.tokopedia.topads.common.activity.NoCreditActivity"
             android:label="Buat Iklan Otomatis"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
     </application>
 

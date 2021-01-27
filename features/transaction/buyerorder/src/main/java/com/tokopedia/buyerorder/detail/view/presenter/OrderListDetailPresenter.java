@@ -11,6 +11,7 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
+import com.tokopedia.buyerorder.detail.analytics.OrderListAnalyticsUtils;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.ActionButtonList;
 import com.tokopedia.buyerorder.detail.data.DetailsData;
@@ -179,7 +180,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                             getView().hideProgressBar();
                         }
                     }
-    
+
                     @Override
                     public void onNext(GraphqlResponse response) {
                         if (response != null) {
@@ -192,6 +193,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                    || orderCategory.equalsIgnoreCase(OrderListContants.BELANJA)) {
                                     requestCancelInfo = details.getRequestCancelInfo();
                                 }
+                                orderListAnalytics.sendOrderDetailImpression(
+                                        OrderListAnalyticsUtils.INSTANCE.getCategoryName(orderDetails),
+                                        OrderListAnalyticsUtils.INSTANCE.getProductName(orderDetails),
+                                        userSessionInterface.getUserId()
+                                );
                             }
 
                             if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
@@ -415,6 +421,35 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 }
             });
         }
+    }
+
+    @Override
+    public void onLihatInvoiceButtonClick(String invoiceUrl) {
+        orderListAnalytics.sendInvoiceClickEvent(
+                OrderListAnalyticsUtils.INSTANCE.getCategoryName(orderDetails),
+                OrderListAnalyticsUtils.INSTANCE.getProductName(orderDetails),
+                userSessionInterface.getUserId()
+        );
+    }
+
+    @Override
+    public void onCopyButtonClick(String copiedValue) {
+        orderListAnalytics.sendCopyButtonClickEvent(
+                OrderListAnalyticsUtils.INSTANCE.getCategoryName(orderDetails),
+                OrderListAnalyticsUtils.INSTANCE.getProductName(orderDetails),
+                userSessionInterface.getUserId()
+        );
+    }
+
+    @Override
+    public void onActionButtonClick(String buttonId, String buttonName) {
+        orderListAnalytics.sendActionButtonClickEvent(
+                OrderListAnalyticsUtils.INSTANCE.getCategoryName(orderDetails),
+                OrderListAnalyticsUtils.INSTANCE.getProductName(orderDetails),
+                buttonId,
+                buttonName,
+                userSessionInterface.getUserId()
+        );
     }
 
     @Override

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -18,9 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:layout_toStartOf="@+id/label_show_all"
-            android:layout_toLeftOf="@+id/label_show_all"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:text="@string/label_empty_cart_recent_view"
@@ -29,19 +27,29 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_show_all"
-            style="@style/TextSmallMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
+            android:layout_toStartOf="@+id/ic_show_all"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16"
             android:text="@string/label_empty_cart_see_all"
-            android:textColor="@color/tkpd_main_green"
-            app:drawableRightCompat="@drawable/ic_keyboard_arrow_right_24dp" />
+            android:textColor="@color/Unify_G400"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_show_all"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_alignTop="@+id/label_show_all"
+            android:layout_alignBottom="@+id/label_show_all"
+            android:layout_alignParentEnd="true"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_color_night_enable="@color/Unify_G500"
+            app:icon_enable_state="true"
+            app:icon_name="CHEVRON_RIGHT" />
 
     </RelativeLayout>
-
 
 </LinearLayout>
