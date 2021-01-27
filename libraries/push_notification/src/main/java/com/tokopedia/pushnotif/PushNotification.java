@@ -10,10 +10,13 @@ import android.os.Bundle;
 
 import androidx.core.app.NotificationManagerCompat;
 
+import com.tokopedia.abstraction.aidl.PushNotificationApi;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.appaidl.AidlApi;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.model.NotificationTargetPriorities;
 import com.tokopedia.pushnotif.data.repository.TransactionRepository;
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
@@ -21,13 +24,18 @@ import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.util.NotificationTracker;
+import com.tokopedia.pushnotif.util.NotificationValidationManager;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import timber.log.Timber;
 
 import static com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase.STATUS_DELIVERED;
 import static com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase.STATUS_DROPPED;
+import static com.tokopedia.pushnotif.util.AdvanceTargetUtil.advanceTargetNotification;
 
 /**
  * @author ricoharisin .
@@ -35,6 +43,24 @@ import static com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase.STATUS
 
 public class PushNotification {
     private static boolean isChatBotWindowOpen;
+    private static PushNotificationApi aidlApiApp;
+    private static Bundle aidlApiBundle;
+
+    public static void init(Context context) {
+        PushNotification.aidlApiApp = new PushNotificationApi(context, new AidlApi.ReceiverListener() {
+            @Override public void onAidlReceive(@NotNull String tag, @Nullable Bundle bundle) {
+                PushNotification.aidlApiBundle = bundle;
+            }
+
+            @Override public void onAidlError() {}
+        });
+
+        PushNotification.aidlApiApp.bindService();
+    }
+
+    public static void unbind() {
+        PushNotification.aidlApiApp.unbindService();
+    }
 
     public static void setIsChatBotWindowOpen(boolean isChatBotWindowOpen) {
         PushNotification.isChatBotWindowOpen = isChatBotWindowOpen;
@@ -42,7 +68,22 @@ public class PushNotification {
 
     public static void notify(Context context, Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
+        Bundle aidlBundle = PushNotification.aidlApiBundle;
 
+        if (aidlBundle != null) {
+            NotificationTargetPriorities targeting = advanceTargetNotification(applinkNotificationModel);
+            NotificationValidationManager validation = new NotificationValidationManager(context, targeting);
+            validation.validate(aidlBundle, () -> renderPushNotification(context, data, applinkNotificationModel));
+        } else {
+            renderPushNotification(context, data, applinkNotificationModel);
+        }
+    }
+
+    private static void renderPushNotification(
+            Context context,
+            Bundle data,
+            ApplinkNotificationModel applinkNotificationModel
+    ) {
         if (isAllowToRender(context, applinkNotificationModel)) {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
