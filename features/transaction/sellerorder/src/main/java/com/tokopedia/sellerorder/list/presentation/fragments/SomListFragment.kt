@@ -46,7 +46,6 @@ import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
-import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_ORDER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
@@ -61,6 +60,7 @@ import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModelWrapper
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
+import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerResponse
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderEmptyViewHolder
@@ -126,8 +126,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         private const val KEY_LAST_SELECTED_ORDER_ID = "lastSelectedOrderId"
 
         private const val SHARED_PREF_NEW_SOM_LIST_COACH_MARK = "newSomListCoachMark"
-
-        private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
         @JvmStatic
         fun newInstance(bundle: Bundle): SomListFragment {
@@ -294,7 +292,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setInitialOrderListParams()
-        observeUserRoles()
         observeTopAdsCategory()
         observeTickers()
         observeFilters()
@@ -359,9 +356,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         super.onHiddenChanged(hidden)
         if (!hidden) {
             SomAnalytics.sendScreenName(SomConsts.LIST_ORDER_SCREEN_NAME)
-            if (!isUserRoleFetched()) viewModel.getUserRoles()
         } else {
-            if (isUserRoleFetched()) viewModel.clearUserRoles()
             dismissCoachMark()
         }
     }
@@ -573,7 +568,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onOrderClicked(order: SomListOrderUiModel) {
         selectedOrderId = order.orderId
-        goToSomOrderDetail(this, order, viewModel.userRoleResult.value)
+        goToSomOrderDetail(this, order)
         SomAnalytics.eventClickOrderCard(order.orderStatusId, order.status)
     }
 
@@ -718,19 +713,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         rvSomList?.layoutManager = somListLayoutManager
         bulkActionCheckBoxContainer.layoutTransition.enableTransitionType(CHANGING)
         setupListeners()
-    }
-
-    private fun observeUserRoles() {
-        viewModel.userRoleResult.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> {
-                    if (!result.data.roles.any { allowedRoles.contains(it) }) {
-                        onUserNotAllowedToViewSOM()
-                    }
-                }
-                is Fail -> showGlobalError(result.throwable)
-            }
-        })
     }
 
     private fun observeTopAdsCategory() {
@@ -1055,10 +1037,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         (adapter as SomListOrderAdapter).updateOrders(newItems)
     }
 
-    private fun loadUserRoles() {
-        viewModel.getUserRoles()
-    }
-
     private fun loadTopAdsCategory() {
         viewModel.getTopAdsCategory()
     }
@@ -1110,7 +1088,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.isMultiSelectEnabled = false
         resetOrderSelectedStatus()
         isLoadingInitialData = true
-        loadUserRoles()
         loadTopAdsCategory()
         loadTickers()
         loadWaitingPaymentOrderCounter()
@@ -1386,7 +1363,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun renderTickers(data: List<TickerData>) {
         val activeTickers = data.filter { (it.itemData as? SomListTickerUiModel)?.isActive == true }
-                .onEach { it.type = Ticker.TYPE_ANNOUNCEMENT }
+                .onEach { it.type = SomListGetTickerResponse.Data.OrderTickers.Ticker.TYPE_ANNOUNCEMENT }
         var tickerPagerAdapter = tickerPagerAdapter
         if (tickerPagerAdapter == null) {
             tickerPagerAdapter = TickerPagerAdapter(context, activeTickers)
@@ -1569,9 +1546,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             tickerSomList?.gone()
             viewModel.getTickers()
         }
-        if (viewModel.userRoleResult.value is Fail) {
-            viewModel.getUserRoles()
-        }
     }
 
     private fun rejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
@@ -1640,7 +1614,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun shouldReloadOrderListImmediately(): Boolean = tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER
-    private fun isUserRoleFetched(): Boolean = viewModel.userRoleResult.value is Success
 
     override fun onClickShowOrderFilter(
             filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>,

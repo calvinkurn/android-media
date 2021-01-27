@@ -27,10 +27,9 @@ class SomDetailViewModel @Inject constructor(
         somRejectOrderUseCase: SomRejectOrderUseCase,
         somEditRefNumUseCase: SomEditRefNumUseCase,
         private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
-        private val getUserRoleUseCase: SomGetUserRoleUseCase,
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase
 ) : SomOrderBaseViewModel(dispatcher.ui(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
-        somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
+        somEditRefNumUseCase, somRejectCancelOrderRequest) {
 
     private val _orderDetailResult = MutableLiveData<Result<GetSomDetailResponse>>()
     val orderDetailResult: LiveData<Result<GetSomDetailResponse>>
@@ -68,15 +67,6 @@ class SomDetailViewModel @Inject constructor(
             _setDelivered.postValue(somSetDeliveredUseCase.execute(rawQuery, orderId, receivedBy))
         }, onError = {
             _setDelivered.postValue(Fail(it))
-        })
-    }
-
-    fun loadUserRoles(userId: Int) {
-        launchCatchError(block = {
-            getUserRoleUseCase.setUserId(userId)
-            _userRoleResult.postValue(getUserRoleUseCase.execute())
-        }, onError = {
-            _userRoleResult.postValue(Fail(it))
         })
     }
 }

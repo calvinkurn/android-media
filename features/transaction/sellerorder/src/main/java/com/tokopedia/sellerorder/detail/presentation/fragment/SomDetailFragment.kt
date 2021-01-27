@@ -52,8 +52,6 @@ import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
-import com.tokopedia.sellerorder.common.presenter.model.Roles
-import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
@@ -83,7 +81,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_USER_ROLES
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
@@ -111,6 +108,7 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetS
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerResponse
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -192,8 +190,6 @@ class SomDetailFragment : BaseDaggerFragment(),
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
 
-    private var userNotAllowedDialog: DialogUnify? = null
-
     private val connectionMonitor by lazy { context?.run { SomConnectionMonitor(this) } }
 
     companion object {
@@ -208,14 +204,11 @@ class SomDetailFragment : BaseDaggerFragment(),
 
         private const val TAG_BOTTOMSHEET = "bottomSheet"
 
-        private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
-
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
             return SomDetailFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_ORDER_ID, bundle.getString(PARAM_ORDER_ID))
-                    putParcelable(PARAM_USER_ROLES, bundle.getParcelable(PARAM_USER_ROLES))
                 }
             }
         }
@@ -250,19 +243,6 @@ class SomDetailFragment : BaseDaggerFragment(),
         startActivity(intent)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            orderId = arguments?.getString(PARAM_ORDER_ID).toString()
-            val userRoles = arguments?.getParcelable<SomGetUserRoleUiModel?>(PARAM_USER_ROLES)
-            if (userRoles != null) {
-                somDetailViewModel.setUserRoles(userRoles)
-            } else {
-                checkUserRole()
-            }
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_som_detail, container, false)
     }
@@ -279,7 +259,6 @@ class SomDetailFragment : BaseDaggerFragment(),
         observingRejectOrder()
         observingEditAwb()
         observingSetDelivered()
-        observingUserRoles()
         observeRejectCancelOrder()
     }
 
@@ -299,15 +278,6 @@ class SomDetailFragment : BaseDaggerFragment(),
         inflater.inflate(R.menu.chat_menu, menu)
     }
 
-    private fun checkUserRole() {
-        showLoading()
-        if (connectionMonitor?.isConnected == true) {
-            somDetailViewModel.getUserRoles()
-        } else {
-            showErrorState(GlobalError.NO_CONNECTION)
-        }
-    }
-
     private fun prepareLayout() {
         refreshHandler = RefreshHandler(swipe_refresh_layout, this)
         refreshHandler?.setPullEnabled(true)
@@ -319,11 +289,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             adapter = somDetailAdapter
         }
         somGlobalError?.setActionClickListener {
-            if (isUserRoleFetched(somDetailViewModel.userRoleResult.value)) {
-                loadDetail()
-            } else {
-                checkUserRole()
-            }
+            loadDetail()
         }
     }
 
@@ -459,25 +425,6 @@ class SomDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun observingUserRoles() {
-        somDetailViewModel.userRoleResult.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> {
-                    if (result.data.roles.any { allowedRoles.contains(it) }) {
-                        onUserAllowedToViewSOM()
-                    } else {
-                        onUserNotAllowedToViewSOM()
-                    }
-                }
-                is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, PAGE_NAME))
-                    result.throwable.showErrorToaster()
-                    result.throwable.showGlobalError()
-                }
-            }
-        })
-    }
-
     private fun observeRejectCancelOrder() {
         somDetailViewModel.rejectCancelOrderResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -493,19 +440,6 @@ class SomDetailFragment : BaseDaggerFragment(),
                 }
             }
         })
-    }
-
-    private fun onUserNotAllowedToViewSOM() {
-        context?.run {
-            if (userNotAllowedDialog == null) {
-                Utils.createUserNotAllowedDialog(this)
-            }
-            userNotAllowedDialog?.show()
-        }
-    }
-
-    private fun onUserAllowedToViewSOM() {
-        loadDetail()
     }
 
     private fun renderDetail() {
@@ -980,7 +914,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
             if (rejectReason.reasonTicker.isNotEmpty()) {
                 ticker_penalty_secondary?.visibility = View.VISIBLE
-                ticker_penalty_secondary?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                ticker_penalty_secondary?.tickerType = SomListGetTickerResponse.Data.OrderTickers.Ticker.TYPE_ANNOUNCEMENT
                 ticker_penalty_secondary?.setHtmlDescription(rejectReason.reasonTicker)
             } else {
                 ticker_penalty_secondary?.visibility = View.GONE
@@ -1036,7 +970,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         val viewBottomSheetShopClosed = View.inflate(context, R.layout.bottomsheet_shop_closed, null).apply {
             if (rejectReason.reasonTicker.isNotEmpty()) {
                 ticker_penalty_shop_closed?.visibility = View.VISIBLE
-                ticker_penalty_shop_closed?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                ticker_penalty_shop_closed?.tickerType = SomListGetTickerResponse.Data.OrderTickers.Ticker.TYPE_ANNOUNCEMENT
                 ticker_penalty_shop_closed?.setHtmlDescription(rejectReason.reasonTicker)
             } else {
                 ticker_penalty_shop_closed?.visibility = View.GONE
@@ -1114,7 +1048,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
             if (rejectReason.reasonTicker.isNotEmpty()) {
                 ticker_penalty_secondary?.visibility = View.VISIBLE
-                ticker_penalty_secondary?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                ticker_penalty_secondary?.tickerType = SomListGetTickerResponse.Data.OrderTickers.Ticker.TYPE_ANNOUNCEMENT
                 ticker_penalty_secondary?.setHtmlDescription(rejectReason.reasonTicker)
             } else {
                 ticker_penalty_secondary?.visibility = View.GONE
@@ -1162,7 +1096,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         val viewBottomSheetBuyerNoResponse = View.inflate(context, R.layout.bottomsheet_secondary, null).apply {
             if (rejectReason.reasonTicker.isNotEmpty()) {
                 ticker_penalty_secondary?.visibility = View.VISIBLE
-                ticker_penalty_secondary?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                ticker_penalty_secondary?.tickerType = SomListGetTickerResponse.Data.OrderTickers.Ticker.TYPE_ANNOUNCEMENT
                 ticker_penalty_secondary?.setHtmlDescription(rejectReason.reasonTicker)
             } else {
                 ticker_penalty_secondary?.visibility = View.GONE
@@ -1204,7 +1138,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         val viewBottomSheetOtherReason = View.inflate(context, R.layout.bottomsheet_secondary, null).apply {
             if (rejectReason.reasonTicker.isNotEmpty()) {
                 ticker_penalty_secondary?.visibility = View.VISIBLE
-                ticker_penalty_secondary?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                ticker_penalty_secondary?.tickerType = SomListGetTickerResponse.Data.OrderTickers.Ticker.TYPE_ANNOUNCEMENT
                 ticker_penalty_secondary?.setHtmlDescription(rejectReason.reasonTicker)
             } else {
                 ticker_penalty_secondary?.visibility = View.GONE
@@ -1386,18 +1320,12 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onRefresh(view: View?) {
-        if (isUserRoleFetched(somDetailViewModel.userRoleResult.value)) {
-            loadDetail()
-        } else {
-            checkUserRole()
-        }
+        loadDetail()
     }
 
     private fun openWebview(url: String) {
         startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
     }
-
-    private fun isUserRoleFetched(value: Result<SomGetUserRoleUiModel>?): Boolean = value is Success
 
     private fun Throwable.showGlobalError() {
         val type = if (this is UnknownHostException || this is SocketTimeoutException) {

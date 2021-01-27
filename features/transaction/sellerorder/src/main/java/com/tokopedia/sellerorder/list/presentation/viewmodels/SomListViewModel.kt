@@ -27,7 +27,6 @@ import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class SomListViewModel @Inject constructor(
-        getUserRoleUseCase: SomGetUserRoleUseCase,
         somAcceptOrderUseCase: SomAcceptOrderUseCase,
         somRejectOrderUseCase: SomRejectOrderUseCase,
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
@@ -43,7 +42,7 @@ class SomListViewModel @Inject constructor(
         private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase,
         private val authorizeAccessUseCase: AuthorizeAccessUseCase
 ) : SomOrderBaseViewModel(dispatcher.io(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
-        somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
+        somEditRefNumUseCase, somRejectCancelOrderRequest) {
 
     companion object {
         private const val MAX_RETRY_GET_ACCEPT_ORDER_STATUS = 20
@@ -207,7 +206,6 @@ class SomListViewModel @Inject constructor(
         getOrderListJob = launchCatchError(block = {
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
-            getUserRolesJob()?.join()
             getOrderListParams.nextOrderId = result.first
             if (_canShowOrderData.value == true) {
                 _orderListResult.postValue(Success(result.second))
@@ -226,7 +224,6 @@ class SomListViewModel @Inject constructor(
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
             setSearchParam(currentSearchParam)
-            getUserRolesJob()?.join()
             getOrderListParams.nextOrderId = currentNextOrderId
             _orderListResult.postValue(Success(result.second))
         }, onError = {
@@ -241,10 +238,6 @@ class SomListViewModel @Inject constructor(
         }, onError = {
             _topAdsCategoryResult.postValue(Fail(it))
         })
-    }
-
-    fun clearUserRoles() {
-        _userRoleResult.postValue(null)
     }
 
     fun isTopAdsActive(): Boolean {

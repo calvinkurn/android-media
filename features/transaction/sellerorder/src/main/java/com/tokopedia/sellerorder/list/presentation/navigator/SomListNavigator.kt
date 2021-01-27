@@ -23,14 +23,10 @@ object SomListNavigator {
     const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
     const val REQUEST_CHANGE_COURIER = 995
 
-    fun goToSomOrderDetail(fragment: SomListFragment, item: SomListOrderUiModel, userRolesResult: Result<SomGetUserRoleUiModel>?) {
+    fun goToSomOrderDetail(fragment: SomListFragment, item: SomListOrderUiModel) {
         fragment.run {
-            val userRoles = if (userRolesResult != null && userRolesResult is Success) userRolesResult.data else null
             Intent(context, SomDetailActivity::class.java).apply {
                 putExtra(SomConsts.PARAM_ORDER_ID, item.orderId)
-                userRoles?.let {
-                    putExtra(SomConsts.PARAM_USER_ROLES, it)
-                }
                 startActivityForResult(this, REQUEST_DETAIL)
             }
         }

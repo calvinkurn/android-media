@@ -853,13 +853,6 @@ class SomListViewModelTest {
     }
 
     @Test
-    fun clearUserRolesTest() {
-        viewModel.clearUserRoles()
-
-        assert(viewModel.userRoleResult.observeAwaitValue() == null)
-    }
-
-    @Test
     fun setStatusOrderFilterTest() {
         val statusOrderIds = listOf(220, 400)
         setGetDataOrderListParams()
