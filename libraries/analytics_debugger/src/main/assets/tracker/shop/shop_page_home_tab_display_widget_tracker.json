@@ -1,0 +1,44 @@
+{
+  "readme": "Shop page tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "creative_url": "{{.+}}"
+      }],
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "view_item",
+      "eventAction": "impression",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{(.+) - display widget - (.+) - (.+)}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "creative_url": "{{.+}}"
+      }],
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "select_content",
+      "eventAction": "click",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{(.+) - display widget - (.+) - (.+)}}"
+    }
+  ]
+}

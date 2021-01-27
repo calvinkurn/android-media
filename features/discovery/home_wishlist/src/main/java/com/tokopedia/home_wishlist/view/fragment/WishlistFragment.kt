@@ -3,6 +3,7 @@ package com.tokopedia.home_wishlist.view.fragment
 import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -11,6 +12,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,11 +21,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.analytics.WishlistTracking
@@ -70,7 +74,6 @@ import javax.inject.Inject
  * @property viewModelProvider the viewModelProvider by Dagger
  * @property adapterFactory the factory for handling type factory Visitor Pattern
  * @property adapter the adapter for recyclerView
- * @property menu the menu of this activity.
  * @property SPAN_COUNT the span count for list.
  * @property SHARE_PRODUCT_TITLE the const value for sharing title.
  * @property SAVED_PRODUCT_ID the const value for handling save productId at SaveInstance.
@@ -81,16 +84,18 @@ import javax.inject.Inject
  * @constructor Creates an empty recommendation.
  */
 @SuppressLint("SyntheticAccessor")
-open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
+open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var appExecutors: SmartExecutors
 
+    private lateinit var cartLocalCacheHandler: LocalCacheHandler
     private lateinit var trackingQueue: TrackingQueue
-    private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
-    internal val viewModel by lazy{ viewModelProvider.get(WishlistViewModel::class.java) }
+    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    internal val viewModel by lazy { viewModelProvider.get(WishlistViewModel::class.java) }
     private val adapterFactory by lazy { WishlistTypeFactoryImpl(appExecutors) }
     private val adapter by lazy { WishlistAdapter(appExecutors, adapterFactory, this) }
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.recycler_view) }
@@ -98,17 +103,16 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
     private val containerDelete by lazy { view?.findViewById<FrameLayout>(R.id.container_delete) }
     private val deleteButton by lazy { view?.findViewById<UnifyButton>(R.id.delete_button) }
     private val searchView by lazy { view?.findViewById<CustomSearchView>(R.id.wishlist_search_view) }
-    private val toolbar by lazy { view?.findViewById<Toolbar>(R.id.toolbar)}
-    private val appBarLayout by lazy { view?.findViewById<AppBarLayout>(R.id.app_bar_layout)}
+    private val toolbar by lazy { view?.findViewById<Toolbar>(R.id.toolbar) }
+    private val appBarLayout by lazy { view?.findViewById<AppBarLayout>(R.id.app_bar_layout) }
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private val coachMark by lazy { CoachMarkBuilder().allowPreviousButton(false).build() }
     private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) }
     private val itemDecorationBottom by lazy { SpaceBottomItemDecoration() }
     private lateinit var toolbarElevation: ToolbarElevationOffsetListener
     private val dialogUnify by lazy { DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
-    internal var menu: Menu? = null
 
-    companion object{
+    companion object {
         private const val SPAN_COUNT = 2
         private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
         private const val SAVED_PRODUCT_ID = "saved_product_id"
@@ -118,6 +122,9 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
         private const val COACH_MARK_TAG = "wishlist"
         private const val REQUEST_FROM_PDP = 394
         private const val className = "com.tokopedia.home_wishlist.view.fragment.WishlistFragment"
+        private const val CACHE_CART = "CART"
+        private const val CACHE_KEY_IS_HAS_CART = "IS_HAS_CART"
+        private const val CACHE_KEY_TOTAL_CART = "CACHE_TOTAL_CART"
         fun newInstance() = WishlistFragment()
     }
 
@@ -156,15 +163,23 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        initCartLocalCacheHandler()
         hideSearchView()
         observeData()
         viewModel.getWishlistData(shouldShowInitialPage = true)
         WishlistTracking.openWishlistPage(viewModel.getUserId())
+        showOnBoarding()
+    }
+
+    private fun initCartLocalCacheHandler() {
+        activity?.let {
+            cartLocalCacheHandler = LocalCacheHandler(it, CACHE_CART)
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        if(this::trackingQueue.isInitialized) trackingQueue.sendAll()
+        if (this::trackingQueue.isInitialized) trackingQueue.sendAll()
     }
 
 
@@ -177,26 +192,50 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater?.inflate(R.menu.wishlist_menu, menu)
+        inflater.inflate(R.menu.wishlist_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
-        this.menu = menu
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        showOnBoarding()
+        context?.let {
+            showCartBadge(menu)
+        }
+    }
+
+    private fun showCartBadge(menu: Menu?) {
+        context?.let {
+            if (::cartLocalCacheHandler.isInitialized) {
+                val drawable = ContextCompat.getDrawable(it, R.drawable.ic_cart_menu)
+                if (drawable is LayerDrawable) {
+                    val cartCount = cartLocalCacheHandler.getInt(CACHE_KEY_TOTAL_CART, 0)
+                    val countDrawable = CountDrawable(it)
+                    countDrawable.setCount(cartCount.toString())
+                    drawable.mutate()
+                    drawable.setDrawableByLayerId(R.id.ic_cart_count, countDrawable)
+                    menu?.findItem(R.id.action_cart)?.icon = drawable
+                }
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
-            R.id.manage -> manageDeleteWishlist()
-            R.id.cancel -> cancelDeleteWishlist()
-            android.R.id.home -> {
-                activity?.finish()
-                true
+        activity?.let {
+            return when (item.itemId) {
+                R.id.action_cart -> {
+                    WishlistTracking.clickCartIcon(userId = viewModel.getUserId())
+                    RouteManager.route(it, ApplinkConst.CART)
+                    it.finish()
+                    true
+                }
+                android.R.id.home -> {
+                    it.finish()
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
             }
-            else -> super.onOptionsItemSelected(item)
         }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun initView() {
@@ -207,28 +246,27 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
         initRecyclerView()
     }
 
-    private fun initToolbar(){
+    private fun initToolbar() {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             appBarLayout?.stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation)
         }
-        toolbar?.let{
+        toolbar?.let {
             toolbarElevation = ToolbarElevationOffsetListener(activity as AppCompatActivity, it)
         }
     }
 
-    private fun initSwipeRefresh(){
-        swipeToRefresh?.setOnRefreshListener{
+    private fun initSwipeRefresh() {
+        swipeToRefresh?.setOnRefreshListener {
             updateBottomMargin()
             endlessRecyclerViewScrollListener?.resetState()
-            menu?.findItem(R.id.manage)?.isVisible = false
             viewModel.getWishlistData(searchView?.getSearchText() ?: "")
         }
     }
 
-    private fun initSearchView(){
+    private fun initSearchView() {
         searchView?.setDelayTextChanged(250)
         searchView?.setListener(object : CustomSearchView.Listener {
             override fun onSearchSubmitted(text: String?) {
@@ -239,12 +277,20 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
                 updateScrollFlagForSearchView(text?.isNotEmpty() ?: false)
                 viewModel.getWishlistData(text ?: "")
             }
+
+            override fun onManageDeleteWishlistClicked() {
+                manageDeleteWishlist()
+            }
+
+            override fun onCancelDeleteWishlistClicked() {
+                cancelDeleteWishlist()
+            }
         })
     }
 
-    private fun initDeleteBulkButton(){
+    private fun initDeleteBulkButton() {
         val count = viewModel.bulkSelectCountActionData.value?.peekContent() ?: 0
-        val title = if(count == 0) getString(R.string.wishlist_delete_zero_text) else String.format(getString(R.string.wishlist_delete_text), count.toString())
+        val title = if (count == 0) getString(R.string.wishlist_delete_zero_text) else String.format(getString(R.string.wishlist_delete_text), count.toString())
         deleteButton?.setOnClickListener {
             dialogUnify.apply {
                 setTitle(title)
@@ -262,7 +308,7 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
         }
     }
 
-    private fun initRecyclerView(){
+    private fun initRecyclerView() {
         recyclerView?.layoutManager = staggeredGridLayoutManager
         recyclerView?.adapter = adapter
         GravitySnapHelper(Gravity.TOP, true).attachToRecyclerView(recyclerView)
@@ -284,7 +330,7 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
 
     private fun observeWishlistState() {
         viewModel.isWishlistState.observe(viewLifecycleOwner, Observer { state ->
-            if(state.isEmpty()) hideSearchView()
+            if (state.isEmpty()) hideSearchView()
             else showSearchView()
 
             val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
@@ -295,17 +341,15 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
             }
             endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager, 1) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    if(state.isEmpty()){
+                    if (state.isEmpty()) {
                         updateBottomMargin()
                         viewModel.getRecommendationOnEmptyWishlist(page + 1)
-                    }else{
+                    } else {
                         viewModel.getNextPageWishlistData()
                     }
                 }
             }
             recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
-
-            menu?.findItem(R.id.manage)?.isVisible = state.isSuccess()
         })
 
 
@@ -313,13 +357,13 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
 
     private fun observeWishlistData() {
         viewModel.wishlistLiveData.observe(viewLifecycleOwner, Observer { response ->
-            if(response.isNotEmpty())
+            if (response.isNotEmpty())
                 renderList(response)
             swipeToRefresh?.isRefreshing = false
         })
-        viewModel.loadMoreWishlistAction.observe(viewLifecycleOwner, Observer {
-            loadMoreWishlistActionData -> updateScrollListenerState(
-                loadMoreWishlistActionData.getContentIfNotHandled()?.hasNextPage?:false)
+        viewModel.loadMoreWishlistAction.observe(viewLifecycleOwner, Observer { loadMoreWishlistActionData ->
+            updateScrollListenerState(
+                    loadMoreWishlistActionData.getContentIfNotHandled()?.hasNextPage ?: false)
 
         })
     }
@@ -328,19 +372,14 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
         viewModel.isInBulkModeState.observe(viewLifecycleOwner, Observer { isInBulkMode ->
             if (isInBulkMode) {
                 updateBottomMargin()
-                menu?.findItem(R.id.cancel)?.isVisible = true
-                menu?.findItem(R.id.manage)?.isVisible = false
 
                 containerDelete?.show()
 
-                hideSearchView()
+                showSearchView()
                 val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
                 (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(false)
                 swipeToRefresh?.isEnabled = false
             } else {
-                menu?.findItem(R.id.cancel)?.isVisible = false
-                menu?.findItem(R.id.manage)?.isVisible = true
-
                 containerDelete?.hide()
 
                 showSearchView()
@@ -350,11 +389,11 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
             }
         })
 
-
     }
 
-    private fun observeAction(){
+    private fun observeAction() {
         viewModel.addToCartActionData.observe(viewLifecycleOwner, Observer { handleAddToCartActionData(it.getContentIfNotHandled()) })
+        viewModel.updateCartCounterActionData.observe(viewLifecycleOwner, Observer { handleUpdateCartCounterActionData(it.getContentIfNotHandled()) })
         viewModel.removeWishlistActionData.observe(viewLifecycleOwner, Observer { handleRemoveWishlistActionData(it.getContentIfNotHandled()) })
         viewModel.bulkRemoveWishlistActionData.observe(viewLifecycleOwner, Observer { handleBulkRemoveActionData(it.getContentIfNotHandled()) })
         viewModel.bulkSelectCountActionData.observe(viewLifecycleOwner, Observer { updateSelectedDeleteItem(it.peekContent()) })
@@ -372,7 +411,7 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
         }
     }
 
-    private fun renderList(list: List<WishlistDataModel>){
+    private fun renderList(list: List<WishlistDataModel>) {
         val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
         adapter.submitList(list)
         recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
@@ -382,10 +421,10 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
-    private fun updateScrollFlagForSearchView(isSearch: Boolean){
-        if(isSearch){
+    private fun updateScrollFlagForSearchView(isSearch: Boolean) {
+        if (isSearch) {
             disableScrollFlagsSearch()
-        }else {
+        } else {
             enableScrollFlagsSearch()
         }
     }
@@ -457,7 +496,7 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
     }
 
     override fun onClickCheckboxDeleteWishlist(position: Int, isChecked: Boolean) {
-        if(position != -1) viewModel.setWishlistOnMarkDelete(position, isChecked)
+        if (position != -1) viewModel.setWishlistOnMarkDelete(position, isChecked)
     }
 
     override fun onWishlistClick(parentPosition: Int, childPosition: Int, wishlistStatus: Boolean) {
@@ -517,66 +556,79 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
         WishlistTracking.impressionTopAdsBanner(item, viewModel.getUserId(), position)
     }
 
-    private fun handleAddToCartActionData(addToCartActionData: AddToCartActionData?){
+    private fun handleAddToCartActionData(addToCartActionData: AddToCartActionData?) {
         addToCartActionData?.let {
-            if(it.isSuccess){
+            if (it.isSuccess) {
                 WishlistTracking.clickBuy(cartId = it.cartId.toString(), wishlistItem = it.item)
-                showToaster(getString(R.string.wishlist_success_atc), getString(R.string.wishlist_see)){
+                showToaster(getString(R.string.wishlist_success_atc), getString(R.string.wishlist_see)) {
                     WishlistTracking.clickSeeCart()
                     RouteManager.route(context, ApplinkConst.CART)
                 }
-            }else {
-                showToaster(if(it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
+            } else {
+                showToaster(if (it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
             }
         }
     }
 
-    private fun handleAddWishlistRecommendationActionData(addWishlistRecommendationData: AddWishlistRecommendationData?){
+    private fun handleUpdateCartCounterActionData(count: Int?) {
+        activity?.let { activity ->
+            count?.let {
+                val cache = LocalCacheHandler(activity, "CART")
+                cache.putInt(CACHE_KEY_IS_HAS_CART, if (count > 0) 1 else 0)
+                cache.putInt(CACHE_KEY_TOTAL_CART, count)
+                cache.applyEditor()
+
+                activity.invalidateOptionsMenu()
+            }
+        }
+    }
+
+    private fun handleAddWishlistRecommendationActionData(addWishlistRecommendationData: AddWishlistRecommendationData?) {
         addWishlistRecommendationData?.let {
-            if(it.isSuccess){
+            if (it.isSuccess) {
                 showToaster(getString(R.string.wishlist_success_add))
-            }else {
-                showToaster(if(it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
+            } else {
+                showToaster(if (it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
             }
         }
     }
 
-    private fun handleBulkRemoveActionData(bulkRemoveWishlistActionData: BulkRemoveWishlistActionData?){
+    private fun handleBulkRemoveActionData(bulkRemoveWishlistActionData: BulkRemoveWishlistActionData?) {
         bulkRemoveWishlistActionData?.let {
-            if(it.isSuccess){
+            if (it.isSuccess) {
                 WishlistTracking.clickConfirmBulkRemoveWishlist(trackingQueue, it.productIds)
                 showToaster(getString(R.string.wishlist_success_remove), "Ok")
                 viewModel.exitBulkMode()
-            }else {
-                showToaster(if(it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
+            } else {
+                showToaster(if (it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
             }
         }
     }
 
-    private fun handleRemoveWishlistActionData(removeWishlistActionData: RemoveWishlistActionData?){
+    private fun handleRemoveWishlistActionData(removeWishlistActionData: RemoveWishlistActionData?) {
         removeWishlistActionData?.let {
-            if(it.isSuccess){
+            if (it.isSuccess) {
                 WishlistTracking.clickConfirmRemoveWishlist(productId = it.productId.toString())
                 showToaster(getString(R.string.wishlist_success_remove), "Ok")
-            }else {
-                showToaster(if(it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
+            } else {
+                showToaster(if (it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
             }
         }
     }
 
-    private fun handleRemoveWishlistRecommendationActionData(removeWishlistRecommendationData: RemoveWishlistRecommendationData?){
+    private fun handleRemoveWishlistRecommendationActionData(removeWishlistRecommendationData: RemoveWishlistRecommendationData?) {
         removeWishlistRecommendationData?.let {
-            if(it.isSuccess){
+            if (it.isSuccess) {
                 showToaster(getString(R.string.wishlist_success_remove), "Ok")
-            }else {
-                showToaster(if(it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
+            } else {
+                showToaster(if (it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
             }
         }
     }
 
-    private fun showToaster(message: String, action: String = "", actionClick: (() -> Unit)? = null){
+    private fun showToaster(message: String, action: String = "", actionClick: (() -> Unit)? = null) {
         this.view?.let {
-            if(action.isNotEmpty()) Toaster.make(it, message, actionText = action, clickListener = View.OnClickListener { actionClick?.invoke() })
+            if (action.isNotEmpty()) Toaster.make(it, message, actionText = action, clickListener = View.OnClickListener { actionClick?.invoke() })
             else Toaster.make(it, message)
         }
     }
@@ -585,7 +637,7 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
         viewModel.getWishlistData(shouldShowInitialPage = true)
     }
 
-    private fun onBulkDelete(){
+    private fun onBulkDelete() {
         viewModel.bulkRemoveWishlist()
         showSearchView()
         val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
@@ -593,23 +645,25 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
         swipeToRefresh?.isEnabled = true
     }
 
-    private fun showOnBoarding(){
-        if(!coachMark.hasShown(activity, COACH_MARK_TAG)){
-            Handler().postDelayed({
-                val manageMenu = view?.rootView?.findViewById<View>(R.id.manage)
+    private fun showOnBoarding() {
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, COACH_MARK_TAG)) {
+                Handler().postDelayed({
+                    val manageMenu = view?.rootView?.findViewById<View>(R.id.text_manage)
 
-                manageMenu?.post {
-                    val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
-                    coachMarkItems.add(
-                            CoachMarkItem(
-                                    manageMenu,
-                                    getString(R.string.wishlist_coach_mark_title),
-                                    getString(R.string.wishlist_coach_mark_description)
-                            )
-                    )
-                    coachMark.show(activity, "wishlist", coachMarkItems)
-                }
-            }, 100)
+                    manageMenu?.post {
+                        val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
+                        coachMarkItems.add(
+                                CoachMarkItem(
+                                        manageMenu,
+                                        context.getString(R.string.wishlist_coach_mark_title),
+                                        context.getString(R.string.wishlist_coach_mark_description)
+                                )
+                        )
+                        coachMark.show(activity, "wishlist", coachMarkItems)
+                    }
+                }, 100)
+        }
         }
     }
 
@@ -619,49 +673,49 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
      * @param productId the productId
      * @param position the position of the item at adapter
      */
-    private fun goToPDP(productId: String, position: Int){
+    private fun goToPDP(productId: String, position: Int) {
         RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId).run {
             putExtra(PDP_EXTRA_UPDATED_POSITION, position)
             startActivityForResult(this, REQUEST_FROM_PDP)
         }
     }
 
-    private fun manageDeleteWishlist(): Boolean{
+    private fun manageDeleteWishlist(): Boolean {
         viewModel.enterBulkMode()
         return true
     }
 
-    private fun cancelDeleteWishlist(): Boolean{
+    private fun cancelDeleteWishlist(): Boolean {
         viewModel.exitBulkMode()
         return true
     }
 
-    private fun enableScrollFlagsSearch(){
+    private fun enableScrollFlagsSearch() {
         val layoutParam = collapse?.layoutParams as? AppBarLayout.LayoutParams
         layoutParam?.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
         collapse?.layoutParams = layoutParam
     }
 
-    private fun disableScrollFlagsSearch(){
+    private fun disableScrollFlagsSearch() {
         val layoutParam = collapse?.layoutParams as? AppBarLayout.LayoutParams
         layoutParam?.scrollFlags = 0
         collapse?.layoutParams = layoutParam
     }
 
-    private fun hideSearchView(){
+    private fun hideSearchView() {
         appBarLayout?.setExpanded(false, true)
     }
 
-    private fun showSearchView(){
+    private fun showSearchView() {
         appBarLayout?.setExpanded(true, true)
     }
 
-    private fun updateSelectedDeleteItem(value: Int){
-        deleteButton?.text = if(value == 0) getString(R.string.wishlist_delete_zero_text) else String.format(getString(R.string.wishlist_delete_text), value.toString())
+    private fun updateSelectedDeleteItem(value: Int) {
+        deleteButton?.text = if (value == 0) getString(R.string.wishlist_delete_zero_text) else String.format(getString(R.string.wishlist_delete_text), value.toString())
         deleteButton?.isEnabled = value > 0
     }
 
-    private fun updateBottomMargin(){
+    private fun updateBottomMargin() {
         recyclerView?.removeItemDecoration(itemDecorationBottom)
         recyclerView?.addItemDecoration(itemDecorationBottom)
     }

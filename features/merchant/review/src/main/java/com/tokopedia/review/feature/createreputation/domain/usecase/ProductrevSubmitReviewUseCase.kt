@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.createreputation.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.review.feature.createreputation.model.ProductrevSubmitReviewResponseWrapper
@@ -17,27 +18,27 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
         const val PARAM_REVIEW_TEXT = "reviewText"
         const val PARAM_IS_ANONYMOUS = "isAnonymous"
         const val PARAM_ATTACHMENT_ID = "attachmentIDs"
-        private val query by lazy {
+        const val PARAM_UTM_SOURCE = "utmSource"
+        const val SUBMIT_REVIEW_QUERY_CLASS_NAME = "SubmitReview"
+        const val SUBMIT_REVIEW_MUTATION =
             """
-                mutation productrevSubmitReview(${'$'}reputationID: Int!,${'$'}productID: Int!, ${'$'}shopID: Int!, ${'$'}reputationScore: Int, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}attachmentIDs: [String]) {
-                  productrevSubmitReview(reputationID: ${'$'}reputationID, productID: ${'$'}productID , shopID: ${'$'}shopID, reputationScore: ${'$'}reputationScore, rating: ${'$'}rating, reviewText: ${'$'}reviewText , isAnonymous: ${'$'}isAnonymous, attachmentIDs: ${'$'}attachmentIDs) {
+                mutation productrevSubmitReview(${'$'}reputationID: Int!,${'$'}productID: Int!, ${'$'}shopID: Int!, ${'$'}reputationScore: Int, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}attachmentIDs: [String], ${'$'}utmSource: String) {
+                  productrevSubmitReview(reputationID: ${'$'}reputationID, productID: ${'$'}productID , shopID: ${'$'}shopID, reputationScore: ${'$'}reputationScore, rating: ${'$'}rating, reviewText: ${'$'}reviewText , isAnonymous: ${'$'}isAnonymous, attachmentIDs: ${'$'}attachmentIDs, utmSource: ${'$'}utmSource) {
                     success
+                    feedbackID
                   }
                 }
-            """.trimIndent()
-        }
+            """
     }
 
-    init {
+    @GqlQuery(SUBMIT_REVIEW_QUERY_CLASS_NAME, SUBMIT_REVIEW_MUTATION)
+    fun setParams(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, attachmentIds: List<String> = emptyList(), utmSource: String) {
         setTypeClass(ProductrevSubmitReviewResponseWrapper::class.java)
-        setGraphqlQuery(query)
-    }
-
-    fun setParams(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, attachmentIds: List<String> = emptyList()) {
+        setGraphqlQuery(SubmitReview.GQL_QUERY)
         setRequestParams(RequestParams.create().apply {
-            putInt(PARAM_REPUTATION_ID, reputationId)
-            putInt(PARAM_PRODUCT_ID, productId)
-            putInt(PARAM_SHOP_ID, shopId)
+            putLong(PARAM_REPUTATION_ID, reputationId)
+            putLong(PARAM_PRODUCT_ID, productId)
+            putLong(PARAM_SHOP_ID, shopId)
             if(reputationScore != 0) {
                 putInt(PARAM_REPUTATION_SCORE, reputationScore)
             }
@@ -51,6 +52,7 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
             if(attachmentIds.isNotEmpty()) {
                 putObject(PARAM_ATTACHMENT_ID, attachmentIds)
             }
+            putString(PARAM_UTM_SOURCE, utmSource)
         }.parameters)
     }
 }

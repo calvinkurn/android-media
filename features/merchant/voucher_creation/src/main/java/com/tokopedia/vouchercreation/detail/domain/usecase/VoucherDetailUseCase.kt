@@ -23,7 +23,6 @@ class VoucherDetailUseCase @Inject constructor(private val gqlRepository: Graphq
                 "    }\n" +
                 "    data{\n" +
                 "      voucher_id\n" +
-                "      shop_id\n" +
                 "      voucher_name\n" +
                 "      voucher_type\n" +
                 "      voucher_image\n" +
@@ -37,24 +36,14 @@ class VoucherDetailUseCase @Inject constructor(private val gqlRepository: Graphq
                 "      voucher_start_time\n" +
                 "      voucher_finish_time\n" +
                 "      voucher_code\n" +
-                "      galadriel_voucher_id\n" +
-                "      galadriel_catalog_id\n" +
                 "      create_time\n" +
-                "      create_by\n" +
                 "      update_time\n" +
-                "      update_by\n" +
                 "      is_public\n" +
-                "      is_quota_avaiable\n" +
                 "      voucher_type_formatted\n" +
-                "      voucher_status_formatted\n" +
                 "      voucher_discount_type_formatted\n" +
                 "      voucher_discount_amt_formatted\n" +
-                "      voucher_discount_amt_max_formatted\n" +
-                "      remaning_quota\n" +
-                "      voucher_minimum_amt_formatted\n" +
-                "      tnc\n" +
-                "      booked_global_quota\n" +
                 "      confirmed_global_quota\n" +
+                "      booked_global_quota\n" +
                 "    }\n" +
                 "  }\n" +
                 "}"

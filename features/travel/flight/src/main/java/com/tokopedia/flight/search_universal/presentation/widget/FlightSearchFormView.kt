@@ -160,6 +160,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun setViewClickListener() {
+
         switchFlightRoundTrip.setOnCheckedChangeListener { compoundButton, isChecked ->
             listener?.onRoundTripSwitchChanged(isChecked)
             toggleOneWay(isChecked)
@@ -170,38 +171,42 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         tvFlightDestinationLabel.setOnClickListener { listener?.onDestinationAirportClicked() }
         tvFlightDestinationAirport.setOnClickListener { listener?.onDestinationAirportClicked() }
         tvFlightDepartureDateLabel.setOnClickListener {
-            val departureAirport = if (flightSearchData.departureAirport.cityAirports != null &&
-                    flightSearchData.departureAirport.cityAirports.size > 0)
-                flightSearchData.departureAirport.cityCode else flightSearchData.departureAirport.airportCode
-            val arrivalAirport = if (flightSearchData.arrivalAirport.cityAirports != null &&
-                    flightSearchData.arrivalAirport.cityAirports.size > 0)
-                flightSearchData.arrivalAirport.cityCode else flightSearchData.arrivalAirport.airportCode
-
-            listener?.onDepartureDateClicked(departureAirport, arrivalAirport,
+            val departureAndArrivalAirports = getDepartureAndArrivalAirports()
+            listener?.onDepartureDateClicked(departureAndArrivalAirports.first, departureAndArrivalAirports.second,
                     flightSearchData.flightClass.id, departureDate, returnDate, isRoundTrip())
         }
         tvFlightDepartureDate.setOnClickListener {
-            val departureAirport = if (flightSearchData.departureAirport.cityAirports != null &&
-                    flightSearchData.departureAirport.cityAirports.size > 0)
-                flightSearchData.departureAirport.cityCode else flightSearchData.departureAirport.airportCode
-            val arrivalAirport = if (flightSearchData.arrivalAirport.cityAirports != null &&
-                    flightSearchData.arrivalAirport.cityAirports.size > 0)
-                flightSearchData.arrivalAirport.cityCode else flightSearchData.arrivalAirport.airportCode
-
-            listener?.onDepartureDateClicked(departureAirport, arrivalAirport,
+            val departureAndArrivalAirports = getDepartureAndArrivalAirports()
+            listener?.onDepartureDateClicked(departureAndArrivalAirports.first,
+                    departureAndArrivalAirports.second,
                     flightSearchData.flightClass.id, departureDate, returnDate, isRoundTrip())
         }
         tvFlightReturnDateLabel.setOnClickListener {
-            listener?.onReturnDateClicked(departureDate, returnDate)
+            val departureAndArrivalAirports = getDepartureAndArrivalAirports()
+            listener?.onReturnDateClicked(departureDate, returnDate, departureAndArrivalAirports.first,
+                    departureAndArrivalAirports.second, flightSearchData.flightClass.id)
         }
         tvFlightReturnDate.setOnClickListener {
-            listener?.onReturnDateClicked(departureDate, returnDate)
+            val departureAndArrivalAirports = getDepartureAndArrivalAirports()
+            listener?.onReturnDateClicked(departureDate, returnDate,
+                    departureAndArrivalAirports.first,
+                    departureAndArrivalAirports.second, flightSearchData.flightClass.id)
         }
         tvFlightPassengerLabel.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerModel) }
         tvFlightPassenger.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerModel) }
         tvFlightClassLabel.setOnClickListener { listener?.onClassClicked(flightSearchData.flightClass.id) }
         tvFlightClass.setOnClickListener { listener?.onClassClicked(flightSearchData.flightClass.id) }
         btnFlightSearch.setOnClickListener { onSaveSearch() }
+    }
+
+    private fun getDepartureAndArrivalAirports(): Pair<String, String> {
+        val departureAirport = if (flightSearchData.departureAirport.cityAirports != null &&
+                flightSearchData.departureAirport.cityAirports.size > 0)
+            flightSearchData.departureAirport.cityCode else flightSearchData.departureAirport.airportCode
+        val arrivalAirport = if (flightSearchData.arrivalAirport.cityAirports != null &&
+                flightSearchData.arrivalAirport.cityAirports.size > 0)
+            flightSearchData.arrivalAirport.cityCode else flightSearchData.arrivalAirport.airportCode
+        return Pair(departureAirport, arrivalAirport)
     }
 
     private fun setOriginAirport(departureAirportId: String,
@@ -362,7 +367,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         text.setSpan(RelativeSizeSpan(1.25f),
                 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         text.setSpan(
-                ForegroundColorSpan(ContextCompat.getColor(context, android.R.color.black)),
+                ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)),
                 0, text.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return text
@@ -430,7 +435,9 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
                                    departureDate: Date, returnDate: Date, isRoundTrip: Boolean)
 
-        fun onReturnDateClicked(departureDate: Date, returnDate: Date)
+        fun onReturnDateClicked(departureDate: Date, returnDate: Date, departureAirport: String,
+                                arrivalAirport: String, flightClassId: Int)
+
         fun onPassengerClicked(passengerModel: FlightPassengerModel?)
         fun onClassClicked(flightClassId: Int = -1)
         fun onSaveSearch(flightSearchData: FlightSearchPassDataModel)

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -18,11 +17,8 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
-
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
 import javax.inject.Inject
-import kotlin.math.abs
 
 open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<DigitalTelcoComponent>,
         TopupBillsMenuBottomSheets.MenuListener {
@@ -33,7 +29,6 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
-    lateinit var appBarLayout: AppBarLayout
     lateinit var menuTelco: Menu
 
     private fun initInjector() {
@@ -56,56 +51,9 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
         super.onCreate(savedInstanceState)
 
         initInjector()
-        intent?.handleExtra()
 
         //draw background without overdraw GPU
-        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
-
-        setAnimationAppBarLayout()
-    }
-
-    private fun setAnimationAppBarLayout() {
-        appBarLayout = findViewById(R.id.telco_app_bar_layout)
-
-        appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            var lastOffset = -1
-            override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
-                if (lastOffset == verticalOffSet) return
-
-                if (::menuTelco.isInitialized) {
-                    lastOffset = verticalOffSet
-                    if (abs(verticalOffSet) >= appBarLayout.totalScrollRange - toolbar.height) {
-                        //Collapsed
-                        (toolbar as HeaderUnify).transparentMode = false
-                        menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
-                                com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
-                        if (fragment != null && fragment is DigitalBaseTelcoFragment) {
-                            (fragment as DigitalBaseTelcoFragment).onCollapseAppBar()
-                        }
-                    } else {
-                        //Expanded
-                        (toolbar as HeaderUnify).transparentMode = true
-                        menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
-                                com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
-                        if (fragment != null && fragment is DigitalBaseTelcoFragment) {
-                            (fragment as DigitalBaseTelcoFragment).onExpandAppBar()
-                        }
-                    }
-                }
-            }
-        })
-    }
-
-    /* This Method is use to tracking Action click when user click TelcoProduct
-   */
-
-    private fun Intent.handleExtra() {
-        if (intent.data != null) {
-            val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
-            if (trackingClick != null) {
-                Timber.w("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
-            }
-        }
+        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -159,6 +107,22 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
 
     private fun navigatePageToOrder() {
         RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
+    }
+
+    fun onCollapseAppBar() {
+        (toolbar as HeaderUnify).transparentMode = false
+        if (::menuTelco.isInitialized) {
+            menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
+                    com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
+        }
+    }
+
+    fun onExpandAppBar() {
+        (toolbar as HeaderUnify).transparentMode = true
+        if (::menuTelco.isInitialized) {
+            menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
+                    com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

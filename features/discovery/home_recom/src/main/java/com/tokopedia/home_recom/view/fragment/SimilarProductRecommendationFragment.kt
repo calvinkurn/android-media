@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
+import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -23,45 +23,53 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
-import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationErrorListener
-import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
+import com.tokopedia.home_recom.model.datamodel.*
+import com.tokopedia.home_recom.util.*
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationTypeFactoryImpl
-import com.tokopedia.home_recom.view.adapter.SimilarRecommendationFilterAdapter
+import com.tokopedia.home_recom.view.viewholder.RecommendationEmptyViewHolder
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
-import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel.Companion.DEFAULT_VALUE_SORT
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.sortfilter.SortFilter
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_simillar_recommendation.view.*
 import javax.inject.Inject
 
 /**
  * Created by Lukas on 26/08/19
  */
-open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(), RecommendationListener, SimilarRecommendationFilterAdapter.FilterChipListener, RecommendationErrorListener {
+open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(),
+        RecommendationListener,
+        RecommendationErrorListener,
+        RecommendationEmptyViewHolder.RecommendationEmptyStateListener,
+        SortFilterBottomSheet.Callback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val adapterFactory by lazy { SimilarProductRecommendationTypeFactoryImpl(this, this) }
+    private val adapterFactory by lazy { SimilarProductRecommendationTypeFactoryImpl(this, this, this) }
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
     private val recommendationViewModel by lazy { viewModelProvider.get(SimilarProductRecommendationViewModel::class.java) }
     private val adapter by lazy { SimilarProductRecommendationAdapter(adapterFactory) }
-    private val filterChipAdapter by lazy { SimilarRecommendationFilterAdapter(this) }
+    private var sortFilterView: SortFilter? = null
+    private var filterSortBottomSheet: SortFilterBottomSheet? = null
     private val staggeredGrid by lazy { StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL) }
     private var trackingQueue: TrackingQueue? = null
     private var ref: String = ""
     private var source: String = ""
     private var productId: String = ""
     private var internalRef: String = ""
+    private var hasNextPage: Boolean = true
 
     companion object{
         private const val SPAN_COUNT = 2
@@ -73,11 +81,12 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         private const val REQUEST_FROM_PDP = 399
 
         @SuppressLint("SyntheticAccessor")
-        fun newInstance(productId: String = "", ref: String = "", source: String = "", internalRef: String = "") = SimilarProductRecommendationFragment().apply {
+        fun newInstance(productId: String = "", ref: String = "", source: String = "", internalRef: String = "", @FragmentInflater fragmentInflater: String = FragmentInflater.DEFAULT) = SimilarProductRecommendationFragment().apply {
             this.ref = ref
             this.source = source
             this.productId = productId
             this.internalRef = internalRef
+            this.fragmentInflater = fragmentInflater
         }
     }
 
@@ -100,39 +109,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let { trackingQueue = TrackingQueue(it) }
-        view.filter_chip_recyclerview?.adapter = filterChipAdapter
-        RecommendationPageTracking.sendScreenSimilarProductRecommendationPage("/rekomendasi/d", ref, productId)
-        getRecyclerView(view)?.apply {
-            if(this is VerticalRecyclerView) clearItemDecoration()
-            layoutManager = recyclerViewLayoutManager
-        }
+        sortFilterView = view.findViewById(R.id.filter_sort_recommendation)
+        setupRecyclerView(view)
+        setupBackToTop(view)
         enableLoadMore()
-        recommendationViewModel.recommendationItem.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when {
-                    it.status.isLoading() || it.status.isLoadMore()  -> showLoading()
-                    it.status.isEmpty() -> showEmpty()
-                    it.status.isError() -> showGetListError(it.exception)
-                    it.status.isSuccess() -> {
-                        if(it.data?.isNotEmpty() == true){
-                            it.data[0].let {
-                                activity?.run{
-                                    (this as AppCompatActivity).supportActionBar?.title = if(it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
-                                }
-                            }
-                        }
-                        clearAllData()
-                        renderList(mapDataModel(it.data ?: emptyList()), true)
-                    }
-                }
-            }
-        })
-
-        recommendationViewModel.filterChips.observe(viewLifecycleOwner, Observer {
-            if(it.status.isSuccess()){
-                it.data?.let { data -> filterChipAdapter.submitFilter(data) }
-            }
-        })
+        observeLiveData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -163,6 +144,92 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                 swipeToRefresh.isEnabled = false
             }
         }
+    }
+
+    override fun showLoading() {
+        if(hasNextPage){
+            super.showLoading()
+        }
+    }
+
+    override fun showEmpty() {
+        adapter.clearAllElements()
+        adapter.addElement(RecommendationEmptyDataModel())
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.home_recom.R.id.swipe_refresh_layout
+
+    private fun setupRecyclerView(view: View){
+        view.filter_sort_recommendation?.hide()
+        getRecyclerView(view)?.apply {
+            if(this is VerticalRecyclerView) clearItemDecoration()
+            layoutManager = recyclerViewLayoutManager
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val lastItems = staggeredGrid.findFirstCompletelyVisibleItemPositions(null)
+                    if (lastItems.isNotEmpty() && lastItems[0] >= 2) {
+                        if(!view.recom_back_to_top.isShown) {
+                            view.recom_back_to_top?.show()
+                            view.recom_back_to_top.visible()
+                        }
+                    } else {
+                        view.recom_back_to_top.gone()
+                        view.recom_back_to_top?.hide()
+                    }
+                }
+            })
+        }
+        RecommendationPageTracking.sendScreenSimilarProductRecommendationPage("/rekomendasi/d", ref, productId)
+    }
+
+    private fun setupBackToTop(view: View){
+        view.recom_back_to_top?.circleMainMenu?.setOnClickListener {
+            view.recycler_view?.smoothScrollToPosition(0)
+        }
+    }
+
+    private fun observeLiveData(){
+        recommendationViewModel.recommendationItem.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when {
+                    it.status.isLoading() -> {
+                        adapter.clearAllElements()
+                        showLoading()
+                    }
+                    it.status.isLoadMore() -> showLoading()
+                    it.status.isEmpty() -> showEmpty()
+                    it.status.isError() -> showGetListError(it.exception)
+                    it.status.isSuccess() -> {
+                        if (it.data?.isNotEmpty() == true) {
+                            it.data[0].let {
+                                activity?.run {
+                                    (this as AppCompatActivity).supportActionBar?.title = if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
+                                }
+                            }
+                            hasNextPage = true
+                            renderList(mapDataModel(it.data), true)
+                        }else{
+                            hasNextPage = false
+                            hideLoading()
+                            updateScrollListenerState(false)
+                            showToastSuccess(getString(R.string.recom_msg_empty_next_page))
+                        }
+                    }
+                }
+            }
+        })
+
+        recommendationViewModel.filterSortChip.observe(viewLifecycleOwner, Observer {
+            if (it.status.isSuccess()) {
+                it.data?.let { data ->
+                    sortFilterView?.show()
+                    setRecommendationFilterAndSort(data.quickFilterList.mapToUnifyFilterModel(this::onQuickFilterClick), data.filterAndSort.mapToFullFilterModel())
+                }
+            } else if(it.status.isLoading()){
+                sortFilterView?.hide()
+            }
+        })
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
@@ -203,17 +270,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     private fun showMessageSuccessAddWishlist() {
-        if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
-        val message = getString(R.string.recom_msg_success_add_wishlist)
-        view?.let {
-            Toaster.make(
-                    it,
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.home_recom_go_to_wishlist),
-                    View.OnClickListener { goToWishlist() })
+        showToastSuccessWithAction(getString(R.string.recom_msg_success_add_wishlist), getString(R.string.home_recom_go_to_wishlist)){
+            View.OnClickListener { goToWishlist() }
         }
     }
 
@@ -223,16 +281,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     private fun showMessageSuccessRemoveWishlist() {
-        if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
-        val message = getString(R.string.recom_msg_success_remove_wishlist)
-        Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        showToastSuccess(getString(R.string.recom_msg_success_remove_wishlist))
     }
 
     private fun showMessageFailedWishlistAction() {
-        if (activity == null) return
-        val view = activity?.findViewById<View>(android.R.id.content)
-        view?.let { Toaster.make(it, ErrorHandler.getErrorMessage(activity, null), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR) }
+        showToastError()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -256,9 +309,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         return adapter
     }
 
-    override fun onItemClicked(item: HomeRecommendationDataModel?) {
-
-    }
+    override fun onItemClicked(item: HomeRecommendationDataModel?) {}
 
     override fun getScreenName(): String = ""
 
@@ -267,7 +318,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     override fun loadData(page: Int) {
-        recommendationViewModel.getSimilarProductRecommendation(page, source, productId)
+        recommendationViewModel.getSimilarProductRecommendation(page, source, productId, ref)
     }
 
     override fun hasInitialSwipeRefresh(): Boolean {
@@ -282,13 +333,63 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         return staggeredGrid
     }
 
-    override fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {
-        return EndlessLayoutManagerListener { recyclerViewLayoutManager }
-    }
-
-    override fun refresh() {
+    override fun onRefreshRecommendation() {
         showLoading()
         loadInitialData()
+    }
+
+    override fun onCloseRecommendation() {
+        activity?.finish()
+    }
+
+    private fun setRecommendationFilterAndSort(filters: List<SortFilterItem>, dynamicFilterModel: DynamicFilterModel){
+        sortFilterView?.let { sortFilterView ->
+            if(dynamicFilterModel.data.filter.isEmpty() && dynamicFilterModel.data.sort.isEmpty()){
+                sortFilterView.sortFilterPrefix.hide()
+                sortFilterView.hide()
+            } else {
+                if(!sortFilterView.isVisible){
+                    sortFilterView.resetAllFilters()
+                    sortFilterView.show()
+                    sortFilterView.sortFilterPrefix.show()
+                }
+                sortFilterView.addItem(filters as ArrayList<SortFilterItem>)
+            }
+            val sortChip = recommendationViewModel.filterSortChip.value?.data?.filterAndSort?.sortChip?.find { it.isSelected }?.value
+            val selectedSort = if(sortChip != null && sortChip != DEFAULT_VALUE_SORT) 1 else 0
+            sortFilterView.parentListener = { openBottomSheetFilterRevamp(dynamicFilterModel) }
+            sortFilterView.indicatorCounter = dynamicFilterModel.data.filter.filter { it.title in filters.map { it.title } }.getCountSelected() + selectedSort
+        }
+    }
+
+    private fun openBottomSheetFilterRevamp(dynamicFilterModel: DynamicFilterModel){
+        filterSortBottomSheet = SortFilterBottomSheet()
+        filterSortBottomSheet?.show(
+                requireFragmentManager(),
+                recommendationViewModel.getSelectedSortFilter(),
+                dynamicFilterModel,
+                this
+        )
+
+        filterSortBottomSheet?.setOnDismissListener {
+            filterSortBottomSheet = null
+        }
+    }
+
+    private fun onQuickFilterClick(item: SortFilterItem, recom: RecommendationFilterChipsEntity.RecommendationFilterChip){
+        adapter.clearAllElements()
+        recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), ref, source, productId)
+        item.toggleSelected()
+        SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId(), "${recom.options.firstOrNull()?.key ?: ""}=${recom.options.firstOrNull()?.value ?: ""}")
+    }
+
+    /**
+     * =================================================================================
+     * Listener from [RecommendationEmptyViewHolder.RecommendationEmptyStateListener]
+     * =================================================================================
+     */
+    override fun onResetFilterClick() {
+        onRefreshRecommendation()
     }
 
     /**
@@ -305,11 +406,15 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      * @param position list of position of the item at Adapter, can be [1] or [1,2] for dynamic nested item
      */
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref, internalRef)
-        else SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref, internalRef)
-        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, position.first())
-            startActivityForResult(this, REQUEST_FROM_PDP)
+        try {
+            if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref, internalRef)
+            else SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref, internalRef)
+            RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
+                putExtra(PDP_EXTRA_UPDATED_POSITION, position.first())
+                startActivityForResult(this, REQUEST_FROM_PDP)
+            }
+        }catch (ex: Exception){
+
         }
     }
 
@@ -346,6 +451,12 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         }
     }
 
+    /**
+     * This void from Callback [RecommendationListener]
+     * It handling three dots click from product card
+     * @param item the item clicked
+     * @param position is array position, which mean more than 1 is nested
+     */
     override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
         showProductCardOptions(
                 this,
@@ -354,12 +465,28 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     /**
-     * Filter chip listener
+     * =================================================================================
+     * Listener from [SortFilterBottomSheet.Callback]
+     * =================================================================================
      */
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        adapter.clearAllElements()
+        recommendationViewModel.getRecommendationFromFullFilter(applySortFilterModel.selectedSortMapParameter, applySortFilterModel.selectedFilterMapParameter, ref, source, productId)
+        filterSortBottomSheet = null
+        val selectedFilterString = applySortFilterModel.selectedFilterMapParameter.map { "${it.key}=${it.value}" }.joinToString("&")
+        val selectedSortString = applySortFilterModel.selectedSortMapParameter.map { "${it.key}=${it.value}" }.joinToString("&")
+        applySortFilterModel.mapParameter.forEach {
+            SimilarProductRecommendationTracking.eventUserClickFullFilterChip(recommendationViewModel.userId(), "${it.key}=${it.value}")
+        }
+        var trackerParam = selectedSortString
+        if(selectedFilterString.isNotEmpty()){
+            trackerParam += if(trackerParam.isNotEmpty()) "&" else "" + selectedFilterString
+        }
+        SimilarProductRecommendationTracking.eventUserClickShowProduct(recommendationViewModel.userId(), trackerParam)
+    }
 
-    override fun onFilterAnnotationClicked(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
-        SimilarProductRecommendationTracking.eventUserClickAnnotationChip(filterChip.value)
-        recommendationViewModel.getRecommendationFromFilterChip(filterChip, source)
+    override fun getResultCount(mapParameter: Map<String, String>) {
+        filterSortBottomSheet?.setResultCountText(getString(R.string.recom_filter_sort_apply))
     }
 
     /**

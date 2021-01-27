@@ -2,13 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/manage"
-        android:title="@string/label_manage"
-        android:visible="false"
+        android:id="@+id/action_cart"
+        android:title="@string/label_cart_wishlist"
+        android:visible="true"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/cancel"
-        android:title="@string/label_cancel"
-        app:showAsAction="always"
-        android:visible="false" />
 </menu>

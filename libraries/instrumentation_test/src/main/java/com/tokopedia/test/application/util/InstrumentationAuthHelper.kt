@@ -30,6 +30,7 @@ object InstrumentationAuthHelper {
             userId = "108956738"
             email = "erick.samuel+testingtokenandroid1@tokopedia.com"
             accessTokenBearer = "kdxPYUwtF5yYMOuwZFxnFqFZea7GUpoX6m1eL1IGJ1pwB3crhQCTvKdMoYV6wIpiHgE5Xlghd0WAKPXW+yMp5w=="
+            shopId = "0"
         }
     }
 
@@ -75,12 +76,15 @@ object InstrumentationAuthHelper {
         get() = accessToken
         set(bearerToken) = setToken(bearerToken, "Bearer")
 
-    fun loginToAnUser(application: Application, idlingResource: CountingIdlingResource? = null) {
+    fun loginToAnUser(
+            application: Application,
+            idlingResource: CountingIdlingResource? = null,
+            userName: String = "fauzanofami.luthfi+01@tokopedia.com",
+            password: String = "toped12345"
+    ) {
         idlingResource?.increment()
         val userSession = UserSession(application)
 
-        val userName = "fauzanofami.luthfi+01@tokopedia.com"
-        val password = "toped12345"
         DataSource.getLoginService(application as InstrumentationTestApp).getToken(hashMapOf(
                 "username" to userName,
                 "password" to password,

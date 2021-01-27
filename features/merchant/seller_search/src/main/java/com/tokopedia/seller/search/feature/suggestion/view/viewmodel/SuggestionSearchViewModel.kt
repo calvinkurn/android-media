@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.seller.search.common.domain.mapper.GlobalSearchSellerMapper
-import com.tokopedia.seller.search.common.util.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.seller.search.feature.suggestion.domain.usecase.InsertSuccessSearchUseCase
 import com.tokopedia.seller.search.feature.suggestion.view.model.BaseSuggestionSearchSeller
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
@@ -17,10 +17,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SuggestionSearchViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatcherProvider,
-        private val getSellerSearchUseCase: GetSellerSearchUseCase,
-        private val insertSellerSearchUseCase: InsertSuccessSearchUseCase
-) : BaseViewModel(dispatcherProvider.main()) {
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getSellerSearchUseCase: GetSellerSearchUseCase,
+    private val insertSellerSearchUseCase: InsertSuccessSearchUseCase
+) : BaseViewModel(dispatcherProvider.main) {
 
     private val _getSearchSeller = MutableLiveData<Result<List<BaseSuggestionSearchSeller>>>()
     val getSellerSearch: LiveData<Result<List<BaseSuggestionSearchSeller>>>
@@ -32,7 +32,7 @@ class SuggestionSearchViewModel @Inject constructor(
 
     fun getSellerSearch(keyword: String, section: String = "", shopId: String) {
         launchCatchError(block = {
-            val responseGetSellerSearch  = withContext(dispatcherProvider.io()) {
+            val responseGetSellerSearch  = withContext(dispatcherProvider.io) {
                 getSellerSearchUseCase.params = GetSellerSearchUseCase.createParams(keyword, shopId, section)
                 GlobalSearchSellerMapper.mapToSellerSearchVisitable(getSellerSearchUseCase.executeOnBackground(), keyword)
             }
@@ -44,7 +44,7 @@ class SuggestionSearchViewModel @Inject constructor(
 
     fun insertSearchSeller(keyword: String, id: String, title: String, index: Int) {
         launchCatchError(block = {
-            val responseInsertSearch = withContext(dispatcherProvider.io()) {
+            val responseInsertSearch = withContext(dispatcherProvider.io) {
                 insertSellerSearchUseCase.params = InsertSuccessSearchUseCase.createParams(
                         keyword, id, title, index)
                 GlobalSearchSellerMapper.mapToRegisterSearchUiModel(insertSellerSearchUseCase.executeOnBackground())

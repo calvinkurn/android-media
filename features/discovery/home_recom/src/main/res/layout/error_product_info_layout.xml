@@ -69,7 +69,7 @@
                     android:textStyle="bold"
                     android:lineSpacingExtra="@dimen/sp_6"
                     android:textSize="@dimen/sp_22"
-                    android:textColor="@color/title_error_product_info"
+                    android:textColor="@color/Unify_N700_96"
                     />
 
                 <TextView
@@ -79,7 +79,7 @@
                     android:layout_marginTop="@dimen/dp_2"
                     android:text="@string/recom_message_retry_general"
                     android:textSize="@dimen/sp_12"
-                    android:textColor="@color/message_error_product_info"
+                    android:textColor="@color/Unify_N700_68"
                     android:lineSpacingExtra="@dimen/sp_6"
                     />
 

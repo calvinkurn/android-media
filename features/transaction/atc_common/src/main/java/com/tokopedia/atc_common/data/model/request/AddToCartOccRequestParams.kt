@@ -35,8 +35,15 @@ data class AddToCartOccRequestParams(
         @Expose
         var notes: String = "",
 
-        // appflyer analytics data
+        // analytics data
         var productName: String = "",
         var category: String = "",
-        var price: String = ""
+        var price: String = "",
+        var userId: String = "",
+        var categoryLevel1Id: String = "",
+        var categoryLevel1Name: String = "",
+        var categoryLevel2Id: String = "",
+        var categoryLevel2Name: String = "",
+        var categoryLevel3Id: String = "",
+        var categoryLevel3Name: String = ""
 )

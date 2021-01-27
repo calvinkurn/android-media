@@ -12,21 +12,21 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHo
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
 import com.tokopedia.attachproduct.view.viewholder.AttachProductEmptyResultViewHolder;
 import com.tokopedia.attachproduct.view.viewholder.AttachProductListItemViewHolder;
-import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
 
 /**
  * Created by Hendri on 14/02/18.
  */
 
 public class AttachProductListAdapterTypeFactory extends BaseAdapterTypeFactory
-        implements BaseListCheckableTypeFactory<AttachProductItemViewModel> {
+        implements BaseListCheckableTypeFactory<AttachProductItemUiModel> {
     private BaseCheckableViewHolder.CheckableInteractionListener checkableInteractionListener;
 
     public AttachProductListAdapterTypeFactory(BaseCheckableViewHolder.CheckableInteractionListener checkableInteractionListener) {
         this.checkableInteractionListener = checkableInteractionListener;
     }
 
-    public int type(AttachProductItemViewModel viewModel) {
+    public int type(AttachProductItemUiModel viewModel) {
         return AttachProductListItemViewHolder.LAYOUT;
     }
 

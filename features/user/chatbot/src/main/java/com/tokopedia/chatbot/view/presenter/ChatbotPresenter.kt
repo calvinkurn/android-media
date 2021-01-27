@@ -8,7 +8,6 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
@@ -23,13 +22,14 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
-import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
@@ -38,6 +38,8 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
+import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
+import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
 import com.tokopedia.chatbot.domain.subscriber.*
 import com.tokopedia.chatbot.domain.usecase.*
 import com.tokopedia.chatbot.view.listener.ChatbotContract
@@ -45,8 +47,9 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVI
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_CODE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT_DIVIDER
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.TEXT_HIDE
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -82,7 +85,10 @@ class ChatbotPresenter @Inject constructor(
         private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
         private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
         private val leaveQueueUseCase: LeaveQueueUseCase,
-        private val getTickerDataUseCase: GetTickerDataUseCase
+        private val getTickerDataUseCase: GetTickerDataUseCase,
+        private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
+        private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
+        private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
 
 
@@ -93,6 +99,7 @@ class ChatbotPresenter @Inject constructor(
         const val UPDATE_TOOLBAR = "14"
         const val CHAT_DIVIDER_DEBUGGING = "15"
         const val LIVE_CHAT_DIVIDER = "16"
+        const val QUERY_SORCE_TYPE = "Apps"
     }
 
     override fun submitCsatRating(inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
@@ -170,11 +177,13 @@ class ChatbotPresenter @Inject constructor(
 
                     val liveChatDividerAttribute = Gson().fromJson(chatResponse.attachment?.attributes, LiveChatDividerAttributes::class.java)
                     if (attachmentType == CHAT_DIVIDER_DEBUGGING) {
-                        val model = ConnectionDividerViewModel(liveChatDividerAttribute?.divider?.label, false, SHOW_TEXT, null)
-                        view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
+                        val model = ChatSepratorViewModel(sepratorMessage = liveChatDividerAttribute?.divider?.label,
+                                dividerTiemstamp = chatResponse.message.timeStampUnixNano)
+                        view.onReceiveChatSepratorEvent(model, getLiveChatQuickReply())
+
                     }
                     if(attachmentType == LIVE_CHAT_DIVIDER){
-                        mappingQueueDivider(liveChatDividerAttribute)
+                        mappingQueueDivider(liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
                     }
 
                 } catch (e: JsonSyntaxException) {
@@ -231,7 +240,7 @@ class ChatbotPresenter @Inject constructor(
         return list
     }
 
-    private fun mappingQueueDivider(liveChatDividerAttribute: LiveChatDividerAttributes) {
+    private fun mappingQueueDivider(liveChatDividerAttribute: LiveChatDividerAttributes, dividerTime: String) {
         if (!isErrorOnLeaveQueue) {
             val agentQueue = liveChatDividerAttribute.agentQueue
             if (agentQueue?.type.equals(SHOW_TEXT)) {
@@ -239,16 +248,16 @@ class ChatbotPresenter @Inject constructor(
             } else {
                 view.isBackAllowed(true)
             }
-            val model = ConnectionDividerViewModel(agentQueue?.label, true,
-                    agentQueue?.type ?: SHOW_TEXT, leaveQueue())
-            view.onReceiveConnectionEvent(model,getLiveChatQuickReply())
+            val model = ConnectionDividerViewModel(dividerMessage = agentQueue?.label, isShowButton = true,
+                    type = agentQueue?.type ?: SHOW_TEXT, leaveQueue = leaveQueue(dividerTime))
+            view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
         }
 
     }
 
-    private fun leaveQueue(): () -> Unit {
+    private fun leaveQueue(dividerTime: String): () -> Unit {
         return {
-            leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(onError(), onSuccess()))
+            leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(onError(), onSuccess(dividerTime)))
         }
     }
 
@@ -258,18 +267,11 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    private fun onSuccess(): (String) -> Unit {
+    private fun onSuccess(dividerTime: String = ""): (String) -> Unit {
         return { str ->
-            if (view!=null){
+            if (view != null) {
                 view.isBackAllowed(true)
-                if(str==ERROR_CODE){
-                    isErrorOnLeaveQueue = true
-                    val model = ConnectionDividerViewModel("",false, TEXT_HIDE, null)
-                    view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
-                }else{
-                    val model = ConnectionDividerViewModel(view.context?.getString(R.string.cb_bot_you_left_the_queue),false, SHOW_TEXT, null)
-                    view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
-                }
+                if (str == ERROR_CODE) isErrorOnLeaveQueue = true
             }
         }
     }
@@ -327,19 +329,21 @@ class ChatbotPresenter @Inject constructor(
 
     override fun getExistingChat(messageId: String,
                                  onError: (Throwable) -> Unit,
-                                 onSuccess: (ChatroomViewModel) -> Unit) {
+                                 onSuccess: (ChatroomViewModel) -> Unit,
+                                 onGetChatRatingListMessageError: (String) -> Unit) {
         if (messageId.isNotEmpty()) {
             getExistingChatUseCase.execute(GetExistingChatUseCase.generateParamFirstTime(messageId),
-                    GetExistingChatSubscriber(onError, onSuccess))
+                    GetExistingChatSubscriber(onError, onSuccess, chipGetChatRatingListUseCase, onGetChatRatingListMessageError))
         }
     }
 
     override fun loadPrevious(messageId: String, page: Int,
                               onError: (Throwable) -> Unit,
-                              onSuccess: (ChatroomViewModel) -> Unit) {
+                              onSuccess: (ChatroomViewModel) -> Unit,
+                              onGetChatRatingListMessageError: (String) -> Unit) {
         if (messageId.isNotEmpty()) {
             getExistingChatUseCase.execute(GetExistingChatUseCase.generateParam(messageId, page),
-                    GetExistingChatSubscriber(onError, onSuccess))
+                    GetExistingChatSubscriber(onError, onSuccess, chipGetChatRatingListUseCase, onGetChatRatingListMessageError))
         }
     }
 
@@ -487,6 +491,34 @@ class ChatbotPresenter @Inject constructor(
         leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(onError(), onSuccess()))
     }
 
+    override fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsViewModel?) {
+        val input = genrateInput(selectedValue, model)
+        chipSubmitHelpfulQuestionsUseCase.execute(chipSubmitHelpfulQuestionsUseCase.generateParam(input), ChipSubmitHelpfullQuestionsSubscriber(onSubmitError))
+    }
+
+    private val onSubmitError: (Throwable) -> Unit = {
+        it.printStackTrace()
+    }
+
+    private fun genrateInput(selectedValue: Int, model: HelpFullQuestionsViewModel?): SubmitOptionInput {
+        val input = SubmitOptionInput()
+        with(input) {
+            caseChatID = model?.helpfulQuestion?.caseChatId ?: ""
+            caseID = model?.helpfulQuestion?.caseId ?: ""
+            messageID = model?.messageId ?: ""
+            source = QUERY_SORCE_TYPE
+            value = selectedValue
+        }
+        return input
+    }
+
+    override fun submitChatCsat(input: ChipSubmitChatCsatInput,
+                                onsubmitingChatCsatSuccess: (String) -> Unit,
+                                onError: (Throwable) -> Unit) {
+        chipSubmitChatCsatUseCase.execute(chipSubmitChatCsatUseCase.generateParam(input),
+                ChipSubmitChatCsatSubscriber(onsubmitingChatCsatSuccess, onError))
+    }
+
     override fun detachView() {
         destroyWebSocket()
         getExistingChatUseCase.unsubscribe()
@@ -495,6 +527,9 @@ class ChatbotPresenter @Inject constructor(
         submitCsatRatingUseCase.unsubscribe()
         leaveQueueUseCase.unsubscribe()
         getTickerDataUseCase.unsubscribe()
+        chipGetChatRatingListUseCase.unsubscribe()
+        chipSubmitHelpfulQuestionsUseCase.unsubscribe()
+        chipSubmitChatCsatUseCase.unsubscribe()
         super.detachView()
     }
 

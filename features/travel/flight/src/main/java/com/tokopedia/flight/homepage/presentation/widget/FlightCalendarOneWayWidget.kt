@@ -125,8 +125,6 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
             }
         })
 
-
-
         btnClose.setOnClickListener { dismissAllowingStateLoss() }
     }
 
@@ -147,12 +145,10 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
             mapFareParam[PARAM_ARRIVAL_CODE] = arrivalCode
             mapFareParam[PARAM_YEAR] = minDate.dateToString(TRAVEL_CAL_YYYY)
             mapFareParam[PARAM_CLASS] = classFlight.toString()
-            activity?.run {
-                fareCalendarViewModel.getFareFlightCalendar(
-                        FlightCalendarQuery.QUERY_CALENDAR_FARE,
-                        mapFareParam, minDate, maxDate)
-            }
 
+            activity?.run {
+                fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minDate, maxDate)
+            }
 
             fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                 it?.let {

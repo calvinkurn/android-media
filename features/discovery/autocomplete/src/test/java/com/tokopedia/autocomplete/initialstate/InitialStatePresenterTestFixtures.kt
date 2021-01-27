@@ -90,7 +90,7 @@ internal open class InitialStatePresenterTestFixtures {
         verify { refreshInitialStateUseCase.execute(any(), any()) }
     }
 
-    protected fun `Then verify refreshPopularSearch view behavior`() {
+    protected fun `Then verify refreshPopularSearch view behavior`(refreshedPosition: Int) {
         verifyOrder {
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
@@ -100,7 +100,7 @@ internal open class InitialStatePresenterTestFixtures {
             initialStateView.showInitialStateResult(capture(slotVisitableList))
 
             //This showInitialStateResult is called when refresh popular search is clicked
-            initialStateView.showInitialStateResult(capture(slotRefreshVisitableList))
+            initialStateView.refreshViewWithPosition(refreshedPosition)
         }
     }
 

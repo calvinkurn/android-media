@@ -1,0 +1,71 @@
+[{
+  "data": {
+    "playGetWidgetV2": {
+      "data": [{
+        "__typename": "PlayWidgetChannel",
+        "ID": "10749",
+        "title": "Starterpack Wajib New Normal",
+        "widgetType": "WATCH_AGAIN",
+        "appLink": "tokopedia://play/10749",
+        "webLink": "https://www.tokopedia.com/play/update",
+        "startTime": "15 August 2020 - 11:30",
+        "config": {
+          "hasPromo": true,
+          "isReminderSet": false
+        },
+        "partner": {
+          "ID": "3418893",
+          "type": "shop",
+          "name": "Dettol Official Store"
+        },
+        "video": {
+          "ID": "6565",
+          "orientation": "vertical",
+          "type": "vod",
+          "coverUrl": "https://ecs7.tokopedia.net/img/jJtrdn/2020/8/13/c4b5dc40-532d-45c7-b188-65c718007f6e.jpg",
+          "streamSource": "https://vod.tokopedia.com/view/adaptive.m3u8?id=58b8d2e9b2bf414e8cd90ebbb675aa0f",
+          "isAutoplay": true,
+          "isShowTotalView": true,
+          "isLive": false,
+          "bufferControl": {
+            "maxBufferInSecond": 18,
+            "minBufferInSecond": 3,
+            "bufferForPlayback": 2,
+            "bufferForPlaybackAfterRebuffer": 2
+          }
+        },
+        "stats": {
+          "view": {
+            "value": 13018,
+            "formatted": "13 rb",
+            "visible": false
+          }
+        },
+        "__typename": "PlayWidgetChannel"
+      }, {
+        "__typename": "PlayWidgetBanner",
+        "__typename": "PlayWidgetBanner",
+        "backgroundURL": "https://ecs7.tokopedia.net/img/jJtrdn/2020/7/30/62d3b071-1a02-4b46-a98d-f5458919b81c.jpg",
+        "appLink": "tokopedia://webview?titlebar=false\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
+        "webLink": "www.tokopedia.com/play/channels"
+      }],
+      "meta": {
+        "isAutoRefresh": true,
+        "autoRefreshTimer": 30,
+        "widgetTitle": "Yuk, tonton sekarang",
+        "buttonText": "Lihat semua",
+        "widgetBackground": "",
+        "autoplayAmount": 2,
+        "autoplay": true,
+        "buttonApplink": "tokopedia://webview?titlebar=false\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
+        "buttonWeblink": "www.tokopedia.com/play/channels",
+        "overlayImage": "https://ecs7.tokopedia.net/stessayalp/KV-Left-Widget-September.png",
+        "overlayImageAppLink": "tokopedia://webview?titlebar=false\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
+        "overlayImageWebLink": "www.tokopedia.com/play/channels",
+        "gradient": ["#57E9FF", "#009ad6"],
+        "serverTimeOffset": "1602832346",
+        "maxAutoplayCell": 30
+      }
+    }
+  }
+}]

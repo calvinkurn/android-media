@@ -172,6 +172,7 @@ class ProductStockHandlerDialog(
             showToastErrorMessage(message)
         } else {
             viewModel.addProductToCart(
+                    userSession.userId,
                     mapToProductData(data)
             )
         }

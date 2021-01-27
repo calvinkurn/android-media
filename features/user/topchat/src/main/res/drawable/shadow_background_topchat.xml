@@ -1,32 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- dropshadow -->
     <item>
         <shape>
-            <solid android:color="#10CCCCCC" />
-            <padding
-                android:bottom="2dp"
-                android:left="0dp"
-                android:right="0dp"
-                android:top="0dp" />
-        </shape>
-    </item>
-
-    <item>
-        <shape>
-            <solid android:color="#20CCCCCC" />
-            <padding
-                android:bottom="2dp"
-                android:left="0dp"
-                android:right="0dp"
-                android:top="0dp" />
-        </shape>
-    </item>
-
-    <item>
-        <shape>
-            <solid android:color="#40CCCCCC" />
+            <solid android:color="@color/Unify_N150_44" />
             <padding
                 android:bottom="2dp"
                 android:left="0dp"
@@ -37,9 +14,8 @@
 
     <!-- content background -->
     <item>
-        <shape xmlns:android="http://schemas.android.com/apk/res/android"
-            android:shape="rectangle">
-            <solid android:color="@color/white" />
+        <shape android:shape="rectangle">
+            <solid android:color="@color/Unify_N0" />
         </shape>
     </item>
 </layer-list>

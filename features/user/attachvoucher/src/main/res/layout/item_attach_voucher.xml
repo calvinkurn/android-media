@@ -13,10 +13,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:background="@color/transparent"
+        android:background="@color/attach_voucher_transparent"
         android:clickable="false"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:buttonTint="@color/Unify_N700_68"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
@@ -43,7 +44,7 @@
 
     <com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
         android:id="@+id/voucher"
-        android:layout_width="270dp"
+        android:layout_width="@dimen/dp_attachvoucher_270"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:clipToPadding="false"

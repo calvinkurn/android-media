@@ -1,0 +1,253 @@
+{
+  "readme": "Shop page tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "networkSpeed": "{{.*}}",
+      "pageType": "/shoppage",
+      "clientId": "{{.+}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "appsflyerId": "{{.*}}",
+      "shopId": "{{.+}}",
+      "screenName": "{{/shoppage - .*}}",
+      "shopType": "{{.+}}",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click back",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{(shop profile|setting) page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click share",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{(shop profile|setting) page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "{{clickProfile|clickShopSetting}}",
+      "eventAction": "click share detail",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"x button"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{(shop profile|setting) page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "{{clickProfile|clickShopSetting}}",
+      "eventAction": "click share detail",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{.*}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click search",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click my cart",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click shop profile",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click close filter",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "{{click (follow|unfollow)}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "{{click (product|feed|review|home) tab}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click chat seller",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "productId": "{{.+}}",
+      "item_list": "{{/shoppage - (.+) - etalase chip (.+) - (login|non login)}}",
+      "dimension90": "{{.*}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "view_item_list",
+      "eventAction": "{{product list impression - etalase chip (.+) - (login|non login)}}",
+      "sessionIris": "{{.+}}",
+      "items": [{
+        "item_id": "{{.+}}",
+        "price": "{{^\\d+(.\\d+)*$}}",
+        "dimension40": "{{/shoppage - (.+) - etalase chip (.+) - (login|non login)}}",
+        "dimension90": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "item_brand": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "item_variant": "{{.+}}",
+        "item_category": "{{.+}}"
+      }],
+      "eventLabel":"{{.+}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "productId": "{{.+}}",
+      "item_list": "{{/shoppage - (.+) - etalase chip (.+) - (login|non login)}}",
+      "dimension90": "{{.*}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "select_content",
+      "eventAction": "{{click product - etalase chip (.+) - (login|non login)}}",
+      "sessionIris": "{{.+}}",
+      "items": [{
+        "item_id": "{{.+}}",
+        "price": "{{^\\d+(.\\d+)*$}}",
+        "dimension40": "{{/shoppage - (.+) - etalase chip (.+) - (login|non login)}}",
+        "dimension90": "{{.*}}",
+        "index": "{{\\d*.\\d*}}",
+        "item_name": "{{.+}}",
+        "dimension81": "{{.+}}",
+        "item_brand": "{{.+}}",
+        "dimension79": "{{.+}}",
+        "item_variant": "{{.+}}",
+        "item_category": "{{.+}}"
+      }],
+      "eventLabel":"{{.*}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "productId": "{{.+}}",
+      "dimension90": "{{.*}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "{{(add|remove) wishlist - etalase chip (.+) - (login|non login)}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{.+}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click view all",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click etalase list",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{etalase (.+)}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "{{click etalase (.+)}}",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click product list toggle",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{.+}}"
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click add product",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click setting",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    }
+  ]
+}

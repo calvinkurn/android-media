@@ -7,10 +7,12 @@ import java.io.InterruptedIOException
 import java.net.SocketException
 import java.net.UnknownHostException
 
-internal open class SearchLogger {
+open class SearchLogger {
 
     companion object {
         private const val DISCOVERY_SEARCH_ERROR_TAG = "P2#DISCOVERY_SEARCH_ERROR#%s;error=%s"
+        private const val DISCOVERY_SEARCH_TDN_ERROR_TAG = "P2#DISCOVERY_SEARCH_TDN_ERROR;error=%s"
+        private const val DISCOVERY_SEARCH_ANOMALY_TAG = "P2#DISCOVERY_SEARCH_ANOMALY#%s"
     }
 
     fun logWarning(message: String?, throwable: Throwable?) {
@@ -30,5 +32,17 @@ internal open class SearchLogger {
 
     protected open fun timberLogWarning(message: String, stackTrace: String) {
         Timber.w(DISCOVERY_SEARCH_ERROR_TAG, message, stackTrace)
+    }
+
+    fun logTDNError(throwable: Throwable?) {
+        if (throwable == null) return
+
+        Timber.w(DISCOVERY_SEARCH_TDN_ERROR_TAG, ExceptionUtils.getStackTrace(throwable))
+    }
+
+    fun logAnomalyNoKeyword(message: String?) {
+        if (message == null) return
+
+        Timber.w(DISCOVERY_SEARCH_ANOMALY_TAG, "No keyword to search result. $message")
     }
 }

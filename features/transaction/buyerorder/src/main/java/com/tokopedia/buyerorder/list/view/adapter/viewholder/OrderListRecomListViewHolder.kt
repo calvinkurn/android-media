@@ -8,12 +8,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.list.view.adapter.WishListResponseListener
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomViewModel
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
-class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics, val actionListener: ActionListener?) : AbstractViewHolder<OrderListRecomViewModel>(itemView), RecommendationCardView.TrackingListener, WishListResponseListener {
+class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics, val actionListener: ActionListener?) : AbstractViewHolder<OrderListRecomUiModel>(itemView), RecommendationCardView.TrackingListener, WishListResponseListener {
 
     companion object {
         @JvmField
@@ -21,11 +21,11 @@ class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: Orde
         var LAYOUT = R.layout.bom_item_recomnedation
     }
     private var recommendationCardView = itemView?.findViewById<RecommendationCardView>(R.id.bomRecommendationCardView)
-    private val wishlist = recommendationCardView?.findViewById<ImageView>(R.id.btn_wishlist)
+    private val wishlist = recommendationCardView?.findViewById<ImageView>(com.tokopedia.productcard.R.id.btn_wishlist)
     private var recomTitle : String = "none/other"
     private var isSelected: Boolean = false
 
-    override fun bind(element: OrderListRecomViewModel) {
+    override fun bind(element: OrderListRecomUiModel) {
         recommendationCardView?.setRecommendationModel(element.recommendationItem, this)
         recommendationCardView?.showAddToCartButton()
         recommendationCardView?.setAddToCartClickListener{
@@ -42,9 +42,9 @@ class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: Orde
 
     private fun setWishlistDrawable() {
         if(isSelected){
-            wishlist?.setImageDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.product_card_ic_wishlist_red))
+            wishlist?.setImageDrawable(MethodChecker.getDrawable(itemView.context, com.tokopedia.productcard.R.drawable.product_card_ic_wishlist_red))
         } else {
-            wishlist?.setImageDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.product_card_ic_wishlist))
+            wishlist?.setImageDrawable(MethodChecker.getDrawable(itemView.context, com.tokopedia.productcard.R.drawable.product_card_ic_wishlist))
         }
     }
 

@@ -16,7 +16,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
+import com.tokopedia.shop.settings.address.data.ShopLocationUiModel
 import com.tokopedia.shop.settings.address.presenter.ShopLocationPresenter
 import com.tokopedia.shop.settings.address.view.adapter.ShopLocationTypeFactory
 import com.tokopedia.shop.settings.address.view.listener.ShopLocationView
@@ -25,13 +25,13 @@ import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
-class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopLocationTypeFactory>(),
+class ShopSettingAddressFragment : BaseListFragment<ShopLocationUiModel, ShopLocationTypeFactory>(),
         ShopLocationView, ShopLocationViewHolder.OnIconMoreClicked, BaseEmptyViewHolder.Callback {
 
     @Inject
     lateinit var presenter: ShopLocationPresenter
 
-    var shopLocationViewModelList: List<ShopLocationViewModel>? = null
+    var shopLocationUiModelList: List<ShopLocationUiModel>? = null
 
     companion object {
         private const val REQUEST_CODE_ADD_ADDRESS = 1
@@ -66,7 +66,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
 
     override fun getAdapterTypeFactory() = ShopLocationTypeFactory(this)
 
-    override fun onItemClicked(t: ShopLocationViewModel?) {
+    override fun onItemClicked(t: ShopLocationUiModel?) {
         //no-op
     }
 
@@ -84,8 +84,8 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
         callback = this@ShopSettingAddressFragment
     }
 
-    override fun onSuccessLoadAddresses(addresses: List<ShopLocationViewModel>?) {
-        shopLocationViewModelList = addresses
+    override fun onSuccessLoadAddresses(addresses: List<ShopLocationUiModel>?) {
+        shopLocationUiModelList = addresses
         super.renderList(addresses ?: listOf())
         activity?.invalidateOptionsMenu()
     }
@@ -111,7 +111,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (shopLocationViewModelList == null) {
+        if (shopLocationUiModelList == null) {
             menu?.clear()
         } else {
             inflater?.inflate(R.menu.menu_add_shop_address, menu)
@@ -142,7 +142,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
         }
     }
 
-    override fun onIconClicked(item: ShopLocationViewModel, pos: Int) {
+    override fun onIconClicked(item: ShopLocationUiModel, pos: Int) {
         activity?.let {
             Menus(it).apply {
                 setItemMenuList(resources.getStringArray(R.array.shop_address_menu_more))
@@ -165,13 +165,13 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
         }
     }
 
-    private fun deleteShopAddress(item: ShopLocationViewModel) {
+    private fun deleteShopAddress(item: ShopLocationUiModel) {
         activity?.let {
             Dialog(it, Dialog.Type.PROMINANCE).apply {
                 setTitle(getString(R.string.title_dialog_delete_shop_address))
                 setDesc(getString(R.string.desc_dialog_delete_shop_address, item.name))
                 setBtnOk(getString(R.string.action_delete))
-                setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
+                setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
                 setOnOkClickListener { presenter.deleteItem(item); dismiss() }
                 setOnCancelClickListener { dismiss() }
                 show()
@@ -179,7 +179,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
         }
     }
 
-    private fun editShopAddress(item: ShopLocationViewModel) {
+    private fun editShopAddress(item: ShopLocationUiModel) {
         context?.let {
             startActivityForResult(ShopSettingAddressAddEditActivity
                     .createIntent(it, item, false), REQUEST_CODE_EDIT_ADDRESS)

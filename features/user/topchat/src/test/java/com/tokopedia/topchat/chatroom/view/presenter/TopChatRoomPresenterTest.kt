@@ -9,7 +9,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
@@ -19,10 +19,11 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.R
@@ -201,7 +202,7 @@ class TopChatRoomPresenterTest {
 
     object Dummy {
         const val exMessageId = "190378584"
-        const val exShopId = 423785
+        const val exShopId = 423785L
         const val exImageUploadId = "667056"
         const val exProductId = "123123"
         const val exUserId = "321321"
@@ -1114,7 +1115,7 @@ class TopChatRoomPresenterTest {
         }
         every {
             chatAttachmentUseCase.getAttachments(
-                    exMessageId.toInt(), roomModel.attachmentIds, captureLambda(), any()
+                    exMessageId.toLongOrZero(), roomModel.attachmentIds, captureLambda(), any()
             )
         } answers {
             val onSuccess = lambda<(ArrayMap<String, Attachment>) -> Unit>()
@@ -1122,7 +1123,7 @@ class TopChatRoomPresenterTest {
         }
 
         // When
-        presenter.loadAttachmentData(exMessageId.toInt(), roomModel)
+        presenter.loadAttachmentData(exMessageId.toLongOrZero(), roomModel)
 
         // Then
         val attachments = presenter.attachments
@@ -1140,7 +1141,7 @@ class TopChatRoomPresenterTest {
         val throwable = Throwable()
         every {
             chatAttachmentUseCase.getAttachments(
-                    exMessageId.toInt(), roomModel.attachmentIds, any(), captureLambda()
+                    exMessageId.toLongOrZero(), roomModel.attachmentIds, any(), captureLambda()
             )
         } answers {
             val onError = lambda<(Throwable, ArrayMap<String, Attachment>) -> Unit>()
@@ -1148,7 +1149,7 @@ class TopChatRoomPresenterTest {
         }
 
         // When
-        presenter.loadAttachmentData(exMessageId.toInt(), roomModel)
+        presenter.loadAttachmentData(exMessageId.toLongOrZero(), roomModel)
 
         // Then
         val attachments = presenter.attachments

@@ -242,12 +242,10 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     override fun showChooseProduct() {
-        if (showcaseAddAdapter?.getSelectedProductList()?.size == 0) {
-            emptyStateProduct?.setImageUrl(ImageAssets.PRODUCT_EMPTY)
-            emptyStateProduct?.visible()
-            headerUnify?.actionTextView?.isEnabled = false
-            hideSelectedProductList()
-        }
+        emptyStateProduct?.setImageUrl(ImageAssets.PRODUCT_EMPTY)
+        emptyStateProduct?.visible()
+        headerUnify?.actionTextView?.isEnabled = false
+        hideSelectedProductList()
     }
 
     override fun onDestroy() {
@@ -283,6 +281,9 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private fun initView() {
         showSoftKeyboard()
+        if(!isActionEdit) {
+            showChooseProduct()
+        }
         observeCreateShopShowcase()
         observeLoaderState()
         observeGetSelectedProductList()
@@ -374,6 +375,9 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
             context?.resources?.getString(R.string.empty_showcase_name_text)?.let {
                 textFieldShowcaseName?.setMessage(it)
             }
+            // since last ux improvement choose product is shown on initial view
+            // it will produce error when click "selesai" and texfield showcase name still empty
+            tracking.addShowcaseIsCreatedSuccessfully(shopId, shopType, isSuccess = false)
         } else {
             hideSoftKeyboard()
             if (showcaseAddAdapter?.getSelectedProductList()?.size == 0) {

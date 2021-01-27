@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.top_ads_headline">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/topads_headline_app_name"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".view.activity.HeadlineStepperActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_topads"
+                    android:path="@string/path_topads_headline_ads_creation"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".view.activity.EditFormHeadlineActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:label="@string/topads_headline_edit_form_label"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_topads"
+                    android:path="@string/path_topads_headline_ads_edit"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".view.activity.TopAdsProductListActivity"
+            android:label="@string/topads_headline_product_list_label"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".view.activity.EditTopAdsHeadlineKeywordActivity"
+            android:label="@string/topads_headline_product_list_label"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan" />
+
+    </application>
+
+</manifest>

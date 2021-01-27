@@ -7,7 +7,7 @@
         naming: path_{module}_{page}
         order by name
     -->
-    <string name="path_change_inactive_phone_form">/change-inactive-phone-form</string>
+    <string name="path_change_inactive_phone">/change-inactive-phone</string>
     <string name="path_choose_account">/choose-account</string>
     <string name="path_withdraw">/withdraw</string>
     <string name="path_autoWithdrawSettings">/autoWithdrawSettings</string>
@@ -41,6 +41,7 @@
     <string name="path_otp_push_notif_setting">/otp-push-notif-setting</string>
     <string name="path_otp_validator">/otp-validator</string>
     <string name="path_image_picker">/image-picker</string>
+    <string name="path_image_editor">/image-editor</string>
     <string name="path_webview" translatable="false">/webview</string>
     <string name="path_setting_profile_phone_verification" translatable="false">/setting-profile-phone-verification</string>
     <string name="path_setting_referral_phone_verification" translatable="false">/setting-referral-phone-verification</string>
@@ -55,8 +56,10 @@
     <string name="path_general_setting" translatable="false">/general-setting</string>
     <string name="path_account_setting" translatable="false">/account-setting</string>
     <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
+    <string name="path_payment_setting" translatable="false">/payment-setting</string>
+    <string name="path_home_account_old" translatable="false">/account-home-old</string>
+
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
-    <string name="path_change_email_register">/change-email-register</string>
     <string name="path_login">/login</string>
     <string name="path_init_register">/init-register</string>
     <string name="path_manage_name">/manage-name</string>
@@ -76,5 +79,11 @@
     <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/</string>
     <string name="two_factor_register">/two-factor-register</string>
 
+    <string name="old_home_account">/old-home-account</string>
+
+    <string name="new_home_account">/new-home-account</string>
+
     <string name="path_screen_recorder">/screen-recorder</string>
+
+    <string name="path_internal_feedback">/internal-feedback</string>
 </resources>

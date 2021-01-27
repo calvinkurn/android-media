@@ -1,40 +1,22 @@
 package com.tokopedia.checkout.domain.model.cartshipmentform
 
-import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by Irfan Khoirul on 2019-11-07.
  */
 
+@Parcelize
 data class AddressesData(
         var active: String = "",
-        var data: DataAddressData? = null
+        var disableTabs: List<String> = emptyList(),
+        var data: AddressData? = null
 ) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString() ?: "",
-            parcel.readParcelable(DataAddressData::class.java.classLoader) ?: null) {
-    }
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(active)
-        parcel.writeParcelable(data, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<AddressesData> {
+    companion object {
         const val DEFAULT_ADDRESS = "default_address";
         const val TRADE_IN_ADDRESS = "trade_in_address";
-
-        override fun createFromParcel(parcel: Parcel): AddressesData {
-            return AddressesData(parcel)
-        }
-
-        override fun newArray(size: Int): Array<AddressesData?> {
-            return arrayOfNulls(size)
-        }
     }
+
 }

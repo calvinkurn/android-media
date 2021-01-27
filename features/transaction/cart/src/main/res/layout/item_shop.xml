@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_shop_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <include
@@ -31,20 +30,18 @@
             android:paddingRight="@dimen/dp_9"
             android:paddingBottom="@dimen/dp_10">
 
-            <CheckBox
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/cb_select_shop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:button="@drawable/ic_cart_check_box"
-                android:paddingRight="@dimen/dp_10" />
+                android:layout_marginStart="@dimen/dp_6"
+                android:paddingEnd="@dimen/dp_10" />
 
             <LinearLayout
                 android:id="@+id/ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/cb_select_shop"
-                android:layout_toRightOf="@id/cb_select_shop"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -53,7 +50,6 @@
                     android:layout_width="@dimen/dp_18"
                     android:layout_height="@dimen/dp_18"
                     android:layout_marginEnd="@dimen/dp_4"
-                    android:layout_marginRight="@dimen/dp_4"
                     tools:src="@drawable/ic_badge_shop_official"
                     tools:visibility="visible" />
 
@@ -61,7 +57,7 @@
                     android:id="@+id/tv_shop_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     app:typographyType="heading_6"
                     tools:text="Loaa Store df" />
 
@@ -70,7 +66,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_8"
                     android:text="@string/label_fulfilment_wording"
                     app:labelType="general_light_grey" />
             </LinearLayout>
@@ -82,7 +77,6 @@
                 android:layout_below="@+id/ll"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_toEndOf="@+id/cb_select_shop"
-                android:layout_toRightOf="@+id/cb_select_shop"
                 android:foregroundGravity="center_vertical"
                 app:flexWrap="wrap">
 
@@ -91,10 +85,31 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:textColor="@color/light_N700_68"
-                    app:typographyType="small"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="body_3"
                     app:typographyWeight="reguler"
                     tools:text="Tangerang Selatan" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/separator_estimated_time_arrival"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/dp_4"
+                    android:paddingRight="@dimen/dp_4"
+                    android:text="|"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="body_3" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_estimated_time_arrival"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="small"
+                    app:typographyWeight="reguler"
+                    tools:text="Estimasi Tiba: 2 Hari" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/separator_pre_order"
@@ -104,7 +119,7 @@
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_4"
                     android:text="|"
-                    android:textColor="@color/light_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="small" />
 
                 <com.tokopedia.unifycomponents.Label
@@ -123,7 +138,7 @@
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_4"
                     android:text="|"
-                    android:textColor="@color/light_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="small" />
 
                 <com.tokopedia.unifycomponents.Label
@@ -142,7 +157,7 @@
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_4"
                     android:text="|"
-                    android:textColor="@color/light_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="small" />
 
                 <com.tokopedia.unifycomponents.ImageUnify
@@ -151,8 +166,8 @@
                     android:layout_height="@dimen/dp_20"
                     android:gravity="center_vertical"
                     android:scaleType="fitStart"
-                    tools:src="@color/unify_G500"
-                    app:unify_image_type="rect" />
+                    app:unify_image_type="rect"
+                    tools:src="@color/Unify_G500" />
 
             </com.google.android.flexbox.FlexboxLayout>
 

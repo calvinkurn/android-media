@@ -9,7 +9,6 @@ import javax.inject.Named
 /**
  * @author by furqan on 17/02/2020
  */
-@FlightFilterScope
 @Module
 class FlightFilterModule {
     @FlightFilterScope

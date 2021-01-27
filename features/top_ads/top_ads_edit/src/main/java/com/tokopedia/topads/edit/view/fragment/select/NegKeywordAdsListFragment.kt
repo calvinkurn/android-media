@@ -13,11 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
-import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.CURRENTLIST
 import com.tokopedia.topads.edit.utils.Constants.RESTORED_DATA
 import com.tokopedia.topads.edit.utils.Constants.SELECTED_KEYWORD
@@ -98,10 +97,9 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
                 if (s.toString().trim().isEmpty()) {
                     add_btn.isEnabled = false
                 } else if (!text.isNullOrBlank()) {
-                    setValues(false)
-                    error_text.text = text
+                    setValues(false, text)
                 } else {
-                    setValues(true)
+                    setValues(true, "")
                 }
             }
 
@@ -139,10 +137,16 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
         selected_info.text = String.format(getString(R.string.format_selected_keyword), count)
     }
 
-    private fun setValues(flag: Boolean) {
+    private fun setValues(flag: Boolean, text: CharSequence) {
         add_btn.isEnabled = flag
         editText.textFieldInput?.imeOptions = if (flag) EditorInfo.IME_ACTION_NEXT else EditorInfo.IME_ACTION_NONE
-        error_text.visibility = if (flag) View.INVISIBLE else View.VISIBLE
+        if(flag) {
+            editText.setError(false)
+            editText.setMessage(text)
+        } else {
+            editText.setError(true)
+            editText.setMessage(text)
+        }
     }
 
     private fun makeToast(s: String) {

@@ -114,6 +114,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializePerformance()
+        TimeZone.setDefault(TimeZone.getTimeZone(GMT));
         urlPDP = arguments?.getString(EXTRA_URL_PDP, "")
     }
 
@@ -247,8 +248,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 }
 
                 view.bottom_sheet_calendar.apply {
-                    getActiveDate(productDetailData).firstOrNull()?.let {
-                        calendarPickerView?.init(it,Date(productDetailData.maxEndDate.toLong() * 1000), listHoliday, getActiveDate(productDetailData))
+                    getActiveDate(productDetailData.dates).firstOrNull()?.let {
+                        calendarPickerView?.init(it,Date(productDetailData.maxEndDate.toLong() * 1000), listHoliday, getActiveDate(productDetailData.dates))
                                 ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                     }
 
@@ -281,7 +282,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 }
             } else {
                 view?.let {
-                    Toaster.make(it, it.context.getString(R.string.ent_pdp_empty_package), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.context.getString(R.string.ent_checkout_error))
+                    Toaster.build(it, it.context.getString(R.string.ent_pdp_empty_package), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, it.context.getString(R.string.ent_checkout_error)).show()
                 }
             }
         }
@@ -297,7 +298,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         val navIcon = event_pdp_toolbar.navigationIcon
 
-        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0) }?.let {
+        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }?.let {
             navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
         }
         (activity as EventPDPActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
@@ -314,7 +315,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
                 if (scrollRange + verticalOffset == 0) {
                     event_pdp_collapsing_toolbar.title = productDetailData.title
-                    context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }?.let {
+                    context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }?.let {
                         navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
                     }
                     event_pdp_toolbar.menu.getItem(0).setIcon(com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_black)
@@ -323,7 +324,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     isShow = true
                 } else if (isShow) {
                     event_pdp_collapsing_toolbar.title = ""
-                    context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0) }?.let {
+                    context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }?.let {
                         navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
                     }
                     event_pdp_toolbar.menu.getItem(0).setIcon(com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_white)
@@ -520,6 +521,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         const val DEFAULT_PIN = "DEFAULT_PIN"
         const val ENT_PDP_PERFORMANCE = "et_event_pdp"
+        const val GMT = "GMT+7"
 
         const val REQUEST_CODE_LOGIN_WITH_DATE = 100
         const val REQUEST_CODE_LOGIN_WITHOUT_DATE = 101

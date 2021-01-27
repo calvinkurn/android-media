@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.presentation.view.fragment;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.search.di.module.AdvertisingLocalCacheHandlerModule;
 import com.tokopedia.search.di.module.GraphqlRepositoryModule;
 import com.tokopedia.search.di.module.RecommendationModule;
 import com.tokopedia.search.di.module.RemoteConfigModule;
@@ -11,6 +10,7 @@ import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule;
 import com.tokopedia.search.di.module.UserSessionModule;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule;
+import com.tokopedia.search.result.domain.usecase.getlocalsearchrecommendation.GetLocalSearchRecommendationUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.getproductcount.GetProductCountUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule;
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule;
@@ -28,9 +28,9 @@ import dagger.Component;
         SearchProductUseCaseModule.class,
         GetProductCountUseCaseModule.class,
         GetDynamicFilterGqlUseCaseModule.class,
+        GetLocalSearchRecommendationUseCaseModule.class,
         ResourcesModule.class,
         GraphqlRepositoryModule.class,
-        AdvertisingLocalCacheHandlerModule.class,
         SearchOnBoardingLocalCacheModule.class,
         TopAdsUrlHitterModule.class,
         ProductionSchedulersProviderModule.class,

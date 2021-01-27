@@ -8,7 +8,7 @@
     android:background="@drawable/topads_bg_top_round">
 
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ic_ilustration"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="@string/yuk_isi_kredit_sekarang"
-        android:textColor="@color/topads_heading_color"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_2"
         app:layout_constraintBottom_toTopOf="@+id/subtitle"
         app:layout_constraintEnd_toEndOf="parent"

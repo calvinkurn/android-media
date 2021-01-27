@@ -2,7 +2,6 @@ package com.tokopedia.topads.common.view.widget
 
 import android.app.Activity
 import android.content.Context
-import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -18,6 +17,7 @@ import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -186,7 +186,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
         val spannableText = SpannableString(moreInfo)
         val startIndex = 0
         val endIndex = spannableText.length
-        spannableText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
                 when (status) {
@@ -212,7 +212,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)
+                ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             }
         }
         spannableText.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -223,15 +223,17 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
     private fun setSwitchAction(view: View) {
         val switch = view.findViewById<SwitchUnify>(R.id.btn_switch)
         val setting = view.findViewById<ImageView>(R.id.setting)
+        setting.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.topads_common_setting))
         switch.isChecked = true
         when (entryPoint) {
             ENTRY_FROM_EDIT_PAGE -> {
                 setting.visibility = View.GONE
                 switch.visibility = View.VISIBLE
                 switch.setOnClickListener {
-                    val manual = ManualAdsConfirmationCommonSheet.newInstance(context as BaseActivity, ::switchToManual)
-                    manual.show()
+                    val manual = ManualAdsConfirmationCommonSheet.newInstance()
+                    manual.show((view.context as FragmentActivity).supportFragmentManager, "")
                     manual.dismissed = { switch.isChecked = true }
+                    manual.manualClick = { switchToManual() }
                 }
             }
             ENTRY_FROM_DETAIL_SHEET -> {
@@ -308,22 +310,20 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
         baseLayout?.addView(view)
         view.let { it ->
             imgBg.background = drawable
+            it.setting.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.topads_common_setting))
             it.progress_status1.text = "Rp $dailyUsage"
-            it.progress_status2.text = String.format(view.context.resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), currentBudget)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                progress_bar.setProgress(dailyUsage, true)
-            } else {
-                progress_bar.progress = dailyUsage
-            }
+            it.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), currentBudget)
+            it.progress_bar.setValue(dailyUsage, true)
             it.btn_switch.isChecked = true
             when (entryPoint) {
                 ENTRY_FROM_EDIT_PAGE -> {
                     it.setting.visibility = View.GONE
                     it.btn_switch.visibility = View.VISIBLE
                     it.btn_switch.setOnClickListener {
-                        val man = ManualAdsConfirmationCommonSheet.newInstance(context as BaseActivity, ::switchToManual)
-                        man.show()
+                        val man = ManualAdsConfirmationCommonSheet.newInstance()
+                        man.show((view.context as FragmentActivity).supportFragmentManager, "")
                         man.dismissed = { it.btn_switch.isChecked = true }
+                        man.manualClick = { switchToManual() }
                     }
                 }
                 ENTRY_FROM_DETAIL_SHEET -> {

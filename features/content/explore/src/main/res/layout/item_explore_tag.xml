@@ -17,7 +17,7 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_12"
-        android:textColor="@color/explore_tag_text"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_14"
         android:textStyle="normal"
         tools:text="Fashion Wanita" />

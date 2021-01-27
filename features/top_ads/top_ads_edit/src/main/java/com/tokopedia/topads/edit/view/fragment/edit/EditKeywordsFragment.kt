@@ -19,13 +19,13 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.KeywordDataItem
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
-import com.tokopedia.topads.edit.data.param.DataSuggestions
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
-import com.tokopedia.topads.edit.data.response.ResponseBidInfo
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.CURRENT_KEY_TYPE
 import com.tokopedia.topads.edit.utils.Constants.FROM_EDIT
@@ -41,6 +41,7 @@ import com.tokopedia.topads.edit.utils.Constants.MIN_SUGGESTION
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.REQUEST_OK
 import com.tokopedia.topads.edit.utils.Constants.SELECTED_DATA
@@ -61,7 +62,7 @@ import javax.inject.Inject
 
 
 private const val CLICK_SETUP_KEY = "click - setup keyword"
-
+private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
 class EditKeywordsFragment : BaseDaggerFragment() {
 
     @Inject
@@ -82,8 +83,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
     private var userID: String = ""
-
-
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
@@ -220,7 +219,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
 
-    private fun onSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
+    private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         minSuggestKeyword = data[0].minBid
         maxSuggestKeyword = data[0].maxBid
         adapter.setBid(minSuggestKeyword)
@@ -290,6 +289,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         })
         add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_plus_add_keyword))
         add_keyword.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_KATA_KUNCI, "")
             onAddKeyword()
         }
     }
@@ -299,18 +299,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         if (data.isEmpty()) {
             setEmptyView()
         } else {
-            val negKeyword: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
             data.forEach { result ->
                 if ((result.type == KEYWORD_TYPE_EXACT || result.type == KEYWORD_TYPE_PHRASE) && result.status != -1) {
                     adapter.items.add(EditKeywordItemViewModel(result))
                     isnewlyAddded.add(false)
                     initialBudget.add(result.priceBid)
                     originalKeyList.add(result.tag)
-                } else if (result.status != -1) {
-                    negKeyword.add(result)
                 }
             }
-            sharedViewModel.setNegKeywords(negKeyword)
             if (adapter.items.isEmpty()) {
                 setEmptyView()
             } else {
@@ -396,6 +392,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         bundle.putParcelableArrayList(POSITIVE_CREATE, addedKeywords)
         bundle.putParcelableArrayList(POSITIVE_DELETE, deletedKeywords)
         bundle.putParcelableArrayList(POSITIVE_EDIT, editedKeywords)
+        bundle.putParcelableArrayList(POSITIVE_KEYWORD_ALL, list)
         return bundle
     }
 

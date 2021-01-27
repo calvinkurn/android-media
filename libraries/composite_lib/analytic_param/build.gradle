@@ -35,7 +35,7 @@ compileTestKotlin {
 project.ext {
     artifactId = 'param'
     groupId = 'com.tokopedia.analytic'
-    versionName = "0.0.2"
+    versionName = "0.0.3"
     artifactName = "analytic_param"
 }
 

@@ -8,7 +8,7 @@
             android:configChanges="uiMode"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -19,12 +19,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".detail.view.activity.RequestCancelActivity"
-            android:label="@string/title_activity_people_reason"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustPan" />
 
         <activity android:name=".detail.view.activity.OrderListwebViewActivity"
             android:screenOrientation="portrait"
@@ -39,7 +33,7 @@
             android:theme="@style/Theme.White" >
 
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -65,13 +59,13 @@
 
         <activity
             android:name=".list.view.activity.OrderListActivity"
-            android:label="@string/title_order_list"
+            android:label="@string/title_buyer_order_list"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
 
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -181,13 +175,6 @@
         </activity>
 
         <activity
-            android:name=".list.view.activity.SellerOrderListActivity"
-            android:label="@string/title_order_list"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Toolbar.White" />
-
-        <activity
             android:name=".detail.view.activity.BuyerRequestCancelActivity"
             android:label="@string/title_buyer_request_cancel"
             android:screenOrientation="portrait"
@@ -201,7 +188,7 @@
             android:theme="@style/Theme.White">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

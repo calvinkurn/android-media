@@ -13,7 +13,6 @@ import javax.inject.Named
  * @author okasurya on 5/17/18.
  */
 @Module
-@AnalyticsDebuggerScope
 class AnalyticsDebuggerModule {
     @Provides
     fun provideContext(@ApplicationContext context: Context): Context {

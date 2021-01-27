@@ -1,0 +1,172 @@
+[{
+  "data": {
+    "GetShopProduct": {
+      "status": "",
+      "errors": "",
+      "data": [{
+        "product_id": "1246981109",
+        "name": "Produk Non Variant 09/10",
+        "product_url": "https://www.tokopedia.com/tokocampaign07/produk-non-variant-09-10?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D3645",
+        "stock": 10,
+        "status": 1,
+        "price": {
+          "text_idr": "Rp 15.000"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": true,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 0,
+          "rating": 0,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "15000.00",
+          "discounted_price_fmt": "1500.00",
+          "discounted_percentage": "90",
+          "discounted_price": "0",
+          "is_upcoming": true,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/9/1e94d12a-7864-418c-9122-69074c70d1f4.jpg",
+          "thumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/9/1e94d12a-7864-418c-9122-69074c70d1f4.jpg",
+          "resize300": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/9/1e94d12a-7864-418c-9122-69074c70d1f4.jpg"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": false,
+          "imgURL": ""
+        },
+        "label_groups": [{
+          "position": "gimmick",
+          "type": "lightOrange",
+          "title": "Segera Hadir"
+        }]
+      }, {
+        "product_id": "1246979281",
+        "name": "Produk Variant 2 09/10 - XXL",
+        "product_url": "https://www.tokopedia.com/tokocampaign07/produk-variant-2-09-10-xxl?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D777",
+        "stock": 10,
+        "status": 1,
+        "price": {
+          "text_idr": "Rp 150.000"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": true,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": true,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 0,
+          "rating": 0,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "150000.00",
+          "discounted_price_fmt": "15000.00",
+          "discounted_percentage": "90",
+          "discounted_price": "0",
+          "is_upcoming": true,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/9/0bdfb4ed-0502-4f09-870c-71e678bb666a.jpg",
+          "thumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/9/0bdfb4ed-0502-4f09-870c-71e678bb666a.jpg",
+          "resize300": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/9/0bdfb4ed-0502-4f09-870c-71e678bb666a.jpg"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": false,
+          "imgURL": ""
+        },
+        "label_groups": [{
+          "position": "gimmick",
+          "type": "lightOrange",
+          "title": "Segera Hadir"
+        }]
+      }, {
+        "product_id": "1246102688",
+        "name": "Produk NPL 4 Variant Min Order 2 - Putih, 12 Pak",
+        "product_url": "https://www.tokopedia.com/tokocampaign07/produk-npl-4-variant-min-order-2-putih-12-pak?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D2245",
+        "stock": 10,
+        "status": 1,
+        "price": {
+          "text_idr": "Rp 15.000"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": true,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": true,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 0,
+          "rating": 0,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "15000.00",
+          "discounted_price_fmt": "1500.00",
+          "discounted_percentage": "90",
+          "discounted_price": "0",
+          "is_upcoming": true,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/9/22d9aaa1-f089-4e9e-a3da-791a11b5fdcc.jpg",
+          "thumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/9/22d9aaa1-f089-4e9e-a3da-791a11b5fdcc.jpg",
+          "resize300": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/9/22d9aaa1-f089-4e9e-a3da-791a11b5fdcc.jpg"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": false,
+          "imgURL": ""
+        },
+        "label_groups": [{
+          "position": "gimmick",
+          "type": "lightOrange",
+          "title": "Segera Hadir"
+        }]
+      }],
+      "totalData": 3
+    }
+  }
+}]

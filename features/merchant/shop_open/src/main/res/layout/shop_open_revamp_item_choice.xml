@@ -18,7 +18,7 @@
             android:layout_marginBottom="@dimen/dp_18"
             android:layout_marginTop="@dimen/dp_18"
             android:clickable="true"
-            android:textColor="@color/title_text"
+            android:textColor="@color/Unify_N700_96"
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/text_default_choice_item" />
 
@@ -35,7 +35,7 @@
     </RelativeLayout>
 
     <View
-        android:background="@color/line_separator"
+        android:background="@color/Unify_N75"
         android:layout_height="@dimen/dp_1"
         android:layout_width="fill_parent">
     </View>

@@ -9,8 +9,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +21,8 @@ import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.videoplayer.utils.showToast
 
 /**
@@ -211,9 +211,9 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private lateinit var mRecyclerView: RecyclerView
-    private lateinit var mProgressBar: ProgressBar
+    private lateinit var mProgressBar: ProgressBarUnify
     private lateinit var mLayoutError: LinearLayout
-    private lateinit var mTextViewError: TextView
+    private lateinit var mTextViewError: Typography
 
     override fun initView(view: View) {
         mRecyclerView = view.findViewById(R.id.recyclerview_bottomsheet)
@@ -261,7 +261,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                         object : ShareCallback {
                             override fun urlCreated(linkerShareData: LinkerShareResult) {
                                 activity?.let {
-                                    ClipboardHandler().copyToClipboard(it, data?.originalTextContent
+                                    ClipboardHandler().copyToClipboard(it, data?.uri
                                             ?: "")
                                 }
                             }
@@ -328,8 +328,8 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         return Intent(ACTION_INSTAGRAM_STORY)
                 .setType(MimeType.IMAGE.typeString)
                 .putExtra(IG_STORY_EXTRA_STICKER_URI, mediaUri)
-                .putExtra(IG_STORY_EXTRA_TOP_BG, getString(R.color.share_ig_story_top_bg))
-                .putExtra(IG_STORY_EXTRA_BOTTOM_BG, getString(R.color.share_ig_story_bottom_bg))
+                .putExtra(IG_STORY_EXTRA_TOP_BG, getString(com.tokopedia.unifyprinciples.R.color.Unify_N75))
+                .putExtra(IG_STORY_EXTRA_BOTTOM_BG, getString(com.tokopedia.unifyprinciples.R.color.Unify_T400))
                 .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
 

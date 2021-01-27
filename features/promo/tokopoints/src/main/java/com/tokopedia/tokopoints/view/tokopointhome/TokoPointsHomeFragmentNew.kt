@@ -40,7 +40,6 @@ import com.tokopedia.tokopoints.view.intro.RewardIntroActivity
 import com.tokopedia.tokopoints.view.intro.RewardIntroFragment
 import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
-import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.tokopointhome.banner.SectionVerticalBanner11ViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.banner.SectionVerticalBanner21ViewBinder
@@ -123,7 +122,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     private fun initObserver() {
-        addRedeemCouponObserver()
         addTokopointDetailObserver()
         addRewardIntroObserver()
     }
@@ -146,25 +144,27 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     private fun hideStatusBar() {
-        coordinatorLayout!!.fitsSystemWindows = false
+        coordinatorLayout?.fitsSystemWindows = false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            coordinatorLayout!!.requestApplyInsets()
+            coordinatorLayout?.requestApplyInsets()
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            var flags = coordinatorLayout!!.systemUiVisibility
-            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            coordinatorLayout!!.systemUiVisibility = flags
-            activity!!.window.statusBarColor = Color.WHITE
+            var flags = coordinatorLayout?.systemUiVisibility
+            flags = flags?.or(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+            if (flags != null) {
+                coordinatorLayout?.systemUiVisibility = flags
+            }
+            activity?.window?.statusBarColor = Color.WHITE
         }
         if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
             setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
         }
         if (Build.VERSION.SDK_INT >= 19) {
-            activity!!.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
         if (Build.VERSION.SDK_INT >= 21) {
             setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-            activity!!.window.statusBarColor = Color.TRANSPARENT
+            activity?.window?.statusBarColor = Color.TRANSPARENT
         }
     }
 
@@ -209,36 +209,25 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 is Loading -> showLoading()
                 is ErrorMessage -> {
                     hideLoading()
-                    onError(it.data, NetworkDetector.isConnectedToInternet(context))
+                    onError(SHOW_ERROR_TOOLBAR, NetworkDetector.isConnectedToInternet(context))
                 }
                 is Success -> {
                     hideLoading()
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList)
+                    renderRewardUi(it.data.topSectionResponse, it.data.sectionList)
                 }
             }
         }
     })
 
-    private fun addRedeemCouponObserver() = mPresenter.onRedeemCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-        it?.let { RouteManager.route(context, it) }
-    })
-
-    override fun onSuccessResponse(data: TokopediaRewardTopSection?, sections: List<SectionContent>) {
-        mContainerMain?.displayedChild = CONTAINER_DATA
-        addDynamicToolbar(data?.dynamicActionList)
-        renderExploreSectionTab(sections, data)
-    }
-
-    override fun onError(error: String, hasInternet: Boolean) {
+    override fun onError(error: Int, hasInternet: Boolean) {
         if (mContainerMain != null) {
             mContainerMain?.displayedChild = CONTAINER_ERROR
-            serverErrorView?.showErrorUi(hasInternet)
+            serverErrorView?.showErrorUi(hasInternet,error)
         }
     }
-
     private fun initViews(view: View) {
         coordinatorLayout = view.findViewById(R.id.container)
         mContainerMain = view.findViewById(R.id.container_main)
@@ -257,7 +246,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
         view?.findViewById<View>(R.id.img_egg)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_membership_value)?.setOnClickListener(this)
-        serverErrorView?.setErrorButtonClickListener { mPresenter.getTokoPointDetail() }
+        serverErrorView?.setErrorButtonClickListener(View.OnClickListener {
+            mPresenter.getTokoPointDetail()
+        })
+        serverErrorView?.setErrorBackButtonClickListener(View.OnClickListener { activity?.onBackPressed() })
     }
 
     override fun openWebView(url: String) {
@@ -300,119 +292,126 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         adapter?.notifyItemChanged(0)
     }
 
-    override fun renderExploreSectionTab(sections: List<SectionContent>, data: TokopediaRewardTopSection?) {
-        if (sections.isEmpty()) {
+    override fun renderRewardUi(topSectionData: TopSectionResponse?,sections: List<SectionContent>) {
+
+        if (topSectionData?.tokopediaRewardTopSection?.dynamicActionList.isNullOrEmpty() &&
+                topSectionData?.tokopediaRewardTopSection?.tier != null && sections.isEmpty()) {
+            onError(SHOW_ERROR_TOOLBAR, true)
             return
         }
+        mContainerMain?.displayedChild = CONTAINER_MAIN
+        addDynamicToolbar(topSectionData?.tokopediaRewardTopSection?.dynamicActionList)
+
         if (adapter == null) {
-
-            val topSectionViewBinder = TopSectionViewBinder(data, this, toolbarItemList)
-
+            val topSectionViewBinder = TopSectionViewBinder(topSectionData, this, toolbarItemList)
             @Suppress("UNCHECKED_CAST")
             viewBinders.put(
                     CommonConstant.SectionLayoutType.TOPHEADER,
                     topSectionViewBinder as SectionItemBinder)
-            data?.let { sectionList.add(0, it) }
+            topSectionData?.let { sectionList.add(0,it) }
 
-            for (sectionContent in sections) {
-                if (sectionContent.layoutCouponAttr != null && sectionContent.layoutCouponAttr.couponList != null && !sectionContent.layoutCouponAttr.couponList.isEmpty()) {
-                    sectionListViewBinder = SectionHorizontalViewBinder()
-                    @Suppress("UNCHECKED_CAST")
-                    viewBinders.put(
-                            sectionContent.layoutType,
-                            sectionListViewBinder as SectionItemBinder)
-                    sectionList.add(sectionContent)
-                }
-                if (sectionContent.layoutTickerAttr != null && sectionContent.layoutTickerAttr.tickerList != null && !sectionContent.layoutTickerAttr.tickerList.isEmpty()) {
-                    val sectionTickerViewBinder = SectionTickerViewBinder()
-                    @Suppress("UNCHECKED_CAST")
-                    viewBinders.put(
-                            sectionContent.layoutType,
-                            sectionTickerViewBinder as SectionItemBinder)
-                    sectionList.add(sectionContent)
-                }
-
-                if (sectionContent.layoutCategoryAttr != null && sectionContent.layoutCategoryAttr.categoryTokopointsList != null
-                        && !sectionContent.layoutCategoryAttr.categoryTokopointsList.isEmpty()) {
-                    val sectionCategoryViewBinder = SectionVerticalCategoryViewBinder()
-                    @Suppress("UNCHECKED_CAST")
-                    viewBinders.put(
-                            sectionContent.layoutType,
-                            sectionCategoryViewBinder as SectionItemBinder)
-                    sectionList.add(sectionContent)
-                }
-
-                if (sectionContent.layoutCatalogAttr != null && sectionContent.layoutCatalogAttr.catalogList != null && !sectionContent.layoutCatalogAttr.catalogList.isEmpty()) {
-                    val sectionCatalogListViewBinder = SectionHoriZontalCatalogViewBinder(mPresenter)
-                    @Suppress("UNCHECKED_CAST")
-                    viewBinders.put(
-                            sectionContent.layoutType,
-                            sectionCatalogListViewBinder as SectionItemBinder)
-                    sectionList.add(sectionContent)
-                }
-
-                if (sectionContent.layoutTopAdsAttr != null && sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()) {
-
-                    val sectionTopAdsViewBinder = SectionTopadsViewBinder()
-                    @Suppress("UNCHECKED_CAST")
-                    viewBinders.put(
-                            sectionContent.layoutType,
-                            sectionTopAdsViewBinder as SectionItemBinder)
-                    sectionList.add(sectionContent)
-
-                }
-                when (sectionContent.layoutBannerAttr.bannerType) {
-                    CommonConstant.BannerType.BANNER_2_1 -> {
-                        val verticalImagesViewBinder = SectionVerticalBanner21ViewBinder()
+            if (!sections.isNullOrEmpty()) {
+                for (sectionContent in sections) {
+                    if (sectionContent.layoutCouponAttr != null && sectionContent.layoutCouponAttr.couponList != null && !sectionContent.layoutCouponAttr.couponList.isEmpty()) {
+                        sectionListViewBinder = SectionHorizontalViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalImagesViewBinder as SectionItemBinder)
+                                sectionContent.layoutType,
+                                sectionListViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
-
                     }
-                    CommonConstant.BannerType.BANNER_3_1 -> {
-                        val verticalBanner31ViewBinder = SectionVerticalBanner31ViewBinder()
+                    if (sectionContent.layoutTickerAttr != null && sectionContent.layoutTickerAttr.tickerList != null && !sectionContent.layoutTickerAttr.tickerList.isEmpty()) {
+                        val sectionTickerViewBinder = SectionTickerViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalBanner31ViewBinder as SectionItemBinder)
+                                sectionContent.layoutType,
+                                sectionTickerViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
                     }
 
-                    CommonConstant.BannerType.BANNER_1_1 -> {
-                        val verticalBanner11ViewBinder = SectionVerticalBanner11ViewBinder()
+                    if (sectionContent.layoutCategoryAttr != null && sectionContent.layoutCategoryAttr.categoryTokopointsList != null
+                            && !sectionContent.layoutCategoryAttr.categoryTokopointsList!!.isEmpty()) {
+                        val sectionCategoryViewBinder = SectionVerticalCategoryViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalBanner11ViewBinder as SectionItemBinder)
-                        sectionList.add(sectionContent)
-                    }
-                    CommonConstant.BannerType.COLUMN_2_1_BY_1,
-                    CommonConstant.BannerType.COLUMN_2_3_BY_4,
-                    CommonConstant.BannerType.COLUMN_3_1_BY_1 -> {
-                        val verticalColumn234ViewBinder = SectionVerticalColumnViewBinder()
-                        @Suppress("UNCHECKED_CAST")
-                        viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalColumn234ViewBinder as SectionItemBinder)
+                                sectionContent.layoutType,
+                                sectionCategoryViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
                     }
 
-                    CommonConstant.BannerType.CAROUSEL_1_1,
-                    CommonConstant.BannerType.CAROUSEL_2_1,
-                    CommonConstant.BannerType.CAROUSEL_3_1 -> {
-                        val verticalCarousel31ViewBinder = SectionHorizontalCarouselViewBinder()
+                    if (sectionContent.layoutCatalogAttr != null && sectionContent.layoutCatalogAttr.catalogList != null && !sectionContent.layoutCatalogAttr.catalogList!!.isEmpty()) {
+                        val sectionCatalogListViewBinder = SectionHoriZontalCatalogViewBinder(mPresenter)
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalCarousel31ViewBinder as SectionItemBinder)
+                                sectionContent.layoutType,
+                                sectionCatalogListViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
                     }
-                    else -> {
+
+                    if (sectionContent.layoutTopAdsAttr != null && sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()) {
+
+                        val sectionTopAdsViewBinder = SectionTopadsViewBinder()
+                        @Suppress("UNCHECKED_CAST")
+                        viewBinders.put(
+                                sectionContent.layoutType,
+                                sectionTopAdsViewBinder as SectionItemBinder)
+                        sectionList.add(sectionContent)
+
+                    }
+                    when (sectionContent.layoutBannerAttr.bannerType) {
+                        CommonConstant.BannerType.BANNER_2_1 -> {
+                            val verticalImagesViewBinder = SectionVerticalBanner21ViewBinder()
+                            @Suppress("UNCHECKED_CAST")
+                            viewBinders.put(
+                                    sectionContent.layoutBannerAttr.bannerType,
+                                    verticalImagesViewBinder as SectionItemBinder)
+                            sectionList.add(sectionContent)
+
+                        }
+                        CommonConstant.BannerType.BANNER_3_1 -> {
+                            val verticalBanner31ViewBinder = SectionVerticalBanner31ViewBinder()
+                            @Suppress("UNCHECKED_CAST")
+                            viewBinders.put(
+                                    sectionContent.layoutBannerAttr.bannerType,
+                                    verticalBanner31ViewBinder as SectionItemBinder)
+                            sectionList.add(sectionContent)
+                        }
+
+                        CommonConstant.BannerType.BANNER_1_1 -> {
+                            val verticalBanner11ViewBinder = SectionVerticalBanner11ViewBinder()
+                            @Suppress("UNCHECKED_CAST")
+                            viewBinders.put(
+                                    sectionContent.layoutBannerAttr.bannerType,
+                                    verticalBanner11ViewBinder as SectionItemBinder)
+                            sectionList.add(sectionContent)
+                        }
+                        CommonConstant.BannerType.COLUMN_2_1_BY_1,
+                        CommonConstant.BannerType.COLUMN_2_3_BY_4,
+                        CommonConstant.BannerType.COLUMN_3_1_BY_1 -> {
+                            val verticalColumn234ViewBinder = SectionVerticalColumnViewBinder()
+                            @Suppress("UNCHECKED_CAST")
+                            viewBinders.put(
+                                    sectionContent.layoutBannerAttr.bannerType,
+                                    verticalColumn234ViewBinder as SectionItemBinder)
+                            sectionList.add(sectionContent)
+                        }
+
+                        CommonConstant.BannerType.CAROUSEL_1_1,
+                        CommonConstant.BannerType.CAROUSEL_2_1,
+                        CommonConstant.BannerType.CAROUSEL_3_1 -> {
+                            val verticalCarousel31ViewBinder = SectionHorizontalCarouselViewBinder()
+                            @Suppress("UNCHECKED_CAST")
+                            viewBinders.put(
+                                    sectionContent.layoutBannerAttr.bannerType,
+                                    verticalCarousel31ViewBinder as SectionItemBinder)
+                            sectionList.add(sectionContent)
+                        }
+                        else -> {
+                        }
                     }
                 }
             }
+
 
 
             adapter = SectionAdapter(viewBinders)
@@ -449,7 +448,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun hideLoading() {
-        mContainerMain?.displayedChild = CONTAINER_DATA
+        mContainerMain?.displayedChild = CONTAINER_MAIN
     }
 
     override fun getAppContext(): Context {
@@ -490,8 +489,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     companion object {
         private const val CONTAINER_LOADER = 0
-        private const val CONTAINER_DATA = 1
+        private const val CONTAINER_MAIN = 1
         private const val CONTAINER_ERROR = 2
+        private const val SHOW_ERROR_TOOLBAR = 1
 
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()

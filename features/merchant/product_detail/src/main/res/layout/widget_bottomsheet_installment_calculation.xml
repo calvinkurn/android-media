@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/rounded_corner_top_left_top_right"
+    android:background="@drawable/product_detail_rounded_corner_top_left_top_right"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
-        android:id="@+id/layout_title"
+        android:id="@+id/pdp_installment_layout_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
@@ -17,7 +17,7 @@
         android:padding="@dimen/dp_16">
 
         <ImageView
-            android:id="@+id/btn_close"
+            android:id="@+id/pdp_installment_btn_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -25,7 +25,7 @@
             app:srcCompat="@drawable/ic_close_default" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_title"
+            android:id="@+id/pdp_installment_tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
@@ -49,13 +49,13 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabBackground="@color/white"
+            app:tabBackground="@color/Unify_N0"
             app:tabGravity="fill"
-            app:tabIndicatorColor="@color/tkpd_green_header"
+            app:tabIndicatorColor="@color/Unify_G400"
             app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/tkpd_green_header"
+            app:tabSelectedTextColor="@color/Unify_G400"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-            app:tabTextColor="@color/black_38" />
+            app:tabTextColor="@color/Unify_N700_32" />
 
         <View
             android:layout_width="match_parent"

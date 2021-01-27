@@ -219,7 +219,7 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         val profilePicture = getSharedPreference(STICKY_LOGIN_REMINDER_PREF).getString(KEY_PROFILE_PICTURE, "")
 
         textContent.setContent(TEXT_RE_LOGIN + name)
-        textContent.setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
+        textContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
 
         profilePicture?.let {
             imageViewLeft.loadImageCircle(it)

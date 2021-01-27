@@ -1,5 +1,6 @@
 package com.tokopedia.review.common.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponseWrapper
@@ -10,7 +11,8 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
 
     companion object {
         const val PARAM_FEEDBACK_ID = "feedbackID"
-        private val query by lazy {
+        const val REVIEW_DETAIL_QUERY_CLASS_NAME = "ReviewDetail"
+        private const val REVIEW_DETAIL_QUERY =
             """
                 query productrevGetReviewDetail(${'$'}feedbackID: Int!) {
                   productrevGetReviewDetail(feedbackID: ${'$'}feedbackID) {
@@ -49,19 +51,16 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
                     }
                   }
                 }
-            """.trimIndent()
-        }
+            """
     }
 
-    init {
-        setGraphqlQuery(query)
+    @GqlQuery(REVIEW_DETAIL_QUERY_CLASS_NAME, REVIEW_DETAIL_QUERY)
+    fun setRequestParams(feedbackID: Long) {
+        setGraphqlQuery(ReviewDetail.GQL_QUERY)
         setTypeClass(ProductrevGetReviewDetailResponseWrapper::class.java)
-    }
-
-    fun setRequestParams(feedbackID: Int) {
         setRequestParams(
                 RequestParams.create().apply {
-                    putInt(PARAM_FEEDBACK_ID, feedbackID)
+                    putLong(PARAM_FEEDBACK_ID, feedbackID)
                 }.parameters
         )
     }

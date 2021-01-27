@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="grey_icon_light_toolbar">#666666</color>
-    <color name="green_go_apotik">#d6ffde</color>
-    <color name="red_ribbon">#EF144A</color>
-    <color name="bg_contdown_white">#F8F8F8</color>
-    <color name="light_N700_AE">#ae31353b</color>
-    <color name="bg_countdown_red">#fd412b</color>
-    <color name="grey_separator">#f3f4f5</color>
-    <color name="pink_discount">#FFEAEF</color>
-    <color name="pdp_inactive_page_control">#AD6C727C</color>
-    <color name="gray_text_color">#f531353b</color>
+    <color name="product_detail_dms_shadow_color_1">#00CCCCCC</color>
+    <color name="product_detail_dms_shadow_color_2">#10CCCCCC</color>
+    <color name="product_detail_dms_shadow_color_3">#15CCCCCC</color>
+    <color name="product_detail_dms_shadow_color_4">#20CCCCCC</color>
+    <color name="product_detail_dms_shadow_color_5">#25CCCCCC</color>
+
+    <color name="product_detail_dms_white">@color/Unify_N0</color>
+    <color name="product_detail_dms_page_control">@color/Unify_N700</color>
+    <color name="product_detail_dms_cashback_green">@color/Unify_G200</color>
+    <color name="product_detail_dms_discount_red_background">@color/Unify_R100</color>
 </resources>

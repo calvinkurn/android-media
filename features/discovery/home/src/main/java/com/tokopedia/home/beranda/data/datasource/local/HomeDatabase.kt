@@ -17,7 +17,7 @@ abstract class HomeDatabase: RoomDatabase() {
     abstract fun homeDao(): HomeDao
     companion object{
         const val homeDatabase = "HomeCache.db"
-        const val homeVersion = 3
+        const val homeVersion = 5
         fun buildDatabase(context: Context) = Room.databaseBuilder(context.applicationContext, HomeDatabase::class.java, homeDatabase).fallbackToDestructiveMigration().build()
     }
 }

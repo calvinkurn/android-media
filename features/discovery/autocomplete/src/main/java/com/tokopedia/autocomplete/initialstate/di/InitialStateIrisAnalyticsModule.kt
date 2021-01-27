@@ -6,7 +6,6 @@ import com.tokopedia.iris.IrisAnalytics
 import dagger.Module
 import dagger.Provides
 
-@InitialStateScope
 @Module
 class InitialStateIrisAnalyticsModule {
     @Provides

@@ -1,12 +1,22 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
+import android.content.Context
+import android.graphics.Color
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.search_inspiration_carousel_option_list.view.*
 
 class InspirationCarouselOptionListViewHolder(
@@ -24,11 +34,11 @@ class InspirationCarouselOptionListViewHolder(
 
         val productOption = item.product.getOrNull(0) ?: return
 
+        bindImpressionListener(productOption)
         bindProductImage(productOption.imgUrl)
         bindProductName(productOption.name)
         bindProductPrice(productOption.priceStr)
-        bindProductRating(productOption.rating)
-        bindReviewCount(productOption.countReview)
+        bindSalesAndRating(productOption)
     }
 
     private fun bindOptionTitle(title: String) {
@@ -58,6 +68,18 @@ class InspirationCarouselOptionListViewHolder(
         }
     }
 
+    private fun bindImpressionListener(product: InspirationCarouselViewModel.Option.Product) {
+        itemView.productImage?.addOnImpressionListener(product, createViewHintListener(product))
+    }
+
+    private fun createViewHintListener(product: InspirationCarouselViewModel.Option.Product): ViewHintListener {
+        return object: ViewHintListener {
+            override fun onViewHint() {
+                inspirationCarouselListener.onImpressedInspirationCarouselListProduct(product)
+            }
+        }
+    }
+
     private fun bindProductImage(imgUrl: String) {
         itemView.productImage?.shouldShowWithAction(imgUrl.isNotEmpty()) {
             ImageHandler.loadImageFitCenter(itemView.context, it, imgUrl)
@@ -76,28 +98,53 @@ class InspirationCarouselOptionListViewHolder(
         }
     }
 
-    private fun bindProductRating(rating: Int) {
-        itemView.productRating?.shouldShowWithAction(rating > 0){
-            itemView.imageViewRating1?.setImageResource(getRatingDrawable(rating >= 1))
-            itemView.imageViewRating2?.setImageResource(getRatingDrawable(rating >= 2))
-            itemView.imageViewRating3?.setImageResource(getRatingDrawable(rating >= 3))
-            itemView.imageViewRating4?.setImageResource(getRatingDrawable(rating >= 4))
-            itemView.imageViewRating5?.setImageResource(getRatingDrawable(rating >= 5))
+    private fun bindSalesAndRating(product: InspirationCarouselViewModel.Option.Product) {
+        bindRatingSalesFloat(product)
+        bindTextIntegrityWithSalesRatingFloat(product)
+    }
+
+    private fun bindRatingSalesFloat(product: InspirationCarouselViewModel.Option.Product) {
+        val willShowSalesRatingFloat = product.willShowRating()
+
+        itemView.optionListCardImageSalesRatingFloat?.showWithCondition(willShowSalesRatingFloat)
+
+        itemView.optionListCardSalesRatingFloat?.shouldShowWithAction(willShowSalesRatingFloat) {
+            it.text = product.ratingAverage
         }
     }
 
-    private fun getRatingDrawable(isActive: Boolean): Int {
-        return if(isActive) R.drawable.search_inspiration_carousel_ic_rating_active
-        else R.drawable.search_inspiration_carousel_ic_rating_default
+    private fun bindTextIntegrityWithSalesRatingFloat(product: InspirationCarouselViewModel.Option.Product) {
+        val labelGroupViewModel = product.getLabelIntegrity()
+
+        itemView.optionListCardImageSalesRatingFloatLine?.showWithCondition(product.willShowSalesAndRating())
+
+        itemView.optionListCardTextViewSales?.initLabelGroup(labelGroupViewModel)
     }
 
-    private fun bindReviewCount(reviewCount: Int){
-        itemView.productReviewCount?.shouldShowWithAction(reviewCount > 0) {
-            it.text = getReviewCountFormattedAsText(reviewCount)
+    private fun Typography.initLabelGroup(labelGroup: LabelGroupViewModel?) {
+        if (labelGroup == null) hide()
+        else showTypography(labelGroup)
+    }
+
+    private fun Typography.showTypography(labelGroupViewModel: LabelGroupViewModel) {
+        shouldShowWithAction(labelGroupViewModel.title.isNotEmpty()) {
+            it.text = MethodChecker.fromHtml(labelGroupViewModel.title)
+            it.setTextColor(labelGroupViewModel.type.toUnifyTextColor(context))
         }
     }
 
-    private fun getReviewCountFormattedAsText(reviewCount: Int): String {
-        return "($reviewCount)"
+    private fun String?.toUnifyTextColor(context: Context): Int {
+        return try{
+            when(this) {
+                SearchConstant.ProductCardLabel.TEXT_DARK_ORANGE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+                SearchConstant.ProductCardLabel.TEXT_DARK_RED -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
+                SearchConstant.ProductCardLabel.LABEL_INTEGRITY_TYPE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                SearchConstant.ProductCardLabel.TEXT_LIGHT_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+                else -> Color.parseColor(this)
+            }
+        } catch (throwable: Throwable){
+            throwable.printStackTrace()
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+        }
     }
 }

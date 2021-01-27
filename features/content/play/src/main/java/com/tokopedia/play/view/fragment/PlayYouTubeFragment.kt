@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
@@ -17,12 +18,14 @@ import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
-import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.YouTube
 import com.tokopedia.play.view.viewcomponent.YouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.lifecycle.lifecycleBound
+import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.dpToPx
 import javax.inject.Inject
@@ -55,6 +58,10 @@ class PlayYouTubeFragment @Inject constructor(
     private val isYouTube: Boolean
         get() = playViewModel.videoPlayer.isYouTube
 
+    private val pipAdapter: FloatingWindowAdapter by lifecycleBound(
+            creator = { FloatingWindowAdapter(this@PlayYouTubeFragment) }
+    )
+
     override fun getScreenName(): String = "Play YouTube"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +79,11 @@ class PlayYouTubeFragment @Inject constructor(
         initView(view)
         initAnalytic()
         setupObserve()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        playViewModel.stopPiP()
     }
 
     override fun onPause() {
@@ -142,6 +154,7 @@ class PlayYouTubeFragment @Inject constructor(
         observeVideoMeta()
         observeBottomInsetsState()
         observeEventUserInfo()
+        observePiPEvent()
     }
 
     //region observe
@@ -167,6 +180,16 @@ class PlayYouTubeFragment @Inject constructor(
         playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
             youtubeViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
         })
+    }
+
+    private fun observePiPEvent() {
+        playViewModel.observableEventPiP.observe(viewLifecycleOwner, Observer {
+            if (it.peekContent() == PiPMode.StopPip) removePiP()
+        })
+    }
+
+    private fun removePiP() {
+        pipAdapter.removeByKey(PlayVideoFragment.FLOATING_WINDOW_KEY)
     }
     //endregion
 

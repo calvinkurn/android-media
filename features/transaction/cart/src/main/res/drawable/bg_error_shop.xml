@@ -4,10 +4,10 @@
 
     <corners android:radius="@dimen/dp_4" />
 
-    <solid android:color="@color/white" />
+    <solid android:color="@color/Unify_N0" />
 
     <stroke
         android:width="1dp"
-        android:color="@color/error_red_outline" />
+        android:color="@color/Unify_R400" />
 
 </shape>

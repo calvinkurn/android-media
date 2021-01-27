@@ -42,11 +42,11 @@ class OfficialStoreCategoryViewModelTest {
     fun testGetOfficialStoreCategoriesSuccess() {
         runBlocking {
             coEvery {
-                getOfficialStoreCategoriesUseCase.executeOnBackground(any())
+                getOfficialStoreCategoriesUseCase.executeOnBackground(any(), any())
             } returns OfficialStoreCategories()
-            viewModelStore.getOfficialStoreCategories()
+            viewModelStore.getOfficialStoreCategories(false)
             coVerify {
-                getOfficialStoreCategoriesUseCase.executeOnBackground(any())
+                getOfficialStoreCategoriesUseCase.executeOnBackground(any(), any())
             }
             assertTrue(viewModelStore.officialStoreCategoriesResult.value is Success)
         }
@@ -56,11 +56,11 @@ class OfficialStoreCategoryViewModelTest {
     fun testGetOfficialStoreCategoriesError() {
         runBlocking {
             coEvery {
-                getOfficialStoreCategoriesUseCase.executeOnBackground(any())
+                getOfficialStoreCategoriesUseCase.executeOnBackground(any(), any())
             } throws Throwable()
-            viewModelStore.getOfficialStoreCategories()
+            viewModelStore.getOfficialStoreCategories(false)
             coVerify {
-                getOfficialStoreCategoriesUseCase.executeOnBackground(any())
+                getOfficialStoreCategoriesUseCase.executeOnBackground(any(), any())
             }
             assertTrue(viewModelStore.officialStoreCategoriesResult.value is Fail)
         }

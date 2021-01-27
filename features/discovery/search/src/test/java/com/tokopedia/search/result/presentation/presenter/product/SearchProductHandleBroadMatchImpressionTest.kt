@@ -26,6 +26,7 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
         `When broad match product impressed`(broadMatchAds)
 
         `Then verify broad match top ads impressed`(broadMatchAds)
+        `Then verify interaction for Broad Match Item impression`(broadMatchAds)
     }
 
     private fun `Given View already load data with broad match`() {
@@ -78,6 +79,12 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
         }
     }
 
+    private fun `Then verify interaction for Broad Match Item impression`(item: BroadMatchItemViewModel) {
+        verify {
+            productListView.trackBroadMatchImpression(item)
+        }
+    }
+
     @Test
     fun `Impressed non top ads broad match`() {
         `Given View already load data with broad match`()
@@ -85,6 +92,7 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
         val broadMatchNotAds = findBroadMatchItemFromVisitableList(false)
         `When broad match product impressed`(broadMatchNotAds)
 
+        `Then verify interaction for Broad Match Item impression`(broadMatchNotAds)
         confirmVerified(topAdsUrlHitter)
     }
 }

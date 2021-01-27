@@ -1,23 +1,30 @@
 package com.tokopedia.productcard
 
+import android.content.Context
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.style.ImageSpan
+import android.text.TextUtils
 import android.view.View
-import android.widget.TextView
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 
 
@@ -25,6 +32,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextGimmick(productCardModel)
     renderPdpCountView(productCardModel)
     renderTextProductName(productCardModel)
+    renderLabelGroupVariant(productCardModel)
     renderDiscount(productCardModel)
     renderLabelPrice(productCardModel)
     renderTextPrice(productCardModel)
@@ -33,15 +41,18 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderRating(productCardModel)
     renderTextReview(productCardModel)
     renderTextCredibility(productCardModel)
-    renderShopRating(productCardModel)
     renderSalesAndRating(productCardModel)
+    renderShopRating(productCardModel)
     renderFreeOngkir(productCardModel)
     renderTextShipping(productCardModel)
 }
 
 
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
-    textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
+    if (productCardModel.isShowLabelGimmick())
+        textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
+    else
+        textViewGimmick?.initLabelGroup(null)
 }
 
 private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
@@ -55,36 +66,158 @@ private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
 private fun View.renderTextProductName(productCardModel: ProductCardModel) {
     textViewProductName?.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
         val productNameFromHtml = MethodChecker.fromHtml(productCardModel.productName)
-        it.contentDescription = context.getString(R.string.content_desc_textViewProductName, productNameFromHtml)
-        it.text = productNameFromHtml
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, productNameFromHtml.toString(), context.getString(R.string.content_desc_textViewProductName))
     }
+}
+
+private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
+    val willShowVariant = productCardModel.willShowVariant()
+
+    if (willShowVariant) {
+        textViewProductName?.isSingleLine = true
+    }
+    else {
+        textViewProductName?.isSingleLine = false
+        textViewProductName?.maxLines = 2
+        textViewProductName?.ellipsize = TextUtils.TruncateAt.END
+    }
+
+    labelVariantContainer?.shouldShowWithAction(willShowVariant) { labelVariantContainer ->
+        labelVariantContainer.removeAllViews()
+
+        val marginStart = 4.toPx()
+        val colorSampleSize = 14.toPx()
+
+        productCardModel.getRenderedLabelGroupVariantList().forEachIndexed { index, labelVariant ->
+            val hasMarginStart = index > 0
+
+            when {
+                labelVariant.isColor() -> {
+                    labelVariantContainer.addLabelVariantColor(labelVariant, hasMarginStart, colorSampleSize, marginStart)
+                }
+                labelVariant.isSize() -> {
+                    labelVariantContainer.addLabelVariantSize(labelVariant, hasMarginStart, marginStart)
+                }
+                labelVariant.isCustom() -> {
+                    labelVariantContainer.addLabelVariantCustom(labelVariant, marginStart)
+                }
+            }
+        }
+    }
+}
+
+private fun LinearLayout.addLabelVariantColor(
+        labelVariant: ProductCardModel.LabelGroupVariant,
+        hasMarginStart: Boolean,
+        colorSampleSize: Int,
+        marginStart: Int
+) {
+    val gradientDrawable = createColorSampleDrawable(context, labelVariant.hexColor)
+
+    val layoutParams = LinearLayout.LayoutParams(colorSampleSize, colorSampleSize)
+    layoutParams.marginStart = if (hasMarginStart) marginStart else 0
+
+    val colorSampleImageView = ImageView(context)
+    colorSampleImageView.setImageDrawable(gradientDrawable)
+    colorSampleImageView.layoutParams = layoutParams
+    colorSampleImageView.tag = LABEL_VARIANT_TAG
+
+    addView(colorSampleImageView)
+}
+
+internal fun createColorSampleDrawable(context: Context, colorString: String): GradientDrawable {
+    val gradientDrawable = GradientDrawable()
+
+    gradientDrawable.shape = GradientDrawable.OVAL
+    gradientDrawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+    gradientDrawable.setStroke(2, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
+    gradientDrawable.setColor(safeParseColor(colorString))
+
+    return gradientDrawable
+}
+
+internal fun safeParseColor(color: String): Int {
+    return try {
+        Color.parseColor(color)
+    }
+    catch (throwable: Throwable) {
+        throwable.printStackTrace()
+        0
+    }
+}
+
+private fun LinearLayout.addLabelVariantSize(
+        labelVariant: ProductCardModel.LabelGroupVariant,
+        hasMarginStart: Boolean,
+        marginStart: Int
+) {
+    val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+    layoutParams.marginStart = if (hasMarginStart) marginStart else 0
+
+    val unifyLabel = Label(context)
+    unifyLabel.setLabelType(labelVariant.type.toUnifyLabelType())
+    unifyLabel.text = labelVariant.title
+    unifyLabel.layoutParams = layoutParams
+    unifyLabel.tag = LABEL_VARIANT_TAG
+
+    addView(unifyLabel)
+}
+
+private fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.LabelGroupVariant, marginStart: Int) {
+    val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+    layoutParams.topMargin = 1.toPx() // Small hack to make custom label center
+    layoutParams.marginStart = marginStart
+
+    val typography = Typography(context)
+    typography.weightType = Typography.BOLD
+    typography.setType(Typography.SMALL)
+    typography.text = "+${labelVariant.title}"
+    typography.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+    typography.layoutParams = layoutParams
+    typography.tag = LABEL_VARIANT_TAG
+
+    addView(typography)
 }
 
 private fun View.renderDiscount(productCardModel: ProductCardModel) {
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
-        it.text = productCardModel.discountPercentage
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.discountPercentage, context.getString(R.string.content_desc_labelDiscount))
     }
 
     textViewSlashedPrice?.shouldShowWithAction(productCardModel.slashedPrice.isNotEmpty()) {
-        it.contentDescription = context.getString(R.string.content_desc_textViewSlashedPrice, productCardModel.slashedPrice)
-        it.text = productCardModel.slashedPrice
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.slashedPrice, context.getString(R.string.content_desc_textViewSlashedPrice))
         it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 }
 
 private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
+    moveLabelPriceConstraint(productCardModel)
+
     if (productCardModel.isShowDiscountOrSlashPrice())
         labelPrice?.initLabelGroup(null)
     else
         labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
 }
 
+private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
+    val targetConstraint = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
+    val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
+
+    view?.let {
+        val constraintSet = ConstraintSet().apply { clone(it) }
+
+        constraintSet.clear(R.id.labelPrice, ConstraintSet.TOP)
+        constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 4.toPx())
+
+        constraintSet.applyTo(it)
+    }
+}
+
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {
     val priceToRender = productCardModel.getPriceToRender()
 
     textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
-        it.contentDescription  = context.getString(R.string.content_desc_textViewPrice, priceToRender)
-        it.text = priceToRender
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, priceToRender, context.getString(R.string.content_desc_textViewPrice))
     }
 }
 
@@ -101,37 +234,22 @@ private fun View.renderShopBadge(productCardModel: ProductCardModel) {
 
 private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
     textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty()) {
-        it.contentDescription = context.getString(R.string.content_desc_textViewShopLocation, productCardModel.shopLocation)
-        it.text = productCardModel.shopLocation
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.shopLocation, context.getString(R.string.content_desc_textViewShopLocation))
     }
 }
 
 private fun View.renderRating(productCardModel: ProductCardModel) {
     when {
         !productCardModel.willShowRatingAndReviewCount() -> hideRating()
-        productCardModel.ratingString.isNotEmpty() -> renderRatingFloat(productCardModel)
         productCardModel.ratingCount > 0 -> renderRatingStars(productCardModel)
     }
 }
 
 private fun View.hideRating() {
-    imageRatingString?.gone()
-    textViewRatingString?.gone()
-    linearLayoutImageRating?.gone()
-}
-
-private fun View.renderRatingFloat(productCardModel: ProductCardModel) {
-    imageRatingString?.visible()
-    textViewRatingString?.visible()
-    textViewRatingString?.text = productCardModel.ratingString
-
     linearLayoutImageRating?.gone()
 }
 
 private fun View.renderRatingStars(productCardModel: ProductCardModel) {
-    imageRatingString?.gone()
-    textViewRatingString?.gone()
-
     linearLayoutImageRating?.visible()
     setImageRating(productCardModel.ratingCount)
 }
@@ -163,6 +281,31 @@ private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
         textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
 }
 
+private fun View.renderSalesAndRating(productCardModel: ProductCardModel) {
+    renderSalesRatingFloat(productCardModel)
+    renderTextIntegrityWithSalesRatingFloat(productCardModel)
+}
+
+private fun View.renderSalesRatingFloat(productCardModel: ProductCardModel) {
+    val willShowSalesRatingFloat = productCardModel.willShowRating()
+
+    imageSalesRatingFloat?.showWithCondition(willShowSalesRatingFloat)
+
+    salesRatingFloat?.shouldShowWithAction(willShowSalesRatingFloat) {
+        it.text = productCardModel.countSoldRating
+    }
+}
+
+private fun View.renderTextIntegrityWithSalesRatingFloat(productCardModel: ProductCardModel) {
+    val willShowSalesAndRating = productCardModel.willShowSalesAndRating()
+
+    salesRatingFloatLine?.showWithCondition(willShowSalesAndRating)
+
+    textViewSales?.shouldShowWithAction(willShowSalesAndRating) {
+        it.initLabelGroup(productCardModel.getLabelIntegrity())
+    }
+}
+
 private fun View.renderShopRating(productCardModel: ProductCardModel) {
     if (productCardModel.isShowShopRating()) {
         imageShopRating?.visible()
@@ -174,21 +317,6 @@ private fun View.renderShopRating(productCardModel: ProductCardModel) {
     else {
         imageShopRating?.gone()
         textViewShopRating?.gone()
-    }
-}
-
-private fun View.renderSalesAndRating(productCardModel: ProductCardModel){
-    textViewSales?.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
-        textViewSales?.initLabelGroup(productCardModel.getLabelIntegrity())
-    }
-    salesRatingFloat.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
-        val ssb = SpannableStringBuilder("( ${productCardModel.countSoldRating})")
-        val drawableStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_apps_active)
-        drawableStar?.let {
-            drawableStar.setBounds(0, 0, 25, 25)
-            ssb.setSpan(ImageSpan(drawableStar, ImageSpan.ALIGN_BASELINE), 1, 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        }
-        salesRatingFloat?.setText(ssb, TextView.BufferType.SPANNABLE)
     }
 }
 

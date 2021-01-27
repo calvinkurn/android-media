@@ -33,7 +33,7 @@ import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.tokopoints.view.util.CommonConstant.TAB_SETUP_DELAY_MS
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TAB_SETUP_DELAY_MS
 import kotlinx.android.synthetic.main.tp_activity_stacked_coupon_list.*
 
 class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivityContract.View, HasComponent<TokopointBundleComponent> {
@@ -57,9 +57,9 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
         val userSession = UserSession(this)
         updateTitle(getString(R.string.tp_label_my_coupon_new))
         component.inject(this)
-        server_error_view.setErrorButtonClickListener { view ->
+        server_error_view.setErrorButtonClickListener(View.OnClickListener {
             mPresenter.getFilter()
-        }
+        })
         initViews()
         addObserver()
         if (!userSession.isLoggedIn) {

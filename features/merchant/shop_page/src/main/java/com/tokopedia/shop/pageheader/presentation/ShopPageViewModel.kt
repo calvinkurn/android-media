@@ -7,16 +7,18 @@ import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.network.exception.UserNotLoginException
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
-import com.tokopedia.shop.common.di.*
-import com.tokopedia.shop.common.domain.interactor.*
+import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseCoreAndAssetsQualifier
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ALLOW_MANAGE
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ASSETS
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_CLOSED_INFO
@@ -29,20 +31,23 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_SHOP_SNIPPET
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_STATUS
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopOperationalHourStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
-import com.tokopedia.shop.common.util.ShopUtil.isHasNextPage
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
-import com.tokopedia.shop.pageheader.domain.interactor.*
+import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
-import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
-import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
+import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
+import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -50,13 +55,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import rx.Subscriber
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class ShopPageViewModel @Inject constructor(
         private val gqlGetShopFavoriteStatusUseCase: Lazy<GQLGetShopFavoriteStatusUseCase>,
         private val userSessionInterface: UserSessionInterface,
@@ -67,12 +73,13 @@ class ShopPageViewModel @Inject constructor(
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
         private val getShopReputationUseCase: Lazy<GetShopReputationUseCase>,
         private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
-        private val getModerateShopUseCase: Lazy<GetModerateShopUseCase>,
-        private val requestModerateShopUseCase: Lazy<RequestModerateShopUseCase>,
         private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
-        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+        private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
+        private val firebaseRemoteConfig: RemoteConfig,
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
         private const val DATA_NOT_FOUND = "Data not found"
@@ -86,11 +93,15 @@ class ShopPageViewModel @Inject constructor(
     val ownerShopName: String
         get() = userSessionInterface.shopName
 
+    val userShopId: String
+        get() = userSessionInterface.shopId
+
     val shopPageP1Data = MutableLiveData<Result<ShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
-    var productListData: GetShopProductUiModel = GetShopProductUiModel()
+    var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
     val shopImagePath = MutableLiveData<String>()
+    private val TEN_MINUTE_MS: Long = 1000 * 60 * 10.toLong()
 
     fun getShopPageTabData(
             shopId: Int,
@@ -102,14 +113,25 @@ class ShopPageViewModel @Inject constructor(
             etalaseId: String,
             isRefresh: Boolean
     ) {
-        if (shopId == 0 && shopDomain.isEmpty()) return
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
-                    Dispatchers.IO,
+                    dispatcherProvider.io,
                     block = {
                         getShopP1Data(
                                 shopId,
                                 shopDomain,
+                                isRefresh
+                        )
+                    },
+                    onError = {
+                        shopPageP1Data.postValue(Fail(it))
+                        null
+                    })
+            val productListDataAsync = asyncCatchError(
+                    dispatcherProvider.io,
+                    block = {
+                        getProductListData(
+                                shopId.toString(),
                                 page,
                                 itemPerPage,
                                 shopProductFilterParameter,
@@ -121,15 +143,12 @@ class ShopPageViewModel @Inject constructor(
                     onError = {
                         shopPageP1Data.postValue(Fail(it))
                         null
-                    })
+                    }
+            )
             shopP1DataAsync.await()?.let { shopPageHeaderP1Data ->
-                productListData = GetShopProductUiModel(
-                        isHasNextPage(page, itemPerPage, shopPageHeaderP1Data.productList.totalData),
-                        shopPageHeaderP1Data.productList.data.map {
-                            ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId.toString()), etalaseId)
-                        },
-                        shopPageHeaderP1Data.productList.totalData
-                )
+                productListDataAsync.await()?.let { shopProductData ->
+                    productListData = shopProductData
+                }
                 shopPageP1Data.postValue(Success(ShopPageHeaderMapper.mapToShopPageP1HeaderData(
                         shopPageHeaderP1Data.isShopOfficialStore,
                         shopPageHeaderP1Data.isShopPowerMerchant,
@@ -139,46 +158,64 @@ class ShopPageViewModel @Inject constructor(
                         shopPageHeaderP1Data.feedWhitelist
                 )))
             }
-        }) {
-            shopPageP1Data.postValue(Fail(it))
+        }) { exception ->
+            shopPageP1Data.postValue(Fail(exception))
         }
     }
 
-    private suspend fun getShopP1Data(
-            shopId: Int,
-            shopDomain: String,
+    private suspend fun getProductListData(
+            shopId: String,
             page: Int,
             itemPerPage: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
             keyword: String,
             etalaseId: String,
             isRefresh: Boolean
-    ): ShopPageHeaderP1 {
-        val useCase = getShopPageP1DataUseCase.get()
-        useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(
+    ): ShopProduct.GetShopProduct {
+        val useCase = getShopProductListUseCase.get()
+        val isDisableProductListCache = firebaseRemoteConfig.getBoolean(
+                DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST,
+                false
+        )
+        useCase.isFromCacheFirst = (!isRefresh).takeIf { !isDisableProductListCache } ?: false
+        useCase.cacheTime = TEN_MINUTE_MS
+        useCase.params = GqlGetShopProductUseCase.createParams(
                 shopId,
-                shopDomain,
-                page,
-                itemPerPage,
-                shopProductFilterParameter,
-                keyword,
-                etalaseId
+                ShopProductFilterInput().apply {
+                    etalaseMenu = etalaseId
+                    this.page = page
+                    perPage = itemPerPage
+                    searchKeyword = keyword
+                    sort = shopProductFilterParameter.getSortId().toIntOrZero()
+                    rating = shopProductFilterParameter.getRating()
+                    pmax = shopProductFilterParameter.getPmax()
+                    pmin = shopProductFilterParameter.getPmin()
+                }
         )
         return useCase.executeOnBackground()
     }
 
+    private suspend fun getShopP1Data(
+            shopId: Int,
+            shopDomain: String,
+            isRefresh: Boolean
+    ): ShopPageHeaderP1 {
+        val useCase = getShopPageP1DataUseCase.get()
+        useCase.isFromCacheFirst = !isRefresh
+        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain)
+        return useCase.executeOnBackground()
+    }
+
     fun saveShopImageToPhoneStorage(context: Context?, shopSnippetUrl: String) {
-        launchCatchError(Dispatchers.IO, {
+        launchCatchError(dispatcherProvider.io, {
             ImageHandler.loadImageWithTarget(context, shopSnippetUrl, object : CustomTarget<Bitmap>(){
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    val savedFile = ImageUtils.writeImageToTkpdPath(
-                            ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
+                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
                             resource,
-                            true
+                            Bitmap.CompressFormat.PNG
                     )
-                    if(savedFile != null) {
-                        shopImagePath.value = savedFile.absolutePath
+                    if (savedFile!= null) {
+                        shopImagePath.postValue(savedFile.absolutePath)
                     }
                 }
                 override fun onLoadCleared(placeholder: Drawable?) {
@@ -190,22 +227,13 @@ class ShopPageViewModel @Inject constructor(
         })
     }
 
-    private inline fun <reified T> getResponseData(response: GraphqlResponse): T {
-        val error = response.getError(T::class.java)
-        if (error == null || error.isEmpty()) {
-            return response.getData<T>(T::class.java)
-        } else {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-        }
-    }
-
     private suspend fun getShopOperationalHourStatus(shopId: Int): ShopOperationalHourStatus {
         gqlGetShopOperationalHourStatusUseCase.get().params = GQLGetShopOperationalHourStatusUseCase.createParams(shopId.toString())
         return gqlGetShopOperationalHourStatusUseCase.get().executeOnBackground()
     }
 
-    private suspend fun getShopFavoriteStatus(shopId: String? = null, shopDomain: String? = null): ShopInfo.FavoriteData {
-        val id = shopId?.toIntOrNull() ?: 0
+    private suspend fun getShopFavoriteStatus(shopId: String, shopDomain: String): ShopInfo.FavoriteData {
+        val id = shopId.toIntOrZero()
         var favoritInfo = ShopInfo.FavoriteData()
         try {
             gqlGetShopFavoriteStatusUseCase.get().params = GQLGetShopFavoriteStatusUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
@@ -215,10 +243,10 @@ class ShopPageViewModel @Inject constructor(
         return favoritInfo
     }
 
-    private suspend fun getShopBroadcasterConfig(shopId: String? = null): Broadcaster.Config {
+    private suspend fun getShopBroadcasterConfig(shopId: String): Broadcaster.Config {
         var broadcasterConfig = Broadcaster.Config()
         try {
-            getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId ?: "")
+            getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId)
             broadcasterConfig = getBroadcasterShopConfigUseCase.get().executeOnBackground()
         } catch (t: Throwable) {
         }
@@ -270,19 +298,15 @@ class ShopPageViewModel @Inject constructor(
     override fun flush() {
         super.flush()
         toggleFavouriteShopUseCase.get().unsubscribe()
-        getModerateShopUseCase.get().unsubscribe()
-        requestModerateShopUseCase.get().unsubscribe()
         stickyLoginUseCase.get().cancelJobs()
     }
 
     fun getShopPageHeaderContentData(shopId: String, shopDomain: String, isRefresh: Boolean) {
-        val id = shopId.toIntOrNull() ?: 0
-        if (id == 0 && shopDomain.isEmpty()) return
         launchCatchError(block = {
             val shopInfoForHeaderResponse = asyncCatchError(
-                    Dispatchers.IO,
+                    dispatcherProvider.io,
                     block = {
-                        getShopInfoHeader(id, shopDomain, isRefresh)
+                        getShopInfoHeader(shopId.toIntOrZero(), shopDomain, isRefresh)
                     },
                     onError = {
                         shopPageHeaderContentData.postValue(Fail(it))
@@ -291,9 +315,9 @@ class ShopPageViewModel @Inject constructor(
             )
 
             val shopBadgeDataResponse = asyncCatchError(
-                    Dispatchers.IO,
+                    dispatcherProvider.io,
                     block = {
-                        getShopBadgeData(id, isRefresh)
+                        getShopBadgeData(shopId.toIntOrZero(), isRefresh)
                     },
                     onError = {
                         shopPageHeaderContentData.postValue(Fail(it))
@@ -302,8 +326,8 @@ class ShopPageViewModel @Inject constructor(
             )
 
             val shopOperationalHourStatus = asyncCatchError(
-                    Dispatchers.IO,
-                    block = { getShopOperationalHourStatus(id) },
+                    dispatcherProvider.io,
+                    block = { getShopOperationalHourStatus(shopId.toIntOrZero()) },
                     onError = {
                         shopPageHeaderContentData.postValue(Fail(it))
                         null
@@ -311,7 +335,7 @@ class ShopPageViewModel @Inject constructor(
             )
 
             val shopFavourite = asyncCatchError(
-                    Dispatchers.IO,
+                    dispatcherProvider.io,
                     block = { getShopFavoriteStatus(shopId, shopDomain) },
                     onError = {
                         shopPageHeaderContentData.postValue(Fail(it))
@@ -321,7 +345,7 @@ class ShopPageViewModel @Inject constructor(
             var broadcasterConfig: Broadcaster.Config = Broadcaster.Config()
             if(isMyShop(shopId = shopId)) {
                 broadcasterConfig = asyncCatchError(
-                        Dispatchers.IO,
+                        dispatcherProvider.io,
                         block = { getShopBroadcasterConfig(shopId) },
                         onError = { null }
                 ).await() ?: Broadcaster.Config()
@@ -343,6 +367,7 @@ class ShopPageViewModel @Inject constructor(
         }) {
             shopPageHeaderContentData.postValue(Fail(it))
         }
+
     }
 
     private suspend fun getShopBadgeData(shopId: Int, refresh: Boolean): ShopBadge {
@@ -376,14 +401,14 @@ class ShopPageViewModel @Inject constructor(
 
     fun getShopIdFromDomain(shopDomain: String) {
         launchCatchError(block = {
-            val shopInfoCoreData = withContext(Dispatchers.IO){
-                getShopInfoCoreFromDomain(shopDomain)
+            flow{
+                emit(getShopInfoCoreFromDomain(shopDomain))
+            }.flowOn(dispatcherProvider.io).collect{
+                shopIdFromDomainData.postValue(Success(it.shopCore.shopID))
             }
-            shopIdFromDomainData.postValue(Success(shopInfoCoreData.shopCore.shopID))
         }){
             shopIdFromDomainData.postValue(Fail(it))
         }
-
     }
 
     private suspend fun getShopInfoCoreFromDomain(shopDomain: String): ShopInfo {

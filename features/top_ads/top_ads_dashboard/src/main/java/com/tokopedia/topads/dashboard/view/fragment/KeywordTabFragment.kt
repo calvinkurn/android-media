@@ -50,6 +50,7 @@ import javax.inject.Inject
  */
 
 private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
+
 class KeywordTabFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: KeywordAdapter
@@ -181,13 +182,13 @@ class KeywordTabFragment : BaseDaggerFragment() {
 
     private fun successCount(list: List<CountDataItem>) {
         totalCount = list[0].totalKeywords
+        (activity as TopAdsGroupDetailViewActivity).setKeywordCount(totalCount)
     }
 
     private fun startEditActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
             putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(GROUP_ID).toString())
-            putExtra(TopAdsDashboardConstant.GROUPNAME, arguments?.getString(TopAdsDashboardConstant.GROUP_NAME))
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_KATA_KUNCI, "")
@@ -243,7 +244,10 @@ class KeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessKeyword(response: KeywordsResponse.GetTopadsDashboardKeywords) {
-        totalPage = (totalCount / response.meta.page.perPage) + 1
+        totalPage = if (totalCount % response.meta.page.perPage == 0) {
+            totalCount / response.meta.page.perPage
+        } else
+            (totalCount / response.meta.page.perPage) + 1
         recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
         recyclerviewScrollListener.updateStateAfterGetData()
@@ -252,7 +256,6 @@ class KeywordTabFragment : BaseDaggerFragment() {
         }
         adapter.notifyDataSetChanged()
         setFilterCount()
-        (activity as TopAdsGroupDetailViewActivity).setKeywordCount(totalCount)
     }
 
     private fun setFilterCount() {

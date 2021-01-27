@@ -114,7 +114,7 @@ class ShopScoreDetailFragment : Fragment() {
 
     private fun emptyState() {
         context?.let {
-            val color = ContextCompat.getColor(it, android.R.color.white)
+            val color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
             scrollview?.setBackgroundColor(color)
         }
 

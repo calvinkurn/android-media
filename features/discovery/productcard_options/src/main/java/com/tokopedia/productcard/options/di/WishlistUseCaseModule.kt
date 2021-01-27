@@ -2,13 +2,11 @@ package com.tokopedia.productcard.options.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.productcard.options.ProductCardOptionsScope
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 
-@ProductCardOptionsScope
 @Module
 internal class WishlistUseCaseModule {
 

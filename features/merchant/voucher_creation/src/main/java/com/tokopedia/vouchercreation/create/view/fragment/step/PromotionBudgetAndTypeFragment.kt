@@ -28,9 +28,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
+import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
-import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.CashbackVoucherCreateFragment
 import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
@@ -45,14 +46,18 @@ import javax.inject.Inject
 class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val ERROR_MESSAGE = "Error validate voucher type"
+
         @JvmStatic
         fun createInstance(onNext: (VoucherImageType, Int, Int) -> Unit,
+                           setRecommendationStatus: (Int) -> Unit,
                            getVoucherUiModel: () -> BannerVoucherUiModel,
                            getBannerBaseUiModel: () -> BannerBaseUiModel,
                            onSetShopInfo: (String, String) -> Unit,
                            getVoucherReviewData: () -> VoucherReviewUiModel,
                            isCreateNew: Boolean) = PromotionBudgetAndTypeFragment().apply {
             this.onNextStep = onNext
+            this.setRecommendationStatus = setRecommendationStatus
             this.getVoucherUiModel = getVoucherUiModel
             this.getBannerBaseUiModel = getBannerBaseUiModel
             this.onSetShopInfo = onSetShopInfo
@@ -62,6 +67,7 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     }
 
     private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ ->  }
+    private var setRecommendationStatus: (Int) -> Unit = { _ -> }
     private var getVoucherUiModel: () -> BannerVoucherUiModel = {
         BannerVoucherUiModel(
                 VoucherImageType.FreeDelivery(0),
@@ -71,10 +77,10 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     }
     private var getBannerBaseUiModel: () -> BannerBaseUiModel = {
         BannerBaseUiModel(
-                CreateMerchantVoucherStepsActivity.BANNER_BASE_URL,
-                CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
+                VoucherUrl.BANNER_BASE_URL,
+                VoucherUrl.FREE_DELIVERY_URL,
+                VoucherUrl.CASHBACK_URL,
+                VoucherUrl.CASHBACK_UNTIL_URL
         )}
     private var onSetShopInfo: (String, String) -> Unit = { _,_ -> }
     private var getVoucherReviewData: () -> VoucherReviewUiModel? = { null }
@@ -109,7 +115,7 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     }
 
     private val cashbackVoucherCreateFragment by lazy {
-        context?.let { CashbackVoucherCreateFragment.createInstance(onNextStep, ::onShouldChangeBannerValue, it, getVoucherReviewData) }
+        context?.let { CashbackVoucherCreateFragment.createInstance(onNextStep, setRecommendationStatus, ::onShouldChangeBannerValue, it, getVoucherReviewData, isCreateNew) }
     }
 
     private val impressHolder = ImpressHolder()
@@ -181,6 +187,7 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
                         is Fail -> {
                             val error = result.throwable.message.toBlankOrString()
                             view?.showErrorToaster(error)
+                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                         }
                     }
                     isWaitingForShopInfo = false

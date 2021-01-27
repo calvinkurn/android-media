@@ -8,6 +8,11 @@
         android:label="OCC Test"
         tools:replace="android:label">
         <activity
+            android:name=".order.view.TestOrderSummaryPageActivity"
+            android:label="@string/title_one_click_checkout"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
             android:name=".preference.edit.view.TestPreferenceEditActivity"
             android:label="@string/title_one_click_checkout_preference"
             android:screenOrientation="portrait"

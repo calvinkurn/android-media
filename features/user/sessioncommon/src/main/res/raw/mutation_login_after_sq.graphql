@@ -7,10 +7,16 @@ mutation login_after_sq($grant_type: String!, $password_type: String!, $access_t
     sid
     token_type
     sq_check
+    action
     errors {
       name
       message
     }
     event_code
+    popup_error {
+      header
+      body
+      action
+    }
   }
 }

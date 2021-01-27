@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inbox.pending.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
@@ -12,8 +13,9 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
     companion object {
         const val PARAM_LIMIT = "limit"
         const val PARAM_PAGE = "page"
-        private val query by lazy {
-            """
+        const val WAIT_FOR_FEEDBACK_QUERY_CLASS_NAME = "WaitForFeedback"
+        const val WAIT_FOR_FEEDBACK_QUERY =
+                """
                 query productrevWaitForFeedback(${'$'}limit: Int!, ${'$'}page: Int!) {
                     productrevWaitForFeedback(limit: ${'$'}limit, page: ${'$'}page) {
                       list {
@@ -31,6 +33,7 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
                         }
                         status {
                           seen
+                          isEligible
                         }
                       }
                       page
@@ -38,16 +41,13 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
                       hasNext
                     }
                 }
-            """.trimIndent()
-        }
+            """
     }
 
-    init {
-        setGraphqlQuery(query)
+    @GqlQuery(WAIT_FOR_FEEDBACK_QUERY_CLASS_NAME, WAIT_FOR_FEEDBACK_QUERY)
+    fun setParams(limit: Int = ReviewInboxConstants.REVIEW_INBOX_DATA_PER_PAGE, page: Int) {
+        setGraphqlQuery(WaitForFeedback.GQL_QUERY)
         setTypeClass(ProductrevWaitForFeedbackResponseWrapper::class.java)
-    }
-
-    fun setParams(limit: Int = ReviewInboxConstants.REVIEW_INBOX_DATA_PER_PAGE, page: Int){
         setRequestParams(
                 RequestParams.create().apply {
                     putInt(PARAM_LIMIT, limit)

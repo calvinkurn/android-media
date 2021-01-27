@@ -3,6 +3,7 @@ package com.tokopedia.autocomplete.initialstate
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 
@@ -35,6 +36,12 @@ interface InitialStateContract {
         fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel)
 
         fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String)
+
+        fun refreshViewWithPosition(position: Int)
+
+        fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String)
+
+        fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -55,5 +62,7 @@ interface InitialStateContract {
         fun recentSearchSeeMoreClicked()
 
         fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+
+        fun onCuratedCampaignCardClicked(curatedCampaignViewModel: CuratedCampaignViewModel)
     }
 }

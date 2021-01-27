@@ -2,9 +2,9 @@ package com.tokopedia.loginregister.common.di;
 
 import android.content.Context;
 import android.content.res.Resources;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
@@ -37,7 +37,7 @@ public interface LoginRegisterComponent {
 
     Retrofit.Builder getRetrofitBuilder();
 
-    CacheManager globalCacheManager();
+    CacheManager provideCacheManager();
 
     LoginRegisterApi provideLoginRegisterApi();
 

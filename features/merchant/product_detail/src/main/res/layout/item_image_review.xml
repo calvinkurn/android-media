@@ -16,7 +16,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_review"
-            tools:src="@color/grey_300"
+            tools:src="@color/Unify_N100"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"/>
@@ -24,7 +24,7 @@
         <View android:id="@+id/overlay_see_all"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/light_primary"
+            android:background="@color/Unify_N700_68"
             android:visibility="gone"
             android:alpha="0.7"
             tools:visibility="visible"/>

@@ -27,7 +27,6 @@ class CalendarPicker : BottomSheetUnify() {
             return CalendarPicker().apply {
                 isFullpage = true
                 clearContentPadding = true
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
             }
         }
     }
@@ -37,7 +36,12 @@ class CalendarPicker : BottomSheetUnify() {
     private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.SINGLE
     private var calendarView: CalendarPickerView? = null
     private val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(90L))
-    private val maxDate = Date(DateTimeUtil.getNNextDaysTimestamp(1L))
+    private val maxDate = Date()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setChild(inflater, container)

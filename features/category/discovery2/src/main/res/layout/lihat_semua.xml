@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/dp_6">
+    android:paddingTop="@dimen/unify_space_12"
+    android:paddingBottom="@dimen/unify_space_8">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_tv"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/dp_20"
         android:textColor="@color/clr_f531353b"
         android:visibility="gone"

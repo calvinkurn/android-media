@@ -6,31 +6,26 @@ object ProductDetailConstant {
     @JvmField
     var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
+    const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
+    const val ENABLE_PDP_DIFFUTIL = "app_enable_pdp_diffutil"
 
     //report product
-    const val PATH_PRODUCT_TYPE = "v4/product/"
-    const val PATH_REPORT_TYPE = "get_product_report_type.pl"
-
     const val PATH_PRODUCT_ACTION = "v4/action/product/"
-    const val PATH_REPORT = "report_product.pl"
 
     const val PARAM_PRODUCT_ID = "product_id"
-    const val PARAM_REPORT_TYPE = "report_type"
-    const val PARAM_TEXT_MESSAGE = "text_message"
 
     const val PARAM_PRODUCT_ETALASE_ID = "product_etalase_id"
     const val PARAM_PRODUCT_ETALASE_NAME = "product_etalase_name"
 
     const val VALUE_NEW_ETALASE = "new"
 
+    const val PARAM_DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
+
     //waarehouse product
     const val PATH_MOVE_TO_WAREHOUSE = "move_to_warehouse.pl"
     const val PATH_MOVE_TO_ETALASE = "edit_etalase.pl"
 
-    const val PARAM_PRICE = "price"
-
     const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
-
 
     const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
     const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
@@ -40,11 +35,14 @@ object ProductDetailConstant {
     const val KEY_OCC_BUTTON = "occ"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
+    const val KEY_REMIND_ME = "remind_me"
+    const val KEY_CHECK_WISHLIST = "check_wishlist"
     const val KEY_BUTTON_PRIMARY = "primary"
     const val KEY_BUTTON_PRIMARY_GREEN = "primary_green"
     const val KEY_BUTTON_SECONDARY_GREEN = "secondary_green"
     const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY = "secondary"
+    const val KEY_BUTTON_SECONDARY_GRAY = "secondary_gray"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_X_SOURCE = "pdp"
     const val KEY_TOP_ADS = "tdn_topads"
@@ -62,13 +60,14 @@ object ProductDetailConstant {
 
     //PAYLOADS
     const val PAYLOAD_WISHLIST = 1
-    const val PAYLOAD_P3 = 2
+    const val PAYLOAD_TRADEIN = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_UPDATE_IMAGE = 5
-    const val PAYLOAD_MEDIA_UPDATE_IMAGE_REVIEW = 521
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
+    const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
+    const val DIFFUTIL_PAYLOAD = "payload"
 
     //Request Code
     const val REQUEST_CODE_EDIT_PRODUCT = 2
@@ -77,6 +76,7 @@ object ProductDetailConstant {
     const val REQUEST_CODE_MERCHANT_VOUCHER = 564
     const val REQUEST_CODE_ETALASE = 565
     const val REQUEST_CODE_REPORT = 570
+    const val REQUEST_CODE_TOP_CHAT = 997
     const val REQUEST_CODE_SHOP_INFO = 998
     const val REQUEST_CODE_IMAGE_PREVIEW = 999
 
@@ -85,28 +85,24 @@ object ProductDetailConstant {
     const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
 
     //Mapper
-    const val SOCIAL_PROOF = "social_proof"
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
     const val SHOP_INFO = "shop_info"
     const val MINI_SHOP_INFO = "shop_info_mini"
     const val PRODUCT_INFO = "product_info"
-    const val DISCUSSION = "discussion"
+    const val PRODUCT_DETAIL = "product_detail"
     const val DISCUSSION_FAQ = "discussion_faq"
     const val MOST_HELPFUL_REVIEW = "most_helpful_review"
     const val REVIEW = "review"
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"
-    const val VALUE_PROPOSITION = "value_prop"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"
     const val UPCOMING_DEALS = "upcoming_deals"
     const val VARIANT_OPTIONS = "variant_options"
     const val VARIANT = "variant"
-    const val SOCIAL_PROOF_PV = "social_proof_pv"
     const val PDP_3 = "pdp_3"
-    const val PRODUCT_LAST_SEEN = "product_last_seen"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
@@ -121,6 +117,7 @@ object ProductDetailConstant {
     const val MEDIA = "product_media"
     const val BY_ME = "byme"
     const val TOP_ADS = "banner_ads"
+    const val REPORT = "report"
 
 
     //Arguments
@@ -158,6 +155,8 @@ object ProductDetailConstant {
     const val LEASING_BUTTON = 5
     const val TRADEIN_BUTTON = 6
     const val TRADEIN_AFTER_DIAGNOSE = 7
+    const val REMIND_ME_BUTTON = 8
+    const val CHECK_WISHLIST_BUTTON = 9
 
     const val REQUEST_CODE_CHECKOUT = 12382
 
@@ -172,4 +171,13 @@ object ProductDetailConstant {
     const val ADS_COUNT = 1
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
+
+    const val HIDE_NPL_BS = false
+    const val RECOM_URL = "tokopedia://rekomendasi/{product_id}/d/?ref=recom_oos"
+
+    //View Constant
+    const val SHOW_VALUE = 1F
+    const val HIDE_VALUE = 0F
+    const val FADE_IN_VIDEO_THUMBNAIL_DURATION = 200L
+
 }

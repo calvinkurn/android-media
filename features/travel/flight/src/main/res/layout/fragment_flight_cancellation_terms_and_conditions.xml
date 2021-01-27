@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_N0"
     android:fillViewport="true">
 
     <LinearLayout
-        android:id="@+id/upper_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_container"
@@ -16,16 +16,16 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/layout_lvl0"
             android:layout_weight="1">
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/txt_cancellation_tnc"
-                style="@style/TextView.Small"
+                app:typographyType="body_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"
-                android:textColor="@color/font_black_secondary_54" />
+                android:layout_margin="@dimen/layout_lvl2"
+                android:textColor="@color/Unify_N700_44" />
 
         </androidx.core.widget.NestedScrollView>
 
@@ -36,45 +36,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/grey_500" />
+            android:background="@color/Unify_N200" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/flight_dp_10"
+            android:layout_marginTop="@dimen/layout_lvl2"
             android:gravity="top"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/checkbox"
-                android:layout_width="@dimen/dp_36"
-                android:layout_height="@dimen/dp_36"
+                android:layout_width="@dimen/flight_dp_36"
+                android:layout_height="@dimen/flight_dp_36"
                 android:theme="@style/checkBoxStyle" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.tokopedia.unifyprinciples.Typography
+                app:typographyType="body_3"
                 android:id="@+id/tv_description"
-                style="@style/TextView.Micro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:textColor="@color/font_black_secondary_54"
+                android:layout_marginBottom="@dimen/flight_dp_10"
+                android:textColor="@color/Unify_N700_44"
                 tools:text="@string/flight_cancellation_review_description" />
 
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_next"
-            style="@style/Button.Submit.Orange"
+            app:unifyButtonType="transaction"
+            app:unifyButtonSize="large"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_16"
+            android:layout_margin="@dimen/layout_lvl2"
             android:enabled="false"
             android:text="@string/flight_cancellation_review_button" />
 

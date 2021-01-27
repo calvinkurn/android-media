@@ -5,13 +5,13 @@ apply from: "../../../compile-unit-test.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
 buildscript {
     repositories {
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -38,12 +38,13 @@ dependencies {
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.attachproduct)
+    implementation project(rootProject.ext.features.attachcommon)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.merchantVoucher)
-    implementation project(rootProject.ext.features.seamlesslogin)
+    implementation project(rootProject.ext.features.seamlessLoginCommon)
     implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.features.purchase_platform_common)
+    implementation project(rootProject.ext.features.reputationCommon)
 
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -52,7 +53,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.websocket)
@@ -62,7 +63,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.mediauploader)
 
@@ -70,6 +71,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
@@ -84,13 +86,9 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.cameraView
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.networkDependencies.glide
-    implementation(rootProject.ext.miscDependencies.ucrop) {
-        exclude group: 'com.android.support'
-    }
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
@@ -99,14 +97,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewPager2
-    implementation rootProject.ext.miscDependencies.parcelerApi
-    kapt rootProject.ext.miscDependencies.parceler
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation rootProject.ext.testDependencies.couroutinesTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting

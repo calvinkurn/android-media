@@ -25,13 +25,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.common.ErrorConstant.ERROR_GET_SURVEY_QUESTIONS
 import com.tokopedia.shop.open.common.ErrorConstant.ERROR_SAVE_LOCATION_SHIPPING
 import com.tokopedia.shop.open.common.ErrorConstant.ERROR_SEND_SURVEY
+import com.tokopedia.shop.open.common.EspressoIdlingResource
 import com.tokopedia.shop.open.common.ExitDialog
 import com.tokopedia.shop.open.common.PageNameConstant.FINISH_SPLASH_SCREEN_PAGE
 import com.tokopedia.shop.open.common.ScreenNameTracker
@@ -141,6 +142,7 @@ class ShopOpenRevampQuisionerFragment :
         btnNext.setOnClickListener {
             shopOpenRevampTracking?.clickButtonNextFromSurveyPage()
             val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
+            EspressoIdlingResource.increment()
             viewModel.sendSurveyData(dataSurveyInput)
         }
     }
@@ -202,6 +204,7 @@ class ShopOpenRevampQuisionerFragment :
 
     private fun observeSurveyData() {
         viewModel.getSurveyDataResponse.observe(this, Observer {
+            EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
                     hideLoader()
@@ -224,6 +227,7 @@ class ShopOpenRevampQuisionerFragment :
 
     private fun observeSendSurveyResult() {
         viewModel.sendSurveyDataResponse.observe(this, Observer {
+            EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.sendSurveyData.success
@@ -250,11 +254,13 @@ class ShopOpenRevampQuisionerFragment :
 
     private fun observeSaveShipmentLocationData() {
         viewModel.saveShopShipmentLocationResponse.observe(this, Observer {
+            EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
                     if (isSuccess) {
                         showLoader()
+                        EspressoIdlingResource.increment()
                         fragmentNavigationInterface?.navigateToNextPage(FINISH_SPLASH_SCREEN_PAGE, THREE_FRAGMENT_TAG)
                     } else {
                         showLoader()
@@ -309,7 +315,8 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     private fun loadDataSurvey() {
-         viewModel.getSurveyQuizionaireData()
+        EspressoIdlingResource.increment()
+        viewModel.getSurveyQuizionaireData()
     }
 
     private fun setupPreconditions() {
@@ -342,6 +349,7 @@ class ShopOpenRevampQuisionerFragment :
 
     private fun saveShipmentLocation(shopId: Int, postalCode: String, courierOrigin: Int,
                                      addrStreet: String, lat: String, long: String) {
+        EspressoIdlingResource.increment()
         viewModel.saveShippingLocation(
                 viewModel.getSaveShopShippingLocationData(
                         shopId, postalCode, courierOrigin, addrStreet, lat, long
@@ -402,7 +410,8 @@ class ShopOpenRevampQuisionerFragment :
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 if (isNeedLocation) {
-                    activity?.finish()
+                    // Should have stayed in the feature instead of finish the feature
+                    hideLoader()
                 } else {
                     hideLoader()
                     showExitOrPickLocationDialog()

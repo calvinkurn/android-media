@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.shipping
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -55,6 +54,8 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private var contentLayout: Group? = null
     private var globalError: GlobalError? = null
 
+    private var isNewLayout = false
+
     companion object {
         private const val ARG_IS_EDIT = "is_edit"
 
@@ -90,7 +91,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
             }
         }
 
-        viewModel.shippingDuration.observe(viewLifecycleOwner, Observer {
+        viewModel.shippingDuration.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -129,7 +130,9 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     }
 
     private fun initViews() {
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         tickerInfo = view?.findViewById(R.id.ticker_info)
         shippingDurationList = view?.findViewById(R.id.shipping_duration_rv)
@@ -161,7 +164,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private fun hitRates() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            viewModel.getRates(parent.getListShopShipment(), parent.getShippingParam())
+            viewModel.getRates(parent.getListShopShipment(), parent.getShippingParam(), parent.isNewFlow())
         }
     }
 

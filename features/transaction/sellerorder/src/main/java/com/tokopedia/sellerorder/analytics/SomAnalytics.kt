@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.analytics
 
-import android.app.Activity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -14,12 +13,12 @@ object SomAnalytics {
     private const val CLICK = "Click"
     private const val CLICK_QUICK_FILTER = "click quick filter"
     private const val CLICK_ORDER_CARD_ORDER_LIST = "click order card order list"
+    private const val CLICK_ORDER_CARD_ON_ORDER_LIST = "click order card on order list"
     private const val SUBMIT_SEARCH = "submit search"
     private const val CLICK_CHAT_ICON_ON_HEADER_ORDER_DETAIL = "click chat icon on header order detail"
     private const val CLICK_CHAT_ICON_ON_HEADER_ORDER_LIST = "click chat icon on header order list"
-    private const val CLICK_MAIN_ACTION_IN_ORDER_DETAIL = "click main action in order detail"
+    private const val CLICK_MAIN_CTA_IN_ORDER_DETAIL = "click main CTA"
     private const val CLICK_SECONDARY_ACTION_IN_ORDER_DETAIL = "click secondary action in order detail"
-    private const val CLICK_BUTTON_PELUANG_IN_EMPTY_STATE = "click button peluang in empty state"
     private const val CLICK_TERAPKAN_ON_FILTER_PAGE = "click terapkan on filter page"
     private const val VIEW_SOM_IRIS = "viewSOMIris"
     private const val VIEW_TICKER = "view ticker"
@@ -42,16 +41,23 @@ object SomAnalytics {
     private const val CLICK_START_ADVERTISE = "click start advertise"
     private const val CLICK_WAITING_FOR_PAYMENT = "click waiting for payment"
     private const val CLICK_CHECK_MANAGE_STOCK = "click check and manage stock"
+    private const val CLICK_BULK_PRINT_ACTION = "click print labels at once"
+    private const val CLICK_BULK_PRINT_ACTION_YES = "click print labels - yes"
+    private const val CLICK_BULK_PRINT_ACTION_CANCEL = "click print labels - cancel"
     private const val TO_APP_ORDER = "To App - Order"
     private const val SELLER_WIDGET = "sellerWidget"
     private const val SELLER_APP_WIDGET = "Seller App Widget"
     private const val CUSTOM_DIMENSION_USER_ID = "userId"
     private const val CUSTOM_DIMENSION_SHOP_ID = "shopId"
+    private const val CUSTOM_DIMENSION_BUSINESS_UNIT = "businessUnit"
+    private const val CUSTOM_DIMENSION_CURRENT_SITE = "currentSite"
     private const val AWAITING_PAYMENT = "awaiting payment"
     private const val WAITING_FOR_PAYMENT = "waiting for payment"
+    private const val BUSINESS_UNIT_PHYSICAL_GOODS = "physicalgoods"
+    private const val CURRENT_SITE_TOKOPEDIA_SELLER = "tokopediaseller"
 
     @JvmStatic
-    fun sendScreenName(activity: Activity, screenName: String) {
+    fun sendScreenName(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
@@ -78,24 +84,21 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, SUBMIT_SEARCH, keyword)
     }
 
-    fun eventClickChatOnHeaderDetail(statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_CHAT_ICON_ON_HEADER_ORDER_DETAIL, statusOrder)
+    fun eventClickChatOnHeaderDetail(statusOrderCode: String, statusOrderName: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_CHAT_ICON_ON_HEADER_ORDER_DETAIL, "$statusOrderCode - $statusOrderName")
     }
 
-    fun eventClickMainActionInOrderDetail(labelBtn: String, statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, "$CLICK_MAIN_ACTION_IN_ORDER_DETAIL $labelBtn", statusOrder)
+    fun eventClickCtaActionInOrderDetail(labelBtn: String, statusOrderCode: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, "$CLICK_MAIN_CTA_IN_ORDER_DETAIL - $statusOrderCode", "$statusOrderCode - $labelBtn")
     }
 
-    fun eventClickSecondaryActionInOrderDetail(labelBtn: String, statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, "$CLICK_SECONDARY_ACTION_IN_ORDER_DETAIL $labelBtn", statusOrder)
+    fun eventClickSecondaryActionInOrderDetail(labelBtn: String, statusOrderCode: String, orderStatusName: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, "$CLICK_SECONDARY_ACTION_IN_ORDER_DETAIL - $statusOrderCode",
+                "$statusOrderCode - $orderStatusName - $labelBtn")
     }
 
-    fun eventClickButtonPeluangInEmptyState(statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_PELUANG_IN_EMPTY_STATE, statusOrder)
-    }
-
-    fun eventClickTerapkanOnFilterPage(orderCode: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_TERAPKAN_ON_FILTER_PAGE, orderCode)
+    fun eventClickTerapkanOnFilterPage(filterValue: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_TERAPKAN_ON_FILTER_PAGE, filterValue)
     }
 
     fun eventViewTicker(tickerId: String) {
@@ -114,8 +117,8 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_FILTER_BUTTON_ON_ORDER_LIST, orderCode)
     }
 
-    fun eventClickViewInvoice(statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_VIEW_INVOICE, statusOrder)
+    fun eventClickViewInvoice(statusOrderCode: String, orderStatusName: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_VIEW_INVOICE, "$statusOrderCode - $orderStatusName")
     }
 
     fun eventViewEmptyState(statusOrderName: String) {
@@ -126,16 +129,12 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BACK_BUTTON_ON_FILTER_PAGE, orderCode)
     }
 
-    fun eventClickResetButtonOnFilterPage(orderCode: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_RESET_BUTTON_ON_FILTER_PAGE, orderCode)
+    fun eventClickResetButtonOnFilterPage() {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_RESET_BUTTON_ON_FILTER_PAGE, "")
     }
 
     fun eventClickTolakPesanan(statusOrderName: String, reason: String) {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_TOLAK_PESANAN, "$statusOrderName - $reason")
-    }
-
-    fun eventClickCekPeluangOnEmptyState(statusOrderName: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_CEK_PELUANG_ON_EMPTY_STATE, statusOrderName)
     }
 
     fun eventClickAcceptOrderPopup(isSuccess: Boolean) {
@@ -154,12 +153,8 @@ object SomAnalytics {
         sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_REQUEST_PICKUP_POPUP)
     }
 
-    fun eventClickButtonTolakPesananPopup(statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_TOLAK_PESANAN_POPUP, statusOrder)
-    }
-
-    fun eventClickButtonChatPembeliPopup(statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_CHAT_PEMBELI_POPUP, statusOrder)
+    fun eventClickButtonTolakPesananPopup(statusOrder: String, statusOrderName: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_TOLAK_PESANAN_POPUP, "$statusOrder - $statusOrderName")
     }
 
     fun eventClickSearchBar() {
@@ -202,6 +197,74 @@ object SomAnalytics {
                 TrackAppUtils.EVENT_LABEL to "$WAITING_FOR_PAYMENT - $AWAITING_PAYMENT:$counter",
                 CUSTOM_DIMENSION_USER_ID to userId,
                 CUSTOM_DIMENSION_SHOP_ID to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // SOM Revamp
+    fun eventClickOrderCard(orderStatus: Int, orderStatusName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_ORDER_CARD_ON_ORDER_LIST, "$orderStatus - $orderStatusName")
+    }
+
+    fun eventClickFilter(orderStatus: List<String>) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_FILTER_BUTTON_ON_ORDER_LIST, orderStatus.joinToString(","))
+    }
+
+    fun eventClickStatusFilter(orderStatus: List<String>, orderStatusName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_QUICK_FILTER, "${orderStatus.joinToString(",")} - $orderStatusName")
+    }
+
+    fun eventClickStartAdvertise(orderStatus: String, orderStatusName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_START_ADVERTISE, "$orderStatus - $orderStatusName")
+    }
+
+    fun eventBulkAcceptOrder(orderStatus: String, orderStatusName: String, acceptedOrderCount: Int, userId: String, shopId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to CLICK_SOM,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                TrackAppUtils.EVENT_ACTION to "click accept all",
+                TrackAppUtils.EVENT_LABEL to "$orderStatus - $orderStatusName - $acceptedOrderCount",
+                CUSTOM_DIMENSION_USER_ID to userId,
+                CUSTOM_DIMENSION_SHOP_ID to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun eventClickBulkPrintAwb(userId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to CLICK_SOM,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                TrackAppUtils.EVENT_ACTION to CLICK_BULK_PRINT_ACTION,
+                TrackAppUtils.EVENT_LABEL to "",
+                CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
+                CUSTOM_DIMENSION_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_SELLER,
+                CUSTOM_DIMENSION_USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun eventClickYesOnBulkPrintAwb(userId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to CLICK_SOM,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                TrackAppUtils.EVENT_ACTION to CLICK_BULK_PRINT_ACTION_YES,
+                TrackAppUtils.EVENT_LABEL to "",
+                CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
+                CUSTOM_DIMENSION_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_SELLER,
+                CUSTOM_DIMENSION_USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun eventClickCancelOnBulkPrintAwb(userId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to CLICK_SOM,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                TrackAppUtils.EVENT_ACTION to CLICK_BULK_PRINT_ACTION_CANCEL,
+                TrackAppUtils.EVENT_LABEL to "",
+                CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
+                CUSTOM_DIMENSION_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_SELLER,
+                CUSTOM_DIMENSION_USER_ID to userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
