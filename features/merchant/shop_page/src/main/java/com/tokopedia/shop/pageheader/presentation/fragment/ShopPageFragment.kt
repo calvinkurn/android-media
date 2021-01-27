@@ -1221,7 +1221,7 @@ class ShopPageFragment :
                 view?.let {
                     Toaster.build(
                             it,
-                            toasterText,
+                            toasterText ?: "",
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_NORMAL,
                             buttonLabel ?: ""
