@@ -1560,6 +1560,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void sendEEStep3() {
         List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
+        if (shipmentCartItemModels == null) return;
 
         // if one of courier reseted because of apply promo logistic (PSL) and eventually not eligible after hit validate use, don't send EE
         boolean courierHasReseted = false;
@@ -2258,7 +2259,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void navigateToProtectionMore(String url) {
         mTrackerPurchaseProtection.eventClickOnPelajari(url);
-        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this,getActivityContext(), url, getString(R.string.title_activity_checkout_webview));
+        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this, getActivityContext(), url, getString(R.string.title_activity_checkout_webview));
     }
 
     @Override
