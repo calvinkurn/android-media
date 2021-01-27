@@ -1,18 +1,19 @@
 {
-  "readme": "Wishlist and ads wishlist, impression and click",
+  "readme": "Wishlist add to cart",
   "mode": "exact",
   "query": [
     {
       "eventCategory": "wishlist page",
-      "event": "clickWishlist",
-      "eventAction": "remove wishlist - wishlist - login",
+      "ecommerce": "",
+      "event": "addToCart",
+      "eventAction": "click - beli on wishlist",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
     },
     {
       "eventCategory": "wishlist page",
       "event": "clickWishlist",
-      "eventAction": "click batalkan hapus wishlist",
+      "eventAction": "click - cek keranjang on wishlist",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
     }

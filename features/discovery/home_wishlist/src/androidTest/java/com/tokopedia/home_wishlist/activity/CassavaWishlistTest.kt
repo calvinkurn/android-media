@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -31,6 +32,7 @@ import com.tokopedia.home_wishlist.view.viewholder.WishlistItemViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.clearUserSession
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestUser1
 import com.tokopedia.test.application.util.RestMockUtil
@@ -44,6 +46,8 @@ private const val TAG = "CassavaWishlistTest"
 
 
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_ITEM = "tracker/wishlist/wishlist_item.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_ADD_TO_CART = "tracker/wishlist/wishlist_addtocart.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_DELETE_ITEM = "tracker/wishlist/wishlist_item_action_delete.json"
 
 class CassavaWishlistTest {
 
@@ -55,10 +59,13 @@ class CassavaWishlistTest {
             gtmLogDBSource.deleteAll().subscribe()
             disableCoachMark()
             super.beforeActivityLaunched()
-            loginInstrumentationTestUser1()
             setupGraphqlMockResponse(WishlistMockData())
             setupMockFromRestResponse()
         }
+    }
+
+    private fun login() {
+        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 
     private fun setupMockFromRestResponse() {
@@ -86,10 +93,37 @@ class CassavaWishlistTest {
     @Test
     fun testWishlistImpressionAndClickLogin() {
         initTestWithLogin()
-
+        login()
         scrollToItemAndBanner()
 
         doCassavaCheck()
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+
+    @Test
+    fun testClickAddToCartAndSnackbarButton() {
+        initTestWithLogin()
+        login()
+        scrollToItemPositionClickAddToCartAndSnackbarButton(0)
+
+        doCassavaCheckAddToCartTracker()
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+    @Test
+    fun testDeleteWishlist() {
+        initTestWithLogin()
+        login()
+        scrollToItemPositionDeleteItem(0)
+
+        doCassavaDeleteItem()
 
         onFinishTest()
 
@@ -112,15 +146,62 @@ class CassavaWishlistTest {
         logTestMessage("Done UI Test")
     }
 
+    private fun scrollToItemPosition(pos: Int) {
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+        scrollHomeRecyclerViewToPosition(recyclerView, pos)
+        checkItemsAndBanner(recyclerView, pos)
+        activityRule.activity.finish()
+        logTestMessage("Done UI Test")
+    }
+
+    private fun scrollToItemPositionClickAddToCartAndSnackbarButton(pos: Int) {
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+        scrollHomeRecyclerViewToPosition(recyclerView, pos)
+        clickAddToCart()
+        waitFoSnackBar()
+        clickSnackBarButton()
+        activityRule.activity.finish()
+        logTestMessage("Done UI Test")
+    }
+
+    private fun scrollToItemPositionDeleteItem(pos: Int) {
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+        scrollHomeRecyclerViewToPosition(recyclerView, pos)
+        clickDeleteItem()
+        waitDeleteDialog()
+        clickCancelDelete()
+        waitDeleteDialog()
+        clickDeleteItem()
+        waitDeleteDialog()
+        clickConfirmDelete()
+        waitDeleteDialog()
+        waitDeleteDialog()
+        activityRule.activity.finish()
+        logTestMessage("Done UI Test")
+    }
+
+
     private fun scrollHomeRecyclerViewToPosition(recyclerView: RecyclerView, position: Int) {
         val layoutManager = recyclerView.layoutManager as StaggeredGridLayoutManager
-        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 400) }
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 0) }
     }
 
 
     private fun doCassavaCheck() {
         waitForData()
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_ITEM),
+                hasAllSuccess())
+    }
+
+    private fun doCassavaCheckAddToCartTracker() {
+        waitForData()
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_ADD_TO_CART),
+                hasAllSuccess())
+    }
+
+    private fun doCassavaDeleteItem() {
+        waitForData()
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_DELETE_ITEM),
                 hasAllSuccess())
     }
 
@@ -135,6 +216,28 @@ class CassavaWishlistTest {
         }
     }
 
+    private fun clickAddToCart() {
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.buttonAddToCart)))
+                    .perform(ViewActions.click())
+            logTestMessage("Click SUCCESS atc")
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click FAILED atc")
+        }
+    }
+
+    private fun clickSnackBarButton() {
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.snackbar_btn)))
+                    .perform(ViewActions.click())
+            logTestMessage("Click SUCCESS snackbar button")
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click FAILED snackbar button")
+        }
+    }
+
     private fun clickWishlistItem(view: View, viewComponent: String, itemPos: Int) {
         try {
             Espresso.onView(firstView(ViewMatchers.withId(R.id.wishlist_card)))
@@ -143,6 +246,39 @@ class CassavaWishlistTest {
         } catch (e: PerformException) {
             e.printStackTrace()
             logTestMessage("Click FAILED wishlist item")
+        }
+    }
+
+    private fun clickDeleteItem() {
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.imageRemoveFromWishlist)))
+                    .perform(ViewActions.click())
+            logTestMessage("Click SUCCESS remove")
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click FAILED remove")
+        }
+    }
+
+    private fun clickCancelDelete() {
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.dialog_btn_primary)))
+                    .perform(ViewActions.click())
+            logTestMessage("Click SUCCESS cancelDelete")
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click FAILED cancelDelete")
+        }
+    }
+
+    private fun clickConfirmDelete() {
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.dialog_btn_secondary)))
+                    .perform(ViewActions.click())
+            logTestMessage("Click SUCCESS ConfirmDelete")
+        } catch (e: PerformException) {
+            e.printStackTrace()
+            logTestMessage("Click FAILED ConfirmDelete")
         }
     }
 
@@ -156,8 +292,15 @@ class CassavaWishlistTest {
         initTest()
     }
 
-    private fun waitForData() {
-        Thread.sleep(5000)
+    private fun waitForData(repetition: Long = 1) {
+        Thread.sleep(5000 * repetition)
+    }
+
+    private fun waitFoSnackBar() {
+        Thread.sleep(1000)
+    }
+    private fun waitDeleteDialog() {
+        Thread.sleep(1000)
     }
 
     private fun addDebugEnd() {
@@ -167,5 +310,7 @@ class CassavaWishlistTest {
     private fun onFinishTest() {
         gtmLogDBSource.deleteAll().subscribe()
     }
+
+
 
 }
