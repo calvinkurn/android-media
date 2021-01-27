@@ -11,22 +11,24 @@ import com.tokopedia.home_component.model.DynamicIconComponent
  * Created by Lukas on 1/14/21.
  */
 class DynamicIconComponentCallback (private val context: Context?, private val homeCategoryListener: HomeCategoryListener): DynamicIconComponentListener {
-    override fun onClickIcon(dynamicIcon: DynamicIconComponent.DynamicIcon, position: Int, iconPosition: Int) {
+    override fun onClickIcon(dynamicIcon: DynamicIconComponent.DynamicIcon, position: Int, iconPosition: Int, type: Int) {
         DynamicIconTracking.sendDynamicIconClick(
                 userId = homeCategoryListener.userId,
                 position = position,
                 iconPosition = iconPosition,
+                type = type,
                 dynamicIcon = dynamicIcon
         )
         RouteManager.route(context, dynamicIcon.applink)
     }
 
-    override fun onImpressIcon(dynamicIcons: List<DynamicIconComponent.DynamicIcon>, position: Int) {
+    override fun onImpressIcon(dynamicIcons: List<DynamicIconComponent.DynamicIcon>, position: Int, type: Int) {
         homeCategoryListener.getTrackingQueueObj()?.let { trackingQueue ->
             DynamicIconTracking.sendDynamicIconImpress(
                     trackingQueue = trackingQueue,
                     userId = homeCategoryListener.userId,
                     position = position,
+                    type = type,
                     dynamicIcons = dynamicIcons
             )
         }

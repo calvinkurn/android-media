@@ -154,7 +154,7 @@ class HomeVisitableFactoryImpl(
         visitableList.add(viewModelDynamicIcon)
     }
 
-    private fun addDynamicIconData(id: String = "", defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf()) {
+    private fun addDynamicIconData(id: String = "", type: Int = 1, defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf()) {
         val viewModelDynamicIcon = DynamicIconComponentDataModel(
                 id = id,
                 dynamicIconComponent = DynamicIconComponent(
@@ -175,7 +175,8 @@ class HomeVisitableFactoryImpl(
                             )
                         }
                 ),
-                isCache = isCache
+                isCache = isCache,
+                type = type
         )
 
         visitableList.add(viewModelDynamicIcon)
@@ -266,7 +267,8 @@ class HomeVisitableFactoryImpl(
                                         visitableList.add(ErrorStateIconModel())
                                     },
                                     onSuccess = {
-                                        addDynamicIconData(data.id.toString(),data.getAtfContent<DynamicHomeIcon>()?.dynamicIcon?: listOf())
+                                        val icon = data.getAtfContent<DynamicHomeIcon>()
+                                        addDynamicIconData(data.id.toString(),icon?.type ?: 1, icon?.dynamicIcon?: listOf())
                                     }
                             )
                             iconPosition++
