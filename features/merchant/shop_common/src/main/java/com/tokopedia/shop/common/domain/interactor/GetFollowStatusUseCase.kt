@@ -42,7 +42,7 @@ class GetFollowStatusUseCase @Inject constructor(
 
     private val query = """
             query followStatus(${'$'}input: ParamFollowStatus!) {
-                followStatus(input:${'$'}input}) {
+                followStatus(input:${'$'}input) {
                     status {
                       userIsFollowing
                       userNeverFollow
