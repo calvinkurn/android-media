@@ -967,9 +967,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (data.list.size > 0) {
                     configureHomeFlag(data.homeFlag)
                     setData(data.list, data.isCache, data.isProcessingAtf)
-                } else if (!data.isCache) {
-                    showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
-                    pageLoadTimeCallback?.invalidate()
                 }
             }
         })
@@ -993,6 +990,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 adapter?.resetChannelErrorState()
                 adapter?.resetAtfErrorState()
             } else if(status == Result.Status.ERROR_GENERAL) {
+                showNetworkError(getString(R.string.home_error_connection))
                 NetworkErrorHelper.showEmptyState(activity, root, getString(R.string.home_error_connection)) { onRefresh() }
                 pageLoadTimeCallback?.invalidate()
             } else {
@@ -2401,9 +2399,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterWithAction(message: String, typeToaster: Int, actionText: String, clickListener: View.OnClickListener) {
-        Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
-        errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
-        if (errorToaster?.isShown == false) {
+        if (errorToaster == null || errorToaster?.isShown == false) {
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
+            errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
             errorToaster?.show()
         }
     }

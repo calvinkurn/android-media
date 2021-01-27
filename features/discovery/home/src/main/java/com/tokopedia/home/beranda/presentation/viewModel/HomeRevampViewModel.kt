@@ -48,6 +48,7 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.homenav.mainnav.view.datamodel.InitialShimmerDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
@@ -927,13 +928,21 @@ open class HomeRevampViewModel @Inject constructor(
                         takeTicker = false
                     }
                     homeDataModel?.let {
-                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
+                        if (homeDataModel.list.isEmpty()) {
+                            val initialHomeDataModel = HomeDataModel(list = listOf(
+                                    HomeHeaderOvoDataModel(),
+                                    HomeInitialShimmerDataModel()
+                            ))
+                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(initialHomeDataModel, this@HomeRevampViewModel))
+                        } else {
+                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
+                        }
                     }
                     refreshHomeData()
                 }
             }
         }) {
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.errorGeneral(Throwable(), null))
         }
     }
 
@@ -953,7 +962,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.errorGeneral(Throwable(), null))
         }
     }
 

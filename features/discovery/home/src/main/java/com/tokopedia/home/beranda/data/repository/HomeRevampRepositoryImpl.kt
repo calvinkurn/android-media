@@ -110,14 +110,12 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 if (homeAtfResponse?.dataList == null) {
                     isAtfSuccess = false
                     homeData.atfData = null
-                    emit(Result.errorAtf(Throwable("ATF data list is null"),null))
                 } else {
                     homeData.atfData = homeAtfResponse
                 }
             } catch (e: Exception) {
                 homeData.atfData = null
                 isAtfSuccess = false
-                emit(Result.errorAtf(e,null))
             }
 
             /**
@@ -238,13 +236,16 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 homeData.isProcessingDynamicChannel = false
                 homeCachedDataSource.saveToDatabase(homeData)
             } else if (dynamicChannelResponseValue == null) {
-                emit(Result.error(Throwable()))
                 /**
                  * 7.1 Emit error pagination only when atf is empty
                  * Because there is no content that we can show, we showing error page
                  */
-                if ((homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) || homeData.atfData?.dataList?.isEmpty() == true) {
+                if (homeData.atfData == null ||
+                        (homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) ||
+                        homeData.atfData?.dataList?.isEmpty() == true) {
                     emit(Result.errorGeneral(Throwable(),null))
+                } else {
+                    emit(Result.error(Throwable(), null))
                 }
                 homeCachedDataSource.saveToDatabase(homeData)
             }
