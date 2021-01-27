@@ -7,14 +7,16 @@ import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.loginregister.common.DispatcherProvider
-import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
-import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
-import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
+import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
-import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
+import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
@@ -24,8 +26,6 @@ import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
-import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -45,7 +45,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import junit.framework.Assert.assertEquals
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.hamcrest.CoreMatchers.instanceOf
@@ -85,7 +85,7 @@ class RegisterInitialViewModelTest {
     private var registerCheckObserver = mockk<Observer<Result<RegisterCheckData>>>(relaxed = true)
     private var registerRequestObserver = mockk<Observer<Result<RegisterRequestData>>>(relaxed = true)
     private var activateUserObserver = mockk<Observer<Result<ActivateUserData>>>(relaxed = true)
-    private var discoverObserver = mockk<Observer<Result<ArrayList<DiscoverItemViewModel>>>>(relaxed = true)
+    private var discoverObserver = mockk<Observer<Result<ArrayList<DiscoverItemDataModel>>>>(relaxed = true)
     private var getFacebookObserver = mockk<Observer<Result<FacebookCredentialData>>>(relaxed = true)
     private var showPopupErrorObserver = mockk<Observer<PopupError>>(relaxed = true)
     private var goToActivationPageObserver = mockk<Observer<MessageErrorException>>(relaxed = true)
@@ -261,12 +261,12 @@ class RegisterInitialViewModelTest {
     @Test
     fun `on Success Discover`() {
         /* When */
-        val discoverViewModel = DiscoverViewModel(arrayListOf(
-                DiscoverItemViewModel("123", "", "", "", "")
+        val discoverViewModel = DiscoverDataModel(arrayListOf(
+                DiscoverItemDataModel("123", "", "", "", "")
         ), "")
 
         every { discoverUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<DiscoverViewModel>>().onNext(discoverViewModel)
+            secondArg<Subscriber<DiscoverDataModel>>().onNext(discoverViewModel)
         }
 
         viewModel.getProvider()
@@ -279,7 +279,7 @@ class RegisterInitialViewModelTest {
     fun `on Providers Empty Error`() {
         /* When */
         every { discoverUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<DiscoverViewModel>>().onError(throwable)
+            secondArg<Subscriber<DiscoverDataModel>>().onError(throwable)
         }
 
         viewModel.getProvider()
@@ -292,7 +292,7 @@ class RegisterInitialViewModelTest {
     fun `on Failed Discover`() {
         /* When */
         every { discoverUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<DiscoverViewModel>>().onError(throwable)
+            secondArg<Subscriber<DiscoverDataModel>>().onError(throwable)
         }
 
         viewModel.getProvider()

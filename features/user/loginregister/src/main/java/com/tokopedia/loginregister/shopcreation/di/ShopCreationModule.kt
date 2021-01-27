@@ -29,7 +29,6 @@ class ShopCreationModule {
     @Provides
     fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
         override fun ui(): CoroutineDispatcher = Dispatchers.Main
-
         override fun io(): CoroutineDispatcher = Dispatchers.IO
     }
 
