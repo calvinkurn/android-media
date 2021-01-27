@@ -102,13 +102,6 @@
             tools:text="Product Name"
             tools:visibility="visible" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.7"/>
-
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelPrice"
             android:layout_width="wrap_content"
@@ -118,7 +111,7 @@
             android:visibility="gone"
             app:labelType="general_light_green"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guidelineLabel"
+            app:layout_constraintTop_toBottomOf="@id/textViewProductName"
             tools:text="Cashback"
             tools:visibility="visible" />
 
@@ -155,7 +148,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/labelDiscount"
-            app:layout_constraintTop_toTopOf="@id/guidelineDiscount"
+            app:layout_constraintTop_toTopOf="@id/labelDiscount"
             app:layout_goneMarginLeft="@dimen/spacing_lvl3"
             app:layout_goneMarginTop="@dimen/spacing_lvl2"
             app:typographyType="small"
