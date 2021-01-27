@@ -108,7 +108,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             tvError.setText(shippingDurationUiModel.getErrorMessage());
             tvError.setVisibility(View.VISIBLE);
         } else {
-            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
+            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
             tvError.setVisibility(View.GONE);
             tvPriceOrDuration.setVisibility(View.VISIBLE);
 
