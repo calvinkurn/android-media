@@ -23,6 +23,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
@@ -40,7 +41,8 @@ class SomListViewModel @Inject constructor(
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
         private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase,
-        private val authorizeAccessUseCase: AuthorizeAccessUseCase
+        private val authorizeSomListAccessUseCase: AuthorizeAccessUseCase,
+        private val authorizeMultiAcceptAccessUseCase: AuthorizeAccessUseCase
 ) : SomOrderBaseViewModel(dispatcher.io(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest) {
 
@@ -77,12 +79,24 @@ class SomListViewModel @Inject constructor(
     val bulkAcceptOrderResult: LiveData<Result<SomListBulkAcceptOrderUiModel>>
         get() = _bulkAcceptOrderResult
 
-    private val _isOrderManageEligible = MutableLiveData<Result<Boolean>>()
-    val isOrderManageEligible: LiveData<Result<Boolean>>
+    private val _isOrderManageEligible = MutableLiveData<Result<Pair<Boolean, Boolean>>>()
+    val isOrderManageEligible: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _isOrderManageEligible
 
-    private val _canShowOrderData = MutableLiveData<Boolean>().apply {
+    private val _canShowOrderData = MediatorLiveData<Boolean>().apply {
         value = true
+        addSource(_isOrderManageEligible) { result ->
+            when(result) {
+                is Success -> {
+                    result.data.let { (canShowOrder, _) ->
+                        value = canShowOrder
+                    }
+                }
+                is Fail -> {
+                    value = false
+                }
+            }
+        }
     }
 
     private var lastBulkAcceptOrderStatusSuccessResult: Result<SomListBulkAcceptOrderStatusUiModel>? = null
@@ -283,27 +297,32 @@ class SomListViewModel @Inject constructor(
     fun getAdminPermission() {
         when {
             userSession.isShopOwner -> {
-                _isOrderManageEligible.postValue(Success(true))
+                _isOrderManageEligible.postValue(Success(true to true))
                 _canShowOrderData.postValue(true)
             }
             userSession.isShopAdmin -> {
                 launchCatchError(
                         block = {
-                            val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST)
-                            authorizeAccessUseCase.execute(requestParams).let { isEligible ->
-                                _isOrderManageEligible.postValue(Success(isEligible))
-                                _canShowOrderData.postValue(isEligible)
+                            val somListRequestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST)
+                            val multiAccessRequestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_MULTI_ACCEPT)
+                            async {
+                                authorizeSomListAccessUseCase.execute(somListRequestParams)
+                            }.let { isSomListEligibleDeferred ->
+                                async {
+                                    authorizeMultiAcceptAccessUseCase.execute(multiAccessRequestParams)
+                                }.let { isMultiAcceptEligibleDeferred ->
+                                    _isOrderManageEligible.postValue(
+                                            Success(isSomListEligibleDeferred.await() to isMultiAcceptEligibleDeferred.await()))
+                                }
                             }
                         },
                         onError = {
                             _isOrderManageEligible.postValue(Fail(it))
-                            _canShowOrderData.postValue(false)
                         }
                 )
             }
             else -> {
-                _isOrderManageEligible.postValue(Success(false))
-                _canShowOrderData.postValue(false)
+                _isOrderManageEligible.postValue(Success(false to false))
             }
         }
     }

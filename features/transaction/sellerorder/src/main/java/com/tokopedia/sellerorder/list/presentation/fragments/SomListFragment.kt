@@ -250,6 +250,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var selectedOrderId: String = ""
     private var tabActive: String = ""
     private var canDisplayOrderData = true
+    private var canMultiAcceptOrder = true
     private var somListBulkProcessOrderBottomSheet: SomListBulkProcessOrderBottomSheet? = null
     private var bulkAcceptOrderDialog: SomListBulkAcceptOrderDialog? = null
     private var tickerPagerAdapter: TickerPagerAdapter? = null
@@ -941,9 +942,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.isOrderManageEligible.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
-                    result.data.let { isEligible ->
-                        canDisplayOrderData = isEligible
-                        if (isEligible) {
+                    result.data.let { (isSomListEligible, isMultiAcceptEligible) ->
+                        canDisplayOrderData = isSomListEligible
+                        canMultiAcceptOrder = isMultiAcceptEligible
+                        if (isSomListEligible) {
                             somAdminPermissionView?.hide()
                             loadAllInitialData()
                         } else {
@@ -1410,7 +1412,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
                 tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab?.getSelectedFilterOrderCount().orZero())
-                multiEditViews.showWithCondition(somListSortFilterTab?.shouldShowBulkAction()
+                multiEditViews.showWithCondition(somListSortFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder)
                         ?: false)
                 toggleTvSomListBulkText()
                 toggleBulkActionCheckboxVisibility()
@@ -1457,7 +1459,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             }
             selectedOrderId = ""
             if (adapter.dataSize == 0) {
-                multiEditViews.showWithCondition(adapter.dataSize > 0)
+                multiEditViews.showWithCondition(adapter.dataSize > 0 && canMultiAcceptOrder)
                 showEmptyState()
             }
         }

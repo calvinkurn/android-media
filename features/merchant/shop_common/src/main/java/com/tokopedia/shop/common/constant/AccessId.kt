@@ -18,6 +18,7 @@ import androidx.annotation.IntDef
 annotation class AccessId {
     companion object {
         const val SOM_LIST = 25
+        const val SOM_MULTI_ACCEPT = 28
         const val PRODUCT_ADD = 101
         const val PRODUCT_EDIT = 121
         const val PRODUCT_DUPLICATE = 123
