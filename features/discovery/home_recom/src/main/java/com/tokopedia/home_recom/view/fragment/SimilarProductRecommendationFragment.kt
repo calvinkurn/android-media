@@ -37,6 +37,7 @@ import com.tokopedia.home_recom.view.viewholder.RecommendationEmptyViewHolder
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel.Companion.DEFAULT_VALUE_SORT
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.sortfilter.SortFilter
@@ -375,11 +376,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         }
     }
 
-    private fun onQuickFilterClick(item: SortFilterItem){
+    private fun onQuickFilterClick(item: SortFilterItem, recom: RecommendationFilterChipsEntity.RecommendationFilterChip){
         adapter.clearAllElements()
         recommendationViewModel.getRecommendationFromQuickFilter(item.title.toString(), ref, source, productId)
         item.toggleSelected()
-        SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId())
+        SimilarProductRecommendationTracking.eventUserClickQuickFilterChip(recommendationViewModel.userId(), "${recom.options.firstOrNull()?.key ?: ""}=${recom.options.firstOrNull()?.value ?: ""}")
     }
 
     /**
@@ -405,11 +406,15 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      * @param position list of position of the item at Adapter, can be [1] or [1,2] for dynamic nested item
      */
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref, internalRef)
-        else SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref, internalRef)
-        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, position.first())
-            startActivityForResult(this, REQUEST_FROM_PDP)
+        try {
+            if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref, internalRef)
+            else SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref, internalRef)
+            RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
+                putExtra(PDP_EXTRA_UPDATED_POSITION, position.first())
+                startActivityForResult(this, REQUEST_FROM_PDP)
+            }
+        }catch (ex: Exception){
+
         }
     }
 
@@ -468,8 +473,16 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         adapter.clearAllElements()
         recommendationViewModel.getRecommendationFromFullFilter(applySortFilterModel.selectedSortMapParameter, applySortFilterModel.selectedFilterMapParameter, ref, source, productId)
         filterSortBottomSheet = null
-        repeat(applySortFilterModel.mapParameter.count()) { SimilarProductRecommendationTracking.eventUserClickFullFilterChip(recommendationViewModel.userId()) }
-        SimilarProductRecommendationTracking.eventUserClickShowProduct(recommendationViewModel.userId())
+        val selectedFilterString = applySortFilterModel.selectedFilterMapParameter.map { "${it.key}=${it.value}" }.joinToString("&")
+        val selectedSortString = applySortFilterModel.selectedSortMapParameter.map { "${it.key}=${it.value}" }.joinToString("&")
+        applySortFilterModel.mapParameter.forEach {
+            SimilarProductRecommendationTracking.eventUserClickFullFilterChip(recommendationViewModel.userId(), "${it.key}=${it.value}")
+        }
+        var trackerParam = selectedSortString
+        if(selectedFilterString.isNotEmpty()){
+            trackerParam += if(trackerParam.isNotEmpty()) "&" else "" + selectedFilterString
+        }
+        SimilarProductRecommendationTracking.eventUserClickShowProduct(recommendationViewModel.userId(), trackerParam)
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {

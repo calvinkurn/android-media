@@ -310,7 +310,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun onSwipeRefresh() {
-        productVideoCoordinator?.onDestroy()
         recommendationCarouselPositionSavedState.clear()
         shouldRefreshProductInfoBottomSheet = true
         isLoadingInitialData = true
@@ -385,7 +384,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             videoTrackerData?.let {
                 DynamicProductDetailTracking.Click.eventVideoStateChange(
                         viewModel.getDynamicProductInfoP1, viewModel.userId, DynamicProductDetailTracking.generateComponentTrackModel(pdpUiUpdater?.mediaMap, 0),
-                        videoTrackerData.first,videoTrackerData.second, isAutoPlay
+                        videoTrackerData.first, videoTrackerData.second, isAutoPlay
                 )
                 alreadyHitVideoTracker = true
             }
@@ -1012,7 +1011,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 sharedViewModel?.updateVideoDetailData(ProductVideoDetailDataModel(it.getVideoDataModel(),
                         //Tracker Data
                         trackerData?.shopTypeString
-                        ?: "",
+                                ?: "",
                         trackerData?.basic?.shopID ?: "",
                         viewModel.userId, trackerData?.basic?.productID ?: ""))
 
@@ -1028,7 +1027,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.generateComponentTrackModel(pdpUiUpdater?.mediaMap, 0), isMute)
     }
 
-    override fun onVideoStateChange(stopDuration: Long, videoDuration:Long) {
+    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
         viewModel.updateVideoTrackerData(stopDuration, videoDuration)
     }
 
@@ -1847,7 +1846,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         view?.let {
             Snackbar.make(it, string, Snackbar.LENGTH_LONG).apply {
                 setAction(getString(com.tokopedia.abstraction.R.string.close)) { dismiss() }
-                setActionTextColor(androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                setActionTextColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }.show()
         }
     }
@@ -2857,10 +2856,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             doActionOrLogin({
                 nplFollowersButton?.startLoading()
                 trackToggleFavoriteShop(componentTrackDataModel)
-                pdpUiUpdater?.getShopInfo?.enableButtonFavorite = false
-                pdpUiUpdater?.shopCredibility?.enableButtonFavorite = false
-                dynamicAdapter.notifyWithPayload(pdpUiUpdater?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
-                dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
                 viewModel.toggleFavorite(viewModel.getDynamicProductInfoP1?.basic?.shopID
                         ?: "", isNplFollowType)
             })

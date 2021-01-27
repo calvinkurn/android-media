@@ -9,7 +9,6 @@ import android.text.TextUtils;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
@@ -218,8 +217,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private boolean isSupportedApplinkNotification(Bundle bundle) {
         String applink = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
-        return ((TkpdCoreRouter) mContext.getApplicationContext())
-                .isSupportedDelegateDeepLink(applink);
+        return DeeplinkHandlerActivity.getApplinkDelegateInstance().supportsUri(applink);
 
     }
 

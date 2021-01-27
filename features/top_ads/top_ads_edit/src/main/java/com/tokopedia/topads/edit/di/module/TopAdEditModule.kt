@@ -19,7 +19,6 @@ import kotlinx.coroutines.Dispatchers
 
 
 @Module
-@EditAdScope
 class TopAdEditModule(val context: Context) {
 
     @Provides

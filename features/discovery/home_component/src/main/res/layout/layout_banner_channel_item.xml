@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/dp_8"
+    android:layout_width="328dp"
+    android:layout_height="109dp">
+    <com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
+        android:id="@+id/image_banner_homepage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</androidx.cardview.widget.CardView>

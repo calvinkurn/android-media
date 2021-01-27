@@ -382,23 +382,6 @@
                 ]
               }
             ]
-          },
-          {
-            "widgetID": 0,
-            "layoutOrder": 0,
-            "name": "play",
-            "type": "dynamic",
-            "header": {
-              "title": "",
-              "ctaText": "",
-              "ctaLink": "",
-              "cover": "",
-              "ratio": "",
-              "isATC": 0
-            },
-            "data": [
-
-            ]
           }
         ]
       }

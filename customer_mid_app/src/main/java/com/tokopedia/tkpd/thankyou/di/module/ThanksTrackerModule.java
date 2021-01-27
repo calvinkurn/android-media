@@ -25,7 +25,6 @@ import dagger.Provides;
  * Created by okasurya on 12/4/17.
  */
 @Module
-@ThanksTrackerScope
 public class ThanksTrackerModule {
     @Provides
     @ThanksTrackerScope

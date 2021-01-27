@@ -12,7 +12,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.variant.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
 import com.tokopedia.product.util.processor.Product
