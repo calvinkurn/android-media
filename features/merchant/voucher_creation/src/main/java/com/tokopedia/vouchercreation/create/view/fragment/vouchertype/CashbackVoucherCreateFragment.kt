@@ -408,6 +408,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                                     }
                                 }
                             }
+                            nextButtonUiModel.isEnabled = !validation.getIsHaveError()
                         }
                         is Fail -> {
                             val error = result.throwable.message.toBlankOrString()
@@ -452,6 +453,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                                     }
                                 }
                             }
+                            nextButtonUiModel.isEnabled = !validation.getIsHaveError()
                         }
                         is Fail -> {
                             val error = result.throwable.message.toBlankOrString()
