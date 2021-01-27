@@ -2,9 +2,6 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.content.Context
 import android.graphics.Color
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.google.android.flexbox.AlignItems
@@ -33,7 +30,6 @@ import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelAdapter
-import com.tokopedia.unifycomponents.UrlSpanNoUnderline
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.detail_header_item.view.*
@@ -145,11 +141,11 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
     private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo, tickerContent: String, tickerUrl: String, isAwb: Boolean) {
         tickerBuyerRequestCancel?.apply {
             val tickerDescription = makeTickerDescription(context, tickerInfo, tickerContent, isAwb)
-            setTextDescription(tickerDescription)
+            setHtmlDescription(tickerDescription)
 
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    if (tickerInfo.actionUrl.isNotBlank()) {
+                    if (tickerUrl.isNotBlank()) {
                         RouteManager.route(context, String.format("%s?=url", ApplinkConst.WEBVIEW, tickerUrl))
                     }
                 }
@@ -164,48 +160,11 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
     private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo, tickerContent: String, isAwb: Boolean): String {
         val message = Utils.getL2CancellationReason(tickerInfo.text, context.getString(R.string.som_header_detail_ticker_cancellation))
         val additionalInvalidResi = itemView.context.getString(R.string.additional_invalid_resi)
-
-        val spannedMessage = if (isAwb) {
-            SpannableStringBuilder()
-                    .append(tickerContent)
-                    .append(" $additionalInvalidResi")
+        return if (isAwb) {
+            String.format(itemView.context.getString(R.string.som_detail_ticker_description), tickerContent, additionalInvalidResi)
         } else {
-            SpannableStringBuilder()
-                    .append(message)
-                    .append(" ${tickerInfo.actionText}")
+            String.format(itemView.context.getString(R.string.som_detail_ticker_description), message, tickerInfo.actionText)
         }
-
-        if(isAwb) {
-            spannedMessage.setSpan(
-                    UrlSpanNoUnderline(additionalInvalidResi),
-                    tickerContent.length + 2,
-                    tickerContent.length + additionalInvalidResi.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannedMessage.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)),
-                    tickerContent.length + 2,
-                    tickerContent.length + additionalInvalidResi.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        } else {
-            if (tickerInfo.actionText.isNotBlank()) {
-                spannedMessage.setSpan(
-                        UrlSpanNoUnderline(tickerInfo.actionText),
-                        message.length + 2,
-                        message.length + tickerInfo.actionText.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                spannedMessage.setSpan(
-                        ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)),
-                        message.length + 2,
-                        message.length + tickerInfo.actionText.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-        }
-
-        return spannedMessage.toString()
     }
 
     companion object {
