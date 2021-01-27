@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -55,6 +56,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -89,6 +91,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
+    private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
@@ -701,6 +704,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             return true;
         }
+        if (isLinkAjaAppLink(url)) {
+            return redirectToLinkAjaApp(url);
+        }
+
+
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
         if (isNotNetworkUrl) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
@@ -777,6 +785,26 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
         return webHistoryItem.getUrl();
     }
+
+    private boolean isLinkAjaAppLink(String url) {
+        return url.contains(LINK_AJA_APP_LINK);
+    }
+
+    private boolean redirectToLinkAjaApp(String url) {
+        Uri uri = Uri.parse(url);
+        Intent linkAjaIntent = new Intent(Intent.ACTION_VIEW, uri);
+        List<ResolveInfo> activities = getActivity().getPackageManager()
+                .queryIntentActivities(linkAjaIntent, 0);
+        boolean isIntentSafe = activities.isEmpty();
+        if (isIntentSafe) {
+            startActivity(linkAjaIntent);
+            getActivity().finish();
+            return true;
+        }else
+            return false;
+
+    }
+
 
     public TkpdWebView getWebView() {
         return webView;
