@@ -53,5 +53,6 @@
     <color name="gf_reward_green_2">#B7F49B</color>
     <color name="gf_direct_gift_borderColor">#50000000</color>
     <color name="gf_white_66">#66ffffff</color>
+    <color name="gf_glowing_green">#70AAFE56</color>
 
 </resources>

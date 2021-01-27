@@ -4,48 +4,56 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.gamification.R
+import com.tokopedia.unifycomponents.toPx
 
 open class GiftBoxGlowingView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private var borderPaint = Paint()
-    private var rectPaint = Paint()
     var shadowPaint = Paint()
-
     var shadowPath = Path()
     protected var clipPath = Path()
-    private var rectBackgroundPath = Path()
-
     protected var clipRectF = RectF()
-    private var rectBackgroundRectF = RectF()
-    private var borderRectF = RectF()
 
     var porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
 
-    open var shadowColor = Color.BLACK
+    var shadowColor = Color.BLACK
+    var shadowStrokeWidth = 15.toPx().toFloat()
+    var blurRadius = 10.toPx().toFloat()
+    private var cornerRadius = 16.toPx().toFloat()
 
-    var shadowStrokeWidth = 15f
+    val padding = 16.toPx() //taken from xml
 
-    open var blurRadius = 50f
-    private var cornerRadius = 8f
-    private var shadowHeight = 0f
-    var shadowDx = 0f
-    var shadowDy = 0f
-    var shadowStartY = java.lang.Float.MIN_VALUE
-    open var enableShadow = false
-    lateinit var blurMaskFilter: BlurMaskFilter
+    var xOffsetTopRight = -9.toPx().toFloat() - padding
+    var xOffsetTopLeft = - xOffsetTopRight
+    var xOffsetBottomRight = -7.toPx().toFloat() - padding
+    var xOffsetBottomLeft = - xOffsetBottomRight
+
+    var yOffsetTopRight = (8).toPx().toFloat() + padding
+    var yOffsetTopLeft = yOffsetTopRight
+    var yOffsetBottomLeft = -5.toPx().toFloat()
+    var yOffsetBottomRight = yOffsetBottomLeft
+
+
+    var blurMaskFilter: BlurMaskFilter
 
     init {
-        readAttrs(attrs)
         blurMaskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL)
+        shadowColor = ContextCompat.getColor(context, R.color.gf_glowing_green)
+        val bottomPadding = context.resources.getDimension(R.dimen.gami_direct_view_bottom_margin)
+        yOffsetBottomLeft = - bottomPadding
+        yOffsetBottomRight = yOffsetBottomLeft
     }
-    open fun readAttrs(attrs: AttributeSet?) {}
 
     override fun dispatchDraw(canvas: Canvas) {
+        clipRadius(canvas)
+        drawShadow(canvas)
+        super.dispatchDraw(canvas)
+    }
+
+    fun clipRadius(canvas: Canvas){
         clipPath.reset()
 
         clipRectF.top = 0f
@@ -55,59 +63,6 @@ open class GiftBoxGlowingView @JvmOverloads constructor(
         clipPath.addRoundRect(clipRectF, cornerRadius, cornerRadius, Path.Direction.CW)
 
         canvas.clipPath(clipPath)
-        super.dispatchDraw(canvas)
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        if (enableShadow) {
-            drawShadow(canvas)
-        }
-//        drawRectBackground(canvas)
-//        drawBorder(canvas)
-        super.onDraw(canvas)
-    }
-
-    private fun drawBorder(canvas: Canvas) {
-
-        val borderColor = ContextCompat.getColor(context, R.color.gf_direct_gift_borderColor)
-
-        borderPaint.style = Paint.Style.STROKE
-        borderPaint.color = borderColor
-        borderPaint.strokeWidth = 0.5f
-
-        borderRectF.top = 0f
-        borderRectF.left = 0f
-        borderRectF.right = width.toFloat()
-        borderRectF.bottom = height.toFloat()
-        canvas.drawRoundRect(borderRectF, cornerRadius, cornerRadius, borderPaint)
-    }
-
-    private fun drawRectBackground(canvas: Canvas) {
-
-        rectPaint.style = Paint.Style.FILL
-        rectPaint.color = Color.WHITE
-        rectPaint.xfermode = porterDuffXfermode
-        rectBackgroundRectF.top = 0f
-        rectBackgroundRectF.left = 40f
-        rectBackgroundRectF.right = width.toFloat() - 40f
-        rectBackgroundRectF.bottom = height.toFloat()
-        rectBackgroundPath.reset()
-        rectBackgroundPath.addRect(rectBackgroundRectF, Path.Direction.CW)
-        canvas.drawRoundRect(rectBackgroundRectF, cornerRadius, cornerRadius, rectPaint)
-    }
-
-    private fun drawRectBackground2(canvas: Canvas) {
-
-        rectPaint.style = Paint.Style.FILL
-        rectPaint.color = Color.WHITE
-        rectPaint.xfermode = porterDuffXfermode
-        rectBackgroundRectF.top = 0f
-        rectBackgroundRectF.left = 0f
-        rectBackgroundRectF.right = width.toFloat()
-        rectBackgroundRectF.bottom = height.toFloat()
-        rectBackgroundPath.reset()
-        rectBackgroundPath.addRect(rectBackgroundRectF, Path.Direction.CW)
-        canvas.drawRoundRect(rectBackgroundRectF, cornerRadius, cornerRadius, rectPaint)
     }
 
     open fun drawShadow(canvas: Canvas) {
@@ -120,19 +75,12 @@ open class GiftBoxGlowingView @JvmOverloads constructor(
 
         shadowPaint.maskFilter = blurMaskFilter
 
-        val yOffset = -shadowDy.toInt()
-        val xOffset = -shadowDx.toInt()
-
-        if (shadowStartY == java.lang.Float.MIN_VALUE) {
-            shadowStartY = (height / 2).toFloat()
-        }
-
         shadowPath.reset()
-        shadowPath.moveTo((width + xOffset).toFloat(), shadowStartY)
-        shadowPath.lineTo((-xOffset).toFloat(), shadowStartY)
-        shadowPath.lineTo((-xOffset).toFloat(), (height + yOffset).toFloat())
-        shadowPath.lineTo((width + xOffset).toFloat(), (height + yOffset).toFloat())
-        shadowPath.lineTo((width + xOffset).toFloat(), shadowStartY)
+        shadowPath.moveTo((width + xOffsetTopRight), yOffsetTopRight)                                     //TR
+        shadowPath.lineTo((xOffsetTopLeft), yOffsetTopLeft)                                           //TR-->TL
+        shadowPath.lineTo((xOffsetBottomLeft), (height + yOffsetBottomLeft))                //TL-->BL
+        shadowPath.lineTo((width + xOffsetBottomRight), (height + yOffsetBottomRight))          //BL-->BR
+        shadowPath.lineTo((width + xOffsetTopRight), yOffsetTopRight)                                 //BR-->TR
 
         canvas.drawPath(shadowPath, shadowPaint)
         canvas.restore()

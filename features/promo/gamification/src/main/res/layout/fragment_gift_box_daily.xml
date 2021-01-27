@@ -97,15 +97,16 @@
 
                     <!--                    <include layout="@layout/gami_gift_reminder" />-->
 
+
                     <com.tokopedia.gamification.giftbox.presentation.views.GamiDirectGiftView
                         android:id="@+id/direct_gift_view"
-                        android:layout_width="match_parent"
+                        style="@style/GamiDirectViewParent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:layout_marginStart="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:layout_marginEnd="@dimen/dp_16"
-                        android:layout_marginBottom="@dimen/gami_direct_view_bottom_margin"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:paddingStart="@dimen/dp_16"
+                        android:paddingTop="@dimen/dp_16"
+                        android:paddingEnd="@dimen/dp_16"
+                        android:paddingBottom="@dimen/gami_direct_view_bottom_margin"
                         android:gravity="center_horizontal" />
 
                 </FrameLayout>
