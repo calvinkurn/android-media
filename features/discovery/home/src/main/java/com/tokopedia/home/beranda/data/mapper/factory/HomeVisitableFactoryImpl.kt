@@ -181,17 +181,17 @@ class HomeVisitableFactoryImpl(
         visitableList.add(viewModelDynamicIcon)
     }
 
-    private fun addDynamicChannelData(addLoadingMore: Boolean, defaultDynamicHomeChannel: DynamicHomeChannel? = null, useDefaultWhenEmpty: Boolean = true) {
+    private fun addDynamicChannelData(addLoadingMore: Boolean, defaultDynamicHomeChannel: DynamicHomeChannel? = null, useDefaultWhenEmpty: Boolean = true, startPosition: Int = 0) {
         if (defaultDynamicHomeChannel != null) {
             defaultDynamicHomeChannel?.let {
                 val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
-                        HomeChannelData(it), isCache, addLoadingMore, useDefaultWhenEmpty)
+                        HomeChannelData(it), isCache, addLoadingMore, useDefaultWhenEmpty, startPosition = startPosition)
                 data?.let { it1 -> visitableList.addAll(it1) }
             }
         } else {
             homeData?.let {
                 val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
-                        HomeChannelData(it.dynamicHomeChannel), isCache, addLoadingMore, useDefaultWhenEmpty)
+                        HomeChannelData(it.dynamicHomeChannel), isCache, addLoadingMore, useDefaultWhenEmpty, startPosition = startPosition)
                 data?.let { it1 -> visitableList.addAll(it1) }
             }
         }
@@ -301,7 +301,8 @@ class HomeVisitableFactoryImpl(
                                         addDynamicChannelData(
                                                 false,
                                                 data.getAtfContent<DynamicHomeChannel>(),
-                                                false
+                                                false,
+                                                it.dataList.size
                                         )
                                     }
                             )
