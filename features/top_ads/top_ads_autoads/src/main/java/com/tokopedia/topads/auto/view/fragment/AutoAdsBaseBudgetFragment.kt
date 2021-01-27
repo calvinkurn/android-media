@@ -128,6 +128,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
                             errorText.visibility = View.GONE
                             btnSubmit.isEnabled = true                                                                                          
                         }
+                        priceEditText.textFieldInput.setSelection(priceEditText.textFieldInput.length())
                         priceEditText.textFieldInput.addTextChangedListener(this)
                     }
                 })
