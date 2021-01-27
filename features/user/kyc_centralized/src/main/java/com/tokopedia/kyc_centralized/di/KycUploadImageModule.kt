@@ -14,6 +14,8 @@ import com.tokopedia.kyc_centralized.KycUrl.KYC_BASE_URL
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -54,7 +56,10 @@ class KycUploadImageModule {
     @Provides
     fun provideWsV4RetrofitWithErrorHandler(okHttpClient: OkHttpClient,
                                             retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(KYC_BASE_URL).client(okHttpClient).build()
+        return when (TokopediaUrl.getInstance().TYPE) {
+            Env.STAGING -> retrofitBuilder.baseUrl(KYC_BASE_URL_STAGING).client(okHttpClient).build()
+            else -> retrofitBuilder.baseUrl(KYC_BASE_URL).client(okHttpClient).build()
+        }
     }
 
     @UserIdentificationCommonScope
