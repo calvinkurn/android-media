@@ -124,7 +124,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         topAdsInsightTabAdapter?.setListener(object : TopAdsInsightTabAdapter.OnRecyclerTabItemClick {
             override fun onTabItemClick(position: Int) {
                 view_pager.currentItem = position
-                if (position == 0 && topAdsInsightTabAdapter?.getTab()?.get(position)?.contains(PRODUK) == true) {
+                if (position == 0 && topAdsInsightTabAdapter?.getTab()?.get(position)?.contains(PRODUK) == true && countProduct != 0) {
                     (activity as TopAdsDashboardActivity?)?.hideButton(false)
                 } else {
                     (activity as TopAdsDashboardActivity?)?.hideButton(true)
@@ -167,6 +167,10 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         if (fragments?.firstOrNull() is TopAdsInsightBaseProductFragment?) {
             (fragments?.get(0) as TopAdsInsightBaseProductFragment).openBottomSheet()
         }
+    }
+
+    fun setEmptyProduct(){
+        countProduct = 0
     }
 
     fun checkButtonVisibility() {

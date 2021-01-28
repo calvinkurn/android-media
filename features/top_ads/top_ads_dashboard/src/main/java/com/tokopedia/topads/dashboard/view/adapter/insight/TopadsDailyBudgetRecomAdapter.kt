@@ -32,10 +32,10 @@ class TopadsDailyBudgetRecomAdapter(private val onBudgetClicked: ((pos: Int) -> 
         var totalPotentialClick = 0
         totalPotentialClick += if (budgetModel.setCurrentBid
                 >= budgetModel.priceDaily) {
-            (budgetModel.setCurrentBid
-                    - budgetModel.priceDaily) / budgetModel.avgBid
+            ((budgetModel.setCurrentBid
+                    - budgetModel.priceDaily) / budgetModel.avgBid.toDouble()).toInt()
         } else {
-            (budgetModel.suggestedPriceDaily - budgetModel.priceDaily) / budgetModel.avgBid
+            ((budgetModel.suggestedPriceDaily - budgetModel.priceDaily) / budgetModel.avgBid.toDouble()).toInt()
         }
         return totalPotentialClick
     }
@@ -58,7 +58,7 @@ class TopadsDailyBudgetRecomAdapter(private val onBudgetClicked: ((pos: Int) -> 
             holder.view.editBudget?.textFieldInput?.addTextChangedListener(object : NumberTextWatcher(holder.view.editBudget.textFieldInput, "0") {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
-                    setCurrentBid = number.toInt()
+                    setCurrentBid = number
                     holder.view.potentialClick.text = String.format(holder.view.context.getString(R.string.topads_dash_potential_click_text), calculatePotentialClick(holder).thousandFormatted())
                     when {
                         number < suggestedPriceDaily.toDouble() && number > priceDaily -> {

@@ -20,7 +20,7 @@ data class ProductRecommendationData(
         @SerializedName("info")
         val info: String = "",
         @SerializedName("nominal_id")
-        val nominalId: Int = 0,
+        val nominalId: String = "0",
         @SerializedName("products")
         val products: List<ProductRecommendation> = listOf()
 )
@@ -37,9 +37,9 @@ data class ProductRecommendation(
         @SerializedName("search_percent")
         val searchPercentage: String = "",
         @SerializedName("recommended_bid")
-        val recomBid: Int = 0,
+        val recomBid: String = "0",
         @SerializedName("min_bid")
-        val minBid: Int = 0,
+        val minBid: String = "0",
         var setCurrentBid: Int = 0,
         var isChecked: Boolean = true
 )

@@ -71,12 +71,12 @@ class TopadsProductRecomAdapter(var itemSelected: () -> Unit, var enableButton: 
                     super.onNumberChanged(number)
                     setCurrentBid = number.toInt()
                     when {
-                        number < recomBid.toDouble() && number > minBid -> {
+                        number < recomBid.toDouble() && number > minBid.toInt() -> {
                             enableButton.invoke(true)
                             holder.view.editBudget?.setError(false)
                             holder.view.editBudget?.setMessage(String.format(holder.view.context.getString(R.string.topads_dash_budget_recom_error), recomBid))
                         }
-                        number < minBid -> {
+                        number < minBid.toInt() -> {
                             enableButton.invoke(false)
                             holder.view.editBudget?.setError(true)
                             holder.view.editBudget?.setMessage(holder.view.context.getString(R.string.topads_dash_product_recomm_min_budget_error))

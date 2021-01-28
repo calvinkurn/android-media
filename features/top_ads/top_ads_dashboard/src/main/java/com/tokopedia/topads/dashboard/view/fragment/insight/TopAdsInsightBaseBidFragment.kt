@@ -115,9 +115,9 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
         var totalPotentialClick = 0
         data.forEach {
             totalPotentialClick += if (it.setCurrentBid >= it.priceDaily) {
-                (it.setCurrentBid - it.priceDaily) / it.avgBid
+                ((it.setCurrentBid - it.priceDaily) / it.avgBid.toDouble()).toInt()
             } else {
-                (it.suggestedPriceDaily - it.priceDaily) / it.avgBid
+                ((it.suggestedPriceDaily - it.priceDaily) / it.avgBid.toDouble()).toInt()
             }
         }
         return totalPotentialClick
@@ -125,7 +125,7 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
 
     private fun onError(message: String) {
         view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.topads_common_text_ok), View.OnClickListener {}).show()
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.topads.common.R.string.topads_common_text_ok), View.OnClickListener {}).show()
         }
         adapter.notifyItemChanged(currentPosition)
     }
@@ -154,7 +154,7 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
 
     private fun showSuccessToast() {
         view?.let {
-            Toaster.build(it, getString(R.string.topads_dash_success_daily_budget_toast), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.topads_common_text_ok), View.OnClickListener {}).show()
+            Toaster.build(it, getString(R.string.topads_dash_success_daily_budget_toast), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_text_ok), View.OnClickListener {}).show()
         }
     }
 }

@@ -18,14 +18,14 @@ data class TopadsGetDailyBudgetRecommendation(
 
 data class DataBudget(
         @SerializedName("avg_bid")
-        val avgBid: Int = 0,
+        val avgBid: String = "0",
         @SerializedName("group_id")
-        val groupId: Int = 0,
+        val groupId: String = "0",
         @SerializedName("group_name")
         val groupName: String = "",
         @SerializedName("price_daily")
-        val priceDaily: Int = 0,
+        val priceDaily: Double = 0.0,
         @SerializedName("suggested_price_daily")
-        val suggestedPriceDaily: Int = 0,
-        var setCurrentBid: Int = 0
+        val suggestedPriceDaily: Double = 0.0,
+        var setCurrentBid: Double = 0.0
 )

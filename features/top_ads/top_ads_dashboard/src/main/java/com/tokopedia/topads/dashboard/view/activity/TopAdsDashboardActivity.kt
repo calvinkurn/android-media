@@ -128,7 +128,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                     INSIGHT_PAGE -> {
                         bottom.visibility = View.GONE
                         multiActionBtn.buttonSize = UnifyButton.Size.MEDIUM
-                        multiActionBtn?.text = getString(R.string.topads_iklankan_button)
+                        multiActionBtn?.text = getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
                         checkVisibility()
                     }
                     else -> {
@@ -153,7 +153,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     }
 
     fun hideButton(toHide: Boolean) {
-        if (view_pager.currentItem != 0) {
+        if (multiActionBtn?.text?.equals(getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)) == true) {
             bottom.visibility = if (toHide) View.GONE else View.VISIBLE
             if (toHide) {
                 view_pager?.setPadding(0, 0, 0, 0)

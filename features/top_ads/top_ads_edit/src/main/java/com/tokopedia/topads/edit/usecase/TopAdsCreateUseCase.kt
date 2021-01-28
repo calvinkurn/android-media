@@ -135,7 +135,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         keywordsPostiveEdit?.forEach { posKey ->
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
-            keyword.price_bid = posKey.priceBid
+            keyword.price_bid = posKey.priceBid.toDouble()
             keyword.id = posKey.keywordId
             keyword.status = null
             keyword.tag = null
@@ -164,7 +164,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
             val keyword = KeywordEditInput.Keyword()
             keyword.source = keyPos.source
             keyword.id = keyPos.keywordId
-            keyword.price_bid = keyPos.priceBid
+            keyword.price_bid = keyPos.priceBid.toDouble()
             keyword.status = ACTIVE
             keyword.tag = keyPos.tag
             if (keyPos.type == KEYWORD_TYPE_PHRASE) {
@@ -180,7 +180,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         keywordsNegDelete?.forEach { negKey ->
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
-            keyword.price_bid = 0
+            keyword.price_bid = 0.0
             keyword.id = negKey.keywordId
             keyword.tag = null
             keyword.status = null
@@ -195,7 +195,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
             keyword.id = "0"
-            keyword.price_bid = 0
+            keyword.price_bid = 0.0
             if (negKey.type == KEYWORD_TYPE_NEGATIVE_PHRASE) {
                 keyword.type = NEGATIVE_PHRASE
             } else {

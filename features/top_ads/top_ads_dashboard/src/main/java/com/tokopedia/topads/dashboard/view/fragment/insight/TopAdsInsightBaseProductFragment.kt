@@ -108,7 +108,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     private fun checkUnchekAll() {
         onCheckedChangeListener = { _, checked ->
             adapter.setAllChecked(checked)
-            selectedItems?.text = String.format(getString(R.string.topads_common_selected_product), adapter.getSelectedIds().size)
+            selectedItems?.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product), adapter.getSelectedIds().size)
         }
         cb_product_recom?.setOnCheckedChangeListener(onCheckedChangeListener)
     }
@@ -130,7 +130,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
         cb_product_recom?.isChecked = true
         (parentFragment as TopAdsRecommendationFragment).setCount(adapter.items.size, 0)
         product_recom_desc.text = Html.fromHtml(String.format(getString(R.string.topads_dash_recom_product_desc), products?.size, calculateSetTitle(products)))
-        selectedItems?.text = String.format(getString(R.string.topads_common_selected_product), adapter.itemCount)
+        selectedItems?.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product), adapter.itemCount)
     }
 
     private fun enableButton(enable: Boolean) {
@@ -152,8 +152,8 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
         product_recom_desc?.gone()
         cb_product_recom?.gone()
         selectedItems?.gone()
+        (parentFragment as TopAdsRecommendationFragment).setEmptyProduct()
         (activity as TopAdsDashboardActivity).hideButton(true)
-
     }
 
     private fun loadData() {
@@ -269,7 +269,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
 
     private fun onError(message: String) {
         view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.topads_common_text_ok), View.OnClickListener {}).show()
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.topads.common.R.string.topads_common_text_ok), View.OnClickListener {}).show()
         }
     }
 
