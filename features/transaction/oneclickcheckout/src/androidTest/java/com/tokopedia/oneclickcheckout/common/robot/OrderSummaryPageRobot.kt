@@ -131,6 +131,14 @@ class OrderSummaryPageRobot {
         OrderPriceSummaryBottomSheetRobot().apply(func)
     }
 
+    fun clickButtonContinueWithRedPromo() {
+        onView(withId(com.tokopedia.purchase_platform.common.R.id.btn_continue)).perform(click())
+    }
+
+    fun closePromoNotEligibleBottomSheet() {
+        onView(withId(com.tokopedia.purchase_platform.common.R.id.btn_close)).perform(click())
+    }
+
     fun pay() {
         onView(withId(R.id.btn_pay)).perform(scrollTo()).perform(click())
     }

@@ -50,6 +50,7 @@ const val UPDATE_CART_OCC_QUERY = "update_cart_occ"
 const val GET_OCC_CART_PAGE_DEFAULT_RESPONSE_PATH = "cart/get_occ_cart_page_default_response.json"
 const val GET_OCC_CART_PAGE_NO_PROFILE_RESPONSE_PATH = "cart/get_occ_cart_page_no_profile_response.json"
 const val GET_OCC_CART_PAGE_LAST_APPLY_RESPONSE_PATH = "cart/get_occ_cart_page_last_apply_response.json"
+const val GET_OCC_CART_PAGE_LAST_APPLY_WITH_LOW_MAXIMUM_PAYMENT_RESPONSE_PATH = "cart/get_occ_cart_page_last_apply_with_low_maximum_payment_response.json"
 
 const val GET_OCC_CART_PAGE_CREDIT_CARD_RESPONSE_PATH = "cart/get_occ_cart_page_credit_cart_response.json"
 const val GET_OCC_CART_PAGE_CREDIT_CARD_EXPIRED_RESPONSE_PATH = "cart/get_occ_cart_page_credit_cart_expired_response.json"
