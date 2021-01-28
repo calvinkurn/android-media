@@ -64,7 +64,8 @@ class ShopHomeSliderBannerViewHolder(
                 img.layoutParams.height = (carouselShopPage?.measuredWidth.orZero() * ratio).toInt()
                 img.requestLayout()
                 try {
-                    img.setImageUrl(carouselItem.imageUrl)
+                    if(img.context.isValidGlideContext())
+                        img.setImageUrl(carouselItem.imageUrl)
                 } catch (e: Throwable) { }
             }
         } catch (e: Exception) {
