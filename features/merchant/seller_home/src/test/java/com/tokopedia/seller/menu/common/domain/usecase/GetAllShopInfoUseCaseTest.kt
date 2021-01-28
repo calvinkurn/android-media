@@ -70,7 +70,7 @@ class GetAllShopInfoUseCaseTest {
     fun `success get all shop info`() = runBlocking {
         val balanceSuccess = OthersBalance()
         val shopTypeSuccess = PowerMerchantStatus.Active
-        val totalFollowersSuccess = anyInt()
+        val totalFollowersSuccess = anyLong()
         val shopBadgeUrlSuccess = anyString()
         val topAdsDepositSuccess = anyFloat()
         val isTopAdsAutoTopupSuccess = anyBoolean()

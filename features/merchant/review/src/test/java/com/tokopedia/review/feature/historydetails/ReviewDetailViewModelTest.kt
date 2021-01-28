@@ -10,12 +10,13 @@ import io.mockk.coVerify
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyLong
 
 class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when setFeedbackId should set feedbackId to expected value and getReviewDetail`() {
-        val feedbackId = anyInt()
+        val feedbackId = anyLong()
         val expectedNetworkResponse = ProductrevGetReviewDetailResponseWrapper()
 
         onGetReviewDetails_thenReturn(expectedNetworkResponse)
@@ -29,7 +30,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when setFeedbackId but getReviewDetailFail should set feedbackId to expected value and set expected failure`() {
-        val feedbackId = anyInt()
+        val feedbackId = anyLong()
         val expectedNetworkResponse = Throwable()
 
         onGetReviewDetailsFails_thenReturn(expectedNetworkResponse)
@@ -43,7 +44,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when getReviewDetail success should execute expected usecase`() {
-        val feedbackId = anyInt()
+        val feedbackId = anyLong()
         val expectedNetworkResponse = ProductrevGetReviewDetailResponseWrapper()
 
         onGetReviewDetails_thenReturn(expectedNetworkResponse)
@@ -56,12 +57,12 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when getReviewDetail Fail should set expected failure`() {
-        val feedbackId = anyInt()
+        val feedbackId = anyLong()
         val expectedNetworkResponse = Throwable()
 
         onGetReviewDetailsFails_thenReturn(expectedNetworkResponse)
 
-        viewModel.getReviewDetails(feedbackId, false)
+        viewModel.getReviewDetails(feedbackId)
 
         verifyProductrevGetReviewDetailUseCaseCalled()
         verifyReviewDetailsError(Fail(expectedNetworkResponse))
@@ -69,7 +70,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when retry() should execute usecase again`() {
-        val feedbackId = anyInt()
+        val feedbackId = anyLong()
 
         viewModel.setFeedbackId(feedbackId)
         verifyProductrevGetReviewDetailUseCaseCalled()
@@ -86,14 +87,14 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when feedback Id live data is not initialized should return 0`() {
-        val expectedFeedbackId = 0
+        val expectedFeedbackId = 0L
         val actualFeedbackId = viewModel.feedbackId
         Assert.assertEquals(expectedFeedbackId, actualFeedbackId)
     }
 
     @Test
     fun `when submitReputation should execute expected usecase`() {
-        val reputationId = anyInt()
+        val reputationId = anyLong()
         val reputationScore = anyInt()
         val expectedResponse = InboxReviewInsertReputationResponseWrapper(InboxReviewInsertReputation(success = 1))
 
@@ -107,7 +108,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when submitReputation fail due to backend should return expected error`() {
-        val reputationId = anyInt()
+        val reputationId = anyLong()
         val reputationScore = anyInt()
         val expectedResponse = InboxReviewInsertReputationResponseWrapper(InboxReviewInsertReputation(success = 0))
 
@@ -121,7 +122,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when submitReputation fails due to network should execute expected usecase and throw expected throwable`() {
-        val reputationId = anyInt()
+        val reputationId = anyLong()
         val reputationScore = anyInt()
         val expectedResponse = Throwable()
 
@@ -157,7 +158,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         coVerify { inboxReviewInsertReputationUseCase.executeOnBackground() }
     }
 
-    private fun verifyFeedbackIdEquals(feedbackId: Int) {
+    private fun verifyFeedbackIdEquals(feedbackId: Long) {
         Assert.assertEquals(feedbackId, viewModel.feedbackId)
     }
 

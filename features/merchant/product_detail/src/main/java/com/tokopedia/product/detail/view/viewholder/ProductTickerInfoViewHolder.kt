@@ -35,7 +35,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
     }
 
     override fun bind(element: ProductTickerInfoDataModel) {
-        if (element.generalTickerInfoDataModel == null) {
+        if (element.statusInfo == null) {
             hideComponent()
         } else {
             componentTrackDataModel = element.getComponentTrackData(adapterPosition)

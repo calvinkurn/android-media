@@ -7,6 +7,7 @@ object ProductDetailConstant {
     var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
     const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
+    const val ENABLE_PDP_DIFFUTIL = "app_enable_pdp_diffutil"
 
     //report product
     const val PATH_PRODUCT_ACTION = "v4/action/product/"
@@ -59,11 +60,14 @@ object ProductDetailConstant {
 
     //PAYLOADS
     const val PAYLOAD_WISHLIST = 1
+    const val PAYLOAD_TRADEIN = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_UPDATE_IMAGE = 5
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
+    const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
+    const val DIFFUTIL_PAYLOAD = "payload"
 
     //Request Code
     const val REQUEST_CODE_EDIT_PRODUCT = 2
@@ -99,7 +103,6 @@ object ProductDetailConstant {
     const val VARIANT_OPTIONS = "variant_options"
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
-    const val PRODUCT_LAST_SEEN = "product_last_seen"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"

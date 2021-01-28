@@ -205,7 +205,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                 creator_name.setOnClickListener { listener?.onUserNameClick(item) }
                 val tagHConverter = TagConverter()
                 post_descr.text = tagHConverter.convertToLinkifyHashtag(SpannableString(item.description),
-                        ContextCompat.getColor(context, R.color.tkpd_main_green)){
+                        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)){
                     val encodeHashtag = URLEncoder.encode(it)
                     RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
                 }

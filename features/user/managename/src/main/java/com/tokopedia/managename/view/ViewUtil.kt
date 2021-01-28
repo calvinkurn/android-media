@@ -18,7 +18,7 @@ object ViewUtil {
             s.removeSpan(it)
             val noUnderline = URLSpanNoUnderline(it.url)
             s.setSpan(noUnderline, start, end, 0)
-            s.setSpan(ForegroundColorSpan(textView.context.resources.getColor(R.color.footer_manage_name_green)), start, end, 0)
+            s.setSpan(ForegroundColorSpan(textView.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)), start, end, 0)
         }
 
         textView.text = s

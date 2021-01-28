@@ -156,9 +156,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
-    debugImplementation (rootProject.ext.testDependencies.fragmentTest, {
-        exclude group: 'androidx.test', module: 'core'
-    })
     testImplementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 }

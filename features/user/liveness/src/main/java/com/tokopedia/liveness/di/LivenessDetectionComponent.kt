@@ -6,10 +6,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import dagger.Component
 
 @LivenessDetectionScope
-@Component(modules = [LivenessDetectionModule::class,
-            LivenessDetectionViewModelModule::class,
-            LivenessDetectionUploadImagesModule::class],
-        dependencies = [BaseAppComponent::class])
+@Component(dependencies = [BaseAppComponent::class])
 interface LivenessDetectionComponent {
     fun inject(fragment: LivenessErrorFragment)
     fun inject(fragment: LivenessFragment)
