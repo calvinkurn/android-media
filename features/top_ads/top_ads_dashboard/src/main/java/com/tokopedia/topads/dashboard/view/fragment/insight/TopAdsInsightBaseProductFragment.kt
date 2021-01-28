@@ -284,13 +284,13 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
 
     private fun showSuccessToast() {
         view?.let {
-            Toaster.build(it, String.format(getString(R.string.topads_dash_success_product_toast), adapter.getSelectedIds().size), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.topads_common_text_ok), View.OnClickListener {}).show()
+            Toaster.build(it, String.format(getString(R.string.topads_dash_success_product_toast), adapter.getSelectedIds().size), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_text_ok), View.OnClickListener {}).show()
         }
     }
 
     private fun itemCheckedUnchecked() {
         val selected = adapter.getSelectedIds().size
-        selectedItems?.text = String.format(getString(R.string.topads_common_selected_product), selected)
+        selectedItems?.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product), selected)
         cb_product_recom?.setOnCheckedChangeListener(null)
         cb_product_recom?.isChecked = selected == adapter.itemCount
         cb_product_recom?.setOnCheckedChangeListener(onCheckedChangeListener)
