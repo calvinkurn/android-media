@@ -70,7 +70,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost"
-            tools:text="@string/bottomsheet_order_cancellation_response_negative_button_code_400" />
+            tools:text="Konfirmasi Pengiriman" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnPositive"
