@@ -219,9 +219,8 @@
                 android:visibility="gone" />
         </FrameLayout>
 
-        <Button
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_claim"
-            style="@style/Button.Submit.Green"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
