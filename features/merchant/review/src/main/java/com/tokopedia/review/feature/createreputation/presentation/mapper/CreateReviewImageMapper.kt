@@ -24,13 +24,13 @@ object CreateReviewImageMapper {
         return originalImages
     }
 
-    fun getEditedImages(originalImageUrl: ArrayList<String>, originalImages: MutableList<String>, edited: ArrayList<Boolean>): List<String> {
+    fun getEditedImages(originalImageUrl: MutableList<String>, originalImages: MutableList<String>, edited: MutableList<Boolean>): List<String> {
         return originalImages.filter {
             originalImageUrl.contains(it)
         }.filterIndexed { index, _ -> !edited[index] }
     }
 
-    fun getImageUrlList(imagePickerResult: ArrayList<String>, edited: ArrayList<Boolean>, pictureList: List<String>, originalImageUrl: ArrayList<String>): MutableList<String> {
+    fun getImageUrlList(imagePickerResult: MutableList<String>, edited: MutableList<Boolean>, pictureList: List<String>, originalImageUrl: MutableList<String>): MutableList<String> {
         return imagePickerResult.mapIndexed { index, urlOrPath ->
             if (edited[index]) urlOrPath else pictureList.find { it == originalImageUrl[index] }
                     ?: urlOrPath
