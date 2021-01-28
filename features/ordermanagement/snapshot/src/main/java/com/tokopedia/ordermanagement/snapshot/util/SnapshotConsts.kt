@@ -9,4 +9,5 @@ object SnapshotConsts {
     const val TYPE_SHOP = "shop"
     const val TYPE_DETAILS = "details"
     const val PARAM_INPUT = "input"
+    const val CREATED_TIME = "#createdTime"
 }
