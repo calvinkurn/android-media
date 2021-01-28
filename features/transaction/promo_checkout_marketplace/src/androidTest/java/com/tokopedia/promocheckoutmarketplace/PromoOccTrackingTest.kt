@@ -41,7 +41,8 @@ class PromoOccTrackingTest {
         gtmLogDBSource.deleteAll().toBlocking().first()
 
         GraphqlClient.reInitRetrofitWithInterceptors(listOf(interceptor), context)
-        interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_response.json"
+        interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_empty_response.json"
+        interceptor.customValidateUsePromoRevampResponsePath = "occ/validate_use_promo_revamp_success_response.json"
 
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
@@ -59,6 +60,14 @@ class PromoOccTrackingTest {
 
             Thread.sleep(5000)
 
+            interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_ineligible_response.json"
+
+            pullSwipeRefresh()
+
+            interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_response.json"
+
+            pullSwipeRefresh()
+
             clickPromoWithTitle("Cashback Rp25.000")
 
             clickPromoWithTitle("Cashback Rp25.000")
@@ -69,15 +78,13 @@ class PromoOccTrackingTest {
 
             clickTerapkanPromoCode()
 
+            clickPromoWithTitle("Discount Rp30.000")
+
+            clickPromoWithTitle("Discount Rp30.000")
+
             clickPilihPromoRecommendation()
 
-            interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_ineligible_response.json"
-
-            pullSwipeRefresh()
-
-            interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_empty_response.json"
-
-            pullSwipeRefresh()
+            clickPakaiPromo()
 
             assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
         }

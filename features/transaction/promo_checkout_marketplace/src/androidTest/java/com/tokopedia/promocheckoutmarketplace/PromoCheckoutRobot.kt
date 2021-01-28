@@ -6,7 +6,7 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoInputViewHolder
@@ -48,6 +48,12 @@ class PromoCheckoutRobot {
 
     fun clickTerapkanPromoCode() {
         onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(RecyclerViewActions.actionOnHolderItem(onPromoInputViewHolder(), clickTerapkanInPromoInputViewHolder()))
+
+        Thread.sleep(3000)
+    }
+
+    fun clickPakaiPromo() {
+        onView(withId(R.id.container_action_bottom)).perform(clickButtonApplyPromo())
 
         Thread.sleep(3000)
     }
@@ -100,66 +106,72 @@ fun onPromoInputViewHolder(): BaseMatcher<AbstractViewHolder<*>> {
     }
 }
 
-fun clickPromoListItemViewHolder(): ViewAction {
-    return object : ViewAction {
-        override fun getConstraints(): Matcher<View> {
-            return ViewMatchers.isDisplayed()
-        }
+fun clickPromoListItemViewHolder() = object : ViewAction {
+    override fun getConstraints(): Matcher<View> {
+        return isDisplayed()
+    }
 
-        override fun getDescription(): String {
-            return "Click PromoListItemViewHolder"
-        }
+    override fun getDescription(): String {
+        return "Click PromoListItemViewHolder"
+    }
 
-        override fun perform(uiController: UiController?, view: View?) {
-            view?.findViewById<View>(R.id.card_promo_item)!!.performClick()
-        }
+    override fun perform(uiController: UiController?, view: View?) {
+        view?.findViewById<View>(R.id.card_promo_item)!!.performClick()
     }
 }
 
-fun clickPilihInPromoRecommendationViewHolder(): ViewAction {
-    return object : ViewAction {
-        override fun getConstraints(): Matcher<View> {
-            return ViewMatchers.isDisplayed()
-        }
+fun clickPilihInPromoRecommendationViewHolder() = object : ViewAction {
+    override fun getConstraints(): Matcher<View> {
+        return isDisplayed()
+    }
 
-        override fun getDescription(): String {
-            return "Click Pilih in PromoRecommendationViewHolder"
-        }
+    override fun getDescription(): String {
+        return "Click Pilih in PromoRecommendationViewHolder"
+    }
 
-        override fun perform(uiController: UiController?, view: View?) {
-            view?.findViewById<View>(R.id.button_apply_promo_recommendation)!!.performClick()
-        }
+    override fun perform(uiController: UiController?, view: View?) {
+        view?.findViewById<View>(R.id.button_apply_promo_recommendation)!!.performClick()
     }
 }
 
-fun typePromoCodeInPromoInputViewHolder(promoCode: String): ViewAction {
-    return object : ViewAction {
-        override fun getConstraints(): Matcher<View> {
-            return ViewMatchers.isDisplayed()
-        }
+fun typePromoCodeInPromoInputViewHolder(promoCode: String) = object : ViewAction {
+    override fun getConstraints(): Matcher<View> {
+        return isDisplayed()
+    }
 
-        override fun getDescription(): String {
-            return "Type Promo Code in PromoInputViewHolder"
-        }
+    override fun getDescription(): String {
+        return "Type Promo Code in PromoInputViewHolder"
+    }
 
-        override fun perform(uiController: UiController?, view: View?) {
-            view?.findViewById<TextFieldUnify>(R.id.text_field_input_promo)!!.textFieldInput.setText(promoCode)
-        }
+    override fun perform(uiController: UiController?, view: View?) {
+        view?.findViewById<TextFieldUnify>(R.id.text_field_input_promo)!!.textFieldInput.setText(promoCode)
     }
 }
 
-fun clickTerapkanInPromoInputViewHolder(): ViewAction {
-    return object : ViewAction {
-        override fun getConstraints(): Matcher<View> {
-            return ViewMatchers.isDisplayed()
-        }
+fun clickTerapkanInPromoInputViewHolder() = object : ViewAction {
+    override fun getConstraints(): Matcher<View> {
+        return isDisplayed()
+    }
 
-        override fun getDescription(): String {
-            return "Type Promo Code in PromoInputViewHolder"
-        }
+    override fun getDescription(): String {
+        return "Type Promo Code in PromoInputViewHolder"
+    }
 
-        override fun perform(uiController: UiController?, view: View?) {
-            view?.findViewById<View>(R.id.button_apply_promo)!!.performClick()
-        }
+    override fun perform(uiController: UiController?, view: View?) {
+        view?.findViewById<View>(R.id.button_apply_promo)!!.performClick()
+    }
+}
+
+fun clickButtonApplyPromo() = object : ViewAction {
+    override fun getConstraints(): Matcher<View> {
+        return isDisplayed()
+    }
+
+    override fun getDescription(): String {
+        return "Click Button Apply Promo in Bottom Container"
+    }
+
+    override fun perform(uiController: UiController?, view: View?) {
+        view?.findViewById<View>(R.id.button_apply_promo)?.performClick()
     }
 }

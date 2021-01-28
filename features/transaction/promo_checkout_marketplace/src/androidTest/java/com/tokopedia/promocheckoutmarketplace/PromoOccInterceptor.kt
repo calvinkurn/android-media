@@ -7,6 +7,24 @@ import okio.Buffer
 class PromoOccInterceptor : Interceptor {
 
     var customCouponListRecommendationResponsePath: String? = null
+    var customValidateUsePromoRevampResponsePath: String? = null
+
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val copy = chain.request().newBuilder().build()
+        val requestString = readRequestString(copy)
+
+        if (requestString.contains(COUPON_LIST_RECOMMENDATION_QUERY)) {
+            if (customCouponListRecommendationResponsePath != null) {
+                return mockResponse(copy, getJsonFromResource(customCouponListRecommendationResponsePath!!))
+            }
+        }
+        if (requestString.contains(VALIDATE_USE_PROMO_REVAMP_QUERY)) {
+            if (customValidateUsePromoRevampResponsePath != null) {
+                return mockResponse(copy, getJsonFromResource(customValidateUsePromoRevampResponsePath!!))
+            }
+        }
+        return chain.proceed(chain.request())
+    }
 
     private fun readRequestString(copyRequest: Request): String {
         val buffer = Buffer()
@@ -25,18 +43,7 @@ class PromoOccInterceptor : Interceptor {
                 .addHeader("content-type", "application/json")
                 .build()
     }
-
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val copy = chain.request().newBuilder().build()
-        val requestString = readRequestString(copy)
-
-        if (requestString.contains(COUPON_LIST_RECOMMENDATION_QUERY)) {
-            if (customCouponListRecommendationResponsePath != null) {
-                return mockResponse(copy, getJsonFromResource(customCouponListRecommendationResponsePath!!))
-            }
-        }
-        return chain.proceed(chain.request())
-    }
 }
 
 const val COUPON_LIST_RECOMMENDATION_QUERY = "coupon_list_recommendation"
+const val VALIDATE_USE_PROMO_REVAMP_QUERY = "validate_use_promo_revamp"

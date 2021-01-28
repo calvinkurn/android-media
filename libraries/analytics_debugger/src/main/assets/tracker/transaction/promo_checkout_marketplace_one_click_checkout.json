@@ -87,14 +87,16 @@
       "event": "clickCheckoutExpress",
       "eventAction": "click pilih promo recommendation",
       "sessionIris": "{{.*}}",
-      "eventLabel": "{{.+}}"
+      "eventLabel": "",
+      "promoCode": "{{.+}}"
     },
     {
       "eventCategory": "order summary",
       "event": "clickCheckoutExpress",
       "eventAction": "click pakai promo",
       "sessionIris": "{{.*}}",
-      "eventLabel": "{{.+}}"
+      "eventLabel": "{{success - (?:0|1)}}",
+      "promoCode": "{{.+}}"
     }
   ]
 }
