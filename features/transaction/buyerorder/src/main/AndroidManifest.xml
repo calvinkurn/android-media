@@ -171,10 +171,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".recharge_download.presentation.activity.OrderDetailRechargeDownloadWebviewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

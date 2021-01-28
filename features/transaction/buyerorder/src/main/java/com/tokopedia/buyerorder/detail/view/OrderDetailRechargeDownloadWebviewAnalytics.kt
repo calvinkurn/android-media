@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.recharge_download.presentation.analytics
+package com.tokopedia.buyerorder.detail.view
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils

@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.buyerorder.detail.domain.ErrorResponse;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
-import com.tokopedia.buyerorder.recharge_download.presentation.analytics.OrderDetailRechargeDownloadWebviewAnalytics;
+import com.tokopedia.buyerorder.detail.view.OrderDetailRechargeDownloadWebviewAnalytics;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSession;

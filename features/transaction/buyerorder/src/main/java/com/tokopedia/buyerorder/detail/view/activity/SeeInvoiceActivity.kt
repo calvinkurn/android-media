@@ -16,9 +16,9 @@ import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.data.Invoice
 import com.tokopedia.buyerorder.detail.data.Status
 import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent
+import com.tokopedia.buyerorder.detail.view.OrderDetailRechargeDownloadWebviewAnalytics
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.list.data.OrderCategory
-import com.tokopedia.buyerorder.recharge_download.presentation.analytics.OrderDetailRechargeDownloadWebviewAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.KEY_TITLE
