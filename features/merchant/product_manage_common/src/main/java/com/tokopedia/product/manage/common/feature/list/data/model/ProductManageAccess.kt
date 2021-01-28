@@ -17,5 +17,6 @@ data class ProductManageAccess(
     val setTopAds: Boolean,
     val setCashBack: Boolean,
     val setFeatured: Boolean,
-    val productList: Boolean
+    val productList: Boolean,
+    val broadcastChat: Boolean
 ): Parcelable
