@@ -1352,8 +1352,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                 }
             })
             (activity as? ProductDetailActivity)?.stopMonitoringP1()
-            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant()
-                    ?: false)
         }
     }
 
@@ -1605,6 +1603,10 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             setupProductVideoCoordinator()
 
             activity?.invalidateOptionsMenu()
+            getRecyclerView()?.addOneTimeGlobalLayoutListener {
+                (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage(viewModel.getDynamicProductInfoP1?.isProductVariant()
+                        ?: false)
+            }
             submitInitialList(data)
         }
     }
