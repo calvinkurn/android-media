@@ -124,6 +124,13 @@ class CartItemViewHolder constructor(itemView: View,
         llShopNoteSection = itemView.findViewById(R.id.ll_shop_note_section)
         layoutProductInfo = itemView.findViewById(R.id.layout_product_info)
 
+        setNoteTouchListener()
+
+        initTextWatcherDebouncer(compositeSubscription)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setNoteTouchListener() {
         etRemark.setOnTouchListener { view, event ->
             if (view.id == R.id.et_remark) {
                 view.parent.requestDisallowInterceptTouchEvent(true)
@@ -133,8 +140,6 @@ class CartItemViewHolder constructor(itemView: View,
             }
             false
         }
-
-        initTextWatcherDebouncer(compositeSubscription)
     }
 
     fun clear() {
