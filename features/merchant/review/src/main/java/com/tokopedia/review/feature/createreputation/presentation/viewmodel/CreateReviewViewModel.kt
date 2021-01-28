@@ -14,6 +14,7 @@ import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductIn
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevEditReviewUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
+import com.tokopedia.review.feature.createreputation.presentation.mapper.CreateReviewImageMapper
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -60,8 +61,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val editReviewResult: LiveData<ReviewViewState<Boolean>>
         get() = _editReviewResult
 
-    fun submitReview(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int,
-                     reviewText: String = "", isAnonymous: Boolean = false, utmSource: String) {
+    fun submitReview(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
+                     reviewText: String, isAnonymous: Boolean, utmSource: String) {
         _submitReviewResult.postValue(LoadingView())
         if (imageData.isEmpty()) {
             sendReviewWithoutImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, utmSource)
@@ -70,8 +71,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun editReview(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int,
-                   reviewText: String = "", isAnonymous: Boolean = false) {
+    fun editReview(feedbackId: Long, reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
+                   reviewText: String, isAnonymous: Boolean) {
         _submitReviewResult.postValue(LoadingView())
         if (imageData.isEmpty()) {
             editReviewWithoutImage(feedbackId, reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
@@ -80,7 +81,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getReviewDetails(feedbackId: Int) {
+    fun getReviewDetails(feedbackId: Long) {
         _reviewDetails.value = LoadingView()
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
@@ -95,14 +96,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     }
 
     fun getAfterEditImageList(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, edited: ArrayList<Boolean>): MutableList<BaseImageReviewUiModel> {
-        val pictureList = originalImages.filter {
-            originalImageUrl.contains(it)
-        }.filterIndexed { index, _ -> !edited[index] }
+        val pictureList = CreateReviewImageMapper.getEditedImages(originalImageUrl, originalImages, edited)
+        val imageUrlOrPathList = CreateReviewImageMapper.getImageUrlList(imagePickerResult, edited, pictureList, originalImageUrl)
 
-        val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
-            if (edited[index]) urlOrPath else pictureList.find { it == originalImageUrl[index] }
-                    ?: urlOrPath
-        }.toMutableList()
+        originalImages = originalImageUrl
 
         when (imagePickerResult.size) {
             5 -> {
@@ -140,16 +137,9 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     fun removeImage(image: BaseImageReviewUiModel, isEditMode: Boolean = false): MutableList<BaseImageReviewUiModel> {
         imageData.remove(image)
         if (isEditMode) {
-            val imageToRemove = image as? ImageReviewUiModel
-            imageToRemove?.let {
-                if (originalImages.contains(it.fullImageUrl)) {
-                    originalImages.remove(it.fullImageUrl)
-                }
-            }
+            originalImages = CreateReviewImageMapper.removeImageFromList(image, originalImages)
         }
-        if (imageData.size < 5 && !imageData.contains(DefaultImageReviewUiModel())) {
-            imageData.add(DefaultImageReviewUiModel())
-        }
+        imageData = CreateReviewImageMapper.addDefaultModelIfLessThanFive(imageData)
         return imageData
     }
 
@@ -164,19 +154,15 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     fun getSelectedImagesUrl(): ArrayList<String> {
         val result = arrayListOf<String>()
         imageData.forEach {
-            val imageUrl = if ((it as? ImageReviewUiModel)?.fullImageUrl?.isNotBlank() == true) {
-                (it as? ImageReviewUiModel)?.fullImageUrl
-            } else {
-                (it as? ImageReviewUiModel)?.imageUrl
-            }
-            if (imageUrl?.isNotEmpty() == true) {
+            val imageUrl = CreateReviewImageMapper.getImageUrl(it)
+            if (imageUrl.isNotEmpty()) {
                 result.add(imageUrl)
             }
         }
         return result
     }
 
-    fun getProductReputation(productId: Int, reputationId: Int) {
+    fun getProductReputation(productId: Long, reputationId: Long) {
         launchCatchError(block = {
             val data = withContext(coroutineDispatcherProvider.io) {
                 getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(reputationId, productId))
@@ -187,7 +173,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getProductIncentiveOvo(productId: Int = 0, reputationId: Int = 0) {
+    fun getProductIncentiveOvo(productId: Long = 0, reputationId: Long = 0) {
         launchCatchError(block = {
             val data = withContext(coroutineDispatcherProvider.io) {
                 getProductIncentiveOvo.getIncentiveOvo(productId, reputationId)
@@ -211,7 +197,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         return (incentiveOvo.value as? com.tokopedia.usecase.coroutines.Success)?.data?.productrevIncentiveOvo != null
     }
 
-    private fun sendReviewWithoutImage(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+    private fun sendReviewWithoutImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                                        reviewText: String, isAnonymous: Boolean, utmSource: String) {
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
@@ -231,7 +217,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    private fun sendReviewWithImage(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+    private fun sendReviewWithImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                                     reviewText: String, isAnonymous: Boolean, listOfImages: List<String>, utmSource: String) {
         val uploadIdList: ArrayList<String> = ArrayList()
         launchCatchError(block = {
@@ -259,7 +245,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    private fun editReviewWithoutImage(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+    private fun editReviewWithoutImage(feedbackId: Long, reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                                        reviewText: String, isAnonymous: Boolean) {
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
@@ -278,7 +264,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    private fun editReviewWithImage(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+    private fun editReviewWithImage(feedbackId: Long, reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                                     reviewText: String, isAnonymous: Boolean, listOfImages: List<String>) {
         val uploadIdList: ArrayList<String> = ArrayList()
         launchCatchError(block = {
@@ -314,11 +300,6 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 sourceId = CREATE_REVIEW_SOURCE_ID,
                 filePath = filePath
         )
-
-        // check picture availability
-        if (!filePath.exists()) {
-            return ""
-        }
 
         return when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> {

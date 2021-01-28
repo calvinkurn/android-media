@@ -32,7 +32,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         return DiscoveryResponse(
                 components = getCategoryComponents(data),
                 pageInfo = PageInfo(
-                        identifier = departmentId, name = data.name, type = "", path = data.url,
+                        identifier = departmentId, name = data.name, type = "", path = data.url, id = data.id ?: 0,
                         searchApplink = SEARCH_APPLINK,
                         redirectionUrl = data.appRedirectionURL,
                         isAdult = data.isAdult,
@@ -40,7 +40,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                         share = Share(
                                 enabled = true,
                                 description = "Beli ${data.name} Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk ${data.name} Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
-                                url = categoryUrl?.replace(DeeplinkConstant.SCHEME_INTERNAL + "://", DOMAIN_URL_LIVE), title = "", image = "")),
+                                url = "https://www.tokopedia.com${data.url}", title = "", image = "")),
                 title = data.name ?: departmentName,
                 additionalInfo = AdditionalInfo(null, hashMapOf(
                         KEY_CATEGORY_ID_MAP to data.id.toString(),

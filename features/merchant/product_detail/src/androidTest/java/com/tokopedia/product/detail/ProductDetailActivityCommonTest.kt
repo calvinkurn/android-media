@@ -8,6 +8,7 @@ import android.os.Looper
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
+import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragmentDiffutil
 import com.tokopedia.utils.view.ViewUtils.screenShotAndSave
 
 
@@ -44,7 +45,7 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity() {
         return PRODUCT_DETAIL_TAG
     }
 
-    override fun getNewFragment(): Fragment? = DynamicProductDetailFragment.newInstance(productId, "", "",
+    override fun getNewFragment(): Fragment? = DynamicProductDetailFragmentDiffutil.newInstance(productId, "", "",
             "", false,
             isAffiliate = false, trackerAttribution = "",
             trackerListName = "", affiliateString = "", deeplinkUrl = "", layoutId = "")

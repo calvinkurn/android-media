@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
-import com.tokopedia.topads.data.response.KeywordDataItem
 import com.tokopedia.topads.view.adapter.keyword.viewholder.KeywordItemViewHolder
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.*

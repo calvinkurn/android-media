@@ -11,7 +11,6 @@ import dagger.multibindings.IntoMap
 
 
 @Module
-@CategoryNavBottomSheetScope
 abstract class ViewModelModule {
 
     @CategoryNavBottomSheetScope

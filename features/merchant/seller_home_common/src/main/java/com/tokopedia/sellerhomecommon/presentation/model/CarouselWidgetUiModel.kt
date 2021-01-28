@@ -27,4 +27,8 @@ class CarouselWidgetUiModel(
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun copy(): BaseWidgetUiModel<CarouselDataUiModel> {
+        return CarouselWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+    }
 }

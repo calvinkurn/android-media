@@ -9,7 +9,7 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="Theme.TextInputLayout" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+    <style name="Theme.TextInputLayout" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="android:textColorHint">@color/colorGray</item>
         <item name="android:textSize">16sp</item>
         <item name="colorControlActivated">@color/green_600</item>

@@ -10,7 +10,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-@AddEditProductScope
 class AddEditProductModule {
 
     @AddEditProductScope

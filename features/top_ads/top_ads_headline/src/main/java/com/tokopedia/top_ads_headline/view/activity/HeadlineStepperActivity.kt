@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.top_ads_headline.R
-import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.view.fragment.AdContentFragment
 import com.tokopedia.top_ads_headline.view.fragment.AdDetailsFragment
 import com.tokopedia.top_ads_headline.view.fragment.AdScheduleAndBudgetFragment
@@ -19,8 +19,8 @@ class HeadlineStepperActivity : BaseStepperActivity() {
     }
 
     private fun initiateStepperModel() {
-        stepperModel = CreateHeadlineAdsStepperModel()
-        (stepperModel as CreateHeadlineAdsStepperModel).slogan = getString(R.string.topads_headline_promotional_dummy_message)
+        stepperModel = HeadlineAdStepperModel()
+        (stepperModel as HeadlineAdStepperModel).slogan = getString(R.string.topads_headline_promotional_dummy_message)
     }
 
     override fun getListFragment(): MutableList<Fragment> {

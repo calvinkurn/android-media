@@ -80,12 +80,16 @@ class OrderAppWidget : AppWidgetProvider() {
     }
 
     override fun onEnabled(context: Context) {
-        AppWidgetHelper.setOrderAppWidgetEnabled(context, true)
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+        cacheHandler.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, true)
+        cacheHandler.applyEditor()
         super.onEnabled(context)
     }
 
     override fun onDisabled(context: Context) {
-        AppWidgetHelper.setOrderAppWidgetEnabled(context, false)
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+        cacheHandler.putBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
+        cacheHandler.applyEditor()
         super.onDisabled(context)
     }
 
@@ -225,6 +229,12 @@ class OrderAppWidget : AppWidgetProvider() {
                 OrderWidgetErrorState.setupErrorState(context, awm, remoteViews, it)
                 awm.updateAppWidget(it, remoteViews)
             }
+        }
+
+        fun showNoLoginState(context: Context) {
+            val awm = AppWidgetManager.getInstance(context)
+            val widgetIds = AppWidgetHelper.getAppWidgetIds<OrderAppWidget>(context, awm)
+            OrderWidgetNoLoginState.setupNoLoginState(context, awm, widgetIds)
         }
 
         private fun getIsUserLoggedIn(context: Context, awm: AppWidgetManager, userSession: UserSessionInterface, widgetIds: IntArray): Boolean {

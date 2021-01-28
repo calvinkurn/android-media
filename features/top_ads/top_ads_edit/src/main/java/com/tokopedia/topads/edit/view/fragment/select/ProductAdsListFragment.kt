@@ -16,8 +16,12 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
-import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
+import com.tokopedia.topads.common.view.sheet.ProductFilterSheetList
+import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.ALL
@@ -27,10 +31,6 @@ import com.tokopedia.topads.edit.utils.Constants.RESULT_NAME
 import com.tokopedia.topads.edit.utils.Constants.RESULT_PRICE
 import com.tokopedia.topads.edit.utils.Constants.RESULT_PROUCT
 import com.tokopedia.topads.edit.utils.Constants.ROW
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
-import com.tokopedia.topads.common.view.sheet.ProductFilterSheetList
-import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
 import com.tokopedia.topads.edit.view.adapter.product.ProductListAdapter
 import com.tokopedia.topads.edit.view.adapter.product.ProductListAdapterTypeFactoryImpl
 import com.tokopedia.topads.edit.view.adapter.product.viewmodel.ProductEmptyViewModel
@@ -49,8 +49,8 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     private lateinit var sortProductList: ProductSortSheetList
     private lateinit var filterSheetProductList: ProductFilterSheetList
     private lateinit var productListAdapter: ProductListAdapter
-    private var selectedPrevPro: List<ResponseProductList.Result.TopadsGetListProduct.Data> = listOf()
-    private var selectedPrevNonPro: List<ResponseProductList.Result.TopadsGetListProduct.Data> = listOf()
+    private var selectedPrevPro: List<TopAdsProductModel> = listOf()
+    private var selectedPrevNonPro: List<TopAdsProductModel> = listOf()
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
@@ -312,7 +312,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) { refreshProduct() }
     }
 
-    private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) {
+    private fun onSuccessGetProductList(data: List<TopAdsProductModel>, eof: Boolean) {
         if (START == 0)
             clearShimmerList()
         prepareForNextFetch(eof)

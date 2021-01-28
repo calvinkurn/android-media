@@ -76,12 +76,16 @@ class ChatAppWidget : AppWidgetProvider() {
     }
 
     override fun onEnabled(context: Context) {
-        AppWidgetHelper.setChatAppWidgetEnabled(context, true)
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+        cacheHandler.putBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, true)
+        cacheHandler.applyEditor()
         super.onEnabled(context)
     }
 
     override fun onDisabled(context: Context) {
-        AppWidgetHelper.setChatAppWidgetEnabled(context, false)
+        val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+        cacheHandler.putBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, false)
+        cacheHandler.applyEditor()
         super.onDisabled(context)
     }
 
@@ -185,6 +189,12 @@ class ChatAppWidget : AppWidgetProvider() {
                 ChatWidgetErrorState.setupErrorState(context, awm, remoteViews, it)
                 awm.updateAppWidget(it, remoteViews)
             }
+        }
+
+        fun showNoLoginState(context: Context) {
+            val awm = AppWidgetManager.getInstance(context)
+            val widgetIds = AppWidgetHelper.getAppWidgetIds<ChatAppWidget>(context, awm)
+            ChatWidgetNoLoginState.setupNoLoginState(context, awm, widgetIds)
         }
 
         private fun getIsUserLoggedIn(context: Context, awm: AppWidgetManager, userSession: UserSessionInterface, widgetIds: IntArray): Boolean {

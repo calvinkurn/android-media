@@ -5,9 +5,9 @@ ext {
             authentication          : "com.tokopedia.authentication:authentication:1.0.19",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
-            globalconfig            : "com.tokopedia.config:global_config:1.0.9",
+            globalconfig            : "com.tokopedia.config:global_config:1.0.11",
             url                     : "com.tokopedia.url:url:1.0.7",
-            network                 : "com.tokopedia.network:network:1.1.11",
+            network                 : "com.tokopedia.network:network:1.1.14",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             usersession             : "com.tokopedia.user.session:user_session:1.0.26",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.6",
@@ -24,7 +24,7 @@ ext {
             analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.2",
             gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.21",
             gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.21",
-            lint                    : "com.tokopedia.library:lint:0.0.5"
+            lint                    : "com.tokopedia.library:lint:0.0.7"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -57,6 +57,7 @@ ext {
             dynamicFeatures         : ":libraries:dynamic_features",
             encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",
+            floatingWindow          : ":libraries:floating_window",
             graphql                 : ":libraries:graphql",
             imagePicker             : ":libraries:image_picker",
             imagePickerCommon       : ":libraries:image_picker_common",

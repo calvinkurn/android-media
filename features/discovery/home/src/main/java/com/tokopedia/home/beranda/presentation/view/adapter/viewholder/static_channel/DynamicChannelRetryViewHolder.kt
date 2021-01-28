@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelRetryModel
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import kotlinx.android.synthetic.main.home_retry_dynamic_channel.view.*
 
 /**
