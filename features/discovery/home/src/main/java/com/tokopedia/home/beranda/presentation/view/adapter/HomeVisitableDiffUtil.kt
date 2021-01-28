@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
 
@@ -17,7 +18,9 @@ class HomeVisitableDiffUtil : DiffUtil.ItemCallback<Visitable<*>>() {
     }
 
     override fun areContentsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
-        return if (oldItem is HomeVisitable && newItem is HomeVisitable) {
+        return if (oldItem is CarouselPlayWidgetDataModel && newItem is CarouselPlayWidgetDataModel) {
+            false
+        } else if (oldItem is HomeVisitable && newItem is HomeVisitable) {
             oldItem.equalsWith(newItem)
         } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
             oldItem.equalsWith(newItem)
@@ -27,7 +30,9 @@ class HomeVisitableDiffUtil : DiffUtil.ItemCallback<Visitable<*>>() {
     }
 
     override fun getChangePayload(oldItem: Visitable<*>, newItem: Visitable<*>): Any? {
-        return if (oldItem is HomeVisitable && newItem is HomeVisitable) {
+        return if (oldItem is CarouselPlayWidgetDataModel && newItem is CarouselPlayWidgetDataModel) {
+            Unit
+        } else if (oldItem is HomeVisitable && newItem is HomeVisitable) {
             oldItem.getChangePayloadFrom(newItem)
         } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
             oldItem.getChangePayloadFrom(newItem)
