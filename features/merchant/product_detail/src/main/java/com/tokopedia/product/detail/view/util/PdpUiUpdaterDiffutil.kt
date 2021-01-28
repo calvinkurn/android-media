@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -119,6 +118,9 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                             productName = it.data.name,
                             isProductActive = it.basic.isActive()
                     )
+                    data?.campaign?.originalPriceFmt = it.data.campaign.originalPrice.getCurrencyFormatted()
+                    data?.campaign?.discountedPriceFmt = it.data.campaign.discountedPrice.getCurrencyFormatted()
+                    data?.price?.priceFmt = it.data.price.value.getCurrencyFormatted()
                 }
             }
 
@@ -182,7 +184,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                 productWholesaleInfoMap?.run {
                     val minPrice = it.data.wholesale?.minBy { it.price.value }?.price?.value
                             ?: return@run
-                    data.first().subtitle = context?.getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
+                    subtitle = context?.getString(R.string.label_format_wholesale, minPrice.getCurrencyFormatted())
                             ?: ""
                 }
             }
@@ -211,7 +213,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                     basicContentMap?.shouldShowTradein = tradeinResponse.isEligible
                 }
 
-                data.first().subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
+                subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
                     context?.getString(com.tokopedia.common_tradein.R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true))
                             ?: ""
                 } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
@@ -235,7 +237,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
     fun updateDataInstallment(context: Context?, financingData: PDPInstallmentRecommendationData, isOs: Boolean) {
         updateData(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO) {
             productInstallmentInfoMap?.run {
-                data.first().subtitle = String.format(context?.getString(R.string.new_installment_template)
+                subtitle = String.format(context?.getString(R.string.new_installment_template)
                         ?: "",
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
                                 (if (isOs) financingData.data.osMonthlyPrice
@@ -259,7 +261,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
 
         updateData(ProductDetailConstant.PRODUCT_FULLFILMENT) {
             productFullfilmentMap?.run {
-                data.first().subtitle = fullFillmentText
+                subtitle = fullFillmentText
             }
         }
     }
@@ -267,7 +269,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
     fun updateByMeData(context: Context?) {
         updateData(ProductDetailConstant.KEY_BYME) {
             productByMeMap?.run {
-                data.firstOrNull()?.subtitle = context?.getString(R.string.product_detail_by_me_subtitle)
+                subtitle = context?.getString(R.string.product_detail_by_me_subtitle)
                         ?: ""
             }
         }
@@ -299,7 +301,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
 
             updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
                 shopCredibility?.run {
-                    shopLastActive = it.shopInfo.shopLastActive
+                    shopLastActive = if (context == null) "" else it.shopInfo.shopLastActive.getRelativeDate(context)
                     shopName = it.shopInfo.shopCore.name
                     shopAva = it.shopInfo.shopAssets.avatar
                     shopLocation = it.shopInfo.location
@@ -309,12 +311,13 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
                     shopSpeed = it.shopSpeed
                     shopChatSpeed = it.shopChatSpeed.toIntOrZero()
                     shopRating = it.shopRating
+                    infoShopData = if (context == null) listOf() else getLastThreeHierarchyData(context)
                 }
             }
 
             updateData(ProductDetailConstant.ORDER_PRIORITY) {
                 orderPriorityMap?.run {
-                    data.first().subtitle = it.shopCommitment.staticMessages.pdpMessage
+                    subtitle = it.shopCommitment.staticMessages.pdpMessage
                 }
             }
 
@@ -348,25 +351,16 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         updateData(ProductDetailConstant.PRODUCT_PROTECTION) {
             productProtectionMap?.run {
                 if (ppItemData.title?.isNotEmpty() == true) {
-                    title = ppItemData.title ?: ""
+                    title = ppItemData.title
                 } else if (ppItemData.titlePDP?.isNotEmpty() == true) {
-                    title = ppItemData.titlePDP ?: ""
+                    title = ppItemData.titlePDP
                 }
-                val contentList = ArrayList<Content>()
-                // Subtitle
-                contentList.add(Content(subtitle = ppItemData.subTitlePDP
-                        ?: ""))
-                // Partner Details
-                contentList.add(Content(
-                        icon = ppItemData.partnerLogo ?: "",
-                        subtitle = ppItemData.partnerText ?: "",
-                        applink = ppItemData.linkURL ?: ""
-                ))
-                data = contentList
+                subtitle = ppItemData.subTitlePDP ?: ""
+                additionalIcon = ppItemData.partnerLogo ?: ""
+                additionalDesc = ppItemData.partnerText ?: ""
                 isApplink = ppItemData.isAppLink ?: false
             }
         }
-
     }
 
     fun updateNotifyMeButton(notifyMe: Boolean) {
@@ -435,7 +429,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
     fun updateDataP3(context: Context?, it: ProductInfoP3) {
         updateData(ProductDetailConstant.PRODUCT_SHIPPING_INFO) {
             productShipingInfoMap?.run {
-                data.first().subtitle = context?.getString(R.string.ongkir_pattern_string_dynamic_pdp, it.rateEstSummarizeText?.minPrice, "${it.rateEstSummarizeText?.destination}")
+                subtitle = context?.getString(R.string.ongkir_pattern_string_dynamic_pdp, it.rateEstSummarizeText?.minPrice, "${it.rateEstSummarizeText?.destination}")
                         ?: ""
             }
         }
@@ -459,7 +453,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         }
     }
 
-    fun updateFilterRecommendationData(data: ProductRecommendationDataModel){
+    fun updateFilterRecommendationData(data: ProductRecommendationDataModel) {
         updateData(data.name) {
             (mapOfData[data.name] as? ProductRecommendationDataModel)?.run {
                 filterData = data.filterData
@@ -489,7 +483,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
     fun updateVariantSelected(variantId: Int, variantKey: String) {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
             productNewVariantDataModel?.let {
-                val copyMap :MutableMap<String,Int> = it.mapOfSelectedVariant.toMutableMap()
+                val copyMap: MutableMap<String, Int> = it.mapOfSelectedVariant.toMutableMap()
                 copyMap[variantKey] = variantId
                 it.mapOfSelectedVariant = copyMap
             }

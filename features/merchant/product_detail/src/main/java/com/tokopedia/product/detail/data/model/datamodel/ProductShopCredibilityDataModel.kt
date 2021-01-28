@@ -50,6 +50,8 @@ data class ProductShopCredibilityDataModel(
         return typeFactory.type(this)
     }
 
+    var infoShopData: List<ShopCredibilityUiData> = listOf()
+
     fun getLastThreeHierarchyData(context: Context): List<ShopCredibilityUiData> {
         val createdDated = try {
             SimpleDateFormat("yyyy-MM-dd", getIdLocale()).parse(shopCreated).toFormattedString("MMM yyyy", getIdLocale())
@@ -98,9 +100,9 @@ data class ProductShopCredibilityDataModel(
                 return null
             }
 
-            if (isFavorite != newData.isFavorite ) {
+            if (isFavorite != newData.isFavorite) {
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
-            } else if(enableButtonFavorite != enableButtonFavorite){
+            } else if (enableButtonFavorite != enableButtonFavorite) {
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
             }
             bundle

@@ -804,10 +804,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun getPurchaseProtectionUrl(): String {
-        pdpUiUpdater?.productProtectionMap?.let {
-            return it.data.getOrNull(1)?.applink ?: ""
-        }
-        return ""
+        return viewModel.p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL ?: ""
     }
 
     private fun getPPTitleName(): String {
