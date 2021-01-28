@@ -208,15 +208,10 @@ class PostListViewHolder(
     }
 
     private fun setupCtaButton(element: PostListWidgetUiModel) {
-        val ctaText = if(element.postFilter.isNotEmpty()) {
-            element.ctaText
+        val (ctaText, appLink) = if(element.data?.cta?.text?.isNotBlank() == true && element.data?.cta?.appLink?.isNotBlank() == true) {
+            Pair(element.data?.cta?.text.orEmpty(), element.data?.cta?.appLink.orEmpty())
         } else {
-            element.data?.cta?.text.orEmpty()
-        }
-        val appLink = if (element.postFilter.isNotEmpty()) {
-            element.appLink
-        } else {
-            element.data?.cta?.appLink.orEmpty()
+            Pair(element.ctaText, element.appLink)
         }
         itemView.tvPostListSeeDetails.text = ctaText
         itemView.tvPostListSeeDetails.setOnClickListener { goToDetails(element, appLink) }

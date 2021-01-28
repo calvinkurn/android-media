@@ -27,7 +27,7 @@ class PostMapper @Inject constructor() {
                     }.orEmpty(),
                     cta = PostCtaDataUiModel(
                             text = it.cta?.text.orEmpty(),
-                            appLink = it.cta?.text.orEmpty()
+                            appLink = it.cta?.appLink.orEmpty()
                     ),
                     error = it.error.orEmpty(),
                     isFromCache = isFromCache
