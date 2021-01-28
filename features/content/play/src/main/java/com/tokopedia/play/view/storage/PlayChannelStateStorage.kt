@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.storage
 
 import com.tokopedia.play.view.uimodel.recom.*
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created by jegul on 19/01/21

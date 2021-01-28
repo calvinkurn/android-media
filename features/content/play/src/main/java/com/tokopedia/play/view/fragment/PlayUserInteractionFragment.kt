@@ -52,6 +52,7 @@ import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -1075,23 +1076,23 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun pinnedViewOnStateChanged(
-            pinnedModel: PinnedUiModel? = playViewModel.observablePinned.value,
+            pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
         when (pinnedModel) {
-            is PinnedMessageUiModel -> {
+            is PlayPinnedUiModel.PinnedMessage -> {
                 pinnedView?.setPinnedMessage(pinnedModel)
 
                 if (!bottomInsets.isAnyShown) pinnedView?.show()
                 else pinnedView?.hide()
             }
-            is PinnedProductUiModel -> {
+            is PlayPinnedUiModel.PinnedProduct -> {
                 pinnedView?.setPinnedProduct(pinnedModel)
 
                 if (!bottomInsets.isAnyShown) pinnedView?.show()
                 else pinnedView?.hide()
             }
-            is PinnedRemoveUiModel -> {
+            PlayPinnedUiModel.NoPinned -> {
                 pinnedView?.hide()
             }
         }

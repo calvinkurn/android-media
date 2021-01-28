@@ -8,13 +8,14 @@ sealed class PinnedUiModel
 data class PinnedMessageUiModel(
         val applink: String?,
         val partnerName: String,
-        val title: String
+        val title: String,
 ) : PinnedUiModel()
 
 data class PinnedProductUiModel(
         val partnerName: String,
         val title: String,
         val hasPromo: Boolean,
+        val shouldShow: Boolean
 ) : PinnedUiModel()
 
 object PinnedRemoveUiModel : PinnedUiModel()

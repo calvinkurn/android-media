@@ -6,6 +6,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -92,11 +93,11 @@ class PlayViewModel @Inject constructor(
         get() = _observableEvent
     val observableBottomInsetsState: LiveData<Map<BottomInsetsType, BottomInsetsState>>
         get() = _observableBottomInsetsState
-    val observablePinned: LiveData<PinnedUiModel>
+    val observablePinned: LiveData<PlayPinnedUiModel>
         get() = _observablePinned
     val observableVideoProperty: LiveData<VideoPropertyUiModel>
         get() = _observableVideoProperty
-    val observableProductSheetContent: LiveData<PlayResult<ProductSheetUiModel>>
+    val observableProductSheetContent: LiveData<PlayResult<PlayProductTagsUiModel.Complete>>
         get() = _observableProductSheetContent
     val observableCartInfo: LiveData<PlayCartInfoUiModel> /**Changed**/
         get() = _observableCartInfo
@@ -151,21 +152,34 @@ class PlayViewModel @Inject constructor(
 
     val latestCompleteChannelData: PlayChannelData
         get() {
+            val channelData = mChannelData ?: error("Channel Data should not be null")
+
             val videoMetaInfo = (_observableVideoMeta.value ?: mChannelData?.videoMetaInfo)
             val videoStream = videoMetaInfo?.videoStream
             val newVideoMeta = videoMetaInfo?.copy(
                     videoStream = videoStream?.copy(lastMillis = playVideoManager.getCurrentPosition())
             )
 
+            val productSheetContent = _observableProductSheetContent.value
+            val productTagsExisting = channelData.pinnedInfo.pinnedProduct.productTags
+            val productTagsInfo = if (productSheetContent == null) productTagsExisting else {
+                val productList = if (productSheetContent is PlayResult.Success) productSheetContent.data.productList else emptyList()
+                val voucherList = if (productSheetContent is PlayResult.Success) productSheetContent.data.voucherList else emptyList()
+                PlayProductTagsUiModel.Complete(productTagsExisting.basicInfo, productList, voucherList)
+            }
+
+            val pinnedMessage = _observablePinnedMessage.value ?: channelData.pinnedInfo.pinnedMessage
+            val pinnedProduct = _observablePinnedProduct.value ?: channelData.pinnedInfo.pinnedProduct
+
             return PlayChannelData(
-                    id = mChannelData?.id ?: error("Channel Id should not be null"),
-                    partnerInfo = _observablePartnerInfo.value ?: mChannelData?.partnerInfo ?: error("Partner Info should not be null"),
-                    likeInfo = _observableLikeInfo.value ?: mChannelData?.likeInfo ?: error("Like Info should not be null"),
-                    shareInfo = _observableShareInfo.value ?: mChannelData?.shareInfo ?: error("Share Info should not be null"),
-                    cartInfo = _observableCartInfo.value ?: mChannelData?.cartInfo ?: error("Cart Info should not be null"),
+                    id = channelData.id,
+                    partnerInfo = _observablePartnerInfo.value ?: channelData.partnerInfo,
+                    likeInfo = _observableLikeInfo.value ?: channelData.likeInfo,
+                    shareInfo = _observableShareInfo.value ?: channelData.shareInfo,
+                    cartInfo = _observableCartInfo.value ?: channelData.cartInfo,
                     pinnedInfo = PlayPinnedInfoUiModel(
-                            pinnedMessage = _observablePinnedMessage.value,
-                            pinnedProduct = _observablePinnedProduct.value
+                            pinnedMessage = pinnedMessage,
+                            pinnedProduct = pinnedProduct,
                     ),
                     quickReplyInfo = _observableQuickReply.value ?: mChannelData?.quickReplyInfo ?: error("Quick Reply should not be null"),
                     videoMetaInfo = newVideoMeta ?: error("Video Meta should not be null")
@@ -203,11 +217,11 @@ class PlayViewModel @Inject constructor(
     private val _observablePartnerInfo = MutableLiveData<PlayPartnerInfoUiModel>() /**Changed**/
     private val _observableQuickReply = MutableLiveData<PlayQuickReplyInfoUiModel>() /**Changed**/
     private val _observableEvent = MutableLiveData<EventUiModel>()
-    private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
-    private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>()
+    private val _observablePinnedMessage = MutableLiveData<PlayPinnedUiModel.PinnedMessage>()
+    private val _observablePinnedProduct = MutableLiveData<PlayPinnedUiModel.PinnedProduct>() /**Changed**/
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val _observableVideoMeta = MutableLiveData<PlayVideoMetaInfoUiModel>() /**Changed**/
-    private val _observableProductSheetContent = MutableLiveData<PlayResult<ProductSheetUiModel>>()
+    private val _observableProductSheetContent = MutableLiveData<PlayResult<PlayProductTagsUiModel.Complete>>() /**Changed**/
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observableLikeInfo = MutableLiveData<PlayLikeInfoUiModel>() /**Added**/
     private val _observableLikeStatusInfo = MediatorLiveData<PlayLikeStatusInfoUiModel>().apply {
@@ -220,7 +234,7 @@ class PlayViewModel @Inject constructor(
             chatList.lastOrNull()?.let { value = Event(it) }
         }
     }
-    private val _observablePinned = MediatorLiveData<PinnedUiModel>()
+    private val _observablePinned = MediatorLiveData<PlayPinnedUiModel>() /**Changed**/
     private val _observableCartInfo = MutableLiveData<PlayCartInfoUiModel>() /**Changed**/
     private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiP = MutableLiveData<Event<PiPMode>>()
@@ -519,7 +533,8 @@ class PlayViewModel @Inject constructor(
         updatePartnerInfo(channelData.partnerInfo.basicInfo)
         updateVideoMetaInfo(channelData.videoMetaInfo)
         updateLikeInfo(channelData.likeInfo.param, channelData.id)
-        updateCartInfo(channelData.cartInfo.shouldShow)
+        updateCartInfo(channelData.cartInfo)
+        updateProductTagsInfo(channelData.pinnedInfo.pinnedProduct.productTags, channelData.pinnedInfo, channelData.id)
     }
 
     fun getChannelInfo(channelId: String) {
@@ -544,8 +559,8 @@ class PlayViewModel @Inject constructor(
 //                _observableGetChannelInfo.value = NetworkResult.Success(completeInfoUiModel.channelInfo)
 //                _observablePartnerInfo.value = completeInfoUiModel.channelInfo.partnerInfo
                 _observableTotalViews.value = completeInfoUiModel.totalView
-                _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
-                _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
+//                _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
+//                _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
 //                _observableQuickReply.value = completeInfoUiModel.quickReply
 //                _observableVideoMeta.value = VideoMetaUiModel(completeInfoUiModel.videoPlayer, completeInfoUiModel.videoStream)
                 _observableEvent.value = completeInfoUiModel.event
@@ -555,7 +570,7 @@ class PlayViewModel @Inject constructor(
                 launch { getTotalLikes(completeInfoUiModel.channelInfo.id) }
                 launch { getIsLike(completeInfoUiModel.channelInfo.feedInfo) }
 //                launch { getBadgeCart(channel.configuration.showCart) }
-                launch { if (completeInfoUiModel.channelInfo.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
+//                launch { if (completeInfoUiModel.channelInfo.showPinnedProduct) getProductTagItems(completeInfoUiModel.channelInfo) }
 
                 startWebSocket(channelId)
 
@@ -629,13 +644,15 @@ class PlayViewModel @Inject constructor(
     fun updateBadgeCart() {
         val cartInfo = _observableCartInfo.value
         if (cartInfo?.shouldShow == true) {
-            viewModelScope.launch {
+            viewModelScope.launchCatchError(block = {
                 val newCount = getCartCount()
                 _observableCartInfo.value = PlayCartInfoUiModel.Complete(
                         shouldShow = cartInfo.shouldShow,
                         count = newCount
                 )
-            }
+            }, onError = {
+
+            })
         }
     }
 
@@ -678,7 +695,7 @@ class PlayViewModel @Inject constructor(
                     }
                     is PinnedMessage -> {
                         val partnerName = _observablePartnerInfo.value?.basicInfo?.name.orEmpty()
-                        _observablePinnedMessage.value = PlayUiMapper.mapPinnedMessage(partnerName, result)
+//                        _observablePinnedMessage.value = PlayUiMapper.mapPinnedMessage(partnerName, result)
                     }
                     is QuickReply -> {
                         //TODO("Use separate mapper")
@@ -694,23 +711,23 @@ class PlayViewModel @Inject constructor(
                         }
                     }
                     is ProductTag -> {
-                        val productSheet = _observableProductSheetContent.value
-                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-                        val productList = PlayUiMapper.mapItemProducts(result.listOfProducts)
-                        _observableProductSheetContent.value = PlayResult.Success(
-                                data = currentProduct.copy(productList = productList)
-                        )
-                        trackProductTag(
-                                channelId = channelId,
-                                productList = productList
-                        )
+//                        val productSheet = _observableProductSheetContent.value
+//                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
+//                        val productList = PlayUiMapper.mapItemProducts(result.listOfProducts)
+//                        _observableProductSheetContent.value = PlayResult.Success(
+//                                data = currentProduct.copy(productList = productList)
+//                        )
+//                        trackProductTag(
+//                                channelId = channelId,
+//                                productList = productList
+//                        )
                     }
                     is MerchantVoucher -> {
-                        val productSheet = _observableProductSheetContent.value
-                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-                        _observableProductSheetContent.value = PlayResult.Success(
-                                data = currentProduct.copy(voucherList = PlayUiMapper.mapItemVouchers(result.listOfVouchers))
-                        )
+//                        val productSheet = _observableProductSheetContent.value
+//                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
+//                        _observableProductSheetContent.value = PlayResult.Success(
+//                                data = currentProduct.copy(voucherList = PlayUiMapper.mapItemVouchers(result.listOfVouchers))
+//                        )
                     }
                 }
             }
@@ -726,7 +743,7 @@ class PlayViewModel @Inject constructor(
         val pinned = _observablePinned.value
         val bottomInsets = _observableBottomInsetsState.value
         return StateHelperUiModel(
-                shouldShowPinned = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
+                shouldShowPinned = pinned is PlayPinnedUiModel.PinnedMessage || pinned is PlayPinnedUiModel.PinnedProduct,
                 channelType = channelType,
                 videoPlayer = videoPlayer,
                 bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
@@ -762,6 +779,9 @@ class PlayViewModel @Inject constructor(
     private fun handlePinnedInfo(pinnedInfo: PlayPinnedInfoUiModel) {
         _observablePinnedMessage.value = pinnedInfo.pinnedMessage
         _observablePinnedProduct.value = pinnedInfo.pinnedProduct
+        if (pinnedInfo.pinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
+            _observableProductSheetContent.value = PlayResult.Success(pinnedInfo.pinnedProduct.productTags)
+        }
     }
 
     private fun handleQuickReplyInfo(quickReplyInfo: PlayQuickReplyInfoUiModel) {
@@ -811,15 +831,29 @@ class PlayViewModel @Inject constructor(
         })
     }
 
-    private fun updateCartInfo(shouldShowCart: Boolean) {
-        if (shouldShowCart) {
-            viewModelScope.launch {
+    private fun updateCartInfo(cartInfo: PlayCartInfoUiModel) {
+        if (cartInfo.shouldShow) {
+            viewModelScope.launchCatchError(block = {
                 val cartCount = getCartCount()
                 _observableCartInfo.value = PlayCartInfoUiModel.Complete(
-                        shouldShow = shouldShowCart,
+                        shouldShow = cartInfo.shouldShow,
                         count = cartCount
                 )
-            }
+            }, onError = {
+
+            })
+        }
+    }
+
+    private fun updateProductTagsInfo(productTags: PlayProductTagsUiModel, pinnedInfo: PlayPinnedInfoUiModel, channelId: String) {
+        if (pinnedInfo.pinnedProduct.shouldShow) {
+            viewModelScope.launchCatchError(block = {
+                getProductTagItems(productTags.basicInfo, channelId)
+            }, onError = {
+                _observableProductSheetContent.value = PlayResult.Failure(it) {
+                    updateProductTagsInfo(productTags, pinnedInfo, channelId)
+                }
+            })
         }
     }
 
@@ -877,32 +911,60 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getProductTagItems(channel: ChannelInfoUiModel) {
+    private suspend fun getProductTagItems(productTagsBasicInfo: PlayProductTagsBasicInfoUiModel, channelId: String) {
         if (!isProductSheetInitialized) _observableProductSheetContent.value = PlayResult.Loading(
                 showPlaceholder = true
         )
 
-        try {
-            val productTagsItems = withContext(dispatchers.io) {
-                getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.id)
-                getProductTagItemsUseCase.executeOnBackground()
-            }
-            val partnerId = partnerId ?: 0L
-            val productSheet = PlayUiMapper.mapProductSheet(
-                    channel.titleBottomSheet,
-                    partnerId,
-                    productTagsItems)
-            _observableProductSheetContent.value = PlayResult.Success(productSheet)
-            trackProductTag(
-                    channelId = channel.id,
-                    productList = productSheet.productList
-            )
-        } catch (e: Exception) {
-            _observableProductSheetContent.value = PlayResult.Failure(e) {
-                scope.launch { if (channel.showPinnedProduct) getProductTagItems(channel) }
-            }
+        val productTagsResponse = withContext(dispatchers.io) {
+            getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channelId)
+            getProductTagItemsUseCase.executeOnBackground()
         }
+        val productSheet = PlayUiMapper.mapProductSheet(
+                productTagsBasicInfo.bottomSheetTitle,
+                productTagsBasicInfo.partnerId,
+                productTagsResponse
+        )
+
+        //TODO("Handle Mapper")
+        val newProductSheet = PlayProductTagsUiModel.Complete(
+                basicInfo = productTagsBasicInfo,
+                productList = productSheet.productList,
+                voucherList = productSheet.voucherList
+        )
+        _observableProductSheetContent.value = PlayResult.Success(newProductSheet)
+        trackProductTag(
+                channelId = channelId,
+                productList = productSheet.productList
+        )
     }
+
+//    private suspend fun getProductTagItems(channel: ChannelInfoUiModel) {
+//        if (!isProductSheetInitialized) _observableProductSheetContent.value = PlayResult.Loading(
+//                showPlaceholder = true
+//        )
+//
+//        try {
+//            val productTagsItems = withContext(dispatchers.io) {
+//                getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.id)
+//                getProductTagItemsUseCase.executeOnBackground()
+//            }
+//            val partnerId = partnerId ?: 0L
+//            val productSheet = PlayUiMapper.mapProductSheet(
+//                    channel.titleBottomSheet,
+//                    partnerId,
+//                    productTagsItems)
+//            _observableProductSheetContent.value = PlayResult.Success(productSheet)
+//            trackProductTag(
+//                    channelId = channel.id,
+//                    productList = productSheet.productList
+//            )
+//        } catch (e: Exception) {
+//            _observableProductSheetContent.value = PlayResult.Failure(e) {
+//                scope.launch { if (channel.showPinnedProduct) getProductTagItems(channel) }
+//            }
+//        }
+//    }
 
     private fun trackProductTag(channelId: String, productList: List<PlayProductUiModel>) {
         scope.launchCatchError(block = {
@@ -922,12 +984,17 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun getPinnedModel(
-            pinnedMessage: PinnedMessageUiModel?,
-            pinnedProduct: PinnedProductUiModel?,
-            productSheetResult: PlayResult<ProductSheetUiModel>?
-    ): PinnedUiModel {
-        return if (pinnedProduct != null && productSheetResult is PlayResult.Success && !productSheetResult.data.productList.isNullOrEmpty()) pinnedProduct
-        else pinnedMessage ?: PinnedRemoveUiModel
+            pinnedMessage: PlayPinnedUiModel.PinnedMessage?,
+            pinnedProduct: PlayPinnedUiModel.PinnedProduct?,
+            productSheetResult: PlayResult<PlayProductTagsUiModel.Complete>?
+    ): PlayPinnedUiModel {
+        return if (
+                pinnedProduct?.shouldShow == true &&
+                (pinnedProduct.productTags is PlayProductTagsUiModel.Incomplete ||
+                        pinnedProduct.productTags is PlayProductTagsUiModel.Complete && pinnedProduct.productTags.productList.isNotEmpty())
+        ) pinnedProduct
+        else if (pinnedMessage?.shouldShow == true) pinnedMessage
+        else PlayPinnedUiModel.NoPinned
     }
     //endregion
 
