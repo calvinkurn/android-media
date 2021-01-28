@@ -68,7 +68,6 @@ class GetPostDataUseCase(
                   }
                   cta{
                     text
-                    url
                     applink
                   }
                   error

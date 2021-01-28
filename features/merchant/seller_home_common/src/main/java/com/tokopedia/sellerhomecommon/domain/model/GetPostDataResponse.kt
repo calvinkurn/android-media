@@ -56,9 +56,6 @@ data class PostCtaDataModel(
         @SerializedName("text")
         @Expose
         val text: String? = "",
-        @SerializedName("url")
-        @Expose
-        val url: String? = "",
         @SerializedName("applink")
         @Expose
         val appLink: String? = "",
