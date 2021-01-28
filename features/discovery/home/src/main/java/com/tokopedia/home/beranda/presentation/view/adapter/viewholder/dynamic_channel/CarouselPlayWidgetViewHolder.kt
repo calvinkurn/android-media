@@ -26,10 +26,7 @@ class CarouselPlayWidgetViewHolder(
     }
 
     override fun bind(element: CarouselPlayWidgetDataModel?) {
-        element?.let {
-            setupAnalyticVariable(element)
-            playWidgetViewHolder.bind(element.widgetUiModel)
-        }
+        element?.let { bind(it, mutableListOf()) }
     }
 
     override fun bind(element: CarouselPlayWidgetDataModel?, payloads: MutableList<Any>) {
@@ -47,6 +44,7 @@ class CarouselPlayWidgetViewHolder(
                     playWidgetViewHolder.bind(element.widgetUiModel)
                 }
             } else {
+                setupAnalyticVariable(element)
                 playWidgetViewHolder.bind(element.widgetUiModel)
             }
         }
