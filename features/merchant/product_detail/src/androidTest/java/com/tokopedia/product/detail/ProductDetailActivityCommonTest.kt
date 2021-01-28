@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragmentDiffutil
 import com.tokopedia.utils.view.ViewUtils.screenShotAndSave
 
@@ -57,8 +56,8 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity() {
     }
 
     fun getLastPositionIndex() : Int {
-        val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragment
+        val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragmentDiffutil
 
-        return fragment.adapter.dataSize - 1
+        return fragment.productAdapter?.currentList?.size ?: 0 - 1
     }
 }
