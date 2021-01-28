@@ -262,6 +262,11 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
+    private val adapter by lazy {
+        val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtil())
+                .build()
+        ProductDetailAdapter(asyncDifferConfig, this, adapterFactory)
+    }
     private var menu: Menu? = null
     private var navToolbar: NavToolbar? = null
     private var toasterWishlistText = ""
@@ -301,11 +306,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         super.onSwipeRefresh()
     }
 
-    override fun createAdapterInstance(): ProductDetailAdapter {
-        val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtil())
-                .build()
-        return ProductDetailAdapter(asyncDifferConfig, this, adapterFactory)
-    }
+    override fun createAdapterInstance(): ProductDetailAdapter = adapter
 
     override fun getScreenName(): String = ""
 
