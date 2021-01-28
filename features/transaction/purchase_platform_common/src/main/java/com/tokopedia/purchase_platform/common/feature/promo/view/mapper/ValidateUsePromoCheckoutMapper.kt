@@ -102,6 +102,7 @@ class ValidateUsePromoCheckoutMapper {
             var code = ""
             voucherOrdersItem?.code?.let { code = it }
             return PromoCheckoutVoucherOrdersItemUiModel(
+                    success = voucherOrdersItem?.success ?: false,
                     code = code,
                     type = voucherOrdersItem?.type ?: "",
                     uniqueId = voucherOrdersItem?.uniqueId ?: "",

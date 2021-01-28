@@ -861,7 +861,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                    getView().resetPromoBenefit();
                                                    getView().cancelAllCourierPromo();
                                                } else {
-                                                   getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
+                                                   getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), false);
                                                    if (validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getState().equals("red")) {
                                                        analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getText());
                                                    } else {
@@ -1111,7 +1111,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                     validateBBO(validateUsePromoRevampUiModel);
                                     if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK)) {
-                                        getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
+                                        getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), true);
                                     } else {
                                         if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
                                             String errMessage = validateUsePromoRevampUiModel.getMessage().get(0);
@@ -1172,7 +1172,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast) {
         setCouponStateChanged(true);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, getView().generateValidateUsePromoRequest());
+        ValidateUsePromoRequest validateUsePromoRequest = getView().generateValidateUsePromoRequest();
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
 
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
