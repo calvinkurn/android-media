@@ -48,11 +48,13 @@ class MvcFollowViewContainer @JvmOverloads constructor(
                 when (it) {
                     FollowWidgetType.FIRST_FOLLOW -> {
                         oneActionView.visibility = View.VISIBLE
+                        twoActionView.visibility = View.GONE
                         oneActionView.setData(followWidget)
                         divider.visibility = View.VISIBLE
                     }
                     FollowWidgetType.MEMBERSHIP_OPEN -> {
                         twoActionView.visibility = View.VISIBLE
+                        oneActionView.visibility = View.GONE
                         twoActionView.setData(followWidget)
                         divider.visibility = View.VISIBLE
                     }
