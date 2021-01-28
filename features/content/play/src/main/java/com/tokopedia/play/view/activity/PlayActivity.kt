@@ -39,6 +39,7 @@ class PlayActivity : BaseActivity(),
         PlayNavigation,
         PlayPiPCoordinator,
         SwipeContainerViewComponent.DataSource,
+        SwipeContainerViewComponent.Listener,
         PlayOrientationListener,
         PlayFullscreenManager {
 
@@ -74,6 +75,7 @@ class PlayActivity : BaseActivity(),
                 fragmentManager = supportFragmentManager,
                 lifecycle = lifecycle,
                 dataSource = this,
+                listener = this
         )
     }
 
@@ -162,6 +164,10 @@ class PlayActivity : BaseActivity(),
         }
     }
 
+    override fun onShouldLoadNextPage() {
+        viewModel.loadNextPage()
+    }
+
     private fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
         if (swipeContainerView.scrollState != ViewPager2.SCROLL_STATE_IDLE) return true
 
@@ -210,8 +216,8 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun observeChannelList() {
-        viewModel.observableChannelIdList.observe(this, Observer {
-            swipeContainerView.setChannelIds(it)
+        viewModel.observableChannelIdsResult.observe(this, Observer {
+            swipeContainerView.setChannelIds(it.currentValue)
         })
     }
 

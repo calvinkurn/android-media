@@ -18,7 +18,8 @@ class SwipeContainerViewComponent(
         @IdRes rootId: Int,
         fragmentManager: FragmentManager,
         lifecycle: Lifecycle,
-        dataSource: DataSource
+        dataSource: DataSource,
+        listener: Listener
 ) : ViewComponent(container, rootId) {
 
     val scrollState: Int
@@ -28,13 +29,27 @@ class SwipeContainerViewComponent(
 
     private val adapter = SwipeContainerStateAdapter(fragmentManager, lifecycle, dataSource::getFragment)
 
+    private var isLoading: Boolean = false
+
     init {
         vpFragment.offscreenPageLimit = 1
         vpFragment.adapter = adapter
+
+        vpFragment.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+
+            override fun onPageSelected(position: Int) {
+                val totalItem = adapter.itemCount
+                if (!isLoading && totalItem + PAGE_LOAD_THRESHOLD >= position) {
+                    isLoading = true
+                    listener.onShouldLoadNextPage()
+                }
+            }
+        })
     }
 
     fun setChannelIds(channelIds: List<String>) {
         adapter.setChannelList(channelIds)
+        isLoading = false
     }
 
     fun getCurrentPos(): Int {
@@ -58,4 +73,12 @@ class SwipeContainerViewComponent(
         fun getFragment(channelId: String): Fragment
     }
 
+    interface Listener {
+
+        fun onShouldLoadNextPage()
+    }
+
+    companion object {
+        private const val PAGE_LOAD_THRESHOLD = 2
+    }
 }
