@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.common.util
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -11,10 +12,13 @@ import android.os.Parcelable
 import android.text.Spanned
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_ANNOUNCEMENT
@@ -22,6 +26,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_ERROR
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_INFO
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_WARNING
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
+import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import java.text.SimpleDateFormat
@@ -163,5 +169,19 @@ object Utils {
         } else {
             MethodChecker.fromHtml(this)
         }
+    }
+
+    fun GlobalError.setUserNotAllowedToViewSom(onActionClick: () -> Unit) {
+        val permissionGroup = SellerHomePermissionGroup.ORDER
+        ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+        errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
+        errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
+        errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)
+        setButtonFull(true)
+
+        setActionClickListener {
+            onActionClick()
+        }
+        show()
     }
 }

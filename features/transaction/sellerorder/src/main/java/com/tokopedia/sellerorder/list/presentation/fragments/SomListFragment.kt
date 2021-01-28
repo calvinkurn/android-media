@@ -83,6 +83,7 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToPrintAwb
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
+import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
@@ -1367,22 +1368,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         scrollViewErrorState.gone()
         errorToaster?.dismiss()
         hideWaitingPaymentOrderListMenu()
-        somAdminPermissionView?.run {
-            val permissionGroup = SellerHomePermissionGroup.ORDER
-            ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
-            errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
-            errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
-            errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)
-            setButtonFull(true)
-
-            setActionClickListener {
-                if (GlobalConfig.isSellerApp()) {
-                    RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
-                } else {
-                    activity?.finish()
-                }
+        somAdminPermissionView?.setUserNotAllowedToViewSom {
+            if (GlobalConfig.isSellerApp()) {
+                RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+            } else {
+                activity?.finish()
             }
-            show()
         }
     }
 
