@@ -22,26 +22,28 @@ object FileUtil {
         if (isExternalWritable) {
             if (isCacheDir) {
                 val rootCacheDirectory = File(GlobalConfig.EXTERNAL_CACHE_DIR)
-                if (rootCacheDirectory.exists()) {
+                if (GlobalConfig.EXTERNAL_CACHE_DIR.isNotEmpty() && rootCacheDirectory.exists()) {
                     directory = File(rootCacheDirectory.absolutePath, relativePathFolder ?: "")
                 }
             } else {
                 val rootFileDirectory = File(GlobalConfig.EXTERNAL_FILE_DIR)
-                if (rootFileDirectory.exists()) {
+                if (GlobalConfig.EXTERNAL_FILE_DIR.isNotEmpty() && rootFileDirectory.exists()) {
                     directory = File(rootFileDirectory.absolutePath, relativePathFolder ?: "")
                 }
             }
-        } else {
-            if (isCacheDir) {
-                directory = File(GlobalConfig.INTERNAL_CACHE_DIR, relativePathFolder ?: "")
-            } else {
-                directory = File(GlobalConfig.INTERNAL_FILE_DIR, relativePathFolder ?: "")
-            }
         }
-        if (directory != null && !directory.exists()) {
+        if (directory == null) {
+            directory =
+                    if (isCacheDir) {
+                        File(GlobalConfig.INTERNAL_CACHE_DIR, relativePathFolder ?: "")
+                    } else {
+                        File(GlobalConfig.INTERNAL_FILE_DIR, relativePathFolder ?: "")
+                    }
+        }
+        if (!directory.exists()) {
             directory.mkdirs()
         }
-        return directory!!
+        return directory
     }
 
     @JvmStatic
