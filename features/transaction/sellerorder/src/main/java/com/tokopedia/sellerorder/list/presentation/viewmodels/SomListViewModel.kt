@@ -216,12 +216,11 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getOrderList() {
-        getOrderListJob?.cancel()
-        getOrderListJob = launchCatchError(block = {
-            somListGetOrderListUseCase.setParam(getOrderListParams)
-            val result = somListGetOrderListUseCase.execute()
-            getOrderListParams.nextOrderId = result.first
+        launchCatchError(block = {
             if (_canShowOrderData.value == true) {
+                somListGetOrderListUseCase.setParam(getOrderListParams)
+                val result = somListGetOrderListUseCase.execute()
+                getOrderListParams.nextOrderId = result.first
                 _orderListResult.postValue(Success(result.second))
             }
         }, onError = {

@@ -408,7 +408,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         if (canDisplayOrderData) {
             loadAllInitialData()
         } else {
-            loadAdminPermission()
+            checkAdminPermission()
         }
     }
 
@@ -947,7 +947,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         canMultiAcceptOrder = isMultiAcceptEligible
                         if (isSomListEligible) {
                             somAdminPermissionView?.hide()
-                            loadAllInitialData()
+                            loadInitialData()
                         } else {
                             showAdminPermissionError()
                         }
@@ -1095,7 +1095,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.getOrderList()
     }
 
-    private fun loadAdminPermission() {
+    private fun checkAdminPermission() {
         viewModel.getAdminPermission()
     }
 
