@@ -92,6 +92,7 @@ dependencies {
     implementation project(rootProject.ext.features.ovoPayWithQr)
     implementation project(rootProject.ext.features.wallet)
     implementation project(rootProject.ext.features.ovop2p)
+    implementation project(rootProject.ext.features.paylater)
 
     //IM
     //implementation project(rootProject.ext.features.referral) //Need to fix the structure
