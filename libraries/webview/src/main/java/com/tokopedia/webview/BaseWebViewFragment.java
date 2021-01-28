@@ -100,6 +100,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String PRINT_AWB_URL = "tokopedia.com/shipping-label";
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
+    private static final String SCHEME_INTENT = "intent";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
@@ -663,8 +664,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 getActivity().finish();
             }
             return true;
-        } else if (url.contains(PLAY_GOOGLE_URL)) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        } else if (PLAY_GOOGLE_URL.equalsIgnoreCase(uri.getHost())) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
             return true;
         } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) && !GlobalConfig.isSellerApp()) {
@@ -677,7 +678,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } catch (ActivityNotFoundException e) {
                 e.printStackTrace();
             }
+        } else if (SCHEME_INTENT.equalsIgnoreCase(uri.getScheme())) {
+            try {
+                Intent newIntent = RouteManager.getIntent(getActivity(), url);
+                startActivity(newIntent);
+            } catch (ActivityNotFoundException e) {
+                Timber.w(e);
+            }
         }
+
         if (url.contains(PARAM_EXTERNAL)) {
             try {
                 Intent destination = new Intent(Intent.ACTION_VIEW);
