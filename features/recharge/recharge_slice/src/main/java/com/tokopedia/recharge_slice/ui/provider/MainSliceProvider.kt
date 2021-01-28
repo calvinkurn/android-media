@@ -305,9 +305,8 @@ class MainSliceProvider : SliceProvider() {
     }
 
     fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean {
-//        remoteConfig = FirebaseRemoteConfigImpl(context)
-//        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
-        return true
+        remoteConfig = FirebaseRemoteConfigImpl(context)
+        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
     }
 
     fun <T> allowReads(block: () -> T): T {
