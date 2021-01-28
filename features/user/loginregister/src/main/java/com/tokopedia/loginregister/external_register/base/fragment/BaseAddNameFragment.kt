@@ -30,9 +30,7 @@ abstract class BaseAddNameFragment: BaseDaggerFragment() {
 
     override fun getScreenName(): String = ExternalRegisterConstants.ADD_NAME_SCREEN
 
-    override fun initInjector() {
-//        getComponent(ExternalRegisterComponent::class.java).inject(this)
-    }
+    override fun initInjector() {}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_base_add_name, container, false)
@@ -47,7 +45,7 @@ abstract class BaseAddNameFragment: BaseDaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
+        super.onViewCreated(view, savedInstanceState)
         setTitle(context?.getString(R.string.title_external_register_add_name) ?: "")
         setBottomText()
         base_add_name_button_next?.setOnClickListener {

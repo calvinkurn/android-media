@@ -22,11 +22,6 @@ abstract class ExternalRegisterUseCaseViewModelModules {
     @ExternalRegisterScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(BaseAddNameViewModel::class)
-//    internal abstract fun provideBaseAddNameViewModel(viewModel: BaseAddNameViewModel): ViewModel
-
     @Binds
     @IntoMap
     @ViewModelKey(OvoAddNameViewModel::class)

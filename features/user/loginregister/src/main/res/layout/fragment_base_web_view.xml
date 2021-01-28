@@ -21,9 +21,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/base_external_register_toolbar" />
 
-    <include
-        android:id="@+id/base_web_view_error"
-        android:visibility="gone"
-        layout="@layout/fragment_base_ovo_error"/>
-
 </FrameLayout>
