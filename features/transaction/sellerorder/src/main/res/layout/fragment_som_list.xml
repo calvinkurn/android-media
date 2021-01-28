@@ -173,8 +173,7 @@
         android:id="@+id/sortFilterShimmer1"
         android:layout_width="@dimen/som_list_sort_filter_shimmer_width"
         android:layout_height="@dimen/som_list_sort_filter_shimmer_height"
-        android:layout_marginStart="@dimen/som_list_sort_filter_shimmer_margin_start"
-        android:layout_marginTop="@dimen/som_list_sort_filter_shimmer_margin_top"
+        android:layout_marginTop="14.5dp"
         app:corners="32"
         app:layout_constraintStart_toStartOf="@id/searchBarSomList"
         app:layout_constraintTop_toBottomOf="@id/searchBarSomList" />
