@@ -264,7 +264,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun renderImage(data: CartItemHolderData) {
         data.cartItemData?.originData?.productImage?.let {
-            ivProductImage.setImageUrl(it)
+            ivProductImage.loadImage(it)
         }
         ivProductImage.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
     }
