@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -301,7 +302,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     private fun setWindowBackground() {
         try {
-            window.decorView.setBackgroundColor(Unify_N0)
+            window.decorView.setBackgroundColor(ContextCompat.getColor(this, Unify_N0))
         } catch (e: Exception) {}
     }
 
