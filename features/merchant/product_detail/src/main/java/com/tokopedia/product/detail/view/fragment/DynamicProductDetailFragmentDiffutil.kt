@@ -1457,7 +1457,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
                 pdpUiUpdater?.updateRecommendationData(it.data)
-                updateUi()
+                    updateUi()
             }, {
                 pdpUiUpdater?.removeComponent(it.message ?: "")
                 updateUi()
@@ -1582,7 +1582,9 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     private fun updateUi() {
         val newData = pdpUiUpdater?.mapOfData?.values?.toList()
-        submitList(newData ?: listOf())
+        getRecyclerView()?.post {
+            submitList(newData ?: listOf())
+        }
     }
 
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
