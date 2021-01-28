@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.recommendation.model
+package com.tokopedia.thankyou_native.recommendation.data
 
 
 data class ProductRecommendationData(

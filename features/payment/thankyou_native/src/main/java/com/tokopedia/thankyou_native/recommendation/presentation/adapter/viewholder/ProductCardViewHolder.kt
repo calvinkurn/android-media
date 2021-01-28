@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.recommendation.model.ThankYouProductCardModel
+import com.tokopedia.thankyou_native.recommendation.data.ThankYouProductCardModel
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.ProductCardViewListener
 
 class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

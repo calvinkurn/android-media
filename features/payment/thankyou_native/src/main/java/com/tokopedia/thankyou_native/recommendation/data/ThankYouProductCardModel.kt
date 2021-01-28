@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.recommendation.model
+package com.tokopedia.thankyou_native.recommendation.data
 
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem

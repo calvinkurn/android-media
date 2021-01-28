@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.ProductCardViewListener
-import com.tokopedia.thankyou_native.recommendation.model.ThankYouProductCardModel
+import com.tokopedia.thankyou_native.recommendation.data.ThankYouProductCardModel
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.viewholder.ProductCardViewHolder
 
 class ProductCardViewAdapter(val productCardList: List<ThankYouProductCardModel>,

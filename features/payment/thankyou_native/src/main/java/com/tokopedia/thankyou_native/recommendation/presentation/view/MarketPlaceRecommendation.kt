@@ -19,8 +19,9 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.recommendation.analytics.RecommendationAnalytics
 import com.tokopedia.thankyou_native.recommendation.di.component.DaggerRecommendationComponent
-import com.tokopedia.thankyou_native.recommendation.model.ProductRecommendationData
-import com.tokopedia.thankyou_native.recommendation.model.ThankYouProductCardModel
+import com.tokopedia.thankyou_native.recommendation.data.ProductRecommendationData
+import com.tokopedia.thankyou_native.recommendation.data.ThankYouProductCardModel
+import com.tokopedia.thankyou_native.recommendation.di.module.RecommendationModule
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.ProductCardViewAdapter
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.ProductCardViewListener
@@ -81,6 +82,7 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
     private fun injectComponents() {
         DaggerRecommendationComponent.builder()
                 .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+                .recommendationModule(RecommendationModule(context.applicationContext))
                 .build().inject(this)
     }
 
@@ -133,7 +135,6 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
         }
     }
 
-
     private fun getRecommendationListener(): ProductCardViewListener {
         return object : ProductCardViewListener {
             override fun onProductClick(item: RecommendationItem,
@@ -154,7 +155,6 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
             }
         }
     }
-
 
     private fun onRecomProductClick(item: RecommendationItem, position: Int) {
         analytics.get().sendRecommendationItemClick(thanksPageData, item, position = position + 1)
