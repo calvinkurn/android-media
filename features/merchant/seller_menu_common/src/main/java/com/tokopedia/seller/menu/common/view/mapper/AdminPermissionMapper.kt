@@ -51,7 +51,7 @@ class AdminPermissionMapper @Inject constructor(private val remoteConfig: Remote
     fun mapFeatureToAccessId(@AdminFeature adminFeature: String): Int {
         return when(adminFeature) {
             AdminFeature.SHOP_SCORE -> AccessId.SHOP_SCORE
-            AdminFeature.NEW_ORDER, AdminFeature.READY_TO_SHIP_ORDER, AdminFeature.ORDER_HISTORY -> AccessId.SOM
+            AdminFeature.NEW_ORDER, AdminFeature.READY_TO_SHIP_ORDER, AdminFeature.ORDER_HISTORY -> AccessId.SOM_LIST
             AdminFeature.MANAGE_PRODUCT -> AccessId.PRODUCT_LIST
             AdminFeature.ADD_PRODUCT -> AccessId.PRODUCT_ADD
             AdminFeature.REVIEW -> AccessId.REVIEW
