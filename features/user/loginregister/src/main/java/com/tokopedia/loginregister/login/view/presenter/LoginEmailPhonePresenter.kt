@@ -6,10 +6,14 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
+import com.tokopedia.loginregister.common.DispatcherProvider
+import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
@@ -19,11 +23,12 @@ import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
-import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
+import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.common.view.ticker.subscriber.TickerInfoLoginSubscriber
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
@@ -32,15 +37,20 @@ import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import rx.Subscriber
+import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 /**
  * @author by nisie on 18/01/19.
  */
 class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseCase: RegisterCheckUseCase,
                                                    private val discoverUseCase: DiscoverUseCase,
+                                                   private val activateUserUseCase: ActivateUserUseCase,
                                                    private val getFacebookCredentialUseCase:
                                                    GetFacebookCredentialUseCase,
                                                    private val loginTokenUseCase:
@@ -53,9 +63,16 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    private var cryptographyUtils: Cryptography?,
                                                    @Named(SESSION_MODULE)
-                                                   private val userSession: UserSessionInterface)
+                                                   private val userSession: UserSessionInterface,
+                                                   private val dispatcherProvider: DispatcherProvider
+)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
-        LoginEmailPhoneContract.Presenter {
+        LoginEmailPhoneContract.Presenter, CoroutineScope {
+
+    private var job: Job = SupervisorJob()
+
+    override val coroutineContext: CoroutineContext
+        get() = dispatcherProvider.io() + job
 
     private lateinit var viewEmailPhone: LoginEmailPhoneContract.View
     var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("LOGIN")
@@ -69,7 +86,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
 
     override fun discoverLogin(context: Context) {
         view?.let { view ->
-            discoverUseCase.execute(RequestParams.EMPTY, object : Subscriber<DiscoverViewModel>() {
+            discoverUseCase.execute(RequestParams.EMPTY, object : Subscriber<DiscoverDataModel>() {
                 override fun onCompleted() {
 
                 }
@@ -80,10 +97,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     view.onErrorDiscoverLogin(e)
                 }
 
-                override fun onNext(discoverViewModel: DiscoverViewModel) {
+                override fun onNext(discoverDataModel: DiscoverDataModel) {
                     view.stopTrace()
                     view.dismissLoadingDiscover()
-                    view.onSuccessDiscoverLogin(discoverViewModel.providers)
+                    view.onSuccessDiscoverLogin(discoverDataModel.providers)
                 }
             })
         }
@@ -336,5 +353,38 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         }, onError = {
             view.onGetDynamicBannerError(it)
         })
+    }
+
+    fun activateUser(
+            email: String,
+            validateToken: String
+    ) {
+        launchCatchError(coroutineContext, {
+            val params = activateUserUseCase.getParams(email, validateToken)
+            val data: ActivateUserData? = activateUserUseCase.getData(params).data
+            if (data != null) {
+                when {
+                    data.isSuccess == 1 -> {
+                        view.onSuccessActivateUser(data)
+                    }
+                    data.message.isNotEmpty() -> {
+                        view.onFailedActivateUser(MessageErrorException(data.message))
+                    }
+                    else -> {
+                        view.onFailedActivateUser(Throwable())
+                    }
+                }
+            } else {
+                view.onFailedActivateUser(Throwable())
+            }
+        }, {
+            view.onFailedActivateUser(it)
+        })
+    }
+
+    override fun cancelJobs() {
+        job.children.map {
+            it.cancel()
+        }
     }
 }

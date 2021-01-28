@@ -86,13 +86,16 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == KYCConstant.REQUEST_CODE_CAMERA_FACE) {
-                if (isKycSelfie) {
-                    val faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)
-                    stepperModel?.faceFile = faceFile.toEmptyStringIfNull()
-                    stepperListener?.goToNextPage(stepperModel)
+                var faceFile = ""
+                if(isKycSelfie) {
+                    stepperModel?.isLiveness = false
+                    faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)?: ""
                 } else {
-                    getLivenessResult(data)
+                    stepperModel?.isLiveness = true
+                    faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH)?: ""
                 }
+                stepperModel?.faceFile = faceFile.toEmptyStringIfNull()
+                stepperListener?.goToNextPage(stepperModel)
             } else if (requestCode == KYCConstant.REQUEST_CODE_CAMERA_KTP) {
                 val ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)
                 stepperModel?.ktpFile = ktpFile.toEmptyStringIfNull()
@@ -112,22 +115,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
             startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
         }
         super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    private fun getLivenessResult(data: Intent) {
-        val isSuccessRegister = data.getBooleanExtra(ApplinkConst.Liveness.EXTRA_IS_SUCCESS_REGISTER, false)
-        if (isSuccessRegister) {
-            activity?.setResult(Activity.RESULT_OK)
-            stepperListener?.finishPage()
-        } else {
-            stepperModel?.faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH).toEmptyStringIfNull()
-            stepperModel?.listRetake = data.getIntegerArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_RETAKE)?: arrayListOf()
-            stepperModel?.listMessage = data.getStringArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_MESSAGE)?: arrayListOf()
-            stepperModel?.titleText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_TITLE).toEmptyStringIfNull()
-            stepperModel?.subtitleText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_SUBTITLE).toEmptyStringIfNull()
-            stepperModel?.buttonText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_BUTTON).toEmptyStringIfNull()
-            stepperListener?.goToNextPage(stepperModel)
-        }
     }
 
     private fun sendAnalyticErrorImageTooLarge(requestCode: Int) {

@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
+import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapter
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.data.response.KeywordDataModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
@@ -22,7 +23,6 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
-import com.tokopedia.topads.edit.view.adapter.KeywordEditPagerAdapter
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.topads_edit_keyword_base_layout.*
 

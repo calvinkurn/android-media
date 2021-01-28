@@ -6,7 +6,7 @@ import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase;
 import com.tokopedia.loginregister.discover.mapper.DiscoverMapper;
-import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
+import com.tokopedia.loginregister.login.view.model.DiscoverDataModel;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -33,19 +33,19 @@ public class CloudDiscoverDataSource {
         this.discoverMapper = discoverMapper;
     }
 
-    public Observable<DiscoverViewModel> getDiscover(RequestParams params) {
+    public Observable<DiscoverDataModel> getDiscover(RequestParams params) {
         return loginRegisterApi
                 .discoverLogin(params.getParameters())
                 .map(discoverMapper)
                 .doOnNext(saveToCache(params.getString(DiscoverUseCase.PARAM_TYPE, "")));
     }
 
-    private Action1<DiscoverViewModel> saveToCache(final String source) {
-        return discoverViewModel -> {
-            if (discoverViewModel != null) {
+    private Action1<DiscoverDataModel> saveToCache(final String source) {
+        return discoverDataModel -> {
+            if (discoverDataModel != null) {
                 cacheManager.put(LocalDiscoverDataSource.KEY_DISCOVER + source,
-                        CacheUtil.convertModelToString(discoverViewModel,
-                                new TypeToken<DiscoverViewModel>() {
+                        CacheUtil.convertModelToString(discoverDataModel,
+                                new TypeToken<DiscoverDataModel>() {
                                 }.getType()), LocalDiscoverDataSource.CACHE_DURATION);
             }
         };
