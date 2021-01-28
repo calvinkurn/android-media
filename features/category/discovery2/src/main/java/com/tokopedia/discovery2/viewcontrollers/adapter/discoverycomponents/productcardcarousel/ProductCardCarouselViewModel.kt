@@ -55,7 +55,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         var lihatSemuaComponentData: ComponentsItem? = null
         components.lihatSemua?.let {
 //            we don't add header component in case after when query is hit but no list of products were found.
-            if (!(components.noOfPagesLoaded == 1 && (components.getComponentsItem() == null || components.getComponentsItem()!!.isEmpty())))
+            if (!(components.noOfPagesLoaded == 1 && components.getComponentsItem().isNullOrEmpty()))
                 it.run {
                     val lihatSemuaDataItem = DataItem(title = header,
                             subtitle = subheader, btnApplink = applink)
