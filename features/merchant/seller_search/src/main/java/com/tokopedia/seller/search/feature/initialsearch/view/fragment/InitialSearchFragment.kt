@@ -191,7 +191,7 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         val itemInitialSearchUiModelList = data.filterIsInstance<ItemInitialSearchUiModel>()
         if (itemInitialSearchUiModelList.isEmpty()) {
             val itemTitleHighlightSearchUiModel = data.filterIsInstance<ItemTitleHighlightInitialSearchUiModel>().firstOrNull() ?: ItemTitleHighlightInitialSearchUiModel()
-            val itemHighlightSearchUiModel = data.filterIsInstance<HighlightSearchUiModel>().firstOrNull() ?: HighlightSearchUiModel()
+            val itemHighlightSearchUiModel = data.filterIsInstance<HighlightInitialSearchUiModel>().firstOrNull() ?: HighlightInitialSearchUiModel()
             val highlightSearchVisitable = mutableListOf(itemTitleHighlightSearchUiModel, itemHighlightSearchUiModel)
             initialSearchAdapter.addNoHistoryState()
             initialSearchAdapter.addAll(highlightSearchVisitable)

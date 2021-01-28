@@ -3,7 +3,7 @@ package com.tokopedia.seller.search.feature.initialsearch.view.model.initialsear
 import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialSearchSeller
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.TypeFactoryInitialSearchAdapter
 
-data class HighlightSearchUiModel(
+data class HighlightInitialSearchUiModel(
         var highlightInitialList: List<ItemHighlightInitialSearchUiModel> = listOf()
 ): BaseInitialSearchSeller {
     override fun type(typeFactory: TypeFactoryInitialSearchAdapter): Int {

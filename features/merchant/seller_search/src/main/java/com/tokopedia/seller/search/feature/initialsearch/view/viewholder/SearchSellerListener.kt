@@ -2,6 +2,7 @@ package com.tokopedia.seller.search.feature.initialsearch.view.viewholder
 
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemHighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.*
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemHighlightSuggestionSearchUiModel
 
 interface HistorySearchListener {
     fun onClearSearchItem(keyword: String, adapterPosition: Int)
@@ -27,6 +28,10 @@ interface OrderSearchListener {
 interface ProductSearchListener {
     fun onProductItemClicked(data: ProductSellerSearchUiModel, position: Int)
     fun onProductMoreClicked(element: TitleHasMoreSellerSearchUiModel, position: Int)
+}
+
+interface HighlightSuggestionSearchListener {
+    fun onHighlightItemClicked(data: ItemHighlightSuggestionSearchUiModel, position: Int)
 }
 
 interface HistoryViewUpdateListener {

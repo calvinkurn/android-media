@@ -2,13 +2,15 @@ package com.tokopedia.seller.search.feature.initialsearch.view.viewholder
 
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchMinCharUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoHistoryUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.HighlightSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.HighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleHighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleInitialSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.LoadingSearchModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.SellerSearchNoResultUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.*
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.HighlightSuggestionSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemTitleHighlightSuggestionSearchUiModel
 
 interface TypeFactoryInitialSearchAdapter {
     fun type(initialSearchUiModel: ItemInitialSearchUiModel): Int
@@ -16,7 +18,7 @@ interface TypeFactoryInitialSearchAdapter {
     fun type(sellerSearchNoHistoryUiModel: SellerSearchNoHistoryUiModel): Int
     fun type(itemTitleInitialSearchUiModel: ItemTitleInitialSearchUiModel): Int
     fun type(itemTitleHighlightInitialSearchUiModel: ItemTitleHighlightInitialSearchUiModel): Int
-    fun type(highlightSearchUiModel: HighlightSearchUiModel): Int
+    fun type(highlightInitialSearchUiModel: HighlightInitialSearchUiModel): Int
 }
 
 interface TypeFactorySuggestionSearchAdapter {
@@ -29,4 +31,6 @@ interface TypeFactorySuggestionSearchAdapter {
     fun type(titleHasMoreSellerSearchUiModel: TitleHasMoreSellerSearchUiModel): Int
     fun type(dividerSellerSearchUiModel: DividerSellerSearchUiModel): Int
     fun type(loadingModel: LoadingSearchModel): Int
+    fun type(itemTitleHighlightSuggestionSearchUiModel: ItemTitleHighlightSuggestionSearchUiModel): Int
+    fun type(highlightSuggestionSearchUiModel: HighlightSuggestionSearchUiModel): Int
 }

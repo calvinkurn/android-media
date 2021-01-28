@@ -16,6 +16,9 @@ import com.tokopedia.seller.search.feature.suggestion.domain.model.SuccessSearch
 import com.tokopedia.seller.search.feature.suggestion.view.model.BaseSuggestionSearchSeller
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.*
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.HighlightSuggestionSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemHighlightSuggestionSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemTitleHighlightSuggestionSearchUiModel
 
 object GlobalSearchSellerMapper {
 
@@ -76,7 +79,8 @@ object GlobalSearchSellerMapper {
                         }
                     }
                     HIGHLIGHTS -> {
-
+                        add(ItemTitleHighlightSuggestionSearchUiModel(it.title.orEmpty()))
+                        add(HighlightSuggestionSearchUiModel(highlightSuggestionSearch = mapToItemHighlightSuggestionSearchUiModel(sellerSearch)))
                     }
                 }
             }
@@ -162,7 +166,7 @@ object GlobalSearchSellerMapper {
                     }
                     HIGHLIGHTS -> {
                         add(ItemTitleHighlightInitialSearchUiModel(it.title.orEmpty()))
-                        add(HighlightSearchUiModel(highlightInitialList = mapToItemHighlightInitialSearchUiModel(sellerSearch)))
+                        add(HighlightInitialSearchUiModel(highlightInitialList = mapToItemHighlightInitialSearchUiModel(sellerSearch)))
                     }
                 }
             }
@@ -192,6 +196,20 @@ object GlobalSearchSellerMapper {
             section.items.map { itemSearch ->
                 itemHighlightSearchList.add(
                         ItemHighlightInitialSearchUiModel(id = itemSearch.id, title = itemSearch.title,
+                                desc = itemSearch.description, imageUrl = itemSearch.image_url,
+                                appUrl = itemSearch.app_url))
+            }
+        }
+        return itemHighlightSearchList
+    }
+
+    private fun mapToItemHighlightSuggestionSearchUiModel(sellerSearch: SellerSearchResponse.SellerSearch): List<ItemHighlightSuggestionSearchUiModel> {
+        val itemHighlightSearchList = mutableListOf<ItemHighlightSuggestionSearchUiModel>()
+
+        sellerSearch.data.sections.filter { it.id == HIGHLIGHTS }.map { section ->
+            section.items.map { itemSearch ->
+                itemHighlightSearchList.add(
+                        ItemHighlightSuggestionSearchUiModel(id = itemSearch.id, title = itemSearch.title,
                                 desc = itemSearch.description, imageUrl = itemSearch.image_url,
                                 appUrl = itemSearch.app_url))
             }

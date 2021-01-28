@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchMinCharUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoHistoryUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.HighlightSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.HighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleHighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleInitialSearchUiModel
@@ -37,7 +37,7 @@ class InitialSearchAdapterTypeFactory(private val historySearchListener: History
         return TitleHighlightInitialSearchViewHolder.LAYOUT
     }
 
-    override fun type(highlightSearchUiModel: HighlightSearchUiModel): Int {
+    override fun type(highlightInitialSearchUiModel: HighlightInitialSearchUiModel): Int {
         return HighlightInitialSearchViewHolder.LAYOUT
     }
 

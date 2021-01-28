@@ -13,7 +13,6 @@ class SuggestionSearchAdapter(typeFactory: SuggestionSearchAdapterTypeFactory):
     fun addAll(list: List<BaseSuggestionSearchSeller>) {
         val callBack = SuggestionSearchDiffUtil(visitables, list)
         val diffResult = DiffUtil.calculateDiff(callBack)
-        visitables.clear()
         visitables.addAll(list)
         diffResult.dispatchUpdatesTo(this)
     }

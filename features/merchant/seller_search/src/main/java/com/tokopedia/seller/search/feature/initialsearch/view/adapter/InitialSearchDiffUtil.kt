@@ -41,7 +41,7 @@ class InitialSearchDiffUtil(private val oldList: List<Visitable<*>>, private val
     }
 
     private fun isTheSameHighlightSearchUiModel(oldItem: Visitable<*>?, newItem: Visitable<*>?): Boolean {
-        return oldItem is HighlightSearchUiModel && newItem is HighlightSearchUiModel &&
+        return oldItem is HighlightInitialSearchUiModel && newItem is HighlightInitialSearchUiModel &&
                 oldItem.highlightInitialList == newItem.highlightInitialList
     }
 }
