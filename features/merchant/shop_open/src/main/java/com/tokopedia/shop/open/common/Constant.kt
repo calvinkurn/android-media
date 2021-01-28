@@ -31,4 +31,8 @@ object ErrorConstant {
     const val ERROR_SAVE_LOCATION_SHIPPING = "error save location shipping"
     const val ERROR_SEND_SURVEY = "error send survey"
     const val ERROR_GET_SURVEY_QUESTIONS = "error get survey questions"
+    const val ERROR_CHECK_SHOP_NAME = "error check shop name"
+    const val ERROR_CHECK_DOMAIN_NAME = "error check domain name"
+    const val ERROR_DOMAIN_NAME_SUGGESTIONS = "error domain name suggestions"
+    const val ERROR_CREATE_SHOP = "error create shop"
 }

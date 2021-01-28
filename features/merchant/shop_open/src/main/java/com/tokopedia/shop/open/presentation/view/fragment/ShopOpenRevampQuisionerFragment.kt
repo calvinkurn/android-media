@@ -217,9 +217,11 @@ class ShopOpenRevampQuisionerFragment :
                     showErrorNetwork(it.throwable) {
                         loadDataSurvey()
                     }
-                    it.throwable.message?.let { message ->
-                        ShopOpenRevampErrorHandler.logMessage(ERROR_GET_SURVEY_QUESTIONS, userSession.userId, it.throwable)
-                    }
+                    ShopOpenRevampErrorHandler.logMessage(
+                            title = ERROR_GET_SURVEY_QUESTIONS,
+                            userId = userSession.userId,
+                            message = it.throwable.message ?: ""
+                    )
                 }
             }
         })
@@ -244,9 +246,11 @@ class ShopOpenRevampQuisionerFragment :
                         val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
                         viewModel.sendSurveyData(dataSurveyInput)
                     }
-                    it.throwable.message?.let { message ->
-                        ShopOpenRevampErrorHandler.logMessage(ERROR_SEND_SURVEY, userSession.userId, it.throwable)
-                    }
+                    ShopOpenRevampErrorHandler.logMessage(
+                            title = ERROR_SEND_SURVEY,
+                            userId = userSession.userId,
+                            message = it.throwable.message ?: ""
+                    )
                 }
             }
         })
@@ -276,11 +280,12 @@ class ShopOpenRevampQuisionerFragment :
                             }
                         }
 
-                        it.message?.let { message ->
-                            ShopOpenRevampErrorHandler.logMessage(ERROR_SAVE_LOCATION_SHIPPING, userSession.userId, it)
-                            ShopOpenRevampErrorHandler.logMessage(message)
-                            ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it)
-                        }
+                        ShopOpenRevampErrorHandler.logMessage(
+                                title = ERROR_SAVE_LOCATION_SHIPPING,
+                                userId = userSession.userId,
+                                message = it.message ?: ""
+                        )
+                        ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it)
                     }
                 }
             }
