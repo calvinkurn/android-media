@@ -11,4 +11,10 @@ data class CardDataUiModel(
         val value: String = "",
         override var error: String = "",
         override var isFromCache: Boolean = false
-): BaseDataUiModel
+): BaseDataUiModel {
+    override fun shouldRemove(): Boolean {
+        return !isFromCache && (value.filterIndexed { index, c ->
+            (c == '.' && value.getOrNull(index - 1)?.isDigit() == true) || c.isDigit()
+        }.toFloat() == 0f)
+    }
+}

@@ -205,7 +205,7 @@ class PlayCoverSetupViewModel @Inject constructor(
 
         return@withContext when (val uploadedImage = uploadImageUseCase.executeOnBackground()) {
             is UploadResult.Success -> uploadedImage.uploadId
-            is UploadResult.Error -> error("Upload image has failed")
+            is UploadResult.Error -> error(uploadedImage.message)
         }
     }
 

@@ -5,6 +5,7 @@ object TopAdsDashboardConstant {
     const val PARAM_START_DATE = "startDate"
     const val PARAM_END_DATE = "endDate"
     const val PATH_DASHBOARD_STATISTIC = "/v1.1/dashboard/statistics"
+    const val PARAM_SOURCE_CREDIT_HISTORY = "dashboard_credit_history_app"
 
     const val SHOP_ID = "shopId"
     const val OFFSCREEN_PAGE_LIMIT = 3
@@ -56,6 +57,8 @@ object TopAdsDashboardConstant {
     const val TANPA_GRUP = "Tanpa Grup"
     const val TOASTER_DURATION :Long = 2000
     const val EXPIRE = "expiryDate"
+    const val IS_CHANGED = "isChanged"
+    const val EDIT_HEADLINE_REQUEST_CODE = 46
     const val EDIT_GROUP_REQUEST_CODE = 47
     const val EDIT_WITHOUT_GROUP_REQUEST_CODE = 49
     const val GROUP_UPDATED = 23

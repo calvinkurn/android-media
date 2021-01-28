@@ -23,8 +23,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
@@ -402,45 +402,47 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     private fun showOnboarding() {
-        // Render onboarding coach mark if there are bills & if it's the first visit
-        if (adapter.dataSize > 0 && !localCacheHandler.getBoolean(SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK, false)) {
-            localCacheHandler.apply {
-                putBoolean(SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK, true)
-                applyEditor()
-            }
+        context?.run {
+            // Render onboarding coach mark if there are bills & if it's the first visit
+            if (adapter.dataSize > 0 && !localCacheHandler.getBoolean(SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK, false)) {
+                localCacheHandler.apply {
+                    putBoolean(SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK, true)
+                    applyEditor()
+                }
 
-            // Get first viewholder item for coach marks
-            rv_smart_bills_items.post {
-                val billItemView = (rv_smart_bills_items.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
-                val coachMarks = ArrayList<CoachMarkItem>()
-                coachMarks.add(
-                        CoachMarkItem(
-                                view_smart_bills_select_all_checkbox_container,
-                                getString(R.string.smart_bills_onboarding_title_1),
-                                getString(R.string.smart_bills_onboarding_description_1)
-                        )
-                )
-                billItemView?.run {
+                // Get first viewholder item for coach marks
+                rv_smart_bills_items.post {
+                    val billItemView = (rv_smart_bills_items.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
+                    val coachMarks = ArrayList<CoachMark2Item>()
                     coachMarks.add(
-                            CoachMarkItem(
-                                    this,
-                                    getString(R.string.smart_bills_onboarding_title_2),
-                                    getString(R.string.smart_bills_onboarding_description_2)
+                            CoachMark2Item(
+                                    view_smart_bills_select_all_checkbox_container,
+                                    getString(R.string.smart_bills_onboarding_title_1),
+                                    getString(R.string.smart_bills_onboarding_description_1)
                             )
                     )
-                }
-                coachMarks.add(
-                        CoachMarkItem(
-                                smart_bills_checkout_view.getCheckoutButton(),
-                                getString(R.string.smart_bills_onboarding_title_3),
-                                getString(R.string.smart_bills_onboarding_description_3)
+                    billItemView?.run {
+                        coachMarks.add(
+                                CoachMark2Item(
+                                        this,
+                                        getString(R.string.smart_bills_onboarding_title_2),
+                                        getString(R.string.smart_bills_onboarding_description_2)
+                                )
                         )
-                )
+                    }
+                    coachMarks.add(
+                            CoachMark2Item(
+                                    smart_bills_checkout_view.getCheckoutButton(),
+                                    getString(R.string.smart_bills_onboarding_title_3),
+                                    getString(R.string.smart_bills_onboarding_description_3)
+                            )
+                    )
 
-                val coachMark = CoachMarkBuilder().build()
-                coachMark.enableSkip = true
-                coachMark.setHighlightMargin(SMART_BILLS_COACH_MARK_HIGHLIGHT_MARGIN)
-                coachMark.show(activity, "SmartBillsOnboardingCoachMark", coachMarks)
+                    val coachMark = CoachMark2(this)
+//                    coachMark.enableSkip = true
+//                    coachMark.setHighlightMargin(SMART_BILLS_COACH_MARK_HIGHLIGHT_MARGIN)
+                    coachMark.showCoachMark(coachMarks)
+                }
             }
         }
     }

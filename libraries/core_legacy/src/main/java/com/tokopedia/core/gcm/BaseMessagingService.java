@@ -31,6 +31,7 @@ import timber.log.Timber;
  */
 
 public class BaseMessagingService extends BaseNotificationMessagingService {
+    private static final String REVERT_PUSH_NOTIFICATION_SHOW_PROMO = "android_revert_push_notif_show_promo";
     private static IAppNotificationReceiver appNotificationReceiver;
     private SharedPreferences sharedPreferences;
     private Context mContext;
@@ -117,10 +118,14 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     }
 
     private boolean showPromoNotification() {
-        if (sharedPreferences == null)
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        return sharedPreferences.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
+        boolean revert = FirebaseRemoteConfig.getInstance().getBoolean(REVERT_PUSH_NOTIFICATION_SHOW_PROMO);
+        if(!revert) {
+            return true;
+        } else{
+            if (sharedPreferences == null)
+                sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            return sharedPreferences.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
+        }
     }
 
     /**

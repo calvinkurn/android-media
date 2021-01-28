@@ -10,10 +10,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
@@ -48,6 +45,8 @@ class ReviewViewHolder constructor(
 
     interface Listener {
         fun startReview(starCount: Int, review: ReviewUiModel, lastKnownPosition: Int)
+        fun trackReviewCardImpression(element: ReviewUiModel)
+        fun trackReviewCardClick(element: ReviewUiModel)
     }
 
     override fun alwaysShowTime(): Boolean = true
@@ -81,6 +80,13 @@ class ReviewViewHolder constructor(
             bindStar(element)
             bindStarClick(element)
             bindItemClick(element)
+            bindImpressionTrack(element)
+        }
+    }
+
+    private fun bindImpressionTrack(element: ReviewUiModel) {
+        container?.addOnImpressionListener(element.impressHolder) {
+            listener?.trackReviewCardImpression(element)
         }
     }
 
@@ -99,6 +105,7 @@ class ReviewViewHolder constructor(
     private fun bindItemClick(element: ReviewUiModel) {
         container?.setOnClickListener {
             if (element.isReviewed && !element.isSender) {
+                listener?.trackReviewCardClick(element)
                 RouteManager.route(itemView.context, element.reviewCard.reviewUrl)
             }
         }
@@ -207,22 +214,11 @@ class ReviewViewHolder constructor(
         reputation?.setListener(object : AnimatedReputationView.AnimatedReputationListener {
             override fun onClick(position: Int) {
                 Handler().postDelayed({
+                    listener?.trackReviewCardClick(element)
                     listener?.startReview(position, element, adapterPosition)
                 }, 200)
             }
         })
-    }
-
-    private fun ReviewUiModel.waitingForReview(): Boolean {
-        return !isReviewed && allowReview
-    }
-
-    private fun ReviewUiModel.hasExpired(): Boolean {
-        return !isReviewed && !allowReview
-    }
-
-    private fun ReviewUiModel.shouldShowStar(): Boolean {
-        return !hasExpired()
     }
 
     companion object {

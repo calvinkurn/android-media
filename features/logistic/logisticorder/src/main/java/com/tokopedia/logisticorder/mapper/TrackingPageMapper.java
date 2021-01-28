@@ -89,6 +89,11 @@ public class TrackingPageMapper implements ITrackingPageMapper {
             }
         }
 
+        model.setTrackingUrl(
+                detailOrder == null || order.getDetail().getTrackingUrl() == null ?
+                        "" : order.getDetail().getTrackingUrl()
+        );
+
         return model;
     }
 

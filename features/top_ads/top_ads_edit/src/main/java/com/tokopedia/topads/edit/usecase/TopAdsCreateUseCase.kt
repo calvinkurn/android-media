@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.di.ActivityContext
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.param.GroupEditInput
@@ -14,7 +15,6 @@ import com.tokopedia.topads.edit.data.param.KeywordEditInput
 import com.tokopedia.topads.edit.data.param.TopadsManageGroupAdsInput
 import com.tokopedia.topads.edit.data.response.FinalAdResponse
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.ACTION_ADD
 import com.tokopedia.topads.edit.utils.Constants.ACTION_CREATE
@@ -35,8 +35,8 @@ import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_SPECIFIC
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_PHRASE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_SPECIFIC
-import com.tokopedia.topads.edit.utils.Constants.POSTIVE_PHRASE
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.PUBLISHED
 import com.tokopedia.user.session.UserSessionInterface
@@ -172,7 +172,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
             keyword.status = ACTIVE
             keyword.tag = keyPos.tag
             if (keyPos.type == KEYWORD_TYPE_PHRASE) {
-                keyword.type = POSTIVE_PHRASE
+                keyword.type = POSITIVE_PHRASE
             } else {
                 keyword.type = POSITIVE_SPECIFIC
             }

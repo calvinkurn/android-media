@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 style="@style/TextView.Title.Green"
-                android:text="@string/label_next"
+                android:text="@string/label_next_short"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
                 android:paddingLeft="@dimen/dp_8"

@@ -46,7 +46,7 @@ class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
 
     private fun initBottomSheet() {
         showCloseIcon = true
-        setTitle("Daftar Bank")
+        setTitle(getString(R.string.cc_bank_list_title))
         setCloseClickListener {
             dismiss()
         }

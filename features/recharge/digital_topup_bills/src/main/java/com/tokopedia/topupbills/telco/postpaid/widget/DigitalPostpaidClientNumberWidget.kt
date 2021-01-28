@@ -8,6 +8,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
@@ -53,8 +55,9 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
 
     fun resetClientNumberPostpaid() {
         enquiryResult.removeAllViews()
-        btnEnquiry.visibility = View.VISIBLE
-        titleEnquiryResult.visibility = View.GONE
+        btnEnquiry.show()
+        titleEnquiryResult.gone()
+        enquiryResult.gone()
         setButtonEnquiry(false)
     }
 
@@ -76,8 +79,9 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
                 enquiryResult.addView(billsResult)
             }
         }
-        btnEnquiry.visibility = View.GONE
-        titleEnquiryResult.visibility = View.VISIBLE
+        btnEnquiry.gone()
+        titleEnquiryResult.show()
+        enquiryResult.show()
     }
 
     fun setPostpaidListener(listener: ClientNumberPostpaidListener) {

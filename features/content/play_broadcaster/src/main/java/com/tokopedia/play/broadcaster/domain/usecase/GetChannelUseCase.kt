@@ -31,6 +31,9 @@ class GetChannelUseCase @Inject constructor(
                 endTime
                 coverURL
                 enableChat
+                timestamp {
+                  publishedAt
+                }
                 status {
                   ID
                   text

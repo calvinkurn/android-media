@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="top"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/dp_10">
+    android:padding="@dimen/layout_lvl1">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
@@ -17,14 +17,18 @@
         android:gravity="center_horizontal"
         app:srcCompat="@drawable/digital_ic_digital_deal_empty" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/TextView.Small.Bold"
-        android:layout_marginTop="@dimen/dp_5"
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_5"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:gravity="center"
         android:text="@string/digital_deal_empty_label" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/TextView.Small"
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
         android:text="@string/digital_deal_empty_detail_label" />
 
 </LinearLayout>

@@ -9,6 +9,7 @@ import com.tokopedia.play_common.domain.model.ChannelId
 import com.tokopedia.play_common.domain.query.FieldsToUpdate
 import com.tokopedia.play_common.domain.query.QueryParamBuilder
 import com.tokopedia.play_common.domain.query.QueryParams
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -81,6 +82,35 @@ class PlayBroadcastUpdateChannelUseCase @Inject constructor(private val updateCh
             return QueryParamBuilder()
                     .setParams(params)
                     .setFields(listOf(FieldsToUpdate.Title, FieldsToUpdate.AuthorID))
+                    .build()
+        }
+
+        fun createUpdateBroadcastScheduleRequest(
+                channelId: String,
+                status: PlayChannelStatusType,
+                date: String
+        ): QueryParams {
+            val params = mapOf(
+                    PARAMS_CHANNEL_ID to channelId,
+                    FieldsToUpdate.Status.fieldName to status.value.toInt(),
+                    FieldsToUpdate.Schedule.fieldName to date,
+            )
+            return QueryParamBuilder()
+                    .setParams(params)
+                    .setFields(listOf(FieldsToUpdate.Status, FieldsToUpdate.Schedule))
+                    .build()
+        }
+
+        fun createDeleteBroadcastScheduleRequest(
+                channelId: String
+        ): QueryParams {
+            val params = mapOf(
+                    PARAMS_CHANNEL_ID to channelId,
+                    FieldsToUpdate.Status.fieldName to PlayChannelStatusType.Draft.value.toInt()
+            )
+            return QueryParamBuilder()
+                    .setParams(params)
+                    .setFields(listOf(FieldsToUpdate.Status))
                     .build()
         }
     }

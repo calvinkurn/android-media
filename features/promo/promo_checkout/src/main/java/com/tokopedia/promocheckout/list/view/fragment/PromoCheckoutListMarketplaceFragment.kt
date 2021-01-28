@@ -64,7 +64,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
     }
 
     override fun onClickItemLastSeen(promoHistoryItem: PromoHistoryItem) {
-        textInputCoupon.setText(promoHistoryItem.promoCode)
+        textInputCoupon.textFieldInput.setText(promoHistoryItem.promoCode)
         promoHistoryItem.promoCode?.let { promoCheckoutListMarketplacePresenter.checkPromoStackingCode(it, isOneClickShipment, promo) }
     }
 
@@ -89,7 +89,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         super.onViewCreated(view, savedInstanceState)
         progressDialog = ProgressDialog(activity)
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
-        textInputCoupon.setText(promoCode)
+        textInputCoupon.textFieldInput.setText(promoCode)
         view.recyclerViewLastSeenPromo.addItemDecoration(PromoTicketItemDecoration(resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16).toInt()))
         // Change last seen promo text style
         promo_checkout_list_last_seen_label.setType(Typography.HEADING_4)

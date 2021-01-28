@@ -15,8 +15,8 @@ import kotlinx.android.synthetic.main.topads_headline_keyword_item.view.*
  * Created by Pika on 6/10/20.
  */
 
-class TopAdsHeadlineKeyAdapter(private var onCheck: (pos: Int) -> Unit,
-                               private val onError: (enable: Boolean) -> Unit,
+class TopAdsHeadlineKeyAdapter(private var onCheck: (keywordDataItem: KeywordDataItem) -> Unit,
+                               private val onBidChange: (enable: Boolean, keywordDataItem: KeywordDataItem) -> Unit,
                                private val selectedKeywords: MutableList<KeywordDataItem>?) : RecyclerView.Adapter<TopAdsHeadlineKeyAdapter.ViewHolder>() {
 
     var items: MutableList<KeywordDataItem> = mutableListOf()
@@ -57,7 +57,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (pos: Int) -> Unit,
             holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
             items[holder.adapterPosition].onChecked = holder.view.checkBox.isChecked
             if (holder.adapterPosition != RecyclerView.NO_POSITION)
-                onCheck(position)
+                onCheck(items[holder.adapterPosition])
         }
         setBidInfo(holder, items[holder.adapterPosition].bidSuggest)
     }
@@ -73,22 +73,22 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (pos: Int) -> Unit,
                     result < minimumBid -> {
                         holder.view.keywordBid.setError(true)
                         holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_min_bid), minimumBid))
-                        onError(false)
+                        onBidChange(false, items[holder.adapterPosition])
                     }
                     result < bidSuggest -> {
                         holder.view.keywordBid.setError(false)
                         holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_recom_bid), bidSuggest))
-                        onError(true)
+                        onBidChange(true, items[holder.adapterPosition])
                     }
                     result > maxBid -> {
                         holder.view.keywordBid.setError(true)
                         holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_max_bid), maxBid))
-                        onError(false)
+                        onBidChange(false, items[holder.adapterPosition])
                     }
                     else -> {
                         holder.view.keywordBid.setError(false)
                         holder.view.keywordBid.setMessage("")
-                        onError(true)
+                        onBidChange(true, items[holder.adapterPosition])
                     }
                 }
             }

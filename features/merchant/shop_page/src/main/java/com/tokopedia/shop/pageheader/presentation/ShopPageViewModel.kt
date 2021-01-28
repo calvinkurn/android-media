@@ -9,7 +9,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -56,11 +55,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import rx.Subscriber
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class ShopPageViewModel @Inject constructor(
         private val gqlGetShopFavoriteStatusUseCase: Lazy<GQLGetShopFavoriteStatusUseCase>,
         private val userSessionInterface: UserSessionInterface,
@@ -111,7 +113,6 @@ class ShopPageViewModel @Inject constructor(
             etalaseId: String,
             isRefresh: Boolean
     ) {
-        if (shopId == 0 && shopDomain.isEmpty()) return
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
                     dispatcherProvider.io,
@@ -145,7 +146,7 @@ class ShopPageViewModel @Inject constructor(
                     }
             )
             shopP1DataAsync.await()?.let { shopPageHeaderP1Data ->
-                productListDataAsync.await()?.let{ shopProductData ->
+                productListDataAsync.await()?.let { shopProductData ->
                     productListData = shopProductData
                 }
                 shopPageP1Data.postValue(Success(ShopPageHeaderMapper.mapToShopPageP1HeaderData(
@@ -157,8 +158,8 @@ class ShopPageViewModel @Inject constructor(
                         shopPageHeaderP1Data.feedWhitelist
                 )))
             }
-        }) {
-            shopPageP1Data.postValue(Fail(it))
+        }) { exception ->
+            shopPageP1Data.postValue(Fail(exception))
         }
     }
 
@@ -209,12 +210,11 @@ class ShopPageViewModel @Inject constructor(
         launchCatchError(dispatcherProvider.io, {
             ImageHandler.loadImageWithTarget(context, shopSnippetUrl, object : CustomTarget<Bitmap>(){
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    val savedFile = ImageUtils.writeImageToTkpdPath(
-                            ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
+                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
                             resource,
-                            true
+                            Bitmap.CompressFormat.PNG
                     )
-                    if(savedFile != null) {
+                    if (savedFile!= null) {
                         shopImagePath.postValue(savedFile.absolutePath)
                     }
                 }
@@ -302,13 +302,11 @@ class ShopPageViewModel @Inject constructor(
     }
 
     fun getShopPageHeaderContentData(shopId: String, shopDomain: String, isRefresh: Boolean) {
-        val id = shopId.toIntOrNull() ?: 0
-        if (id == 0 && shopDomain.isEmpty()) return
         launchCatchError(block = {
             val shopInfoForHeaderResponse = asyncCatchError(
                     dispatcherProvider.io,
                     block = {
-                        getShopInfoHeader(id, shopDomain, isRefresh)
+                        getShopInfoHeader(shopId.toIntOrZero(), shopDomain, isRefresh)
                     },
                     onError = {
                         shopPageHeaderContentData.postValue(Fail(it))
@@ -319,7 +317,7 @@ class ShopPageViewModel @Inject constructor(
             val shopBadgeDataResponse = asyncCatchError(
                     dispatcherProvider.io,
                     block = {
-                        getShopBadgeData(id, isRefresh)
+                        getShopBadgeData(shopId.toIntOrZero(), isRefresh)
                     },
                     onError = {
                         shopPageHeaderContentData.postValue(Fail(it))
@@ -329,7 +327,7 @@ class ShopPageViewModel @Inject constructor(
 
             val shopOperationalHourStatus = asyncCatchError(
                     dispatcherProvider.io,
-                    block = { getShopOperationalHourStatus(id) },
+                    block = { getShopOperationalHourStatus(shopId.toIntOrZero()) },
                     onError = {
                         shopPageHeaderContentData.postValue(Fail(it))
                         null
@@ -369,6 +367,7 @@ class ShopPageViewModel @Inject constructor(
         }) {
             shopPageHeaderContentData.postValue(Fail(it))
         }
+
     }
 
     private suspend fun getShopBadgeData(shopId: Int, refresh: Boolean): ShopBadge {
@@ -402,14 +401,14 @@ class ShopPageViewModel @Inject constructor(
 
     fun getShopIdFromDomain(shopDomain: String) {
         launchCatchError(block = {
-            val shopInfoCoreData = withContext(dispatcherProvider.io){
-                getShopInfoCoreFromDomain(shopDomain)
+            flow{
+                emit(getShopInfoCoreFromDomain(shopDomain))
+            }.flowOn(dispatcherProvider.io).collect{
+                shopIdFromDomainData.postValue(Success(it.shopCore.shopID))
             }
-            shopIdFromDomainData.postValue(Success(shopInfoCoreData.shopCore.shopID))
         }){
             shopIdFromDomainData.postValue(Fail(it))
         }
-
     }
 
     private suspend fun getShopInfoCoreFromDomain(shopDomain: String): ShopInfo {

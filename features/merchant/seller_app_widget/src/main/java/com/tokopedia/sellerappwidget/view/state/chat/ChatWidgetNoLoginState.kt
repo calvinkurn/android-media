@@ -19,7 +19,7 @@ import com.tokopedia.sellerappwidget.view.model.CommonStateUiModel
 object ChatWidgetNoLoginState {
 
     fun setupNoLoginState(context: Context, awm: AppWidgetManager, ids: IntArray) {
-        val remoteView = AppWidgetHelper.getOrderWidgetRemoteView(context)
+        val remoteView = AppWidgetHelper.getChatWidgetRemoteView(context)
         with(remoteView) {
             ids.forEach {
                 val option = awm.getAppWidgetOptions(it)

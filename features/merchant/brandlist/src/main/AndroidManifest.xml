@@ -8,7 +8,7 @@
             android:name=".brandlist_category.presentation.activity.BrandlistActivity"
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
@@ -22,7 +22,7 @@
             android:name=".brandlist_search.presentation.activity.BrandlistSearchActivity"
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data

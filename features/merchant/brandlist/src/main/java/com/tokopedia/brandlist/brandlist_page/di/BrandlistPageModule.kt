@@ -14,7 +14,6 @@ import dagger.Provides
 import javax.inject.Named
 
 @Module(includes = [BrandlistPageViewModelModule::class])
-@BrandlistPageScope
 class BrandlistPageModule {
 
     @BrandlistPageScope

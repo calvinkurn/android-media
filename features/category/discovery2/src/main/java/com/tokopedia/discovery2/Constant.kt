@@ -44,4 +44,15 @@ object Constant {
         const val SOLD_PERCENTAGE_LOWER_LIMIT = 0
         const val PDP_VIEW_THRESHOLD = 1000
     }
+
+    object EmptyStateTexts{
+        const val TITLE = "Awas keduluan pembeli lain!"
+        const val DESCRIPTION = "Aktifkan pengingat supaya kamu nggak ketinggalan penawaran seru dari seller-seller Tokopedia!"
+        const val EMPTY_IMAGE = "ic_product_empty_state.png"
+
+        const val FILTER_TITLE = "Oops, barangnya nggak ketemu"
+        const val FILTER_DESCRIPTION = "Coba kurangi filter yang sedang aktif, atau reset filter buat lanjutkan penjelajahanmu!"
+        const val FILTER_BUTTON_TEXT = "Reset Filter"
+        const val FILTER_EMPTY_IMAGE = "filtered_product_empty_state.png"
+    }
 }

@@ -8,8 +8,8 @@ import android.provider.MediaStore;
 import androidx.annotation.Nullable;
 import androidx.loader.content.CursorLoader;
 
+import com.tokopedia.imagepicker.common.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.internal.entity.Album;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -113,7 +113,8 @@ public class AlbumMediaLoader extends CursorLoader {
         super(context, QUERY_URI, PROJECTION, selection, selectionArgs, ORDER_BY);
     }
 
-    public static CursorLoader newInstance(Context context, @Nullable Album album, int galleryType) {
+    public static CursorLoader newInstance(Context context, @Nullable Album album,
+                                           GalleryType galleryType) {
         String selection;
         String[] selectionArgs;
 

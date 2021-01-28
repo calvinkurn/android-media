@@ -22,4 +22,7 @@ public class TopAdsCommonConstant {
 
     public static final String TOPADS_GRAPHQL_TA_URL = "https://gql.tokopedia.com/graphql/ta";
 
+    public static final String KATA_KUNCI = " Kata Kunci";
+    public static final String ATUR_NAME = " Atur";
+
 }

@@ -6,7 +6,6 @@ import android.widget.RemoteViews
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.*
 import com.tokopedia.sellerappwidget.view.appwidget.ChatAppWidget
-import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.CommonStateUiModel
 import com.tokopedia.sellerappwidget.view.state.AppWidgetStateHelper
 
@@ -39,20 +38,20 @@ object ChatWidgetStateHelper : AppWidgetStateHelper() {
 
     fun updateViewCommonState(remoteViews: RemoteViews, @WidgetSize widgetSize: String) {
         when (widgetSize) {
-            WidgetSize.NORMAL -> remoteViews.setOrderUiVisibility(R.id.containerSawNormalCommonState)
-            else -> remoteViews.setOrderUiVisibility(R.id.containerSawLargeCommonState)
+            WidgetSize.NORMAL -> remoteViews.setChatUiVisibility(R.id.containerSawNormalCommonState)
+            else -> remoteViews.setChatUiVisibility(R.id.containerSawLargeCommonState)
         }
     }
 
     fun updateViewOnSuccess(remoteViews: RemoteViews) {
-        remoteViews.setOrderUiVisibility(R.id.containerSawChatSuccessState)
+        remoteViews.setChatUiVisibility(R.id.containerSawChatSuccessState)
     }
 
     fun updateViewOnLoading(remoteViews: RemoteViews) {
-        remoteViews.setOrderUiVisibility(R.id.containerSawChatListLoading)
+        remoteViews.setChatUiVisibility(R.id.containerSawChatListLoading)
     }
 
-    private fun RemoteViews.setOrderUiVisibility(viewToVisible: Int) {
+    private fun RemoteViews.setChatUiVisibility(viewToVisible: Int) {
         viewIds.forEach {
             val viewVisibility = if (it == viewToVisible) {
                 View.VISIBLE

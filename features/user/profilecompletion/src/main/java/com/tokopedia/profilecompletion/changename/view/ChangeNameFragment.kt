@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -87,7 +88,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
                         s.isEmpty() || s == "" -> activity?.let {
                             changeNameTextMessage?.run {
                                 text = getString(R.string.change_name_visible_on_another_user)
-                                setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+                                setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                                 changeNameButtonSave?.isEnabled = false
                             }
                         }
@@ -106,7 +107,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
                             activity?.let {
                                 changeNameTextMessage?.run {
                                     text = getString(R.string.change_name_visible_on_another_user)
-                                    setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+                                    setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                                 }
                             }
                         }
@@ -165,7 +166,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
             activity?.let {
                 changeNameTextMessage?.run {
                     text = message
-                    setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Red_R500))
+                    setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_R500))
                     ChangeNameTracker().onFailedChangeName(throwable.message.toString())
                 }
             }

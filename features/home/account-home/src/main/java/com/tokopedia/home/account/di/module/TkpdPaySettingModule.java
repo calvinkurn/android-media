@@ -10,7 +10,6 @@ import com.tokopedia.navigation_common.model.WalletPref;
 import dagger.Module;
 import dagger.Provides;
 
-@TkpdPaySettingScope
 @Module
 public class TkpdPaySettingModule {
 

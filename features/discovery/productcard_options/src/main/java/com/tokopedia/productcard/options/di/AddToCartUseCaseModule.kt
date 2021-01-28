@@ -7,7 +7,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@ProductCardOptionsScope
 @Module
 internal class AddToCartUseCaseModule {
 

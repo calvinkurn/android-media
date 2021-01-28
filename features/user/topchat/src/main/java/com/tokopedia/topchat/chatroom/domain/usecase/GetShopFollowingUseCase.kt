@@ -23,7 +23,7 @@ class GetShopFollowingUseCase @Inject constructor(
     override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
 
     fun getStatus(
-            shopId: Int,
+            shopId: Long,
             onError: (Throwable) -> Unit,
             onSuccessGetShopFollowingStatus: (Boolean) -> Unit
     ) {
@@ -54,7 +54,7 @@ class GetShopFollowingUseCase @Inject constructor(
         }
     }
 
-    private fun generateParam(shopId: Int): Map<String, Any> {
+    private fun generateParam(shopId: Long): Map<String, Any> {
         val shopIds = listOf(shopId)
         val inputFields = listOf(DEFAULT_FAVORITE)
         return mapOf<String, Any>(

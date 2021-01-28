@@ -10,9 +10,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.*
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
@@ -171,18 +173,14 @@ class AccountDocumentFragment : BaseDaggerFragment() {
             getString(R.string.sbank_pic_of_family_card)
         else getString(R.string.sbank_attach_image_company)
         context?.let {
-            val builder = ImagePickerBuilder(pickerTitle,
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                    GalleryType.IMAGE_ONLY, MAX_FILE_SIZE,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
-                    ImagePickerEditorBuilder(
-                            intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
-                                    ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                            false, null),
-                    ImagePickerMultipleSelectionBuilder(
-                            null, null, -1, 1
-                    ))
-            val intent = ImagePickerActivity.getIntent(it, builder)
+            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
+                    .withSimpleEditor()
+                    .withSimpleMultipleSelection(maxPick = 1)
+                    .apply {
+                        maxFileSizeInKB = MAX_FILE_SIZE
+                    }
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -191,7 +189,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    val selectedImage = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
                     setSelectedFile(selectedImage[0])
                 }
             }
@@ -208,7 +206,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
     }
 
     private fun startObservingViewModels() {
-        uploadDocumentViewModel.uploadDocumentStatus.observe(this, Observer {
+        uploadDocumentViewModel.uploadDocumentStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is DocumentUploadStarted -> progressBar.visible()
                 is DocumentUploadEnd -> progressBar.gone()

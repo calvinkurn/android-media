@@ -5,7 +5,9 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
@@ -87,11 +89,11 @@ class FlightSearchActivityTest {
 
     @Test
     fun validateFlightSearchPageP2AndBelowTracking() {
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         quickFilter()
         changeSearch()
 
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_ALL),
                 hasAllSuccess())
     }
@@ -132,15 +134,19 @@ class FlightSearchActivityTest {
     @Test
     fun validateFlightSearchPageP1Tracking() {
         Thread.sleep(3000)
+
+        try {
+            onView(withId(R.id.text_next)).check(matches(isDisplayed())).perform(click())
+        } catch (e: NoMatchingViewException) { }
+
         assert(getJourneyItemCount() > 1)
 
-        Thread.sleep(1000)
         if (getJourneyItemCount() > 0) {
             onView(withId(R.id.recycler_view)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<FlightSearchViewHolder>(0, click()))
         }
 
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_P1),
                 hasAllSuccess())
     }

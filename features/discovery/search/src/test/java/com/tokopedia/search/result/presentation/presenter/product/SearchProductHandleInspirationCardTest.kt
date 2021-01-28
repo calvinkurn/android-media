@@ -96,6 +96,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         // 13 -> product
         // 14 -> product
         // 15 -> product
+
         visitableList.size shouldBe 15
 
         visitableList.forEachIndexed { index, visitable ->
@@ -210,23 +211,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
     private fun `Then verify inspiration card is not shown on first page`() {
         val visitableList = visitableListSlot.captured
 
-        // 0 -> product
-        // 1 -> product
-        // 2 -> product
-        // 3 -> product
-        // 4 -> product
-        // 5 -> product
-        // 6 -> product
-        // 7 -> product
-        // 8 -> product
-
-        visitableList.size shouldBe 8
-
-        visitableList.forEachIndexed { index, visitable ->
-            visitable.shouldBeInstanceOf<ProductItemViewModel>(
-                    "visitable list at index $index should be ProductItemViewModel"
-            )
-        }
+        visitableList.any { it is InspirationCardViewModel } shouldBe false
     }
 
     private fun `Then verify visitable list has inspiration card after 9th product item`(searchProductModel: SearchProductModel) {

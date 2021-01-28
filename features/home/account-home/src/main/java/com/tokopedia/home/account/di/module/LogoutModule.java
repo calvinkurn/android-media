@@ -22,7 +22,6 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
-@AccountLogoutScope
 @Module
 public class LogoutModule {
 

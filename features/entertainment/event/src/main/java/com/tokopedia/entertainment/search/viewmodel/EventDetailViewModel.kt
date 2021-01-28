@@ -1,16 +1,11 @@
 package com.tokopedia.entertainment.search.viewmodel
 
-import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.search.adapter.DetailEventItem
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
 import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
 import com.tokopedia.entertainment.search.data.CategoryModel
 import com.tokopedia.entertainment.search.data.EventDetailResponse
-import com.tokopedia.entertainment.search.data.mapper.DetailMapper
 import com.tokopedia.entertainment.search.data.mapper.SearchMapper.mapInitCategory
 import com.tokopedia.entertainment.search.data.mapper.SearchMapper.mapSearchtoGrid
 import com.tokopedia.entertainment.search.data.mapper.SearchMapper.mappingForbiddenID
@@ -20,9 +15,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -39,7 +32,6 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
     }
 
     val hashSet = HashSet<String>()
-    lateinit var resources: Resources
     var cityID = ""
     var category = ""
     var initCategory = false

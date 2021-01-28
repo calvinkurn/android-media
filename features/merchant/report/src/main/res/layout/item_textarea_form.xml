@@ -17,6 +17,8 @@
         android:id="@+id/edit_text_report"
         style="@style/EditText"
         android:layout_width="match_parent"
+        android:textColor="@color/Unify_N700_96"
+        android:textColorHint="@color/Unify_N700_96"
         android:inputType="text"
         android:maxLength="@integer/product_max_character_report"
         android:focusable="false"/>

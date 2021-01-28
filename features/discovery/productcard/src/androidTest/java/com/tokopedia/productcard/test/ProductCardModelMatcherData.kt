@@ -64,6 +64,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testLabelVariantColor())
     it.add(testLabelVariantSize())
     it.add(testLabelBestSeller())
+    it.add(testProductCardWithNameAndStockBarAndStockBarLabelColor())
 }
 
 private fun testOneLineProductName(): ProductCardModelMatcher {
@@ -1758,6 +1759,30 @@ private fun testLabelBestSeller(): ProductCardModelMatcher {
         it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testProductCardWithNameAndStockBarAndStockBarLabelColor(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productName = "Product Card With Stock label color",
+            productImageUrl = productImageUrl,
+            pdpViewCount = "17.7k View",
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            stockBarLabel = "Segera Habis",
+            stockBarPercentage = 80,
+            stockBarLabelColor = "#ef144a",
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.imageViewPdpView]= isDisplayed()
+        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
+        it[R.id.progressBarStock] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

@@ -19,6 +19,7 @@ class RechargeHomepageAdapter(val context: Context,
             val emptyModel = EmptyModel()
             emptyModel.content = context.getString(R.string.digital_home_empty_list_label)
             visitables.add(emptyModel)
+            notifyDataSetChanged()
         } else {
             val result = DiffUtil.calculateDiff(RechargeHomepageDiffUtil(this.visitables, data))
             visitables.clear()

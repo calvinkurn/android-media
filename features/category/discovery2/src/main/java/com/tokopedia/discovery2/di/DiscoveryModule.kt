@@ -25,6 +25,8 @@ import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRe
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRestRepository
+import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterGQLRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
@@ -140,6 +142,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideEmptyStateRepository() : EmptyStateRepository {
         return  repoProvider.provideEmptyStateRepository()
+    }
+
+    @Provides
+    fun provideQuickFilterGQLRepository(): IQuickFilterGqlRepository {
+        return QuickFilterGQLRepository()
     }
 
     @DiscoveryScope

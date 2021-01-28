@@ -9,7 +9,7 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
  */
 open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
 
-    var blastId = 0
+    var blastId: Long = 0
     var fraudStatus = 0
 
     constructor(
@@ -37,7 +37,7 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
             messageId: String, fromUid: String, from: String, fromRole: String,
             attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
             isRead: Boolean, isDummy: Boolean, isSender: Boolean, message: String,
-            source: String, blastId: Int = 0, fraudStatus: Int = 0
+            source: String, blastId: Long = 0, fraudStatus: Int = 0
     ) : super(
             messageId, fromUid, from, fromRole,
             attachmentId, attachmentType, replyTime, startTime,

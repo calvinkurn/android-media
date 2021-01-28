@@ -7,14 +7,14 @@ import android.os.Parcelable
 import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.promocheckout.common.R
 import kotlinx.android.synthetic.main.layout_checkout_ticker.view.*
 
 class TickerCheckoutView @JvmOverloads constructor(
         context: Context, val attrs: AttributeSet? = null, val defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr) {
 
     var state: State = State.EMPTY
         set(value) {

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.activity.EXTRA_BUTTON
 import com.tokopedia.topads.common.activity.EXTRA_SUBTITLE
@@ -38,6 +39,7 @@ class OnSuccessFragment : TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ic_ilustration.setImageDrawable(view?.context?.getResDrawable(R.drawable.ill_success))
         btn_go_to_dashboard.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
                 if (isFromPdpSellerMigration(activity?.intent?.extras)) {

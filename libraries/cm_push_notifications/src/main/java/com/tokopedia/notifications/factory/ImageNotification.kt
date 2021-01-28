@@ -53,33 +53,4 @@ class ImageNotification internal constructor(context: Context, baseNotificationM
             builder.setStyle(bigPictureStyle)
         }
     }
-
-    private fun getRatio(bitmap: Bitmap): Pair<Int, Int> {
-        var height = bitmap.height
-        var width = bitmap.width
-        val displayMetrics = Resources.getSystem().displayMetrics
-        val deviceWidth = displayMetrics.widthPixels
-        val notificationHeightWRTRatio = deviceWidth / 2
-        val gcd = findGCD(height, width)
-        width = (width / gcd) / (height / gcd) * notificationHeightWRTRatio
-        height = notificationHeightWRTRatio
-
-        return Pair(width, height)
-    }
-
-    fun findGCD(x: Int, y: Int): Int {
-        var r = 0
-        var a: Int
-        var b: Int
-        a = max(x, y) // a is greater number
-        b = min(x, y) // b is smaller number
-        r = b
-        while (a % b != 0) {
-            r = a % b
-            a = b
-            b = r
-        }
-        return r
-    }
-
 }

@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
@@ -18,24 +20,24 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.MaintenancePage;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
@@ -52,7 +54,6 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
-import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerapp.utils.constants.Constants;
 import com.tokopedia.sellerhome.SellerHomeRouter;
@@ -77,7 +78,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.hansel.hanselsdk.Hansel;
-import okhttp3.Interceptor;
 import okhttp3.Response;
 import timber.log.Timber;
 
@@ -87,8 +87,9 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  * Created by normansyahputa on 12/15/16.
  */
 
-public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, TopAdsModuleRouter,
+public abstract class SellerRouterApplication extends MainApplication implements
+        TkpdCoreRouter,
+        TopAdsModuleRouter,
         AbstractionRouter,
         ApplinkRouter,
         NetworkRouter,
@@ -233,10 +234,16 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void onLogout(AppComponent appComponent) {
+    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public void onForceLogout(Activity activity) {
         forceLogout();
-        new CacheApiClearAllUseCase(this).executeSync();
-        setTetraUserId("");
+        Intent intent = new Intent(activity, SplashScreenActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void forceLogout() {
@@ -247,38 +254,13 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean isSupportedDelegateDeepLink(String appLinks) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(appLinks);
-    }
-
-    @NonNull
-    @Override
-    public Intent getSplashScreenIntent(@NonNull Context context) {
-        return new Intent(context, SplashScreenActivity.class);
-    }
-
-    @Override
-    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public void onForceLogout(Activity activity) {
-        forceLogout();
-        Intent intent = getSplashScreenIntent(this);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    @Override
     public void showTimezoneErrorSnackbar() {
         ServerErrorHandler.showTimezoneErrorSnackbar();
     }
 
     @Override
     public void showMaintenancePage() {
-        ServerErrorHandler.showMaintenancePage();
+        CoreNetworkApplication.getAppContext().startActivity(MaintenancePage.createIntentFromNetwork(getAppContext()));
     }
 
     @Override
@@ -415,6 +397,15 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
+        if(TextUtils.isEmpty(errorMessage)){
+            SessionAnalytics.trackRefreshTokenSuccess();
+        }else {
+            SessionAnalytics.trackRefreshTokenFailed(errorMessage);
+        }
+    }
+
+    @Override
     public void onNewIntent(Context context, Intent intent) {
         //no op
     }
@@ -454,5 +445,33 @@ public abstract class SellerRouterApplication extends MainApplication
     public void setOnboardingStatus(boolean status) {
         SellerOnboardingPreference preference = new SellerOnboardingPreference(this);
         preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
+    }
+    private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
+    private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
+
+    @Override
+    public Class<?> getInboxMessageActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = getActivityClass(INBOX_MESSAGE_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    @Override
+    public Class<?> getInboxResCenterActivityClassReal() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = getActivityClass(INBOX_RESCENTER_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
+        return Class.forName(activityFullPath);
     }
 }

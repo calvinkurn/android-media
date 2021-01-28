@@ -11,7 +11,6 @@ import dagger.Provides
  * ade.hadian@tokopedia.com
  */
 
-@ChooseAccountScope
 @Module
 class ChooseAccountUseCaseModule{
 

@@ -11,7 +11,6 @@ import javax.inject.Named
  * Created by zulfikarrahman on 10/24/17.
  */
 
-@FlightAirportScope
 @Module
 class FlightAirportModule {
 

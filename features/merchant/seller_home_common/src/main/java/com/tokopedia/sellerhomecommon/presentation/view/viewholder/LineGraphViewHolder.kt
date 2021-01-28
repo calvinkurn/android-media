@@ -45,10 +45,11 @@ class LineGraphViewHolder(
 
     private var showAnimation: ValueAnimator? = null
     private var hideAnimation: ValueAnimator? = null
+    private var showEmptyState: Boolean = false
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
-        showAnimation?.cancel()
-        hideAnimation?.cancel()
+        showAnimation?.end()
+        hideAnimation?.end()
         observeState(element)
 
         val data = element.data
@@ -140,18 +141,24 @@ class LineGraphViewHolder(
         }
 
         if (isShown) {
+            showEmptyState = showEmpty(element)
             showLineGraph(element)
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendLineGraphImpressionEvent(element)
             }
-            if (element.isShowEmpty && element.data?.list?.all { it.yVal == 0f } == true &&
-                    element.emptyState.title.isNotBlank() && element.emptyState.description.isNotBlank() &&
-                    element.emptyState.ctaText.isNotBlank() && element.emptyState.appLink.isNotBlank()) {
+            if (showEmptyState) {
+                showEmptyState = true
                 setupEmptyState(element.emptyState)
             } else {
                 animateHideEmptyState()
             }
         }
+    }
+
+    private fun showEmpty(element: LineGraphWidgetUiModel): Boolean {
+        return element.isShowEmpty && element.data?.list?.all { it.yVal == 0f } == true &&
+                element.emptyState.title.isNotBlank() && element.emptyState.description.isNotBlank() &&
+                element.emptyState.ctaText.isNotBlank() && element.emptyState.appLink.isNotBlank()
     }
 
     private fun setupEmptyState(emptyState: WidgetEmptyStateUiModel) {
@@ -201,7 +208,7 @@ class LineGraphViewHolder(
         return LineChartConfig.create {
             xAnimationDuration { 200 }
             yAnimationDuration { 200 }
-            tooltipEnabled { true }
+            tooltipEnabled { !showEmptyState }
             setChartTooltip(getLineGraphTooltip())
 
             xAxis {
@@ -248,13 +255,13 @@ class LineGraphViewHolder(
     }
 
     private fun animateShowEmptyState() {
-        if (hideAnimation?.isRunning == true) hideAnimation?.cancel()
+        if (hideAnimation?.isRunning == true) hideAnimation?.end()
         itemView.multiLineEmptyState.show()
         showAnimation = itemView.multiLineEmptyState.animatePop(0f, 1f)
     }
 
     private fun animateHideEmptyState() {
-        if (showAnimation?.isRunning == true) showAnimation?.cancel()
+        if (showAnimation?.isRunning == true) showAnimation?.end()
         hideAnimation = itemView.multiLineEmptyState.animatePop(1f, 0f)
         hideAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}

@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/layout_lvl0"
         app:cardElevation="@dimen/spacing_lvl2"
+        app:cardBackgroundColor="@color/Unify_N0"
         android:layout_alignParentBottom="true">
 
         <com.tokopedia.unifycomponents.UnifyButton

@@ -27,6 +27,10 @@ query hachikoCatalogDetailQuery($slug: String, $catalog_id: Int , $apiVersion :S
     how_to_use
     tnc
     cta
+    minimumUsageLabel
+    minimumUsage
     upper_text_desc
+    activePeriod
+    activePeriodDate
   }
 }

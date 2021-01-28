@@ -63,6 +63,8 @@ class VideoViewComponent(
         ivThumbnail.hide()
     }
 
+    fun getPlayerView(): PlayerView = pvVideo
+
     private fun configureVideoLayout(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
 
         fun configureVideo() {

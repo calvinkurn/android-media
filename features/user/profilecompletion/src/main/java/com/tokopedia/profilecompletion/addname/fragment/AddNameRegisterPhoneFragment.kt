@@ -216,7 +216,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
             span = URLSpanNoUnderline(span.url)
             s.setSpan(span, start, end, 0)
             context?.run {
-                s.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Green_G500)), start, end, 0)
+                s.setSpan(ForegroundColorSpan(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), start, end, 0)
             }
         }
         textView.text = s

@@ -982,7 +982,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         dialog.setTitle(getString(R.string.feed_delete_post))
         dialog.setDesc(getString(R.string.feed_after_delete_cant))
         dialog.setBtnOk(getString(R.string.button_delete))
-        dialog.setBtnCancel(getString(R.string.cancel))
+        dialog.setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
         dialog.setOnOkClickListener {
             feedViewModel.doDeletePost(id, rowNumber)
             dialog.dismiss()

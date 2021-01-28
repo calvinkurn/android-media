@@ -1,7 +1,7 @@
 package com.tokopedia.homenav.mainnav.data.mapper
 
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
-import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
+import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 
@@ -10,9 +10,9 @@ import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
  */
 
 fun List<DynamicHomeIconEntity.Category>.toVisitable(): List<HomeNavVisitable> = map {
-    HomeNavMenuViewModel(sectionId = MainNavConst.Section.BU_ICON, id = it.id, srcImage = it.imageUrl, itemTitle = it.name, applink = it.applink, submenu = it.categoryRows.toVisitables())
+    HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON, id = it.id, srcImage = it.imageUrl, itemTitle = it.name, applink = it.applink, submenus = it.categoryRows.toVisitables())
 }
 
-fun List<DynamicHomeIconEntity.CategoryRow>.toVisitables(): List<HomeNavMenuViewModel> = map {
-    HomeNavMenuViewModel(sectionId = MainNavConst.Section.BU_ICON, id = it.id, srcImage = it.imageUrl, itemTitle = it.name, applink =  it.applink)
+fun List<DynamicHomeIconEntity.CategoryRow>.toVisitables(): List<HomeNavMenuDataModel> = map {
+    HomeNavMenuDataModel(sectionId = MainNavConst.Section.BU_ICON, id = it.id, srcImage = it.imageUrl, itemTitle = it.name, applink =  it.applink)
 }

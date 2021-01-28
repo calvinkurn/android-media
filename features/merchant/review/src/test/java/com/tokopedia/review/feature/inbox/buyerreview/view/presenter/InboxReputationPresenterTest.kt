@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.presenter
 
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationDomain
+import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -66,7 +67,7 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
         }
 
         inboxReputationPresenter.setHasNextPage(true)
-        inboxReputationPresenter.getNextPage(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyInt())
+        inboxReputationPresenter.getNextPage(10, 10, anyString(), anyString(), anyString(), anyInt())
 
         testSubscriber.assertNoErrors()
         testSubscriber.assertValue(expectedResponse)
@@ -88,11 +89,31 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
         }
 
         inboxReputationPresenter.setHasNextPage(true)
-        inboxReputationPresenter.getNextPage(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyInt())
+        inboxReputationPresenter.getNextPage(10, 10, anyString(), anyString(), anyString(), anyInt())
 
         testSubscriber.assertError(expectedResponse)
         testSubscriber.assertCompleted()
         verifyGetInboxReputationUseCaseExecuted()
+    }
+
+    @Test
+    fun `when getNextPage has different lastItemPosition & visibleItem should not execute expected usecase`() {
+        inboxReputationPresenter.setHasNextPage(true)
+        inboxReputationPresenter.getNextPage(10, 1, anyString(), anyString(), anyString(), anyInt())
+
+        verify {
+            getInboxReputationUseCase wasNot Called
+        }
+    }
+
+    @Test
+    fun `when getNextPage has no next page should not execute expected usecase`() {
+        inboxReputationPresenter.setHasNextPage(false)
+        inboxReputationPresenter.getNextPage(10, 10, anyString(), anyString(), anyString(), anyInt())
+
+        verify {
+            getInboxReputationUseCase wasNot Called
+        }
     }
 
     @Test
@@ -138,23 +159,35 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
 
     @Test
     fun `when refreshPage success should execute expected usecase and perform expected view actions`() {
-        val expectedResponse = mockk<InboxReputationDomain>(relaxed = true)
-        val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+        val params = listOf(
+                Triple("query", "time", "status"),
+                Triple("", "time", "status"),
+                Triple("query", "", "status"),
+                Triple("query", "time", ""),
+                Triple("query", "", ""),
+                Triple("", "time", ""),
+                Triple("", "", "status")
+        )
 
-        every {
-            getInboxReputationUseCase.execute(any(), any())
-        } answers {
-            testSubscriber.onStart()
-            testSubscriber.onCompleted()
-            testSubscriber.onNext(expectedResponse)
+        params.forEach {
+            val expectedResponse = mockk<InboxReputationDomain>(relaxed = true)
+            val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+
+            every {
+                getInboxReputationUseCase.execute(any(), any())
+            } answers {
+                testSubscriber.onStart()
+                testSubscriber.onCompleted()
+                testSubscriber.onNext(expectedResponse)
+            }
+
+            inboxReputationPresenter.refreshPage(it.first, it.second, it.third, anyInt())
+
+            testSubscriber.assertNoErrors()
+            testSubscriber.assertValue(expectedResponse)
+            testSubscriber.assertCompleted()
+            verifyGetInboxReputationUseCaseExecuted()
         }
-
-        inboxReputationPresenter.refreshPage(anyString(), anyString(), anyString(), anyInt())
-
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertValue(expectedResponse)
-        testSubscriber.assertCompleted()
-        verifyGetInboxReputationUseCaseExecuted()
     }
 
     @Test
@@ -170,7 +203,7 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
             testSubscriber.onError(expectedResponse)
         }
 
-        inboxReputationPresenter.refreshPage(anyString(), anyString(), anyString(), anyInt())
+        inboxReputationPresenter.refreshPage("", "", "", anyInt())
 
         testSubscriber.assertError(expectedResponse)
         testSubscriber.assertCompleted()

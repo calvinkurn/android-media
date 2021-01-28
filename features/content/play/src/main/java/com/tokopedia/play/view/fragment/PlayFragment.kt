@@ -47,6 +47,7 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.uimodel.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.*
@@ -191,6 +192,15 @@ class PlayFragment @Inject constructor(
                 .any { it.onInterceptOrientationChangedEvent(newOrientation) }
         val videoOrientation = playViewModel.videoOrientation
         return isIntercepted || !videoOrientation.isHorizontal
+    }
+
+    override fun onEnterPiPMode(pipMode: PiPMode) {
+        if (playViewModel.isPiPAllowed) {
+            childFragmentManager.fragments
+                    .forEach {
+                        if (it is PlayFragmentContract) it.onEnterPiPMode(pipMode)
+                    }
+        }
     }
 
     /**
@@ -348,6 +358,7 @@ class PlayFragment @Inject constructor(
         observeVideoMeta()
         observeBottomInsetsState()
         observePinned()
+        observePiPEvent()
     }
 
     //region observe
@@ -435,6 +446,15 @@ class PlayFragment @Inject constructor(
             if (it is PinnedProductUiModel) fragmentBottomSheetView.safeInit()
         })
     }
+
+    private fun observePiPEvent() {
+        playViewModel.observableEventPiP.observe(viewLifecycleOwner, EventObserver {
+            if (it != PiPMode.StopPip) {
+                onEnterPiPMode(it)
+            }
+        })
+    }
+    //endregion
 
     private fun showEventDialog(title: String, message: String, buttonTitle: String, buttonUrl: String = "") {
         activity?.let {

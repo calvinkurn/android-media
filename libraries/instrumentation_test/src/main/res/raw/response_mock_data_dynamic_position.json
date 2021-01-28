@@ -1,0 +1,7 @@
+[{"data":{"dynamicPosition":[
+    {"id":1,"name":"ticker","component":"ticker","param":"","isOptional":false},
+    {"id":2,"name":"icon","component":"dynamic_icon","param":"page=atf-1&withBackground=true","isOptional":false},
+    {"id":4,"name":"channel carousel","component":"channel","param":"channel_ids=65312","isOptional":false},
+    {"id":5,"name":"icon 2","component":"dynamic_icon","param":"page=atf-2","isOptional":false},
+    {"id":6,"name":"lego 4","component":"channel","param":"channel_ids=45397","isOptional":true}
+]}}]

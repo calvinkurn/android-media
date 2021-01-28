@@ -8,7 +8,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -19,6 +18,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.product.share.ekstensions.getShareContent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
 class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
@@ -38,7 +38,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     val sticker = ProductImageSticker(activity, resource, data)
                     try {
                         val bitmap = sticker.buildBitmapImage()
-                        val file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, bitmap, false)
+                        val file = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG)
                         bitmap.recycle()
                         generateBranchLink(file, data)
                     } catch (t: Throwable){

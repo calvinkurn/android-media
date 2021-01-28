@@ -4,8 +4,8 @@
             <corners android:radius="15dp" />
             <gradient
                 android:angle="90"
-                android:endColor="@color/light_grey"
-                android:startColor="@color/grey_100" />
+                android:endColor="@color/Unify_N0"
+                android:startColor="@color/Unify_N50" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
@@ -14,8 +14,8 @@
                 <corners android:radius="15dp" />
                 <gradient
                     android:angle="90"
-                    android:endColor="@color/red_50"
-                    android:startColor="@color/red_50" />
+                    android:endColor="@color/Unify_R100"
+                    android:startColor="@color/Unify_R100" />
             </shape>
         </clip>
     </item>

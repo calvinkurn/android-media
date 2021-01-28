@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.loginregister.common.DispatcherProvider;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
@@ -24,10 +25,14 @@ import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -116,5 +121,23 @@ public class LoginRegisterModule {
     @Provides
     IrisSession provideIrisSession(@ApplicationContext Context context) {
         return new IrisSession(context);
+    }
+
+    @LoginRegisterScope
+    @Provides
+    DispatcherProvider provideDispatcherProvider() {
+        return new DispatcherProvider() {
+            @NotNull
+            @Override
+            public CoroutineDispatcher io() {
+                return Dispatchers.getIO();
+            }
+
+            @NotNull
+            @Override
+            public CoroutineDispatcher ui() {
+                return Dispatchers.getMain();
+            }
+        };
     }
 }
