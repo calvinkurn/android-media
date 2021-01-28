@@ -120,6 +120,7 @@
 /features/recharge/smart_bills                          @tokopedia/android-minionmark-dev
 /features/recharge/common_electronic_money              @tokopedia/android-minionmark-dev
 /features/recharge/digital_brizzi                       @tokopedia/android-minionmark-dev
+/features/recharge/recharge_component                   @tokopedia/android-minionmark-dev
 
 /features/entertainment/event                 			@tokopedia/android-minionmark-dev
 /features/entertainment/digital_deals         			@tokopedia/android-minionmark-dev
