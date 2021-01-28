@@ -292,6 +292,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         navAbTestCondition({ initNavToolbar() }, { initToolbar() })
         initStickyLogin(view)
         renderInitialAffiliate()
+        RouteManager.route(context, ApplinkConst.PAYLATER)
     }
 
     override fun onSwipeRefresh() {

@@ -10,6 +10,6 @@ object ApplinkConstInternalFintech {
     const val HOST_FINTECH = "fintech"
     val INTERNAL_FINTECH = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_FINTECH}"
     @JvmField
-    val PAYLATER = "$INTERNAL_FINTECH/paylater"
+    val PAYLATER = "$INTERNAL_FINTECH/pay_later"
 
 }
