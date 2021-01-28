@@ -46,6 +46,8 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     private var sellerFeatureCarousel: SellerFeatureCarousel? = null
     private var product: ProductUiModel? = null
     private var isPowerMerchantOrOfficialStore: Boolean = false
+    
+    private val access by lazy { arguments?.getParcelable<ProductManageAccess>(EXTRA_FEATURE_ACCESS) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupChildView(inflater, container)
@@ -82,16 +84,10 @@ class ProductManageBottomSheet : BottomSheetUnify() {
 
         product?.let { product ->
             val menu = createProductManageMenu(product, isPowerMerchantOrOfficialStore)
-
+            
             if (!GlobalConfig.isSellerApp()) {
-                sellerFeatureCarousel?.setItems(listOf(
-                        SellerFeatureUiModel.MultiEditFeatureWithDataUiModel(product),
-                        SellerFeatureUiModel.TopAdsFeatureWithDataUiModel(product),
-                        SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(product),
-                        SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel(product),
-                        SellerFeatureUiModel.StockReminderFeatureWithDataUiModel(product),
-                        SellerFeatureUiModel.BroadcastChatProductManageUiModel(product)
-                ))
+                val sellerFeatureList = createSellerFeatureList(product)
+                sellerFeatureCarousel?.setItems(sellerFeatureList)
             }
 
             menuAdapter?.clearAllElements()
@@ -121,43 +117,47 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     ): List<Visitable<*>> {
         val menuList = mutableListOf<Visitable<*>>()
 
-        arguments?.getParcelable<ProductManageAccess>(EXTRA_FEATURE_ACCESS)?.let { access ->
+        access?.run {
             menuList.apply {
                 val isFeatured = product.isFeatured == true
 
                 add(Preview(product))
 
-                if(access.duplicateProduct) {
+                if(duplicateProduct) {
                     add(Duplicate(product))
                 }
 
-                if (GlobalConfig.isSellerApp() && access.setStockReminder) {
+                if(GlobalConfig.isSellerApp() && setStockReminder) {
                     add(StockReminder(product))
                 }
 
-                if(access.deleteProduct) {
+                if(deleteProduct) {
                     add(Delete(product))
                 }
 
-                if (GlobalConfig.isSellerApp()) {
+                if(GlobalConfig.isSellerApp()) {
                     add(ProductItemDivider)
 
-                    if(access.setTopAds) {
+                    if(setTopAds) {
                         when {
                             product.hasTopAds() -> add(SeeTopAds(product))
                             else -> add(SetTopAds(product))
                         }
                     }
 
-                    add(CreateBroadcastChat(product))
+                    if(broadcastChat) {
+                        add(CreateBroadcastChat(product))
+                    }
 
-                    add(SetCashBack(product))
+                    if(setCashBack) {
+                        add(SetCashBack(product))
+                    }
 
-                    if(isFeatured && isPowerMerchantOrOfficialStore && access.setFeatured) {
+                    if(isFeatured && isPowerMerchantOrOfficialStore && setFeatured) {
                         add(RemoveFeaturedProduct(product))
                     }
 
-                    if(!isFeatured && product.isActive() && access.setFeatured) {
+                    if(!isFeatured && product.isActive() && setFeatured) {
                         add(SetFeaturedProduct(product))
                     }
                 }
@@ -165,6 +165,40 @@ class ProductManageBottomSheet : BottomSheetUnify() {
         }
 
         return menuList
+    }
+    
+    private fun createSellerFeatureList(product: ProductUiModel): List<SellerFeatureUiModel> {
+        val featureList = mutableListOf<SellerFeatureUiModel>()
+
+        access?.run {
+            featureList.apply {
+                if(multiSelect) {
+                    add(SellerFeatureUiModel.MultiEditFeatureWithDataUiModel(product))
+                }
+
+                if(setTopAds) {
+                    add(SellerFeatureUiModel.TopAdsFeatureWithDataUiModel(product))
+                }
+
+                if(setCashBack) {
+                    add(SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(product))
+                }
+
+                if(setFeatured) {
+                    add(SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel(product))
+                }
+
+                if(setStockReminder) {
+                    add(SellerFeatureUiModel.StockReminderFeatureWithDataUiModel(product))
+                }
+
+                if(broadcastChat) {
+                   add( SellerFeatureUiModel.BroadcastChatProductManageUiModel(product))
+                }
+            }
+        }
+
+        return featureList
     }
 
     fun init(
