@@ -17,7 +17,9 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(thankYouProductCardModel: ThankYouProductCardModel,
              listener: ProductCardViewListener?) {
-        thankYouProductCardModel.productCardModel?.let { productCardModel ->
+        this.thankYouProductCardModel = thankYouProductCardModel
+        thankYouProductCardModel.productCardModel.let { productCardModel ->
+            itemView.tag = thankYouProductCardModel
             productCardView.run {
                 applyCarousel()
                 setProductModel(productCardModel)
@@ -50,53 +52,3 @@ class ProductCardViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val LAYOUT_ID = R.layout.thank_item_recommendation
     }
 }
-
-
-/*
-
-    private fun getString(@StringRes stringRes: Int): String {
-        return itemView.context.getString(stringRes)
-    }
-
-    fun clearImage() {
-       */
-/* itemView.productCardView.setImageProductVisible(false)*//*
-
-    }
-*/
-
-
-/*this.marketPlaceRecommendationModel = marketPlaceRecommendationModel
-itemView.tag = marketPlaceRecommendationModel
-itemView.productCardView.apply {
-    val recommendationItem = marketPlaceRecommendationModel.recommendationItem
-    setProductModel(marketPlaceRecommendationModel.productCardModel, blankSpaceConfig)
-    setImageProductViewHintListener(recommendationItem, object : ViewHintListener {
-        override fun onViewHint() {
-            listener?.onProductImpression(marketPlaceRecommendationModel.recommendationItem, adapterPosition)
-        }
-    })
-    setAddToCartOnClickListener { listener?.onProductAddToCartClick(recommendationItem, adapterPosition) }
-    setButtonWishlistOnClickListener {
-        listener?.onWishlistClick(recommendationItem, recommendationItem.isWishlist) { success, throwable ->
-            val activity = (context as Activity)
-            if (!activity.isFinishing) {
-                if (success) {
-                    recommendationItem.isWishlist = !recommendationItem.isWishlist
-                    setButtonWishlistImage(recommendationItem.isWishlist)
-                    if (recommendationItem.isWishlist) {
-                        listener.onWishListedSuccessfully(getString(R.string.msg_success_add_wishlist))
-                    } else {
-                        listener.onRemoveFromWishList(getString(R.string.msg_success_remove_wishlist))
-                    }
-                } else {
-                    listener.onShowError(throwable)
-                }
-            }
-
-        }
-    }
-    setOnClickListener { listener?.onProductClick(marketPlaceRecommendationModel.recommendationItem, position = *intArrayOf(adapterPosition)) }
-    this.setAddToCartVisible(false)
-}*/
-
