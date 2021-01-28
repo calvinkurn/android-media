@@ -25,7 +25,6 @@ import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilt
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
-import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
@@ -414,29 +413,11 @@ class ProductManageViewModel @Inject constructor(
             var result: Result<EditStockResult>? = null
 
             status?.let {
-                val response = editProductStatus(productId, it)
-                val productUpdateV3Data = response.productUpdateV3Data
-                val errorMessage = productUpdateV3Data.header.errorMessage
-
-                result = when {
-                    productUpdateV3Data.isSuccess -> {
-                        Success(EditStockResult(productName, productId, stock, status))
-                    }
-                    errorMessage.isNotEmpty() -> {
-                        val error = Throwable(message = errorMessage.last())
-                        Fail(EditStockResult(productName, productId, stock, status, error))
-                    }
-                    else -> {
-                        val message = com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
-                        Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(message)))
-                    }
-                }
+                result = editProductStatus(productId, productName, stock, it)
             }
 
             stock?.let {
-                val response = editProductStock(productId, it)
-                val productStatus = response.getProductStatus() ?: status
-                result = Success(EditStockResult(productName, productId, stock, productStatus))
+                result = editProductStock(productId, productName, it, status)
             }
 
             _editStockResult.postValue(result)
@@ -654,19 +635,48 @@ class ProductManageViewModel @Inject constructor(
         _showStockTicker.value = false
     }
 
-    private suspend fun editProductStatus(productId: String, status: ProductStatus): ProductUpdateV3Response {
+    private suspend fun editProductStatus(
+        productId: String,
+        productName: String,
+        stock: Int?,
+        status: ProductStatus
+    ): Result<EditStockResult> {
         return withContext(dispatchers.io) {
             editStatusUseCase.setParams(userSessionInterface.shopId, productId, status)
-            editStatusUseCase.executeOnBackground()
+            val response = editStatusUseCase.executeOnBackground()
+
+            val productUpdateV3Data = response.productUpdateV3Data
+            val errorMessage = productUpdateV3Data.header.errorMessage
+
+            when {
+                productUpdateV3Data.isSuccess -> {
+                    Success(EditStockResult(productName, productId, stock, status))
+                }
+                errorMessage.isNotEmpty() -> {
+                    val error = Throwable(message = errorMessage.last())
+                    Fail(EditStockResult(productName, productId, stock, status, error))
+                }
+                else -> {
+                    val message = com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
+                    Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(message)))
+                }
+            }
         }
     }
 
-    private suspend fun editProductStock(productId: String, stock: Int): ProductStockWarehouse {
+    private suspend fun editProductStock(
+        productId: String,
+        productName: String,
+        stock: Int,
+        status: ProductStatus?
+    ): Result<EditStockResult> {
         return withContext(dispatchers.io) {
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
                 userSessionInterface.shopId, productId, warehouseId, stock.toString()
             )
-            editStockUseCase.execute(requestParams)
+            val response = editStockUseCase.execute(requestParams)
+            val productStatus = response.getProductStatus() ?: status
+            Success(EditStockResult(productName, productId, stock, productStatus))
         }
     }
 
