@@ -75,6 +75,9 @@ object GlobalSearchSellerMapper {
                                     appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
                         }
                     }
+                    HIGHLIGHTS -> {
+
+                    }
                 }
             }
         }
@@ -158,8 +161,8 @@ object GlobalSearchSellerMapper {
                         addAll(mapToItemInitialSearchUiModel(sellerSearch))
                     }
                     HIGHLIGHTS -> {
-                        add(ItemTitleHighlightSearchUiModel(it.title.orEmpty()))
-                        add(HighlightSearchUiModel(highlightList = mapToItemHighlightSearchUiModel(sellerSearch)))
+                        add(ItemTitleHighlightInitialSearchUiModel(it.title.orEmpty()))
+                        add(HighlightSearchUiModel(highlightInitialList = mapToItemHighlightInitialSearchUiModel(sellerSearch)))
                     }
                 }
             }
@@ -182,13 +185,13 @@ object GlobalSearchSellerMapper {
         return itemInitialSearchList
     }
 
-    private fun mapToItemHighlightSearchUiModel(sellerSearch: SellerSearchResponse.SellerSearch): List<ItemHighlightSearchUiModel> {
-        val itemHighlightSearchList = mutableListOf<ItemHighlightSearchUiModel>()
+    private fun mapToItemHighlightInitialSearchUiModel(sellerSearch: SellerSearchResponse.SellerSearch): List<ItemHighlightInitialSearchUiModel> {
+        val itemHighlightSearchList = mutableListOf<ItemHighlightInitialSearchUiModel>()
 
         sellerSearch.data.sections.filter { it.id == HIGHLIGHTS }.map { section ->
             section.items.map { itemSearch ->
                 itemHighlightSearchList.add(
-                        ItemHighlightSearchUiModel(id = itemSearch.id, title = itemSearch.title,
+                        ItemHighlightInitialSearchUiModel(id = itemSearch.id, title = itemSearch.title,
                                 desc = itemSearch.description, imageUrl = itemSearch.image_url,
                                 appUrl = itemSearch.app_url))
             }

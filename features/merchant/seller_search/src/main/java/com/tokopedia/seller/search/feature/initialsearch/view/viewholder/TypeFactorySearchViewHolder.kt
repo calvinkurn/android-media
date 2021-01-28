@@ -4,7 +4,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearch
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoHistoryUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.HighlightSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleHighlightSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleHighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleInitialSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.LoadingSearchModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.SellerSearchNoResultUiModel
@@ -15,7 +15,7 @@ interface TypeFactoryInitialSearchAdapter {
     fun type(sellerSearchMinCharUiModel: SellerSearchMinCharUiModel): Int
     fun type(sellerSearchNoHistoryUiModel: SellerSearchNoHistoryUiModel): Int
     fun type(itemTitleInitialSearchUiModel: ItemTitleInitialSearchUiModel): Int
-    fun type(itemTitleHighlightSearchUiModel: ItemTitleHighlightSearchUiModel): Int
+    fun type(itemTitleHighlightInitialSearchUiModel: ItemTitleHighlightInitialSearchUiModel): Int
     fun type(highlightSearchUiModel: HighlightSearchUiModel): Int
 }
 

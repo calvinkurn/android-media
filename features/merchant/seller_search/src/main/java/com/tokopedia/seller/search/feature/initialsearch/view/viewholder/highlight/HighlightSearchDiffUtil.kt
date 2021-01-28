@@ -1,10 +1,10 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.viewholder.highlight
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemHighlightSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemHighlightInitialSearchUiModel
 
-class HighlightSearchDiffUtil(private val oldList: List<ItemHighlightSearchUiModel>,
-                              private val newList: List<ItemHighlightSearchUiModel>): DiffUtil.Callback() {
+class HighlightSearchDiffUtil(private val oldList: List<ItemHighlightInitialSearchUiModel>,
+                              private val newList: List<ItemHighlightInitialSearchUiModel>): DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = oldList.size
 

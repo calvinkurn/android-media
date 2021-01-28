@@ -10,17 +10,17 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearc
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistorySearchListener
 import kotlinx.android.synthetic.main.item_highlight_search_list.view.*
 
-class HighlightSearchViewHolder(view: View, private val searchListener: HistorySearchListener):
+class HighlightInitialSearchViewHolder(view: View, private val searchListener: HistorySearchListener):
         AbstractViewHolder<HighlightSearchUiModel>(view)  {
 
     companion object {
         val LAYOUT = R.layout.item_highlight_search_list
     }
 
-    private var highLightListAdapter: ItemHighLightChipsAdapter? = null
+    private var highLightInitialListAdapter: ItemHighLightInitialChipsAdapter? = null
 
     override fun bind(element: HighlightSearchUiModel?) {
-        highLightListAdapter = ItemHighLightChipsAdapter(searchListener)
+        highLightInitialListAdapter = ItemHighLightInitialChipsAdapter(searchListener)
         setupChipsHighlightAdapter(element)
     }
 
@@ -36,8 +36,8 @@ class HighlightSearchViewHolder(view: View, private val searchListener: HistoryS
                 }
                 it.layoutManager = layoutManagerChips
                 ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR)
-                it.adapter = highLightListAdapter
-                data?.highlightList?.let { highLightList -> highLightListAdapter?.setChipsHighlight(highLightList) }
+                it.adapter = highLightInitialListAdapter
+                data?.highlightInitialList?.let { highLightList -> highLightInitialListAdapter?.setChipsHighlight(highLightList) }
             }
         }
     }

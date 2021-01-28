@@ -1,9 +1,9 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch
 
-data class ItemHighlightSearchUiModel(
+class ItemHighlightInitialSearchUiModel(
         val id: String? = "",
         val title: String? = "",
         val desc: String? = "",
         val imageUrl: String? = "",
-        val appUrl: String? = ""
+        val appUrl: String? = "",
 )

@@ -1,34 +1,36 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.viewholder.highlight
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.seller.search.R
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemHighlightSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemHighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistorySearchListener
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_chips_highlight_search.view.*
 
-class ItemHighLightChipsAdapter(private val highLightListener: HistorySearchListener) :
-        RecyclerView.Adapter<ItemHighLightChipsAdapter.ChipsListViewHolder>() {
+class ItemHighLightInitialChipsAdapter(private val highLightListener: HistorySearchListener) :
+        RecyclerView.Adapter<ItemHighLightInitialChipsAdapter.ChipsListViewHolder>() {
 
-    private var highLightChipsUiModel = mutableListOf<ItemHighlightSearchUiModel>()
+    private var highLightChipsUiModel = mutableListOf<ItemHighlightInitialSearchUiModel>()
 
-    fun setChipsHighlight(newHighLightChipsUiModel: List<ItemHighlightSearchUiModel>) {
-        if (newHighLightChipsUiModel.size >= MAX_CHIPS_FILTER) {
-            val maxChipsHighlight = newHighLightChipsUiModel.take(MAX_CHIPS_FILTER)
+    fun setChipsHighlight(newHighLightChipsUiModelInitial: List<ItemHighlightInitialSearchUiModel>) {
+        if (newHighLightChipsUiModelInitial.size >= MAX_CHIPS_FILTER) {
+            val maxChipsHighlight = newHighLightChipsUiModelInitial.take(MAX_CHIPS_FILTER)
             val callBack = HighlightSearchDiffUtil(highLightChipsUiModel, maxChipsHighlight)
             val diffResult = DiffUtil.calculateDiff(callBack)
             highLightChipsUiModel.clear()
             highLightChipsUiModel.addAll(maxChipsHighlight)
             diffResult.dispatchUpdatesTo(this)
         } else {
-            val callBack = HighlightSearchDiffUtil(highLightChipsUiModel, newHighLightChipsUiModel)
+            val callBack = HighlightSearchDiffUtil(highLightChipsUiModel, newHighLightChipsUiModelInitial)
             val diffResult = DiffUtil.calculateDiff(callBack)
             highLightChipsUiModel.clear()
-            highLightChipsUiModel.addAll(newHighLightChipsUiModel)
+            highLightChipsUiModel.addAll(newHighLightChipsUiModelInitial)
             diffResult.dispatchUpdatesTo(this)
         }
     }
@@ -48,7 +50,7 @@ class ItemHighLightChipsAdapter(private val highLightListener: HistorySearchList
     }
 
     inner class ChipsListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(data: ItemHighlightSearchUiModel) {
+        fun bind(data: ItemHighlightInitialSearchUiModel) {
             with(itemView) {
                 chipsHighlightItem.apply {
                     centerText = true
@@ -57,6 +59,9 @@ class ItemHighLightChipsAdapter(private val highLightListener: HistorySearchList
                     chipType = ChipsUnify.TYPE_NORMAL
                     setOnClickListener {
                         highLightListener.onHighlightItemClicked(data, adapterPosition)
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        background = ContextCompat.getDrawable(context, R.drawable.chips_ripple)
                     }
                 }
             }

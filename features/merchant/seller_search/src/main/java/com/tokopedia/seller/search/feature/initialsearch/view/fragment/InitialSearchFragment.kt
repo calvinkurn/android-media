@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
@@ -27,7 +26,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.initial_search_fragment.*
-import kotlinx.android.synthetic.main.initial_search_with_history_section.*
 import javax.inject.Inject
 
 
@@ -123,7 +121,7 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         SellerSearchTracking.clickRecommendWordingEvent(userId)
     }
 
-    override fun onHighlightItemClicked(data: ItemHighlightSearchUiModel, position: Int) {
+    override fun onHighlightItemClicked(data: ItemHighlightInitialSearchUiModel, position: Int) {
         viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
         startActivityFromAutoComplete(data.appUrl.orEmpty())
         SellerSearchTracking.clickOnItemSearchHighlights(userId)
@@ -192,7 +190,7 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         initialSearchAdapter.clearAllElements()
         val itemInitialSearchUiModelList = data.filterIsInstance<ItemInitialSearchUiModel>()
         if (itemInitialSearchUiModelList.isEmpty()) {
-            val itemTitleHighlightSearchUiModel = data.filterIsInstance<ItemTitleHighlightSearchUiModel>().firstOrNull() ?: ItemTitleHighlightSearchUiModel()
+            val itemTitleHighlightSearchUiModel = data.filterIsInstance<ItemTitleHighlightInitialSearchUiModel>().firstOrNull() ?: ItemTitleHighlightInitialSearchUiModel()
             val itemHighlightSearchUiModel = data.filterIsInstance<HighlightSearchUiModel>().firstOrNull() ?: HighlightSearchUiModel()
             val highlightSearchVisitable = mutableListOf(itemTitleHighlightSearchUiModel, itemHighlightSearchUiModel)
             initialSearchAdapter.addNoHistoryState()

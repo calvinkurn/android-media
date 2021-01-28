@@ -7,11 +7,11 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearch
 import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoHistoryUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.HighlightSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleHighlightSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleHighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.*
-import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.highlight.HighlightSearchViewHolder
-import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.highlight.TitleHighlightSearchViewHolder
+import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.highlight.HighlightInitialSearchViewHolder
+import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.highlight.TitleHighlightInitialSearchViewHolder
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.history.HistorySearchViewHolder
 
 class InitialSearchAdapterTypeFactory(private val historySearchListener: HistorySearchListener):
@@ -33,12 +33,12 @@ class InitialSearchAdapterTypeFactory(private val historySearchListener: History
         return TitleInitialSearchViewHolder.LAYOUT
     }
 
-    override fun type(itemTitleHighlightSearchUiModel: ItemTitleHighlightSearchUiModel): Int {
-        return TitleHighlightSearchViewHolder.LAYOUT
+    override fun type(itemTitleHighlightInitialSearchUiModel: ItemTitleHighlightInitialSearchUiModel): Int {
+        return TitleHighlightInitialSearchViewHolder.LAYOUT
     }
 
     override fun type(highlightSearchUiModel: HighlightSearchUiModel): Int {
-        return HighlightSearchViewHolder.LAYOUT
+        return HighlightInitialSearchViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -46,9 +46,9 @@ class InitialSearchAdapterTypeFactory(private val historySearchListener: History
             HistorySearchViewHolder.LAYOUT_RES -> HistorySearchViewHolder(parent, historySearchListener)
             SellerSearchNoHistoryViewHolder.LAYOUT_RES -> SellerSearchNoHistoryViewHolder(parent)
             SellerSearchMinCharViewHolder.LAYOUT_RES -> SellerSearchMinCharViewHolder(parent)
-            TitleHighlightSearchViewHolder.LAYOUT -> TitleHighlightSearchViewHolder(parent)
+            TitleHighlightInitialSearchViewHolder.LAYOUT -> TitleHighlightInitialSearchViewHolder(parent)
             TitleInitialSearchViewHolder.LAYOUT -> TitleInitialSearchViewHolder(parent, historySearchListener)
-            HighlightSearchViewHolder.LAYOUT -> HighlightSearchViewHolder(parent, historySearchListener)
+            HighlightInitialSearchViewHolder.LAYOUT -> HighlightInitialSearchViewHolder(parent, historySearchListener)
             else -> super.createViewHolder(parent, type)
         }
     }
