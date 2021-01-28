@@ -154,7 +154,10 @@ class ShopHomeNplCampaignViewHolder(
             it.bannerType.equals(selectedBannerType, true)
         }?.imageUrl.orEmpty()
         itemView.banner_background?.apply {
-            setImageUrl(bannerUrl, heightRatio = 1f)
+            try {
+                if(context.isValidGlideContext())
+                    setImageUrl(bannerUrl, heightRatio = 1f)
+            } catch (e: Throwable) { }
         }
     }
 
