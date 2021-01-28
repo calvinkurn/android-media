@@ -316,6 +316,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 is Success -> {
 
                     val productList: MutableList<ShowcaseProduct> = it.data.toMutableList()
+                    val tempSelectedProductFromAdapter = showcaseProductListAdapter?.getSelectedProduct()
                     val selectedProductList = activity?.intent?.getParcelableArrayListExtra<BaseShowcaseProduct>(ShopShowcaseAddFragment.SELECTED_SHOWCASE_PRODUCT)?.filterIsInstance<ShowcaseProduct>()
                     val excludedProduct = activity?.intent?.getParcelableArrayListExtra<ShowcaseProduct>(ShopShowcaseAddFragment.EXCLUDED_SHOWCASE_PRODUCT)
 
@@ -325,8 +326,16 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                     } else {
                         showEmptyViewProductSearch(false)
                         productList.forEach { showcaseProduct->
+
+                            // check selected product that already saved before
                             selectedProductList?.forEach { selectedProduct ->
                                 if(selectedProduct.productId == showcaseProduct.productId)
+                                    showcaseProduct.ishighlighted = true
+                            }
+
+                            // check unsaved selected product
+                            tempSelectedProductFromAdapter?.forEach { tempSelectedProduct ->
+                                if(tempSelectedProduct.productId == showcaseProduct.productId)
                                     showcaseProduct.ishighlighted = true
                             }
                         }
