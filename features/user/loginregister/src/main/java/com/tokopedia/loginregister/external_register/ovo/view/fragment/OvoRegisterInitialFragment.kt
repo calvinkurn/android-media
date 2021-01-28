@@ -1,6 +1,5 @@
 package com.tokopedia.loginregister.external_register.ovo.view.fragment
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -125,11 +124,7 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == RegisterInitialFragment.REQUEST_ADD_PIN){
-            if(resultCode == Activity.RESULT_OK || enableSkip2Fa) {
-                externalRegisterViewModel.getUserInfo()
-            }else {
-                goToErrorPage()
-            }
+            externalRegisterViewModel.getUserInfo()
         }
         else {
             super.onActivityResult(requestCode, resultCode, data)
