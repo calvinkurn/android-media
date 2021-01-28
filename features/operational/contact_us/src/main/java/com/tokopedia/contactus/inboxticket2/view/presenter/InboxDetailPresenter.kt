@@ -412,7 +412,8 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                 },
                 onError = {
                     mView?.hideSendProgress()
-                    mView?.setSnackBarErrorMessage(it.message.toString(), true)
+                    mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_sent_error_message)
+                            ?: "", true)
                     it.printStackTrace()
                 }
         )
@@ -432,7 +433,8 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                 },
                 onError = {
                     mView?.hideSendProgress()
-                    mView?.setSnackBarErrorMessage(it.message.toString(), true)
+                    mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_sent_error_message)
+                            ?: "", true)
                     it.printStackTrace()
                 })
 
