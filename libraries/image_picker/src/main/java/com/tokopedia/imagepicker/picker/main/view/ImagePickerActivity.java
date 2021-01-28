@@ -31,7 +31,6 @@ import com.tokopedia.imagepicker.common.ImageEditorBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
-import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
@@ -41,6 +40,8 @@ import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter
 import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
 import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
+import com.tokopedia.utils.file.cleaner.InternalStorageCleaner;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,6 +156,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
             tvDone.setVisibility(View.GONE);
         }
         trackOpen();
+        InternalStorageCleaner.cleanUpInternalStorageIfNeeded(this, ImageProcessingUtil.DEFAULT_DIRECTORY);
     }
 
     protected void onDoneClicked() {
@@ -298,7 +300,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
             return;
         }
         int cameraIndex = imagePickerBuilder.getCameraIndex();
-        String[] permissions;
+        String[] permissions = null;
         if (cameraIndex > -1) {
             permissions = new String[]{
                     Manifest.permission.CAMERA,
@@ -335,8 +337,6 @@ public final class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
-        //remove any cache file captured by camera
-        ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
         trackBack();
         super.onBackPressed();
     }
@@ -702,4 +702,5 @@ public final class ImagePickerActivity extends BaseSimpleActivity
             ImagePickerGlobalSettings.onImagePickerContinue.invoke();
         }
     }
+
 }

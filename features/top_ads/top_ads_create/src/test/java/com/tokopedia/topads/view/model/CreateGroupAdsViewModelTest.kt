@@ -1,16 +1,15 @@
 package com.tokopedia.topads.view.model
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.topads.data.response.Error
-import com.tokopedia.topads.data.response.ResponseGroupValidateName
-import com.tokopedia.topads.view.RequestHelper
+import com.tokopedia.topads.common.data.response.Error
+import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSession
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
@@ -30,87 +29,89 @@ class CreateGroupAdsViewModelTest {
 
     private lateinit var viewModel: CreateGroupAdsViewModel
 
-    private lateinit var repository: GraphqlRepository
-    private lateinit var context: Context
     private lateinit var userSession: UserSession
+    private lateinit var topAdsGroupValidateNameUseCase: TopAdsGroupValidateNameUseCase
 
     @Before
     fun setUp() {
-        repository = mockk()
-        context = mockk(relaxed = true)
+        topAdsGroupValidateNameUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
-        viewModel = spyk(CreateGroupAdsViewModel(context, rule.dispatchers, userSession, repository))
-        mockkObject(RequestHelper)
-        every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
-        every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
+        viewModel = spyk(CreateGroupAdsViewModel(rule.dispatchers, userSession, topAdsGroupValidateNameUseCase))
     }
 
     @Test
     fun `test exception in validateGroup`() {
-        var t: Throwable? = null
-        val myThrowable: Throwable = Exception("my excep")
+        var actual: Throwable? = null
+        val expected = Exception("my excep")
 
-        coEvery { repository.getReseponse(any(), any()) } throws myThrowable
+        val onError: (Throwable) -> Unit = {
+            actual = expected
+        }
+        every { topAdsGroupValidateNameUseCase.execute(any(), any()) } throws expected
 
         viewModel.validateGroup(
                 groupName = "",
                 onSuccess = {
                 },
-                onError = {
-                    t = it
-                }
+                onError = onError
         )
-
-        Assert.assertEquals(myThrowable.message, t?.message)
+        Assert.assertEquals(actual?.message, expected.message)
     }
 
     @Test
     fun `check invocation of onError validateGroup`() {
         val expected = "error"
         var actual = ""
-        val data = ResponseGroupValidateName(ResponseGroupValidateName.TopAdsGroupValidateName(errors = listOf(Error(detail = expected))))
-        val response: GraphqlResponse = mockk(relaxed = true)
-
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.getReseponse(any(), any()) } returns response
-        every { response.getError(ResponseGroupValidateName::class.java) } returns listOf()
-        every { response.getData<ResponseGroupValidateName>(ResponseGroupValidateName::class.java) } returns data
-
+        val data = ResponseGroupValidateName(ResponseGroupValidateName.TopAdsGroupValidateName(errors = listOf(Error().apply {
+            detail = expected
+        })))
+        val onError: (Throwable) -> Unit = {
+            actual = expected
+        }
+        every { userSession.shopId } returns "123"
+        every {
+            topAdsGroupValidateNameUseCase.execute(captureLambda(), any())
+        } answers {
+            if (data.topAdsGroupValidateName.errors.isNotEmpty()) {
+                actual = data.topAdsGroupValidateName.errors.first().detail
+            }
+            onError.invoke(java.lang.Exception(actual))
+        }
         viewModel.validateGroup(
                 groupName = "",
-                onSuccess = {
-                },
-                onError = {
-                    actual = it.message ?: ""
-                }
+                onSuccess = {},
+                onError = onError
         )
-
+        verify {
+            topAdsGroupValidateNameUseCase.execute(any(), any())
+        }
         Assert.assertEquals(expected, actual)
     }
 
     @Test
     fun `check invocation of onSuccess validateGroup`() {
-        val expected = "groupName"
+        val expected = "test"
         var actual = ""
         val data = ResponseGroupValidateName(ResponseGroupValidateName.TopAdsGroupValidateName(ResponseGroupValidateName.TopAdsGroupValidateName.Data(groupName = expected)))
-        val response: GraphqlResponse = mockk(relaxed = true)
-
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        coEvery { repository.getReseponse(any(), any()) } returns response
-        every { response.getError(ResponseGroupValidateName::class.java) } returns listOf()
-        every { response.getData<ResponseGroupValidateName>(ResponseGroupValidateName::class.java) } returns data
-
+        val onSuccess: () -> Unit = {
+            actual = expected
+        }
+        every { userSession.shopId } returns "123"
+        every {
+            topAdsGroupValidateNameUseCase.execute(captureLambda(), any())
+        } answers {
+            if (data.topAdsGroupValidateName.errors.isEmpty()) {
+                onSuccess.invoke()
+            }
+        }
         viewModel.validateGroup(
                 groupName = "",
-                onSuccess = {
-                    actual = it.groupName
-                },
-                onError = {
-                }
+                onSuccess = onSuccess,
+                onError = {}
         )
-
+        verify {
+            topAdsGroupValidateNameUseCase.execute(any(), any())
+        }
         Assert.assertEquals(expected, actual)
     }
 }

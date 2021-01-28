@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
-import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.Token
@@ -27,6 +29,7 @@ import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -63,9 +66,19 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
                         customPeekHeight = height
                     }
                     setChild(child)
-                    setAction(context.getResDrawable(R.drawable.ic_add_grey)) {
+                    val actionIconParam = getIconUnifyDrawable(context, IconUnify.ADD)
+                    setAction(actionIconParam) {
                         this@AddressListBottomSheet.bottomSheet?.dismiss()
                         listener.onAddAddress(token)
+                    }
+                    setShowListener {
+                        try {
+                            val displayMetrics = context.resources.displayMetrics
+                            bottomSheetAction.layoutParams.height = 20.dpToPx(displayMetrics)
+                            bottomSheetAction.layoutParams.width = 20.dpToPx(displayMetrics)
+                        } catch (t: Throwable) {
+                            Timber.d(t)
+                        }
                     }
                     show(it, null)
                     setOnDismissListener {
@@ -213,11 +226,11 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
     // ================ VIEW MODEL LOGIC ==================
 
     var savedQuery: String = ""
-    var selectedId = "-1"
-    var destinationLatitude: String = ""
-    var destinationLongitude: String = ""
-    var destinationDistrict: String = ""
-    var destinationPostalCode: String = ""
+    private var selectedId = "-1"
+    private var destinationLatitude: String = ""
+    private var destinationLongitude: String = ""
+    private var destinationDistrict: String = ""
+    private var destinationPostalCode: String = ""
     var token: Token? = null
 
     private var page = 1

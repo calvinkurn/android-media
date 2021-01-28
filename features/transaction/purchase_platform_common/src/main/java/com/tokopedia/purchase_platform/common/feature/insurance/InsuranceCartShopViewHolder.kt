@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.R
@@ -34,7 +35,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
     private val tvInsuranceInfo: TextView
     private val tvInsuranceSubtitle: TextView
     private val tvInsuranceTickerText: TextView
-    private val ivDeleteInsurance: ImageView
+    private val ivDeleteInsurance: IconUnify
     private val tvChangeInsuranceApplicationDetails: TextView
     private var insuranceCartShops: InsuranceCartShops? = null
     private val typeValues = ArrayList<TextView>()

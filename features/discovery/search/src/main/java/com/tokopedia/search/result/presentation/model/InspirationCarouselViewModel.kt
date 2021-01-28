@@ -38,6 +38,10 @@ class InspirationCarouselViewModel(
             return typeFactory.type(layout)
         }
 
+        fun shouldAddBannerCard(): Boolean {
+            return bannerImageUrl.isNotEmpty() || title.isNotEmpty()
+        }
+
         fun getBannerDataLayer(keyword: String): Any {
             return DataLayer.mapOf(
                 "creative", carouselTitle,

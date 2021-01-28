@@ -15,8 +15,6 @@ object TrackingConstant {
     object Event {
         const val CLICK_CHAT_WIDGET = "clickChatWidget"
         const val VIEW_CHAT_WIDGET = "viewChatWidgetIris"
-        const val CLICK_ORDER_WIDGET = "clickOrderWidget"
-        const val VIEW_ORDER_WIDGET = "viewOrderWidgetIris"
     }
 
     object Category {

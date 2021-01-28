@@ -168,7 +168,6 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         }
         (context?.applicationContext as? LoginRouter)?.let {
             it.setOnboardingStatus(true)
-            SellerAppWidgetHelper.fetchSellerAppWidgetData(context)
         }
     }
 
@@ -245,6 +244,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private fun onSuccessLoginToken(){
         analytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
         hideProgressBar()
+        SellerAppWidgetHelper.fetchSellerAppWidgetData(context)
         finishIntent()
     }
 

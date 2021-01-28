@@ -305,6 +305,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
+            presenter.onLihatInvoiceButtonClick(invoice.invoiceUrl());
             RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
         });
     }
@@ -324,6 +325,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 @Override
                 public void onCopyValue() {
                     if (getContext() != null) {
+                        presenter.onCopyButtonClick(detail.value());
                         BuyerUtils.copyTextToClipBoard("voucher code", detail.value(), getContext());
                         BuyerUtils.vibrate(getContext());
                         Toaster.build(itemView, getString(R.string.title_voucher_code_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
@@ -557,7 +559,10 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             primaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
         }
         if (!TextUtils.isEmpty(actionButton.getUri())) {
-            primaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+            primaryActionBtn.setOnClickListener(v -> {
+                presenter.onActionButtonClick(ActionButton.PRIMARY_BUTTON, actionButton.getLabel());
+                onActionButtonClick(actionButton.getUri());
+            });
         }
     }
 
@@ -578,25 +583,26 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             secondaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
         }
         if (!TextUtils.isEmpty(actionButton.getUri())) {
-            secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+            secondaryActionBtn.setOnClickListener(v -> {
+                presenter.onActionButtonClick(ActionButton.SECONDARY_BUTTON, actionButton.getLabel());
+                onActionButtonClick(actionButton.getUri());
+            });
         }
     }
 
-    private View.OnClickListener getActionButtonClickListener(final String uri) {
-        return view -> {
-            String newUri = uri;
-            if (uri != null && uri.startsWith("tokopedia")) {
-                Uri url = Uri.parse(newUri);
+    private void onActionButtonClick(final String uri) {
+        String newUri = uri;
+        if (uri != null && uri.startsWith("tokopedia")) {
+            Uri url = Uri.parse(newUri);
 
-                if (newUri.contains("idem_potency_key")) {
-                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
-                    newUri = newUri.replace("idem_potency_key=", "");
-                }
-                RouteManager.route(getActivity(), newUri);
-            } else if (uri != null && !uri.equals("")) {
-                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
+            if (newUri.contains("idem_potency_key")) {
+                newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
+                newUri = newUri.replace("idem_potency_key=", "");
             }
-        };
+            RouteManager.route(getActivity(), newUri);
+        } else if (uri != null && !uri.equals("")) {
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
+        }
     }
 
     @Override

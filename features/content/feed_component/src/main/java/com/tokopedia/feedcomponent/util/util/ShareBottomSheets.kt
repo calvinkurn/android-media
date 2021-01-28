@@ -9,8 +9,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +21,8 @@ import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.videoplayer.utils.showToast
 
 /**
@@ -211,9 +211,9 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private lateinit var mRecyclerView: RecyclerView
-    private lateinit var mProgressBar: ProgressBar
+    private lateinit var mProgressBar: ProgressBarUnify
     private lateinit var mLayoutError: LinearLayout
-    private lateinit var mTextViewError: TextView
+    private lateinit var mTextViewError: Typography
 
     override fun initView(view: View) {
         mRecyclerView = view.findViewById(R.id.recyclerview_bottomsheet)

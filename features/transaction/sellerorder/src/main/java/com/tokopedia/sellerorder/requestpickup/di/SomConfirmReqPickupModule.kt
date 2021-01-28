@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
  * Created by fwidjaja on 12/05/20.
  */
 @Module
-@SomConfirmReqPickupScope
 class SomConfirmReqPickupModule {
     @SomConfirmReqPickupScope
     @Provides

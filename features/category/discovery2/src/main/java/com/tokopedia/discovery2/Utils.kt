@@ -225,5 +225,24 @@ class Utils {
             }
             return DEFAULT_TIME_DATA
         }
+
+        fun getShareUrlQueryParamAppended(url: String?, queryParameterMap: Map<String, String?>?): String {
+            var isAllKeyNullOrEmpty = true
+            val queryString = StringBuilder()
+            queryParameterMap?.forEach { (key, value) ->
+                if (!value.isNullOrEmpty()) {
+                    isAllKeyNullOrEmpty = false
+                    if (queryString.isNotEmpty()) {
+                        queryString.append('&')
+                    }
+                    queryString.append(key).append('=').append(value)
+                }
+            }
+
+            if(url.isNullOrEmpty()) return ""
+
+            return if(isAllKeyNullOrEmpty) url else {"$url?$queryString"}
+        }
+
     }
 }

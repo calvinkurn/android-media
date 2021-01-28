@@ -151,6 +151,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     EgoldAttributeModel egoldAttributeModel = new EgoldAttributeModel();
                     egoldAttributeModel.setEligible(shipmentAddressFormDataResponse.getEgoldAttributes().isEligible());
                     egoldAttributeModel.setTiering(shipmentAddressFormDataResponse.getEgoldAttributes().isTiering());
+                    egoldAttributeModel.setChecked(shipmentAddressFormDataResponse.getEgoldAttributes().isOptIn());
                     if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange() != null) {
                         egoldAttributeModel.setMinEgoldRange(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange().getMinEgoldValue());
                         egoldAttributeModel.setMaxEgoldRange(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange().getMaxEgoldValue());

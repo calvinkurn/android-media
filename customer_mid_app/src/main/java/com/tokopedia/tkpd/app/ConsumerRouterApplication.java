@@ -27,25 +27,24 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.common_digital.common.constant.DigitalCache;
-import com.tokopedia.core.MaintenancePage;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
@@ -80,7 +79,6 @@ import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
-import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.creditcard.domain.CreditCardFingerPrintUseCase;
@@ -277,34 +275,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToHome(Context context) {
-        Intent intent = getHomeIntent(context);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
 
     @Override
-    public Intent getSplashScreenIntent(Context context) {
-        return new Intent(context, ConsumerSplashScreen.class);
-    }
-
-    @Override
     public void onNewIntent(Context context, Intent intent) {
         NFCSubscriber.onNewIntent(context, intent);
-    }
-
-    /**
-     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#isSupportApplink(String)}
-     *
-     * @param appLinks
-     * @return
-     */
-    @Deprecated
-    public boolean isSupportedDelegateDeepLink(String appLinks) {
-        return isSupportApplink(appLinks);
-    }
-
-    public Intent getIntentDeepLinkHandlerActivity() {
-        return new Intent(this, DeeplinkHandlerActivity.class);
     }
 
     @Override
@@ -331,15 +309,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private Intent getInboxReputationIntent(Context context) {
         return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
-    }
-
-    @Override
-    public void onLogout(AppComponent appComponent) {
-
-        forceLogout();
-
-        PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
-        new CacheApiClearAllUseCase(this).executeSync();
     }
 
     private void forceLogout() {
@@ -383,7 +352,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onForceLogout(Activity activity) {
         forceLogout();
-        Intent intent = ((TkpdCoreRouter) getBaseContext().getApplicationContext()).getSplashScreenIntent(getBaseContext());
+        Intent intent = new Intent(context, ConsumerSplashScreen.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -395,7 +364,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void showMaintenancePage() {
-        ServerErrorHandler.showMaintenancePage();
+        CoreNetworkApplication.getAppContext().startActivity(MaintenancePage.createIntentFromNetwork(getAppContext()));
     }
 
     @Override
@@ -632,6 +601,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return null;
     }
 
+
     @Override
     public void sendRefreshTokenAnalytics(String errorMessage) {
         if(TextUtils.isEmpty(errorMessage)){
@@ -639,5 +609,34 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }else {
             SessionAnalytics.trackRefreshTokenFailed(errorMessage);
         }
+    }
+
+    private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
+    private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
+
+    @Override
+    public Class<?> getInboxMessageActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = getActivityClass(INBOX_MESSAGE_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    @Override
+    public Class<?> getInboxResCenterActivityClassReal() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = getActivityClass(INBOX_RESCENTER_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
+        return Class.forName(activityFullPath);
     }
 }

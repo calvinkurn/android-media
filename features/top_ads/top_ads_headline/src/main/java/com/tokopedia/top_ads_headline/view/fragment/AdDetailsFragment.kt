@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
-import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.viewmodel.AdDetailsViewModel
@@ -24,7 +24,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_ad_details.*
 import javax.inject.Inject
 
-class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>() {
+class AdDetailsFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

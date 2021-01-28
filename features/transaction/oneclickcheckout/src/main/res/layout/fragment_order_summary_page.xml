@@ -194,17 +194,16 @@
                     app:typographyType="body_3"
                     app:typographyWeight="reguler" />
 
-                <ImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/img_bt_insurance_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/dp_8"
-                    android:paddingRight="@dimen/dp_8"
-                    android:src="@drawable/info_icon"
+                    android:layout_width="@dimen/layout_lvl3"
+                    android:layout_height="@dimen/layout_lvl3"
+                    android:paddingStart="@dimen/spacing_lvl2"
+                    android:paddingEnd="@dimen/spacing_lvl2"
+                    app:icon_name="INFORMATION"
                     app:layout_constraintBottom_toBottomOf="@+id/cb_insurance"
                     app:layout_constraintStart_toEndOf="@+id/tv_insurance"
-                    app:layout_constraintTop_toTopOf="@+id/cb_insurance"
-                    tools:ignore="ContentDescription" />
+                    app:layout_constraintTop_toTopOf="@+id/cb_insurance" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_insurance_price"

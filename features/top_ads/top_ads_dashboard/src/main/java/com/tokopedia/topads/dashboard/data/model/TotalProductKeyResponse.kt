@@ -25,6 +25,9 @@ data class CountDataItem(
         @field:SerializedName("totalAds")
         val totalAds: Int = 0,
 
+        @field:SerializedName("totalProducts")
+        val totalProducts: Int = 0,
+
         @field:SerializedName("totalKeywords")
         val totalKeywords: Int = 0
 )

@@ -22,7 +22,7 @@
         android:layout_marginStart="@dimen/play_dp_12"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/play_dp_12"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:text="@string/play_prepare_cover_title_header_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

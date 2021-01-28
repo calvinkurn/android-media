@@ -7,10 +7,11 @@ import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.text.style.WebViewURLSpan
 import com.tokopedia.topads.freeclaim.R
+import com.tokopedia.utils.text.style.WebViewURLSpan
 import kotlinx.android.synthetic.main.widget_ticker_free_claim.view.*
 
 class TopAdsWidgetFreeClaim @JvmOverloads constructor(
@@ -22,6 +23,7 @@ class TopAdsWidgetFreeClaim @JvmOverloads constructor(
 
     private fun instatiateView() {
         inflate(context, R.layout.widget_ticker_free_claim, this)
+        img_top_ads_announcement.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_top_ads_announcement))
     }
 
     override fun onFinishInflate() {

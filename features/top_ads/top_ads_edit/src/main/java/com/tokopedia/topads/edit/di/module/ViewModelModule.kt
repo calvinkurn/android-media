@@ -18,7 +18,6 @@ import dagger.multibindings.IntoMap
 
 
 @Module
-@EditAdScope
 abstract class ViewModelModule {
 
     @Binds

@@ -97,6 +97,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
+    private static final String PRINT_AWB_URL = "tokopedia.com/shipping-label";
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
@@ -441,13 +442,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                     String decodedUrl = Uri.decode(url).toLowerCase();
                     if (!TextUtils.isEmpty(title)
                             && Uri.parse(title).getScheme() == null
-                            && isKolUrl(decodedUrl)) {
+                            && (isKolUrl(decodedUrl) || isPrintAwbUrl(decodedUrl))) {
                         actionBar.setTitle(title);
                     } else if (!isHelpUrl(decodedUrl)) {
                         actionBar.setTitle(getString(R.string.tokopedia));
                     }
                 }
             }
+        }
+
+        private boolean isPrintAwbUrl(String url) {
+            return url.contains(PRINT_AWB_URL);
         }
 
         private boolean isKolUrl(String url) {

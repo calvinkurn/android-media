@@ -41,7 +41,6 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
-import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor;
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;
@@ -173,6 +172,11 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
+
+    }
+
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
 
     }
 
@@ -463,5 +467,4 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
 
     }
-
 }

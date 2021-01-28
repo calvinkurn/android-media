@@ -8,9 +8,10 @@
     android:foreground="?attr/selectableItemBackground"
     android:layout_marginEnd="@dimen/spacing_lvl2"
     app:cardCornerRadius="@dimen/spacing_lvl3"
-    app:cardElevation="@dimen/spacing_lvl2"
+    app:cardElevation="@dimen/spacing_lvl1"
     app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true">
+    app:cardUseCompatPadding="true"
+    >
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/play_widget_banner"
@@ -21,6 +22,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="parent"
+        />
 
 </androidx.cardview.widget.CardView>

@@ -61,7 +61,7 @@ class WholesaleActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        this@WholesaleActivity.overridePendingTransition(0, R.anim.push_down)
+        this@WholesaleActivity.overridePendingTransition(0, com.tokopedia.design.R.anim.push_down)
     }
 
     override fun getNewFragment(): Fragment? {

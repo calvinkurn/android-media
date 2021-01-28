@@ -64,13 +64,13 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
 
         itemView.info_detail_value?.run {
             if (data.applink.isNotEmpty()) {
-                setTextColor(MethodChecker.getColor(context, R.color.light_G500))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.light_G500))
                 setWeight(Typography.BOLD)
                 setOnClickListener {
                     listener.goToApplink(data.applink)
                 }
             } else {
-                setTextColor(MethodChecker.getColor(context, R.color.light_N700_68))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.light_N700_68))
                 setWeight(Typography.REGULAR)
                 setOnClickListener { }
             }

@@ -27,7 +27,7 @@
     android:clipToPadding="false"
     app:tabMode="fixed"
     app:tabGravity="fill"
-    app:tabMinWidth="@dimen/image_picker_tab_min_width"
+    app:tabMinWidth="50dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent" />

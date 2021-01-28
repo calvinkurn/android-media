@@ -101,12 +101,12 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private fun initToolbarIcon() {
         wishlistBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_white)
-        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_system_action_notification_pressed_24)
+        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_notification_pressed_24)
         inboxBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_white)
         searchMagnifierIcon = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_search_bar)
 
         wishlistBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_grey)
-        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_system_action_notification_normal_24)
+        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_notification_normal_24)
         inboxBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_grey)
 
         wishlistCrossfader = TransitionDrawable(arrayOf<Drawable>(wishlistBitmapGrey, wishlistBitmapWhite))
@@ -152,7 +152,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             }
             val pR = toolbar.paddingRight
             val pB = 0
-            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.Unify_N0))
+            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             toolbar!!.setPadding(pL, pT, pR, pB)
         }
     }
@@ -166,7 +166,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                 pT = ViewHelper.getStatusBarHeight(context)
             }
             val pR = toolbar.paddingRight
-            val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+            val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
 
             toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
             toolbar!!.setPadding(pL, pT, pR, pB)
@@ -286,7 +286,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             while (true) {
                 var hint = context.getString(R.string.search_tokopedia)
                 var keyword = ""
-                val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.slide_up_in)
+                val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.search_bar_slide_up_in)
                 slideUpIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
                 val slideOutUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
                 slideOutUp.interpolator = EasingInterpolator(Ease.QUART_IN)

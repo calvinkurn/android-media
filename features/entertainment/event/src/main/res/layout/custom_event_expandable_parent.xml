@@ -11,7 +11,7 @@
     <com.tokopedia.unifyprinciples.Typography
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/event_arrow_expandable"
+        app:layout_constraintRight_toLeftOf="@+id/event_arrow_expandable"
         app:layout_constraintRight_toRightOf="@+id/event_arrow_expandable"
         android:id="@+id/tg_event_pdp_expand_title"
         android:layout_width="0dp"

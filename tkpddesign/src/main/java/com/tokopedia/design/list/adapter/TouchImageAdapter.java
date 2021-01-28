@@ -12,7 +12,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.tokopedia.design.image.ImageLoader;
 import com.tokopedia.design.image.TouchImageView;
-import com.tokopedia.utils.image.ImageUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.util.ArrayList;
 
@@ -67,7 +67,7 @@ public class TouchImageAdapter extends PagerAdapter {
 
     private void loadImageFromFile(Context context, ImageView imageView, String thumbnail){
         if (!TextUtils.isEmpty(thumbnail)) {
-            Bitmap bitmap = ImageUtil.getBitmapFromFile(context, thumbnail);
+            Bitmap bitmap = ImageProcessingUtil.getBitmapFromFile(context, thumbnail);
             imageView.setImageBitmap(bitmap);
         }
     }

@@ -35,6 +35,7 @@
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
     <string name="path_product_detail" translatable="false">/product-detail/.*\\/</string>
     <string name="path_product_detail_domain" translatable="false">/product-detail/.*\\/.*\\/</string>
+    <string name="path_product_detail_affiliate" translatable="false">/product-detail/affiliate/.*\\/</string>
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
     <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*\\/</string>

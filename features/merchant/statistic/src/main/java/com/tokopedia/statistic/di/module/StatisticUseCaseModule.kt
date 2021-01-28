@@ -11,7 +11,6 @@ import dagger.Provides
  * Created By @ilhamsuaib on 10/06/20
  */
 
-@StatisticScope
 @Module
 class StatisticUseCaseModule {
 

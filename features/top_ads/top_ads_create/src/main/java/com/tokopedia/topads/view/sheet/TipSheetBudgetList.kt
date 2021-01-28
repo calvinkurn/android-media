@@ -17,7 +17,7 @@ class TipSheetBudgetList : BottomSheetUnify() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var contentView = View.inflate(context, R.layout.topads_create_fragment_budget_sheet_tip, null)
         setChild(contentView)
-        setTitle(getString(R.string.seputar_biaya_iklan))
+        setTitle(getString(R.string.tip_biaya_iklan))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

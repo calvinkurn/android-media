@@ -43,7 +43,6 @@ class ViewHolderDataMapper @Inject constructor() {
                 productPrice = cartItemHolderData.cartItemData?.originData?.pricePlan
                         ?: 0.toDouble(),
                 isWishlisted = cartItemHolderData.cartItemData?.originData?.isWishlisted ?: false,
-                tickerMessage = cartItemHolderData.cartItemData?.warningMessageTitle,
                 showDivider = showDivider,
                 data = cartItemHolderData.cartItemData,
                 actionsData = cartItemHolderData.actionsData,
