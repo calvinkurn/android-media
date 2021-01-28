@@ -255,7 +255,7 @@ class HomeVisitableFactoryImpl(
                 var tickerPosition = 0
                 var iconPosition = 0
 
-                it.dataList.forEach { data ->
+                it.dataList.forEachIndexed { index, data ->
                     when(data.component) {
                         TYPE_ICON -> {
                             data.atfStatusCondition (
@@ -302,7 +302,7 @@ class HomeVisitableFactoryImpl(
                                                 false,
                                                 data.getAtfContent<DynamicHomeChannel>(),
                                                 false,
-                                                it.dataList.size
+                                                index
                                         )
                                     }
                             )
@@ -322,7 +322,7 @@ class HomeVisitableFactoryImpl(
     }
 
     override fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean): HomeVisitableFactory {
-        addDynamicChannelData(addLoadingMore = addLoadingMore, useDefaultWhenEmpty = useDefaultWhenEmpty)
+        addDynamicChannelData(addLoadingMore = addLoadingMore, useDefaultWhenEmpty = useDefaultWhenEmpty, startPosition = homeData?.atfData?.dataList?.size ?: 0)
         return this
     }
 

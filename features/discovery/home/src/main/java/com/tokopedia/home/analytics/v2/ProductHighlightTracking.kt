@@ -23,7 +23,8 @@ object ProductHighlightTracking : BaseTrackerConst() {
             position: Int,
             isTopAds: Boolean,
             recommendationType: String,
-            pageName: String) {
+            pageName: String,
+            positionOnHome: Int) {
         getTracker().sendEnhanceEcommerceEvent(getProductHighlightClick(
                 channelId,
                 headerName,
@@ -37,11 +38,12 @@ object ProductHighlightTracking : BaseTrackerConst() {
                 isTopAds,
                 recommendationType,
                 pageName,
-                position))
+                position,
+                positionOnHome))
     }
 
     //componentSection
-    fun getProductHighlightImpression(channel: ChannelModel, userId: String = "", isToIris: Boolean = false): Map<String, Any> {
+    fun getProductHighlightImpression(channel: ChannelModel, userId: String = "", isToIris: Boolean = false, positionOnHome: Int): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
@@ -49,7 +51,7 @@ object ProductHighlightTracking : BaseTrackerConst() {
                 eventAction = EVENT_ACTION_IMPRESSION_PRODUCT_DYNAMIC_CHANNEL_HERO,
                 eventLabel = Label.NONE,
                 list = String.format(
-                        Value.LIST, "1", PRODUCT_DYNAMIC_CHANNEL_HERO
+                        Value.LIST, positionOnHome, PRODUCT_DYNAMIC_CHANNEL_HERO
                 ),
                 products = channel.channelGrids.mapIndexed { index, grid ->
                     Product(
@@ -92,7 +94,8 @@ object ProductHighlightTracking : BaseTrackerConst() {
             isTopAds: Boolean,
             recommendationType: String,
             pageName: String,
-            position: Int) : Map<String, Any> {
+            position: Int,
+            positionOnHome: Int) : Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
@@ -120,7 +123,7 @@ object ProductHighlightTracking : BaseTrackerConst() {
                         )
                 ),
                 list = String.format(
-                        Value.LIST, "1", PRODUCT_DYNAMIC_CHANNEL_HERO
+                        Value.LIST, positionOnHome, PRODUCT_DYNAMIC_CHANNEL_HERO
                 ))
                 .appendChannelId(channelId)
                 .appendCampaignCode(campaignCode)

@@ -23,18 +23,22 @@ class ProductHighlightComponentCallback(val homeCategoryListener: HomeCategoryLi
                 position = adapterPosition,
                 isTopAds = channelGrid.isTopads,
                 pageName = channel.pageName,
-                recommendationType = channelGrid.recommendationType
+                recommendationType = channelGrid.recommendationType,
+                positionOnHome = adapterPosition
         )
     }
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int) {
         //GA
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(
-                ProductHighlightTracking.getProductHighlightImpression(channel,  userId = homeCategoryListener.userId) as HashMap<String, Any>
+                ProductHighlightTracking.getProductHighlightImpression(
+                        channel,
+                        userId = homeCategoryListener.userId,
+                        positionOnHome = adapterPosition) as HashMap<String, Any>
         )
         //iris
         homeCategoryListener.putEEToIris(ProductHighlightTracking.getProductHighlightImpression(
-                channel, homeCategoryListener.userId, true
+                channel, homeCategoryListener.userId, true, positionOnHome = adapterPosition
         ) as HashMap<String, Any>)
 
     }
