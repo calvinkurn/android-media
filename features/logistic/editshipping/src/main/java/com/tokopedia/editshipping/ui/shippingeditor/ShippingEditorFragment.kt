@@ -80,6 +80,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private var bottomSheetCourierInactiveAdapter = WarehouseInactiveAdapter()
 
     private var bottomSheetCourierInactive: BottomSheetUnify? = null
+    private var bottomSheetBOValidation: BottomSheetUnify? = null
     private var tvCourierInactive: Typography? = null
     private var warehouseListRv: RecyclerView? = null
     private var bottomSheetCourierInactiveState: Int = 0
@@ -248,6 +249,10 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private fun updateBottomsheetData(data: ShipperDetailModel) {
         bottomSheetShipperAdapter.setShippingEditorDetailsData(data)
         openBottomSheetDetails()
+    }
+
+    private fun setValidateBOData(data: ValidateShippingEditorModel) {
+
     }
 
     private fun setDataCourierNotCovered(data: ValidateShippingEditorModel) {

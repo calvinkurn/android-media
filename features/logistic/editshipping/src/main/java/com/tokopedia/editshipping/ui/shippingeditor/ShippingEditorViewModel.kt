@@ -8,7 +8,7 @@ import com.tokopedia.editshipping.domain.mapper.ShipperDetailMapper
 import com.tokopedia.editshipping.domain.mapper.ShippingEditorMapper
 import com.tokopedia.editshipping.domain.mapper.ValidateShippingNewMapper
 import com.tokopedia.editshipping.domain.model.shippingEditor.*
-import com.tokopedia.logisticCommon.data.repository.ShippingEditorRepository
+import com.tokopedia.editshipping.data.repository.ShippingEditorRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingResponse
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
