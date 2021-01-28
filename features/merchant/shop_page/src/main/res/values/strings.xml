@@ -28,6 +28,8 @@
     <string name="new_shop_page_header_shop_not_active_description_seller">Toko Anda sudah tidak aktif lebih dari 30 hari. <![CDATA[<a href="">%1$s</a>]]></string>
 
     <string name="shop_page_header_request_unmoderate_bottomsheet_title">Permintaan buka moderasi toko</string>
+    <string name="shop_page_header_request_unmoderate_already_sent">Permintaan anda sedang dalam proses.</string>
+    <string name="shop_page_header_request_unmoderate_success_message">Permintaan buka moderasi toko berhasil</string>
     <string name="shop_page_header_request_unmoderate_option_1_text">Saya sudah mengikuti syarat &amp; ketentuan Tokopedia.</string>
     <string name="shop_page_header_request_unmoderate_option_1_value">Following Rules</string>
     <string name="shop_page_header_request_unmoderate_option_2_text">Saya sudah melakukan perbaikan toko.</string>
