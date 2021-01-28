@@ -282,9 +282,7 @@ class MainSliceProvider : SliceProvider() {
         try {
             SplitCompat.install(contextNonNull)
         } catch (e: Exception){
-            e.message?.let {
-                FirebaseCrashlytics.getInstance().log(it)
-            }
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
         return true
     }
