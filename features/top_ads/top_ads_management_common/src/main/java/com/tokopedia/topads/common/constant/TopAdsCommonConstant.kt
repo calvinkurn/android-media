@@ -9,6 +9,7 @@ import com.tokopedia.url.TokopediaUrl
 object TopAdsCommonConstant {
     @JvmField
     var BASE_DOMAIN_URL = TokopediaUrl.getInstance().TA
+    const val TOPADS_SELLER_CENTER = "https://seller.tokopedia.com/about-topads/"
     const val PARAM_SHOP_ID = "shop_id"
     const val DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
     const val REQUEST_DATE_FORMAT = "yyyy-MM-dd"

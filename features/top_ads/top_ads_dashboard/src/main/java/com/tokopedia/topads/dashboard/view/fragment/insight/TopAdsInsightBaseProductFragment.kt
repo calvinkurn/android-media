@@ -209,10 +209,10 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
                 group = Group(
                         groupName = currentGroupName,
                         ads = getAdsList(),
-                        priceBid = data.firstOrNull()?.suggestionBid ?: 0,
+                        priceBid = data.firstOrNull()?.suggestionBid?.toDouble() ?: 0.0,
                         groupBudget = "0",
                         source = PARAM_SOURCE_RECOM,
-                        suggestedBidValue = data.firstOrNull()?.suggestionBid ?: 0
+                        suggestedBidValue = data.firstOrNull()?.suggestionBid?.toDouble() ?: 0.0
                 )
             }
             topAdsDashboardPresenter.createGroup(param, ::onSuccessGroupCreation)

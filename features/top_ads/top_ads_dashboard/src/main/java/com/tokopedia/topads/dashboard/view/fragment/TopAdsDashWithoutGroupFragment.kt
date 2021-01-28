@@ -214,7 +214,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         recyclerviewScrollListener.updateStateAfterGetData()
         list.forEach {
             groupList.add(MovetoGroupItemViewModel(it))
-            groupIds.add(it.groupId.toString())
+            groupIds.add(it.groupId)
         }
         if (list.isEmpty()) {
             movetoGroupSheet.setButtonDisable()

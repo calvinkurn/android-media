@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_NAME
 import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_EDIT_OPTION
@@ -64,8 +63,8 @@ class TopAdsEditUseCase @Inject constructor(graphqlRepository: GraphqlRepository
                             adOperations = dataProduct,
                             name = null,
                             type = PRODUCT,
-                            dailyBudget = dailyBudgetGroup,
-                            priceBid = priceBidGroup
+                            dailyBudget = dailyBudgetGroup?.toDouble(),
+                            priceBid = priceBidGroup?.toDouble()
                     )
             )
         }

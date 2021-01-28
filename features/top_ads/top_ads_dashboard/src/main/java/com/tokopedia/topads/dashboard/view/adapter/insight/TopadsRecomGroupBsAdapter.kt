@@ -71,7 +71,7 @@ class TopadsRecomGroupBsAdapter(private val onGroupSelect: (() -> Unit)) : Recyc
     }
 
     fun getCheckedPosition(): Int {
-        return items[selectedPosition].groupId
+        return items[selectedPosition].groupId.toInt()
     }
 
     fun isChecked():Int{

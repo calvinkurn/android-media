@@ -59,7 +59,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
         } else {
             adapter.setItems(groupList)
             val groupIds: List<String> = groupList.map {
-                it.groupId.toString()
+                it.groupId
             }
             topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
         }
@@ -67,7 +67,8 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
 
     private fun setSheetValues() {
         showCloseIcon = false
-        isFullpage = true
+        isDragable = true
+        isHideable = true
         setTitle(getString(R.string.topads_headline_recom_grp_bs_title))
     }
 

@@ -29,7 +29,7 @@ data class GroupListDataItem(
         val groupStatusDesc: String = "",
 
         @field:SerializedName("group_id")
-        val groupId: Int = 0,
+        val groupId: String = "0",
 
         @field:SerializedName("group_name")
         val groupName: String = "",

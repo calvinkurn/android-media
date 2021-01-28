@@ -12,7 +12,7 @@ open class KeywordsItem(
         @SerializedName("source")
         var source: String = "dashboard_add_product",
         @SerializedName("priceBid")
-        var priceBid: Int = 0,
+        var priceBid: Double = 0.0,
         @SerializedName("status")
         var status: String = "1"
 )

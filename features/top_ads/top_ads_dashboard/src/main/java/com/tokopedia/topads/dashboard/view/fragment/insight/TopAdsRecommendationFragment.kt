@@ -44,7 +44,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         const val HEIGHT = "addp_bar_height"
         fun createInstance(height: Int?): TopAdsRecommendationFragment {
             val bundle = Bundle()
-            bundle.putInt(HEIGHT,height?:0)
+            bundle.putInt(HEIGHT, height ?: 0)
             val fragment = TopAdsRecommendationFragment()
             fragment.arguments = bundle
             return fragment
@@ -73,7 +73,6 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as TopAdsDashboardActivity?)?.hideButton(true)
         topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
         topAdsDashboardPresenter.getProductRecommendation(::onSuccessProductRecommendation)
         topAdsDashboardPresenter.getDailyBudgetRecommendation(::onSuccessBudgetRecommendation)
@@ -101,11 +100,10 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private fun checkAllData() {
         if (productRecommendData == null || keywordRecommendData == null || dailyBudgetRecommendData == null)
             return
+        (activity as TopAdsDashboardActivity?)?.hideButton(countProduct == 0)
         if (countProduct == 0 && countBid == 0 && countKey == 0) {
-            (activity as TopAdsDashboardActivity?)?.hideButton(true)
             setEmptyView()
         } else {
-            (activity as TopAdsDashboardActivity?)?.hideButton(countProduct == 0)
             initInsightTabAdapter()
             renderViewPager()
             topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, countBid, countKey)
@@ -169,5 +167,10 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         if (fragments?.firstOrNull() is TopAdsInsightBaseProductFragment?) {
             (fragments?.get(0) as TopAdsInsightBaseProductFragment).openBottomSheet()
         }
+    }
+
+    fun checkButtonVisibility() {
+        if (productRecommendData != null)
+            (activity as TopAdsDashboardActivity?)?.hideButton(countProduct == 0)
     }
 }

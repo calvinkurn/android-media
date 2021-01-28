@@ -96,7 +96,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             finish()
         })
 
-        multiActionBtn.setOnClickListener {
+        multiActionBtn?.setOnClickListener {
             if (tab_layout?.getUnifyTabLayout()?.selectedTabPosition == 0)
                 navigateToAdTypeSelection()
             if (tab_layout?.getUnifyTabLayout()?.selectedTabPosition == 3) {
@@ -126,10 +126,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                         setPadding()
                     }
                     INSIGHT_PAGE -> {
-                        bottom.visibility = View.VISIBLE
+                        bottom.visibility = View.GONE
                         multiActionBtn.buttonSize = UnifyButton.Size.MEDIUM
                         multiActionBtn?.text = getString(R.string.topads_iklankan_button)
-                        setPadding()
+                        checkVisibility()
                     }
                     else -> {
                         bottom.visibility = View.GONE
@@ -141,12 +141,25 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenScreenEvent()
     }
 
+    private fun checkVisibility() {
+        val fragments = (view_pager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
+        for (frag in fragments) {
+            when (frag.fragment) {
+                is TopAdsRecommendationFragment -> {
+                    (frag.fragment as TopAdsRecommendationFragment).checkButtonVisibility()
+                }
+            }
+        }
+    }
+
     fun hideButton(toHide: Boolean) {
-        bottom.visibility = if (toHide) View.GONE else View.VISIBLE
-        if (!toHide) {
-            view_pager?.setPadding(0, 0, 0, 0)
-        } else {
-            setPadding()
+        if (view_pager.currentItem != 0) {
+            bottom.visibility = if (toHide) View.GONE else View.VISIBLE
+            if (toHide) {
+                view_pager?.setPadding(0, 0, 0, 0)
+            } else {
+                setPadding()
+            }
         }
     }
 

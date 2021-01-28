@@ -7,13 +7,9 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.topads.common.data.response.GetKeywordResponse
+import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.di.ActivityContext
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.common.data.response.GroupEditInput
-import com.tokopedia.topads.common.data.response.FinalAdResponse
-import com.tokopedia.topads.common.data.response.KeywordEditInput
-import com.tokopedia.topads.common.data.response.TopadsManageGroupAdsInput
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.ACTION_ADD
@@ -113,10 +109,10 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         group?.scheduleStart = ""
         group?.scheduleEnd = ""
         if (isBudgetLimited == true) {
-            group?.dailyBudget = 0
+            group?.dailyBudget = 0.0
         } else
-            group?.dailyBudget = dailyBudgetGroup
-        group?.priceBid = priceBidGroup
+            group?.dailyBudget = dailyBudgetGroup?.toDouble()
+        group?.priceBid = priceBidGroup?.toDouble()
         val productList: MutableList<GroupEditInput.Group.AdOperationsItem> = mutableListOf()
         val keywordList: MutableList<KeywordEditInput> = mutableListOf()
         dataAddProduct?.forEach { x ->

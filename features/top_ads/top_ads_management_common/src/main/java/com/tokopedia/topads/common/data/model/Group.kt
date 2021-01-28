@@ -8,13 +8,13 @@ open class Group(
         @SerializedName("source")
         var source: String = "dashboard_add_product",
         @SerializedName("priceBid")
-        var priceBid: Int = 0,
+        var priceBid: Double = 0.0,
         @SerializedName("suggestedBidValue")
-        var suggestedBidValue: Int = 0,
+        var suggestedBidValue: Double = 0.0,
         @SerializedName("ads")
         var ads: List<AdsItem> = listOf(),
         @SerializedName("groupName")
         var groupName: String = "",
         @SerializedName("priceDaily")
-        var priceDaily: Int = 0,
+        var priceDaily: Double = 0.0,
 )
