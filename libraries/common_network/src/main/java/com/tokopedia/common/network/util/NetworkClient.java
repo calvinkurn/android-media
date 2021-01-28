@@ -24,7 +24,6 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 public class NetworkClient {
     private static Retrofit sRetrofit = null;
     private static RestApi sRestApi = null;
-    private static Retrofit retrofitCustomInterceptor = null;
     private static FingerprintManager sFingerprintManager = null;
     private static UserSession sUserSession;
     private static RestDatabase sRestDatabase;
@@ -91,7 +90,7 @@ public class NetworkClient {
     }
 
     // region init retrofit to support custom interceptor
-    public static void initRetrofitWithInterceptors(@NonNull List<Interceptor> interceptors,
+    public static RestApi getApiInterfaceCustomInterceptor(@NonNull List<Interceptor> interceptors,
                                                     @NonNull Context context) {
         UserSession userSession = new UserSession(context.getApplicationContext());
         TkpdOkHttpBuilder okkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
@@ -105,24 +104,11 @@ public class NetworkClient {
             }
         }
 
-        retrofitCustomInterceptor = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .baseUrl(RestConstant.BASE_URL)
                 .addConverterFactory(new StringResponseConverter())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(okkHttpBuilder.build()).build();
-
-        sUserSession = new UserSession(context);
-    }
-
-    private static Retrofit getRetrofitCustomInterceptor() {
-        if (retrofitCustomInterceptor == null) {
-            throw new RuntimeException("Please call initRetrofitWithInterceptors() to start the network library.");
-        }
-        return retrofitCustomInterceptor;
-    }
-
-    public static RestApi getApiInterfaceCustomInterceptor() {
-        return getRetrofitCustomInterceptor().create(RestApi.class);
+                .client(okkHttpBuilder.build()).build().create(RestApi.class);
     }
     //endregion
 }
