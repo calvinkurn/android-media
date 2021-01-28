@@ -3,6 +3,7 @@ package com.tokopedia.shop.pageheader.presentation
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -14,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseCoreAndAssetsQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
@@ -40,8 +42,11 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopRep
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
+import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.ShopRequestUnmoderateUseCase
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -58,6 +63,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -76,6 +82,8 @@ class ShopPageViewModel @Inject constructor(
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
         private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
+        private val shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>,
+        private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
         private val firebaseRemoteConfig: RemoteConfig,
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
@@ -100,6 +108,16 @@ class ShopPageViewModel @Inject constructor(
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
     var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
     val shopImagePath = MutableLiveData<String>()
+
+    private val _shopUnmoderateData = MutableLiveData<Result<ShopRequestUnmoderateSuccessResponse>>()
+    val shopUnmoderateData : LiveData<Result<ShopRequestUnmoderateSuccessResponse>>
+        get() = _shopUnmoderateData
+
+    private val _shopModerateRequestStatus = MutableLiveData<Result<ShopModerateRequestData>>()
+    val shopModerateRequestStatus : LiveData<Result<ShopModerateRequestData>>
+        get() = _shopModerateRequestStatus
+
+
     private val TEN_MINUTE_MS: Long = 1000 * 60 * 10.toLong()
 
     fun getShopPageTabData(
@@ -189,6 +207,33 @@ class ShopPageViewModel @Inject constructor(
         useCase.isFromCacheFirst = !isRefresh
         useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain)
         return useCase.executeOnBackground()
+    }
+
+    fun checkShopRequestModerateStatus() {
+        launchCatchError(dispatcherProvider.io, {
+            val shopModerateRequestStatusUseCase = shopModerateRequestStatusUseCase.get()
+            val shopModerateRequestStatusResponse = withContext(dispatcherProvider.io) {
+                shopModerateRequestStatusUseCase.executeOnBackground()
+            }
+            _shopModerateRequestStatus.postValue(Success(shopModerateRequestStatusResponse))
+        }) {
+            _shopModerateRequestStatus.postValue(Fail(it))
+        }
+    }
+
+    fun sendRequestUnmoderateShop(shopId : Double, optionValue : String) {
+        launchCatchError(dispatcherProvider.io, {
+            val shopUnmoderateUseCase = shopRequestUnmoderateUseCase.get().apply {
+                params = ShopRequestUnmoderateUseCase.createRequestParams(shopId, optionValue)
+            }
+            val shopUnmoderateResponse = withContext(dispatcherProvider.io) {
+                shopUnmoderateUseCase.executeOnBackground()
+            }
+            _shopUnmoderateData.postValue(Success(shopUnmoderateResponse))
+
+        }) {
+            _shopUnmoderateData.postValue(Fail(it))
+        }
     }
 
     fun saveShopImageToPhoneStorage(context: Context?, shopSnippetUrl: String) {

@@ -10,7 +10,8 @@ import com.tokopedia.shop.R
 import kotlinx.android.synthetic.main.item_shop_request_unmoderate.view.*
 
 class ShopRequestUnmoderateBottomSheetAdapter(
-        context: Context?
+        context: Context?,
+        private val bottomsheetViewHolderListener: ShopRequestUnmoderateBottomsheetViewHolderListener
 ) : RecyclerView.Adapter<ShopRequestUnmoderateBottomSheetAdapter.ShopRequestUnmoderateBottomSheetViewHolder>() {
 
     companion object {
@@ -58,6 +59,7 @@ class ShopRequestUnmoderateBottomSheetAdapter(
             itemView.setOnClickListener {
                 lastSelectedRadioPosition = adapterPosition
                 notifyDataSetChanged()
+                bottomsheetViewHolderListener.setOptionValue(item.optionValue)
             }
         }
 
@@ -65,6 +67,9 @@ class ShopRequestUnmoderateBottomSheetAdapter(
 
 }
 
+interface ShopRequestUnmoderateBottomsheetViewHolderListener {
+    fun setOptionValue(optionValue : String?)
+}
 
 /**
  * Shop unmoderate option ui model

@@ -17,6 +17,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
@@ -229,8 +230,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                 when (shopPageHeaderDataModel.shopStatus) {
                     ShopStatusDef.MODERATED -> {
                         if(isMyShop) {
-                            // show request unmoderate bottomsheet
-                            listener.showShopUnmoderateRequestBottomSheet(ShopRequestUnmoderateBottomSheet.createInstance())
+                            // set request unmoderate bottomsheet
+                            listener.setShopUnmoderateRequestBottomSheet(ShopRequestUnmoderateBottomSheet.createInstance().apply {
+                                init(listener)
+                            })
                         }
                     }
                     else -> listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
@@ -327,7 +330,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
         fun openShopInfo()
         fun onStartLiveStreamingClicked()
-        fun showShopUnmoderateRequestBottomSheet(shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet)
+        fun onSendRequestOpenModerate(optionValue : String)
+        fun onCompleteSendRequestOpenModerate()
+        fun onCompleteCheckRequestModerateStatus(moderateStatusResult : ShopModerateRequestResult)
+        fun setShopUnmoderateRequestBottomSheet(bottomSheet: ShopRequestUnmoderateBottomSheet)
     }
 
 

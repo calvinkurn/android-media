@@ -4,9 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ShopRequestUnmoderateBaseResponse(
-)
-
-data class ShopRequestUnmoderateResponse(
         @SerializedName("errors")
         @Expose
         val errors : List<ShopRequestUnmoderateErrorResponse> = listOf(),
@@ -21,7 +18,7 @@ data class ShopRequestUnmoderateErrorResponse(
         val message : String = "",
         @SerializedName("path")
         @Expose
-        val path : List<String> = listOf(),
+        val path : List<String>? = listOf(),
         @SerializedName("extensions")
         @Expose
         val extensions : ShopRequestUnmoderateErrorResponseExtensions = ShopRequestUnmoderateErrorResponseExtensions()

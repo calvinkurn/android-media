@@ -39,6 +39,7 @@ import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -68,12 +69,14 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
+import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_CONTENT_DATA_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_CONTENT_DATA_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
@@ -247,6 +250,7 @@ class ShopPageFragment :
     private var shopPageHeaderDataModel: ShopPageHeaderDataModel? = null
     private var initialProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
+    private var shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
@@ -278,6 +282,8 @@ class ShopPageFragment :
         shopViewModel.shopPageP1Data.removeObservers(this)
         shopViewModel.shopPageHeaderContentData.removeObservers(this)
         shopViewModel.shopImagePath.removeObservers(this)
+        shopViewModel.shopUnmoderateData.removeObservers(this)
+        shopViewModel.shopModerateRequestStatus.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel.flush()
@@ -409,6 +415,58 @@ class ShopPageFragment :
                     init(this@ShopPageFragment)
                 }
                 shopShareBottomSheet?.show(fragmentManager)
+            }
+        })
+
+        shopViewModel.shopUnmoderateData.observe(owner, Observer {
+            when (it) {
+                is Success -> {
+                    onCompleteSendRequestOpenModerate()
+                    it.data.moderateShop?.let { moderateShop ->
+                        if(moderateShop.success) {
+                            showToasterShopUnmoderate(
+                                    getString(R.string.shop_page_header_request_unmoderate_success_message),
+                                    Toaster.TYPE_NORMAL
+                            )
+                        } else {
+                            showToasterShopUnmoderate(moderateShop.message, Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+                is Fail -> {
+                    onCompleteSendRequestOpenModerate()
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_REQ_UNMODERATE_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${errorMessage}'" +
+                                    ";error_trace='${Log.getStackTraceString(it.throwable)}'"
+                    )
+                    showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
+                }
+            }
+        })
+
+        shopViewModel.shopModerateRequestStatus.observe(owner, Observer {
+            when (it) {
+                is Success -> {
+                    val moderateStatusRequestResponse = it.data.shopModerateRequestStatus
+                    if(moderateStatusRequestResponse.error.message.isEmpty()) {
+                        onCompleteCheckRequestModerateStatus(moderateStatusRequestResponse.result)
+                    } else  {
+                        showToasterShopUnmoderate(moderateStatusRequestResponse.error.message, Toaster.TYPE_ERROR)
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_CHECK_UNMODERATE_STATUS_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${errorMessage}'" +
+                                    ";error_trace='${Log.getStackTraceString(it.throwable)}'"
+                    )
+                    showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
+                }
             }
         })
 
@@ -1323,8 +1381,34 @@ class ShopPageFragment :
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
     }
 
-    override fun showShopUnmoderateRequestBottomSheet(shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet) {
-        shopUnmoderateBottomSheet.show(fragmentManager)
+    override fun onSendRequestOpenModerate(choosenOptionValue : String) {
+        shopViewModel.sendRequestUnmoderateShop(
+                shopId = shopId.toDoubleOrZero(),
+                optionValue = choosenOptionValue
+        )
+    }
+
+    override fun setShopUnmoderateRequestBottomSheet(bottomSheet: ShopRequestUnmoderateBottomSheet) {
+        shopUnmoderateBottomSheet = bottomSheet
+        shopUnmoderateBottomSheet?.show(fragmentManager)
+        shopUnmoderateBottomSheet?.showLoading()
+        shopViewModel.checkShopRequestModerateStatus()
+    }
+
+    override fun onCompleteCheckRequestModerateStatus(moderateStatusResult: ShopModerateRequestResult) {
+        when (moderateStatusResult.status) {
+            ShopModerateRequestStatusCode.SHOP_MODERATED, ShopModerateRequestStatusCode.SHOP_MODERATION_REQUEST_REJECTED -> {
+                shopUnmoderateBottomSheet?.showOptionList()
+            }
+            ShopModerateRequestStatusCode.SHOP_REQUESTING_OPEN_MODERATE -> {
+                shopUnmoderateBottomSheet?.showModerateStatus()
+            }
+        }
+    }
+
+    override fun onCompleteSendRequestOpenModerate() {
+        shopUnmoderateBottomSheet?.setLoadingButton(false)
+        shopUnmoderateBottomSheet?.dismiss()
     }
 
     override fun onCloseBottomSheet() {
@@ -1542,6 +1626,15 @@ class ShopPageFragment :
                 getString(R.string.shop_page_play_widget_sgc_video_deleted),
                 Toaster.LENGTH_SHORT,
                 Toaster.TYPE_NORMAL
+        ).show()
+    }
+
+    private fun showToasterShopUnmoderate(message: String, type: Int) {
+        Toaster.build(
+                requireView(),
+                message,
+                Toaster.LENGTH_SHORT,
+                type
         ).show()
     }
 
