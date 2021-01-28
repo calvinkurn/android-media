@@ -63,7 +63,7 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
             followLiveData.postValue(LiveDataResult.loading())
             val response = followUseCase.getResponse(followUseCase.getQueryParams(shopId))
             val success = response?.followShop?.success
-            if (success != null) {
+            if (success == true) {
                 followLiveData.postValue(LiveDataResult.success(membershipRegistrationSuccessMessage))
                 getListData(shopId)
             } else {
