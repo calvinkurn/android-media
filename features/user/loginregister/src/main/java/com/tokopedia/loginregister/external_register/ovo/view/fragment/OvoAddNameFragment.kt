@@ -72,6 +72,7 @@ class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
             val intent = Intent(this, ExternalRegisterWebViewActivity::class.java).apply {
                 putExtra(ExternalRegisterConstants.PARAM.URL, url)
             }
+            intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
             startActivity(intent)
         }
     }

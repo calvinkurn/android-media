@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.external_register.base.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,7 @@ class ExternalRegisterWebViewFragment: BaseDaggerFragment() {
                     if(url?.startsWith(ApplinkConstInternalGlobal.OVO_REG_INIT) == true && response.isNotEmpty()){
                         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OVO_REG_INIT)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY, response)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
                         startActivity(intent)
                         activity?.finish()
                     }
