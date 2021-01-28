@@ -51,6 +51,7 @@ import java.util.concurrent.TimeUnit
 /**
  * @author anggaprasetiyo on 13/03/18.
  */
+@SuppressLint("ClickableViewAccessibility")
 class CartItemViewHolder constructor(itemView: View,
                                      private val compositeSubscription: CompositeSubscription,
                                      private var actionListener: CartItemAdapter.ActionListener?) : RecyclerView.ViewHolder(itemView) {
