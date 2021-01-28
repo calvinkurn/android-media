@@ -94,7 +94,7 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
                 " " + bottomSheetTitle.text.toString().toLowerCase(locale)
         searchBarData.searchBarTextField.afterTextChanged { text ->
             val filteredElements = tempSearchData.filter {
-                it.text.toLowerCase(locale).startsWith(text)
+                it.text.startsWith(text, ignoreCase = true)
             }
             listAdapter?.setElements(filteredElements)
         }
