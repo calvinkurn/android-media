@@ -16,8 +16,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.sellerhomenavigationcommon.plt.SomListLoadTimeMonitoring
-import com.example.sellerhomenavigationcommon.plt.SomListLoadTimeMonitoringActivity
+import com.tokopedia.sellerhomenavigationcommon.plt.SomListLoadTimeMonitoring
+import com.tokopedia.sellerhomenavigationcommon.plt.SomListLoadTimeMonitoringActivity
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment

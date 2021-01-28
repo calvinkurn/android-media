@@ -8,7 +8,7 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.sellerhomenavigationcommon.plt.LoadTimeMonitoringListener
+import com.tokopedia.sellerhomenavigationcommon.plt.LoadTimeMonitoringListener
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeIdlingResource

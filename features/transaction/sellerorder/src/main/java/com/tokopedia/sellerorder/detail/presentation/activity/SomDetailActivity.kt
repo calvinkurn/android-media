@@ -8,7 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.example.sellerhomenavigationcommon.plt.LoadTimeMonitoringListener
+import com.tokopedia.sellerhomenavigationcommon.plt.LoadTimeMonitoringListener
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder

@@ -6,7 +6,7 @@ import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.example.sellerhomenavigationcommon.plt.LoadTimeMonitoringListener
+import com.tokopedia.sellerhomenavigationcommon.plt.LoadTimeMonitoringListener
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.sellerorder.SomIdlingResource
 import com.tokopedia.sellerorder.common.presenter.model.Roles
@@ -17,9 +17,7 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor
-import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
