@@ -26,7 +26,7 @@ object ViewUtils {
         saveImage(this, dir, fileName, bitmap)
     }
 
-    private fun saveImage(activity: Activity, dir: String, fileName: String, bitmap: Bitmap?) {
+    fun saveImage(activity: Activity, dir: String, fileName: String, bitmap: Bitmap?) {
         val path = activity.getExternalFilesDir(null)
         val imageDir = File(path, dir)
 

@@ -6,9 +6,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.fragment.app.Fragment
+import androidx.test.runner.screenshot.Screenshot
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragmentDiffutil
-import com.tokopedia.utils.view.ViewUtils.screenShotAndSave
+import com.tokopedia.utils.view.ViewUtils.saveImage
 
 
 /**
@@ -55,11 +56,12 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity() {
 
     fun takeScreenShot(screenshotName: String) {
         Handler(Looper.getMainLooper()).post {
-            screenShotAndSave(window.decorView, "", screenshotName)
+            val bitmap = Screenshot.capture(this).bitmap;
+            saveImage(this, "", screenshotName, bitmap)
         }
     }
 
-    fun getLastPositionIndex() : Int {
+    fun getLastPositionIndex(): Int {
         val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragmentDiffutil
         return fragment.productAdapter?.currentList?.indexOfFirst {
             it.name() == "pdp_5"
