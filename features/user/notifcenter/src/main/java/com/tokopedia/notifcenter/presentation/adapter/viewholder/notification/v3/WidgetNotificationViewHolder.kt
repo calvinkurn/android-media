@@ -34,7 +34,6 @@ class WidgetNotificationViewHolder constructor(
         initRecyclerView()
     }
 
-    // TODO: How to inflate once and when only expanded ?
     private fun initRecyclerView() {
         historyTimeLine?.apply {
             setHasFixedSize(true)
