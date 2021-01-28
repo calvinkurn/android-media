@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -21,8 +22,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.di.shopeditaddress.ShopEditAddressComponent
+import com.tokopedia.editshipping.domain.model.shopeditaddress.ShopEditAddressState
 import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_LAT
 import com.tokopedia.editshipping.util.EditShippingConstant.DEFAULT_LONG
@@ -63,6 +66,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var currentLong: Double = 0.0
     private var detailAddressHelper: String = ""
 
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var etShopLocationWrapper: TextInputLayout? = null
     private var etShopLocation: TextInputEditText? = null
     private var etKotaKecamatanWrapper: TextInputLayout? = null
@@ -200,6 +204,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun initViews() {
+        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
         etShopLocationWrapper = view?.findViewById(R.id.et_nama_lokasi_shop_wrapper)
         etShopLocation = view?.findViewById(R.id.et_nama_lokasi_shop)
         etKotaKecamatanWrapper = view?.findViewById(R.id.et_kota_kecamatan_shop_wrapper)
@@ -262,18 +267,74 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         viewModel.saveEditShop.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> {
+                is ShopEditAddressState.Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
                     view?.let { view -> Toaster.build(view, "Detail lokasi telah diubah", Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
                     activity?.run {
                         setResult(Activity.RESULT_OK)
                         finish()
                     }
                 }
-                is Fail -> {
+                is ShopEditAddressState.Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
                     view?.let { view -> Toaster.build(view, DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
                 }
+
+                else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
+
+        viewModel.checkCouriers.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is ShopEditAddressState.Success -> {
+                    checkCouriersCoverage(it.data.data.isCovered)
+                }
+
+                is ShopEditAddressState.Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    view?.let { view -> Toaster.build(view, DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
+                }
+
+                else -> swipeRefreshLayout?.isRefreshing = true
+            }
+        })
+
+    }
+
+    private fun checkCouriersCoverage(isCoverage: Boolean) {
+        if (isCoverage) {
+            val latLong = "$currentLat,$currentLong"
+            warehouseModel?.let {
+                viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation?.text.toString(),
+                        it.districtId, latLong, userSession.email, etShopDetail?.text.toString(),
+                        etZipCode?.text.toString(), userSession.phoneNumber)
+            }
+        } else {
+            swipeRefreshLayout?.isRefreshing = false
+            showDialog()
+        }
+    }
+
+    private fun showDialog() {
+        val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.apply {
+            setTitle("Kurir pilihanmu tidak tersedia di lokasi baru ini")
+            setDescription("Aktifkan kurir lainnya lewat Atur Pengiriman agar lokasi tokomu yang baru dapat melakukan pengiriman.")
+            setPrimaryCTAText("Simpan & Atur Pengiriman")
+            setPrimaryCTAClickListener {
+                val latLong = "$currentLat,$currentLong"
+                warehouseModel?.let {
+                    viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation?.text.toString(),
+                            it.districtId, latLong, userSession.email, etShopDetail?.text.toString(),
+                            etZipCode?.text.toString(), userSession.phoneNumber)
+                }
+            }
+            setSecondaryCTAText("Batalkan")
+            setSecondaryCTAClickListener {
+                dialog.hide()
+            }
+            show()
+        }
     }
 
     private fun prepareMap() {
@@ -304,11 +365,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         btnSave?.setOnClickListener {
             warehouseModel?.let { it ->
-                val latLong = "$currentLat,$currentLong"
                 if(validate) {
-                    viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation?.text.toString(),
-                            it.districtId, latLong, userSession.email, etShopDetail?.text.toString(),
-                            etZipCode?.text.toString(), userSession.phoneNumber)
+                    viewModel.checkCouriersAvailability(userSession?.shopId.toInt(), it.districtId)
                 }
             }
         }
@@ -317,7 +375,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         if (warehouseModel?.latLon?.isNotEmpty() == true) {
             viewModel.getDistrictGeocode(warehouseModel?.latLon)
-        } else viewModel.getDistrictGeocode("$DEFAULT_LAT, $DEFAULT_LONG")
+        } else viewModel.getDistrictGeocode("$DEFAULT_LAT,$DEFAULT_LONG")
 
     }
 

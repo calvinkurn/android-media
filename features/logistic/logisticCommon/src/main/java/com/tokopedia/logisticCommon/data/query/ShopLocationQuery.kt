@@ -88,4 +88,20 @@ object ShopLocationQuery {
         }
     """.trimIndent()
 
+
+    val shopLocCheckCouriers = """
+        query ShopLocCheckCouriersNewLoc(${'$'}shop_id: Int!, ${'$'}district_id: Int!) {
+          ShopLocCheckCouriersNewLoc(shop_id: ${'$'}shop_id, district_id: ${'$'}district_id) {
+            status
+            message
+            error {
+              id
+              description
+            }
+            data {
+              is_covered
+            } 
+          }
+        }
+    """.trimIndent()
 }

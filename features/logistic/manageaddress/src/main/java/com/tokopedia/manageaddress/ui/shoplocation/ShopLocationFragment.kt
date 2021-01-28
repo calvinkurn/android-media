@@ -159,6 +159,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         viewModel.result.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ShopLocationState.Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
                     if (warehouseStatus == 1) {
                         view?.let { view -> Toaster.build(view, getString(R.string.text_deactivate_success, warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
                     } else {
@@ -168,7 +169,12 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                 }
 
                 is ShopLocationState.Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
                     view?.let { view -> Toaster.build(view, ManageAddressConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
+                }
+
+                else -> {
+                    swipeRefreshLayout?.isRefreshing = true
                 }
             }
         })
@@ -272,7 +278,6 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
             bottomSheetAddressType?.dismiss()
         }
     }
-
 
     private fun handleError(throwable: Throwable) {
         when (throwable) {

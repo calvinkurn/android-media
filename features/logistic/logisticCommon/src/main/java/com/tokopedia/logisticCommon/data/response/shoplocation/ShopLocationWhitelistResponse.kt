@@ -13,16 +13,9 @@ data class ShopLocWhitelist(
         @SerializedName("message")
         var message: String = "",
         @SerializedName("error")
-        var error: ErrorWhitelist = ErrorWhitelist(),
+        var error: Error = Error(),
         @SerializedName("data")
         var data: DataWhitelist = DataWhitelist()
-)
-
-data class ErrorWhitelist(
-        @SerializedName("id")
-        var id: Int = -1,
-        @SerializedName("description")
-        var description: String = ""
 )
 
 data class DataWhitelist(

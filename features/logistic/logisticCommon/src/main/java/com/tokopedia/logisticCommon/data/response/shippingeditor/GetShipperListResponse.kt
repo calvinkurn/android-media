@@ -87,6 +87,6 @@ data class Ticker(
         var body: String = "",
         @SerializedName("text_link")
         var textLink: String = "",
-        @SerializedName("urlLink")
+        @SerializedName("url_link")
         var urlLink: String = ""
 )

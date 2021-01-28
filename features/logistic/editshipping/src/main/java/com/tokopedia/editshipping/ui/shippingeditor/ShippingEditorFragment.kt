@@ -253,14 +253,14 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private fun setDataCourierNotCovered(data: ValidateShippingEditorModel) {
         bottomSheetCourierInactiveState = BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE
         bottomSheetCourierInactiveAdapter.setData(data.uiContent.warehouses)
-        bottomSheetCourierInactiveAdapter.setInactiveWarehouseValidate(data.uiContent)
+//        bottomSheetCourierInactiveAdapter.setInactiveWarehouseValidate(data.uiContent)
         openBottomSheetValidateCoureirNotCovered(data)
     }
 
     private fun setDataBoAndCourierNotCovered(data: ValidateShippingEditorModel) {
         bottomSheetCourierInactiveState = BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_BO_STATE
         bottomSheetCourierInactiveAdapter.setData(data.uiContent.warehouses)
-        bottomSheetCourierInactiveAdapter.setInactiveWarehouseValidate(data.uiContent)
+//        bottomSheetCourierInactiveAdapter.setInactiveWarehouseValidate(data.uiContent)
         openBottomSheetValidateCoureirNotCovered(data)
     }
 
@@ -510,7 +510,10 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     }
 
     private fun saveButtonShippingEditor() {
-        viewModel.validateShippingEditor(userSession?.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()))
+        val activatedSpIds = getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds())
+        if (activatedSpIds.isEmpty()) {
+            view?.let { Toaster.build(it, EditShippingConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
+        } else viewModel.validateShippingEditor(userSession?.shopId.toInt(), activatedSpIds)
     }
 
     private fun getListActivatedSpIds(onDemandList: List<String>, conventionalList: List<String>): String {

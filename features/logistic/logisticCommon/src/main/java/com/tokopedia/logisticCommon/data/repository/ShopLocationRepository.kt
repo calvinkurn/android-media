@@ -3,10 +3,7 @@ package com.tokopedia.logisticCommon.data.repository
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logisticCommon.data.query.ShopLocationQuery
-import com.tokopedia.logisticCommon.data.response.shoplocation.GetShopLocationResponse
-import com.tokopedia.logisticCommon.data.response.shoplocation.SetShopLocationStatusResponse
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationUpdateWarehouseResponse
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationWhitelistResponse
+import com.tokopedia.logisticCommon.data.response.shoplocation.*
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
 
@@ -56,6 +53,13 @@ class ShopLocationRepository @Inject constructor(private val gql: GraphqlReposit
         val param = mapOf("shop_id" to shopId)
         val request = GraphqlRequest(ShopLocationQuery.shopLocationWhitelist,
                 ShopLocationWhitelistResponse::class.java, param)
+        return gql.getResponse(request)
+    }
+
+    suspend fun shopCheckCouriersNewLoc(shopId: Int, districtId: Int): ShopLocCheckCouriersNewLocResponse {
+        val param = mapOf("shop_id" to shopId, "district_id" to districtId)
+        val request = GraphqlRequest(ShopLocationQuery.shopLocCheckCouriers,
+                ShopLocCheckCouriersNewLocResponse::class.java, param)
         return gql.getResponse(request)
     }
 }

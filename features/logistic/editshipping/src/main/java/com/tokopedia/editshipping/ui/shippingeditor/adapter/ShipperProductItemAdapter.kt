@@ -31,6 +31,7 @@ class ShipperProductItemAdapter(): RecyclerView.Adapter<ShipperProductItemAdapte
     }
 
     fun addData(data: List<ShipperProductModel>) {
+        shipperProduct.clear()
         shipperProduct.addAll(data)
         notifyDataSetChanged()
     }

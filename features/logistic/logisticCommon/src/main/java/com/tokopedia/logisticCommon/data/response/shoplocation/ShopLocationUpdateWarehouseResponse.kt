@@ -13,16 +13,9 @@ data class ShopLocUpdateWarehouse(
         @SerializedName("message")
         var message: String = "",
         @SerializedName("error")
-        var error: ErrorWarehouse = ErrorWarehouse(),
+        var error: Error = Error(),
         @SerializedName("data")
         var data: DataWarehouse = DataWarehouse()
-)
-
-data class ErrorWarehouse(
-        @SerializedName("id")
-        var id: Int = -1,
-        @SerializedName("description")
-        var description: String = ""
 )
 
 data class DataWarehouse(

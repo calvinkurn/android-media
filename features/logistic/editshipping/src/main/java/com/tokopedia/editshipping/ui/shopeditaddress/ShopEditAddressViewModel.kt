@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.editshipping.domain.mapper.AutoCompleteMapper
 import com.tokopedia.editshipping.domain.model.shopeditaddress.DistrictLocation
+import com.tokopedia.editshipping.domain.model.shopeditaddress.ShopEditAddressState
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
+import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriers
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocUpdateWarehouse
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,8 +33,8 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
     val districtLocation: LiveData<Result<DistrictLocation>>
         get() = _districtLocation
 
-    private val _saveEditShop = MutableLiveData<Result<ShopLocUpdateWarehouse>>()
-    val saveEditShop: LiveData<Result<ShopLocUpdateWarehouse>>
+    private val _saveEditShop = MutableLiveData<ShopEditAddressState<ShopLocUpdateWarehouse>>()
+    val saveEditShop: LiveData<ShopEditAddressState<ShopLocUpdateWarehouse>>
         get() = _saveEditShop
 
     private val _zipCodeList = MutableLiveData<Result<KeroDistrictRecommendation>>()
@@ -42,6 +44,10 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
     private val _districtGeocode = MutableLiveData<Result<KeroMapsAutofill>>()
     val districtGeocode: LiveData<Result<KeroMapsAutofill>>
         get() = _districtGeocode
+
+    private val _checkCouriers = MutableLiveData<ShopEditAddressState<ShopLocCheckCouriers>>()
+    val checkCouriers: LiveData<ShopEditAddressState<ShopLocCheckCouriers>>
+        get() = _checkCouriers
 
 
     fun getAutoCompleteList(keyword: String) {
@@ -75,9 +81,19 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
     fun saveEditShopLocation(shopId: Int, warehouseId: Int, warehouseName: String,
                              districtId: Int, latLon: String, email: String,
                              addressDetail: String, postalCode: String, phone: String) {
+        _saveEditShop.value = ShopEditAddressState.Loading
         viewModelScope.launch(onErrorSaveEditShopLocation) {
             val saveEditLocation  = shopRepo.saveEditShopLocation(shopId, warehouseId, warehouseName, districtId, latLon, email, addressDetail, postalCode, phone)
-            _saveEditShop.value = Success(saveEditLocation.shopLocUpdateWarehouse)
+            _saveEditShop.value = ShopEditAddressState.Success(saveEditLocation.shopLocUpdateWarehouse)
+        }
+    }
+
+
+    fun checkCouriersAvailability(shopId: Int, districtId: Int) {
+        _checkCouriers.value = ShopEditAddressState.Loading
+        viewModelScope.launch {
+            val getCheckCouriersData = shopRepo.shopCheckCouriersNewLoc(shopId, districtId)
+            _checkCouriers.value = ShopEditAddressState.Success(getCheckCouriersData.shopLocCheckCouriers)
         }
     }
 
@@ -98,6 +114,6 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
     }
 
     private val onErrorSaveEditShopLocation = CoroutineExceptionHandler { _, e ->
-        _saveEditShop.value = Fail(e)
+        _saveEditShop.value = ShopEditAddressState.Fail(e, "")
     }
 }
