@@ -65,7 +65,6 @@ dependencies {
     implementation project(rootProject.ext.features.variantCommon)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.thankYouNative)
-    implementation project(rootProject.ext.features.paylater)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
