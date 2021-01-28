@@ -340,6 +340,16 @@
     <string name="topads_dash_grp_bs_empty">Oops, pencarianmu tidak ditemukan!</string>
     <string name="topads_dash_name_empty_error">Nama group tidak boleh kosong</string>
 
+    <string name="topads_dash_cd_folder">folder image</string>
+    <string name="topads_dash_cd_arrow">Arrow image</string>
+    <string name="topads_dash_cd_search">search image</string>
+    <string name="topads_dash_cd_up_icon">up arrow image</string>
+    <string name="topads_dash_cd_saldo">saldo image</string>
+
+
+
+
+
 
     <!-- HEADLINE -->
     <string name="topads_dash_headline_title">Iklan Toko</string>

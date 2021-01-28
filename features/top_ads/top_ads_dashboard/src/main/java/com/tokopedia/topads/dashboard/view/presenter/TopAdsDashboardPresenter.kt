@@ -30,6 +30,7 @@ import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.common.data.response.groupitem.GroupStatisticsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.domain.interactor.*
 import com.tokopedia.topads.common.domain.usecase.*
 import com.tokopedia.topads.dashboard.R
@@ -84,7 +85,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
 
     companion object {
         const val HIDDEN_TRIAL_FEATURE = 21
-        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale)
         const val STATS_URL = """query topadsDashboardStatistics (${'$'}startDate: String!, ${'$'}endDate: String!,${'$'}shopID: Int!,${'$'}type:Int,${'$'}group:String){
     topadsDashboardStatistics(startDate:${'$'}startDate,endDate:${'$'}endDate,shopID:${'$'}shopID,type:${'$'}type,group:${'$'}group){
     data{

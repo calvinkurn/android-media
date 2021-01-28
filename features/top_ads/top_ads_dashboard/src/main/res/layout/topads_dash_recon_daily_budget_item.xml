@@ -3,18 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_marginBottom="@dimen/dp_16"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_16">
 
     <ImageView
         android:id="@+id/img_folder"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_16"
+        android:contentDescription="@string/topads_dash_cd_folder"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_dash_folder_with_border"
-        tools:ignore="ContentDescription" />
+        app:srcCompat="@drawable/topads_dash_folder_with_border" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/groupName"
@@ -52,12 +52,12 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/topads_dash_cd_arrow"
         app:layout_constraintBottom_toBottomOf="@id/daily_budget_value"
         app:layout_constraintEnd_toStartOf="@id/recom_budget"
         app:layout_constraintStart_toEndOf="@id/daily_budget_text"
         app:layout_constraintTop_toTopOf="@id/daily_budget_text"
-        app:srcCompat="@drawable/topads_arrow_green"
-        tools:ignore="ContentDescription" />
+        app:srcCompat="@drawable/topads_arrow_green" />
 
 
     <com.tokopedia.unifyprinciples.Typography
