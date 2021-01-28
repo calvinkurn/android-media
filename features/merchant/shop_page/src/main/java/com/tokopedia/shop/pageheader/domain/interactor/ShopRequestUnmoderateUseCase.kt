@@ -22,7 +22,7 @@ class ShopRequestUnmoderateUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ShopRequestUnmoderateSuccessResponse {
-        val request = GraphqlRequest(MUTATION, ShopRequestUnmoderateBaseResponse::class.java, params.parameters)
+        val request = GraphqlRequest(MUTATION, ShopRequestUnmoderateSuccessResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(
                 listOf(request),
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()

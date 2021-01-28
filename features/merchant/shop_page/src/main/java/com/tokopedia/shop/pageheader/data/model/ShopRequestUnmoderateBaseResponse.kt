@@ -36,7 +36,7 @@ data class ShopRequestUnmoderateErrorResponseExtensions(
 data class ShopRequestUnmoderateSuccessResponse(
         @SerializedName("moderateShop")
         @Expose
-        val moderateShop : ShopRequestUnmoderateDataModel? = null
+        val moderateShop : ShopRequestUnmoderateDataModel? = ShopRequestUnmoderateDataModel()
 )
 
 data class ShopRequestUnmoderateDataModel(
