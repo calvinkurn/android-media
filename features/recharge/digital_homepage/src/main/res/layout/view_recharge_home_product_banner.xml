@@ -10,7 +10,6 @@
         android:id="@+id/view_recharge_home_product_banner_background"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

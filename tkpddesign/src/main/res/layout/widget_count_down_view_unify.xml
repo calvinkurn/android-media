@@ -3,57 +3,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/hourView"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:background="@drawable/background_countdown_unify"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textColor="#FF5C84"
-        android:textSize="@dimen/sp_12"
-        android:textStyle="bold"
-        tools:text="00" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/dateView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="18 Januari 2020"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700"
+        app:typographyType="body_3"/>
 
-    <TextView
-        android:id="@+id/col1"
-        style="@style/TextView.Small.OrangeRed.Bold"
-        android:padding="@dimen/dp_2"
-        android:text=":"
-        android:textColor="#FF5C84" />
+    <LinearLayout
+        android:id="@+id/countViewLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/hourView"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:background="@drawable/background_countdown_unify"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="#FF5C84"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            tools:text="00" />
 
-    <TextView
-        android:id="@+id/minuteView"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:background="@drawable/background_countdown_unify"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textColor="#FF5C84"
-        android:textSize="@dimen/sp_12"
-        android:textStyle="bold"
-        tools:text="00" />
+        <TextView
+            android:id="@+id/col1"
+            style="@style/TextView.Small.OrangeRed.Bold"
+            android:padding="@dimen/dp_2"
+            android:text=":"
+            android:textColor="#FF5C84" />
 
-    <TextView
-        android:id="@+id/col2"
-        style="@style/TextView.Small.OrangeRed.Bold"
-        android:padding="@dimen/dp_2"
-        android:text=":"
-        android:textColor="#FF5C84" />
+        <TextView
+            android:id="@+id/minuteView"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:background="@drawable/background_countdown_unify"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="#FF5C84"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            tools:text="00" />
 
-    <TextView
-        android:id="@+id/secondView"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:background="@drawable/background_countdown_unify"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textColor="#FF5C84"
-        android:textSize="@dimen/sp_12"
-        android:textStyle="bold"
-        tools:text="00" />
+        <TextView
+            android:id="@+id/col2"
+            style="@style/TextView.Small.OrangeRed.Bold"
+            android:padding="@dimen/dp_2"
+            android:text=":"
+            android:textColor="#FF5C84" />
+
+        <TextView
+            android:id="@+id/secondView"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:background="@drawable/background_countdown_unify"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="#FF5C84"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            tools:text="00" />
+    </LinearLayout>
 
 </LinearLayout>

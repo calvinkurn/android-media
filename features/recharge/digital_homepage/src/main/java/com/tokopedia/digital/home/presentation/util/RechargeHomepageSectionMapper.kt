@@ -58,7 +58,9 @@ object RechargeHomepageSectionMapper {
     }
 
     fun mapHomepageSections(sections: List<RechargeHomepageSections.Section>): List<Visitable<*>> {
-        return sections.mapNotNull {
+        return sections.filter {
+            !isExpired(it)
+        }.mapNotNull {
             val id = it.id.toString()
             with(RechargeHomepageViewModel.Companion) {
                 when (it.template) {
@@ -152,11 +154,25 @@ object RechargeHomepageSectionMapper {
             val serverDateMillisecond = getServerTime(serverDate).time
 
             return ChannelModel(sectionId, sectionId,
-                    channelHeader = ChannelHeader(sectionId, section.title, section.subtitle, dueDate),
+                    channelHeader = ChannelHeader(sectionId, section.title, section.subtitle, dueDate,
+                            enableTimeDiffMoreThan24h = true),
                     channelConfig = ChannelConfig(serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverDateMillisecond))
             )
         }
         return null
+    }
+
+    private fun isExpired(section: RechargeHomepageSections.Section): Boolean {
+        if (section.template == RechargeHomepageViewModel.SECTION_DYNAMIC_ICONS
+                || section.template == RechargeHomepageViewModel.SECTION_COUNTDOWN_SINGLE_BANNER) {
+        section.items.firstOrNull()?.run {
+            val serverDateMillisecond = getServerTime(serverDate).time
+            val expiredTime = DateHelper.getExpiredTime(dueDate)
+            val serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverDateMillisecond)
+                return DateHelper.isExpired(serverTimeOffset, expiredTime)
+            }
+            return false
+        } else return false
     }
 
     private fun getServerTime(serverTimeString: String): Date {

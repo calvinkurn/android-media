@@ -6,6 +6,8 @@ import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSingleBannerModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.view_recharge_home_single_banner.view.*
 
@@ -25,7 +27,16 @@ class RechargeHomepageSingleBannerViewHolder(itemView: View?, val listener: Rech
 
                 val item = section.items[0]
                 RechargeHomepageSectionMapper.setDynamicHeaderViewChannel(
-                        view_recharge_home_single_banner_header, section
+                        view_recharge_home_single_banner_header, section,
+                        object : HeaderListener {
+                            override fun onSeeAllClick(link: String) {
+
+                            }
+
+                            override fun onChannelExpired(channelModel: ChannelModel) {
+                                listener.onRechargeSectionEmpty(element.visitableId())
+                            }
+                        }
                 )
 
                 view_recharge_home_single_banner_image.loadImage(item.mediaUrl)
@@ -36,8 +47,8 @@ class RechargeHomepageSingleBannerViewHolder(itemView: View?, val listener: Rech
                     listener.onRechargeSectionItemImpression(section)
                 }
 
-                view_recharge_home_single_banner_title.displayTextOrHide(section.title)
-                view_recharge_home_single_banner_label.displayTextOrHide(section.subtitle)
+                view_recharge_home_single_banner_title.displayTextOrHide(section.items.firstOrNull()?.title ?: "")
+                view_recharge_home_single_banner_label.displayTextOrHide(section.items.firstOrNull()?.subtitle ?: "")
             } else {
                 view_recharge_home_single_banner_container.hide()
                 view_recharge_home_single_banner_shimmering.show()
