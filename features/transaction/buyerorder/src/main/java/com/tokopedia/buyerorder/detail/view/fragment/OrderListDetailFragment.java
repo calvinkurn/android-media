@@ -54,6 +54,7 @@ import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
+import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity;
 import com.tokopedia.buyerorder.detail.view.adapter.RechargeWidgetAdapter;
 import com.tokopedia.buyerorder.detail.view.customview.CopyableDetailItemView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
@@ -61,7 +62,6 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.PaymentData;
-import com.tokopedia.buyerorder.recharge_download.presentation.activity.OrderDetailRechargeDownloadWebviewActivity;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.utils.view.DoubleTextView;
 
@@ -312,12 +312,14 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                     getArguments().getString(KEY_ORDER_CATEGORY) : "";
             presenter.onLihatInvoiceButtonClick(invoice.invoiceUrl());
             if (orderCategory != null && orderCategory.equals(OrderCategory.DIGITAL)) {
-                startActivity(OrderDetailRechargeDownloadWebviewActivity.Companion.getIntent(getContext(),
-                        invoice.invoiceRefNum(),
-                        orderId,
-                        "",
+                startActivity(SeeInvoiceActivity.newInstance(getContext(),
                         presenter.getOrderCategoryName(),
-                        presenter.getOrderProductName()));
+                        presenter.getOrderProductName(),
+                        orderId,
+                        invoice.invoiceUrl(),
+                        invoice.invoiceRefNum(),
+                        getString(R.string.title_invoice),
+                        OrderCategory.DIGITAL));
             } else {
                 RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
             }

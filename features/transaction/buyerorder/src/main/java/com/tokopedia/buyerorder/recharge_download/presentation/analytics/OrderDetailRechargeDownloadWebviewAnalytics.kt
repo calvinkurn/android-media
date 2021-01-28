@@ -15,7 +15,7 @@ class OrderDetailRechargeDownloadWebviewAnalytics {
                 String.format("%s - %s", categoryName, productName))
 
         event[SCREEN_NAME] = SCREEN_NAME_INVOICE
-        event[IS_LOGGED_IN_STATUS] = isLoggedIn
+        event[IS_LOGGED_IN_STATUS] = isLoggedIn.toString()
         event[CURRENT_SITE] = CURRENT_SITE_RECHARGE
         event[BUSINESS_UNIT] = BUSINESS_UNIT_RECHARGE
         event[USER_ID] = userId
