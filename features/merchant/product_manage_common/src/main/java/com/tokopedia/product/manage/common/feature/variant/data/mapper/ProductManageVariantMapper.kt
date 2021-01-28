@@ -42,16 +42,33 @@ object ProductManageVariantMapper {
         return GetVariantResult(productName, variants, variantSelections, variantSizeCharts)
     }
 
-    fun EditVariantResult.updateVariant(
-        variantId: String,
-        updateBlock: (ProductVariant) -> ProductVariant
-    ): EditVariantResult {
+    fun EditVariantResult.updateVariant(variantId: String, updateBlock: (ProductVariant) -> ProductVariant): EditVariantResult {
         val variantList = variants.toMutableList()
         val variant = variants.find { it.id == variantId }
         val index = variants.indexOf(variant)
 
         variantList[index] = updateBlock.invoke(variantList[index])
-        return EditVariantResult(productId, productName, variantList, selections, sizeCharts)
+        return copy(variants = variantList)
+    }
+
+    fun EditVariantResult.setEditStockAndStatus(currentProductVariantList: List<ProductVariant>): EditVariantResult {
+        var editStock = false
+        var editStatus = false
+
+        currentProductVariantList.forEachIndexed { index, variant ->
+            val variantStockInput = variants[index].stock
+            val variantStatusInput = variants[index].status
+
+            if(variantStockInput != variant.stock) {
+                editStock = true
+            }
+
+            if(variantStatusInput != variant.status) {
+                editStatus = true
+            }
+        }
+
+        return copy(editStock = editStock, editStatus = editStatus)
     }
 
     fun mapResultToUpdateParam(shopId: String, result: EditVariantResult): UpdateVariantParam {

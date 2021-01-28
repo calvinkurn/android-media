@@ -45,6 +45,7 @@ import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPrice
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
@@ -473,19 +474,17 @@ class ProductManageViewModel @Inject constructor(
     fun editVariantsStock(result: EditVariantResult) {
         showProgressDialog()
         launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                val shopId = userSessionInterface.shopId
-                val variantInputParam = mapResultToUpdateParam(shopId, result)
-                val requestParams = EditProductVariantUseCase.createRequestParams(variantInputParam)
-                editProductVariantUseCase.execute(requestParams).productUpdateV3Data
+            var data: Result<EditVariantResult>? = null
+
+            if(result.editStatus) {
+                data = editVariantStatus(result)
             }
 
-            if(response.isSuccess) {
-                _editVariantStockResult.value = Success(result)
-            } else {
-                val message = response.header.errorMessage.lastOrNull().orEmpty()
-                _editVariantStockResult.value = Fail(MessageErrorException(message))
+            if(result.editStock) {
+                data = editVariantStock(result)
             }
+
+            _editVariantStockResult.value = data
             hideProgressDialog()
         }) {
             _editVariantStockResult.value = Fail(it)
@@ -668,6 +667,39 @@ class ProductManageViewModel @Inject constructor(
                 userSessionInterface.shopId, productId, warehouseId, stock.toString()
             )
             editStockUseCase.execute(requestParams)
+        }
+    }
+
+    private suspend fun editVariantStatus(result: EditVariantResult): Result<EditVariantResult> {
+        return withContext(dispatchers.io) {
+            val shopId = userSessionInterface.shopId
+            val variantInputParam = mapResultToUpdateParam(shopId, result)
+            val requestParams = EditProductVariantUseCase.createRequestParams(variantInputParam)
+            val response = editProductVariantUseCase.execute(requestParams).productUpdateV3Data
+
+            when {
+                response.isSuccess -> Success(result)
+                response.header.errorMessage.isNotEmpty() -> {
+                    val message = response.header.errorMessage.lastOrNull().orEmpty()
+                    Fail(MessageErrorException(message))
+                }
+                else -> {
+                    val message = com.tokopedia.product.manage.common.R.string
+                        .product_stock_reminder_toaster_failed_desc.toString()
+                    Fail(MessageErrorException(message))
+                }
+            }
+        }
+    }
+
+    private suspend fun editVariantStock(result: EditVariantResult): Result<EditVariantResult> {
+        return withContext(dispatchers.io) {
+            val productList = result.variants.map { ProductStock(it.id, it.stock.toString()) }
+            val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
+                userSessionInterface.shopId, warehouseId, productList
+            )
+            editStockUseCase.execute(requestParams)
+            Success(result)
         }
     }
 

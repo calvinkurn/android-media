@@ -23,9 +23,9 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.Sto
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.UpdateCampaignStockResult
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.VariantStockAllocationResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
-import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -241,34 +241,79 @@ class CampaignStockViewModel @Inject constructor(
     private fun updateVariantData() {
         launchCatchError(
             block = {
-                mProductUpdateResponseLiveData.value = Success(withContext(dispatchers.io) {
-                    val variants = editVariantResult.variants
-                    val updateVariantParam = ProductManageVariantMapper.mapResultToUpdateParam(shopId, editVariantResult)
-                    val editProductVariantParam = EditProductVariantUseCase.createRequestParams(updateVariantParam)
-                    val editStockResponse = editProductVariantUseCase.execute(editProductVariantParam)
+                var result: Result<UpdateCampaignStockResult> =  with(editVariantResult) {
+                    val status = getVariantStatus()
+                    val totalStock = countVariantStock() + campaignReservedStock
 
-                    with(editVariantResult) {
-                        val totalStock = variants.sumBy { it.stock } + campaignReservedStock
-                        val status = if (variants.any { it.status == ProductStatus.ACTIVE }) {
-                            ProductStatus.ACTIVE
-                        } else {
-                            ProductStatus.INACTIVE
-                        }
-                        UpdateCampaignStockResult(
-                            productId,
-                            productName,
-                            totalStock,
-                            status,
-                            editStockResponse.productUpdateV3Data.isSuccess,
-                            editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
-                        )
-                    }
-                })
+                    Success(UpdateCampaignStockResult(
+                        productId,
+                        productName,
+                        totalStock,
+                        status,
+                        true
+                    ))
+                }
+
+                if(shouldEditVariantStatus()) {
+                    result = editVariantStatus()
+                }
+
+                if(shouldEditVariantStock()) {
+                    result = editVariantStock()
+                }
+
+                mProductUpdateResponseLiveData.value = result
             },
             onError = {
                 mProductUpdateResponseLiveData.value = Fail(it)
             }
         )
+    }
+
+    private suspend fun editVariantStatus(): Success<UpdateCampaignStockResult> {
+        return withContext(dispatchers.io) {
+            val updateVariantParam = ProductManageVariantMapper.mapResultToUpdateParam(shopId, editVariantResult)
+            val editProductVariantParam = EditProductVariantUseCase.createRequestParams(updateVariantParam)
+            val editStockResponse = editProductVariantUseCase.execute(editProductVariantParam)
+
+            with(editVariantResult) {
+                val status = getVariantStatus()
+                val totalStock = countVariantStock() + campaignReservedStock
+
+                Success(UpdateCampaignStockResult(
+                    productId,
+                    productName,
+                    totalStock,
+                    status,
+                    editStockResponse.productUpdateV3Data.isSuccess,
+                    editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+                ))
+            }
+        }
+    }
+
+    private suspend fun editVariantStock(): Success<UpdateCampaignStockResult> {
+        return withContext(dispatchers.io) {
+            with(editVariantResult) {
+                val status = getVariantStatus()
+                val totalStock = countVariantStock() + campaignReservedStock
+                val productList = variants.map { ProductStock(it.id, it.stock.toString()) }
+                val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
+                    shopId,
+                    getWarehouseId(shopId),
+                    productList
+                )
+                editStockUseCase.execute(requestParams)
+
+                Success(UpdateCampaignStockResult(
+                    productId,
+                    campaignProductName,
+                    totalStock,
+                    status,
+                    true
+                ))
+            }
+        }
     }
 
     private suspend fun getNonVariantResult(
@@ -354,12 +399,40 @@ class CampaignStockViewModel @Inject constructor(
     }
 
     private suspend fun getWarehouseId(shopId: String): String {
-        return if(warehouseId.isEmpty()) {
+        return if (warehouseId.isEmpty()) {
             val response = getAdminInfoShopLocationUseCase.execute(shopId.toIntOrZero())
-            warehouseId = response.firstOrNull { it.isMainLocation() } ?.locationId.toString()
+            warehouseId = response.firstOrNull { it.isMainLocation() }?.locationId.toString()
             warehouseId
         } else {
             warehouseId
         }
+    }
+
+    private fun shouldEditVariantStatus(): Boolean {
+        (mGetStockAllocationLiveData.value as? Success<StockAllocationResult>)?.data?.run {
+            val variantStockAllocation = this as? VariantStockAllocationResult
+            variantStockAllocation?.getVariantResult?.variants?.forEachIndexed { index, variant ->
+                val inputStatus = editVariantResult.variants[index].status
+                val currentStatus = variant.status
+                if(inputStatus != currentStatus) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    private fun shouldEditVariantStock(): Boolean {
+        (mGetStockAllocationLiveData.value as? Success<StockAllocationResult>)?.data?.run {
+            val variantStockAllocation = this as? VariantStockAllocationResult
+            variantStockAllocation?.getVariantResult?.variants?.forEachIndexed { index, variant ->
+                val inputStock = editVariantResult.variants[index].stock
+                val currentStock = variant.stock
+                if(inputStock != currentStock) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 }

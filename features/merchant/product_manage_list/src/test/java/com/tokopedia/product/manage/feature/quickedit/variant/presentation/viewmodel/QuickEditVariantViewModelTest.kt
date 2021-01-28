@@ -102,7 +102,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
         )
         val expectedResult = EditVariantResult(productId, productName, productVariants, emptyList(), emptyList())
 
-        viewModel.editVariantResult
+        viewModel.onClickSaveButton
             .verifyValueEquals(expectedResult)
     }
 
@@ -128,7 +128,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
         )
         val expectedResult = EditVariantResult(productId, productName, productVariants, emptyList(), emptyList())
 
-        viewModel.editVariantResult
+        viewModel.onClickSaveButton
             .verifyValueEquals(expectedResult)
     }
 
@@ -154,7 +154,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
         )
         val expectedResult = EditVariantResult(productId, productName, productVariants, emptyList(), emptyList())
 
-        viewModel.editVariantResult
+        viewModel.onClickSaveButton
             .verifyValueEquals(expectedResult)
     }
 
@@ -162,7 +162,7 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
     fun `given variant result is null when set variant price should NOT update variant`() {
         viewModel.setVariantPrice("1", 100)
 
-        viewModel.editVariantResult
+        viewModel.onClickSaveButton
             .verifyValueEquals(null)
     }
 

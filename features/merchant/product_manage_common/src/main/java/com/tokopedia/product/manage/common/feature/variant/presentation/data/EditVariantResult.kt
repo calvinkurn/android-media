@@ -10,7 +10,9 @@ data class EditVariantResult(
         val productName: String = "",
         val variants: List<ProductVariant> = emptyList(),
         val selections: List<Selection> = emptyList(),
-        val sizeCharts: List<Picture> = emptyList()
+        val sizeCharts: List<Picture> = emptyList(),
+        val editStock: Boolean = false,
+        val editStatus: Boolean = false
 ) {
 
     fun countVariantStock(): Int = variants.sumBy { it.stock }
