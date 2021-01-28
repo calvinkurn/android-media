@@ -121,7 +121,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             observer.dispatchOnGlobalLayout()
             observer.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    observer.removeOnGlobalLayoutListener(this)
+                    tab_deals_brand_category.getUnifyTabLayout().viewTreeObserver.removeOnGlobalLayoutListener(this)
                     isEnableTabClickAnalytics = true
                     position?.let { tabLayout.getTabAt(it)?.select() }
                 }
