@@ -42,7 +42,7 @@ class MembershipRegisterUseCase @Inject constructor(val gqlWrapper: GqlUseCaseWr
 }
 
 object MembershipRegisterParams {
-    const val CARD_ID = "cardId"
+    const val CARD_ID = "cardID"
 //    const val REFERENCE_ID = "referenceID"
 //    const val SOURCE = "source"
 //    const val NAME = "name"
