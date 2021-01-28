@@ -285,7 +285,6 @@ dependencies {
     implementation project(rootProject.ext.features.kyc)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.imagePicker)
-    implementation project(rootProject.ext.features.paylater)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.utils)
 

@@ -292,7 +292,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
         navAbTestCondition({ initNavToolbar() }, { initToolbar() })
         initStickyLogin(view)
         renderInitialAffiliate()
-        RouteManager.route(context, ApplinkConst.PAYLATER)
     }
 
     override fun onSwipeRefresh() {
@@ -776,7 +775,9 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             }
             ProductDetailConstant.PRODUCT_PROTECTION -> {
                 DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(viewModel.getDynamicProductInfoP1, getPurchaseProtectionUrl(), componentTrackDataModel)
-                openFtInsuranceBottomSheet(getPurchaseProtectionUrl())
+                //openFtInsuranceBottomSheet(getPurchaseProtectionUrl())
+                openFtInstallmentBottomSheet(viewModel.p2Data.value?.productFinancingCalculationData
+                        ?: FtInstallmentCalculationDataResponse())
             }
         }
     }
@@ -2238,7 +2239,14 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
-        val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
+        val intent = RouteManager.getIntent(activity, ApplinkConst.PAYLATER)
+        val bundle = Bundle().apply {
+            putInt(ProductDetailConstant.PARAM_PRICE, viewModel.getDynamicProductInfoP1?.finalPrice?: 0)
+        }
+        intent.putExtras(bundle)
+        startActivity(intent)
+
+        /*val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
 
         val productInfo = viewModel.getDynamicProductInfoP1
 
@@ -2255,7 +2263,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
             pdpInstallmentBottomSheet.arguments = bundleData
             pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
-        }
+        }*/
     }
 
     /**
