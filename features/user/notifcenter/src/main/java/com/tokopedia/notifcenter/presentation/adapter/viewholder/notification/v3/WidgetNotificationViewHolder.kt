@@ -3,10 +3,14 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.notifcenter.R
@@ -24,6 +28,9 @@ class WidgetNotificationViewHolder constructor(
 ) : BaseNotificationViewHolder(itemView, listener) {
 
     private val historyBtn: Typography? = itemView?.findViewById(R.id.tp_history)
+    private val thumbnail: ImageView? = itemView?.findViewById(R.id.iv_product_thumbnail)
+    private val widgetTitle: Typography? = itemView?.findViewById(R.id.tp_widget_title)
+    private val widgetCta: Typography? = itemView?.findViewById(R.id.tp_cta)
     private val progressIndicator: Group? = itemView?.findViewById(
             R.id.group_progress_indicator
     )
@@ -51,6 +58,9 @@ class WidgetNotificationViewHolder constructor(
         bindProgressIndicator(element)
         bindHistoryBtnClick(element)
         bindProgressIndicator(element)
+        bindThumbnail(element)
+        bindWidgetTitle(element)
+        bindWidgetCta(element)
     }
 
     private fun bindTrackHistory(element: NotificationUiModel) {
@@ -78,6 +88,23 @@ class WidgetNotificationViewHolder constructor(
             progressIndicator?.show()
         } else {
             progressIndicator?.hide()
+        }
+    }
+
+    private fun bindThumbnail(element: NotificationUiModel) {
+        ImageHandler.LoadImage(thumbnail, element.widget.image)
+    }
+
+    private fun bindWidgetTitle(element: NotificationUiModel) {
+        widgetTitle?.text = element.widget.title
+    }
+
+    private fun bindWidgetCta(element: NotificationUiModel) {
+        widgetCta?.shouldShowWithAction(element.widget.buttonText.isNotEmpty()) {
+            widgetCta.text = element.widget.buttonText
+            widgetCta.setOnClickListener {
+                RouteManager.route(itemView.context, element.widget.androidButtonLink)
+            }
         }
     }
 
