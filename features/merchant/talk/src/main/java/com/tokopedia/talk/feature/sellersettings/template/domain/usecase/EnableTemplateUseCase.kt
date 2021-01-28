@@ -36,7 +36,7 @@ class EnableTemplateUseCase @Inject constructor(graphqlRepository: GraphqlReposi
     fun setParams(isEnable: Boolean) {
         setRequestParams(
                 requestParams.apply {
-                    putBoolean(TemplateConstants.PARAM_IS_SELLER, isEnable)
+                    putBoolean(TemplateConstants.PARAM_IS_ENABLE, isEnable)
                 }.parameters
         )
     }
