@@ -390,11 +390,14 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             }
 
             val logoUrl = shopBasicData.logo
-            if (TextUtils.isEmpty(logoUrl)) {
-                ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
-            } else {
-                ImageHandler.LoadImage(ivShopLogo, logoUrl)
-            }
+            //avoid crash in ImageUnify when image url is returned as base64
+            try {
+                if (TextUtils.isEmpty(logoUrl)) {
+                    ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
+                } else {
+                    ImageHandler.LoadImage(ivShopLogo, logoUrl)
+                }
+            }catch (e: Exception) {}
 
             if (shopBasicData.tagline.isNullOrBlank()) {
                 tvShopSloganTitle.visibility = View.GONE
