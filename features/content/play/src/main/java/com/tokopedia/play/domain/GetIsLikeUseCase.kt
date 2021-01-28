@@ -21,9 +21,11 @@ class GetIsLikeUseCase @Inject constructor(private val gqlUseCase: GraphqlReposi
 
         val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
+        val error = gqlResponse.getError(IsLikedContent.Response::class.java)
+        if (error != null) return false
+
         val response = gqlResponse.getData<IsLikedContent.Response>(IsLikedContent.Response::class.java)
                 ?: return false
-
         if (response.isLikedContent.error.isEmpty()) {
             response.isLikedContent.data?.let {
                 return it.isLike
