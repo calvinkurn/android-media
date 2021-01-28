@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -18,12 +19,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
-import com.tokopedia.otp.common.idling_resource.TkpdIdlingResourceProvider
 import com.tokopedia.otp.verification.common.ViewActionSpannable
 import com.tokopedia.otp.verification.email.stub.OTPEmailMockResponse
 import com.tokopedia.otp.verification.email.stub.VerificationActivityStub
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.otp.test.R
+import com.tokopedia.otp.verification.common.FreshIdlingResourceTestRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -47,9 +48,12 @@ class OTPEmailTest {
     @get:Rule
     val activityRule = ActivityTestRule(VerificationActivityStub::class.java, false, false)
 
+    @get:Rule
+    val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
+
     val context = InstrumentationRegistry.getInstrumentation().targetContext
     val gtmLogDBSource = GtmLogDBSource(context)
-    var idlingResource: TkpdIdlingResource? = null
+    var idlingResource: IdlingResource? = null
 
     @ExperimentalCoroutinesApi
     @Before
@@ -62,9 +66,9 @@ class OTPEmailTest {
     }
 
     private fun setupIdlingResource() {
-        idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("OTP_REGISTER_EMAIL")
+        idlingResource = TkpdIdlingResource.getIdlingResource("OTP_REGISTER_EMAIL")
         if (idlingResource != null)
-            IdlingRegistry.getInstance().register(idlingResource?.countingIdlingResource)
+            IdlingRegistry.getInstance().register(idlingResource)
         else
             throw RuntimeException("No idling resource found")
     }
@@ -107,7 +111,7 @@ class OTPEmailTest {
     fun unregisterIdlingResource() {
         Intents.release()
         idlingResource?.let {
-            IdlingRegistry.getInstance().unregister(it.countingIdlingResource)
+            IdlingRegistry.getInstance().unregister(it)
         }
         activityRule.finishActivity()
     }
@@ -116,7 +120,7 @@ class OTPEmailTest {
         val intent = Intent()
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "kelvinsaputra+28@tokopedia.com")
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 126)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 126) //OTP_TYPE_REGISTER
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)

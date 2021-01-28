@@ -22,8 +22,10 @@ import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.otp.test.R
 import com.tokopedia.otp.verification.common.FreshIdlingResourceTestRule
+import com.tokopedia.otp.verification.common.ViewActionSpannable
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
+import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -32,8 +34,8 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 @LargeTest
-class OTPPhoneTest {
-    val trackerPath = "tracker/user/otp/otp_method_phone_p1.json"
+class OTPSecurityQuestionTest {
+    val trackerPath = "tracker/user/otp/otp_security_question_p1.json"
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -64,7 +66,11 @@ class OTPPhoneTest {
     @Test
     fun `check_otp_method_phone_success_tracker`() {
         activityRule.launchActivity(getTestIntent())
+
         checkClickOnSms()
+        checkClickOnVerficationButton()
+        checkClickOnKirimUlang()
+        checkClickOnBackPress()
 
         ViewMatchers.assertThat(
                 getAnalyticsWithQuery(gtmLogDBSource, context, trackerPath),
@@ -74,9 +80,28 @@ class OTPPhoneTest {
 
     private fun checkClickOnSms() {
         Thread.sleep(1000)
-        Espresso.onView(ViewMatchers.withId(R.id.method_list))
-                .check(matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.method_list)).check(matches(ViewMatchers.isDisplayed()))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<VerificationMethodAdapter.ViewHolder>(1, ViewActions.click()))
+    }
+
+    private fun checkClickOnVerficationButton() {
+        Thread.sleep(1000)
+        Espresso.onView(CoreMatchers.allOf(ViewMatchers.withId(R.id.pin_text_field), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.pin))))
+                .check(matches(ViewMatchers.isDisplayed()))
+                .perform(ViewActions.typeText("9999"))
+    }
+
+    private fun checkClickOnKirimUlang() {
+        Thread.sleep(1000)
+        Espresso.onView(ViewMatchers.withText(CoreMatchers.endsWith("Kirim ulang")))
+                .check(matches(ViewMatchers.isDisplayed()))
+                .perform(ViewActionSpannable.clickClickableSpan("Kirim ulang"))
+    }
+
+    private fun checkClickOnBackPress() {
+        Thread.sleep(1000)
+        Espresso.closeSoftKeyboard()
+        Espresso.pressBackUnconditionally()
     }
 
     @After
@@ -92,7 +117,7 @@ class OTPPhoneTest {
         val intent = Intent()
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, "09000123")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 116) //OTP_TYPE_REGISTER_PHONE_NUMBER
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 134) //OTP_SECURITY_QUESTION
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)

@@ -1,16 +1,23 @@
 package com.tokopedia.otp.common.idling_resource
 
+import androidx.annotation.VisibleForTesting
+import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.idling.CountingIdlingResource
 
-class TkpdIdlingResource(resName: String) {
-
-    val countingIdlingResource : CountingIdlingResource? = CountingIdlingResource(resName)
+object TkpdIdlingResource {
+    private var idlingResource: CountingIdlingResource? = null
 
     fun increment() {
-        countingIdlingResource?.increment()
+        idlingResource!!.increment()
     }
 
     fun decrement() {
-        countingIdlingResource?.decrement()
+        idlingResource!!.decrement()
+    }
+
+    @VisibleForTesting
+    fun getIdlingResource(resName: String): IdlingResource {
+        idlingResource = CountingIdlingResource(resName)
+        return idlingResource!!
     }
 }
