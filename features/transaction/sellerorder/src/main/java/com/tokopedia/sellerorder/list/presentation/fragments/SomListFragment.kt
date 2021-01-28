@@ -1913,4 +1913,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             reshowBulkAcceptOrderCoachMark()
         }, DELAY_COACHMARK)
     }
+
+    private fun hideKeyboard() {
+        val context = context
+        val view = view
+        if (view != null && context != null) {
+            KeyboardHandler.DropKeyboard(context, view)
+        }
+    }
 }
