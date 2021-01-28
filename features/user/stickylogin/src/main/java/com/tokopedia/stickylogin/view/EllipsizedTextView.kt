@@ -8,7 +8,9 @@ import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.stickylogin.R
 
@@ -16,7 +18,7 @@ class EllipsizedTextView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
-) : AppCompatTextView(context, attrs, defStyleAttr) {
+) : AppCompatTextView(context, attrs, defStyleAttr), DarkModeListener {
 
     private var content = ""
     private var highLight = getDefaultEllipsis().toString()
@@ -39,6 +41,12 @@ class EllipsizedTextView @JvmOverloads constructor(
     }
 
     fun setContent(_content: String, _highLight: String) {
+        if (isDarkModeOn()) {
+            onDarkMode()
+        } else {
+            onLightMode()
+        }
+
         content = _content
         highLight = _highLight
         highLightSpannable = SpannableString(highLight)
@@ -83,5 +91,16 @@ class EllipsizedTextView @JvmOverloads constructor(
 
     private fun getDefaultEllipsisColor(): Int {
         return textColors.defaultColor
+    }
+
+    override fun isDarkModeOn(): Boolean = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+
+    override fun onDarkMode() {
+        this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
+        highLightColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+    }
+
+    override fun onLightMode() {
+
     }
 }

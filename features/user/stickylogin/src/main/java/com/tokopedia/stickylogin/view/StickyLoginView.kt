@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -52,7 +53,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class StickyLoginView : FrameLayout, CoroutineScope {
+class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -110,7 +111,7 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         }
     }
 
-    fun initAttrsInBg(attributeSet: AttributeSet) : Deferred<Unit> = async(Dispatchers.IO) {
+    private fun initAttrsInBg(attributeSet: AttributeSet) : Deferred<Unit> = async(Dispatchers.IO) {
         initAttributeSet(attributeSet)
     }
 
@@ -361,6 +362,12 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         this.visibility = View.VISIBLE
         layoutContainer.show()
         if (::stickyLoginAction.isInitialized) stickyLoginAction.onViewChange(true)
+
+        if (isDarkModeOn()) {
+            onDarkMode()
+        } else {
+            onLightMode()
+        }
     }
 
     private fun hide() {
@@ -385,7 +392,6 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         val profilePicture = getPrefLoginReminder(context).getString(KEY_PROFILE_PICTURE, "")
 
         textContent.setContent("$TEXT_RE_LOGIN $name")
-        textContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
 
         profilePicture?.let {
             imageViewLeft.loadImageCircle(it)
@@ -395,13 +401,23 @@ class StickyLoginView : FrameLayout, CoroutineScope {
         show()
     }
 
+    override fun isDarkModeOn(): Boolean = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+
+    override fun onDarkMode() {
+        if (isLoginReminder()) {
+            textContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+        }
+
+        layoutContainer.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+    }
+
+    override fun onLightMode() {
+
+    }
+
     companion object {
-        const val TAG = "StickyTextButton"
-
         private const val DEFAULT_DELAY_TIME_IN_MINUTES = 30
-
         private const val TEXT_RE_LOGIN = "Masuk sebagai"
-
         private val REGEX_HTML_TAG = "<[^>]+>".toRegex()
     }
 }
