@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import com.tokopedia.loginregister.external_register.ovo.data.ActivateOvoResponse
-import com.tokopedia.loginregister.external_register.ovo.domain.query.QueryCheckHasOvoAcc
+import com.tokopedia.loginregister.external_register.ovo.domain.query.OvoRegisterQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import java.text.SimpleDateFormat
@@ -24,7 +24,7 @@ class ActivateOvoUseCase @Inject constructor(
     private val params = RequestParams.create()
 
     init {
-        graphqlUseCase.setGraphqlQuery(QueryCheckHasOvoAcc.activateOvoQuery)
+        graphqlUseCase.setGraphqlQuery(OvoRegisterQuery.activateOvoQuery)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(ActivateOvoResponse::class.java)
     }

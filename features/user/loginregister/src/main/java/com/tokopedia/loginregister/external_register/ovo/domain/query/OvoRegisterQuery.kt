@@ -5,7 +5,7 @@ package com.tokopedia.loginregister.external_register.ovo.domain.query
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-object QueryCheckHasOvoAcc {
+object OvoRegisterQuery {
 
     private const val phoneNo = "\$phone_number"
     private const val clientId = "\$client_id"
@@ -13,15 +13,9 @@ object QueryCheckHasOvoAcc {
     private const val date = "\$date"
     private const val regType = "\$reg_type"
 
-    private const val type = "\$type"
     private const val fullname = "\$fullname"
-    private const val email = "\$email"
-    private const val password = "\$password"
-    private const val osType = "\$os_type"
-    private const val validateToken = "\$validate_token"
     private const val goalKey = "\$goal_key"
     private const val authCode = "\$auth_code"
-    private const val typeName = "\$accounts_type_name"
 
     private const val msisdn = "\$phone"
 
@@ -84,5 +78,4 @@ object QueryCheckHasOvoAcc {
             }
         }
     """.trimIndent()
-
 }

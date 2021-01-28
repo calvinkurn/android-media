@@ -4,7 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
-import com.tokopedia.loginregister.external_register.ovo.domain.query.QueryCheckHasOvoAcc
+import com.tokopedia.loginregister.external_register.ovo.domain.query.OvoRegisterQuery
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -22,7 +22,7 @@ class ExternalRegisterUseCase @Inject constructor(
     private val params = RequestParams.create()
 
     init {
-        graphqlUseCase.setGraphqlQuery(QueryCheckHasOvoAcc.registerOvoQuery)
+        graphqlUseCase.setGraphqlQuery(OvoRegisterQuery.registerOvoQuery)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(RegisterPojo::class.java)
     }

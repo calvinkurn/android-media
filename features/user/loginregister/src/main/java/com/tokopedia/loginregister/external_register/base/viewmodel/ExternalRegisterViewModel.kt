@@ -25,6 +25,7 @@ import javax.inject.Named
  * Created by Yoris Prayogo on 05/01/21.
  * Copyright (c) 2021 PT. Tokopedia All rights reserved.
  */
+
 class ExternalRegisterViewModel @Inject constructor(
         private val externalRegisterUseCase: ExternalRegisterUseCase,
         private val externalRegisterPreference: ExternalRegisterPreference,

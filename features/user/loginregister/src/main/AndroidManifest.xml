@@ -180,13 +180,6 @@
         </activity>
 
         <activity
-            android:name=".external_register.ovo.view.activity.OvoAddPhoneActivity"
-            android:label="@string/title_external_register"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize"/>
-
-        <activity
             android:name=".external_register.ovo.view.activity.OvoRegisterInitialActivity"
             android:label="@string/title_external_register"
             android:screenOrientation="portrait"
