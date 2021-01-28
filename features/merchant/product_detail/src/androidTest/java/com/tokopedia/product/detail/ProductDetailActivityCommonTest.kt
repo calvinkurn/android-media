@@ -40,6 +40,10 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity() {
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.product_detail_parent_view
+    }
+
     override fun getTagFragment(): String {
         return PRODUCT_DETAIL_TAG
     }
@@ -57,7 +61,8 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity() {
 
     fun getLastPositionIndex() : Int {
         val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragmentDiffutil
-
-        return fragment.productAdapter?.currentList?.size ?: 0 - 1
+        return fragment.productAdapter?.currentList?.indexOfFirst {
+            it.name() == "pdp_5"
+        } ?: 0
     }
 }
