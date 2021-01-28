@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
+import com.tokopedia.notifcenter.data.consts.Resources.Unify_N0
 import com.tokopedia.notifcenter.data.entity.NotificationTabItem
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
@@ -222,7 +223,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
             }
         })
 
-        tabLayout.setBackgroundResource(R.color.white)
+        tabLayout.setBackgroundResource(Unify_N0)
         tabLayout.tabMode = TabLayout.MODE_FIXED
         tabLayout.getTabAt(initialIndexPage)?.select()
     }
@@ -299,7 +300,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
     }
 
     private fun setWindowBackground() {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        try {
+            window.decorView.setBackgroundColor(Unify_N0)
+        } catch (e: Exception) {}
     }
 
     override fun onDestroy() {

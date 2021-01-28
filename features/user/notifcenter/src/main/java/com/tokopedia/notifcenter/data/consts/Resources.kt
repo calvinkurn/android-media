@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.data.consts
 
 object Resources {
     //color
+    val Unify_N0 = com.tokopedia.unifyprinciples.R.color.Unify_N0
     val Green_G100 = com.tokopedia.unifyprinciples.R.color.Green_G100
     val Green_G200 = com.tokopedia.unifyprinciples.R.color.Green_G200
     val Green_G500 = com.tokopedia.unifyprinciples.R.color.Green_G500
