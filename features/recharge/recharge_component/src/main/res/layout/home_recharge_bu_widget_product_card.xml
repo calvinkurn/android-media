@@ -28,6 +28,7 @@
             tools:visibility="visible">
 
             <ImageView
+                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
                 android:id="@+id/imageProductBackgroundOverlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -37,6 +38,7 @@
         </FrameLayout>
 
         <ImageView
+            android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
             android:id="@+id/imageProduct"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
@@ -59,6 +61,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
                 android:id="@+id/imageProductIcon"
                 android:layout_width="@dimen/layout_lvl5"
                 android:layout_height="@dimen/layout_lvl5"
