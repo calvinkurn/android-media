@@ -180,7 +180,7 @@ object Utils {
         setButtonFull(true)
 
         setActionClickListener {
-            onActionClick()
+            onActionClick.invoke()
         }
         show()
     }

@@ -250,8 +250,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var coachMarkIndexToShow: Int = 0
     private var selectedOrderId: String = ""
     private var tabActive: String = ""
-    private var canDisplayOrderData = true
-    private var canMultiAcceptOrder = true
+    private var canDisplayOrderData = false
+    private var canMultiAcceptOrder = false
     private var somListBulkProcessOrderBottomSheet: SomListBulkProcessOrderBottomSheet? = null
     private var bulkAcceptOrderDialog: SomListBulkAcceptOrderDialog? = null
     private var tickerPagerAdapter: TickerPagerAdapter? = null

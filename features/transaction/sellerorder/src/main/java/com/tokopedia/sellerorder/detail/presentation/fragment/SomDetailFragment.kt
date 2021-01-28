@@ -24,15 +24,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
@@ -117,8 +114,6 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
-import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
-import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -194,8 +189,6 @@ class SomDetailFragment : BaseDaggerFragment(),
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
-
-    private var userNotAllowedDialog: DialogUnify? = null
 
     private var menu: Menu? = null
 
@@ -317,7 +310,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             adapter = somDetailAdapter
         }
         somGlobalError?.setActionClickListener {
-            if (isUserRoleFetched(somDetailViewModel.somDetailChatEligibility.value)) {
+            if (isShowDetailEligible(somDetailViewModel.somDetailChatEligibility.value)) {
                 loadDetail()
             } else {
                 checkUserRole()
@@ -498,6 +491,11 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onUserNotAllowedToViewSOM() {
+        progressBarSom?.hide()
+        refreshHandler?.run {
+            setPullEnabled(false)
+            finishRefresh()
+        }
         somDetailAdminPermissionView?.setUserNotAllowedToViewSom {
             activity?.finish()
         }
@@ -1388,7 +1386,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onRefresh(view: View?) {
-        if (isUserRoleFetched(somDetailViewModel.somDetailChatEligibility.value)) {
+        if (isShowDetailEligible(somDetailViewModel.somDetailChatEligibility.value)) {
             loadDetail()
         } else {
             checkUserRole()
@@ -1399,7 +1397,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
     }
 
-    private fun isUserRoleFetched(value: Result<Pair<Boolean, Boolean>>?): Boolean = value is Success
+    private fun isShowDetailEligible(value: Result<Pair<Boolean, Boolean>>?): Boolean = (value as? Success)?.data?.first == true
 
     private fun Throwable.showGlobalError() {
         val type = if (this is UnknownHostException || this is SocketTimeoutException) {
