@@ -50,6 +50,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="fitCenter"
                     android:layout_gravity="center"
+                    android:contentDescription="@string/notifcenter_cd_avatar"
                     android:layout_marginBottom="@dimen/notif_dp_16"
                     tools:src="@tools:sample/avatars"/>
 
