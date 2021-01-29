@@ -27,6 +27,9 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
         val LAYOUT = R.layout.item_hierarchycal_social_proof
     }
 
+    private val containerView: ViewGroup = view.findViewById(R.id.root_socproof)
+    private val inflater: LayoutInflater = view.context.layoutInflater
+
     override fun bind(element: ProductMiniSocialProofDataModel) {
         if (!element.shouldRenderSocialProof) {
             setupLoading(element.shouldShowSingleViewSocialProof())
@@ -43,25 +46,23 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
 
                 hideLoading()
 
-                val rootView = findViewById<ViewGroup>(R.id.root_socproof)
-                val inflater: LayoutInflater = context.layoutInflater
 
-                rootView.removeAllViews()
+                containerView.removeAllViews()
 
                 if (element.shouldShowSingleViewSocialProof()) {
                     val socProofView: View = inflater.inflate(R.layout.social_proof_item, null)
-                    renderSingleSocialProof(element.generateSingleView(context), socProofView, rootView)
+                    renderSingleSocialProof(element.generateSingleView(context), socProofView, containerView)
                 } else {
                     availableData.forEachIndexed { index, pairValue ->
                         if (element.isFirstData(pairValue)) {
                             val firstSocProofView: View = inflater.inflate(R.layout.social_proof_item, null)
                             renderFirstSocialProof(element, firstSocProofView)
-                            rootView.addView(firstSocProofView, index)
+                            containerView.addView(firstSocProofView, index)
                         } else {
                             val clickedSocialProof: View = inflater.inflate(R.layout.chip_social_proof_item, null)
                             renderClickedSocialProof(pairValue, clickedSocialProof, element.rating
                                     ?: 0F, getComponentTrackData(element))
-                            rootView?.addView(clickedSocialProof, index)
+                            containerView.addView(clickedSocialProof, index)
                         }
                     }
                 }

@@ -266,13 +266,14 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shopName = it.shopInfo.shopCore.name
                 shopAva = it.shopInfo.shopAssets.avatar
                 shopLocation = it.shopInfo.location
-                shopActiveProduct = it.shopInfo.activeProduct.toIntOrZero()
-                shopCreated = it.shopInfo.createdInfo.shopCreated
                 isGoApotik = it.isGoApotik
-                shopSpeed = it.shopSpeed
-                shopChatSpeed = it.shopChatSpeed.toIntOrZero()
-                shopRating = it.shopRating
-                infoShopData = if (context == null) listOf() else getLastThreeHierarchyData(context)
+                infoShopData = if (context == null) listOf() else
+                    getTwoShopInfoHiearchy(context,
+                            it.shopSpeed,
+                            it.shopChatSpeed.toIntOrZero(),
+                            it.shopInfo.activeProduct.toIntOrZero(),
+                            it.shopInfo.createdInfo.shopCreated,
+                            it.shopRating)
             }
 
             orderPriorityMap?.run {
