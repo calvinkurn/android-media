@@ -94,15 +94,19 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        activity?.let{
-            SplitCompat.installActivity(it)
-        }
+        splitCompatInstall()
 
         val view = inflater.inflate(com.tokopedia.profilecompletion.R.layout.fragment_add_name_register, container, false)
         bottomInfo = view.findViewById(R.id.bottom_info)
         progressBar = view.findViewById(R.id.progress_bar)
         mainContent = view.findViewById(R.id.main_content)
         return view
+    }
+
+    private fun splitCompatInstall() {
+        activity?.let{
+            SplitCompat.installActivity(it)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
