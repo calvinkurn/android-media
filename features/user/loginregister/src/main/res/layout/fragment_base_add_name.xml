@@ -40,6 +40,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="body_3"
         android:textAlignment="center"
         android:layout_marginTop="@dimen/unify_space_24"
         android:id="@+id/base_add_name_tnc_text"
