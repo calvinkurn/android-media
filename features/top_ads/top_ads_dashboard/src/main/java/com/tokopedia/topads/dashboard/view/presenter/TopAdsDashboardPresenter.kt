@@ -236,10 +236,10 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         })
     }
 
-    fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, onSuccess: ((GetDashboardProductStatistics) -> Unit)) {
+    fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, sort: String, status: Int, onSuccess: ((GetDashboardProductStatistics) -> Unit)) {
         topAdsGetProductStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 com.tokopedia.topads.common.R.raw.gql_query_product_statistics))
-        topAdsGetProductStatisticsUseCase.setParams(startDate, endDate, adIds)
+        topAdsGetProductStatisticsUseCase.setParams(startDate, endDate, adIds, sort, status)
         topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.getDashboardProductStatistics)
