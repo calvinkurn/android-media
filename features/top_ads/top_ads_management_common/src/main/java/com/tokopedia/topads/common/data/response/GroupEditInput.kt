@@ -1,4 +1,4 @@
-package com.tokopedia.topads.edit.data.param
+package com.tokopedia.topads.common.data.response
 
 import com.google.gson.annotations.SerializedName
 
@@ -19,13 +19,13 @@ data class GroupEditInput(
             var adOperations: List<AdOperationsItem>? = null,
 
             @field:SerializedName("priceBid")
-            var priceBid: Int? = 0,
+            var priceBid: Double? = 0.0,
 
             @field:SerializedName("name")
             var name: String? = null,
 
             @field:SerializedName("priceDaily")
-            var dailyBudget: Int? = 0,
+            var dailyBudget: Double? = 0.0,
 
             @field:SerializedName("scheduleEnd")
             var scheduleEnd: String? = null,

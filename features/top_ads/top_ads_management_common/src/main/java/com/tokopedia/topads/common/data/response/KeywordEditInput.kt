@@ -1,4 +1,4 @@
-package com.tokopedia.topads.edit.data.param
+package com.tokopedia.topads.common.data.response
 
 import com.google.gson.annotations.SerializedName
 
@@ -23,7 +23,7 @@ data class KeywordEditInput(
             @field:SerializedName("tag")
             var tag: String? = "",
             @field:SerializedName("priceBid")
-            var price_bid: Int? = 0,
+            var price_bid: Double? = 0.0,
             @field:SerializedName("source")
             var source: String? = ""
 
