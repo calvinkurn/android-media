@@ -84,14 +84,14 @@ fun ProductInfoDataModel.mapToRecommendationTracking(): RecommendationItem{
     )
 }
 
-fun List<RecommendationFilterChipsEntity.RecommendationFilterChip>.mapToUnifyFilterModel(chipClick: (item: SortFilterItem) -> Unit): List<SortFilterItem>{
+fun List<RecommendationFilterChipsEntity.RecommendationFilterChip>.mapToUnifyFilterModel(chipClick: (item: SortFilterItem, recom: RecommendationFilterChipsEntity.RecommendationFilterChip) -> Unit): List<SortFilterItem>{
     return map {
         SortFilterItem(
             title = it.options.firstOrNull()?.name ?: it.title,
             type = if(it.options.firstOrNull()?.isActivated == true) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
         ).apply{
             listener = {
-                chipClick(this)
+                chipClick(this, it)
             }
             typeUpdated = false
         }

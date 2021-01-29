@@ -99,8 +99,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
             supportFragmentManager.beginTransaction()
                     .replace(parentViewResourceID, fragmentByPaymentMode.fragment, tagFragment)
                     .commit()
+            decideDialogs(it.fragment, thanksPageData)
         } ?: run { gotoHomePage() }
-        decideDialogs(fragment, thanksPageData)
         postEventOnThankPageDataLoaded(thanksPageData)
         idlingResource?.decrement()
     }

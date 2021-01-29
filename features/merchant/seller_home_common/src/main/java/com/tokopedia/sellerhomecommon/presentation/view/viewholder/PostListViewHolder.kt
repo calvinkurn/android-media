@@ -208,8 +208,13 @@ class PostListViewHolder(
     }
 
     private fun setupCtaButton(element: PostListWidgetUiModel) {
-        itemView.tvPostListSeeDetails.text = element.ctaText
-        itemView.tvPostListSeeDetails.setOnClickListener { goToDetails(element) }
+        val (ctaText, appLink) = if(element.data?.cta?.text?.isNotBlank() == true && element.data?.cta?.appLink?.isNotBlank() == true) {
+            Pair(element.data?.cta?.text.orEmpty(), element.data?.cta?.appLink.orEmpty())
+        } else {
+            Pair(element.ctaText, element.appLink)
+        }
+        itemView.tvPostListSeeDetails.text = ctaText
+        itemView.tvPostListSeeDetails.setOnClickListener { goToDetails(element, appLink) }
     }
 
     private fun toggleCtaButtonVisibility(isShow: Boolean) = with(itemView) {
@@ -229,8 +234,8 @@ class PostListViewHolder(
         listener.onTooltipClicked(tooltip)
     }
 
-    private fun goToDetails(element: PostListWidgetUiModel) {
-        if (RouteManager.route(itemView.context, element.appLink)) {
+    private fun goToDetails(element: PostListWidgetUiModel, appLink: String) {
+        if (RouteManager.route(itemView.context, appLink)) {
             listener.sendPostListCtaClickEvent(element)
         }
     }

@@ -63,41 +63,45 @@ class UohRobot {
         waitForData()
     }
 
+    fun doApplyFilter() {
+        onView(withId(com.tokopedia.buyerorder.R.id.btn_apply))
+                .perform(click())
+        waitForData()
+    }
+
     fun clickFilterStatus() {
         onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),0))
                 .perform(click())
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+        waitForData()
     }
 
-    fun doApplyFilterStatus() {
-        onView(withId(com.tokopedia.buyerorder.R.id.btn_apply))
-                .perform(click())
+    fun selectFilterStatus() {
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
         waitForData()
     }
 
     fun clickFilterCategory() {
         onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),1))
                 .perform(click())
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+        waitForData()
     }
 
-    fun doApplyFilterCategory() {
-        onView(withId(com.tokopedia.buyerorder.R.id.btn_apply))
-                .perform(click())
+    fun selectFilterCategory() {
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+        waitForData()
     }
 
     fun clickFilterDate() {
         onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),2))
                 .perform(scrollTo(), click())
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+        waitForData()
     }
 
-    fun doApplyFilterDate() {
-        onView(withId(com.tokopedia.buyerorder.R.id.btn_apply))
-                .perform(click())
+    fun selectFilterDate() {
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
         waitForData()
     }
 

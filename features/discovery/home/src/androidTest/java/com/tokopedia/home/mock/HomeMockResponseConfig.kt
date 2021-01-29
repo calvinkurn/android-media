@@ -9,6 +9,9 @@ class HomeMockResponseConfig: MockModelConfig() {
     companion object {
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL = "homeData"
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY = "dynamicHomeChannel"
+        const val KEY_QUERY_DYNAMIC_POSITION = "dynamicPosition"
+        const val KEY_QUERY_DYNAMIC_POSITION_ICON = "homeIcon"
+        const val KEY_QUERY_DYNAMIC_POSITION_TICKER = "homeTicker"
 
         const val KEY_QUERY_DYNAMIC_HOME_POPULAR_KEYWORD = "popular_keywords"
         const val KEY_QUERY_DYNAMIC_HOME_SUCCESS_OCC = "add_to_cart_occ"
@@ -26,6 +29,21 @@ class HomeMockResponseConfig: MockModelConfig() {
                 KEY_QUERY_DYNAMIC_HOME_CHANNEL,
                 getRawString(context, R.raw.response_mock_data_dynamic_home_channel),
                 FIND_BY_QUERY_NAME)
+
+        addMockResponse(
+                KEY_QUERY_DYNAMIC_POSITION,
+                getRawString(context, R.raw.response_mock_data_dynamic_position),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_QUERY_DYNAMIC_POSITION,
+                getRawString(context, R.raw.response_mock_data_dynamic_position_icon),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_QUERY_DYNAMIC_POSITION,
+                getRawString(context, R.raw.response_mock_data_dynamic_position_ticker),
+                FIND_BY_CONTAINS)
 
         addMockResponse(
                 KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,

@@ -255,7 +255,7 @@ class FollowRecomAdapter(
                 imageView.loadImage(imageUrl)
             } else {
                 imageView.setBackgroundColor(
-                        MethodChecker.getColor(imageView.context, R.color.feed_image_default)
+                        MethodChecker.getColor(imageView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
                 )
             }
         }

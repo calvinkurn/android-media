@@ -8,7 +8,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@HeadlineAdsScope
 @Module
 class HeadlineAdsModule {
 
