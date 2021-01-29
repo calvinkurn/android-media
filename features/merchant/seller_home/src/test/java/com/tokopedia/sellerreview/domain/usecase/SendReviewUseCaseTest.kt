@@ -111,13 +111,13 @@ class SendReviewUseCaseTest {
 
     private fun getSendReviewParam(): RequestParams {
         return RequestParams.create().apply {
-            putLong("user_id", 123456)
+            putString("userId", "123456")
             putInt("rating", 5)
             putString("comment", "nice app")
-            putString("app_version", "SA 2.42")
-            putString("device_model", "samsung")
-            putString("os_type", "android")
-            putString("os_version", "10")
+            putString("appVersion", "SA 2.42")
+            putString("deviceModel", "samsung")
+            putString("osType", "android")
+            putString("osVersion", "10")
         }
     }
 }

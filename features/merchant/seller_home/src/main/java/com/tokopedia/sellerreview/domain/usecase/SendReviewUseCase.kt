@@ -35,13 +35,13 @@ class SendReviewUseCase(
     }
 
     companion object {
-        private const val USER_ID = "user_id"
+        private const val USER_ID = "userID"
         private const val RATING = "rating"
         private const val COMMENT = "comment"
-        private const val APP_VERSION = "app_version"
-        private const val DEVICE_MODEL = "device_model"
-        private const val OS_TYPE = "os_type"
-        private const val OS_VERSION = "os_version"
+        private const val APP_VERSION = "appVersion"
+        private const val DEVICE_MODEL = "deviceModel"
+        private const val OS_TYPE = "osType"
+        private const val OS_VERSION = "osVersion"
 
         private val QUERY = """
             mutation submitReviewSellerApp(${'$'}user_id: Int!, ${'$'}rating: Int!, ${'$'}comment: String, ${'$'}app_version: String, ${'$'}device_model: String, ${'$'}os_type: String, ${'$'}os_version: String) {
@@ -53,7 +53,7 @@ class SendReviewUseCase(
 
         fun createParams(param: SendReviewParam): RequestParams {
             return RequestParams.create().apply {
-                putLong(USER_ID, param.userId)
+                putString(USER_ID, param.userId)
                 putInt(RATING, param.rating)
                 putString(COMMENT, param.feedback)
                 putString(APP_VERSION, param.appVersion)

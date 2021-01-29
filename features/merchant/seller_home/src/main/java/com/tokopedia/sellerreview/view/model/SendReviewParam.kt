@@ -5,7 +5,7 @@ package com.tokopedia.sellerreview.view.model
  */
 
 data class SendReviewParam(
-        val userId: Long,
+        val userId: String,
         val rating: Int,
         val feedback: String = "",
         val appVersion: String = "",
