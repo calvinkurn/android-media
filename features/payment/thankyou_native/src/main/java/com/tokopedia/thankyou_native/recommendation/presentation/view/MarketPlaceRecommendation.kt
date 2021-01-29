@@ -35,11 +35,9 @@ import javax.inject.Inject
 
 class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
 
-
     private lateinit var fragment: BaseDaggerFragment
     private lateinit var paymentId: String
     private lateinit var thanksPageData: ThanksPageData
-
 
     @Inject
     lateinit var analytics: dagger.Lazy<RecommendationAnalytics>
@@ -61,7 +59,7 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
 
     var listener: ProductCardViewListener? = null
 
-    fun getLayout() = R.layout.thank_pdp_recommendation
+    private fun getLayout() = R.layout.thank_pdp_recommendation
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         injectComponents()
@@ -165,7 +163,6 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
         fragment.startActivityForResult(intent, REQUEST_FROM_PDP)
     }
 
-
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         listener = null
@@ -175,78 +172,4 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
         const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         const val REQUEST_FROM_PDP = 138
     }
-
 }
-
-
-/*
-
-
-    const val PDP_WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
-private fun onWishListedSuccessfully(message: String) {
-     fragment.view?.let { view ->
-         Toaster.make(view,
-                 message,
-                 Snackbar.LENGTH_LONG,
-                 actionText = view.context.getString(R.string.thank_recom_go_to_wishlist),
-                 clickListener = View.OnClickListener {
-                     RouteManager.route(view.context, ApplinkConst.WISHLIST)
-                 },
-                 type = Toaster.TYPE_NORMAL)
-     }
- }*/
-
-/* private fun onItemRemoveFromWishList(message: String) {
-     fragment.view?.let { view ->
-         Toaster.make(view, message, Snackbar.LENGTH_LONG)
-     }
- }*/
-
-/* private fun onShowError(throwable: Throwable?) {
-     fragment.view?.let { view ->
-         val message = ErrorHandler.getErrorMessage(view.context, throwable)
-         Toaster.make(view,
-                 message,
-                 Snackbar.LENGTH_LONG,
-                 type = Toaster.TYPE_ERROR)
-     }
- }*/
-
-/*
-    private fun onItemWishListClick(item: RecommendationItem, isAddWishlist: Boolean,
-                                    callback: (Boolean, Throwable?) -> Unit) {
-        if (userSessionInterface.get().isLoggedIn) {
-            if (!isAddWishlist) {
-                viewModel.addToWishList(item, callback)
-            } else {
-                viewModel.removeFromWishList(item, callback)
-            }
-        } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-    }*/
-
-
-/*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-    return when (requestCode) {
-        WishList.REQUEST_FROM_PDP -> {
-            if (data != null) {
-                val wishListStatusFromPdp = data
-                        .getBooleanExtra(WishList.PDP_WIHSLIST_STATUS_IS_WISHLIST, false)
-                val position = data.getIntExtra(WishList.PDP_EXTRA_UPDATED_POSITION, -1)
-                updateWishListedItemStatus(position, wishListStatusFromPdp)
-            }
-            true
-        }
-        else -> false
-    }
-}*/
-
-/*   private fun updateWishListedItemStatus(position: Int, wishListStatusFromPdp: Boolean) {
-       if (::adapter.isInitialized) {
-           val thankYouRecommendationModel = adapter.productCardList[position]
-           thankYouRecommendationModel.recommendationItem.isWishlist = wishListStatusFromPdp
-           thankYouRecommendationModel.productCardModel?.isWishlisted = wishListStatusFromPdp
-           adapter.notifyDataSetChanged()
-       }
-   }*/
