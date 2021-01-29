@@ -125,6 +125,10 @@ class PlayActivity : BaseActivity(),
 //                .commit()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onEnterPiPMode() {
         lifecycle.removeObserver(playLifecycleObserver)
         onBackPressed(isSystemBack = false)

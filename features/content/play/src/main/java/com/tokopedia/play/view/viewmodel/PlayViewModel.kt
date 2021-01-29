@@ -48,6 +48,7 @@ class PlayViewModel @Inject constructor(
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
         private val getTotalLikeUseCase: GetTotalLikeUseCase,
+        private val getReportSummariesUseCase: GetReportSummariesUseCase,
         private val getIsLikeUseCase: GetIsLikeUseCase,
         private val getCartCountUseCase: GetCartCountUseCase,
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
@@ -81,7 +82,7 @@ class PlayViewModel @Inject constructor(
 //        get() = _observableTotalLikes
 //    val observableLikeState: LiveData<NetworkResult<LikeStateUiModel>>
 //        get() = _observableLikeState
-    val observableTotalViews: LiveData<TotalViewUiModel>
+    val observableTotalViews: LiveData<PlayTotalViewUiModel> /**Changed**/
         get() = _observableTotalViews
     val observablePartnerInfo: LiveData<PlayPartnerInfoUiModel> /**Changed**/
         get() = _observablePartnerInfo
@@ -143,8 +144,9 @@ class PlayViewModel @Inject constructor(
         }
     val partnerId: Long?
         get() = _observablePartnerInfo.value?.basicInfo?.id
+
     val totalView: String?
-        get() = _observableTotalViews.value?.totalView
+        get() = _observableTotalViews.value?.totalViewFmt
 
     private var mChannelData: PlayChannelData? = null
 
@@ -173,6 +175,7 @@ class PlayViewModel @Inject constructor(
                     id = channelData.id,
                     partnerInfo = _observablePartnerInfo.value ?: channelData.partnerInfo,
                     likeInfo = _observableLikeInfo.value ?: channelData.likeInfo,
+                    totalViewInfo = _observableTotalViews.value ?: channelData.totalViewInfo,
                     shareInfo = _observableShareInfo.value ?: channelData.shareInfo,
                     cartInfo = _observableCartInfo.value ?: channelData.cartInfo,
                     pinnedInfo = PlayPinnedInfoUiModel(
@@ -211,7 +214,7 @@ class PlayViewModel @Inject constructor(
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
 //    private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
 //    private val _observableLikeState = MutableLiveData<NetworkResult<LikeStateUiModel>>()
-    private val _observableTotalViews = MutableLiveData<TotalViewUiModel>()
+    private val _observableTotalViews = MutableLiveData<PlayTotalViewUiModel>() /**Changed**/
     private val _observablePartnerInfo = MutableLiveData<PlayPartnerInfoUiModel>() /**Changed**/
     private val _observableQuickReply = MutableLiveData<PlayQuickReplyInfoUiModel>() /**Changed**/
     private val _observableEvent = MutableLiveData<EventUiModel>()
@@ -504,6 +507,8 @@ class PlayViewModel @Inject constructor(
         handlePartnerInfo(channelData.partnerInfo)
         handleVideoMetaInfo(channelData.videoMetaInfo)
         handleShareInfo(channelData.shareInfo)
+        handleTotalViewInfo(channelData.totalViewInfo)
+        handleLikeInfo(channelData.likeInfo)
         handleCartInfo(channelData.cartInfo)
         handlePinnedInfo(channelData.pinnedInfo)
         handleQuickReplyInfo(channelData.quickReplyInfo)
@@ -530,7 +535,7 @@ class PlayViewModel @Inject constructor(
     private fun updateChannelInfo(channelData: PlayChannelData) {
         updatePartnerInfo(channelData.partnerInfo.basicInfo)
         updateVideoMetaInfo(channelData.videoMetaInfo)
-        updateLikeInfo(channelData.likeInfo.param, channelData.id)
+        updateLikeAndTotalViewInfo(channelData.likeInfo.param, channelData.id)
         updateCartInfo(channelData.cartInfo)
         updateProductTagsInfo(channelData.pinnedInfo.pinnedProduct.productTags, channelData.pinnedInfo, channelData.id)
     }
@@ -556,7 +561,7 @@ class PlayViewModel @Inject constructor(
 
 //                _observableGetChannelInfo.value = NetworkResult.Success(completeInfoUiModel.channelInfo)
 //                _observablePartnerInfo.value = completeInfoUiModel.channelInfo.partnerInfo
-                _observableTotalViews.value = completeInfoUiModel.totalView
+//                _observableTotalViews.value = completeInfoUiModel.totalView
 //                _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
 //                _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
 //                _observableQuickReply.value = completeInfoUiModel.quickReply
@@ -704,7 +709,7 @@ class PlayViewModel @Inject constructor(
 //                        _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(result)
                     }
                     is TotalView -> {
-                        _observableTotalViews.value = PlayUiMapper.mapTotalViews(result)
+//                        _observableTotalViews.value = PlayUiMapper.mapTotalViews(result)
                     }
                     is PlayChat -> {
                         setNewChat(PlayUiMapper.mapPlayChat(userSession.userId, result))
@@ -788,6 +793,14 @@ class PlayViewModel @Inject constructor(
         _observableShareInfo.value = shareInfo
     }
 
+    private fun handleTotalViewInfo(totalViewInfo: PlayTotalViewUiModel) {
+        _observableTotalViews.value = totalViewInfo
+    }
+
+    private fun handleLikeInfo(likeInfo: PlayLikeInfoUiModel) {
+        _observableLikeInfo.value = likeInfo
+    }
+
     private fun handleCartInfo(cartInfo: PlayCartInfoUiModel) {
         _observableCartInfo.value = cartInfo
     }
@@ -832,16 +845,16 @@ class PlayViewModel @Inject constructor(
         else playVideoManager.release()
     }
 
-    private fun updateLikeInfo(likeParamInfo: PlayLikeParamInfoUiModel, channelId: String) {
+    private fun updateLikeAndTotalViewInfo(likeParamInfo: PlayLikeParamInfoUiModel, channelId: String) {
         viewModelScope.launchCatchError(block = {
-            val deferredTotalLike = async { getTotalLikes(channelId) }
+            val deferredReportSummaries = async { getReportSummaries(channelId) }
             val deferredIsLiked = async { getIsLiked(likeParamInfo) }
 
-            val (totalLike, totalLikeFormatted) = try {
-                val response = deferredTotalLike.await()
-                response.totalLike to response.totalLikeFormatted
+            val (totalView, totalLike, totalLikeFormatted) = try {
+                val report = deferredReportSummaries.await().data.first().channel.metrics
+                Triple(report.totalViewFmt, report.totalLike.toIntOrZero(), report.totalLikeFmt)
             } catch (e: Throwable) {
-                0 to "0"
+                Triple("", 0 , "0")
             }
 
             val isLiked = try { deferredIsLiked.await() } catch (e: Throwable) { false }
@@ -852,6 +865,8 @@ class PlayViewModel @Inject constructor(
                     isLiked = isLiked
             )
             _observableLikeInfo.value = likeParamInfo + newLikeStatus
+
+            _observableTotalViews.value = PlayTotalViewUiModel.Complete(totalView)
         }, onError = {
             _observableLikeInfo.value = likeParamInfo + PlayLikeStatusInfoUiModel(
                     totalLike = 0,
@@ -898,6 +913,11 @@ class PlayViewModel @Inject constructor(
         val currentChatList = _observableChatList.value ?: mutableListOf()
         currentChatList.add(chat)
         _observableChatList.value = currentChatList
+    }
+
+    private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
+        getReportSummariesUseCase.params = GetReportSummariesUseCase.createParam(channelId)
+        getReportSummariesUseCase.executeOnBackground()
     }
 
     private suspend fun getTotalLikes(channelId: String): TotalLike = withContext(dispatchers.io) {

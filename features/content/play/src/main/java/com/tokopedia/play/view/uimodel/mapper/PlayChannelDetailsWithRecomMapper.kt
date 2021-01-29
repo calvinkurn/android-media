@@ -31,6 +31,7 @@ class PlayChannelDetailsWithRecomMapper(
                     id = it.id,
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam),
+                    totalViewInfo = mapTotalViewInfo(),
                     shareInfo = mapShareInfo(it.share, it.config.active, it.config.freezed),
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
@@ -56,6 +57,8 @@ class PlayChannelDetailsWithRecomMapper(
                     likeType = feedLikeParamResponse.likeType
             )
     )
+
+    private fun mapTotalViewInfo() = PlayTotalViewUiModel.Incomplete
 
     private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share, isActive: Boolean, isFreezed: Boolean): PlayShareInfoUiModel {
         val fullShareContent = try {
