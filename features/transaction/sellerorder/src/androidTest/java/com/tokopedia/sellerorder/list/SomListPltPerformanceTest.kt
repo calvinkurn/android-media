@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list
 
+import android.app.Application
 import android.content.Context
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingPolicies
@@ -9,6 +10,7 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.sellerhomenavigationcommon.plt.LoadTimeMonitoringListener
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.sellerorder.SomIdlingResource
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.presentation.activities.SomListActivity
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -62,7 +64,6 @@ class SomListPltPerformanceTest {
     @After
     fun tearDown() {
         unregisterIdlingResources()
-        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
     @Test
@@ -76,11 +77,18 @@ class SomListPltPerformanceTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+        InstrumentationAuthHelper.loginToAnUser(
+                InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application,
+                SomIdlingResource.idlingResource,
+                "try.sugiharto+02@tokopedia.com",
+                "tokopedia789"
+        )
     }
 
     private fun startSomListActivity() {
-        activityRule.launchActivity(SomListActivity.createIntent(InstrumentationRegistry.getInstrumentation().targetContext))
+        activityRule.launchActivity(SomListActivity.createIntent(InstrumentationRegistry.getInstrumentation().targetContext).apply {
+            putExtra(SomConsts.TAB_ACTIVE, "done")
+        })
     }
 
     private fun savePLTPerformanceResultData(tag: String) {
