@@ -21,7 +21,7 @@ class UpdateFollowStatusUseCase @Inject constructor(
         private const val PARAM_INPUT = "input"
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_ACTION = "action"
-        private const val PARAM_SOURCE = "src"
+        private const val PARAM_SOURCE = "pageSource"
 
         @JvmStatic
         fun createParams(shopId: String, action: String): HashMap<String, Any> {
@@ -34,12 +34,12 @@ class UpdateFollowStatusUseCase @Inject constructor(
         }
 
         @JvmStatic
-        fun createParams(shopId: String, action: String, src: String): HashMap<String, Any> {
+        fun createParams(shopId: String, action: String, pageSource: String): HashMap<String, Any> {
             return hashMapOf(
                     PARAM_INPUT to hashMapOf(
                             PARAM_SHOP_ID to shopId,
                             PARAM_ACTION to action,
-                            PARAM_SOURCE to src
+                            PARAM_SOURCE to pageSource
                     )
             )
         }
