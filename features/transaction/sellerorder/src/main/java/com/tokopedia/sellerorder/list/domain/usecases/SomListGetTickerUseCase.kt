@@ -39,7 +39,7 @@ class SomListGetTickerUseCase @Inject constructor(
 
     companion object {
         val QUERY = """
-            query OrderTickers(${'$'}input: OrderTickersArgs!) {
+            query GetOrderTickers(${'$'}input: OrderTickersArgs!) {
               orderTickers(input: ${'$'}input) {
                 total
                 tickers {

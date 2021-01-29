@@ -48,7 +48,7 @@ class MovetoGroupSheetList {
             it.btn_close.setOnClickListener { dismissDialog() }
             it.submit_butt.setOnClickListener {
                 if (groupId.toString() == "0") {
-                    groupId = (adapter?.items?.get(0) as MovetoGroupItemViewModel).result.groupId
+                    groupId = (adapter?.items?.get(0) as MovetoGroupItemViewModel).result.groupId.toInt()
                 }
                 onItemClick?.invoke()
                 dismissDialog()
@@ -61,7 +61,7 @@ class MovetoGroupSheetList {
     }
 
     private fun itemSelected(pos: Int) {
-        groupId = (adapter?.items?.get(pos) as MovetoGroupItemViewModel).result.groupId
+        groupId = (adapter?.items?.get(pos) as MovetoGroupItemViewModel).result.groupId.toInt()
         adapter?.setLastSelected(pos)
     }
 

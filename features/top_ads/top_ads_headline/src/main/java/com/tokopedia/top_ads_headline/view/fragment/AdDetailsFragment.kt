@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
@@ -119,7 +118,7 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() 
 
     private fun validateGroup(s: String?) {
         s?.let {
-            adDetailsViewModel.validateGroup(it, userSession.shopId.toIntOrZero(), this::onSuccess, this::onError)
+            adDetailsViewModel.validateGroup(it, this::onSuccess, this::onError)
         }
     }
 
