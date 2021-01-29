@@ -112,7 +112,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private var bottomSheetFilter: BottomSheetUnify? = null
     private var bottomSheetSort: BottomSheetUnify? = null
-    
+
     private var itemViewSummary: View? = null
 
     private var productItemList: List<ProductReviewUiModel>? = null
@@ -225,7 +225,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewSellerPerformanceMonitoringListener? {
-        return if(context is ReviewSellerPerformanceMonitoringListener) {
+        return if (context is ReviewSellerPerformanceMonitoringListener) {
             context
         } else {
             null
@@ -663,9 +663,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             }
         }
 
-        fragmentManager?.let {
-            bottomSheetFilter?.show(it, title)
-        }
+        bottomSheetFilter?.show(requireFragmentManager(), title)
     }
 
     private fun initBottomSheetSort(sortListItemUnify: ArrayList<ListItemUnify>, title: String) {
@@ -699,9 +697,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             }
         }
 
-        fragmentManager?.let {
-            bottomSheetSort?.show(it, title)
-        }
+        bottomSheetSort?.show(requireFragmentManager(), title)
     }
 
     private fun onItemFilterClickedBottomSheet(position: Int, filterListItemUnify: ArrayList<ListItemUnify>,
@@ -720,7 +716,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             filterAllText = ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
             loadInitialData()
             bottomSheetFilter?.dismiss()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         }
     }
@@ -738,7 +734,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             sortBy = ReviewConstants.mapSortReviewProduct().getKeyByValue(chipsSortText)
             loadInitialData()
             bottomSheetSort?.dismiss()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         }
     }
