@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.sir_thank_you_bottom_sheet.view.*
 class ThankYouBottomSheet : BaseBottomSheet() {
 
     companion object {
-        private const val TAG = "ThankYouBottomSheet"
+        const val TAG = "SirThankYouBottomSheet"
 
         fun createInstance(): ThankYouBottomSheet {
             return ThankYouBottomSheet()

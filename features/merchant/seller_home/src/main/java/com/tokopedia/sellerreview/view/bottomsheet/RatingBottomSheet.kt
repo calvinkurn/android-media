@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.sir_rating_bottom_sheet.view.*
 class RatingBottomSheet : BaseBottomSheet() {
 
     companion object {
-        private const val TAG = "RatingBottomSheet"
+        const val TAG = "SirRatingBottomSheet"
 
         fun createInstance(): RatingBottomSheet {
             return RatingBottomSheet().apply {

@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.sir_feedback_bottom_sheet.view.*
 class FeedbackBottomSheet : BaseBottomSheet() {
 
     companion object {
-        private const val TAG = "FeedbackBottomSheet"
+        const val TAG = "SirFeedbackBottomSheet"
 
         fun createInstance(): FeedbackBottomSheet {
             return FeedbackBottomSheet().apply {
