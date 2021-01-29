@@ -67,13 +67,13 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                                             ImageProcessingUtil.DEF_WIDTH,
                                             ImageProcessingUtil.DEF_HEIGHT,
                                             true,
-                                            ImageProcessingUtil.getCompressFormat(path));
+                                            Bitmap.CompressFormat.WEBP);
                                 } else {
                                     pathResult = ImageProcessingUtil.resizeBitmap(path,
                                             ImageProcessingUtil.DEF_WIDTH,
                                             ImageProcessingUtil.DEF_HEIGHT,
                                             true,
-                                            Bitmap.CompressFormat.WEBP);
+                                            ImageProcessingUtil.getCompressFormat(path));
                                 }
 
                                 if (recheckSizeAfterResize && FileUtil.getFileSizeInKb(pathResult) > maxFileSize) {
