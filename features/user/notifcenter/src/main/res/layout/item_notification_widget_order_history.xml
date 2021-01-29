@@ -99,21 +99,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/notif_dp_22"
-        android:layout_marginBottom="@dimen/unify_space_24"
         android:contentDescription="@null"
-        app:layout_constraintBottom_toTopOf="@id/rv_history"
+        app:layout_constraintBottom_toBottomOf="@+id/view_notification_desc"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/view_notification_desc"
         app:srcCompat="@drawable/ic_notifcenter_on_progress_mark" />
 
     <View
         android:id="@+id/view_bottom_line"
         android:layout_width="@dimen/notif_dp_1"
-        android:layout_height="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_0"
         android:background="@color/Unify_N100"
         app:layout_constraintBottom_toTopOf="@+id/rv_history"
         app:layout_constraintEnd_toEndOf="@+id/iv_mark_seen"
         app:layout_constraintStart_toStartOf="@+id/iv_mark_seen"
         app:layout_constraintTop_toBottomOf="@+id/iv_mark_seen" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        app:layout_constraintEnd_toEndOf="@+id/view_notification_desc"
+        app:layout_constraintStart_toStartOf="@+id/view_notification_desc"
+        app:layout_constraintTop_toBottomOf="@+id/view_notification_desc"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Dana akan dikembalikan ke Saldo (1x24 jam) atau ke limit kartu kredit (14 hari kerja)." />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_history"
@@ -123,7 +135,8 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_notification_desc" />
+        app:layout_constraintTop_toBottomOf="@+id/tp_message"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tp_history"

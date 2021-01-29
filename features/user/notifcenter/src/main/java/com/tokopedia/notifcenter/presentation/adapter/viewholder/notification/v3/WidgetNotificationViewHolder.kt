@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -31,6 +32,7 @@ class WidgetNotificationViewHolder constructor(
     private val thumbnail: ImageView? = itemView?.findViewById(R.id.iv_product_thumbnail)
     private val widgetTitle: Typography? = itemView?.findViewById(R.id.tp_widget_title)
     private val widgetCta: Typography? = itemView?.findViewById(R.id.tp_cta)
+    private val message: Typography? = itemView?.findViewById(R.id.tp_message)
     private val progressIndicator: Group? = itemView?.findViewById(
             R.id.group_progress_indicator
     )
@@ -61,6 +63,7 @@ class WidgetNotificationViewHolder constructor(
         bindThumbnail(element)
         bindWidgetTitle(element)
         bindWidgetCta(element)
+        bindMessage(element)
     }
 
     private fun bindTrackHistory(element: NotificationUiModel) {
@@ -105,6 +108,12 @@ class WidgetNotificationViewHolder constructor(
             widgetCta.setOnClickListener {
                 RouteManager.route(itemView.context, element.widget.androidButtonLink)
             }
+        }
+    }
+
+    private fun bindMessage(element: NotificationUiModel) {
+        message?.shouldShowWithAction(element.widget.message.isNotEmpty()) {
+            message.text = MethodChecker.fromHtml(element.widget.message)
         }
     }
 
