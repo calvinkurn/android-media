@@ -2,12 +2,12 @@ package com.tokopedia.explore.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
+import com.tokopedia.explore.domain.entity.GetDiscoveryKolData
+import com.tokopedia.explore.domain.entity.GetExploreData
 import com.tokopedia.explore.domain.interactor.ExploreDataUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
-import io.mockk.spyk
+import com.tokopedia.usecase.coroutines.Fail
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -36,13 +36,31 @@ class HashTagLandingPageViewModelTest {
     }
 
     @Test
-    fun `test getContentByHashTag for exception`(){
-        val dummyException = Exception("my excep")
+    fun `test trackAffiliate method`() {
+        every { trackClickAffiliateClickUseCase.execute(any(), any()) } just runs
+        viewModel.trackAffiliate("test_url")
+        verify { trackClickAffiliateClickUseCase.execute(any(), any()) }
+    }
 
+    @Test
+    fun `test getContentByHashtag method for exception`() {
+        val dummyException = Exception("dummy message")
         coEvery { exploreDataUseCase.executeOnBackground() } throws dummyException
         viewModel.getContentByHashtag()
         coVerify { exploreDataUseCase.executeOnBackground() }
-        assertEquals(viewModel.getPostResponse().value, dummyException)
+        assertEquals(viewModel.getPostResponse().value, Fail(dummyException))
     }
 
+    @Test
+    fun `test getContentByHashtag method for success`() {
+        val dummyResponse = GetExploreData().apply {
+            getDiscoveryKolData = GetDiscoveryKolData().apply {
+                lastCursor = "dummy"
+            }
+        }
+        coEvery { exploreDataUseCase.executeOnBackground() } returns dummyResponse
+        viewModel.getContentByHashtag()
+        coVerify { exploreDataUseCase.executeOnBackground() }
+        assertEquals(viewModel.canLoadMore, true)
+    }
 }
