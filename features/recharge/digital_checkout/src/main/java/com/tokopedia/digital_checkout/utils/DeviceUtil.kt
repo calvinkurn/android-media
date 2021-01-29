@@ -5,6 +5,7 @@ import android.os.Build
 import android.text.TextUtils
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
 import com.tokopedia.user.session.UserSession
 import java.net.Inet4Address
 import java.net.NetworkInterface
@@ -34,8 +35,8 @@ object DeviceUtil {
 
     private val deviceName: String
         private get() {
-            val manufacturer = Build.MANUFACTURER
-            val model = Build.MODEL
+            val manufacturer = Build.MANUFACTURER ?: ""
+            val model = Build.MODEL ?: ""
             return if (model.startsWith(manufacturer)) {
                 capitalize(model)
             } else capitalize(manufacturer) + " " + model
@@ -78,5 +79,12 @@ object DeviceUtil {
         requestBodyIdentifier.userId = userSession.userId
         requestBodyIdentifier.osType = "1"
         return requestBodyIdentifier
+    }
+
+    fun getAppsFlyerIdentifierParam(afUniqueId: String?, adsId: String?): RequestBodyCheckout.RequestBodyAppsFlyer {
+        val requestBodyAppsFlyer: RequestBodyCheckout.RequestBodyAppsFlyer = RequestBodyCheckout.RequestBodyAppsFlyer()
+        requestBodyAppsFlyer.appsflyerId = afUniqueId
+        requestBodyAppsFlyer.deviceId = adsId
+        return requestBodyAppsFlyer
     }
 }

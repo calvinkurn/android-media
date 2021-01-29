@@ -14,7 +14,7 @@ object ApplinkConsInternalDigital {
     const val INTERNAL_DIGITAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL"
     const val INTERNAL_RECHARGE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_RECHARGE"
 
-    const val CART_DIGITAL = "$INTERNAL_DIGITAL/cart"
+    const val CART_DIGITAL = "$INTERNAL_DIGITAL/cart/baru"
     const val TELCO_PREPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopre"
     const val TELCO_POSTPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopost"
     const val VOUCHER_GAME = "$INTERNAL_DIGITAL/vouchergame"

@@ -39,7 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/spacing_lvl4">
+            android:padding="@dimen/spacing_lvl4"
+            android:focusableInTouchMode="true">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productTitle"
@@ -65,18 +66,42 @@
                 android:visibility="gone"
                 app:typographyType="body_2" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/Neutral_N75"
+
+                android:layout_marginTop="@dimen/spacing_lvl3"/>
+
+            <LinearLayout
+                android:id="@+id/inputPriceContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
+                    android:id="@+id/inputPriceHolderView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/layoutMyBills"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingVertical="@dimen/spacing_lvl4">
+                android:paddingBottom="@dimen/spacing_lvl4">
 
                 <View
+                    android:id="@+id/myBillsSeperator"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginBottom="@dimen/spacing_lvl4"
-                    android:background="@color/Neutral_N75" />
+                    android:background="@color/Neutral_N75"
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
 
                 <com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
                     android:id="@+id/subscriptionWidget"
@@ -100,7 +125,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:focusableInTouchMode="true">
 
         <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
             android:id="@+id/digitalPromoTickerView"
