@@ -353,7 +353,7 @@
 
     <!--  TICKER  -->
     <string name="title_ticker_from_atc">Yuk, lanjutin belanjanya sekarang!</string>
-    <string name="desc_ticker_from_atc">Khusus pengguna baru, dapetin cashback 80&#37; hingga Rp30.000.</string>
+    <string name="desc_ticker_from_atc">Khusus pengguna baru, dapetin cashback 80%% hingga Rp30.000.</string>
 
     <string name="seller_direct_login">Masuk ke toko ini?</string>
     <string name="button_direct_login">Masuk</string>
