@@ -414,5 +414,6 @@
 
     <string name="ovo_register_account_description">Kamu bisa daftarkan nomor %1$s di Tokopedia &amp; OVO sekaligus, lho!</string>
     <string name="ovo_register_account_title">Mau sekalian daftar OVO?</string>
+    <string name="content_desc_ovo_success">OvoSuccess</string>
 
 </resources>
