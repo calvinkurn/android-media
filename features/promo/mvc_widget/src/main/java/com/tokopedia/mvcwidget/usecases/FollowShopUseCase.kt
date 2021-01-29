@@ -12,7 +12,6 @@ import javax.inject.Inject
 class FollowShopUseCase @Inject constructor(val gqlWrapper: GqlUseCaseWrapper) {
 
     suspend fun getResponse(map: HashMap<String, Any>): FollowShopResponse? {
-//        return getFakeResponseSuccess()
         return gqlWrapper.getResponse(FollowShopResponse::class.java, FollowShopQuery.GQL_QUERY, map)
     }
 
@@ -23,19 +22,9 @@ class FollowShopUseCase @Inject constructor(val gqlWrapper: GqlUseCaseWrapper) {
         variables[FollowShopParams.INPUT] = map
         return variables
     }
-
-//    suspend fun getFakeResponseSuccess(): FollowShopResponse {
-//        delay(1000)
-//        return FollowShopResponse(FollowShop(true))
-//    }
-//
-//    suspend fun getFakeResponseFail(): FollowShopResponse {
-//        delay(1000)
-//        return FollowShopResponse(FollowShop(false))
-//    }
 }
 
 object FollowShopParams {
-    const val SHOP_ID = "shopId"
+    const val SHOP_ID = "shopID"
     const val INPUT = "input"
 }
