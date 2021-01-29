@@ -726,7 +726,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             filterAllText = ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
             loadInitialData()
             bottomSheetFilter?.dismiss()
-        } catch (e: Throwable) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -744,7 +744,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             sortBy = ReviewConstants.mapSortReviewProduct().getKeyByValue(chipsSortText)
             loadInitialData()
             bottomSheetSort?.dismiss()
-        } catch (e: Throwable) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
