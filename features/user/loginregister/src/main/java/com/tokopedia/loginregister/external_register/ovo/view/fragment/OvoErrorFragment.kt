@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.external_register.base.fragment.ExternalAccountFinalFragment
 import com.tokopedia.loginregister.external_register.base.listener.BaseFinalListener
+import com.tokopedia.loginregister.external_register.ovo.OvoConstants
 
 /**
  * Created by Yoris Prayogo on 06/01/21.
@@ -26,7 +27,7 @@ class OvoErrorFragment: ExternalAccountFinalFragment(), BaseFinalListener {
             ovoCreationAnalytics.trackViewOvoFailPage()
             setTitle(getString(R.string.ovo_external_register_title_error))
             setDescription(getString(R.string.ovo_external_register_description_error))
-            setMainImage(imgResId = R.drawable.img_ovo_error)
+            setMainImage(imgUrl = OvoConstants.IMG_ERROR_OVO)
             setButtonText(getString(R.string.base_add_name_next))
             setSuccessListener(this@OvoErrorFragment)
         }

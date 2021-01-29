@@ -8,6 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.external_register.base.fragment.ExternalAccountFinalFragment
 import com.tokopedia.loginregister.external_register.base.listener.BaseFinalListener
+import com.tokopedia.loginregister.external_register.ovo.OvoConstants
 
 /**
  * Created by Yoris Prayogo on 17/11/20.
@@ -28,7 +29,7 @@ class OvoSuccessFragment: ExternalAccountFinalFragment(), BaseFinalListener {
             ovoCreationAnalytics.trackViewOvoSuccessPage()
             setTitle(getString(R.string.ovo_external_register_title_success))
             setDescription(getString(R.string.ovo_external_register_description_success))
-            setMainImage(imgResId = R.drawable.img_register_success)
+            setMainImage(imgUrl = OvoConstants.IMG_SUCCESS_OVO)
             setSuccessListener(this@OvoSuccessFragment)
         }
     }

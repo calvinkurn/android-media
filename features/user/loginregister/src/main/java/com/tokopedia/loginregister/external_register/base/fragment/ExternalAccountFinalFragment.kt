@@ -48,7 +48,7 @@ open class ExternalAccountFinalFragment: BaseDaggerFragment() {
         }
     }
 
-    fun setMainImage(imgResId: Int, imgUrl: String = ""){
+    fun setMainImage(imgResId: Int = 0, imgUrl: String = ""){
         if(imgResId != 0){
             view?.fragment_base_success_main_img?.setImageResource(imgResId)
         } else if(imgUrl.isNotEmpty()){
