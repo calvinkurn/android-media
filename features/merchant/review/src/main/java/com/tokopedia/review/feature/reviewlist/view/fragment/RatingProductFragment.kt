@@ -634,40 +634,46 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun initBottomSheetFilter(filterListItemUnify: ArrayList<ListItemUnify>, title: String) {
         tracking.eventClickFilterRatingProduct(userSession.shopId.orEmpty())
-
         try {
-            fragmentManager?.let { fragmentManager ->
-                bottomSheetFilter?.apply {
-                    setOnDismissListener {
-                        chipsFilter?.toggle()
-                    }
-                    setTitle(title)
-                    showCloseIcon = true
-                    setCloseClickListener {
-                        dismiss()
-                    }
-                }
-
-                filterListUnify?.let { it ->
-                    it.onLoadFinish {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                            it.setSelectedFilterOrSort(filterListItemUnify, positionFilter.orZero())
-                        }
-                        it.setOnItemClickListener { _, _, position, _ ->
-                            onItemFilterClickedBottomSheet(position, filterListItemUnify, it)
-                        }
-
-                        filterListItemUnify.forEachIndexed { position, listItemUnify ->
-                            listItemUnify.listRightRadiobtn?.setOnClickListener { _ ->
-                                onItemFilterClickedBottomSheet(position, filterListItemUnify, it)
-                            }
-                        }
-                    }
-                }
-                bottomSheetFilter?.show(fragmentManager, title)
-            }
+            setFilterListUnifyData(filterListItemUnify)
+            setupViewFilterBottomSheet(title)
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun setupViewFilterBottomSheet(title: String) {
+        fragmentManager?.let { fragmentManager ->
+            bottomSheetFilter?.apply {
+                setOnDismissListener {
+                    chipsFilter?.toggle()
+                }
+                setTitle(title)
+                showCloseIcon = true
+                setCloseClickListener {
+                    dismiss()
+                }
+                show(fragmentManager, title)
+            }
+        }
+    }
+
+    private fun setFilterListUnifyData(filterListItemUnify: ArrayList<ListItemUnify>) {
+        filterListUnify?.let { it ->
+            it.onLoadFinish {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    it.setSelectedFilterOrSort(filterListItemUnify, positionFilter.orZero())
+                }
+                it.setOnItemClickListener { _, _, position, _ ->
+                    onItemFilterClickedBottomSheet(position, filterListItemUnify, it)
+                }
+
+                filterListItemUnify.forEachIndexed { position, listItemUnify ->
+                    listItemUnify.listRightRadiobtn?.setOnClickListener { _ ->
+                        onItemFilterClickedBottomSheet(position, filterListItemUnify, it)
+                    }
+                }
+            }
         }
     }
 
@@ -675,38 +681,45 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         tracking.eventClickSortRatingProduct(userSession.shopId.orEmpty())
 
         try {
-            fragmentManager?.let { fragmentManager ->
-                bottomSheetSort?.apply {
-                    setOnDismissListener {
-                        chipsSort?.toggle()
-                    }
-                    setTitle(title)
-                    showCloseIcon = true
-                    setCloseClickListener {
-                        dismiss()
-                    }
-                }
-
-                sortListUnify?.let { it ->
-                    it.onLoadFinish {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                            it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
-                        }
-                        it.setOnItemClickListener { _, _, position, _ ->
-                            onItemSortClickedBottomSheet(position, sortListItemUnify, it)
-                        }
-
-                        sortListItemUnify.forEachIndexed { position, listItemUnify ->
-                            listItemUnify.listRightRadiobtn?.setOnClickListener { _ ->
-                                onItemSortClickedBottomSheet(position, sortListItemUnify, it)
-                            }
-                        }
-                    }
-                }
-                bottomSheetSort?.show(fragmentManager, title)
-            }
+            setSortListUnifyData(sortListItemUnify)
+            setupViewSortBottomSheet(title)
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun setupViewSortBottomSheet(title: String) {
+        fragmentManager?.let { fragmentManager ->
+            bottomSheetSort?.apply {
+                setOnDismissListener {
+                    chipsSort?.toggle()
+                }
+                setTitle(title)
+                showCloseIcon = true
+                setCloseClickListener {
+                    dismiss()
+                }
+            }
+            bottomSheetSort?.show(fragmentManager, title)
+        }
+    }
+
+    private fun setSortListUnifyData(sortListItemUnify: ArrayList<ListItemUnify>) {
+        sortListUnify?.let { it ->
+            it.onLoadFinish {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
+                }
+                it.setOnItemClickListener { _, _, position, _ ->
+                    onItemSortClickedBottomSheet(position, sortListItemUnify, it)
+                }
+
+                sortListItemUnify.forEachIndexed { position, listItemUnify ->
+                    listItemUnify.listRightRadiobtn?.setOnClickListener { _ ->
+                        onItemSortClickedBottomSheet(position, sortListItemUnify, it)
+                    }
+                }
+            }
         }
     }
 
