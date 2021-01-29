@@ -3,9 +3,7 @@ package com.tokopedia.paylater.presentation.viewModel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.paylater.data.mapper.PayLaterApplicationStatusMapper
-import com.tokopedia.paylater.data.mapper.PayLaterPartnerTypeMapper
-import com.tokopedia.paylater.data.mapper.PayLaterSimulationResponseMapper
+import com.tokopedia.paylater.data.mapper.*
 import com.tokopedia.paylater.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.paylater.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.paylater.domain.model.*
@@ -41,7 +39,6 @@ class PayLaterViewModel @Inject constructor(
                 ::onPayLaterSimulationDataError,
                 amount
         )
-        //onPayLaterSimulationDataError(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
     }
 
     fun getPayLaterProductData() {
@@ -65,17 +62,15 @@ class PayLaterViewModel @Inject constructor(
 
     private fun onPayLaterSimulationDataSuccess(payLaterGetSimulationResponse: PayLaterGetSimulationResponse?) {
         launchCatchError(block = {
-            val mapperResponse = withContext(ioDispatcher) {
+            val dataStatus = withContext(ioDispatcher) {
                 return@withContext PayLaterSimulationResponseMapper.handleSimulationResponse(payLaterGetSimulationResponse)
             }
-            if (!mapperResponse.first) {
-                onPayLaterSimulationDataError(PdpSimulationException.PayLaterNullDataException(SIMULATION_DATA_FAILURE))
-            } else if (!mapperResponse.second) {
-                onPayLaterSimulationDataError(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
-            } else {
-                payLaterSimulationResultLiveData.value = Success(payLaterGetSimulationResponse?.payLaterGetSimulationGateway?.payLaterGatewayList!!)
-            }
+            when (dataStatus) {
+                StatusSuccess -> payLaterSimulationResultLiveData.value = Success(payLaterGetSimulationResponse?.payLaterGetSimulationGateway?.payLaterGatewayList!!)
+                StatusPayLaterNotAvailable -> onPayLaterSimulationDataError(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
+                StatusDataFailure -> onPayLaterSimulationDataError(PdpSimulationException.PayLaterNullDataException(SIMULATION_DATA_FAILURE))
 
+            }
         }, onError = {
             onPayLaterSimulationDataError(it)
         })

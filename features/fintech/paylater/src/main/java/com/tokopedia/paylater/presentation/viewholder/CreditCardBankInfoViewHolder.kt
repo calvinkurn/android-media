@@ -21,7 +21,7 @@ class CreditCardBankInfoViewHolder(val view: View) : RecyclerView.ViewHolder(vie
             ImageHandler.loadImage(context,
                     ivBank,
                     bankData.bankImageUrl,
-                    R.drawable.ic_loading_image)
+                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
             setLabelData(this, bankData.transactionBenefits)
             tvInstallments.text = "Cicilan ${duration} bulan"
         }

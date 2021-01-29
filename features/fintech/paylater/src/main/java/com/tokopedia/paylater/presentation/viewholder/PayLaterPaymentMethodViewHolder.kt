@@ -34,7 +34,7 @@ class PayLaterPaymentMethodViewHolder(val view: View, val clickListener: (PayLat
                 ImageHandler.loadImage(context,
                         ivPartnerLogo,
                         imageUrl,
-                        R.drawable.ic_loading_image)
+                        com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
 
             tvTitlePaymentPartner.text = payLaterItemProductData.partnerName ?: ""
 

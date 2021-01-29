@@ -19,7 +19,7 @@ class CreditCardRegistrationViewHolder(val view: View) : RecyclerView.ViewHolder
             ImageHandler.loadImage(context,
                     ivPartnerLogo,
                     bankData.bankLogoUrl,
-                    R.drawable.ic_loading_image)
+                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
             tvTitlePaymentPartner.text = bankData.bankName
             if (bankData.bankPdpInfo.isNullOrEmpty()) {
                 tvDescription.text = "Lihat pilihan kartu"

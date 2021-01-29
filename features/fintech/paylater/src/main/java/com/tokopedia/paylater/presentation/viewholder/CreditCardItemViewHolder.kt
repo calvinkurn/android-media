@@ -22,10 +22,10 @@ class CreditCardItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             ImageHandler.loadImage(context,
                     ivCreditCard,
                     creditCardItem.cardImageUrl,
-                    R.drawable.ic_loading_image)
+                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
             setLabelData(this, creditCardItem.specialLabel)
             if (creditCardItem.isSpecialOffer == true) {
-                creditCardLayout.background = ContextCompat.getDrawable(context, R.drawable.shadow_np)
+                creditCardLayout.background = ContextCompat.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.shadow_np)
                 clCreditCard.background = ContextCompat.getDrawable(context, R.drawable.bg_credit_card_border_recommendation)
                 ivRecommendationBadge.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_credit_card_header_recommendation))
                 recommendationGroup.visible()

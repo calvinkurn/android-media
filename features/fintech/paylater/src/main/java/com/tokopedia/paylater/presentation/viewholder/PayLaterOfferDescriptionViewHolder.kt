@@ -19,7 +19,7 @@ class PayLaterOfferDescriptionViewHolder(val view: View) : RecyclerView.ViewHold
             if (descriptionData.isHighlighted == true) {
                 ivBenefitsHeader.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_paylater_card_info_star))
             } else {
-                AppCompatResources.getDrawable(context, R.drawable.iconunify_check_big)?.let {
+                AppCompatResources.getDrawable(context, com.tokopedia.iconunify.R.drawable.iconunify_check_big)?.let {
                     val backgroundDrawable = DrawableCompat.wrap(it).mutate()
                     DrawableCompat.setTint(backgroundDrawable, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                     ivBenefitsHeader.setImageDrawable(backgroundDrawable)

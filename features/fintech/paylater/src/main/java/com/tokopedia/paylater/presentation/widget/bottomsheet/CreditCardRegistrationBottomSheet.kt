@@ -108,11 +108,6 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
     }
 
     private fun initAdapter() {
-        /*baseList.setOnTouchListener { v, event ->
-            v.parent.requestDisallowInterceptTouchEvent(true)
-            v.onTouchEvent(event)
-            true
-        }*/
         baseList.adapter = CreditCardRegistrationAdapter(arrayListOf()) { creditCardList, bankName, bankSlug ->
             listener?.showCreditCardList(creditCardList, bankName, bankSlug)
             dismiss()

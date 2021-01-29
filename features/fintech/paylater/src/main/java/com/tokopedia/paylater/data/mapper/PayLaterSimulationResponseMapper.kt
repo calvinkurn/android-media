@@ -18,13 +18,19 @@ object NineMonthlyInstallment : PayLaterSimulationTenureType(NINE_MONTH_TENURE)
 object TwelveMonthlyInstallment : PayLaterSimulationTenureType(TWELVE_MONTH_TENURE)
 object EmptyInstallment : PayLaterSimulationTenureType(EMPTY_TENURE)
 
+sealed class PayLaterSimulationDataStatus()
+object StatusSuccess : PayLaterSimulationDataStatus()
+object StatusDataFailure : PayLaterSimulationDataStatus()
+object StatusPayLaterNotAvailable : PayLaterSimulationDataStatus()
+
+
 object PayLaterSimulationResponseMapper {
 
-    fun handleSimulationResponse(payLaterSimulationResponse: PayLaterGetSimulationResponse?): Pair<Boolean, Boolean> {
+    fun handleSimulationResponse(payLaterSimulationResponse: PayLaterGetSimulationResponse?): PayLaterSimulationDataStatus {
         payLaterSimulationResponse?.also {
             it.payLaterGetSimulationGateway?.also { gatewayResponse ->
                 if (gatewayResponse.payLaterGatewayList.isNullOrEmpty()) {
-                    return Pair(first = false, second = false)
+                    return StatusDataFailure
                 } else {
                     var isPayLaterApplicable = false
                     for (gatewayItem in gatewayResponse.payLaterGatewayList) {
@@ -41,11 +47,12 @@ object PayLaterSimulationResponseMapper {
                         gatewayItem.isRecommended = isRecommended
                         gatewayItem.installmentMap = tenureMap
                     }
-                    return Pair(true, isPayLaterApplicable)
+                    if (isPayLaterApplicable) return StatusSuccess
+                    else return StatusPayLaterNotAvailable
                 }
-            } ?: return Pair(first = false, second = false)
-        } ?: return Pair(first = false, second = false)
-        return Pair(first = false, second = false)
+            } ?: return StatusDataFailure
+        } ?: return StatusDataFailure
+        return StatusDataFailure
     }
 
     fun getSimulationTenureType(tenure: Int?): PayLaterSimulationTenureType {

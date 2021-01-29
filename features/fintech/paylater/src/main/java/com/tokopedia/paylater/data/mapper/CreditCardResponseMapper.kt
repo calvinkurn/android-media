@@ -6,6 +6,13 @@ import com.tokopedia.paylater.domain.model.CreditCardPdpMetaData
 import com.tokopedia.paylater.domain.model.PdpCreditCardSimulation
 import com.tokopedia.paylater.domain.model.PdpInfoTableItem
 
+
+sealed class CCSimulationDataStatus()
+object StatusApiSuccess : CCSimulationDataStatus()
+object StatusApiFail : CCSimulationDataStatus()
+object StatusCCNotAvailable : CCSimulationDataStatus()
+
+
 object CreditCardResponseMapper {
 
     fun populatePdpInfoMetaDataResponse(data: CreditCardPdpMetaData?) {
@@ -30,19 +37,20 @@ object CreditCardResponseMapper {
         }
     }
 
-    fun handleSimulationResponse(pdpCreditCardSimulationData: PdpCreditCardSimulation?): Pair<Boolean, Boolean> {
+    fun handleSimulationResponse(pdpCreditCardSimulationData: PdpCreditCardSimulation?): CCSimulationDataStatus {
         pdpCreditCardSimulationData?.let {
             it.creditCardGetSimulationResult?.let { simulationResult ->
                 if (simulationResult.creditCardInstallmentList.isNullOrEmpty()) {
-                    return Pair(first = false, second = false)
+                    return StatusApiFail
                 } else {
                     val isCreditCardSimulationAvailable = simulationResult.creditCardInstallmentList.any { installment ->
                         installment.isDisabled == false
                     }
                     simulationResult.creditCardInstallmentList[0].isSelected = true
-                    return Pair(true, isCreditCardSimulationAvailable)
+                    return if (isCreditCardSimulationAvailable) return StatusApiSuccess
+                    else StatusCCNotAvailable
                 }
-            } ?: return Pair(first = false, second = false)
-        } ?: return Pair(first = false, second = false)
+            } ?: return StatusApiFail
+        } ?: return StatusApiFail
     }
 }

@@ -4,6 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.paylater.data.mapper.CreditCardResponseMapper
+import com.tokopedia.paylater.data.mapper.StatusApiFail
+import com.tokopedia.paylater.data.mapper.StatusApiSuccess
+import com.tokopedia.paylater.data.mapper.StatusCCNotAvailable
 import com.tokopedia.paylater.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.paylater.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.paylater.domain.model.*
@@ -63,16 +66,14 @@ class CreditCardViewModel @Inject constructor(
 
     private fun onCreditCardSimulationSuccess(pdpCreditCardSimulationData: PdpCreditCardSimulation?) {
         launchCatchError(block = {
-            val mapperResponse = withContext(ioDispatcher) {
+            val dataStatus = withContext(ioDispatcher) {
                 return@withContext CreditCardResponseMapper.handleSimulationResponse(pdpCreditCardSimulationData)
             }
-            if (!mapperResponse.first) {
-                onCreditCardSimulationError(PdpSimulationException.CreditCardNullDataException(SIMULATION_DATA_FAILURE))
-            } else if (!mapperResponse.second) {
-                onCreditCardSimulationError(PdpSimulationException.CreditCardSimulationNotAvailableException(CREDIT_CARD_NOT_AVAILABLE))
-            } else
-                creditCardSimulationResultLiveData.value = Success(pdpCreditCardSimulationData?.creditCardGetSimulationResult!!)
-
+            when (dataStatus) {
+                is StatusApiSuccess -> creditCardSimulationResultLiveData.value = Success(pdpCreditCardSimulationData?.creditCardGetSimulationResult!!)
+                is StatusApiFail -> onCreditCardSimulationError(PdpSimulationException.CreditCardNullDataException(SIMULATION_DATA_FAILURE))
+                is StatusCCNotAvailable -> onCreditCardSimulationError(PdpSimulationException.CreditCardSimulationNotAvailableException(CREDIT_CARD_NOT_AVAILABLE))
+            }
         }, onError = {
             onCreditCardSimulationError(it)
         })

@@ -82,7 +82,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             ImageHandler.loadImage(context,
                     ivPaylaterPartner,
                     imageUrl,
-                    R.drawable.ic_loading_image)
+                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
     }
 
     private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {

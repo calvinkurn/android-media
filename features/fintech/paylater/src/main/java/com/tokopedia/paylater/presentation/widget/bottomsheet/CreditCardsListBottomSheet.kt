@@ -75,11 +75,11 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
     }
 
     private fun initAdapter() {
-        baseList.setOnTouchListener { v, event ->
+        /*baseList.setOnTouchListener { v, event ->
             v.parent.requestDisallowInterceptTouchEvent(true)
             v.onTouchEvent(event)
             true
-        }
+        }*/
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         baseList.adapter = CreditCardListAdapter(creditCardList, bankName) { cardSlug ->
             openUrlWebView("${INTERNAL_URL}bank/${bankSlug}/${cardSlug}")
@@ -89,7 +89,7 @@ class CreditCardsListBottomSheet : BottomSheetUnify() {
 
 
     private fun setDefaultParams() {
-        setTitle("Kartu kredit Citibank")
+        setTitle("Kartu kredit ${bankName ?: ""}")
         isDragable = true
         isHideable = true
         showCloseIcon = true

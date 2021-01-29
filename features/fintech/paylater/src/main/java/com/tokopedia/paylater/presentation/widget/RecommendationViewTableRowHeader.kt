@@ -28,7 +28,7 @@ class RecommendationViewTableRowHeader(val context: Context, val layoutParams: V
             ImageHandler.loadImage(context,
                     ivPayLaterPartner,
                     imageUrl,
-                    R.drawable.ic_loading_image)
+                    com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
         if (showBackGround)
             recommendationView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
         return recommendationView
