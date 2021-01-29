@@ -1,6 +1,6 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber;
 
-import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.review.common.util.ReviewErrorHandler;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.report.ReportReviewDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationReport;
 
@@ -25,7 +25,7 @@ public class ReportReviewSubscriber extends Subscriber<ReportReviewDomain> {
     @Override
     public void onError(Throwable e) {
         viewListener.removeLoadingProgress();
-        viewListener.onErrorReportReview(ErrorHandler.getErrorMessage(viewListener.getContext().getApplicationContext(), e));
+        viewListener.onErrorReportReview(ReviewErrorHandler.getErrorMessage(viewListener.getContext().getApplicationContext(), e));
     }
 
     @Override

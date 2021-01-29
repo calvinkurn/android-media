@@ -1,4 +1,4 @@
-package com.tokopedia.topads.data.param
+package com.tokopedia.topads.common.data.model
 
 import com.google.gson.annotations.SerializedName
 
