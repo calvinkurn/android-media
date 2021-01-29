@@ -48,6 +48,21 @@ query notifcenter_detail_v3(
 			expire_time_unix
 			status
 			read_status
+            widget {
+                title
+                description
+                message
+                image
+                button_text
+                desktop_button_link
+                mobile_button_link
+                android_button_link
+                ios_button_link
+            }
+            track_history {
+                title
+                create_time_unix
+            }
 			image {
 				url
 				width
@@ -159,6 +174,21 @@ query notifcenter_detail_v3(
 			expire_time_unix
 			status
 			read_status
+            widget {
+                title
+                description
+                message
+                image
+                button_text
+                desktop_button_link
+                mobile_button_link
+                android_button_link
+                ios_button_link
+            }
+            track_history {
+                title
+                create_time_unix
+            }
 			image {
 				url
 				width
