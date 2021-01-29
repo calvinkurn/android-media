@@ -58,9 +58,7 @@ object RechargeHomepageSectionMapper {
     }
 
     fun mapHomepageSections(sections: List<RechargeHomepageSections.Section>): List<Visitable<*>> {
-        return sections.filter {
-            !isExpired(it)
-        }.mapNotNull {
+        return sections.mapNotNull {
             val id = it.id.toString()
             with(RechargeHomepageViewModel.Companion) {
                 when (it.template) {
@@ -79,7 +77,9 @@ object RechargeHomepageSectionMapper {
                     SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it)
                     SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
                     SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
-                    SECTION_COUNTDOWN_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
+                    SECTION_COUNTDOWN_SINGLE_BANNER -> {
+                        if (!isExpired(it)) { RechargeHomepageSingleBannerModel(it) } else null
+                    }
                     SECTION_DUAL_BANNERS -> RechargeHomepageDualBannersModel(it)
                     SECTION_LEGO_BANNERS -> {
                         // Check if it is initial sections or not
@@ -90,7 +90,9 @@ object RechargeHomepageSectionMapper {
                         }
                     }
                     SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
-                    SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(it)
+                    SECTION_COUNTDOWN_PRODUCT_BANNER -> {
+                        if (!isExpired(it)) { RechargeHomepageProductBannerModel(it) } else null
+                    }
                     SECTION_PRODUCT_CARD_CUSTOM_BANNER -> RechargeProductCardCustomBannerModel(it)
                     else -> null
                 }

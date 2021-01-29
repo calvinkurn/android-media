@@ -236,7 +236,7 @@ class DynamicChannelHeaderView: FrameLayout {
                     }
                 }
                 countDownView?.visibility = View.VISIBLE
-            }
+            } else listener?.onChannelExpired(channel)
         } else {
             countDownView?.let {
                 it.visibility = View.GONE
