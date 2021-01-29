@@ -23,6 +23,7 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimpl
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
+import com.tokopedia.cart.view.viewholder.CartSelectAllViewHolder
 import com.tokopedia.cart.view.viewholder.CartShopViewHolder
 import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
@@ -33,6 +34,7 @@ import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
@@ -77,6 +79,20 @@ class CartPageRobot {
         }))
     }
 
+    fun assertCartSelectAllViewHolder(position: Int) {
+        onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartSelectAllViewHolder>(position, object : ViewAction {
+            override fun getDescription(): String = "performing assertion action on CartSelectAllViewHolder"
+
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun perform(uiController: UiController?, view: View) {
+                Assert.assertEquals(View.VISIBLE, view.findViewById<CheckboxUnify>(R.id.checkbox_global).visibility)
+                Assert.assertEquals(true, view.findViewById<CheckboxUnify>(R.id.checkbox_global).isChecked)
+                Assert.assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.text_select_all).visibility)
+            }
+        }))
+    }
+
     fun assertCartTickerErrorViewHolder(position: Int, message: String) {
         onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartTickerErrorViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "performing assertion action on CartTickerErrorViewHolder"
@@ -90,8 +106,8 @@ class CartPageRobot {
     }
 
     fun assertFirstCartShopViewHolder(view: View,
-                                      position: Int) {
-        val shopIndex = position - 1 // Represent shop index on cartListData
+                                      position: Int,
+                                      shopIndex: Int) {
         onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartShopViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "performing assertion action on first CartShopViewHolder"
 

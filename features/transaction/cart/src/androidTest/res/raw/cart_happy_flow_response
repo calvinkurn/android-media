@@ -381,7 +381,7 @@
             "description": "Gunakan promo Tokopedia",
             "quantity_label": "4 Kupon"
           },
-          "global_checkbox_state": false,
+          "global_checkbox_state": true,
           "tickers": [
             {
               "id": 0,
