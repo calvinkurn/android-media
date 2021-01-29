@@ -32,6 +32,16 @@ class VideoLoadingComponent(
         show()
     }
 
+    override fun show() {
+        ivLoading.start()
+        super.show()
+    }
+
+    override fun hide() {
+        super.hide()
+        ivLoading.pause()
+    }
+
     private fun showLoadingWithText() {
         ivLoadingText.visible()
         show()

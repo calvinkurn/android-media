@@ -23,8 +23,8 @@
 
     <com.tokopedia.play.view.custom.PlayUnifyLoader
         android:id="@+id/iv_loading"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/play_viewer_loading_size"
+        android:layout_height="@dimen/play_viewer_loading_size"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintBottom_toTopOf="@id/iv_loading_text"
         app:layout_constraintEnd_toEndOf="parent"
