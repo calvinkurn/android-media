@@ -67,11 +67,12 @@
                 app:typographyType="body_2" />
 
             <View
+                android:id="@+id/inputViewSeperator"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/Neutral_N75"
-
-                android:layout_marginTop="@dimen/spacing_lvl3"/>
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:id="@+id/inputPriceContainer"
@@ -100,8 +101,7 @@
                     android:layout_height="1dp"
                     android:layout_marginBottom="@dimen/spacing_lvl4"
                     android:background="@color/Neutral_N75"
-                    android:visibility="gone"
-                    tools:visibility="visible"/>
+                    android:visibility="gone"/>
 
                 <com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
                     android:id="@+id/subscriptionWidget"

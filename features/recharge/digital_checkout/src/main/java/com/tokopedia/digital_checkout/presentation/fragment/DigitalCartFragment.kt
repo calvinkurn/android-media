@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
@@ -131,10 +132,18 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         }
     }
 
+    private fun getCartAfterCheckout() {
+        cartPassData?.let {
+            viewModel.getCart(it, getString(R.string.digital_cart_login_message))
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         viewModel.cartDigitalInfoData.observe(viewLifecycleOwner, Observer {
+
+            digitalSubscriptionParams.isSubscribed = it.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
             sendGetCartAndCheckoutAnalytics()
             renderCartDigitalInfoData(it)
 
@@ -147,7 +156,8 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             it.attributes?.userInputPrice?.let { userInputPrice ->
                 renderInputPriceView(it.attributes?.pricePlain.toString(), userInputPrice)
             }
-            showMyBillsSubscriptionView(it.crossSellingType == DigitalCartCrossSellingType.MYBILLS.id)
+            showMyBillsSubscriptionView(it.crossSellingType == DigitalCartCrossSellingType.MYBILLS.id ||
+                    (it.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id))
         })
 
         viewModel.cartAdditionalInfoList.observe(viewLifecycleOwner, Observer {
@@ -352,13 +362,13 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                 }
                 PaymentConstant.PAYMENT_FAILED -> {
                     showToastMessage(getString(R.string.digital_cart_alert_payment_canceled_or_failed))
-                    loadData()
+                    getCartAfterCheckout()
                 }
                 PaymentConstant.PAYMENT_CANCELLED -> {
                     showToastMessage(getString(R.string.digital_cart_alert_payment_canceled))
-                    loadData()
+                    getCartAfterCheckout()
                 }
-                else -> loadData()
+                else -> getCartAfterCheckout()
             }
         }
     }
@@ -376,51 +386,51 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     }
 
     private fun renderPostPaidPopup(postPaidPopupAttribute: AttributesDigitalData.PostPaidPopupAttribute) {
-        val dialog = DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(postPaidPopupAttribute.title)
-        dialog.setDescription(postPaidPopupAttribute.content ?: "")
+        val dialog = DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(postPaidPopupAttribute.title.toString())
+        dialog.setDescription(MethodChecker.fromHtml(postPaidPopupAttribute.content ?: ""))
         dialog.setPrimaryCTAText(postPaidPopupAttribute.confirmButtonTitle ?: "")
-        dialog.show()
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
         }
+        dialog.show()
     }
 
     private fun renderCrossSellingMyBillsWidget(crossSellingConfig: CartDigitalInfoData.CrossSellingConfig) {
         btnCheckout.text = crossSellingConfig.checkoutButtonText
 
-        //if user has subscribe, hide subscriptionWidget
-        if (digitalSubscriptionParams.isSubscribed) {
-            subscriptionWidget.disableCheckBox()
-        } else {
-            subscriptionWidget.setTitle(crossSellingConfig.bodyTitle ?: "")
+        //if user has subscribe, hide subscriptionWidget's checkbox
+        if (digitalSubscriptionParams.isSubscribed) { subscriptionWidget.disableCheckBox() }
 
-            if (crossSellingConfig.isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter
-                    ?: "")
-            else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore ?: "")
+        subscriptionWidget.setTitle(crossSellingConfig.bodyTitle ?: "")
 
-            subscriptionWidget.setChecked(crossSellingConfig.isChecked)
-            subscriptionWidget.hasMoreInfo(false)
+        if (crossSellingConfig.isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter
+                ?: "")
+        else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore ?: "")
 
-            subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
-                override fun onMoreInfoClicked() {}
+        subscriptionWidget.setChecked(crossSellingConfig.isChecked)
+        subscriptionWidget.hasMoreInfo(false)
 
-                override fun onCheckChanged(isChecked: Boolean) {
-                    digitalAnalytics.eventClickSubscription(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
-                    if (isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter
-                            ?: "")
-                    else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore
-                            ?: "")
-                    viewModel.onSubscriptionChecked(isChecked)
-                }
+        subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
+            override fun onMoreInfoClicked() {}
+
+            override fun onCheckChanged(isChecked: Boolean) {
+                digitalAnalytics.eventClickSubscription(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
+                if (isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter
+                        ?: "")
+                else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore
+                        ?: "")
+                viewModel.onSubscriptionChecked(isChecked)
             }
         }
+
     }
 
     private fun showMyBillsSubscriptionView(show: Boolean) {
-        myBillsSeperator.visibility = View.VISIBLE
-        if (show) subscriptionWidget.visibility = View.VISIBLE
-        else subscriptionWidget.visibility = View.GONE
+        if (show) {
+            subscriptionWidget.visibility = View.VISIBLE
+            myBillsSeperator.visibility = View.VISIBLE
+        } else subscriptionWidget.visibility = View.GONE
     }
 
     private fun renderFintechProductWidget(fintechProduct: FintechProduct) {
@@ -471,6 +481,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     }
 
     private fun renderInputPriceView(total: String?, userInputPriceDigital: AttributesDigitalData.UserInputPriceDigital) {
+        inputViewSeperator.visibility = View.VISIBLE
         inputPriceContainer.visibility = View.VISIBLE
         inputPriceHolderView.setLabelText(userInputPriceDigital.minPayment ?: "",
                 userInputPriceDigital.maxPayment ?: "")
