@@ -113,7 +113,8 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
 
     private fun setSuggestionSearch(data: List<BaseSuggestionSearchSeller>) {
         suggestionSearchAdapter.clearAllElements()
-        if (data.isEmpty()) {
+        val suggestionData = data.filterNot { it is ItemTitleHighlightSuggestionSearchUiModel && it is HighlightSuggestionSearchUiModel }
+        if (suggestionData.isEmpty()) {
             suggestionSearchAdapter.addNoResultState()
             val itemTitleHighlightSearchUiModel = data.filterIsInstance<ItemTitleHighlightSuggestionSearchUiModel>().firstOrNull() ?: ItemTitleHighlightSuggestionSearchUiModel()
             val itemHighlightSearchUiModel = data.filterIsInstance<HighlightSuggestionSearchUiModel>().firstOrNull() ?: HighlightSuggestionSearchUiModel()
@@ -121,7 +122,6 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
             suggestionSearchAdapter.addAll(highlightSearchVisitable)
             SellerSearchTracking.impressionEmptyResultEvent(userId)
         } else {
-            val suggestionData = data.filterNot { it is ItemTitleHighlightSuggestionSearchUiModel && it is HighlightSuggestionSearchUiModel }
             suggestionSearchAdapter.addAll(suggestionData)
         }
         suggestionViewUpdateListener?.showSuggestionView()
