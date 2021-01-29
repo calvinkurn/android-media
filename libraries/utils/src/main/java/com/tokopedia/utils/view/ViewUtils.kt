@@ -3,8 +3,8 @@ package com.tokopedia.utils.view
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.util.Log
 import android.view.View
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -41,11 +41,10 @@ object ViewUtils {
             bitmap?.compress(Bitmap.CompressFormat.PNG, 100, fos)
             fos.flush()
             fos.close()
-            Log.e("screenshot", "success")
         } catch (e: FileNotFoundException) {
-            Log.e("screenshot", "fail : ${e.message}")
+            Timber.d("screenshot fail : ${e.message}")
         } catch (e: IOException) {
-            Log.e("screenshot", "fail : ${e.message}")
+            Timber.d("screenshot fail : ${e.message}")
         }
     }
 }
