@@ -1,12 +1,11 @@
 package com.tokopedia.sellerreview.common
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Handler
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.constant.TkpdCache
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerreview.view.bottomsheet.FeedbackBottomSheet
@@ -14,6 +13,7 @@ import com.tokopedia.sellerreview.view.bottomsheet.RatingBottomSheet
 import com.tokopedia.sellerreview.view.bottomsheet.ThankYouBottomSheet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
@@ -34,8 +34,12 @@ class SellerReviewHelper @Inject constructor(
 ) : CoroutineScope {
 
     companion object {
+        private const val QUOTA_CHECK_DELAY = 1000L
         private const val POPUP_DELAY = 500L
+        private const val SELLER_APP_ON_GOOGLE_PLAY = "https://play.google.com/store/apps/details?id=com.tokopedia.sellerapp"
     }
+
+    private val handler by lazy { Handler() }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
@@ -47,6 +51,7 @@ class SellerReviewHelper @Inject constructor(
      * */
     fun checkForReview(context: Context, fm: FragmentManager) {
         launchCatchError(block = {
+            delay(QUOTA_CHECK_DELAY)
             val hasAddedProduct = cacheHandler.getBoolean(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT, false)
             val hasPostedFeed = cacheHandler.getBoolean(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED, false)
             val hasReplied5Chats = cacheHandler.getStringSet(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO, emptySet()).size >= 5
@@ -68,36 +73,46 @@ class SellerReviewHelper @Inject constructor(
 
         resetQuotaCheck()
 
-        RatingBottomSheet.createInstance()
-                .setOnSubmittedListener {
-                    setOnRatingSubmitted(context, fm, it)
-                }
-                .show(fm)
+        val ratingBottomSheet = (fm.findFragmentByTag(RatingBottomSheet.TAG) as? RatingBottomSheet)
+                ?: RatingBottomSheet.createInstance()
+
+        ratingBottomSheet.setOnSubmittedListener {
+            setOnRatingSubmitted(context, fm, it)
+        }.show(fm)
     }
 
     private fun setOnRatingSubmitted(context: Context, fm: FragmentManager, rating: Int) {
         if (rating >= 4) {
             rateOnPlayStore(context, fm)
         } else {
-            Handler().postDelayed({
+            handler.postDelayed({
                 showFeedBackBottomSheet(fm)
             }, POPUP_DELAY)
         }
     }
 
     private fun showFeedBackBottomSheet(fm: FragmentManager) {
-        FeedbackBottomSheet.createInstance()
-                .setOnSubmittedListener {
-                    Handler().postDelayed({
-                        showTankYouBottomSheet(fm)
-                    }, POPUP_DELAY)
-                }
-                .show(fm)
+        //we can't show bottom sheet if FragmentManager's state has already been saved
+        if (fm.isStateSaved) return
+
+        val feedbackBottomSheet = (fm.findFragmentByTag(FeedbackBottomSheet.TAG) as? FeedbackBottomSheet)
+                ?: FeedbackBottomSheet.createInstance()
+
+        feedbackBottomSheet.setOnSubmittedListener {
+            handler.postDelayed({
+                showTankYouBottomSheet(fm)
+            }, POPUP_DELAY)
+        }.show(fm)
     }
 
     private fun showTankYouBottomSheet(fm: FragmentManager) {
-        ThankYouBottomSheet.createInstance()
-                .show(fm)
+        //we can't show bottom sheet if FragmentManager's state has already been saved
+        if (fm.isStateSaved) return
+
+        val thankYouBottomSheet = (fm.findFragmentByTag(ThankYouBottomSheet.TAG) as? ThankYouBottomSheet)
+                ?: ThankYouBottomSheet.createInstance()
+
+        thankYouBottomSheet.show(fm)
     }
 
     /**
@@ -110,12 +125,8 @@ class SellerReviewHelper @Inject constructor(
     }
 
     private fun rateOnPlayStore(context: Context, fm: FragmentManager) {
-        val intent = Intent(Intent.ACTION_VIEW)
-        val sellerAppPlayStoreUrl = "market://details?id=${context.packageName}"
-        intent.data = Uri.parse(sellerAppPlayStoreUrl)
-        context.startActivity(intent)
-
-        Handler().postDelayed({
+        RouteManager.route(context, SELLER_APP_ON_GOOGLE_PLAY)
+        handler.postDelayed({
             showTankYouBottomSheet(fm)
         }, POPUP_DELAY)
     }
