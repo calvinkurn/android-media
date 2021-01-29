@@ -123,29 +123,40 @@ class SomListViewModel @Inject constructor(
 
     var isMultiSelectEnabled: Boolean = false
 
-    private suspend fun <T : Any> getDataFromUseCase(
+    private fun <T : Any> getDataFromUseCase(
             useCase: BaseGraphqlUseCase<T>,
             liveData: MutableLiveData<Result<T>>,
             checkDiff: Boolean,
             checkPredicate: (T) -> Boolean) {
         if (useCase.isFirstLoad) {
             useCase.isFirstLoad = false
-            try {
-                useCase.setUseCache(true)
-                liveData.value = Success(useCase.executeUseCase())
-            } catch (_: Exception) {
+            useCase.executeUseCaseAsync(onComplete = {
+                try {
+                    useCase.setUseCache(true)
+                    it.takeIf { liveData.value != null }?.run {
+                        liveData.value = Success(this)
+                    }
+                } catch (_: Exception) {
+                    // ignore exception from cache
+                }
+            }, onError = {
                 // ignore exception from cache
-            }
+            })
         }
         useCase.setUseCache(false)
-        useCase.executeUseCase().takeIf { !checkDiff || checkPredicate(it) }?.run {
-            liveData.value = Success(this)
-        }
+        useCase.executeUseCaseAsync(onComplete = {
+            it.takeIf { !checkDiff || checkPredicate(it) }?.run {
+                liveData.value = Success(this)
+            }
+        }, onError = { liveData.value = Fail(it) })
     }
 
-    private suspend fun <T : Any> BaseGraphqlUseCase<T>.executeUseCase() = kotlinx.coroutines.withContext(dispatcher.io()) {
-        executeOnBackground()
-    }
+    private fun <T : Any> BaseGraphqlUseCase<T>.executeUseCaseAsync(onComplete: (T) -> Unit, onError: (Throwable) -> Unit) = launchCatchError(dispatcher.io(),
+            block = {
+                onComplete(executeOnBackground())
+            }, onError = {
+        onError(it)
+    })
 
     private fun getBulkAcceptOrderStatus(batchId: String, wait: Long) {
         launchCatchError(block = {
@@ -194,14 +205,10 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters() {
-        launchCatchError(block = {
-            getDataFromUseCase(somListGetFilterListUseCase, _filterResult, somListGetFilterListUseCase.isFirstLoad) {
-                val lastResult = _filterResult.value
-                lastResult == null || lastResult is Fail || (lastResult is Success && lastResult.data.statusList != it.statusList)
-            }
-        }, onError = {
-            _filterResult.value = Fail(it)
-        })
+        getDataFromUseCase(somListGetFilterListUseCase, _filterResult, somListGetFilterListUseCase.isFirstLoad) {
+            val lastResult = _filterResult.value
+            lastResult == null || lastResult is Fail || (lastResult is Success && lastResult.data.statusList != it.statusList)
+        }
     }
 
     fun getWaitingPaymentCounter() {
