@@ -13,15 +13,11 @@ class PromoOccInterceptor : Interceptor {
         val copy = chain.request().newBuilder().build()
         val requestString = readRequestString(copy)
 
-        if (requestString.contains(COUPON_LIST_RECOMMENDATION_QUERY)) {
-            if (customCouponListRecommendationResponsePath != null) {
-                return mockResponse(copy, getJsonFromResource(customCouponListRecommendationResponsePath!!))
-            }
+        if (requestString.contains(COUPON_LIST_RECOMMENDATION_QUERY) && customCouponListRecommendationResponsePath != null) {
+            return mockResponse(copy, getJsonFromResource(customCouponListRecommendationResponsePath!!))
         }
-        if (requestString.contains(VALIDATE_USE_PROMO_REVAMP_QUERY)) {
-            if (customValidateUsePromoRevampResponsePath != null) {
-                return mockResponse(copy, getJsonFromResource(customValidateUsePromoRevampResponsePath!!))
-            }
+        if (requestString.contains(VALIDATE_USE_PROMO_REVAMP_QUERY) && customValidateUsePromoRevampResponsePath != null) {
+            return mockResponse(copy, getJsonFromResource(customValidateUsePromoRevampResponsePath!!))
         }
         return chain.proceed(chain.request())
     }

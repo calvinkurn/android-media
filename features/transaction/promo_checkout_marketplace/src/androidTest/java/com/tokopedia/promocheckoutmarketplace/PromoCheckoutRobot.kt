@@ -6,6 +6,7 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnHolderItem
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -27,19 +28,23 @@ class PromoCheckoutRobot {
     }
 
     fun clickPromoWithTitle(title: String) {
-        onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(RecyclerViewActions.actionOnHolderItem(onPromoListItemViewHolderWithTitle(title), clickPromoListItemViewHolder()))
+        onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(
+                actionOnHolderItem(onPromoListItemViewHolderWithTitle(title), clickPromoListItemViewHolder()))
     }
 
     fun clickPilihPromoRecommendation() {
-        onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(RecyclerViewActions.actionOnHolderItem(onPromoRecommendationViewHolder(), clickPilihInPromoRecommendationViewHolder()))
+        onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(
+                actionOnHolderItem(onPromoRecommendationViewHolder(), clickPilihInPromoRecommendationViewHolder()))
     }
 
     fun typePromoCode(promoCode: String) {
-        onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(RecyclerViewActions.actionOnHolderItem(onPromoInputViewHolder(), typePromoCodeInPromoInputViewHolder(promoCode)))
+        onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(
+                actionOnHolderItem(onPromoInputViewHolder(), typePromoCodeInPromoInputViewHolder(promoCode)))
     }
 
     fun clickTerapkanPromoCode() {
-        onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(RecyclerViewActions.actionOnHolderItem(onPromoInputViewHolder(), clickTerapkanInPromoInputViewHolder()))
+        onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(
+                actionOnHolderItem(onPromoInputViewHolder(), clickTerapkanInPromoInputViewHolder()))
     }
 
     fun clickPakaiPromo() {
