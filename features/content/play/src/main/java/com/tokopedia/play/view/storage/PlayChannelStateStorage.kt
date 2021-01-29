@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.storage
 
 import com.tokopedia.play.view.uimodel.recom.*
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created by jegul on 19/01/21
@@ -36,6 +35,7 @@ data class PlayChannelData(
         val id: String,
         val partnerInfo: PlayPartnerInfoUiModel,
         val likeInfo: PlayLikeInfoUiModel,
+        val totalViewInfo: PlayTotalViewUiModel,
         val shareInfo: PlayShareInfoUiModel,
         val cartInfo: PlayCartInfoUiModel,
         val pinnedInfo: PlayPinnedInfoUiModel,

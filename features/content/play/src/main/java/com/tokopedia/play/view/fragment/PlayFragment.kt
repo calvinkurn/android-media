@@ -51,6 +51,7 @@ import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.uimodel.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -461,7 +462,7 @@ class PlayFragment @Inject constructor(
 
     private fun observePinned() {
         playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver {
-            if (it is PinnedProductUiModel) fragmentBottomSheetView.safeInit()
+            if (it is PlayPinnedUiModel.PinnedProduct) fragmentBottomSheetView.safeInit()
         })
     }
 

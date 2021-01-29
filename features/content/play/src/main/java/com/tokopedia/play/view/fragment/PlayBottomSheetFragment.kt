@@ -24,7 +24,7 @@ import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
-import com.tokopedia.play.view.uimodel.ProductSheetUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
@@ -298,7 +298,7 @@ class PlayBottomSheetFragment @Inject constructor(
         if (shouldFinish) activity?.finish()
     }
 
-    private fun sendTrackerImpression(playResult: PlayResult<ProductSheetUiModel>) {
+    private fun sendTrackerImpression(playResult: PlayResult<PlayProductTagsUiModel.Complete>) {
         if (playResult is PlayResult.Success) {
             if (playResult.data.productList.isNotEmpty()
                     && playResult.data.productList.first() is ProductLineUiModel) {
@@ -323,7 +323,7 @@ class PlayBottomSheetFragment @Inject constructor(
                     if (it.data.productList.isNotEmpty()) {
                         productSheetView.setProductSheet(it.data)
                     } else {
-                        productSheetView.showEmpty(it.data.partnerId)
+                        productSheetView.showEmpty(it.data.basicInfo.partnerId)
                     }
                 }
                 is PlayResult.Failure -> productSheetView.showError(
