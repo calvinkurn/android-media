@@ -304,4 +304,8 @@ class SomListViewModel @Inject constructor(
     fun setSortOrderBy(value: Int) {
         this.getOrderListParams.sortBy = value
     }
+
+    fun isOrderStatusIdsChanged(orderStatusIds: List<Int>): Boolean {
+        return this.getOrderListParams.statusList != orderStatusIds
+    }
 }

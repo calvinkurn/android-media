@@ -30,8 +30,7 @@ class SomListGetFilterListUseCase @Inject constructor(
         val errors = gqlResponse.getError(SomListFilterResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {
             val response = gqlResponse.getData<SomListFilterResponse.Data>()
-            if (cacheStrategy.type == CacheType.ALWAYS_CLOUD) delay(2000)
-            return mapper.mapResponseToUiModel(response.orderFilterSom)
+            return mapper.mapResponseToUiModel(response.orderFilterSom, useCache)
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })
         }

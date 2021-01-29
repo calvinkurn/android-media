@@ -1,6 +1,8 @@
 package com.tokopedia.sellerorder.list.presentation.models
 
-data class SomListFilterUiModel(val statusList: List<Status> = listOf()) {
+data class SomListFilterUiModel(
+        val statusList: List<Status> = listOf(),
+        val fromCache: Boolean) {
     data class Status(
             val key: String = "",
             val status: String = "",

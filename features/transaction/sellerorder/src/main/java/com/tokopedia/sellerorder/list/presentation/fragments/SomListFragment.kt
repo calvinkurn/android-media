@@ -92,6 +92,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_som_list.*
@@ -784,20 +785,38 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun observeFilters() {
-        viewModel.filterResult.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> {
-                    if (tabActive.isNotBlank() && tabActive != SomConsts.STATUS_ALL_ORDER) {
-                        result.data.statusList.find { it.key == tabActive }?.let { activeFilter ->
-                            activeFilter.isChecked = true
-                            onTabClicked(activeFilter, shouldScrollToTop, false)
+        viewModel.filterResult.observe(viewLifecycleOwner, object : Observer<Result<SomListFilterUiModel>> {
+            var realtimeDataChangeCount = 0
+            override fun onChanged(result: Result<SomListFilterUiModel>?) {
+                when (result) {
+                    is Success -> {
+                        /* apply result only if:
+                           1. First filter data
+                           2. Any filter data that is not from cache
+                         */
+                        if (realtimeDataChangeCount == 0 || !result.data.fromCache) {
+                            if (tabActive.isNotBlank() && tabActive != SomConsts.STATUS_ALL_ORDER) {
+                                result.data.statusList.find { it.key == tabActive }?.let { activeFilter ->
+                                    activeFilter.isChecked = true
+                                    val orderStatusIds = result.data.statusList.find { it.key == tabActive }?.id.orEmpty()
+                                    /*  refresh only on:
+                                        1. 2nd..n-th realtime data
+                                        2. First realtime data with any differences from the previous cached data (if first realtime data is coming after cached data)
+                                     */
+                                    if (realtimeDataChangeCount >= 1 || (realtimeDataChangeCount == 0 && viewModel.isOrderStatusIdsChanged(orderStatusIds))) {
+                                        onTabClicked(activeFilter, shouldScrollToTop, false)
+                                    }
+                                }
+                            }
+                            somListSortFilterTab?.show(result.data)
                         }
+                        if (!result.data.fromCache) realtimeDataChangeCount++
                     }
-                    somListSortFilterTab?.show(result.data)
+                    is Fail -> showGlobalError(result.throwable)
+                    else -> showGlobalError(Throwable())
                 }
-                is Fail -> showGlobalError(result.throwable)
+                shimmerViews.gone()
             }
-            shimmerViews.gone()
         })
     }
 
