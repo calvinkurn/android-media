@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker.picker.main.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
@@ -57,13 +58,24 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                 .concatMap(new Func1<String, Observable<String>>() {
                     @Override
                     public Observable<String> call(String path) {
-                        if (convertToWebp) {
-                            path = ImageProcessingUtil.convertToWebp(getView().getContext(), path, 100);
-                        }
                         if (FileUtil.getFileSizeInKb(path) > maxFileSize) {
                             if (FileUtil.isImageType(getView().getContext(), path)) {
+                                String pathResult = "";
                                 //resize image
-                                String pathResult = ImageProcessingUtil.resizeBitmap(path, ImageProcessingUtil.DEF_WIDTH, ImageProcessingUtil.DEF_HEIGHT, true);
+                                if (convertToWebp) {
+                                    pathResult = ImageProcessingUtil.resizeBitmap(path,
+                                            ImageProcessingUtil.DEF_WIDTH,
+                                            ImageProcessingUtil.DEF_HEIGHT,
+                                            true,
+                                            ImageProcessingUtil.getCompressFormat(path));
+                                } else {
+                                    pathResult = ImageProcessingUtil.resizeBitmap(path,
+                                            ImageProcessingUtil.DEF_WIDTH,
+                                            ImageProcessingUtil.DEF_HEIGHT,
+                                            true,
+                                            Bitmap.CompressFormat.WEBP);
+                                }
+
                                 if (recheckSizeAfterResize && FileUtil.getFileSizeInKb(pathResult) > maxFileSize) {
                                     throw new FileSizeAboveMaximumException();
                                 }
