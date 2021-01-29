@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.test.runner.screenshot.Screenshot
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragmentDiffutil
-import com.tokopedia.utils.view.ViewUtils.saveImage
+import com.tokopedia.utils.view.ViewUtils.screenShotAndSave
 
 
 /**
@@ -56,8 +56,7 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity() {
 
     fun takeScreenShot(screenshotName: String) {
         Handler(Looper.getMainLooper()).post {
-            val bitmap = Screenshot.capture(this).bitmap;
-            saveImage(this, "", screenshotName, bitmap)
+            screenShotAndSave(window.decorView, "", screenshotName)
         }
     }
 
