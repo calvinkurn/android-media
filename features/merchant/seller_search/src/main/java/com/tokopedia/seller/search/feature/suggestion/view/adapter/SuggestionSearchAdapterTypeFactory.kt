@@ -13,7 +13,6 @@ import com.tokopedia.seller.search.feature.suggestion.view.viewholder.DividerSel
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.TitleHasMoreSellerSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.TitleHeaderSellerSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.faq.ItemFaqSearchViewHolder
-import com.tokopedia.seller.search.feature.suggestion.view.viewholder.hightlights.HighlightSuggestionSearchDiffUtil
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.hightlights.HighlightSuggestionSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.hightlights.TitleHighlightSuggestionSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.navigation.ItemNavigationSearchViewHolder
