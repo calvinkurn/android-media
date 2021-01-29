@@ -813,6 +813,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             String utmMedium = (String) campaignMap.get(AppEventTracking.GTM.UTM_MEDIUM);
             customDimension.put("utmSource", utmSource);
             customDimension.put("utmMedium", utmMedium);
+
+            Object xClid = campaignMap.get(AppEventTracking.GTM.X_CLID);
+            if (xClid != null && xClid instanceof String) {
+                String xClid_  = (String)xClid;
+                customDimension.put(AppEventTracking.GTM.X_CLID,xClid_);
+            }
             TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
         } catch (MalformedURLException e) {
             e.printStackTrace();

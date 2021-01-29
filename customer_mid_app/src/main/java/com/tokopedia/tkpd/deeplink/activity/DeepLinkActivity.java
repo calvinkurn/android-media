@@ -54,7 +54,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
 
         checkUrlMapToApplink();
-        presenter.sendAuthenticatedEvent(uriData, getScreenName());
+        sendCampaignTrack(uriData);
 
 
         isAllowFetchDepartmentView = true;
