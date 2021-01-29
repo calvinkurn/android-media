@@ -30,8 +30,13 @@ class SomListGetOrderListUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): Pair<Int, List<SomListOrderUiModel>> {
+        return executeOnBackground(false)
+    }
+
+    override suspend fun executeOnBackground(useCache: Boolean): Pair<Int, List<SomListOrderUiModel>> {
+        val cacheStrategy = getCacheStrategy(useCache)
         val gqlRequest = GraphqlRequest(QUERY, SomListOrderListResponse.Data::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
         val searchKeyword = getSearchKeyword()
 
         val errors = gqlResponse.getError(SomListOrderListResponse.Data::class.java)

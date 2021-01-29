@@ -1,10 +1,13 @@
 package com.tokopedia.sellerorder.list.domain.usecases
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerorder.list.domain.mapper.FilterResultMapper
 import com.tokopedia.sellerorder.list.domain.model.SomListFilterResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
@@ -16,12 +19,18 @@ class SomListGetFilterListUseCase @Inject constructor(
 ) : BaseGraphqlUseCase<SomListFilterUiModel>(gqlRepository) {
 
     override suspend fun executeOnBackground(): SomListFilterUiModel {
+        return executeOnBackground(false)
+    }
+
+    override suspend fun executeOnBackground(useCache: Boolean): SomListFilterUiModel {
+        val cacheStrategy = getCacheStrategy(useCache)
         val gqlRequest = GraphqlRequest(QUERY, SomListFilterResponse.Data::class.java)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(SomListFilterResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {
             val response = gqlResponse.getData<SomListFilterResponse.Data>()
+            if (cacheStrategy.type == CacheType.ALWAYS_CLOUD) delay(2000)
             return mapper.mapResponseToUiModel(response.orderFilterSom)
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })

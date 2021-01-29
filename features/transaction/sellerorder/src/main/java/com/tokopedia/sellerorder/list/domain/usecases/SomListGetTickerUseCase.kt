@@ -19,8 +19,13 @@ class SomListGetTickerUseCase @Inject constructor(
 ) : BaseGraphqlUseCase<List<TickerData>>(gqlRepository) {
 
     override suspend fun executeOnBackground(): List<TickerData> {
+        return executeOnBackground(false)
+    }
+
+    override suspend fun executeOnBackground(useCache: Boolean): List<TickerData> {
+        val cacheStrategy = getCacheStrategy(useCache)
         val gqlRequest = GraphqlRequest(QUERY, SomListGetTickerResponse.Data::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(SomListGetTickerResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {

@@ -10,8 +10,10 @@ import com.tokopedia.usecase.RequestParams
 
 abstract class BaseGraphqlUseCase<T : Any>(graphqlRepository: GraphqlRepository) : GraphqlUseCase<T>(graphqlRepository) {
     protected var params: RequestParams = RequestParams.EMPTY
+    protected var activeCacheStrategy: MutableList<GraphqlCacheStrategy> = mutableListOf()
     var isFirstLoad: Boolean = true
-    protected var activeCacheStrategy: GraphqlCacheStrategy = getAlwaysCloudCacheStrategy()
+
+    abstract suspend fun executeOnBackground(useCache: Boolean): T
 
     inline fun <reified T> GraphqlResponse.getData(): T {
         return this.getData(T::class.java)
@@ -29,12 +31,11 @@ abstract class BaseGraphqlUseCase<T : Any>(graphqlRepository: GraphqlRepository)
                 .build()
     }
 
-    fun setUseCache(useCache: Boolean) {
-        activeCacheStrategy = if (useCache) {
+    fun getCacheStrategy(useCache: Boolean): GraphqlCacheStrategy {
+        return if (useCache) {
             getCacheOnlyCacheStrategy()
         } else {
             getAlwaysCloudCacheStrategy()
         }
-        setCacheStrategy(activeCacheStrategy)
     }
 }

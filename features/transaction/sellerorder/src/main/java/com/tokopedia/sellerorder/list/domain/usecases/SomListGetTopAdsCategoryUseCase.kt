@@ -10,8 +10,13 @@ class SomListGetTopAdsCategoryUseCase @Inject constructor(
 ) : BaseGraphqlUseCase<Int>(gqlRepository) {
 
     override suspend fun executeOnBackground(): Int {
+        return executeOnBackground(false)
+    }
+
+    override suspend fun executeOnBackground(useCache: Boolean): Int {
+        val cacheStrategy = getCacheStrategy(useCache)
         val gqlRequest = GraphqlRequest(QUERY, SomListGetShopTopAdsCategoryResponse.Data::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(SomListGetShopTopAdsCategoryResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {

@@ -22,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SomListViewModel @Inject constructor(
@@ -130,32 +131,34 @@ class SomListViewModel @Inject constructor(
             checkPredicate: (T) -> Boolean) {
         if (useCase.isFirstLoad) {
             useCase.isFirstLoad = false
-            useCase.executeUseCaseAsync(onComplete = {
-                try {
-                    useCase.setUseCache(true)
-                    it.takeIf { liveData.value != null }?.run {
-                        liveData.value = Success(this)
-                    }
-                } catch (_: Exception) {
-                    // ignore exception from cache
+            useCase.executeUseCaseAsync(true, onComplete = {
+                it.takeIf { liveData.value == null }?.run {
+                    liveData.value = Success(this)
                 }
             }, onError = {
                 // ignore exception from cache
             })
         }
-        useCase.setUseCache(false)
-        useCase.executeUseCaseAsync(onComplete = {
+        useCase.executeUseCaseAsync(false, onComplete = {
             it.takeIf { !checkDiff || checkPredicate(it) }?.run {
                 liveData.value = Success(this)
             }
         }, onError = { liveData.value = Fail(it) })
     }
 
-    private fun <T : Any> BaseGraphqlUseCase<T>.executeUseCaseAsync(onComplete: (T) -> Unit, onError: (Throwable) -> Unit) = launchCatchError(dispatcher.io(),
+    private fun <T : Any> BaseGraphqlUseCase<T>.executeUseCaseAsync(
+            useCache: Boolean,
+            onComplete: (T) -> Unit,
+            onError: (Throwable) -> Unit) = launchCatchError(dispatcher.ui(),
             block = {
-                onComplete(executeOnBackground())
+                val result = executeOnBackground(useCache)
+                withContext(dispatcher.io()) {
+                    onComplete(result)
+                }
             }, onError = {
-        onError(it)
+        withContext(dispatcher.io()) {
+            onError(it)
+        }
     })
 
     private fun getBulkAcceptOrderStatus(batchId: String, wait: Long) {
