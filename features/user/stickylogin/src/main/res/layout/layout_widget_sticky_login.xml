@@ -12,17 +12,18 @@
       android:gravity="center"
       android:clickable="true"
       android:focusable="true"
-      android:visibility="gone"
+      android:visibility="visible"
       android:background="@color/Unify_G100"
       android:orientation="horizontal">
         
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
           android:id="@+id/layout_sticky_image_left"
           android:layout_width="@dimen/layout_lvl4"
           android:layout_height="@dimen/layout_lvl4"
           android:layout_marginStart="@dimen/layout_lvl2"
           android:layout_marginTop="@dimen/layout_lvl1"
           android:layout_marginBottom="@dimen/layout_lvl1"
+          android:contentDescription="@string/sticky_icon"
           app:layout_constraintLeft_toLeftOf="parent"
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintBottom_toBottomOf="parent"
@@ -43,12 +44,13 @@
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintBottom_toBottomOf="parent"/>
         
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
           android:id="@+id/layout_sticky_image_right"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
           android:padding="@dimen/layout_lvl2"
           android:scaleType="center"
+          android:contentDescription="@string/close_button_icon"
           app:layout_constraintRight_toRightOf="parent"
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintBottom_toBottomOf="parent"
