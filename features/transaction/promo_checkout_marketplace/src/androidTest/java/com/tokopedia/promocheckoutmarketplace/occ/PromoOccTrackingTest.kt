@@ -68,7 +68,7 @@ class PromoOccTrackingTest {
     fun performPromoTrackingActions() {
         promoCheckoutPage {
 
-            // to ensure no promo UI is shown
+            // to ensure empty promo list UI is shown
             pullSwipeRefresh()
 
             interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_ineligible_response.json"

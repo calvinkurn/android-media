@@ -3,9 +3,9 @@
   "mode": "exact",
   "query": [
     {
+      "eventAction": "view available promo list",
       "eventCategory": "order summary",
       "event": "view_item",
-      "eventAction": "view available promo list",
       "sessionIris": "{{.*}}",
       "eventLabel": "eligible promo",
       "promotions": [
@@ -22,9 +22,9 @@
       ]
     },
     {
+      "eventAction": "view available promo list",
       "eventCategory": "order summary",
       "event": "view_item",
-      "eventAction": "view available promo list",
       "sessionIris": "{{.*}}",
       "eventLabel": "ineligible product",
       "promotions": [
@@ -41,59 +41,59 @@
       ]
     },
     {
+      "eventAction": "view available promo list",
       "eventCategory": "order summary",
       "event": "viewCheckoutExpressIris",
-      "eventAction": "view available promo list",
       "sessionIris": "{{.*}}",
       "eventLabel": "no promo"
     },
     {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
       "eventAction": "select kupon",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.+}}"
     },
     {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
       "eventAction": "deselect kupon",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.+}}"
     },
     {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
       "eventAction": "select promo",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.+}}"
     },
     {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
       "eventAction": "deselect promo",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.+}}"
     },
     {
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
       "eventAction": "click terapkan promo",
+      "eventCategory": "order summary",
+      "event": "clickCheckoutExpress",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.+}}"
     },
     {
+      "eventAction": "click pilih promo recommendation",
       "eventCategory": "order summary",
       "event": "clickCheckoutExpress",
-      "eventAction": "click pilih promo recommendation",
       "sessionIris": "{{.*}}",
       "eventLabel": "",
       "promoCode": "{{.+}}"
     },
     {
+      "eventAction": "click pakai promo",
       "eventCategory": "order summary",
       "event": "clickCheckoutExpress",
-      "eventAction": "click pakai promo",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{success - (?:0|1)}}",
       "promoCode": "{{.+}}"
