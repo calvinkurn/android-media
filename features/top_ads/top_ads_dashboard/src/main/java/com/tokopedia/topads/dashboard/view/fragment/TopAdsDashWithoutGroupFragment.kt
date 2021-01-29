@@ -315,7 +315,8 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         if (adIds.isNotEmpty()) {
             val startDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).startDate)
             val endDate = Utils.format.format((parentFragment as TopAdsProductIklanFragment).endDate)
-            topAdsDashboardPresenter.getProductStats(resources, startDate, endDate, adIds, ::OnSuccessStats)
+            topAdsDashboardPresenter.getProductStats(resources, startDate, endDate, adIds, groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId()
+                    ?: 0, ::OnSuccessStats)
         }
         (parentFragment as TopAdsProductIklanFragment).setNonGroupCount(totalCount)
         setFilterCount()
