@@ -46,12 +46,10 @@
     <string name="label_no_courier_bottomsheet_button">Saya Mengerti</string>
     <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Produk</string>
     <string name="title_activity_checkout_webview">Proteksi Produk</string>
-    <string name="lebel_understood">Mengerti</string>
     <string name="emas_checkout_title">Bulatkan Tagihan dengan Nabung Emas</string>
     <string name="checkout_module_message_cart_error">Terjadi kendala pada pesanan Anda, lihat di bawah untuk info lebih lengkap.</string>
     <string name="ppp_more">Pelajari</string>
     <string name="label_payment_total">Total Tagihan</string>
-    <string name="label_pay_cod">Bayar di Tempat</string>
     <string name="label_hint_cart_item_dropshipper_phone_number">Nomor Telepon</string>
     <string name="label_hint_cart_item_dropshipper_name">Nama Pengirim</string>
     <string name="label_hardcoded_prioritas_ticker">Hanya berlaku untuk pembelian pada pukul 09.00 – 21.00 WIB.</string>
@@ -70,7 +68,6 @@
     <string name="label_emas">Pembulatan Emas</string>
     <string name="order_prioritas_label">Biaya Order Prioritas</string>
     <string name="label_button_change_address">Pilih Alamat Lain</string>
-    <string name="hyperlink_learn_more">Pelajari selengkapnya</string>
     <string name="message_error_courier_not_selected">Pilih pengiriman dulu yuk sebelum lanjut bayar.</string>
     <string name="message_error_multiple_courier_not_selected">Pilih pengiriman untuk %d pesananmu dulu yuk sebelum lanjut bayar.</string>
     <string name="message_error_dropshipper_empty">Pastikan Anda telah melengkapi informasi tambahan.</string>
