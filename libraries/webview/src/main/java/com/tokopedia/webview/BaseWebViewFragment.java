@@ -45,7 +45,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -56,7 +55,6 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -88,7 +86,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
     private static final String REGISTER_APPLINK = "tokopedia://registration";
-    private static final String LITE_THANK_PAGE_URL_IDENTIFIER = "tokopedia.com/payment/thank-you/";
 
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
@@ -126,7 +123,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private UserSession userSession;
     private PermissionCheckerHelper permissionCheckerHelper;
     private RemoteConfig remoteConfig;
-
 
     /**
      * return the url to load in the webview
@@ -206,7 +202,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         webView.clearCache(true);
-        webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
+        webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
         webSettings.setJavaScriptEnabled(true);
@@ -360,7 +356,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onPermissionRequest(PermissionRequest request) {
-            for (String resource :
+            for (String resource:
                     request.getResources()) {
                 if (resource.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
                     permissionCheckerHelper = new PermissionCheckerHelper();
@@ -369,12 +365,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         public void onPermissionDenied(String permissionText) {
                             request.deny();
                         }
-
                         @Override
                         public void onNeverAskAgain(String permissionText) {
                             request.deny();
                         }
-
                         @Override
                         public void onPermissionGranted() {
                             request.grant(request.getResources());
@@ -383,7 +377,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             }
         }
-
         @Override
         public void onPermissionRequestCanceled(PermissionRequest request) {
             super.onPermissionRequestCanceled(request);
@@ -653,7 +646,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE);
             if (queryParam != null)
                 intent.putExtra(CUST_OVERLAY_URL, queryParam);
-            if (headerText != null)
+            if(headerText != null)
                 intent.putExtra(CUST_HEADER, headerText);
             startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
             return true;
@@ -691,7 +684,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 return false;
             }
         }
-        if (url.contains(LOGIN_APPLINK) || url.contains(REGISTER_APPLINK)) {
+        if (url.contains(LOGIN_APPLINK)||url.contains(REGISTER_APPLINK)) {
             boolean isCanClearCache = remoteConfig.getBoolean(KEY_CLEAR_CACHE, false);
             if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
                 Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.LOGOUT);
@@ -703,10 +696,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             return true;
         }
-        if (isLiteThankYouPage(url)) {
-            return openNativeThankYouPage(url);
-        }
-
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
         if (isNotNetworkUrl) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
@@ -726,29 +715,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         return hasMoveToNativePage;
-    }
-
-    private boolean isLiteThankYouPage(String url) {
-        return url.contains(LITE_THANK_PAGE_URL_IDENTIFIER);
-    }
-
-
-    private boolean openNativeThankYouPage(String url) {
-        String appLinkThankYouPage = ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE
-                + "?merchant=%s&payment_id=%s";
-        Uri uri = Uri.parse(url);
-        List<String> pathSegments = uri.getPathSegments();
-        if (pathSegments != null && pathSegments.size() >= 2) {
-            String paymentId = pathSegments.get(pathSegments.size() - 1);
-            String merchantCode = pathSegments.get(pathSegments.size() - 2);
-            if (merchantCode != null && paymentId != null) {
-                RouteManager.route(getActivity(), String.format(appLinkThankYouPage, merchantCode, paymentId));
-                if (getActivity() != null)
-                    getActivity().finish();
-                return true;
-            }
-        }
-        return false;
     }
 
     private void logApplinkErrorOpen(String url) {
