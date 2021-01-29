@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.common.feature.checkout.request;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -41,6 +42,7 @@ public class CheckoutRequest implements Parcelable {
     public ArrayList<String> promoCodes;
     @SerializedName("leasing_id")
     @Expose
+    @SuppressLint("Invalid Data Type")
     public int leasingId;
 
     public CheckoutRequest() {

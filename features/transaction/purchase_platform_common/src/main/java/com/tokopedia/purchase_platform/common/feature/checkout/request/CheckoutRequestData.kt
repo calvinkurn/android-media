@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.common.feature.checkout.request
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -27,6 +28,7 @@ data class CheckoutRequestGqlData(
         @SerializedName("has_promo_stacking")
         var hasPromoStacking: Boolean = false,
         @SerializedName("leasing_id")
+        @SuppressLint("Invalid Data Type")
         var leasingId: Int = 0
 )
 
