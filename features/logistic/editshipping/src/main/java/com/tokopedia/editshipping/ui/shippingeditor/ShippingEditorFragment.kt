@@ -5,7 +5,6 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
@@ -37,6 +36,7 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.*
@@ -91,6 +91,14 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private var btnPrimaryHorizontal: UnifyButton? = null
     private var btnSecondaryVertical: UnifyButton? = null
     private var btnSecondaryHorizontal: UnifyButton? = null
+
+    private var tickerValidateBO: Ticker? = null
+    private var textPointOne: Typography? = null
+    private var textPointTwo: Typography? = null
+    private var textPointThree: Typography? = null
+    private var btnNonaktifkanValidationBO: UnifyButton? = null
+    private var btnAktifkanValidateBO: UnifyButton? = null
+
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var globalErrorLayout: GlobalError? = null
@@ -251,10 +259,6 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         openBottomSheetDetails()
     }
 
-    private fun setValidateBOData(data: ValidateShippingEditorModel) {
-
-    }
-
     private fun setDataCourierNotCovered(data: ValidateShippingEditorModel) {
         bottomSheetCourierInactiveState = BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE
         bottomSheetCourierInactiveAdapter.setData(data.uiContent.warehouses)
@@ -303,9 +307,11 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             tickerShipperInfo?.addPagerView(tickerPageAdapter, messages)
             tickerPageAdapter?.setPagerDescriptionClickEvent(object: TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    val applink = itemData.toString()
-                    if(!TextUtils.isEmpty(applink)) {
-                        RouteManager.route(activity, applink)
+                    val appLink = itemData.toString()
+                    if (appLink.startsWith("tokopedia")) {
+                        startActivity(RouteManager.getIntent(context, appLink))
+                    } else {
+                        startActivity(RouteManager.getIntent(context, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, appLink)))
                     }
                 }
 
@@ -323,6 +329,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
             setDataBoAndCourierNotCovered(data)
         } else if (data.state == 0) {
             viewModel.saveShippingData(userSession?.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), data.featureId.toString())
+        } else if (data.state == 4) {
+            openBottomSheetValidateBOData(data)
         }
     }
 
@@ -363,6 +371,62 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         fragmentManager?.let {
             bottomSheetCourierInactive?.show(it, "show")
         }
+    }
+
+
+    private fun openBottomSheetValidateBOData(data: ValidateShippingEditorModel) {
+        bottomSheetBOValidation = BottomSheetUnify()
+        val viewBottomSheetBOValidation = View.inflate(activity, R.layout.popup_validation_bo, null)
+        setUpChildBottomSheetValidateBOData(viewBottomSheetBOValidation, data)
+
+        bottomSheetBOValidation?.apply {
+            setTitle("Yakin mau nonaktifkan?")
+            setCloseClickListener { dismiss() }
+            setChild(viewBottomSheetBOValidation)
+            setOnDismissListener { dismiss() }
+        }
+
+        fragmentManager?.let {
+            bottomSheetBOValidation?.show(it, "show")
+        }
+    }
+
+    private fun setUpChildBottomSheetValidateBOData(child: View, data: ValidateShippingEditorModel) {
+        val uiContentModel = data.uiContent
+        tickerValidateBO = child.findViewById(R.id.ticker_validation_bo)
+        textPointOne = child.findViewById(R.id.point_one)
+        textPointTwo = child.findViewById(R.id.point_two)
+        textPointThree = child.findViewById(R.id.point_three)
+        btnAktifkanValidateBO = child.findViewById(R.id.btn_aktifkan)
+        btnNonaktifkanValidationBO = child.findViewById(R.id.btn_nonaktifkan)
+
+        tickerValidateBO?.apply {
+            tickerTitle = uiContentModel.ticker.header
+            setHtmlDescription(uiContentModel.ticker.body + HtmlLinkHelper(context, uiContentModel.ticker.textLink).spannedString.toString())
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    RouteManager.getIntent(activity, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, uiContentModel.ticker.urlLink))
+                }
+
+                override fun onDismiss() {
+                    //no-op
+                }
+            })
+        }
+        context?.let {
+            textPointOne?.text = HtmlLinkHelper(it, uiContentModel.body[0]).spannedString
+            textPointTwo?.text = HtmlLinkHelper(it, uiContentModel.body[1]).spannedString
+            textPointThree?.text = HtmlLinkHelper(it, uiContentModel.body[2]).spannedString
+        }
+
+        btnNonaktifkanValidationBO?.setOnClickListener {
+            viewModel.saveShippingData(userSession?.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), data?.featureId.toString())
+            bottomSheetBOValidation?.dismiss()
+        }
+        btnAktifkanValidateBO?.setOnClickListener {
+            bottomSheetBOValidation?.dismiss()
+        }
+
     }
 
     private fun setupChildCourierInactive(child: View, header: String, courierCount: Int?, data: ValidateShippingEditorModel?) {
@@ -414,7 +478,6 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                 btnSecondaryVertical?.setOnClickListener {
                     viewModel.saveShippingData(userSession?.shopId.toInt(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), data?.featureId.toString())
                     bottomSheetCourierInactive?.dismiss()
-
                 }
                 btnVerticalLayout?.visible()
                 btnSecondaryVertical?.visible()

@@ -12,6 +12,12 @@ object ShopLocationQuery {
               description
             }
             data {
+              general_ticker {
+                header
+                body
+                body_link_text
+                body_link_url
+              }	
               warehouses {
                 warehouse_id
                 warehouse_name

@@ -25,7 +25,7 @@
         app:srcCompat="@drawable/ic_no_1"
         app:layout_constraintTop_toBottomOf="@id/ticker_validation_bo" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/point_one"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/point_one" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/point_two"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/point_two" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/point_three"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

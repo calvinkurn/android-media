@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -88,6 +89,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         private val couponLayout = itemView.findViewById<RelativeLayout>(R.id.layout_coupon)
         private val couponText = itemView.findViewById<Typography>(R.id.title_coupon)
         private val childLayout = itemView.findViewById<FrameLayout>(R.id.item_child_layout)
+        private val flDisableContainer = itemView.findViewById<FrameLayout>(R.id.fl_container)
 
         fun bindData(data: OnDemandModel) {
             onDemandModel = data
@@ -128,7 +130,6 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                     tickerShipper.visibility = View.VISIBLE
                     tickerShipper.tickerType = Ticker.TYPE_ERROR
                     tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_red))
-
                 }
                 2 -> {
                     tickerShipper.visibility = View.VISIBLE
@@ -160,24 +161,25 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
             } else {
                 childLayout.gone()
             }
-            shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
-                data.isActive = isChecked
-                shipperProductChild?.updateChecked(isChecked)
-                if (isChecked) {
-                    childLayout.visible()
-                } else {
-                    childLayout.gone()
+
+            if (data.tickerState == 1) {
+                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
+                shipmentItemCb.isEnabled = false
+            } else {
+                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
+                shipmentItemCb.isEnabled = true
+                shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
+                    data.isActive = isChecked
+                    shipperProductChild?.updateChecked(isChecked)
+                    if (isChecked) {
+                        childLayout.visible()
+                    } else {
+                        childLayout.gone()
+                    }
                 }
             }
-
-
         }
 
-        /* private fun setListener(data: OnDemandModel) {
-            shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
-                listener.onShipperInfoClicked()
-            }
-        }*/
     }
 
 }
