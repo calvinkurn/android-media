@@ -15,7 +15,8 @@ object PlayUiMocker {
     fun getMockPinnedProduct() = PinnedProductUiModel(
             partnerName = "GSK Official Store",
             title = "Ayo belanja barang pilihan kami sebelum kehabisan!",
-            hasPromo = true
+            hasPromo = true,
+            shouldShow = true
     )
 
     fun getMockProductSheetContent() = PlayResult.Success(ProductSheetUiModel(

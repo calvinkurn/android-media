@@ -77,7 +77,7 @@ class PlayParentViewModel constructor(
                 val response = getChannelDetailsWithRecomUseCase.apply {
                     params = when (nextKey) {
                         is ChannelDetailNextKey.ChannelId -> GetChannelDetailsWithRecomUseCase.createParamsWithChannelId(nextKey.channelId)
-                        is ChannelDetailNextKey.Cursor -> GetChannelDetailsWithRecomUseCase.createParamsWithChannelId(nextKey.cursor)
+                        is ChannelDetailNextKey.Cursor -> GetChannelDetailsWithRecomUseCase.createParamsWithCursor(nextKey.cursor)
                     }
                 }.executeOnBackground()
 

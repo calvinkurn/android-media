@@ -52,6 +52,8 @@ import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.uimodel.recom.PlayLikeStatusInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -588,16 +590,25 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLikeStatus() {
-        playViewModel.observableLikeStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            likeView.setTotalLikes(it)
+        playViewModel.observableLikeStatusInfo.observe(viewLifecycleOwner, object : Observer<PlayLikeStatusInfoUiModel> {
+            private var isFirstTime = true
+
+            override fun onChanged(it: PlayLikeStatusInfoUiModel) {
+                likeView.setEnabled(true)
+
+                likeView.playLikeAnimation(it.isLiked, !isFirstTime)
+                isFirstTime = false
+
+                likeView.setTotalLikes(it)
+            }
         })
     }
 
     private fun observeTotalLikes() {
-        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, DistinctObserver {
-            likeView.setTotalLikes(it)
-            endLiveInfoView.setTotalLikes(it)
-        })
+//        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, DistinctObserver {
+//            likeView.setTotalLikes(it)
+//            endLiveInfoView.setTotalLikes(it)
+//        })
     }
 
     private fun observeTotalViews() {
@@ -633,18 +644,18 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLikeContent() {
-        playViewModel.observableLikeState.observe(viewLifecycleOwner, object : Observer<NetworkResult<LikeStateUiModel>> {
-            private var isFirstTime = true
-            override fun onChanged(result: NetworkResult<LikeStateUiModel>) {
-                likeView.setEnabled(true)
-
-                if (result is NetworkResult.Success) {
-                    val likeModel = result.data
-                    likeView.playLikeAnimation(likeModel.isLiked, !likeModel.fromNetwork && !isFirstTime)
-                    isFirstTime = false
-                }
-            }
-        })
+//        playViewModel.observableLikeState.observe(viewLifecycleOwner, object : Observer<NetworkResult<LikeStateUiModel>> {
+//            private var isFirstTime = true
+//            override fun onChanged(result: NetworkResult<LikeStateUiModel>) {
+//                likeView.setEnabled(true)
+//
+//                if (result is NetworkResult.Success) {
+//                    val likeModel = result.data
+//                    likeView.playLikeAnimation(likeModel.isLiked, !likeModel.fromNetwork && !isFirstTime)
+//                    isFirstTime = false
+//                }
+//            }
+//        })
     }
 
     private fun observeBottomInsetsState() {
@@ -1075,23 +1086,23 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun pinnedViewOnStateChanged(
-            pinnedModel: PinnedUiModel? = playViewModel.observablePinned.value,
+            pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
         when (pinnedModel) {
-            is PinnedMessageUiModel -> {
+            is PlayPinnedUiModel.PinnedMessage -> {
                 pinnedView?.setPinnedMessage(pinnedModel)
 
                 if (!bottomInsets.isAnyShown) pinnedView?.show()
                 else pinnedView?.hide()
             }
-            is PinnedProductUiModel -> {
+            is PlayPinnedUiModel.PinnedProduct -> {
                 pinnedView?.setPinnedProduct(pinnedModel)
 
                 if (!bottomInsets.isAnyShown) pinnedView?.show()
                 else pinnedView?.hide()
             }
-            is PinnedRemoveUiModel -> {
+            PlayPinnedUiModel.NoPinned -> {
                 pinnedView?.hide()
             }
         }

@@ -5,7 +5,8 @@ import android.widget.TextView
 import androidx.annotation.IdRes
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.TotalLikeUiModel
-import com.tokopedia.play.view.uimodel.TotalViewUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayTotalViewUiModel
+import com.tokopedia.play.view.uimodel.recom.totalViewFmt
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -34,8 +35,8 @@ class EndLiveInfoViewComponent(
         }
     }
 
-    fun setTotalViews(totalView: TotalViewUiModel) {
-        tvTotalViews.text = totalView.totalView
+    fun setTotalViews(totalView: PlayTotalViewUiModel) {
+        tvTotalViews.text = totalView.totalViewFmt
     }
 
     fun setTotalLikes(totalLikes: TotalLikeUiModel) {

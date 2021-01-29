@@ -114,12 +114,12 @@ object PlayUiMapper {
         )
     } else null
 
-    private fun mapPinnedProduct(partnerName: String, configuration: Channel.Configuration) = if (configuration.showPinnedProduct)
-        PinnedProductUiModel(
+    private fun mapPinnedProduct(partnerName: String, configuration: Channel.Configuration) = PinnedProductUiModel(
             partnerName = partnerName,
             title = configuration.pinnedProduct.title,
-            hasPromo = configuration.hasPromo
-    ) else null
+            hasPromo = configuration.hasPromo,
+            shouldShow = configuration.showPinnedProduct
+    )
 
     private fun mapVideoStream(video: Video, config: Channel.Configuration, isLive: Boolean) = VideoStreamUiModel(
             uriString = video.streamSource,
