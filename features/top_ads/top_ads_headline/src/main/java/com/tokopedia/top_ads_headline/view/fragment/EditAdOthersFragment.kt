@@ -190,14 +190,12 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     }
 
     private fun setUpScheduleView() {
-        if (stepperModel?.startDate?.isNotBlank() == true) {
+        if (stepperModel?.startDate?.isNotBlank() == true && stepperModel?.endDate?.isNotBlank() == true) {
+            adScheduleSwitch.isChecked = true
             stepperModel?.startDate?.convertToDate(HEADLINE_DATETIME_FORMAT2, localeID)?.let {
                 selectedStartDate = Calendar.getInstance()
                 selectedStartDate?.time = it
-                adScheduleSwitch.isChecked = true
             }
-        }
-        if (stepperModel?.endDate?.isNotBlank() == true) {
             stepperModel?.endDate?.convertToDate(HEADLINE_DATETIME_FORMAT2, localeID)?.let {
                 selectedEndDate = Calendar.getInstance()
                 selectedEndDate?.time = it
@@ -360,7 +358,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     private fun validateGroup(s: String?) {
         s?.let {
-            editAdOthersViewModel.validateGroup(it, userSession.shopId.toIntOrZero(), this::onSuccess, this::onError)
+            editAdOthersViewModel.validateGroup(it, this::onSuccess, this::onError)
         }
     }
 
@@ -383,7 +381,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         stepperModel?.startDate = if (adScheduleSwitch.isChecked) {
             selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
         } else {
-            context?.getToday()?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
+            ""
         }
         stepperModel?.endDate = if (adScheduleSwitch.isChecked) {
             selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""

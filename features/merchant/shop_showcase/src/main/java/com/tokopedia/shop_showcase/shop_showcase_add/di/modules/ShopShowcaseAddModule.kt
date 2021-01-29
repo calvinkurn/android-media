@@ -13,7 +13,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@ShopShowcaseAddScope
 @Module(includes = [ShopShowcaseAddUseCaseModule::class, ShopShowcaseAddViewModelModule::class])
 class ShopShowcaseAddModule {
     @ShopShowcaseAddScope

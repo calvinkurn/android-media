@@ -15,7 +15,6 @@ import dagger.Provides
 import javax.inject.Named
 
 @Module
-@RatesEstimationScope
 class RatesEstimationModule {
 
     @RatesEstimationScope

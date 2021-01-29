@@ -67,6 +67,7 @@
     <dimen name="mvc_dimen_120dp">120dp</dimen>
     <dimen name="mvc_dimen_140dp">140dp</dimen>
     <dimen name="mvc_dimen_6dp">6dp</dimen>
+    <dimen name="mvc_dimen_11dp">11dp</dimen>
 
     <!-- font size -->
     <dimen name="mvc_create_target_description_line_spacing">4sp</dimen>

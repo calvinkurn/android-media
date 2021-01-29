@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_marginTop="@dimen/dp_9"
+            android:background="@drawable/bg_rounded_corner"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_9"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_alignParentLeft="true"/>
+
+        <View
+            android:layout_marginTop="@dimen/dp_9"
+            android:background="@drawable/bg_rounded_corner"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_9"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:contentDescription="@string/content_desc_error_state_channel"
+        android:layout_marginTop="@dimen/dp_16"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/error_state_1"/>
+</LinearLayout>

@@ -34,7 +34,6 @@ import java.util.concurrent.TimeUnit
  * @author by jessica on 11/06/20
  */
 
-@DealsScope
 @Module
 class DealsModule(val context: Context) {
 

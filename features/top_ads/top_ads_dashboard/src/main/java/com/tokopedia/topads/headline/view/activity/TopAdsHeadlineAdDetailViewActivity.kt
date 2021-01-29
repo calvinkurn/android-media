@@ -86,6 +86,9 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {
+        if(!isDataChanged){
+            tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
+        }
         val list: MutableList<FragmentTabItem> = mutableListOf()
         tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
         tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE

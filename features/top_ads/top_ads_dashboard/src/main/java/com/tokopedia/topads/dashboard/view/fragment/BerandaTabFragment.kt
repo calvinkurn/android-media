@@ -66,7 +66,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
     private val topAdsInsightTabAdapter: TopAdsInsightTabAdapter? by lazy {
-        context?.run { TopAdsInsightTabAdapter(this) }
+        context?.run { TopAdsInsightTabAdapter() }
     }
 
     override fun getLayoutId(): Int {
@@ -211,7 +211,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
                 }
             }
         })
-        topAdsInsightTabAdapter?.setTabTitles(resources, response.data.size, 0, 0)
+        topAdsInsightTabAdapter?.setTabTitles(resources, 0, 0, response.data.size)
         rvTabInsight.adapter = topAdsInsightTabAdapter
     }
 

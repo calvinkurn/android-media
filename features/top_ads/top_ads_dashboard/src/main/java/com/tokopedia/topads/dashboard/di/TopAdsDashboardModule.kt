@@ -15,7 +15,6 @@ import com.tokopedia.shop.common.data.source.ShopCommonDataSource
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsStatisticsUseCase
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal
@@ -33,7 +32,6 @@ import javax.inject.Named
  * Created by hadi.putra on 23/04/18.
  */
 
-@TopAdsDashboardScope
 @Module
 class TopAdsDashboardModule {
 
@@ -86,10 +84,6 @@ class TopAdsDashboardModule {
     fun provideTopAdsSourceTaggingRepository(dataSource: TopAdsSourceTaggingDataSource): TopAdsSourceTaggingRepository {
         return TopAdsSourceTaggingRepositoryImpl(dataSource)
     }
-
-    @TopAdsDashboardScope
-    @Provides
-    fun provideDeleteTopAdsStatisticsUseCase(@ApplicationContext context: Context) = DeleteTopAdsStatisticsUseCase(context)
 
     @TopAdsDashboardScope
     @Provides
