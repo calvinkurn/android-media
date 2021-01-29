@@ -23,7 +23,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.explore.R
 import com.tokopedia.explore.analytics.ContentExloreEventTracking
 import com.tokopedia.explore.analytics.ContentExploreAnalytics
@@ -47,8 +46,6 @@ import javax.inject.Inject
 class ContentExploreFragment :
         BaseDaggerFragment(),
         ContentExploreContract.View,
-        SearchInputView.Listener,
-        SearchInputView.ResetListener,
         SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
@@ -86,7 +83,6 @@ class ContentExploreFragment :
     @Inject
     lateinit var analytics: ContentExploreAnalytics
 
-    private lateinit var searchInspiration: SearchInputView
     private lateinit var exploreCategoryRv: RecyclerView
     private lateinit var exploreImageRv: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -116,7 +112,6 @@ class ContentExploreFragment :
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_content_explore, container, false)
-        searchInspiration = view.findViewById(R.id.search_inspiration)
         exploreCategoryRv = view.findViewById(R.id.explore_category_rv)
         exploreImageRv = view.findViewById(R.id.explore_image_rv)
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout)
@@ -144,9 +139,6 @@ class ContentExploreFragment :
 
     private fun initView() {
         dropKeyboard()
-        searchInspiration.setListener(this)
-        searchInspiration.setResetListener(this)
-        searchInspiration.searchTextView.setOnClickListener { searchInspiration.searchTextView.isCursorVisible = true }
         swipeToRefresh.setOnRefreshListener(this)
 
         val linearLayoutManager = LinearLayoutManager(context,
@@ -163,17 +155,17 @@ class ContentExploreFragment :
                 false)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                when {
+                return when {
                     imageAdapter.list[position] is ExploreImageViewModel -> {
-                        return IMAGE_SPAN_SINGLE
+                        IMAGE_SPAN_SINGLE
                     }
                     imageAdapter.list[position] is LoadingMoreModel -> {
-                        return IMAGE_SPAN_COUNT
+                        IMAGE_SPAN_COUNT
                     }
                     imageAdapter.list[position] is EmptyModel -> {
-                        return IMAGE_SPAN_COUNT
+                        IMAGE_SPAN_COUNT
                     }
-                    else -> return 0
+                    else -> 0
                 }
             }
         }
@@ -371,28 +363,6 @@ class ContentExploreFragment :
         affiliatePreference.setCoachmarkExploreAsAffiliateShown(userSession.userId)
     }
 
-    override fun onSearchSubmitted(text: String) {
-        dropKeyboard()
-        resetDataParam()
-        setAllCategoriesInactive()
-        imageAdapter.clearData()
-
-        updateSearch(text)
-        presenter.getExploreData(true)
-        analytics.eventSubmitSearch(text)
-    }
-
-    override fun onSearchTextChanged(text: String) {
-
-    }
-
-    override fun onSearchReset() {
-        resetDataParam()
-        setAllCategoriesInactive()
-        imageAdapter.clearData()
-        presenter.getExploreData(true)
-    }
-
     override fun onRefresh() {
         presenter.onPullToRefreshTriggered()
         presenter.updateCursor("")
@@ -400,7 +370,6 @@ class ContentExploreFragment :
     }
 
     override fun dropKeyboard() {
-        searchInspiration.searchTextView.isCursorVisible = false
         KeyboardHandler.DropKeyboard(activity, view)
     }
 
@@ -449,12 +418,7 @@ class ContentExploreFragment :
     }
 
     private fun clearSearch() {
-        searchInspiration.searchTextView.setText("")
         dropKeyboard()
-    }
-
-    private fun setAllCategoriesInactive() {
-        setAllCategoriesInactive(-1)
     }
 
     private fun setAllCategoriesInactive(position: Int): Boolean {

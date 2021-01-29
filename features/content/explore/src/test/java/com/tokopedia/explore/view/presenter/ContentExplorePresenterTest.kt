@@ -101,6 +101,8 @@ class ContentExplorePresenterTest {
         coEvery { getExploreDataUseCase.executeOnBackground() } returns dummyResponse
 
         presenter.getExploreData(false)
+        coVerify { getExploreDataUseCase.setParams(any(), any(), any()) }
+        coVerify { getExploreDataUseCase.executeOnBackground() }
         coVerify { view.updateCursor(dummyResponse.getDiscoveryKolData?.lastCursor) }
         coVerify { view.dismissLoading() }
         coVerify { view.stopTrace() }
@@ -111,6 +113,16 @@ class ContentExplorePresenterTest {
     fun `test trackAffiliate method`() {
         every { trackAffiliateClickUseCase.execute(any(), any()) } just runs
         presenter.trackAffiliate("test_url")
+        verify { trackAffiliateClickUseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun `test trackBulkAffiliate method`() {
+        //when urlList is empty
+        presenter.trackBulkAffiliate(mutableListOf())
+        verify(exactly = 0) { presenter.trackAffiliate("") }
+        //when urlList is not empty
+        presenter.trackBulkAffiliate(mutableListOf("test1", "test2"))
         verify { trackAffiliateClickUseCase.execute(any(), any()) }
     }
 

@@ -165,20 +165,24 @@ class ContentExplorePresenter @Inject constructor(
         }
     }
 
-    private fun trackBulkAffiliate(urlList: MutableList<String>) {
+    fun trackBulkAffiliate(urlList: MutableList<String>) {
         if (urlList.isNotEmpty()) {
-            val activityIdListString = urlList
-                    .mapNotNull { Uri.parse(it).getQueryParameter(QUERY_ACTIVITY_ID) }
-                    .joinToString(",")
-            val recomIdListString = urlList
-                    .mapNotNull { Uri.parse(it).getQueryParameter(QUERY_RECOM_ID) }
-                    .joinToString(",")
+            var finalUrl = ""
+            try {
+                val activityIdListString = urlList
+                        .mapNotNull { Uri.parse(it).getQueryParameter(QUERY_ACTIVITY_ID) }
+                        .joinToString(",")
+                val recomIdListString = urlList
+                        .mapNotNull { Uri.parse(it).getQueryParameter(QUERY_RECOM_ID) }
+                        .joinToString(",")
 
-            var finalUrl =
-                    Uri.parse(urlList.first()).setParameter(QUERY_ACTIVITY_ID, activityIdListString).toString().decodeToUtf8()
-            finalUrl =
-                    Uri.parse(finalUrl).setParameter(QUERY_RECOM_ID, recomIdListString).toString().decodeToUtf8()
+                finalUrl = Uri.parse(urlList.first()).setParameter(QUERY_ACTIVITY_ID, activityIdListString).toString().decodeToUtf8()
+                finalUrl = Uri.parse(finalUrl).setParameter(QUERY_RECOM_ID, recomIdListString).toString().decodeToUtf8()
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
             trackAffiliate(finalUrl)
+
         }
     }
 
