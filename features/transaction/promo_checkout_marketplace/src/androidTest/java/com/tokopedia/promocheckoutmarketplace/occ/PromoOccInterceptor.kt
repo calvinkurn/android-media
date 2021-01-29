@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckoutmarketplace
+package com.tokopedia.promocheckoutmarketplace.occ
 
 import com.tokopedia.test.application.util.ResourcePathUtil.getJsonFromResource
 import okhttp3.*

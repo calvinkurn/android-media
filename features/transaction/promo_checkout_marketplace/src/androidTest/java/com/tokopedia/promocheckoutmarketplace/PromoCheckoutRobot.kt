@@ -24,38 +24,26 @@ class PromoCheckoutRobot {
 
     fun pullSwipeRefresh() {
         onView(withId(R.id.swipe_refresh_layout)).perform(swipeDown())
-
-        Thread.sleep(3000)
     }
 
     fun clickPromoWithTitle(title: String) {
         onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(RecyclerViewActions.actionOnHolderItem(onPromoListItemViewHolderWithTitle(title), clickPromoListItemViewHolder()))
-
-        Thread.sleep(3000)
     }
 
     fun clickPilihPromoRecommendation() {
         onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(RecyclerViewActions.actionOnHolderItem(onPromoRecommendationViewHolder(), clickPilihInPromoRecommendationViewHolder()))
-
-        Thread.sleep(3000)
     }
 
     fun typePromoCode(promoCode: String) {
         onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(RecyclerViewActions.actionOnHolderItem(onPromoInputViewHolder(), typePromoCodeInPromoInputViewHolder(promoCode)))
-
-        Thread.sleep(3000)
     }
 
     fun clickTerapkanPromoCode() {
         onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(RecyclerViewActions.actionOnHolderItem(onPromoInputViewHolder(), clickTerapkanInPromoInputViewHolder()))
-
-        Thread.sleep(3000)
     }
 
     fun clickPakaiPromo() {
         onView(withId(R.id.container_action_bottom)).perform(clickButtonApplyPromo())
-
-        Thread.sleep(3000)
     }
 }
 

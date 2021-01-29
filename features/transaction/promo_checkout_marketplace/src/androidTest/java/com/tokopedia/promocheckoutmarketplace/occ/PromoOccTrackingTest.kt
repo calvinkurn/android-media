@@ -1,13 +1,17 @@
-package com.tokopedia.promocheckoutmarketplace
+package com.tokopedia.promocheckoutmarketplace.occ
 
 import android.content.Intent
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutActivity
+import com.tokopedia.promocheckoutmarketplace.promoCheckoutPage
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
@@ -35,6 +39,7 @@ class PromoOccTrackingTest {
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     private val interceptor = PromoOccInterceptor()
+    private var idlingResource: IdlingResource? = null
 
     @Before
     fun setup() {
@@ -46,19 +51,25 @@ class PromoOccTrackingTest {
 
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
+        idlingResource = PromoCheckoutIdlingResource.getIdlingResource()
+        IdlingRegistry.getInstance().register(idlingResource)
+
         activityRule.launchActivity(generateOccPromoIntent())
     }
 
     @After
     fun cleanup() {
         gtmLogDBSource.deleteAll().toBlocking().first()
+
+        IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
     @Test
     fun performPromoTrackingActions() {
         promoCheckoutPage {
 
-            Thread.sleep(5000)
+            // to ensure no promo UI is shown
+            pullSwipeRefresh()
 
             interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_ineligible_response.json"
 
@@ -85,6 +96,9 @@ class PromoOccTrackingTest {
             clickPilihPromoRecommendation()
 
             clickPakaiPromo()
+
+            // to ensure promo successfully applied
+            Thread.sleep(1000)
 
             assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
         }
