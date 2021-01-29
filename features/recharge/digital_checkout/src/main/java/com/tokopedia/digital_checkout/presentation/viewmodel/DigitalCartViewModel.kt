@@ -9,6 +9,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
@@ -139,7 +140,8 @@ class DigitalCartViewModel @Inject constructor(
                             digitalCheckoutPassData: DigitalCheckoutPassData,
                             errorNotLoginMessage: String = "") {
         val attributes = RequestBodyOtpSuccess.Attributes(DeviceUtil.localIpAddress, DeviceUtil.userAgentForApiCall, digitalIdentifierParam)
-        val requestBodyOtpSuccess = RequestBodyOtpSuccess("cart", requestCheckoutParam.cartId ?: "", attributes)
+        val requestBodyOtpSuccess = RequestBodyOtpSuccess(DigitalCheckoutConst.RequestBodyParams.REQUEST_BODY_OTP_CART_TYPE,
+                requestCheckoutParam.cartId ?: "", attributes)
         val requestParams = digitalPatchOtpUseCase.createRequestParams(requestBodyOtpSuccess)
         digitalPatchOtpUseCase.execute(requestParams, getSubscriberOtp(digitalCheckoutPassData, errorNotLoginMessage))
     }
@@ -275,12 +277,12 @@ class DigitalCartViewModel @Inject constructor(
             val additionals: MutableList<CartItemDigitalWithTitle> = ArrayList(_cartAdditionalInfoList.value
                     ?: listOf())
             val items: MutableList<CartItemDigital> = ArrayList()
-            items.add(CartItemDigital("Harga", cartDigitalInfoData.value?.attributes?.price ?: ""))
-            items.add(CartItemDigital("Promo", String.format("-%s", getStringIdrFormat(promoData.amount.toDouble()))))
+            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PRICE, cartDigitalInfoData.value?.attributes?.price ?: ""))
+            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PROMO, String.format("-%s", getStringIdrFormat(promoData.amount.toDouble()))))
             val totalPayment: Long = (cartDigitalInfoData.value?.attributes?.pricePlain
                     ?: 0L) - promoData.amount.toLong()
-            items.add(CartItemDigital("Total Bayar", getStringIdrFormat(totalPayment.toDouble())))
-            val cartAdditionalInfo = CartItemDigitalWithTitle("Pembayaran", items)
+            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_TOTAL_PAYMENT, getStringIdrFormat(totalPayment.toDouble())))
+            val cartAdditionalInfo = CartItemDigitalWithTitle(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT, items)
             additionals.add(cartAdditionalInfo)
             _cartAdditionalInfoList.value = additionals
             _totalPrice.forceRefresh()
@@ -290,7 +292,7 @@ class DigitalCartViewModel @Inject constructor(
     fun resetVoucherCart() {
         val additionalInfos = cartAdditionalInfoList.value?.toMutableList() ?: mutableListOf()
         for ((i, additionalInfo) in additionalInfos.withIndex()) {
-            if (additionalInfo.title.contains("Pembayaran")) {
+            if (additionalInfo.title.contains(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT)) {
                 additionalInfos.removeAt(i)
                 break
             }

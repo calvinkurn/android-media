@@ -88,8 +88,7 @@ class DigitalCartViewModelTest {
     @Test
     fun getCart_onSuccess_NoNeedOtpAndIsNotSubscribed() {
         //given
-        val dummyResponse = DigitalCartDummyData.getDummyGetCartResponse()
-        dummyResponse.crossSellingType = 0
+        val dummyResponse = DigitalCartDummyData.getDummyGetCartResponseWithDefaultCrossSellType()
         coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
             secondArg<(RechargeGetCart.Response) -> Unit>().invoke(RechargeGetCart.Response(dummyResponse))
         }
@@ -153,8 +152,7 @@ class DigitalCartViewModelTest {
     @Test
     fun getCart_onSuccess_NeedOtp() {
         //given
-        val dummyResponse = DigitalCartDummyData.getDummyGetCartResponse()
-        dummyResponse.isOtpRequired = true
+        val dummyResponse = DigitalCartDummyData.getDummyGetCartResponseWithRequiredOtp()
         coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
             secondArg<(RechargeGetCart.Response) -> Unit>().invoke(RechargeGetCart.Response(dummyResponse))
         }

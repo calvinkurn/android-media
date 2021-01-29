@@ -3,6 +3,7 @@ package com.tokopedia.digital_checkout.utils
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData.PostPaidPopupAttribute
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
@@ -22,6 +23,7 @@ import com.tokopedia.track.TrackApp
  */
 
 object DigitalCheckoutMapper {
+
     fun mapToCartDigitalInfoData(responseCartData: ResponseCartData): CartDigitalInfoData {
         try {
             val cartDigitalInfoData = CartDigitalInfoData()
@@ -288,7 +290,7 @@ object DigitalCheckoutMapper {
                                digitalIdentifierParam: RequestBodyIdentifier,
                                fintechProduct: FintechProduct?): RequestBodyCheckout {
         val requestBodyCheckout = RequestBodyCheckout()
-        requestBodyCheckout.type = "checkout"
+        requestBodyCheckout.type = DigitalCheckoutConst.RequestBodyParams.REQUEST_BODY_CHECKOUT_TYPE
 
         val attributes = RequestBodyCheckout.AttributesCheckout()
         attributes.voucherCode = checkoutData.voucherCode
