@@ -8,11 +8,8 @@ data class InboxCounter(
         @SerializedName("buyer")
         val buyer: Buyer = Buyer(),
         @SerializedName("seller")
-        val seller: Seller = Seller(),
-        @SerializedName("seller_discussion_unresponded")
-        val sellerDiscussionUnresponded: SellerDiscussionUnresponded = SellerDiscussionUnresponded()
+        val seller: Seller = Seller()
 ) {
-
     fun getByRole(role: Int): BaseNotification? {
         return when (role) {
             RoleType.BUYER -> buyer
@@ -27,9 +24,5 @@ data class InboxCounter(
             RoleType.SELLER -> buyer
             else -> null
         }
-    }
-
-    fun updateTotalDiscussion() {
-        seller.talkInt = sellerDiscussionUnresponded.totalInt
     }
 }
