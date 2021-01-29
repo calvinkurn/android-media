@@ -342,6 +342,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     }
                 }
             }
+            merchantVoucherSummary{
+                title
+                subTitle
+                imageURL
+                isShown
+            }
         }
     }""".trimIndent()
     }
@@ -402,6 +408,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
             p2UiData.productFinancingCalculationData = productFinancingCalculationData
             p2UiData.restrictionInfo = restrictionInfo
+            p2UiData.merchantVoucherSummary = merchantVoucherSummary
         }
         return p2UiData
     }
