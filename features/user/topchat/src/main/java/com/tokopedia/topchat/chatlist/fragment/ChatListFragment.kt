@@ -314,6 +314,17 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                 }
             }
         })
+
+        chatItemListViewModel.isChatAdminEligible.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    loadInitialData()
+                }
+                is Fail -> {
+                    // TODO: Show ineligible view
+                }
+            }
+        }
     }
 
     fun processIncomingMessage(newChat: IncomingChatWebSocketModel) {

@@ -8,7 +8,10 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD
@@ -32,7 +35,9 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.collections.HashSet
@@ -66,6 +71,8 @@ class ChatItemListViewModel @Inject constructor(
         private val pinChatUseCase: MutationPinChatUseCase,
         private val unpinChatUseCase: MutationUnpinChatUseCase,
         private val getChatListUseCase: GetChatListMessageUseCase,
+        private val authorizeAccessUseCase: AuthorizeAccessUseCase,
+        private val userSession: UserSessionInterface,
         private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {
 
@@ -89,12 +96,20 @@ class ChatItemListViewModel @Inject constructor(
     val chatBannedSellerStatus: LiveData<Result<Boolean>>
         get() = _chatBannedSellerStatus
 
+    private val _isChatAdminEligible = MutableLiveData<Result<Boolean>>()
+    val isChatAdminEligible: LiveData<Result<Boolean>>
+        get() = _isChatAdminEligible
+
     val chatListHasNext: Boolean get() = getChatListUseCase.hasNext
     val pinnedMsgId: HashSet<String> = HashSet()
     val unpinnedMsgId: HashSet<String> = HashSet()
 
     override fun getChatListMessage(page: Int, filterIndex: Int, tab: String) {
-        queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
+        whenChatAdminAuthorized { isEligible ->
+            if (isEligible) {
+                queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
+            }
+        }
     }
 
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
@@ -110,6 +125,39 @@ class ChatItemListViewModel @Inject constructor(
                     _mutateChatList.value = Fail(it)
                 }
         )
+    }
+
+    private fun whenChatAdminAuthorized(action: (Boolean) -> Unit) {
+        _isChatAdminEligible.value.let { result ->
+            if (result != null && result is Success) {
+                action(result.data)
+            } else {
+                launchCatchError(
+                        block = {
+                            _isChatAdminEligible.value = withContext(Dispatchers.IO) {
+                                Success(getIsChatAdminAccessAuthorized())
+                            }
+                        },
+                        onError = {
+                            _isChatAdminEligible.value = Fail(it)
+                        }
+                )
+            }
+        }
+    }
+
+    private suspend fun getIsChatAdminAccessAuthorized(): Boolean {
+        return when {
+            userSession.isShopOwner -> true
+            userSession.isShopAdmin -> checkChatAdminEligiblity()
+            else -> false
+        }
+    }
+
+    private suspend fun checkChatAdminEligiblity(): Boolean {
+        return AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.CHAT_LIST).let { requestParams ->
+            authorizeAccessUseCase.execute(requestParams)
+        }
     }
 
     override fun chatMoveToTrash(messageId: Int) {
