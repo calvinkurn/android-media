@@ -90,6 +90,8 @@ class PlayActivity : BaseActivity(),
         val channelId = intent?.data?.lastPathSegment
         intent.putExtra(PLAY_KEY_CHANNEL_ID, channelId)
 
+        onExitFullscreen()
+
         setupViewModel(channelId)
         setupPage()
         setupObserve()
