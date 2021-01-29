@@ -1267,7 +1267,7 @@ class ShopPageFragment :
         val childView = MvcDetailView(requireContext())
         bottomSheet.setChild(childView)
         bottomSheet.show((context as AppCompatActivity).supportFragmentManager, getString(R.string.shop_merchant_voucher_tag_bottom_sheet))
-        childView.show(shopId.toString())
+        childView.show(shopId.toString(),false)
         bottomSheet.setShowListener {
             val margin = dpToPx(context, 20)
             bottomSheet.bottomSheetWrapper.setPadding(0,  margin, 0, 0)

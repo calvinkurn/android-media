@@ -21,6 +21,7 @@ import com.tokopedia.utils.htmltags.HtmlUtil
 
 /*
 * 1. It has internal Padding of 6dp to render its shadows
+* 2. isMainContainerSetFitsSystemWindows must be true if activity/fragment layout is setFitsSystemWindows(false) or setFitsSystemWindows = false
 * */
 class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
     lateinit var tvTitle: Typography
@@ -29,6 +30,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     lateinit var imageCoupon: AppCompatImageView
     lateinit var promoCouponView: PromoCouponView
     var shopId: String = ""
+    var isMainContainerSetFitsSystemWindows = false
 
     init {
         View.inflate(context, R.layout.mvc_entry_view, this)
@@ -36,7 +38,8 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         this.layoutParams = lp
         initViews()
 
-        val startPadding = dpToPx(16).toInt() - promoCouponView.defaultPadding
+        val startPadding = 0
+//        val startPadding = dpToPx(16).toInt() - promoCouponView.defaultPadding
         val topPadding = dpToPx(8).toInt() - promoCouponView.topPadding
         setPadding(startPadding, topPadding, startPadding, 0)
 
@@ -59,7 +62,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
             val childView = MvcDetailView(context)
             bottomSheet.setChild(childView)
             bottomSheet.show((context as AppCompatActivity).supportFragmentManager, "BottomSheet Tag")
-            childView.show(shopId)
+            childView.show(shopId, isMainContainerSetFitsSystemWindows)
             bottomSheet.setShowListener {
                 val imageMargin = dpToPx(20).toInt()
                 bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(20).toInt(), 0, 0)
@@ -74,7 +77,8 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         }
     }
 
-    fun setData(mvcData: MvcData, shopId: String) {
+    fun setData(mvcData: MvcData, shopId: String, isMainContainerSetFitsSystemWindows:Boolean = false) {
+        this.isMainContainerSetFitsSystemWindows = isMainContainerSetFitsSystemWindows
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             tvTitle.text = HtmlUtil.fromHtml(mvcData.title).trim()
         } else {

@@ -31,6 +31,7 @@ class MvcDetailView @JvmOverloads constructor(
     var rv: RecyclerView
     var viewFlipper: ViewFlipper
     var globalError: GlobalError
+    var addBottomMarginOnToast = false
 
     private val adapter = MvcDetailAdapter(arrayListOf(), this)
 
@@ -133,13 +134,16 @@ class MvcDetailView @JvmOverloads constructor(
     }
 
     private fun handleMembershipRegistrationSuccess(message: String?) {
-        if (!message.isNullOrEmpty())
+        if (!message.isNullOrEmpty()) {
+            setToastBottomMargin()
             Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun handleMembershipRegistrationError(th: Throwable?) {
         toggleLoading(false)
         if (!th?.message.isNullOrEmpty()) {
+            setToastBottomMargin()
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 handleJadiMemberButtonClick()
             }).show()
@@ -147,8 +151,8 @@ class MvcDetailView @JvmOverloads constructor(
     }
 
     private fun handleFollowSuccess(message: String?) {
-//        Toaster.toasterCustomBottomHeight = dpToPx(48).toInt()
         if (!message.isNullOrEmpty()) {
+            setToastBottomMargin()
             Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
         }
     }
@@ -156,13 +160,15 @@ class MvcDetailView @JvmOverloads constructor(
     private fun handleFollowFail(th: Throwable?) {
         toggleLoading(false)
         if (!th?.message.isNullOrEmpty()) {
+            setToastBottomMargin()
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 handleFollowButtonClick()
             }).show()
         }
     }
 
-    fun show(shopId: String) {
+    fun show(shopId: String, addBottomMarginOnToast: Boolean) {
+        this.addBottomMarginOnToast = addBottomMarginOnToast
         this.shopId = shopId
         viewModel.getListData(shopId)
     }
@@ -170,7 +176,9 @@ class MvcDetailView @JvmOverloads constructor(
     fun setupData(response: TokopointsCatalogMVCListResponse) {
         val tempList = arrayListOf<MvcListItem>()
         response.data?.followWidget?.let {
-            tempList.add(it)
+            if (it.isShown == true) {
+                tempList.add(it)
+            }
         }
 
         val shopName = response.data?.shopName
@@ -178,29 +186,27 @@ class MvcDetailView @JvmOverloads constructor(
             tempList.add(TickerText(shopName))
         }
 
-        if(response.data?.followWidget?.isShown == true){
-            response.data.catalogList?.forEach {
-                var quotaTextLength = 0
-                if (it != null) {
+        response.data?.catalogList?.forEach {
+            var quotaTextLength = 0
+            if (it != null) {
 
-                    val sb = StringBuilder()
-                    if (!it.expiredLabel.isNullOrEmpty()) {
-                        sb.append(it.expiredLabel)
-                    }
-                    if (!it.quotaLeftLabel.isNullOrEmpty()) {
-                        if (sb.isNotEmpty()) {
-                            sb.append(" • ")
-                        }
-                        quotaTextLength = it.quotaLeftLabel.length
-                        sb.append(it.quotaLeftLabel)
-                    }
-                    val spannableString2 = SpannableString(sb.toString())
-
-                    spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.mvcw_red)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    val mvcListItem = MvcCouponListItem(it.tagImageURLs, it.title ?: "", it.minimumUsageLabel
-                            ?: "", spannableString2)
-                    tempList.add(mvcListItem)
+                val sb = StringBuilder()
+                if (!it.expiredLabel.isNullOrEmpty()) {
+                    sb.append(it.expiredLabel)
                 }
+                if (!it.quotaLeftLabel.isNullOrEmpty()) {
+                    if (sb.isNotEmpty()) {
+                        sb.append(" • ")
+                    }
+                    quotaTextLength = it.quotaLeftLabel.length
+                    sb.append(it.quotaLeftLabel)
+                }
+                val spannableString2 = SpannableString(sb.toString())
+
+                spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.mvcw_red)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val mvcListItem = MvcCouponListItem(it.tagImageURLs, it.title ?: "", it.minimumUsageLabel
+                        ?: "", spannableString2)
+                tempList.add(mvcListItem)
             }
         }
 
@@ -219,5 +225,11 @@ class MvcDetailView @JvmOverloads constructor(
 
     override fun handleJadiMemberButtonClick() {
         viewModel.registerMembership()
+    }
+
+    private fun setToastBottomMargin() {
+        if (addBottomMarginOnToast) {
+            Toaster.toasterCustomBottomHeight = dpToPx(48).toInt()
+        }
     }
 }
