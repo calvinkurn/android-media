@@ -54,6 +54,7 @@
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            tools:layout_height="50dp"
             tools:srcCompat="@tools:sample/avatars" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -64,12 +65,30 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_product_thumbnail"
+            app:layout_constraintBottom_toTopOf="@+id/tp_widget_desc"
             app:layout_constraintEnd_toStartOf="@+id/tp_cta"
             app:layout_constraintStart_toEndOf="@+id/iv_product_thumbnail"
             app:layout_constraintTop_toTopOf="@+id/iv_product_thumbnail"
             app:typographyType="body_3"
-            tools:text="Kursi putih cantik ala modern min asdf asdf sdf asdf asdf" />
+            tools:text="Kursi putih cantik ala modern min asdf asdf sdf asdf asdf"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tp_widget_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_96"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_product_thumbnail"
+            app:layout_constraintEnd_toStartOf="@+id/tp_cta"
+            app:layout_constraintStart_toEndOf="@+id/iv_product_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/tp_widget_title"
+            app:typographyType="body_3"
+            tools:text="Kursi putih cantik ala modern min asdf asdf sdf asdf asdf"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_cta"

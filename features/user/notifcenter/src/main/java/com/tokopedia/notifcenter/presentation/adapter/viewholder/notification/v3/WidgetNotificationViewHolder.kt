@@ -31,6 +31,7 @@ class WidgetNotificationViewHolder constructor(
     private val historyBtn: Typography? = itemView?.findViewById(R.id.tp_history)
     private val thumbnail: ImageView? = itemView?.findViewById(R.id.iv_product_thumbnail)
     private val widgetTitle: Typography? = itemView?.findViewById(R.id.tp_widget_title)
+    private val widgetDesc: Typography? = itemView?.findViewById(R.id.tp_widget_desc)
     private val widgetCta: Typography? = itemView?.findViewById(R.id.tp_cta)
     private val message: Typography? = itemView?.findViewById(R.id.tp_message)
     private val progressIndicator: Group? = itemView?.findViewById(
@@ -38,6 +39,9 @@ class WidgetNotificationViewHolder constructor(
     )
     private val historyTimeLine: RecyclerView? = itemView?.findViewById(R.id.rv_history)
     private val historyAdapter: HistoryAdapter = HistoryAdapter()
+
+    private val height_38 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_30)
+    private val height_50 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_50)
 
     init {
         initRecyclerView()
@@ -60,8 +64,10 @@ class WidgetNotificationViewHolder constructor(
         bindProgressIndicator(element)
         bindHistoryBtnClick(element)
         bindProgressIndicator(element)
+        bindThumbnailHeight(element)
         bindThumbnail(element)
         bindWidgetTitle(element)
+        bindWidgetDesc(element)
         bindWidgetCta(element)
         bindMessage(element)
     }
@@ -94,12 +100,29 @@ class WidgetNotificationViewHolder constructor(
         }
     }
 
+    private fun bindThumbnailHeight(element: NotificationUiModel) {
+        val thumbLp = thumbnail?.layoutParams as? ViewGroup.MarginLayoutParams ?: return
+        val height = if (element.isMultiLineWidget()) {
+            height_50
+        } else {
+            height_38
+        } ?: return
+        thumbLp.height = height.toInt()
+        thumbnail.layoutParams = thumbLp
+    }
+
     private fun bindThumbnail(element: NotificationUiModel) {
         ImageHandler.LoadImage(thumbnail, element.widget.image)
     }
 
     private fun bindWidgetTitle(element: NotificationUiModel) {
-        widgetTitle?.text = element.widget.title
+        widgetTitle?.text = element.widgetTitleHtml
+    }
+
+    private fun bindWidgetDesc(element: NotificationUiModel) {
+        widgetDesc?.shouldShowWithAction(element.isMultiLineWidget()) {
+            widgetDesc.text = element.widgetDescHtml
+        }
     }
 
     private fun bindWidgetCta(element: NotificationUiModel) {
@@ -113,7 +136,7 @@ class WidgetNotificationViewHolder constructor(
 
     private fun bindMessage(element: NotificationUiModel) {
         message?.shouldShowWithAction(element.widget.message.isNotEmpty()) {
-            message.text = MethodChecker.fromHtml(element.widget.message)
+            message.text = element.widgetMessage
         }
     }
 

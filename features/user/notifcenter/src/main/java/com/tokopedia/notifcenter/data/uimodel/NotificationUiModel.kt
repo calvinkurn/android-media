@@ -4,6 +4,7 @@ package com.tokopedia.notifcenter.data.uimodel
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.notifcenter.data.entity.notification.*
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import java.util.*
@@ -86,6 +87,18 @@ data class NotificationUiModel(
             time = Date(expireTimeUnix * 1000)
         }
     }
+    @delegate:Transient
+    val widgetTitleHtml: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
+        MethodChecker.fromHtml(widget.title)
+    }
+    @delegate:Transient
+    val widgetDescHtml: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
+        MethodChecker.fromHtml(widget.description)
+    }
+    @delegate:Transient
+    val widgetMessage: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
+        MethodChecker.fromHtml(widget.message)
+    }
     var options: Options = Options()
     val product: ProductData? get() = productData.getOrNull(0)
     val expireTimeUnixMillis: Long get() = expireTimeUnix * 1000
@@ -138,11 +151,19 @@ data class NotificationUiModel(
     }
 
     fun hasWidget(): Boolean {
-        return widgetType == 1
+        return isSingleLineWidget() || isMultiLineWidget()
     }
 
     fun toggleHistoryVisibility() {
         isHistoryVisible = !isHistoryVisible
+    }
+
+    fun isSingleLineWidget(): Boolean {
+        return widgetType == WIDGET_SINGLE
+    }
+
+    fun isMultiLineWidget(): Boolean {
+        return widgetType == WIDGET_MULTIPLE
     }
 
     companion object {
@@ -159,5 +180,8 @@ data class NotificationUiModel(
         const val BS_TYPE_ProductCheckout = 1
         const val BS_TYPE_StockHandler = 2
         const val BS_TYPE_Information = 3
+
+        const val WIDGET_SINGLE = 1
+        const val WIDGET_MULTIPLE = 2
     }
 }
