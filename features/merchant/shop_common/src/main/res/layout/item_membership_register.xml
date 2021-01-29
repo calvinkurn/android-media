@@ -20,6 +20,7 @@
             tools:background="@color/Unify_N100"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
+            android:contentDescription="@string/register_membership_background_content_description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
