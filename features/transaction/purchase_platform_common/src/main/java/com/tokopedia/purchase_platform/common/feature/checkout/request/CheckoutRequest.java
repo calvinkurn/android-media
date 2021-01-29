@@ -42,7 +42,7 @@ public class CheckoutRequest implements Parcelable {
     public ArrayList<String> promoCodes;
     @SerializedName("leasing_id")
     @Expose
-    @SuppressLint("Invalid Data Type")
+    @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
     public int leasingId;
 
     public CheckoutRequest() {
