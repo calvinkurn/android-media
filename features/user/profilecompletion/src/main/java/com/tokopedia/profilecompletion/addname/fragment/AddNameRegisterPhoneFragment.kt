@@ -17,6 +17,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -93,6 +94,10 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        activity?.let{
+            SplitCompat.installActivity(it)
+        }
+
         val view = inflater.inflate(com.tokopedia.profilecompletion.R.layout.fragment_add_name_register, container, false)
         bottomInfo = view.findViewById(R.id.bottom_info)
         progressBar = view.findViewById(R.id.progress_bar)
