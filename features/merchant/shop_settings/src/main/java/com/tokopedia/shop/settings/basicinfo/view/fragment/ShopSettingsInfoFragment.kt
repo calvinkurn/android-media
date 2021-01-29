@@ -28,6 +28,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -392,10 +393,12 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             val logoUrl = shopBasicData.logo
             //avoid crash in ImageUnify when image url is returned as base64
             try {
-                if (TextUtils.isEmpty(logoUrl)) {
-                    ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
-                } else {
-                    ImageHandler.LoadImage(ivShopLogo, logoUrl)
+                if (ivShopLogo.context.isValidGlideContext()) {
+                    if (TextUtils.isEmpty(logoUrl)) {
+                        ImageHandler.loadImage2(ivShopLogo, logoUrl, com.tokopedia.design.R.drawable.ic_shop_default_empty)
+                    } else {
+                        ImageHandler.LoadImage(ivShopLogo, logoUrl)
+                    }
                 }
             }catch (e: Exception) {}
 
