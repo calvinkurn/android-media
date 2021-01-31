@@ -176,6 +176,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
 
     private fun GlobalError.showAdminError() {
         setType(GlobalError.SERVER_ERROR)
+        errorAction.text = context?.getString(R.string.admin_error_refresh_page)
 
         setActionClickListener {
             viewModel.checkAccess(adminFeature)
