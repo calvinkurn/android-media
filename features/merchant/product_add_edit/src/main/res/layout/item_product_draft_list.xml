@@ -32,23 +32,23 @@
         android:orientation="vertical"
         android:layout_gravity="center_vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvProductName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
             tools:text="Nama Produk"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N700"
             android:textSize="@dimen/sp_14" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCompletionPercentage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:singleLine="true"
             tools:text="38% complete"
-            android:textColor="#868686"
+            android:textColor="@color/Unify_N300"
             android:textSize="@dimen/sp_12" />
 
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar

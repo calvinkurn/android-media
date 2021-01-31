@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -275,7 +276,7 @@ class AddEditProductPreviewFragment :
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
@@ -1403,8 +1404,7 @@ class AddEditProductPreviewFragment :
                     getString(R.string.label_for_toaster_success_set_shop_location),
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
-                    getString(R.string.label_for_action_text_toaster_success_set_shop_location)
-            ) { /*no op*/ }.show()
+                    getString(R.string.label_for_action_text_toaster_success_set_shop_location)).show()
         }
     }
 
