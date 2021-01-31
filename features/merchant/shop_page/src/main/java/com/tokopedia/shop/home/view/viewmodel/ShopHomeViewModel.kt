@@ -68,7 +68,7 @@ class ShopHomeViewModel @Inject constructor(
     private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
     private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
     private val shopProductSortMapper: ShopProductSortMapper,
-    private val mvcSummeryUseCase: MVCSummaryUseCase,
+    private val mvcSummaryUseCase: MVCSummaryUseCase,
     private val playWidgetTools: PlayWidgetTools
 ) : BaseViewModel(dispatcherProvider.main) {
 
@@ -213,7 +213,7 @@ class ShopHomeViewModel @Inject constructor(
         if (result is Success && !result.data.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().isNullOrEmpty()) {
             launchCatchError(dispatcherProvider.io, block = {
                 var uiModel = result.data.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
-                val response =  mvcSummeryUseCase.getResponse(mvcSummeryUseCase.getQueryParams(shopId))
+                val response =  mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
                 uiModel = uiModel?.copy(
                         data = ShopPageHomeMapper.mapToVoucherCouponUiModel(response.data, shopId),
                         isError = false

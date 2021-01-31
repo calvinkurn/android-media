@@ -9,10 +9,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopOperationalHourStatusUseCase
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
+import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -60,8 +59,6 @@ class ShopPageViewModelTest {
     @RelaxedMockK
     lateinit var getShopReputationUseCase: Lazy<GetShopReputationUseCase>
     @RelaxedMockK
-    lateinit var toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
-    @RelaxedMockK
     lateinit var stickyLoginUseCase: Lazy<StickyLoginUseCase>
     @RelaxedMockK
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
@@ -69,6 +66,10 @@ class ShopPageViewModelTest {
     lateinit var getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>
     @RelaxedMockK
     lateinit var getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>
+    @RelaxedMockK
+    lateinit var getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>
+    @RelaxedMockK
+    lateinit var updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>
     @RelaxedMockK
     lateinit var firebaseRemoteConfig: RemoteConfig
     @RelaxedMockK
@@ -92,11 +93,12 @@ class ShopPageViewModelTest {
                 getBroadcasterShopConfigUseCase,
                 gqlGetShopInfobUseCaseCoreAndAssets,
                 getShopReputationUseCase,
-                toggleFavouriteShopUseCase,
                 stickyLoginUseCase,
                 gqlGetShopOperationalHourStatusUseCase,
                 getShopPageP1DataUseCase,
                 getShopProductListUseCase,
+                getFollowStatusUseCase,
+                updateFollowStatusUseCase,
                 firebaseRemoteConfig,
                 testCoroutineDispatcherProvider
         )
@@ -203,34 +205,46 @@ class ShopPageViewModelTest {
     }
 
     @Test
-    fun `check whether toggleFavorite call onSuccess`() {
-        val onSuccess: (Boolean) -> Unit = mockk(relaxed = true)
+    fun `check whether update follow status is success`() {
         every { userSessionInterface.isLoggedIn } returns true
-        every { toggleFavouriteShopUseCase.get().execute(any(), any()) } answers {
-            (secondArg() as Subscriber<Boolean>).onNext(true)
-        }
-        shopPageViewModel.toggleFavorite(SAMPLE_SHOP_ID, onSuccess, {})
-        verify { onSuccess.invoke(true) }
+        coEvery { updateFollowStatusUseCase.get().executeOnBackground() } returns FollowShopResponse(null)
+        shopPageViewModel.updateFollowStatus(SAMPLE_SHOP_ID, UpdateFollowStatusUseCase.ACTION_FOLLOW)
+        coVerify { updateFollowStatusUseCase.get().executeOnBackground() }
+        assert(shopPageViewModel.followShopData.value is Success)
     }
 
     @Test
-    fun `check whether toggleFavorite call onError`() {
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val throwable = Throwable()
+    fun `check whether update follow status is fail`() {
         every { userSessionInterface.isLoggedIn } returns true
-        every { toggleFavouriteShopUseCase.get().execute(any(), any()) } answers {
-            (secondArg() as Subscriber<Boolean>).onError(throwable)
-        }
-        shopPageViewModel.toggleFavorite(SAMPLE_SHOP_ID, {}, onError)
-        verify { onError.invoke(throwable) }
+        coEvery { updateFollowStatusUseCase.get().executeOnBackground() } throws Throwable()
+        shopPageViewModel.updateFollowStatus(SAMPLE_SHOP_ID, UpdateFollowStatusUseCase.ACTION_FOLLOW)
+        coVerify { updateFollowStatusUseCase.get().executeOnBackground() }
+        assert(shopPageViewModel.followShopData.value is Fail)
     }
 
     @Test
-    fun `check whether toggleFavorite call onError when user not login`() {
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
+    fun `check whether update follow status is error when user not login`() {
         every { userSessionInterface.isLoggedIn } returns false
-        shopPageViewModel.toggleFavorite(SAMPLE_SHOP_ID, {}, onError)
-        verify { onError.invoke(any()) }
+        shopPageViewModel.updateFollowStatus(SAMPLE_SHOP_ID, UpdateFollowStatusUseCase.ACTION_FOLLOW)
+        assert(shopPageViewModel.followShopData.value is Fail)
+    }
+
+    @Test
+    fun `check whether get follow status is success`() {
+        every { userSessionInterface.isLoggedIn } returns true
+        coEvery { getFollowStatusUseCase.get().executeOnBackground() } returns FollowStatusResponse(null)
+        shopPageViewModel.getFollowStatus(SAMPLE_SHOP_ID)
+        coVerify { getFollowStatusUseCase.get().executeOnBackground() }
+        assert(shopPageViewModel.followStatusData.value is Success)
+    }
+
+    @Test
+    fun `check whether get follow status is fail`() {
+        every { userSessionInterface.isLoggedIn } returns true
+        coEvery { getFollowStatusUseCase.get().executeOnBackground() } throws Throwable()
+        shopPageViewModel.getFollowStatus(SAMPLE_SHOP_ID)
+        coVerify { getFollowStatusUseCase.get().executeOnBackground() }
+        assert(shopPageViewModel.followStatusData.value is Fail)
     }
 
     @Test
@@ -327,12 +341,10 @@ class ShopPageViewModelTest {
 
     @Test
     fun `check whether required function is called when flush`() {
-        every { toggleFavouriteShopUseCase.get().unsubscribe() } returns mockk(relaxed = true)
         every { stickyLoginUseCase.get().cancelJobs() } returns mockk(relaxed = true)
 
         shopPageViewModel.flush()
         verify {
-            toggleFavouriteShopUseCase.get().unsubscribe()
             stickyLoginUseCase.get().cancelJobs()
         }
     }
@@ -365,8 +377,4 @@ class ShopPageViewModelTest {
         } returns mockUserShopId
         assert(shopPageViewModel.userShopId == mockUserShopId)
     }
-
-
-
-
 }

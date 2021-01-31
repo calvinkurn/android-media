@@ -8,6 +8,7 @@ import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
@@ -71,6 +72,8 @@ abstract class ShopPageProductListViewModelTestFixture {
     lateinit var restrictionEngineNplUseCase: RestrictionEngineNplUseCase
     @RelaxedMockK
     lateinit var toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
+    @RelaxedMockK
+    lateinit var getFollowStatusUseCase: GetFollowStatusUseCase
 
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
     protected lateinit var shopPageProductListResultViewModel: ShopPageProductListResultViewModel
@@ -115,7 +118,8 @@ abstract class ShopPageProductListViewModelTestFixture {
                 getShopFilterBottomSheetDataUseCase,
                 getShopFilterProductCountUseCase,
                 restrictionEngineNplUseCase,
-                toggleFavouriteShopUseCase
+                toggleFavouriteShopUseCase,
+                getFollowStatusUseCase
         )
     }
 }

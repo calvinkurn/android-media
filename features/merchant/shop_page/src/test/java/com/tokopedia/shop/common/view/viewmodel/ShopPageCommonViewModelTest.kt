@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.util.LiveDataUtil.observeAwaitValue
@@ -51,7 +52,7 @@ class ShopPageCommonViewModelTest {
 
     @Test
     fun  `When set page following status should be successful`(){
-        val mockData = true
+        val mockData = FollowShop(true, null,null,null,null,null)
 
         shopPageFollowingStatusSharedViewModel.setShopPageFollowingStatus(mockData)
 
