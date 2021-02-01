@@ -1,0 +1,26 @@
+[
+  {
+    "data": {
+      "update_cart_v2": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "error": "",
+          "status": true,
+          "toaster_action": {
+            "text": "",
+            "show_cta": false
+          },
+          "out_of_service": {
+            "id": 0,
+            "code": "",
+            "image": "",
+            "title": "",
+            "description": "",
+            "buttons": []
+          }
+        }
+      }
+    }
+  }
+]
