@@ -22,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -124,26 +125,22 @@ class SomListViewModel @Inject constructor(
 
     var isMultiSelectEnabled: Boolean = false
 
-    private fun <T : Any> getDataFromUseCase(
+    private suspend fun <T : Any> getDataFromUseCase(
             useCase: BaseGraphqlUseCase<T>,
-            liveData: MutableLiveData<Result<T>>,
-            checkDiff: Boolean,
-            checkPredicate: (T) -> Boolean) {
+            liveData: MutableLiveData<Result<T>>) {
+        val requests = mutableListOf<Job>()
         if (useCase.isFirstLoad) {
             useCase.isFirstLoad = false
-            useCase.executeUseCaseAsync(true, onComplete = {
-                it.takeIf { liveData.value == null }?.run {
-                    liveData.value = Success(this)
-                }
+            requests.add(useCase.executeUseCaseAsync(true, onComplete = {
+                liveData.value = Success(it)
             }, onError = {
                 // ignore exception from cache
-            })
+            }))
         }
-        useCase.executeUseCaseAsync(false, onComplete = {
-            it.takeIf { !checkDiff || checkPredicate(it) }?.run {
-                liveData.value = Success(this)
-            }
-        }, onError = { liveData.value = Fail(it) })
+        requests.add(useCase.executeUseCaseAsync(false, onComplete = {
+            liveData.value = Success(it)
+        }, onError = { throw it }))
+        requests.joinAll()
     }
 
     private fun <T : Any> BaseGraphqlUseCase<T>.executeUseCaseAsync(
@@ -208,10 +205,11 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters() {
-        getDataFromUseCase(somListGetFilterListUseCase, _filterResult, somListGetFilterListUseCase.isFirstLoad) {
-            val lastResult = _filterResult.value
-            lastResult == null || lastResult is Fail || (lastResult is Success && lastResult.data.statusList != it.statusList)
-        }
+        launchCatchError(block = {
+            getDataFromUseCase(somListGetFilterListUseCase, _filterResult)
+        }, onError = {
+            _filterResult.value = Fail(it)
+        })
     }
 
     fun getWaitingPaymentCounter() {
