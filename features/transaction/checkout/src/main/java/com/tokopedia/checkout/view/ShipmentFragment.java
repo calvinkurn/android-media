@@ -2798,7 +2798,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         onNeedUpdateViewItem(shipmentAdapter.getPromoCheckoutPosition());
     }
 
-    private void doResetButtonPromoCheckout() {
+    @Override
+    public void doResetButtonPromoCheckout() {
         shipmentAdapter.resetPromoCheckoutData();
         onNeedUpdateViewItem(shipmentAdapter.getPromoCheckoutPosition());
         resetPromoBenefit();
@@ -2849,6 +2850,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.resetCourier(index);
             addShippingCompletionTicker(shipmentCartItemModel.isEligibleNewShippingExperience());
         }
+    }
+
+    @Override
+    public void resetAllCourier() {
+        shipmentAdapter.resetAllCourier();
     }
 
     @Override

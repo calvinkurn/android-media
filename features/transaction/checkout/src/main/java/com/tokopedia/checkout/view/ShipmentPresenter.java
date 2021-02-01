@@ -778,7 +778,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                        public void onError(Throwable e) {
                                            Timber.d(e);
                                            if (getView() != null) {
-                                               getView().renderErrorCheckPromoShipmentData(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                                               if (e instanceof AkamaiErrorException) {
+                                                   ShipmentPresenter.this.lastValidateUsePromoRequest = new ValidateUsePromoRequest();
+                                                   ShipmentPresenter.this.validateUsePromoRevampUiModel = null;
+                                                   getView().showToastError(e.getMessage());
+                                                   getView().resetAllCourier();
+                                                   getView().cancelAllCourierPromo();
+                                                   getView().doResetButtonPromoCheckout();
+                                               } else {
+                                                   getView().renderErrorCheckPromoShipmentData(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                                               }
                                            }
                                        }
 
@@ -1128,6 +1137,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 if (getView() != null) {
                                     if (e instanceof CheckPromoCodeException) {
                                         getView().showToastError(e.getMessage());
+                                    } else if (e instanceof AkamaiErrorException) {
+                                        getView().showToastError(e.getMessage());
+                                        getView().resetCourier(itemPosition);
                                     } else {
                                         getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                                     }
@@ -1663,9 +1675,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     getView().hideLoading();
                                     getView().setHasRunningApiCall(false);
                                     Timber.d(e);
-                                    getView().showToastError(
-                                            ErrorHandler.getErrorMessage(getView().getActivityContext(), e)
-                                    );
+                                    String errorMessage;
+                                    if (e instanceof AkamaiErrorException) {
+                                        errorMessage = e.getMessage();
+                                    } else {
+                                        errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), e);
+                                    }
+                                    getView().showToastError(errorMessage);
                                     if (isHandleFallback) {
                                         getView().renderChangeAddressFailed(reloadCheckoutPage);
                                     }

@@ -24,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.*
@@ -44,6 +45,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -386,7 +388,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let { v ->
                         var message = it.errorMessage
                         if (message.isBlank() && it.throwable != null) {
-                            message = ErrorHandler.getErrorMessage(context, it.throwable)
+                            message = if (it.throwable is AkamaiErrorException) {
+                                it.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE
+                            } else {
+                                ErrorHandler.getErrorMessage(context, it.throwable)
+                            }
                         }
                         if (message.isNotBlank()) {
                             Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
@@ -400,7 +406,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let { v ->
                         var message = it.errorMessage
                         if (message.isBlank()) {
-                            message = ErrorHandler.getErrorMessage(context, it.throwable)
+                            message = if (it.throwable is AkamaiErrorException) {
+                                it.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE
+                            } else {
+                                ErrorHandler.getErrorMessage(context, it.throwable)
+                            }
                         }
                         Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
                     }
@@ -1249,7 +1259,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.build(it, throwable?.message
+                    var message = throwable?.message
+                    if (throwable !is AkamaiErrorException) {
+                        message = ErrorHandler.getErrorMessage(it.context, throwable)
+                    }
+                    Toaster.build(it, message
                             ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
                 }
             }
@@ -1289,6 +1303,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let {
                         showAtcGlobalError(GlobalError.SERVER_ERROR)
                     }
+                }
+            }
+            if (atcError.throwable is AkamaiErrorException) {
+                view?.let {
+                    Toaster.build(it, atcError.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                 }
             }
         } else {

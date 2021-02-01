@@ -837,6 +837,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     }
 
     private fun setApplyPromoStateFailed(throwable: Throwable) {
+        // Initialize response action state if needed
+        initApplyPromoResponseAction()
         applyPromoResponseAction.value?.let {
             it.state = ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR
             it.exception = throwable

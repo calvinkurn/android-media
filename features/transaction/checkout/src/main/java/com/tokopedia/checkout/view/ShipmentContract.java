@@ -136,11 +136,15 @@ public interface ShipmentContract {
 
         void updateButtonPromoCheckout(PromoUiModel promoUiModel);
 
+        void doResetButtonPromoCheckout();
+
         void resetCourier(ShipmentCartItemModel shipmentCartItemModel);
 
         void setHasRunningApiCall(boolean hasRunningApiCall);
 
         void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc);
+
+        void resetAllCourier();
     }
 
     interface AnalyticsActionListener {

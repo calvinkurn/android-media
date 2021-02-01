@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -706,6 +707,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             toolbar?.hideResetButton()
             fragmentUiModel.uiData.exception?.let {
                 layoutGlobalError?.setType(getGlobalErrorType(it))
+                if (it is AkamaiErrorException) {
+                    showToastMessage(it)
+                }
             }
             layoutGlobalError?.setActionClickListener { view ->
                 analytics.eventClickCobaLagi(viewModel.getPageSource())
@@ -791,19 +795,19 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         return false
     }
 
-    fun showToastMessage(message: String) {
+    private fun showToastMessage(message: String) {
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            Toaster.build(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
     }
 
-    fun showToastMessage(throwable: Throwable) {
+    private fun showToastMessage(throwable: Throwable) {
         showToastMessage(getErrorMessage(throwable))
     }
 
     private fun getErrorMessage(throwable: Throwable): String {
         var errorMessage = throwable.message
-        if (throwable !is PromoErrorException) errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        if (throwable !is PromoErrorException && throwable !is AkamaiErrorException) errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         if (errorMessage.isNullOrBlank()) {
             errorMessage = getString(R.string.label_error_global_promo_checkout)
         }

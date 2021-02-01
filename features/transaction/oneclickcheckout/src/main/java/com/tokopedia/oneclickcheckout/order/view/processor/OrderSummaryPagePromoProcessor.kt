@@ -31,8 +31,8 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                                          private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                          private val executorDispatchers: ExecutorDispatchers) {
 
-    suspend fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest, lastValidateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<Boolean, ValidateUsePromoRevampUiModel?> {
-        if (!hasPromo(validateUsePromoRequest)) return true to null
+    suspend fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest, lastValidateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<Throwable?, ValidateUsePromoRevampUiModel?> {
+        if (!hasPromo(validateUsePromoRequest)) return null to null
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
@@ -52,9 +52,9 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 } else if (lastValidateUsePromoRevampUiModel != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastValidateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
                     orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
                 }
-                return@withContext true to result
+                return@withContext null to result
             } catch (t: Throwable) {
-                return@withContext false to null
+                return@withContext (t.cause ?: t) to null
             }
         }
         OccIdlingResource.decrement()

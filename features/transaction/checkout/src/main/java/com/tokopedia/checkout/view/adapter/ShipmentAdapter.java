@@ -520,6 +520,26 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(cartPosition);
     }
 
+    public void resetAllCourier() {
+        boolean eligibleNewShippingExperience = false;
+        for (int position = 0; position < shipmentDataList.size(); position++) {
+            if (shipmentDataList.get(position) instanceof ShipmentCartItemModel) {
+                ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(position);
+                if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                    shipmentCartItemModel.setSelectedShipmentDetailData(null);
+                    shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
+                    updateShipmentCostModel();
+                    updateInsuranceTncVisibility();
+                    notifyItemChanged(position);
+                    eligibleNewShippingExperience = shipmentCartItemModel.isEligibleNewShippingExperience();
+                }
+            }
+        }
+        if (eligibleNewShippingExperience) {
+            updateShippingCompletionTickerVisibility();
+        }
+    }
+
     public RecipientAddressModel getAddressShipmentData() {
         return recipientAddressModel;
     }

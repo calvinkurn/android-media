@@ -508,16 +508,21 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.main) {
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
-            val (isSuccess, resultValidateUse) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel)
-            if (!isSuccess) {
-                orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
-                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-            } else if (resultValidateUse != null) {
-                validateUsePromoRevampUiModel = resultValidateUse
-                updatePromoState(resultValidateUse.promoUiModel)
-            } else {
-                orderPromo.value = orderPromo.value.copy(state = OccButtonState.NORMAL)
-                calculateTotal(forceButtonState = OccButtonState.NORMAL)
+            val (error, resultValidateUse) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel)
+            when {
+                error != null -> {
+                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+                    globalEvent.value = OccGlobalEvent.Error(error)
+                }
+                resultValidateUse != null -> {
+                    validateUsePromoRevampUiModel = resultValidateUse
+                    updatePromoState(resultValidateUse.promoUiModel)
+                }
+                else -> {
+                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.NORMAL)
+                    calculateTotal(forceButtonState = OccButtonState.NORMAL)
+                }
             }
         }
     }
