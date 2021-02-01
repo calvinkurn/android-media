@@ -37,8 +37,9 @@
         android:id="@+id/btnSpecification"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl5"
-        android:layout_marginHorizontal="@dimen/spacing_lvl4"
-        android:layout_marginVertical="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:text="@string/action_specification_save"
         android:enabled="false"
         app:layout_constraintBottom_toBottomOf="parent" />
