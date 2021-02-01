@@ -33,11 +33,11 @@ data class FintechProduct(
 
         @SerializedName("fintech_amount")
         @Expose
-        var fintechAmount: Long = 0,
+        var fintechAmount: Double = 0.0,
 
         @SerializedName("fintech_partner_amount")
         @Expose
-        var fintechPartnerAmount: Long = 0,
+        var fintechPartnerAmount: Double = 0.0,
 
         @SerializedName("info")
         @Expose

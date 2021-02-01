@@ -36,7 +36,7 @@ data class AttributesCart(
 
         @SerializedName("price_plain")
         @Expose
-        var pricePlain: Long = 0,
+        var pricePlain: Double = 0.0,
 
         @SerializedName("instant_checkout")
         @Expose
@@ -110,11 +110,11 @@ data class AttributesCart(
 
             @SerializedName("min_payment_plain")
             @Expose
-            var minPaymentPlain: Long = 0,
+            var minPaymentPlain: Double = 0.0,
 
             @SerializedName("max_payment_plain")
             @Expose
-            var maxPaymentPlain: Long = 0
+            var maxPaymentPlain: Double = 0.0
     )
 
     data class InfoDetail(

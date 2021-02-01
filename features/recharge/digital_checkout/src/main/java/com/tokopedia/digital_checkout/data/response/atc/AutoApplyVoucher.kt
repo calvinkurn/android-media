@@ -18,7 +18,7 @@ data class AutoApplyVoucher (
 
     @SerializedName("discount_amount")
     @Expose
-    var discountAmount: Long = 0,
+    var discountAmount: Double = 0.0,
 
     @SerializedName("title_description")
     @Expose

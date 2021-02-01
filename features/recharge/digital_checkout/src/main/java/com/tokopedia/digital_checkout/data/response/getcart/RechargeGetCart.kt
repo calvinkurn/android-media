@@ -42,7 +42,7 @@ data class RechargeGetCart(
 
         @SerializedName("price")
         @Expose
-        val price: Long = 0,
+        val price: Double = 0.0,
 
         @SerializedName("is_instant_checkout")
         @Expose
@@ -129,11 +129,11 @@ data class RechargeGetCart(
     data class OpenPaymentConfig(
             @SerializedName("min_payment")
             @Expose
-            val minPayment: Long = 0,
+            val minPayment: Double = 0.0,
 
             @SerializedName("max_payment")
             @Expose
-            val maxPayment: Long = 0,
+            val maxPayment: Double = 0.0,
 
             @SerializedName("min_payment_text")
             @Expose

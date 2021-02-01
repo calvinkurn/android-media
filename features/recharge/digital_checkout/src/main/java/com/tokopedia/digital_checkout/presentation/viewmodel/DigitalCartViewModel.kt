@@ -81,8 +81,8 @@ class DigitalCartViewModel @Inject constructor(
     val isSuccessCancelVoucherCart: LiveData<Result<Boolean>>
         get() = _isSuccessCancelVoucherCart
 
-    private val _totalPrice = MutableLiveData<Long>()
-    val totalPrice: LiveData<Long>
+    private val _totalPrice = MutableLiveData<Double>()
+    val totalPrice: LiveData<Double>
         get() = _totalPrice
 
     private val _showContentCheckout = MutableLiveData<Boolean>()
@@ -164,7 +164,7 @@ class DigitalCartViewModel @Inject constructor(
                 _showLoading.postValue(false)
                 _cartDigitalInfoData.postValue(mappedCartData)
                 _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
-                _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0)
+                _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
             }
         }
     }
@@ -205,7 +205,7 @@ class DigitalCartViewModel @Inject constructor(
                     _showLoading.postValue(false)
                     _cartDigitalInfoData.postValue(mappedCartData)
                     _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
-                    _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0)
+                    _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
                 }
             }
         }
@@ -279,9 +279,8 @@ class DigitalCartViewModel @Inject constructor(
             val items: MutableList<CartItemDigital> = ArrayList()
             items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PRICE, cartDigitalInfoData.value?.attributes?.price ?: ""))
             items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PROMO, String.format("-%s", getStringIdrFormat(promoData.amount.toDouble()))))
-            val totalPayment: Long = (cartDigitalInfoData.value?.attributes?.pricePlain
-                    ?: 0L) - promoData.amount.toLong()
-            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_TOTAL_PAYMENT, getStringIdrFormat(totalPayment.toDouble())))
+            val totalPayment = (cartDigitalInfoData.value?.attributes?.pricePlain ?: 0.0) - promoData.amount.toDouble()
+            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_TOTAL_PAYMENT, getStringIdrFormat(totalPayment)))
             val cartAdditionalInfo = CartItemDigitalWithTitle(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT, items)
             additionals.add(cartAdditionalInfo)
             _cartAdditionalInfoList.value = additionals
@@ -312,21 +311,21 @@ class DigitalCartViewModel @Inject constructor(
             var totalPrice = attributes.pricePlain
             if (isChecked) {
                 val fintechProductPrice = attributes.fintechProduct?.getOrNull(0)?.fintechAmount
-                        ?: 0
+                        ?: 0.0
                 totalPrice += fintechProductPrice
             }
             _totalPrice.value = totalPrice
         }
     }
 
-    fun setTotalPrice(totalPrice: Long) {
+    fun setTotalPrice(totalPrice: Double) {
         _totalPrice.postValue(totalPrice)
     }
 
     fun proceedToCheckout(promoCode: String, digitalIdentifierParam: RequestBodyIdentifier) {
         val cartDigitalInfoData = _cartDigitalInfoData.value
         cartDigitalInfoData?.let {
-            requestCheckoutParam.transactionAmount = _totalPrice.value ?: 0
+            requestCheckoutParam.transactionAmount = _totalPrice.value ?: 0.0
             requestCheckoutParam.voucherCode = promoCode
 
             _showLoading.postValue(true)

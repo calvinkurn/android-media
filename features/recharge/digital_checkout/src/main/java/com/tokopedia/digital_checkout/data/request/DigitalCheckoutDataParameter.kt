@@ -6,7 +6,7 @@ package com.tokopedia.digital_checkout.data.request
 class DigitalCheckoutDataParameter (
         var voucherCode: String? = null,
         var cartId: String? = null,
-        var transactionAmount: Long = 0,
+        var transactionAmount: Double = 0.0,
         var ipAddress: String? = null,
         var userAgent: String? = null,
         var accessToken: String? = null,

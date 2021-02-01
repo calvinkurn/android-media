@@ -296,10 +296,10 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     }
 
     private fun getPromoDigitalModel(): PromoDigitalModel? {
-        var price: Long = getCartDigitalInfoData().attributes?.pricePlain ?: 0
+        var price: Double = getCartDigitalInfoData().attributes?.pricePlain ?: 0.0
 
         if (inputPriceContainer.visibility == View.VISIBLE) {
-            price = inputPriceHolderView.getPriceInput()
+            price = inputPriceHolderView.getPriceInput().toDouble()
         }
 
         return PromoDigitalModel(cartPassData?.categoryId?.toIntOrNull() ?: 0,
@@ -307,7 +307,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                 getOperatorName(),
                 getProductId(),
                 cartPassData?.clientNumber ?: "",
-                price
+                price.toLong()
         )
     }
 
@@ -488,7 +488,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         inputPriceHolderView.setMinMaxPayment(total ?: "", userInputPriceDigital.minPaymentPlain,
                 userInputPriceDigital.maxPaymentPlain)
         inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
-            override fun onInputPriceByUserFilled(paymentAmount: Long) {
+            override fun onInputPriceByUserFilled(paymentAmount: Double) {
                 viewModel.setTotalPrice(paymentAmount)
             }
 

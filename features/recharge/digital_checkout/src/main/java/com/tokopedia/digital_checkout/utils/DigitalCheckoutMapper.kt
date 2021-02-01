@@ -61,9 +61,9 @@ object DigitalCheckoutMapper {
                 if (attributes.userInputPrice != null) {
                     val userInputPriceDigital = AttributesDigitalData.UserInputPriceDigital()
                     userInputPriceDigital.maxPaymentPlain = attributes.userInputPrice?.maxPaymentPlain
-                            ?: 0
+                            ?: 0.0
                     userInputPriceDigital.minPaymentPlain = attributes.userInputPrice?.minPaymentPlain
-                            ?: 0
+                            ?: 0.0
                     userInputPriceDigital.minPayment = attributes.userInputPrice?.minPayment
                     userInputPriceDigital.maxPayment = attributes.userInputPrice?.maxPayment
                     attributesDigital.userInputPrice = userInputPriceDigital
@@ -184,7 +184,7 @@ object DigitalCheckoutMapper {
                 attributesDigital.voucherAutoCode = attributes.voucher
 
                 val userInputPrice = responseRechargeGetCart.response.openPaymentConfig
-                if (userInputPrice.maxPayment != 0L && userInputPrice.minPayment != 0L) {
+                if (userInputPrice.maxPayment != 0.0 && userInputPrice.minPayment != 0.0) {
                     val userInputPriceDigital = AttributesDigitalData.UserInputPriceDigital()
                     userInputPriceDigital.maxPaymentPlain = userInputPrice.maxPayment
                     userInputPriceDigital.minPaymentPlain = userInputPrice.minPayment
@@ -281,7 +281,7 @@ object DigitalCheckoutMapper {
         digitalCheckoutDataParameter.relationId = cartDigitalInfoData.id
         digitalCheckoutDataParameter.relationType = cartDigitalInfoData.type
         digitalCheckoutDataParameter.transactionAmount = cartDigitalInfoData.attributes?.pricePlain
-                ?: 0
+                ?: 0.0
         digitalCheckoutDataParameter.userAgent = DeviceUtil.userAgentForApiCall
         digitalCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
         return digitalCheckoutDataParameter
@@ -295,7 +295,7 @@ object DigitalCheckoutMapper {
 
         val attributes = RequestBodyCheckout.AttributesCheckout()
         attributes.voucherCode = checkoutData.voucherCode
-        attributes.transactionAmount = checkoutData.transactionAmount
+        attributes.transactionAmount = checkoutData.transactionAmount.toLong()
         attributes.ipAddress = checkoutData.ipAddress
         attributes.userAgent = checkoutData.userAgent
         attributes.identifier = digitalIdentifierParam
@@ -317,8 +317,8 @@ object DigitalCheckoutMapper {
                         transactionType = transactionType,
                         tierId = tierId,
                         userId = attributes.identifier?.userId?.toLongOrNull(),
-                        fintechAmount = fintechAmount,
-                        fintechPartnerAmount = fintechPartnerAmount,
+                        fintechAmount = fintechAmount.toLong(),
+                        fintechPartnerAmount = fintechPartnerAmount.toLong(),
                         productName = info.title
                 ))
             }
