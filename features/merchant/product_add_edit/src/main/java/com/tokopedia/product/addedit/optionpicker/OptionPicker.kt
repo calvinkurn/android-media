@@ -17,11 +17,9 @@ import com.tokopedia.product.addedit.optionpicker.adapter.OptionTypeFactory
 import com.tokopedia.product.addedit.optionpicker.model.OptionModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipDividerItemDecoration
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.add_edit_product_specification_data_bottom_sheet_content.*
+import kotlinx.android.synthetic.main.bottom_sheet_list.*
 import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
-import kotlinx.android.synthetic.main.bottom_sheet_list.view.searchBarData
 import java.util.*
-import kotlin.collections.ArrayList
 
 class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
     private var selectedPosition: Int = -1
@@ -30,11 +28,13 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
     private var isDividerVisible: Boolean = false
     private var isSearchable: Boolean = false
     private var listAdapter: BaseListAdapter<OptionModel, OptionTypeFactory>? = null
+    private var tempSearchData: List<OptionModel> = mutableListOf()
 
     init {
         val optionTypeFactory = OptionTypeFactory()
         optionTypeFactory.setOnItemClickListener(this)
         listAdapter = BaseListAdapter(optionTypeFactory)
+        isKeyboardOverlap = false
         setCloseClickListener {
             dismiss()
         }
@@ -93,11 +93,12 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
         searchBarData.searchBarPlaceholder = getString(R.string.label_specification_search) +
                 " " + bottomSheetTitle.text.toString().toLowerCase(locale)
         searchBarData.searchBarTextField.afterTextChanged { text ->
-            val filteredElements = listAdapter?.data?.filter {
-                it.text.toLowerCase(locale).startsWith(text)
-            }.orEmpty()
+            val filteredElements = tempSearchData.filter {
+                it.text.startsWith(text, ignoreCase = true)
+            }
             listAdapter?.setElements(filteredElements)
         }
+        isFullpage = true
     }
 
     private fun initChildLayout() {
@@ -124,6 +125,8 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
         data.forEachIndexed { index, it ->
             listAdapter?.addElement(OptionModel(it, index == selectedPosition))
         }
+        tempSearchData = listAdapter?.data.orEmpty()
+
     }
 
     fun setSelectedPosition(selectedPosition: Int){

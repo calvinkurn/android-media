@@ -41,6 +41,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.logisticCommon)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.features.youtubeCommon)
+
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -63,8 +66,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
     implementation rootProject.ext.miscDependencies.navigationUiKtx
-    implementation project(rootProject.ext.features.youtubeCommon)
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockitorCore
@@ -79,6 +81,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 
     implementation (rootProject.ext.firebase.crashlytics) {

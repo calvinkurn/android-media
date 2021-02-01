@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,14 +16,18 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT_MODEL
+import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.di.DaggerAddEditProductSpecificationComponent
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.presentation.adapter.SpecificationValueAdapter
+import com.tokopedia.product.addedit.specification.presentation.dialog.NewUserSpecificationBottomSheet
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.specification.presentation.viewmodel.AddEditProductSpecificationViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -73,14 +78,36 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // set bg color programatically, to reduce overdraw
+        requireActivity().window.decorView.setBackgroundColor(getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+
         // setup UI
         setupToolbarActions()
         setupSubmitButton()
+        setupTicker()
 
         // setup observers
         observeProductInputModel()
         observeAnnotationCategoryData()
         observeErrorMessage()
+    }
+
+    private fun setupTicker() {
+        val isInfoDisplayed = SharedPreferencesUtil.getFirstTimeSpecification(requireActivity())
+        val htmlDescription = getString(R.string.label_info_specification)
+        val newUserSpecificationBottomSheet = NewUserSpecificationBottomSheet()
+        newUserSpecificationBottomSheet.setOnDismissListener {
+            SharedPreferencesUtil.setFirstTimeSpecification(requireActivity(), true)
+        }
+
+        tickerSpecification.setHtmlDescription(htmlDescription)
+        tickerSpecification.setOnClickListener {
+            newUserSpecificationBottomSheet.show(requireFragmentManager())
+        }
+
+        if (!isInfoDisplayed) {
+            newUserSpecificationBottomSheet.show(requireFragmentManager())
+        }
     }
 
     private fun observeProductInputModel() {
@@ -101,6 +128,8 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         viewModel.annotationCategoryData.observe(viewLifecycleOwner, Observer {
             val itemSelected = viewModel.getItemSelected(it)
             setupSpecificationAdapter(it, itemSelected)
+            loaderSpecification.gone()
+            btnSpecification.isEnabled = true
         })
     }
 
@@ -111,11 +140,12 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
                 activity?.finish()
             }
             actionTextView?.setOnClickListener {
-                //showRemoveSpecificationDialog()
+                viewModel.removeSpecification()
             }
             actionTextView?.text = getString(R.string.title_specification_activity_action)
             tvDeleteAll = actionTextView
             tvDeleteAll?.isEnabled = false
+            tvDeleteAll?.visible()
         }
     }
 
@@ -124,6 +154,10 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         rvSpecification.adapter = specificationValueAdapter
         setRecyclerViewToVertical(rvSpecification)
         specificationValueAdapter?.setData(annotationCategoryData, itemSelected)
+        tvDeleteAll?.isEnabled = viewModel.getHasSpecification(itemSelected)
+        specificationValueAdapter?.showOnSpecificationChanged {
+            tvDeleteAll?.isEnabled = viewModel.getHasSpecification(it)
+        }
     }
 
     private fun setupSubmitButton() {

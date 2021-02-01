@@ -19,6 +19,7 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
     private var items: MutableList<AnnotationCategoryData> = mutableListOf()
     private var itemsSelected: MutableList<SpecificationInputModel> = mutableListOf()
     private var mContext: Context? = null
+    private var onSpecificationChanged: (itemsSelected: List<SpecificationInputModel>) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpecificationValueViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_specification_value, parent, false)
@@ -47,6 +48,7 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
             it.id = ""
             it.data = ""
         }
+        onSpecificationChanged(itemsSelected)
     }
 
     fun setData(items: List<AnnotationCategoryData>) {
@@ -71,6 +73,7 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
             data = itemData
             notifyItemChanged(position)
         }
+        onSpecificationChanged(itemsSelected)
     }
 
     fun getData(position: Int): AnnotationCategoryData {
@@ -83,6 +86,10 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
 
     fun getDataSelectedList(): List<SpecificationInputModel> {
         return itemsSelected
+    }
+
+    fun showOnSpecificationChanged(onChanged: (itemsSelected: List<SpecificationInputModel>) -> Unit) {
+        onSpecificationChanged = onChanged
     }
 
     private fun showSpecificationOption(title: String, annotationData: List<Values>, selectedId: String, adapterPosition: Int) {

@@ -323,6 +323,11 @@
     <string name="label_product_specification">Spesifikasi</string>
     <string name="label_product_specification_tips">Tambah keterangan secara rinci supaya produkmu makin mudah dikenali pembeli.</string>
     <string name="label_refresh_specification">Data tidak berhasil ditampilkan,\nklik <b>Muat Ulang</b> untuk coba lagi</string>
+    <string name="label_info_specification">Pelajari tentang Spesifikasi <![CDATA[<font color=\'#42b549\'><b>di sini</b></font>.]]></string>
+    <string name="label_specification_subtitle">Spesifikasi yang lengkap dapat bantu pembeli memilih produk sesuai kebutuhannya.</string>
+    <string name="label_specification_info_title_points">Mengapa perlu tambah Spesifikasi?</string>
+    <string name="label_specification_info_point1">Semakin besar kemungkinan produkmu muncul dalam hasil pencarian.</string>
+    <string name="label_specification_info_point2">Produk dengan Spesifikasi yang lengkap akan lebih disukai pembeli.</string>
     <string name="action_specification_save">Simpan</string>
     <string name="action_specification_add">Tambah</string>
     <string name="action_specification_change">Ubah</string>

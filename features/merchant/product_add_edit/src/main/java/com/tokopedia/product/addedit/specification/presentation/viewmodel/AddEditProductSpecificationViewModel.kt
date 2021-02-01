@@ -40,7 +40,7 @@ class AddEditProductSpecificationViewModel @Inject constructor(
             })
             mAnnotationCategoryData.value = result.data.drogonAnnotationCategoryV2.data
         }, onError = {
-            mErrorMessage.value = it.localizedMessage
+            mErrorMessage.value = it.message
         })
     }
 
@@ -64,11 +64,20 @@ class AddEditProductSpecificationViewModel @Inject constructor(
         }
     }
 
+    fun getHasSpecification(specificationList: List<SpecificationInputModel>) = specificationList.any {
+        it.id.isNotBlank()
+    }
+
     fun updateProductInputModelSpecifications(specificationList: List<SpecificationInputModel>) {
         mProductInputModel.value?.apply {
             detailInputModel.specifications = specificationList.filter {
                 it.id.isNotBlank()
             }
         }
+    }
+
+    fun removeSpecification() {
+        updateProductInputModelSpecifications(emptyList())
+        mAnnotationCategoryData.value = mAnnotationCategoryData.value // trigger observer change
     }
 }
