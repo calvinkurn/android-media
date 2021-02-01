@@ -31,7 +31,6 @@ import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -55,12 +54,12 @@ import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.LikeSource
 import com.tokopedia.play.view.uimodel.recom.PlayLikeStatusInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayStatusInfoUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.EventObserver
@@ -699,7 +698,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             getBottomSheetInstance().setState(it.isFreeze)
 
             if (it.isFreeze || it.isBanned) {
@@ -1178,12 +1177,12 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun endLiveInfoViewOnStateChanged(
-            event: EventUiModel
+            event: PlayStatusInfoUiModel
     ) {
         if(event.isFreeze) {
             endLiveInfoView.setInfo(
-                    title = event.freezeTitle,
-                    message = event.freezeMessage,
+                    title = event.freezeModel.title,
+                    message = event.freezeModel.message,
 //                    btnTitle = event.freezeButtonTitle,
 //                    btnUrl = event.freezeButtonUrl
             )

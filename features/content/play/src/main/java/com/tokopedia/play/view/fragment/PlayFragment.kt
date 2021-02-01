@@ -19,7 +19,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.ERR_STATE_SOCKET
@@ -49,13 +48,11 @@ import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.type.PiPMode
-import com.tokopedia.play.view.uimodel.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -422,11 +419,11 @@ class PlayFragment @Inject constructor(
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.isFreeze) {
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
             } else if (it.isBanned) {
-                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
+                showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)
             }
             if (it.isFreeze || it.isBanned) {
                 unregisterKeyboardListener(requireView())

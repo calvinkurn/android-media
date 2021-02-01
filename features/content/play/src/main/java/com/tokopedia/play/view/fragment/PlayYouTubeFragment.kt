@@ -185,7 +185,7 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             youtubeViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
         })
     }

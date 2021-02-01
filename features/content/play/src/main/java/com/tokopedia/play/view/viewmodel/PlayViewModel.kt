@@ -60,12 +60,6 @@ class PlayViewModel @Inject constructor(
         private val remoteConfig: RemoteConfig
 ) : PlayBaseViewModel(dispatchers.main) {
 
-    /**
-     * Not Used for Event to component
-     */
-//    val observableGetChannelInfo: LiveData<NetworkResult<ChannelInfoUiModel>>
-//        get() = _observableGetChannelInfo
-
     val observableChannelErrorEvent: LiveData<Event<Boolean>>
         get() = _observableChannelErrorEvent
     val observableLatestChannelInfo: LiveData<PlayCompleteInfoUiModel>
@@ -78,18 +72,14 @@ class PlayViewModel @Inject constructor(
         get() = _observableNewChat
     val observableChatList: LiveData<out List<PlayChatUiModel>>
         get() = _observableChatList
-//    val observableTotalLikes: LiveData<TotalLikeUiModel>
-//        get() = _observableTotalLikes
-//    val observableLikeState: LiveData<NetworkResult<LikeStateUiModel>>
-//        get() = _observableLikeState
     val observableTotalViews: LiveData<PlayTotalViewUiModel> /**Changed**/
         get() = _observableTotalViews
     val observablePartnerInfo: LiveData<PlayPartnerInfoUiModel> /**Changed**/
         get() = _observablePartnerInfo
     val observableQuickReply: LiveData<PlayQuickReplyInfoUiModel> /**Changed**/
         get() = _observableQuickReply
-    val observableEvent: LiveData<EventUiModel>
-        get() = _observableEvent
+    val observableStatusInfo: LiveData<PlayStatusInfoUiModel> /**Changed**/
+        get() = _observableStatusInfo
     val observableBottomInsetsState: LiveData<Map<BottomInsetsType, BottomInsetsState>>
         get() = _observableBottomInsetsState
     val observablePinned: LiveData<PlayPinnedUiModel>
@@ -144,7 +134,7 @@ class PlayViewModel @Inject constructor(
         }
     val isFreezeOrBanned: Boolean
         get() {
-            val event = _observableEvent.value
+            val event = _observableStatusInfo.value
             return event?.isFreeze == true || event?.isBanned == true
         }
     val partnerId: Long?
@@ -165,14 +155,6 @@ class PlayViewModel @Inject constructor(
                     videoStream = videoStream?.copy(lastMillis = playVideoPlayer.getCurrentPosition())
             )
 
-            val productSheetContent = _observableProductSheetContent.value
-            val productTagsExisting = channelData.pinnedInfo.pinnedProduct.productTags
-            val productTagsInfo = if (productSheetContent == null) productTagsExisting else {
-                val productList = if (productSheetContent is PlayResult.Success) productSheetContent.data.productList else emptyList()
-                val voucherList = if (productSheetContent is PlayResult.Success) productSheetContent.data.voucherList else emptyList()
-                PlayProductTagsUiModel.Complete(productTagsExisting.basicInfo, productList, voucherList)
-            }
-
             val pinnedMessage = _observablePinnedMessage.value ?: channelData.pinnedInfo.pinnedMessage
             val pinnedProduct = _observablePinnedProduct.value ?: channelData.pinnedInfo.pinnedProduct
 
@@ -181,14 +163,15 @@ class PlayViewModel @Inject constructor(
                     partnerInfo = _observablePartnerInfo.value ?: channelData.partnerInfo,
                     likeInfo = _observableLikeInfo.value ?: channelData.likeInfo,
                     totalViewInfo = _observableTotalViews.value ?: channelData.totalViewInfo,
-                    shareInfo = _observableShareInfo.value ?: channelData.shareInfo,
+                    shareInfo = channelData.shareInfo,
                     cartInfo = _observableCartInfo.value ?: channelData.cartInfo,
                     pinnedInfo = PlayPinnedInfoUiModel(
                             pinnedMessage = pinnedMessage,
                             pinnedProduct = pinnedProduct,
                     ),
-                    quickReplyInfo = _observableQuickReply.value ?: mChannelData?.quickReplyInfo ?: error("Quick Reply should not be null"),
-                    videoMetaInfo = newVideoMeta ?: error("Video Meta should not be null")
+                    quickReplyInfo = _observableQuickReply.value ?: channelData.quickReplyInfo,
+                    videoMetaInfo = newVideoMeta ?: channelData.videoMetaInfo,
+                    statusInfo = _observableStatusInfo.value ?: channelData.statusInfo
             )
         }
 
@@ -214,15 +197,12 @@ class PlayViewModel @Inject constructor(
 
     private val _observableLatestChannelInfo = MutableLiveData<PlayCompleteInfoUiModel>()
     private val _observableChannelErrorEvent = MutableLiveData<Event<Boolean>>()
-//    private val _observableGetChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
-//    private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
-//    private val _observableLikeState = MutableLiveData<NetworkResult<LikeStateUiModel>>()
     private val _observableTotalViews = MutableLiveData<PlayTotalViewUiModel>() /**Changed**/
     private val _observablePartnerInfo = MutableLiveData<PlayPartnerInfoUiModel>() /**Changed**/
     private val _observableQuickReply = MutableLiveData<PlayQuickReplyInfoUiModel>() /**Changed**/
-    private val _observableEvent = MutableLiveData<EventUiModel>()
+    private val _observableStatusInfo = MutableLiveData<PlayStatusInfoUiModel>() /**Changed**/
     private val _observablePinnedMessage = MutableLiveData<PlayPinnedUiModel.PinnedMessage>()
     private val _observablePinnedProduct = MutableLiveData<PlayPinnedUiModel.PinnedProduct>() /**Changed**/
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
@@ -252,7 +232,7 @@ class PlayViewModel @Inject constructor(
                     productSheetResult = it
             )
         }
-        addSource(observableEvent) {
+        addSource(observableStatusInfo) {
             if (it.isFreeze || it.isBanned) doOnForbidden()
         }
     }
@@ -276,8 +256,8 @@ class PlayViewModel @Inject constructor(
     private val channelStateListener = object : PlayViewerChannelStateListener {
         override fun onChannelFreezeStateChanged(shouldFreeze: Boolean) {
             scope.launch(dispatchers.immediate) {
-                val value = _observableEvent.value
-                value?.let { _observableEvent.value = it.copy(isFreeze = shouldFreeze) }
+                val value = _observableStatusInfo.value
+                value?.let { _observableStatusInfo.value = it.copy(isFreeze = shouldFreeze) }
             }
         }
     }
@@ -511,6 +491,7 @@ class PlayViewModel @Inject constructor(
 
     fun createPage(channelData: PlayChannelData) {
         mChannelData = channelData
+        handleStatusInfo(channelData.statusInfo)
         handlePartnerInfo(channelData.partnerInfo)
         handleVideoMetaInfo(channelData.videoMetaInfo)
         handleShareInfo(channelData.shareInfo)
@@ -563,7 +544,7 @@ class PlayViewModel @Inject constructor(
 
                 val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
                         channel = channel,
-                        isBanned = _observableEvent.value?.isBanned ?: false,
+                        isBanned = _observableStatusInfo.value?.isBanned ?: false,
                         exoPlayer = playVideoPlayer.videoPlayer
                 )
                 _observableLatestChannelInfo.value = completeInfoUiModel
@@ -575,7 +556,7 @@ class PlayViewModel @Inject constructor(
 //                _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
 //                _observableQuickReply.value = completeInfoUiModel.quickReply
 //                _observableVideoMeta.value = VideoMetaUiModel(completeInfoUiModel.videoPlayer, completeInfoUiModel.videoStream)
-                _observableEvent.value = completeInfoUiModel.event
+//                _observableStatusInfo.value = completeInfoUiModel.event
 
                 if (!isActive) return@launchCatchError
 
@@ -734,7 +715,7 @@ class PlayViewModel @Inject constructor(
                     }
                     is BannedFreeze -> {
                         if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
-                            _observableEvent.value = _observableEvent.value?.copy(
+                            _observableStatusInfo.value = _observableStatusInfo.value?.copy(
                                     isBanned = result.isBanned && result.userId.isNotEmpty()
                                             && result.userId.equals(userSession.userId, true))
 
@@ -791,6 +772,10 @@ class PlayViewModel @Inject constructor(
     /**
      * Handle existing channel data
      */
+    private fun handleStatusInfo(statusInfo: PlayStatusInfoUiModel) {
+        _observableStatusInfo.value = statusInfo
+    }
+
     private fun handlePartnerInfo(partnerInfo: PlayPartnerInfoUiModel) {
         _observablePartnerInfo.value = partnerInfo
     }

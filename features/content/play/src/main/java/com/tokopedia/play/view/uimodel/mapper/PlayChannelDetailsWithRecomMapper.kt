@@ -37,6 +37,7 @@ class PlayChannelDetailsWithRecomMapper(
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = mapVideoMeta(it.video, it.config, it.isLive),
+                    statusInfo = mapChannelStatusInfo(it.config, it.title)
 //                    miscConfigInfo = mapMiscConfigInfo(it.config),
             )
         }
@@ -147,6 +148,34 @@ class PlayChannelDetailsWithRecomMapper(
             backgroundUrl = configResponse.roomBackground.imageUrl,
             isActive = configResponse.active,
             lastMillis = null
+    )
+
+    private fun mapChannelStatusInfo(
+            configResponse: ChannelDetailsWithRecomResponse.Config,
+            title: String
+    ) = PlayStatusInfoUiModel(
+            isBanned = false,
+            isFreeze = !configResponse.active || configResponse.freezed,
+            bannedModel = mapBannedModel(configResponse.bannedData),
+            freezeModel = mapFreezeModel(configResponse.freezeData, title),
+    )
+
+    private fun mapBannedModel(
+            bannedDataResponse: ChannelDetailsWithRecomResponse.BannedData
+    ) = PlayBannedUiModel(
+            title = bannedDataResponse.title,
+            message = bannedDataResponse.message,
+            btnTitle = bannedDataResponse.buttonText
+    )
+
+    private fun mapFreezeModel(
+            freezeDataResponse: ChannelDetailsWithRecomResponse.FreezeData,
+            title: String
+    ) = PlayFreezeUiModel(
+            title = String.format(freezeDataResponse.title, title),
+            message = freezeDataResponse.desc,
+            btnTitle = freezeDataResponse.buttonText,
+            btnUrl = freezeDataResponse.buttonAppLink
     )
 
     private fun mapMiscConfigInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayMiscConfigUiModel(

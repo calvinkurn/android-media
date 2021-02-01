@@ -41,6 +41,7 @@ data class PlayChannelData(
         val pinnedInfo: PlayPinnedInfoUiModel,
         val quickReplyInfo: PlayQuickReplyInfoUiModel,
         val videoMetaInfo: PlayVideoMetaInfoUiModel,
+        val statusInfo: PlayStatusInfoUiModel
 )
 
 //sealed class PlayChannelData {

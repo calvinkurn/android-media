@@ -312,7 +312,7 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.isFreeze || it.isBanned) {
                 oneTapView.hide()
             }
