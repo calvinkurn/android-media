@@ -31,6 +31,7 @@ class WidgetNotificationViewHolder constructor(
     private val thumbnail: ImageView? = itemView?.findViewById(R.id.iv_product_thumbnail)
     private val widgetTitle: Typography? = itemView?.findViewById(R.id.tp_widget_title)
     private val widgetDesc: Typography? = itemView?.findViewById(R.id.tp_widget_desc)
+    private val widgetDescSingle: Typography? = itemView?.findViewById(R.id.tp_widget_desc_single)
     private val widgetCta: Typography? = itemView?.findViewById(R.id.tp_cta)
     private val message: Typography? = itemView?.findViewById(R.id.tp_message)
     private val progressIndicator: Group? = itemView?.findViewById(
@@ -67,6 +68,7 @@ class WidgetNotificationViewHolder constructor(
         bindThumbnailHeight(element)
         bindThumbnail(element)
         bindWidgetTitle(element)
+        bindWidgetDescSingle(element)
         bindWidgetDesc(element)
         bindWidgetCta(element)
         bindMessage(element)
@@ -117,6 +119,12 @@ class WidgetNotificationViewHolder constructor(
 
     private fun bindWidgetTitle(element: NotificationUiModel) {
         widgetTitle?.text = element.widgetTitleHtml
+    }
+
+    private fun bindWidgetDescSingle(element: NotificationUiModel) {
+        widgetDescSingle?.shouldShowWithAction(element.hasSingleLineDesc()) {
+            widgetDescSingle.text = element.widgetDescHtml
+        }
     }
 
     private fun bindWidgetDesc(element: NotificationUiModel) {

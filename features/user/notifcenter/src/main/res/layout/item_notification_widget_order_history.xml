@@ -59,18 +59,39 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_widget_title"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_8"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_96"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@+id/tp_widget_desc"
             app:layout_constraintEnd_toStartOf="@+id/tp_cta"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/iv_product_thumbnail"
             app:layout_constraintTop_toTopOf="@+id/iv_product_thumbnail"
             app:typographyType="body_3"
             tools:text="Kursi putih cantik ala modern min asdf asdf sdf asdf asdf"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tp_widget_desc_single"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_96"
+            android:visibility="gone"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@+id/tp_widget_title"
+            app:layout_constraintEnd_toStartOf="@+id/tp_cta"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tp_widget_title"
+            app:layout_constraintTop_toTopOf="@+id/tp_widget_title"
+            app:typographyType="body_3"
+            tools:text="+3 Lainya"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -98,6 +119,7 @@
             android:paddingStart="@dimen/unify_space_12"
             android:paddingEnd="@dimen/unify_space_12"
             android:textColor="@color/Unify_G500"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

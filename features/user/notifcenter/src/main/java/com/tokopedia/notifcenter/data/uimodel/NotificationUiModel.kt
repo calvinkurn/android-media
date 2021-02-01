@@ -87,14 +87,17 @@ data class NotificationUiModel(
             time = Date(expireTimeUnix * 1000)
         }
     }
+
     @delegate:Transient
     val widgetTitleHtml: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
         MethodChecker.fromHtml(widget.title)
     }
+
     @delegate:Transient
     val widgetDescHtml: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
         MethodChecker.fromHtml(widget.description)
     }
+
     @delegate:Transient
     val widgetMessage: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
         MethodChecker.fromHtml(widget.message)
@@ -164,6 +167,10 @@ data class NotificationUiModel(
 
     fun isMultiLineWidget(): Boolean {
         return widgetType == WIDGET_MULTIPLE
+    }
+
+    fun hasSingleLineDesc(): Boolean {
+        return isSingleLineWidget() && widget.description.isNotEmpty()
     }
 
     companion object {
