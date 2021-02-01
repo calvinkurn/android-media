@@ -167,7 +167,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
      * common_network with use case RestRequestSupportInterceptorUseCase
      */
     public void addRestSupportInterceptor(Interceptor interceptor) {
-        NetworkClient.reInitRetrofitWithInterceptors(Collections.singletonList(interceptor), this);
+        NetworkClient.getApiInterfaceCustomInterceptor(Collections.singletonList(interceptor), this);
     }
 
     @Override
