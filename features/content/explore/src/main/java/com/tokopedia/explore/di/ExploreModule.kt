@@ -21,7 +21,7 @@ import retrofit2.Retrofit
 /**
  * @author by milhamj on 23/07/18.
  */
-@ExploreScope
+
 @Module
 class ExploreModule {
     @ExploreScope
