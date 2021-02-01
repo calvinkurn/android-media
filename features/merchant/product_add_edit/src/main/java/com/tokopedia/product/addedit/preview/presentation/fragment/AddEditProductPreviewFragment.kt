@@ -285,7 +285,7 @@ class AddEditProductPreviewFragment :
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
 
-        // action button
+        // ticker specification unavailable
         tickerAddEditProductNotification = activity?.findViewById(R.id.ticker_add_edit_product_notification)
 
         // photos
@@ -806,7 +806,7 @@ class AddEditProductPreviewFragment :
     private fun displayEditMode() {
         toolbar?.title = getString(R.string.label_title_edit_product)
         doneButton?.show()
-        tickerAddEditProductNotification?.show()
+        tickerAddEditProductNotification?.isVisible = !RollenceUtil.getSpecificationRollence()
 
         enablePhotoEdit()
         enableDetailEdit()
@@ -1404,7 +1404,8 @@ class AddEditProductPreviewFragment :
                     getString(R.string.label_for_toaster_success_set_shop_location),
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
-                    getString(R.string.label_for_action_text_toaster_success_set_shop_location)).show()
+                    getString(R.string.label_for_action_text_toaster_success_set_shop_location)
+            ).show()
         }
     }
 
