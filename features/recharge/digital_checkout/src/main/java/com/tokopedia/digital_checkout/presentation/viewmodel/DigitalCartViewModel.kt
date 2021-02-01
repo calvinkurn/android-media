@@ -32,6 +32,8 @@ import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.ResponseDataNullException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -96,6 +98,10 @@ class DigitalCartViewModel @Inject constructor(
     private val _paymentPassData = MutableLiveData<PaymentPassData>()
     val paymentPassData: LiveData<PaymentPassData>
         get() = _paymentPassData
+
+    private val _promoData = MutableLiveData<PromoData>()
+    val promoData: LiveData<PromoData>
+        get() = _promoData
 
     var requestCheckoutParam = DigitalCheckoutDataParameter()
 
@@ -205,6 +211,7 @@ class DigitalCartViewModel @Inject constructor(
                     _showLoading.postValue(false)
                     _cartDigitalInfoData.postValue(mappedCartData)
                     _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
+                    _promoData.postValue(DigitalCheckoutMapper.mapToPromoData(mappedCartData))
                     _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
                 }
             }
@@ -252,6 +259,7 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     fun cancelVoucherCart() {
+        applyPromoData(PromoData())
         cancelVoucherUseCase.execute(onSuccessCancelVoucher(), onErrorCancelVoucher())
     }
 
@@ -259,6 +267,7 @@ class DigitalCartViewModel @Inject constructor(
         return {
             if (it.response.success) {
                 _isSuccessCancelVoucherCart.postValue(Success(true))
+                applyPromoData(PromoData(state = TickerCheckoutView.State.EMPTY))
             } else {
                 _isSuccessCancelVoucherCart.postValue(Fail(Throwable("")))
             }
@@ -271,15 +280,16 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun onReceivedPromoCode(promoData: PromoData) {
-        resetVoucherCart()
-        if (promoData.amount > 0) {
+    fun onReceivedPromoCode() {
+        resetAdditionalInfoAndTotalPrice()
+        val promoDataValue = promoData.value?.amount ?: 0
+        if (promoDataValue > 0) {
             val additionals: MutableList<CartItemDigitalWithTitle> = ArrayList(_cartAdditionalInfoList.value
                     ?: listOf())
             val items: MutableList<CartItemDigital> = ArrayList()
             items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PRICE, cartDigitalInfoData.value?.attributes?.price ?: ""))
-            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PROMO, String.format("-%s", getStringIdrFormat(promoData.amount.toDouble()))))
-            val totalPayment = (cartDigitalInfoData.value?.attributes?.pricePlain ?: 0.0) - promoData.amount.toDouble()
+            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
+            val totalPayment = (cartDigitalInfoData.value?.attributes?.pricePlain ?: 0.0) - promoDataValue.toDouble()
             items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_TOTAL_PAYMENT, getStringIdrFormat(totalPayment)))
             val cartAdditionalInfo = CartItemDigitalWithTitle(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT, items)
             additionals.add(cartAdditionalInfo)
@@ -288,7 +298,7 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun resetVoucherCart() {
+    fun resetAdditionalInfoAndTotalPrice() {
         val additionalInfos = cartAdditionalInfoList.value?.toMutableList() ?: mutableListOf()
         for ((i, additionalInfo) in additionalInfos.withIndex()) {
             if (additionalInfo.title.contains(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT)) {
@@ -322,7 +332,8 @@ class DigitalCartViewModel @Inject constructor(
         _totalPrice.postValue(totalPrice)
     }
 
-    fun proceedToCheckout(promoCode: String, digitalIdentifierParam: RequestBodyIdentifier) {
+    fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier) {
+        val promoCode = promoData.value?.promoCode ?: ""
         val cartDigitalInfoData = _cartDigitalInfoData.value
         cartDigitalInfoData?.let {
             requestCheckoutParam.transactionAmount = _totalPrice.value ?: 0.0
@@ -359,6 +370,35 @@ class DigitalCartViewModel @Inject constructor(
                 _showLoading.postValue(false)
                 _paymentPassData.postValue(checkoutData)
             }
+        }
+    }
+
+    fun getPromoDigitalModel(cartPassData: DigitalCheckoutPassData?, userInputPriceAmount: Double): PromoDigitalModel {
+        val cartInfoData = cartDigitalInfoData.value ?: CartDigitalInfoData()
+        var price: Double = cartInfoData.attributes?.pricePlain ?: 0.0
+
+        if (userInputPriceAmount > 0.0) { price = userInputPriceAmount }
+
+        return PromoDigitalModel(cartPassData?.categoryId?.toIntOrNull() ?: 0,
+                cartInfoData.attributes?.categoryName ?: "",
+                cartInfoData.attributes?.operatorName ?: "",
+                cartPassData?.productId?.toIntOrNull() ?: 0,
+                cartPassData?.clientNumber ?: "",
+                price.toLong()
+        )
+    }
+
+    fun applyPromoData(promoData: PromoData) {
+        _promoData.postValue(promoData)
+        when (promoData.state) {
+            TickerCheckoutView.State.FAILED,
+            TickerCheckoutView.State.EMPTY -> {
+                resetAdditionalInfoAndTotalPrice()
+            }
+            TickerCheckoutView.State.ACTIVE -> {
+                onReceivedPromoCode()
+            }
+            else -> {}
         }
     }
 

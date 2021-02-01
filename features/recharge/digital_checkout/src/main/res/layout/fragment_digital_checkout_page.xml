@@ -49,8 +49,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/Neutral_N75"
-                android:layout_marginTop="@dimen/spacing_lvl3"
-                android:visibility="gone"/>
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:visibility="gone"
+                tools:visibility="visible"/>
 
             <LinearLayout
                 android:id="@+id/inputPriceContainer"
@@ -79,7 +80,8 @@
                     android:layout_height="1dp"
                     android:layout_marginBottom="@dimen/spacing_lvl4"
                     android:background="@color/Neutral_N75"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
 
                 <com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
                     android:id="@+id/subscriptionWidget"
@@ -173,7 +175,6 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone"
-        tools:visibility="visible"
         android:background="@color/Neutral_N0">
 
         <com.tokopedia.unifycomponents.LoaderUnify

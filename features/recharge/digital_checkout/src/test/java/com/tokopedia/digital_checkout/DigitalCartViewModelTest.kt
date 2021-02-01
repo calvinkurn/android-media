@@ -25,6 +25,7 @@ import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.ResponseDataNullException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -602,7 +603,7 @@ class DigitalCartViewModelTest {
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
-        digitalCartViewModel.proceedToCheckout("", RequestBodyIdentifier())
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
 
         // then
         val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
@@ -629,7 +630,7 @@ class DigitalCartViewModelTest {
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
-        digitalCartViewModel.proceedToCheckout("", RequestBodyIdentifier())
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
 
         // then
         val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
@@ -643,13 +644,17 @@ class DigitalCartViewModelTest {
         // given
         val promoData = PromoData()
         promoData.amount = 12000
+        promoData.promoCode = "dummyPromoCode"
+        promoData.state = TickerCheckoutView.State.ACTIVE
 
         // when
         addToCart_onSuccess()
-        digitalCartViewModel.onReceivedPromoCode(promoData)
+        digitalCartViewModel.applyPromoData(promoData)
 
         // then
         // if promo has its amount, then apply promo to total price and add additional info
+        assert(digitalCartViewModel.promoData.value?.amount == 12000)
+        assert(digitalCartViewModel.promoData.value?.promoCode == "dummyPromoCode")
         assert(digitalCartViewModel.totalPrice.value == getDummyCartData().attributes?.pricePlain ?: 0 - promoData.amount)
         assert(digitalCartViewModel.cartAdditionalInfoList.value?.size == 2)
         assert(digitalCartViewModel.cartAdditionalInfoList.value?.lastOrNull()?.title == "Pembayaran")
@@ -662,10 +667,12 @@ class DigitalCartViewModelTest {
 
         // when
         addToCart_onSuccess()
-        digitalCartViewModel.onReceivedPromoCode(promoData)
+        digitalCartViewModel.applyPromoData(promoData)
 
         // then
         // if amount == 0, then expected if total price not updated and no changes on additional info
+        assert(digitalCartViewModel.promoData.value?.amount == 0)
+        assert(digitalCartViewModel.promoData.value?.promoCode == "")
         assert(digitalCartViewModel.totalPrice.value == getDummyCartData().attributes?.pricePlain)
         assert(digitalCartViewModel.cartAdditionalInfoList.value?.size == 1)
     }
@@ -677,7 +684,7 @@ class DigitalCartViewModelTest {
 
         // when
         onRecievedPromoCode_addOnAdditionalInfoAndUpdateTotalPayment()
-        digitalCartViewModel.resetVoucherCart()
+        digitalCartViewModel.resetAdditionalInfoAndTotalPrice()
 
         // then
         assert(digitalCartViewModel.totalPrice.value == getDummyCartData().attributes?.pricePlain)

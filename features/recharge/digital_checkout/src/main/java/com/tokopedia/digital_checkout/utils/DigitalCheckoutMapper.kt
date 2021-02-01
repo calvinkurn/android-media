@@ -16,6 +16,8 @@ import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
 import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.track.TrackApp
 
 /**
@@ -23,6 +25,20 @@ import com.tokopedia.track.TrackApp
  */
 
 object DigitalCheckoutMapper {
+
+    fun mapToPromoData(cartInfo: CartDigitalInfoData): PromoData {
+        var promoData: PromoData? = null
+        cartInfo.attributes?.autoApplyVoucher?.let {
+            if (it.isSuccess && !(cartInfo.attributes?.isCouponActive == 0 && it.isCoupon == 1)) {
+                promoData = PromoData(title = it.title ?: "",
+                        description = it.messageSuccess ?: "",
+                        promoCode = it.code ?: "",
+                        typePromo = it.isCoupon,
+                        state = TickerCheckoutView.State.ACTIVE)
+            }
+        }
+        return promoData ?: PromoData()
+    }
 
     fun mapToCartDigitalInfoData(responseCartData: ResponseCartData): CartDigitalInfoData {
         try {
@@ -111,6 +127,8 @@ object DigitalCheckoutMapper {
 
             responseCartData.attributes?.run {
                 cartDigitalInfoData.crossSellingType = crossSellingType
+                cartDigitalInfoData.showSubscriptionsView = crossSellingType == DigitalCartCrossSellingType.MYBILLS.id ||
+                        crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
                 crossSellingConfig?.run {
                     val crossSellingConfig = CartDigitalInfoData.CrossSellingConfig()
                     crossSellingConfig.isSkipAble = isSkipAble
@@ -223,6 +241,8 @@ object DigitalCheckoutMapper {
 
             responseRechargeGetCart.response.run {
                 cartDigitalInfoData.crossSellingType = crossSellingType
+                cartDigitalInfoData.showSubscriptionsView = crossSellingType == DigitalCartCrossSellingType.MYBILLS.id ||
+                        crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
                 crossSellingConfig.run {
                     val crossSellingConfig = CartDigitalInfoData.CrossSellingConfig()
                     crossSellingConfig.isSkipAble = canBeSkipped
@@ -307,7 +327,8 @@ object DigitalCheckoutMapper {
             attributes.appsFlyer = DeviceUtil.getAppsFlyerIdentifierParam(
                     TrackApp.getInstance().appsFlyer.uniqueId,
                     TrackApp.getInstance().appsFlyer.googleAdId)
-        } catch (e: Throwable) { }
+        } catch (e: Throwable) {
+        }
 
         attributes.subscribe = checkoutData.isSubscriptionChecked
 
