@@ -698,6 +698,12 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         )
     }
 
+    override fun returnToSellerHome() {
+        if (GlobalConfig.isSellerApp()) {
+            RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+        }
+    }
+
     private fun onSuccessUnpinChat(element: ItemChatListPojo, position: Int) {
         adapter?.unpinChatItem(
                 element,

@@ -7,12 +7,14 @@ import androidx.annotation.StringDef
 @StringDef(
         SellerHomePermissionGroup.PRODUCT,
         SellerHomePermissionGroup.CHAT,
-        SellerHomePermissionGroup.ORDER
+        SellerHomePermissionGroup.ORDER,
+        SellerHomePermissionGroup.DEFAULT
 )
 annotation class SellerHomePermissionGroup {
     companion object {
         const val PRODUCT = "Produk"
         const val CHAT = "Chat"
         const val ORDER = "Penjualan"
+        const val DEFAULT = "ini"
     }
 }
