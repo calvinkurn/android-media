@@ -38,6 +38,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.collections.HashSet
@@ -100,9 +101,13 @@ class ChatItemListViewModel @Inject constructor(
     val isChatAdminEligible: LiveData<Result<Boolean>>
         get() = _isChatAdminEligible
 
+    private var getChatAdminAccessJob: Job? = null
+
     val chatListHasNext: Boolean get() = getChatListUseCase.hasNext
     val pinnedMsgId: HashSet<String> = HashSet()
     val unpinnedMsgId: HashSet<String> = HashSet()
+    val isAdminHasAccess: Boolean
+        get() = (_isChatAdminEligible.value as? Success)?.data == true
 
     override fun getChatListMessage(page: Int, filterIndex: Int, tab: String) {
         whenChatAdminAuthorized { isEligible ->
@@ -132,17 +137,24 @@ class ChatItemListViewModel @Inject constructor(
             if (result != null && result is Success) {
                 action(result.data)
             } else {
-                launchCatchError(
-                        block = {
-                            _isChatAdminEligible.value = withContext(Dispatchers.IO) {
-                                Success(getIsChatAdminAccessAuthorized())
-                            }
-                        },
-                        onError = {
-                            _isChatAdminEligible.value = Fail(it)
-                        }
-                )
+                setChatAdminAccessJob()
             }
+        }
+    }
+
+    private fun setChatAdminAccessJob() {
+        if (getChatAdminAccessJob?.isCompleted != false) {
+            getChatAdminAccessJob =
+                    launchCatchError(
+                            block = {
+                                _isChatAdminEligible.value = withContext(dispatcher) {
+                                    Success(getIsChatAdminAccessAuthorized())
+                                }
+                            },
+                            onError = {
+                                _isChatAdminEligible.value = Fail(it)
+                            }
+                    )
         }
     }
 
@@ -252,6 +264,7 @@ class ChatItemListViewModel @Inject constructor(
                 val request = GraphqlRequest(query, BlastSellerMetaDataResponse::class.java, emptyMap())
                 repository.getReseponse(listOf(request))
             }.getSuccessData<BlastSellerMetaDataResponse>()
+            getChatAdminAccessJob?.join()
             onSuccessLoadChatBlastSellerMetaData(data.chatBlastSellerMetadata)
         }) {
             onErrorLoadChatBlastSellerMetaData(it)
