@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +28,7 @@ class WidgetNotificationViewHolder constructor(
         private val adapterListener: NotificationAdapterListener?
 ) : BaseNotificationViewHolder(itemView, listener) {
 
+    private val widgetBox: ConstraintLayout? = itemView?.findViewById(R.id.view_notification_desc)
     private val historyBtn: Typography? = itemView?.findViewById(R.id.tp_history)
     private val thumbnail: ImageView? = itemView?.findViewById(R.id.iv_product_thumbnail)
     private val widgetTitle: Typography? = itemView?.findViewById(R.id.tp_widget_title)
@@ -42,6 +44,12 @@ class WidgetNotificationViewHolder constructor(
 
     private val height_38 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_30)
     private val height_50 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_50)
+    private val margin_4 = itemView?.context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_4
+    )
+    private val margin_8 = itemView?.context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_8
+    )
 
     init {
         initRecyclerView()
@@ -61,21 +69,26 @@ class WidgetNotificationViewHolder constructor(
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindTrackHistory(element)
+        bindWidgetBox(element)
         bindTimeLineVisibility(element)
         bindProgressIndicator(element)
         bindHistoryBtnClick(element)
-        bindProgressIndicator(element)
-        bindThumbnailHeight(element)
-        bindThumbnail(element)
-        bindWidgetTitle(element)
-        bindWidgetDescSingle(element)
-        bindWidgetDesc(element)
-        bindWidgetCta(element)
         bindMessage(element)
     }
 
     private fun bindTrackHistory(element: NotificationUiModel) {
         historyAdapter.updateHistories(element)
+    }
+
+    private fun bindWidgetBox(element: NotificationUiModel) {
+        widgetBox?.shouldShowWithAction(element.hasWidget()) {
+            bindThumbnailHeight(element)
+            bindThumbnail(element)
+            bindWidgetTitle(element)
+            bindWidgetDescSingle(element)
+            bindWidgetDesc(element)
+            bindWidgetCta(element)
+        }
     }
 
     private fun bindHistoryBtnClick(element: NotificationUiModel) {
@@ -144,8 +157,25 @@ class WidgetNotificationViewHolder constructor(
 
     private fun bindMessage(element: NotificationUiModel) {
         message?.shouldShowWithAction(element.widget.message.isNotEmpty()) {
-            message.text = element.widgetMessage
+            bindMessageMargin(element)
+            val widgetMessage = if (element.noWidgetWithTrackHistory()) {
+                element.shortDescHtml
+            } else {
+                element.widgetMessageHtml
+            }
+            message.text = widgetMessage
         }
+    }
+
+    private fun bindMessageMargin(element: NotificationUiModel) {
+        val messageLp = message?.layoutParams as? ViewGroup.MarginLayoutParams ?: return
+        val marginTop = if (element.noWidgetWithTrackHistory()) {
+            margin_4
+        } else {
+            margin_8
+        } ?: return
+        messageLp.topMargin = marginTop.toInt()
+        message.layoutParams = messageLp
     }
 
     companion object {

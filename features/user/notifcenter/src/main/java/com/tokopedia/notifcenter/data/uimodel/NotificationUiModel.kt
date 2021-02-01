@@ -99,9 +99,15 @@ data class NotificationUiModel(
     }
 
     @delegate:Transient
-    val widgetMessage: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
+    val widgetMessageHtml: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
         MethodChecker.fromHtml(widget.message)
     }
+
+    @delegate:Transient
+    val shortDescHtml: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
+        MethodChecker.fromHtml(shortDescriptionHtml)
+    }
+
     var options: Options = Options()
     val product: ProductData? get() = productData.getOrNull(0)
     val expireTimeUnixMillis: Long get() = expireTimeUnix * 1000
@@ -173,6 +179,15 @@ data class NotificationUiModel(
         return isSingleLineWidget() && widget.description.isNotEmpty()
     }
 
+    fun noWidgetWithTrackHistory(): Boolean {
+        return typeLink == TYPE_TRACK_HISTORY && widgetType == NO_WIDGET
+                && trackHistory.isNotEmpty()
+    }
+
+    fun isTrackHistory(): Boolean {
+        return typeLink == TYPE_TRACK_HISTORY
+    }
+
     companion object {
         const val STATUS_UNREAD = 1
         const val STATUS_READ = 2
@@ -181,6 +196,7 @@ data class NotificationUiModel(
         const val TYPE_BANNER = 4
         const val TYPE_BUY = 5
         const val TYPE_ATC = 3
+        const val TYPE_TRACK_HISTORY = 8
         const val TYPE_RECOM = 2
 
         const val BS_TYPE_LongerContent = 0
@@ -188,6 +204,7 @@ data class NotificationUiModel(
         const val BS_TYPE_StockHandler = 2
         const val BS_TYPE_Information = 3
 
+        const val NO_WIDGET = 0
         const val WIDGET_SINGLE = 1
         const val WIDGET_MULTIPLE = 2
     }
