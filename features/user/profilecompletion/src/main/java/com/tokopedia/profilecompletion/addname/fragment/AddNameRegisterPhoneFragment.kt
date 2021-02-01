@@ -187,8 +187,8 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
             val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
             termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0)
             termPrivacy.setSpan(privacyClickAction(), 61, 78, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.Unify_G500)), 34, 54, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.Unify_G500)), 61, 78, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
 
             bottomInfo.setText(termPrivacy, TextView.BufferType.SPANNABLE)
             bottomInfo.movementMethod = LinkMovementMethod.getInstance()

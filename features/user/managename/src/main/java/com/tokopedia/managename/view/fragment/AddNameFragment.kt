@@ -113,8 +113,8 @@ class AddNameFragment : BaseDaggerFragment() {
             val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
             termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0)
             termPrivacy.setSpan(privacyClickAction(), 61, 78, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.Unify_G500)), 34, 54, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.Unify_G500)), 61, 78, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
 
             bottom_info.setText(termPrivacy, TextView.BufferType.SPANNABLE)
             bottom_info.movementMethod = LinkMovementMethod.getInstance()

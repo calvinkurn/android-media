@@ -242,8 +242,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             SpannableString termPrivacy = new SpannableString(getString(R.string.detail_term_and_privacy));
             termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0);
             termPrivacy.setSpan(privacyClickAction(), 61, 78, 0);
-            termPrivacy.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.Unify_G500)), 34, 54, 0);
-            termPrivacy.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.Unify_G500)), 61, 78, 0);
+            termPrivacy.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0);
+            termPrivacy.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0);
 
             registerNextTAndC.setText(termPrivacy, TextView.BufferType.SPANNABLE);
             registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
