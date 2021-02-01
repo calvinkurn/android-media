@@ -15,6 +15,7 @@ class GamingRecommendationProductUseCase @Inject constructor(graphqlUseCase: Gra
                                                              val userSession: UserSessionInterface,
                                                              val mapper: Mapper)
     : GetRecommendationUseCase(GamiProductRecomWidgetQuery.GQL_QUERY, graphqlUseCase, userSession) {
+    var useEmptyShopId = false
 
     fun getRequestParams(params: GamingRecommendationParam, pageNumber: Int, shopId: Long, pageName: String): RequestParams {
         val rp = RequestParams()
@@ -29,7 +30,7 @@ class GamingRecommendationProductUseCase @Inject constructor(graphqlUseCase: Gra
         rp.putBoolean(POWER_BADGE, params.powerBadge)
         rp.putBoolean(POWER_MERCHANT, params.powerMerchant)
         rp.putBoolean(HAS_DISCOUNT, params.hasDiscount)
-        rp.putLong(SHOP_ID, shopId)
+        rp.putLong(SHOP_ID, if (useEmptyShopId) params.shopId else shopId)
         rp.putInt(PRICE_MIN, params.priceMin)
         rp.putInt(PRICE_MAX, params.priceMax)
         rp.putString(REF, params.ref)

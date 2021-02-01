@@ -59,7 +59,7 @@ class PdpGamificationView : LinearLayout {
     private lateinit var dataList: ArrayList<Visitable<*>>
     var pageName = ""
     var shopId = 0L
-    var userId:String? = null
+    var userId: String? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -172,17 +172,25 @@ class PdpGamificationView : LinearLayout {
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
 
-                    if (it.data != null && it.data.isNotEmpty()) {
+                    if (it.data != null) {
+                        if (it.data.isNotEmpty()) {
 
-                        if (viewFlipper.displayedChild != CONTAINER_LIST) {
-                            viewFlipper.displayedChild = CONTAINER_LIST
+                            if (viewFlipper.displayedChild != CONTAINER_LIST) {
+                                viewFlipper.displayedChild = CONTAINER_LIST
+                            }
+                            val oldSize = dataList.size
+                            val delay = if (oldSize == 0) 600L else 0L
+                            val handler = Handler()
+                            handler.postDelayed({
+                                updateList(oldSize, it.data)
+                            }, delay)
+                        }else{
+                            val oldSize = dataList.size
+                            if(oldSize == 0 && it.data?.isNullOrEmpty()){
+                                viewModel.useEmptyShopId = true
+                                viewModel.getProducts(0)
+                            }
                         }
-                        val oldSize = dataList.size
-                        val delay = if (oldSize == 0) 600L else 0L
-                        val handler = Handler()
-                        handler.postDelayed({
-                            updateList(oldSize, it.data)
-                        }, delay)
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {

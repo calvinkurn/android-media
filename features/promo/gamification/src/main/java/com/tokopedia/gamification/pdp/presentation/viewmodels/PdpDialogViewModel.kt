@@ -37,6 +37,7 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
     //    val titleLiveData: MutableLiveData<LiveDataResult<String>> = MutableLiveData()
     var shopId = 0L
     var pageName = ""
+    var useEmptyShopId = false
 
     fun getRecommendationParams(pageName: String) {
         this.pageName = pageName
@@ -55,7 +56,7 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
 
         launchCatchError(block = {
             val params = recommendationLiveData.value!!.data!!.params
-
+            recommendationProductUseCase.useEmptyShopId = useEmptyShopId
             val item = recommendationProductUseCase.getData(recommendationProductUseCase.getRequestParams(params, page, shopId, pageName)).first()
             val list = recommendationProductUseCase.mapper.recommWidgetToListOfVisitables(item)
 
