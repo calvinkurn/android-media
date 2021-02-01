@@ -21,9 +21,5 @@ interface AddToCartVariantActionListener {
 
     fun onVariantGuidelineClick(variantGuideline: String)
 
-    fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean)
-
     fun onGetCompositeSubscriber(): CompositeSubscription?
-    fun sendEventInsuranceSelectedStateChanged(isChecked: Boolean, title: String)
-    fun sendEventInsuranceInfoClicked()
 }
