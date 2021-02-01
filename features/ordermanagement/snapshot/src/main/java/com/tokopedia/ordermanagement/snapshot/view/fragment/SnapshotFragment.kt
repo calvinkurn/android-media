@@ -1,9 +1,12 @@
 package com.tokopedia.ordermanagement.snapshot.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,46 +14,90 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.design.utils.StringUtils
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.ordermanagement.snapshot.R
-import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
-import com.tokopedia.ordermanagement.snapshot.di.SnapshotComponent
-import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts
+import com.tokopedia.ordermanagement.snapshot.analytics.SnapshotAnalytics
+import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotParam
+import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotResponse
+import com.tokopedia.ordermanagement.snapshot.di.DaggerSnapshotComponent
+import com.tokopedia.ordermanagement.snapshot.di.SnapshotModule
 import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotAdapter
 import com.tokopedia.ordermanagement.snapshot.view.viewmodel.SnapshotViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 class SnapshotFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private lateinit var snapshotAdapter: SnapshotAdapter
+    private lateinit var userSession: UserSession
     private var rv: RecyclerView? = null
+    private var btnSnapshotToPdp: UnifyButton? = null
+    private var clShop: ConstraintLayout? = null
+    private val REQUEST_CODE_LOGIN = 588
+    private var orderId = ""
+    private var orderDetailId = ""
+    private var responseSnapshot: SnapshotResponse.Data.GetOrderSnapshot = SnapshotResponse.Data.GetOrderSnapshot()
 
     private val snapshotViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SnapshotViewModel::class.java]
     }
 
     companion object {
-        fun newInstance() = SnapshotFragment()
+        @JvmStatic
+        fun newInstance(bundle: Bundle): SnapshotFragment {
+            return SnapshotFragment().apply {
+                arguments = bundle
+            }
+        }
     }
 
     private lateinit var viewModel: SnapshotViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        userSession = UserSession(context)
+        if (userSession.isLoggedIn) {
+            initialLoad()
+        } else {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         val contentView = inflater.inflate(R.layout.snapshot_fragment, container, false)
         rv = contentView.findViewById(R.id.rv_snapshot)
+        btnSnapshotToPdp = contentView.findViewById(R.id.btn_snapshot_to_pdp)
+        clShop = contentView.findViewById(R.id.cl_shop)
         return contentView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(SnapshotViewModel::class.java)
-        // TODO: Use the ViewModel
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_LOGIN) {
+            if (resultCode == Activity.RESULT_OK) {
+                initialLoad()
+            } else {
+                activity?.finish()
+            }
+        }
     }
 
     override fun getScreenName(): String = ""
@@ -59,9 +106,19 @@ class SnapshotFragment : BaseDaggerFragment() {
         activity?.let {
             DaggerSnapshotComponent.builder()
                     .baseAppComponent(getBaseAppComponent())
-                    .snapshotModule(context?.let { SnapshotComponent(it) })
+                    .snapshotModule(context?.let { SnapshotModule(it) })
                     .build()
                     .inject(this)
+        }
+    }
+
+    private fun initialLoad() {
+        if (arguments?.getString(PARAM_ORDER_ID) != null
+                && arguments?.getString(PARAM_ORDER_DETAIL_ID) != null) {
+            orderId = arguments?.getString(PARAM_ORDER_ID).toString()
+            orderDetailId = arguments?.getString(PARAM_ORDER_DETAIL_ID).toString()
+            val paramSnapshot = SnapshotParam(orderId = orderId, orderDetailId = orderDetailId)
+            snapshotViewModel.loadSnapshot(paramSnapshot)
         }
     }
 
@@ -72,7 +129,7 @@ class SnapshotFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
-        renderPage()
+        observingData()
     }
 
     private fun prepareLayout() {
@@ -81,37 +138,37 @@ class SnapshotFragment : BaseDaggerFragment() {
             layoutManager = LinearLayoutManager(activity)
             adapter = snapshotAdapter
         }
+        btnSnapshotToPdp?.text = getString(R.string.btn_snapshot_to_pdp_label)
+        btnSnapshotToPdp?.gone()
     }
 
-    private fun renderPage() {
-        val listPage = arrayListOf<SnapshotTypeData>()
-        listPage.add(SnapshotTypeData(2, SnapshotConsts.TYPE_HEADER))
-        listPage.add(SnapshotTypeData("a", SnapshotConsts.TYPE_INFO))
-        listPage.add(SnapshotTypeData("b", SnapshotConsts.TYPE_SHOP))
-        listPage.add(SnapshotTypeData("c", SnapshotConsts.TYPE_DETAILS))
-        snapshotAdapter.addList(listPage)
-    }
-
-    private fun observingSnapshot() {
-        snapshotViewModel.snapshotResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
+    private fun observingData() {
+        snapshotAdapter.showLoader()
+        snapshotViewModel.snapshotResponse.observe(viewLifecycleOwner, { result ->
+            when (result) {
                 is Success -> {
-                    val listPage = arrayListOf<SnapshotTypeData>()
-                    listPage.add(SnapshotTypeData(it.data.productImageSecondary, SnapshotConsts.TYPE_HEADER))
-                    listPage.add(SnapshotTypeData())
+                    snapshotAdapter.snapshotResponse = result.data
+                    snapshotAdapter.showContent()
+                    btnSnapshotToPdp?.visible()
 
-
-                    val msg = StringUtils.convertListToStringDelimiter(it.data.atcMulti.buyAgainData.message, ",")
-                    if (it.data.atcMulti.buyAgainData.success == 1) {
-                        showToasterAtc(msg, Toaster.TYPE_NORMAL)
-                    } else {
-                        showToaster(msg, Toaster.TYPE_ERROR)
+                    userSession.userId?.let { userId ->
+                        SnapshotAnalytics.clickLihatHalamanProduk(result.data.orderDetail.productId.toString(), userId)
+                        clShop?.setOnClickListener {
+                            SnapshotAnalytics.clickShopPage(result.data.shopSummary.shopId.toString(), userId)
+                        }
                     }
                 }
                 is Fail -> {
-                    context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    showToaster(getString(R.string.snapshot_error_common), Toaster.TYPE_ERROR)
                 }
             }
         })
+    }
+
+    private fun showToaster(message: String, type: Int) {
+        val toasterSuccess = Toaster
+        view?.let { v ->
+            toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, "").show()
+        }
     }
 }

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class SnapshotParam (
         @SerializedName("order_id")
-        var orderId: Int = -1,
+        var orderId: String = "",
 
         @SerializedName("order_detail_id")
-        var orderDetailId: Int = -1)
+        var orderDetailId: String = "")

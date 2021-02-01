@@ -164,7 +164,8 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 @Override
                 public void onClick(View view) {
                     orderListAnalytics.sendProductClickDetailsEvent(items, getIndex(), status.status());
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(items.getId()));
+                    sini
+                    // RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(items.getId()));
                 }
             });
 

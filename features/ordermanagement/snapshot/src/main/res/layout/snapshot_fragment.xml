@@ -4,14 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_snapshot"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context=".view.fragment.SnapshotFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_snapshot"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_snapshot_to_pdp"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_snapshot_to_pdp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/rv_snapshot"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

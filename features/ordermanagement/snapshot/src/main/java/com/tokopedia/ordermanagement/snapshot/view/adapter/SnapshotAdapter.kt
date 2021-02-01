@@ -7,48 +7,34 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.ordermanagement.snapshot.R
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotResponse
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
-import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_DETAILS
-import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_HEADER
-import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_INFO
-import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_SHOP
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_CONTENT
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_LOADER
 import com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder.*
 
 /**
  * Created by fwidjaja on 1/15/21.
  */
 class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>() {
-    // var listTypeData = mutableListOf<SnapshotTypeData>()
+    var listTypeData = mutableListOf<SnapshotTypeData>()
     var snapshotResponse = SnapshotResponse.Data.GetOrderSnapshot()
 
-    /*companion object {
-        const val LAYOUT_HEADER = 0
-        const val LAYOUT_INFO = 1
-        const val LAYOUT_SHOP = 2
-        const val LAYOUT_DETAILS = 3
-    }*/
+    companion object {
+        const val LAYOUT_LOADER = 0
+        const val LAYOUT_CONTENT = 1
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.snapshot_item, parent, false)
-        return SnapshotItemViewHolder(view)
-        /*return when (viewType) {
-            LAYOUT_HEADER -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.snapshot_header_item, parent, false)
-                SnapshotHeaderViewHolder(view)
+        return when (viewType) {
+            LAYOUT_LOADER -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.snapshot_loader_item, parent, false)
+                SnapshotLoaderViewHolder(view)
             }
-            LAYOUT_INFO -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.snapshot_info_item, parent, false)
-                SnapshotInfoViewHolder(view)
-            }
-            LAYOUT_SHOP -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.snapshot_shop_item, parent, false)
-                SnapshotShopViewHolder(view)
-            }
-            LAYOUT_DETAILS -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.snapshot_details_item, parent, false)
-                SnapshotDetailsViewHolder(view)
+            LAYOUT_CONTENT -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.snapshot_content_item, parent, false)
+                SnapshotContentViewHolder(view)
             }
             else -> throw IllegalArgumentException("Invalid view type")
-        }*/
+        }
     }
 
     abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -56,10 +42,13 @@ class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>(
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
-        // val element = listTypeData[position]
+        val element = listTypeData[position]
         when (holder) {
-            is SnapshotItemViewHolder-> {
-                holder.bind(snapshotResponse, holder.adapterPosition)
+            is SnapshotLoaderViewHolder -> {
+                holder.bind(element, holder.adapterPosition)
+            }
+            is SnapshotContentViewHolder-> {
+                holder.bind(element, holder.adapterPosition)
             }
             /*is SnapshotInfoViewHolder -> {
                 holder.bind(element, holder.adapterPosition)
@@ -74,22 +63,26 @@ class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>(
     }
 
     override fun getItemCount(): Int {
-        return 1
+        return listTypeData.size
     }
 
-    /*override fun getItemViewType(position: Int): Int {
+    override fun getItemViewType(position: Int): Int {
         return when (listTypeData[position].typeLayout) {
-            TYPE_HEADER -> LAYOUT_HEADER
-            TYPE_INFO -> LAYOUT_INFO
-            TYPE_SHOP -> LAYOUT_SHOP
-            TYPE_DETAILS -> LAYOUT_DETAILS
+            TYPE_LOADER -> LAYOUT_LOADER
+            TYPE_CONTENT -> LAYOUT_CONTENT
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
-    fun addList(list: List<SnapshotTypeData>) {
+    fun showContent() {
         listTypeData.clear()
-        listTypeData.addAll(list)
+        listTypeData.add(SnapshotTypeData(snapshotResponse, TYPE_CONTENT))
         notifyDataSetChanged()
-    }*/
+    }
+
+    fun showLoader() {
+        listTypeData.clear()
+        listTypeData.add(SnapshotTypeData("", TYPE_LOADER))
+        notifyDataSetChanged()
+    }
 }

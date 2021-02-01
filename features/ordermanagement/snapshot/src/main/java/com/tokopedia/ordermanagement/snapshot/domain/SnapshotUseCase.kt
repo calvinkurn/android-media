@@ -97,6 +97,7 @@ class SnapshotUseCase @Inject constructor(private val gqlRepository: GraphqlRepo
                     }
                   }
                 }
+            }
         """.trimIndent()
     }
 }
