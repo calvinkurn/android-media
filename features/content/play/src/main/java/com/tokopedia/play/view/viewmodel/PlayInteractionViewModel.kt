@@ -9,6 +9,7 @@ import com.tokopedia.play.domain.PostFollowPartnerUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.view.uimodel.FeedInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayLikeParamInfoUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
@@ -51,6 +52,20 @@ class PlayInteractionViewModel @Inject constructor(
                         contentId = feedInfoUiModel?.contentId.toIntOrZero(),
                         contentType = feedInfoUiModel?.contentType.orZero(),
                         likeType = feedInfoUiModel?.likeType.orZero(),
+                        action = shouldLike
+                )
+                postLikeUseCase.executeOnBackground()
+            }
+        }) {}
+    }
+
+    fun doLikeUnlike(likeParamInfo: PlayLikeParamInfoUiModel, shouldLike: Boolean) {
+        scope.launchCatchError(block = {
+            withContext(dispatchers.io) {
+                postLikeUseCase.params = PostLikeUseCase.createParam(
+                        contentId = likeParamInfo.contentId.toIntOrZero(),
+                        contentType = likeParamInfo.contentType.orZero(),
+                        likeType = likeParamInfo.likeType.orZero(),
                         action = shouldLike
                 )
                 postLikeUseCase.executeOnBackground()

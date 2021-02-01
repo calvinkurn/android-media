@@ -228,7 +228,7 @@ class PlayActivity : BaseActivity(),
     private fun observeChannelList() {
         viewModel.observableChannelIdsResult.observe(this, Observer {
             when (it.state) {
-                PageResultState.Loading -> ivLoading.show()
+                PageResultState.Loading -> if (it.currentValue.isEmpty()) ivLoading.show() else ivLoading.hide()
                 else -> ivLoading.hide()
             }
             swipeContainerView.setChannelIds(it.currentValue)

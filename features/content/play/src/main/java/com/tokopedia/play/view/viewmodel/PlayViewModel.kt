@@ -132,6 +132,11 @@ class PlayViewModel @Inject constructor(
             val channelInfo = _observableLatestChannelInfo.value?.channelInfo
             return channelInfo?.feedInfo
         }
+    val likeParamInfo: PlayLikeParamInfoUiModel
+        get() {
+            val likeParamInfo = _observableLikeInfo.value?.param
+            return likeParamInfo ?: error("Not Possible")
+        }
     val bottomInsets: Map<BottomInsetsType, BottomInsetsState>
         get() {
             val value = _observableBottomInsetsState.value
@@ -643,10 +648,11 @@ class PlayViewModel @Inject constructor(
         if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
             val finalTotalLike = (currentTotalLike + (if (shouldLike) 1 else -1)).coerceAtLeast(0)
             _observableLikeInfo.value = likeInfo.copy(
-                    status = likeInfo.status.copy(
+                    status = PlayLikeStatusInfoUiModel(
                             totalLike = finalTotalLike,
                             totalLikeFormatted = finalTotalLike.toAmountString(amountStringStepArray, separator = "."),
-                            isLiked = shouldLike
+                            isLiked = shouldLike,
+                            source = LikeSource.UserAction
                     )
             )
         }
@@ -802,7 +808,14 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleLikeInfo(likeInfo: PlayLikeInfoUiModel) {
-        _observableLikeInfo.value = likeInfo
+        _observableLikeInfo.value = when (likeInfo) {
+            is PlayLikeInfoUiModel.Incomplete -> likeInfo
+            is PlayLikeInfoUiModel.Complete -> likeInfo.copy(
+                    status = likeInfo.status.copy(
+                            source = LikeSource.Storage
+                    )
+            )
+        }
     }
 
     private fun handleCartInfo(cartInfo: PlayCartInfoUiModel) {
@@ -867,17 +880,20 @@ class PlayViewModel @Inject constructor(
                 val newLikeStatus = PlayLikeStatusInfoUiModel(
                         totalLike = totalLike,
                         totalLikeFormatted = totalLikeFormatted,
-                        isLiked = isLiked
+                        isLiked = isLiked,
+                        source = LikeSource.Network
                 )
                 _observableLikeInfo.value = likeParamInfo + newLikeStatus
 
                 _observableTotalViews.value = PlayTotalViewUiModel.Complete(totalView)
             }
         }, onError = {
+            //TODO("Handle difference for first time and subsequent")
             _observableLikeInfo.value = likeParamInfo + PlayLikeStatusInfoUiModel(
                     totalLike = 0,
                     totalLikeFormatted = "0",
-                    isLiked = false
+                    isLiked = false,
+                    source = LikeSource.Network
             )
         })
     }

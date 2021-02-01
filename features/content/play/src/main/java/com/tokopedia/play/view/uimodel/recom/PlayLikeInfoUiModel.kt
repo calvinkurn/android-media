@@ -23,7 +23,15 @@ data class PlayLikeParamInfoUiModel(
 data class PlayLikeStatusInfoUiModel(
         val totalLike: Int,
         val totalLikeFormatted: String,
-        val isLiked: Boolean
+        val isLiked: Boolean,
+        val source: LikeSource
 )
+
+enum class LikeSource {
+
+    Network,
+    UserAction,
+    Storage
+}
 
 operator fun PlayLikeParamInfoUiModel.plus(status: PlayLikeStatusInfoUiModel) = PlayLikeInfoUiModel.Complete(param = this, status = status)

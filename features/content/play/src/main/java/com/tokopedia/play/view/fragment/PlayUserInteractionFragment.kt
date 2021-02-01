@@ -52,6 +52,7 @@ import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.uimodel.recom.LikeSource
 import com.tokopedia.play.view.uimodel.recom.PlayLikeStatusInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.viewcomponent.*
@@ -594,9 +595,9 @@ class PlayUserInteractionFragment @Inject constructor(
             private var isFirstTime = true
 
             override fun onChanged(it: PlayLikeStatusInfoUiModel) {
-                likeView.setEnabled(true)
+                if (isFirstTime) likeView.setEnabled(true)
 
-                likeView.playLikeAnimation(it.isLiked, !isFirstTime)
+                likeView.playLikeAnimation(it.isLiked, it.source == LikeSource.UserAction && !isFirstTime)
                 isFirstTime = false
 
                 likeView.setTotalLikes(it)
@@ -915,7 +916,7 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.changeLikeCount(shouldLike)
 
         viewModel.doLikeUnlike(
-                feedInfoUiModel = playViewModel.feedInfoUiModel,
+                likeParamInfo = playViewModel.likeParamInfo,
                 shouldLike = shouldLike
         )
 
