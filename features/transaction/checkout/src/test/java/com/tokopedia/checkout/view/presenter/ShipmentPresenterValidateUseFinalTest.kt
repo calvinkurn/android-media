@@ -129,7 +129,7 @@ class ShipmentPresenterValidateUseFinalTest {
 
         // Then
         verify {
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -160,7 +160,7 @@ class ShipmentPresenterValidateUseFinalTest {
         // Then
         verifyOrder {
             view.showToastError(message)
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -197,7 +197,7 @@ class ShipmentPresenterValidateUseFinalTest {
         // Then
         verifyOrder {
             view.showToastError(message)
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -234,7 +234,7 @@ class ShipmentPresenterValidateUseFinalTest {
         verifyOrder {
             view.showToastError(message)
             view.resetCourier(shipmentCartItemModel)
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -263,7 +263,7 @@ class ShipmentPresenterValidateUseFinalTest {
         verify {
             view.updateTickerAnnouncementMessage();
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerStatusCode);
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -293,7 +293,7 @@ class ShipmentPresenterValidateUseFinalTest {
         verify {
             view.updateTickerAnnouncementMessage();
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerStatusCode);
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -329,7 +329,7 @@ class ShipmentPresenterValidateUseFinalTest {
         // Then
         verify {
             view.prepareReloadRates(lastSelectedCourierOrderIndex, false)
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -368,7 +368,7 @@ class ShipmentPresenterValidateUseFinalTest {
 
         // Then
         verifySequence {
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
             view.showLoading();
             view.setHasRunningApiCall(true);
             view.hideLoading()

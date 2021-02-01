@@ -1285,7 +1285,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
                     viewModel.getDynamicProductInfoP1,
                     pdpUiUpdater?.productNewVariantDataModel,
                     viewModel.variantData,
-                    getComponentPosition(pdpUiUpdater?.productNewVariantDataModel))
+                    getComponentPositionBeforeUpdate(pdpUiUpdater?.productNewVariantDataModel))
         }
         updateUi()
     }
