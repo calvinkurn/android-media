@@ -91,9 +91,9 @@ class SomListSortFilterTab(
             true
         } else {
             selectedTab = null
+            sortFilterItem.toggleSelected()
             false
         }
-        sortFilterItem.type = ChipsUnify.TYPE_SELECTED
         listener.onTabClicked(status, true)
     }
 
