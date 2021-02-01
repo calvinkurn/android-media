@@ -79,8 +79,10 @@ class PromoOccTrackingTest {
 
             pullSwipeRefresh()
 
+            // Select promo
             clickPromoWithTitle("Cashback Rp25.000")
 
+            // Deselect promo
             clickPromoWithTitle("Cashback Rp25.000")
 
             interceptor.customCouponListRecommendationResponsePath = "occ/coupon_list_recommendation_with_input_code_response.json"
@@ -89,8 +91,10 @@ class PromoOccTrackingTest {
 
             clickTerapkanPromoCode()
 
+            // Deselect promo
             clickPromoWithTitle("Discount Rp30.000")
 
+            // Select promo
             clickPromoWithTitle("Discount Rp30.000")
 
             clickPilihPromoRecommendation()
