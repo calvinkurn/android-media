@@ -101,6 +101,7 @@ class EllipsizedTextView @JvmOverloads constructor(
     }
 
     override fun onLightMode() {
-
+        this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N500))
+        highLightColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
     }
 }

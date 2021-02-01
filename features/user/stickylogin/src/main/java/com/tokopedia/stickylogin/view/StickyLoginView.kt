@@ -412,7 +412,11 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     }
 
     override fun onLightMode() {
+        if (isLoginReminder()) {
+            textContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        }
 
+        layoutContainer.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
     }
 
     companion object {

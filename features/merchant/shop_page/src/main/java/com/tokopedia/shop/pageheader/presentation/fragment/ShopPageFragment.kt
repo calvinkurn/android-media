@@ -118,6 +118,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.*
 import kotlinx.android.synthetic.main.shop_page_main.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
 import javax.inject.Inject
 
@@ -290,6 +291,7 @@ class ShopPageFragment :
         outState.putParcelable(SAVED_INITIAL_FILTER,  initialProductFilterParameter)
     }
 
+    @ExperimentalCoroutinesApi
     private fun initViews(view: View) {
         context?.let{
             activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
@@ -311,8 +313,8 @@ class ShopPageFragment :
             refreshData()
         }
         mainLayout.requestFocus()
-        initStickyLogin(view)
         getChatButtonInitialMargin()
+        if (!shopViewModel.isUserSessionActive) initStickyLogin(view)
     }
 
     private fun setupBottomSheetSellerMigration(view: View) {
@@ -698,7 +700,6 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         setShopName()
-        stickyLoginView.loadContent()
     }
 
     private fun setViewState(viewState: Int) {
