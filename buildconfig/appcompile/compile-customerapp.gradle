@@ -135,6 +135,7 @@ include "features:merchant:report"
 include "features:merchant:review"
 include "features:merchant:seller_active_common"
 include "features:merchant:seller_home_drawer"
+include "features:merchant:seller_home_navigation_common"
 include ':features:merchant:seller_migration_common'
 include "features:merchant:shop_common"
 include "features:merchant:shop_page"

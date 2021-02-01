@@ -8,6 +8,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.END_DATE
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_TYPE
@@ -85,13 +86,12 @@ class TopAdsGetGroupDataUseCase @Inject constructor(val userSession: UserSession
 
     override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
         val tempRequest = ArrayList<RestRequest>()
-        val url = "https://gql.tokopedia.com/graphql/ta"
         val token = object : TypeToken<DataResponse<GroupItemResponse>>() {}.type
         val query = GetTopadsGroupListQuery.GQL_QUERY
         val request = GraphqlRequest(query, GroupItemResponse::class.java, requestParams?.parameters)
         val headers = java.util.HashMap<String, String>()
         headers["Content-Type"] = "application/json"
-        val restReferralRequest = RestRequest.Builder(url, token)
+        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
                 .setBody(request)
                 .setHeaders(headers)
                 .setRequestType(RequestType.POST)

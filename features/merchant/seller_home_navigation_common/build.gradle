@@ -1,0 +1,28 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.libraries.analytics)
+}
+
+project.ext {
+    artifactId = 'seller_home_navigation_common'
+    groupId = 'com.tokopedia.sellerhomenavigationcommon'
+    versionName = "0.0.1"
+    artifactName ="seller_home_navigation_common-release"
+}
+
+apply from: '../../../publish_local.gradle'
