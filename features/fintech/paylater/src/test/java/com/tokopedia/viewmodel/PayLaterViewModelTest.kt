@@ -3,12 +3,12 @@ package com.tokopedia.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.Gson
-import com.tokopedia.paylater.domain.model.*
-import com.tokopedia.paylater.domain.usecase.PayLaterApplicationStatusUseCase
-import com.tokopedia.paylater.domain.usecase.PayLaterProductDetailUseCase
-import com.tokopedia.paylater.domain.usecase.PayLaterSimulationUseCase
-import com.tokopedia.paylater.helper.PayLaterHelper
-import com.tokopedia.paylater.presentation.viewModel.PayLaterViewModel
+import com.tokopedia.paylater.paylater.domain.usecase.PayLaterApplicationStatusUseCase
+import com.tokopedia.paylater.paylater.domain.usecase.PayLaterProductDetailUseCase
+import com.tokopedia.paylater.paylater.domain.usecase.PayLaterSimulationUseCase
+import com.tokopedia.paylater.common.helper.PayLaterHelper
+import com.tokopedia.paylater.paylater.domain.model.*
+import com.tokopedia.paylater.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -125,7 +125,32 @@ class PayLaterViewModelTest {
     }
 
     @Test
-    fun `Execute getPayLaterSimulationData Fail(Amount less than 10000)`() {
+    fun `Execute getPayLaterSimulationData Fail(Data Failure)`() {
+        val mockSimulationData = PayLaterGetSimulationResponse(PayLaterGetSimulationGateway(arrayListOf()))
+
+        coEvery {
+            payLaterSimulationDataUseCase.getSimulationData(any(), any(), any())
+        } coAnswers {
+            firstArg<(PayLaterGetSimulationResponse) -> Unit>().invoke(mockSimulationData)
+        }
+        coEvery {
+            payLaterSimulationDataUseCase.cancelJobs()
+        } just Runs
+        viewModel.getPayLaterSimulationData(1000000)
+        assert(viewModel.payLaterSimulationResultLiveData.value is Fail)
+        Assertions.assertThat((viewModel.payLaterSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(nullDataErrorMessage)
+    }
+
+    @Test
+    fun `Execute getPayLaterSimulationData PayLater Not Applicable`() {
+        val item = PayLaterSimulationGatewayItem(1, "Kredivo", "", "", arrayListOf(), HashMap(), false)
+        val mockSimulationData = PayLaterGetSimulationResponse(PayLaterGetSimulationGateway(arrayListOf(item, item)))
+
+        coEvery {
+            payLaterSimulationDataUseCase.getSimulationData(any(), any(), any())
+        } coAnswers {
+            firstArg<(PayLaterGetSimulationResponse) -> Unit>().invoke(mockSimulationData)
+        }
         coEvery {
             payLaterSimulationDataUseCase.cancelJobs()
         } just Runs

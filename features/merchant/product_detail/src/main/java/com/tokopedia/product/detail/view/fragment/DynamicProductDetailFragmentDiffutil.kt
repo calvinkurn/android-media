@@ -775,9 +775,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             }
             ProductDetailConstant.PRODUCT_PROTECTION -> {
                 DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(viewModel.getDynamicProductInfoP1, getPurchaseProtectionUrl(), componentTrackDataModel)
-                //openFtInsuranceBottomSheet(getPurchaseProtectionUrl())
-                openFtInstallmentBottomSheet(viewModel.p2Data.value?.productFinancingCalculationData
-                        ?: FtInstallmentCalculationDataResponse())
+                openFtInsuranceBottomSheet(getPurchaseProtectionUrl())
             }
         }
     }
@@ -2787,6 +2785,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
+        openFtInstallmentBottomSheet(FtInstallmentCalculationDataResponse())
         if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
             doActionOrLogin({
                 nplFollowersButton?.startLoading()
