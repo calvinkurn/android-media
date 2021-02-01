@@ -1579,9 +1579,7 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
 
     private fun updateUi() {
         val newData = pdpUiUpdater?.mapOfData?.values?.toList()
-        getRecyclerView()?.post {
-            submitList(newData ?: listOf())
-        }
+        submitList(newData ?: listOf())
     }
 
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
