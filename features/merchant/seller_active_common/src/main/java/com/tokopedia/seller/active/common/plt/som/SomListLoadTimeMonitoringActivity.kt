@@ -1,6 +1,6 @@
-package com.tokopedia.sellerhomecommon.common.plt.som
+package com.tokopedia.seller.active.common.plt.som
 
-import com.tokopedia.sellerhomecommon.common.plt.LoadTimeMonitoringActivity
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
 
 interface SomListLoadTimeMonitoringActivity: LoadTimeMonitoringActivity {
     var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring?
