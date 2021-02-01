@@ -75,7 +75,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         observeData()
     }
 
-    fun remoteConfig(): RemoteConfig? = (activity as ProductDetailActivity).remoteConfig
+    fun remoteConfig(): RemoteConfig? = (activity as? ProductDetailActivity)?.remoteConfig
 
     fun submitInitialList(visitables: List<DynamicPdpDataModel>) {
         hideSwipeLoading()

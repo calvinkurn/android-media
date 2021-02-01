@@ -20,7 +20,6 @@ import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -65,12 +64,6 @@ class ShopPageModule {
     @Provides
     fun provideGetBroadcasterShopConfigUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): GetBroadcasterShopConfigUseCase {
         return GetBroadcasterShopConfigUseCase(graphqlUseCase)
-    }
-
-    @ShopPageScope
-    @Provides
-    fun provideStickyLoginUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): StickyLoginUseCase {
-        return StickyLoginUseCase(context.getResources(), graphqlRepository);
     }
 
     @ShopPageScope

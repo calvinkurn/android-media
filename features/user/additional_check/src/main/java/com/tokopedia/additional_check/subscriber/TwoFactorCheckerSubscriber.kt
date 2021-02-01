@@ -35,7 +35,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
             "ConsumerSplashScreen", "AddPinActivity", "AddPhoneActivity", "TwoFactorActivity",
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
-            "RegisterEmailActivity", "AddNameRegisterPhoneActivity", "SmartLockActivity"
+            "RegisterEmailActivity", "AddNameRegisterPhoneActivity", "SmartLockActivity", "OvoRegisterInitialActivity", "OvoFinalPageActivity"
     )
 
     private val exceptionPageSeller = listOf(

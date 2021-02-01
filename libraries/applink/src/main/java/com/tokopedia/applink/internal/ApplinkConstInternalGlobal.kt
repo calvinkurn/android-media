@@ -47,6 +47,7 @@ object ApplinkConstInternalGlobal {
     const val PARAM_ENABLE_2FA = "enable_2fa"
     const val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
     const val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
+    const val PARAM_IS_SUCCESS_REGISTER = "isSuccessRegister"
 
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
@@ -507,4 +508,15 @@ object ApplinkConstInternalGlobal {
     //FeedbackPageActivity
     @JvmField
     val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
+
+    // OvoAddNameActivity
+    // tokopedia-android-internal://global/ovo-add-name
+    @JvmField
+    val OVO_ADD_NAME = "$INTERNAL_GLOBAL/ovo-add-name"
+
+    // OvoRegisterInitialActivity
+    // tokopedia-android-internal://global/ovo-reg-init
+    @JvmField
+    val OVO_REG_INIT = "$INTERNAL_GLOBAL/ovo-reg-init"
+
 }

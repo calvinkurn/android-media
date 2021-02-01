@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
@@ -14,7 +13,6 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +21,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -115,7 +112,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private var bottomSheetFilter: BottomSheetUnify? = null
     private var bottomSheetSort: BottomSheetUnify? = null
-    
+
     private var itemViewSummary: View? = null
 
     private var productItemList: List<ProductReviewUiModel>? = null
@@ -182,7 +179,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         stopPreparePerformancePageMonitoring()
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        initRecyclerView(view)
         initSearchBar()
         initViewBottomSheet()
         initChipsSort(view)
@@ -229,7 +225,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewSellerPerformanceMonitoringListener? {
-        return if(context is ReviewSellerPerformanceMonitoringListener) {
+        return if (context is ReviewSellerPerformanceMonitoringListener) {
             context
         } else {
             null
@@ -300,19 +296,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
     }
 
-    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : DataEndlessScrollListener(linearLayoutManager, reviewSellerAdapter) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                reviewSellerAdapter.showLoading()
-                loadNextPage(page)
-            }
-            override fun isDataEmpty(): Boolean {
-                return reviewSellerAdapter.list.isEmpty()
-            }
-        }
+    override fun loadData(page: Int) {
+        loadNextPage(page)
     }
-
-    override fun loadData(page: Int) {}
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
         return swipeToRefreshRatingProduct
@@ -327,16 +313,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     override fun getRecyclerView(view: View): RecyclerView {
         return view.findViewById(R.id.rvRatingProduct)
     }
-
-    private fun initRecyclerView(view: View) {
-        getRecyclerView(view).let {
-            it.clearOnScrollListeners()
-            it.layoutManager = linearLayoutManager
-            endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
-            it.addOnScrollListener(endlessRecyclerViewScrollListener)
-        }
-    }
-
 
     private fun initSearchBar() {
         searchBarRatingProduct?.apply {
@@ -473,7 +449,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         emptyState_reviewProduct?.show()
     }
 
-    fun loadNextPage(page: Int) {
+    private fun loadNextPage(page: Int) {
         tracking.eventScrollRatingProduct(userSession.shopId.orEmpty())
         viewModelListReviewList?.getNextProductReviewList(
                 sortBy = sortBy.orEmpty(),
@@ -658,18 +634,31 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun initBottomSheetFilter(filterListItemUnify: ArrayList<ListItemUnify>, title: String) {
         tracking.eventClickFilterRatingProduct(userSession.shopId.orEmpty())
+        try {
+            setFilterListUnifyData(filterListItemUnify)
+            setupViewFilterBottomSheet(title)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
-        bottomSheetFilter?.apply {
-            setOnDismissListener {
-                chipsFilter?.toggle()
-            }
-            setTitle(title)
-            showCloseIcon = true
-            setCloseClickListener {
-                dismiss()
+    private fun setupViewFilterBottomSheet(title: String) {
+        fragmentManager?.let { fragmentManager ->
+            bottomSheetFilter?.apply {
+                setOnDismissListener {
+                    chipsFilter?.toggle()
+                }
+                setTitle(title)
+                showCloseIcon = true
+                setCloseClickListener {
+                    dismiss()
+                }
+                show(fragmentManager, title)
             }
         }
+    }
 
+    private fun setFilterListUnifyData(filterListItemUnify: ArrayList<ListItemUnify>) {
         filterListUnify?.let { it ->
             it.onLoadFinish {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -686,26 +675,36 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 }
             }
         }
-
-        fragmentManager?.let {
-            bottomSheetFilter?.show(it, title)
-        }
     }
 
     private fun initBottomSheetSort(sortListItemUnify: ArrayList<ListItemUnify>, title: String) {
         tracking.eventClickSortRatingProduct(userSession.shopId.orEmpty())
 
-        bottomSheetSort?.apply {
-            setOnDismissListener {
-                chipsSort?.toggle()
-            }
-            setTitle(title)
-            showCloseIcon = true
-            setCloseClickListener {
-                dismiss()
-            }
+        try {
+            setSortListUnifyData(sortListItemUnify)
+            setupViewSortBottomSheet(title)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+    }
 
+    private fun setupViewSortBottomSheet(title: String) {
+        fragmentManager?.let { fragmentManager ->
+            bottomSheetSort?.apply {
+                setOnDismissListener {
+                    chipsSort?.toggle()
+                }
+                setTitle(title)
+                showCloseIcon = true
+                setCloseClickListener {
+                    dismiss()
+                }
+            }
+            bottomSheetSort?.show(fragmentManager, title)
+        }
+    }
+
+    private fun setSortListUnifyData(sortListItemUnify: ArrayList<ListItemUnify>) {
         sortListUnify?.let { it ->
             it.onLoadFinish {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -721,10 +720,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                     }
                 }
             }
-        }
-
-        fragmentManager?.let {
-            bottomSheetSort?.show(it, title)
         }
     }
 
