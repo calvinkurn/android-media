@@ -12,8 +12,8 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.sellerhomecommon.common.plt.LoadTimeMonitoringListener
-import com.tokopedia.sellerhomecommon.common.plt.SomListLoadTimeMonitoring
-import com.tokopedia.sellerhomecommon.common.plt.SomListLoadTimeMonitoringActivity
+import com.tokopedia.sellerhomecommon.common.plt.som.SomListLoadTimeMonitoring
+import com.tokopedia.sellerhomecommon.common.plt.som.SomListLoadTimeMonitoringActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
