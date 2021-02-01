@@ -86,17 +86,17 @@ class SellerReviewHelper @Inject constructor(
             rateOnPlayStore(context, fm)
         } else {
             handler.postDelayed({
-                showFeedBackBottomSheet(fm)
+                showFeedBackBottomSheet(fm, rating)
             }, POPUP_DELAY)
         }
     }
 
-    private fun showFeedBackBottomSheet(fm: FragmentManager) {
+    private fun showFeedBackBottomSheet(fm: FragmentManager, rating: Int) {
         //we can't show bottom sheet if FragmentManager's state has already been saved
         if (fm.isStateSaved) return
 
         val feedbackBottomSheet = (fm.findFragmentByTag(FeedbackBottomSheet.TAG) as? FeedbackBottomSheet)
-                ?: FeedbackBottomSheet.createInstance()
+                ?: FeedbackBottomSheet.createInstance(rating)
 
         feedbackBottomSheet.setOnSubmittedListener {
             handler.postDelayed({
