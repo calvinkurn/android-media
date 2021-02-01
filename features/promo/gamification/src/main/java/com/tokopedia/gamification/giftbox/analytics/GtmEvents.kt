@@ -197,4 +197,52 @@ object GtmEvents {
         }
         getTracker().sendGeneralEvent(map)
     }
+
+    //1
+    fun clickInfoButton(userId:String?){
+        val map = mutableMapOf<String, Any>()
+        map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
+        map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
+        map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_INFO_BUTTON
+        userId?.let {
+            map[GiftBoxTrackerConstants.USER_ID] = userId
+        }
+        getTracker().sendGeneralEvent(map)
+    }
+
+    //2
+    fun clickRewardDetail(userId:String?){
+        val map = mutableMapOf<String, Any>()
+        map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
+        map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
+        map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_REWARD_DETAIL
+        userId?.let {
+            map[GiftBoxTrackerConstants.USER_ID] = userId
+        }
+        getTracker().sendGeneralEvent(map)
+    }
+
+    //3
+    fun clickInfoButtonFromDialog(userId:String?){
+        val map = mutableMapOf<String, Any>()
+        map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
+        map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
+        map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_T_AND_C
+        userId?.let {
+            map[GiftBoxTrackerConstants.USER_ID] = userId
+        }
+        getTracker().sendGeneralEvent(map)
+    }
+
+    //4
+    fun clickProductRecom(userId:String?){
+        val map = mutableMapOf<String, Any>()
+        map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
+        map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
+        map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_PRODUCT_RECOM
+        userId?.let {
+            map[GiftBoxTrackerConstants.USER_ID] = userId
+        }
+        getTracker().sendGeneralEvent(map)
+    }
 }

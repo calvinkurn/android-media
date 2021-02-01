@@ -182,6 +182,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //        bottomSheetContainer = v.findViewById(R.id.bottomSheetContainer)
         bottomSheetBehavior = BottomSheetBehavior.from<ViewGroup>(pdpGamificationView)
         super.initViews(v)
+        pdpGamificationView.userId = userSession?.userId
         setTabletConfigurations()
         setShadows()
         setListeners()
@@ -569,6 +570,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     override fun handleInfoIconClick() {
         RouteManager.route(context, infoUrl)
+        GtmEvents.clickInfoButton(userSession?.userId)
     }
 
     fun handleButtonAction() {
@@ -820,7 +822,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             directGiftView.setData(entity.gamiLuckyHome.prizeList,
                     entity.gamiLuckyHome.bottomSheetButtonText,
                     entity.gamiLuckyHome.prizeDetailList,
-                    entity.gamiLuckyHome.prizeDetailListButton
+                    entity.gamiLuckyHome.prizeDetailListButton,
+                    userSession?.userId
             )
             if (isTablet) {
 //                tvRewardFirstLine.setTextSize(TypedValue.COMPLEX_UNIT_PX, 20.toPx().toFloat())

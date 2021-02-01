@@ -25,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.di.ActivityContextModule
+import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
@@ -58,6 +59,7 @@ class PdpGamificationView : LinearLayout {
     private lateinit var dataList: ArrayList<Visitable<*>>
     var pageName = ""
     var shopId = 0L
+    var userId:String? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -151,6 +153,10 @@ class PdpGamificationView : LinearLayout {
     }
 
     private fun setListeners() {
+
+        setOnClickListener {
+            GtmEvents.clickProductRecom(userId)
+        }
 
 //        viewModel.titleLiveData.observe(context as AppCompatActivity, Observer {
 //            when (it.status) {

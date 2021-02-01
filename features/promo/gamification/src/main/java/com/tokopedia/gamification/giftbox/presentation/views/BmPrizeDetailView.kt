@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListButton
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListItem
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
@@ -21,6 +22,7 @@ class BmPrizeDetailView @JvmOverloads constructor(
     var imageClose: AppCompatImageView? = null
     var prizeListItemContainer: LinearLayout
     var btn: GreenGradientButton
+    var userId: String? = ""
 
     init {
         View.inflate(context, LAYOUT, this)
@@ -61,6 +63,7 @@ class BmPrizeDetailView @JvmOverloads constructor(
                 if (!prizeDetailListButton?.applink.isNullOrEmpty()) {
                     RouteManager.route(context, prizeDetailListButton!!.applink)
                 }
+                GtmEvents.clickInfoButtonFromDialog(userId)
             }
         }
     }

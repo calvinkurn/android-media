@@ -8,6 +8,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListButton
 import com.tokopedia.gamification.giftbox.data.entities.PrizeDetailListItem
 import com.tokopedia.gamification.giftbox.data.entities.PrizeListItem
@@ -24,6 +25,7 @@ class GamiDirectGiftView @JvmOverloads constructor(
     lateinit var tvTitle: Typography
     lateinit var tvMessage: Typography
     lateinit var greenBtn: GreenGradientButton
+    var userId: String? = ""
 
     init {
         View.inflate(context, LAYOUT, this)
@@ -40,7 +42,9 @@ class GamiDirectGiftView @JvmOverloads constructor(
     fun setData(prizeList: List<PrizeListItem>?,
                 bottomSheetButtonText: String?,
                 prizeDetailList: List<PrizeDetailListItem?>?,
-                prizeDetailListButton: PrizeDetailListButton?) {
+                prizeDetailListButton: PrizeDetailListButton?,
+                userId: String?) {
+        this.userId = userId
 
         val prizeItem = prizeList?.find { it -> it.isSpecial }
         if (prizeItem != null) {
@@ -59,6 +63,7 @@ class GamiDirectGiftView @JvmOverloads constructor(
                 greenBtn.setText(bottomSheetButtonText)
                 greenBtn.setOnClickListener {
                     showBmPrizeDetails(prizeDetailList, prizeDetailListButton)
+                    GtmEvents.clickRewardDetail(this.userId)
                 }
             }
         } else {
@@ -80,6 +85,7 @@ class GamiDirectGiftView @JvmOverloads constructor(
     fun getDialogChildView(prizeDetailList: List<PrizeDetailListItem?>?, prizeDetailListButton: PrizeDetailListButton?): BmPrizeDetailView {
         val itemView = BmPrizeDetailView(context)
         itemView.setData(prizeDetailList, prizeDetailListButton)
+        itemView.userId = userId
         return itemView
     }
 
