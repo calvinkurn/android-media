@@ -97,7 +97,7 @@ class PlayUserInteractionFragment @Inject constructor(
         VideoSettingsViewComponent.Listener,
         ImmersiveBoxViewComponent.Listener,
         PlayButtonViewComponent.Listener,
-        EndLiveInfoViewComponent.Listener,
+//        EndLiveInfoViewComponent.Listener,
         PiPViewComponent.Listener
 {
     private val job = SupervisorJob()
@@ -116,7 +116,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
-    private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info, this) }
+    private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
 
     private lateinit var playViewModel: PlayViewModel
@@ -370,12 +370,12 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * EndLiveInfo View Component Listener
      */
-    override fun onButtonActionClicked(view: EndLiveInfoViewComponent, btnUrl: String) {
-        openPageByApplink(
-                applink = btnUrl,
-                shouldFinish = true
-        )
-    }
+//    override fun onButtonActionClicked(view: EndLiveInfoViewComponent, btnUrl: String) {
+//        openPageByApplink(
+//                applink = btnUrl,
+//                shouldFinish = true
+//        )
+//    }
 
     /**
      * PIP View Component Listener
@@ -614,7 +614,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeTotalViews() {
         playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver {
             statsInfoView.setTotalViews(it)
-            endLiveInfoView.setTotalViews(it)
+//            endLiveInfoView.setTotalViews(it)
         })
     }
 
@@ -1183,8 +1183,8 @@ class PlayUserInteractionFragment @Inject constructor(
             endLiveInfoView.setInfo(
                     title = event.freezeTitle,
                     message = event.freezeMessage,
-                    btnTitle = event.freezeButtonTitle,
-                    btnUrl = event.freezeButtonUrl
+//                    btnTitle = event.freezeButtonTitle,
+//                    btnUrl = event.freezeButtonUrl
             )
             endLiveInfoView.show()
         } else endLiveInfoView.hide()
