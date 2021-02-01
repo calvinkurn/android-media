@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">seller_search</string>
     <string name="title_global_search_seller">Seller Search</string>
     <string name="title_no_history_label">Cari produk, pesanan, atau fitur gampang!</string>
     <string name="desc_no_history_label">Ketik kata kunci yang kamu cari dengan min. 3 huruf.</string>
