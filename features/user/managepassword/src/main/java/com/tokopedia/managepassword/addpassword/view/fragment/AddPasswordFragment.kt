@@ -69,7 +69,7 @@ class AddPasswordFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.checkPassword()
+        hasPasswordChecker()
 
         txtPassword?.textFieldInput?.afterTextChanged {
             viewModel.validatePassword(it)
@@ -164,8 +164,16 @@ class AddPasswordFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun hasPasswordChecker() {
+        if (userSession.hasPassword()) {
+            activity?.finish()
+        } else {
+            viewModel.checkPassword()
+        }
+    }
+
     private fun hasPasswordProcess(hasPassword: Boolean) {
-        if (userSession.isLoggedIn && hasPassword) {
+        if (hasPassword) {
             userSession.setHasPassword(true)
             activity?.finish()
         }
