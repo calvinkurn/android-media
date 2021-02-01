@@ -244,7 +244,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val BACKGROUND_DARK_2 = BASE_URL + "home/header/xxhdpi/home_header_dark_2.png"
 
         private const val MARGIN_BOTTOM_TOASTER_RESET_PASSWORD = 32
-        private const val DELAY_TOASTER_RESET_PASSWORD = 60000
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -2569,7 +2568,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         Toaster.toasterCustomBottomHeight = MARGIN_BOTTOM_TOASTER_RESET_PASSWORD
         Toaster.build(root,
                 getString(R.string.text_dialog_success_reset_password),
-                DELAY_TOASTER_RESET_PASSWORD,
+                Toaster.LENGTH_INDEFINITE,
                 TYPE_NORMAL,
                 getString(R.string.cta_dialog_success_reset_password),
                 View.OnClickListener {
