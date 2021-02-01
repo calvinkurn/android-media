@@ -87,6 +87,7 @@ import com.tokopedia.buyerorder.detail.view.adapter.RecommendationMPAdapter;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
+import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.PaymentData;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -478,8 +479,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             invoiceCopy.setOnClickListener(view -> {
                 ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(getString(R.string.invoice_label), invoice.invoiceRefNum());
-                if (clipboard != null) { clipboard.setPrimaryClip(clip); }
-                Toaster.build(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { }).show();
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
+                Toaster.build(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> {
+                }).show();
             });
             if (!BuyerUtils.isValidUrl(invoice.invoiceUrl())) {
                 lihat.setVisibility(View.GONE);
@@ -490,8 +494,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
                 if (getContext() != null) {
                     Intent intent = SeeInvoiceActivity.newInstance(getContext(), status, invoice,
-                            invoiceNum, boughtDate, getString(R.string.title_invoice));
-                startActivity(intent);
+                            invoiceNum, boughtDate, getString(R.string.title_invoice), OrderCategory.MARKETPLACE);
+                    startActivity(intent);
                 }
             });
         } else {
@@ -534,7 +538,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             myClipboard.setPrimaryClip(myClip);
                             if (getView() != null && getContext() != null) {
                                 Toaster.build(getView(), getContext().getResources().getString(R.string.awb_number_copied),
-                                        Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
+                                        Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v -> {
+                                        }).show();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -731,7 +736,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void showSuccessMessage(String message) {
         if (getView() != null) {
             Toaster.build(getView(), message,
-                    Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{}).show();
+                    Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v -> {
+                    }).show();
         }
     }
 
@@ -746,7 +752,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void showErrorMessage(String message) {
         if (getView() != null) {
-            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,"", v -> {}).show();
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, "", v -> {
+            }).show();
         }
     }
 
@@ -938,7 +945,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                                 actionStatus,
                                                 userSessionInterface.getUserId());
                                         dialogUnify.dismiss();
-                                    } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments()!=null) {
+                                    } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments() != null) {
                                         Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));
                                         startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
                                         dialogUnify.dismiss();
@@ -989,7 +996,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
                     orderListAnalytics.sendTulisReviewEventData(status.status());
-                    if(useNewPage()) {
+                    if (useNewPage()) {
                         RouteManager.route(getContext(), ApplinkConst.REPUTATION);
                     } else {
                         RouteManager.route(getContext(), actionButton.getUri());
@@ -1095,7 +1102,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 int result = data.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1);
                 if (result == 1) {
                     if (resultMsg != null && getView() != null) {
-                        Toaster.build(getView(), resultMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { }).show();
+                        Toaster.build(getView(), resultMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> {
+                        }).show();
                     }
                 } else if (result == 3) {
                     String popupTitle = data.getStringExtra(RESULT_POPUP_TITLE_INSTANT_CANCEL);
