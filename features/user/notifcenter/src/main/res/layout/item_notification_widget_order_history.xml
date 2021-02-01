@@ -188,7 +188,7 @@
         android:paddingTop="@dimen/unify_space_8"
         android:paddingEnd="@dimen/unify_space_48"
         android:paddingBottom="@dimen/unify_space_8"
-        android:text="Sebelumnya"
+        android:text="@string/cta_widget_notifcenter_see_previous"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

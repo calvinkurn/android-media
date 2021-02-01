@@ -105,8 +105,19 @@ class WidgetNotificationViewHolder constructor(
 
     private fun bindHistoryBtn(element: NotificationUiModel) {
         historyBtn?.shouldShowWithAction(element.hasTrackHistory()) {
+            bindHistoryBtnState(element)
             bindHistoryBtnClick(element)
         }
+    }
+
+    private fun bindHistoryBtnState(element: NotificationUiModel) {
+        val triggerText = if (element.isHistoryVisible) {
+            R.string.cta_widget_notifcenter_close_previous
+        } else {
+            R.string.cta_widget_notifcenter_see_previous
+        }
+        historyBtn?.setText(triggerText)
+        // TODO: Adjust trigger icon
     }
 
     private fun bindHistoryBtnClick(element: NotificationUiModel) {
@@ -114,6 +125,7 @@ class WidgetNotificationViewHolder constructor(
             element.toggleHistoryVisibility()
             bindTimeLineVisibility(element)
             bindProgressIndicator(element)
+            bindHistoryBtnState(element)
         }
     }
 
