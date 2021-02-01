@@ -5,11 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import com.airbnb.lottie.LottieCompositionFactory
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerreview.common.Const
+import com.tokopedia.sellerreview.view.model.SendReviewParam
+import com.tokopedia.sellerreview.view.viewmodel.ReviewViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.sir_rating_bottom_sheet.view.*
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 20/01/21
@@ -27,6 +35,9 @@ class RatingBottomSheet : BaseBottomSheet() {
         }
     }
 
+    private val mViewModel: ReviewViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ReviewViewModel::class.java)
+    }
     private var ratingStatus: Array<String>? = null
     private var onSubmitted: ((Int) -> Unit)? = null
     private var givenRating = 0
@@ -36,6 +47,20 @@ class RatingBottomSheet : BaseBottomSheet() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initRatingStatus()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        observeReviewState()
+    }
+
+    override fun initInjector() {
+        val baseComponent = (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+        DaggerSellerHomeComponent.builder()
+                .baseAppComponent(baseComponent)
+                .build()
+                .inject(this)
     }
 
     override fun setupView() = childView?.run {
@@ -64,13 +89,35 @@ class RatingBottomSheet : BaseBottomSheet() {
         return this
     }
 
+    private fun observeReviewState() {
+        mViewModel.reviewStatus.observe(viewLifecycleOwner) {
+            onSubmitted?.invoke(givenRating)
+            this.dismiss()
+        }
+    }
+
+    /**
+     * navigate to play store if user give 4 or 5 stars.
+     * or open feedback bottom sheet if else
+     * */
     private fun submitRating() {
         childView?.run {
-            btnSirSubmit.isLoading = true
-
-            this@RatingBottomSheet.dismiss()
-            onSubmitted?.invoke(givenRating)
+            if (givenRating >= 4) {
+                btnSirSubmit.isLoading = true
+                val param = getParams()
+                mViewModel.submitReview(param)
+            } else {
+                onSubmitted?.invoke(givenRating)
+                this@RatingBottomSheet.dismiss()
+            }
         }
+    }
+
+    private fun getParams(): SendReviewParam {
+        return SendReviewParam(
+                userId = userSession.userId,
+                rating = givenRating
+        )
     }
 
     private fun initRatingStatus() {

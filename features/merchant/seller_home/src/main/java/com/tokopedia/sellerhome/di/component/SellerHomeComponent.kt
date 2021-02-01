@@ -12,6 +12,8 @@ import com.tokopedia.sellerhome.settings.view.fragment.MenuSettingFragment
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
+import com.tokopedia.sellerreview.view.bottomsheet.FeedbackBottomSheet
+import com.tokopedia.sellerreview.view.bottomsheet.RatingBottomSheet
 import dagger.Component
 
 /**
@@ -40,4 +42,7 @@ interface SellerHomeComponent {
 
     fun inject(freeShippingBottomSheet: SettingsFreeShippingBottomSheet)
     fun inject(firstVoucherBottomSheetFragment: FirstVoucherBottomSheetFragment)
+
+    fun inject(ratingBottomSheet: RatingBottomSheet)
+    fun inject(feedbackBottomSheet: FeedbackBottomSheet)
 }

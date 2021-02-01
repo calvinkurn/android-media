@@ -1,10 +1,18 @@
 package com.tokopedia.sellerreview.view.bottomsheet
 
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerreview.common.Const
+import com.tokopedia.sellerreview.view.model.SendReviewParam
+import com.tokopedia.sellerreview.view.viewmodel.ReviewViewModel
 import kotlinx.android.synthetic.main.sir_feedback_bottom_sheet.view.*
 
 /**
@@ -15,17 +23,38 @@ class FeedbackBottomSheet : BaseBottomSheet() {
 
     companion object {
         const val TAG = "SirFeedbackBottomSheet"
+        private const val KEY_RATING = "key_rating"
 
-        fun createInstance(): FeedbackBottomSheet {
+        fun createInstance(rating: Int): FeedbackBottomSheet {
             return FeedbackBottomSheet().apply {
                 overlayClickDismiss = false
+                arguments = Bundle().apply {
+                    putInt(KEY_RATING, rating)
+                }
             }
         }
     }
 
+    private val mViewModel: ReviewViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ReviewViewModel::class.java)
+    }
     private var onSubmitted: (() -> Unit)? = null
 
     override fun getResLayout(): Int = R.layout.sir_feedback_bottom_sheet
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        observeReviewState()
+    }
+
+    override fun initInjector() {
+        val baseComponent = (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+        DaggerSellerHomeComponent.builder()
+                .baseAppComponent(baseComponent)
+                .build()
+                .inject(this)
+    }
 
     override fun setupView() = childView?.run {
         imgSirFeedback.setImageUrl(Const.IMG_REQUEST_FEEDBACK)
@@ -43,9 +72,7 @@ class FeedbackBottomSheet : BaseBottomSheet() {
             }
         })
         btnSirSubmitFeedback.setOnClickListener {
-            btnSirSubmitFeedback.isLoading = true
-            this@FeedbackBottomSheet.dismiss()
-            onSubmitted?.invoke()
+            setOnSubmitClicked()
         }
     }
 
@@ -56,5 +83,26 @@ class FeedbackBottomSheet : BaseBottomSheet() {
     fun setOnSubmittedListener(action: () -> Unit): FeedbackBottomSheet {
         onSubmitted = action
         return this
+    }
+
+    private fun observeReviewState() {
+        mViewModel.reviewStatus.observe(viewLifecycleOwner) {
+            this.dismiss()
+            onSubmitted?.invoke()
+        }
+    }
+
+    private fun setOnSubmitClicked() = childView?.run {
+        btnSirSubmitFeedback.isLoading = true
+        val param = getParams()
+        mViewModel.submitReview(param)
+    }
+
+    private fun getParams(): SendReviewParam {
+        val rating = arguments?.getInt(KEY_RATING).orZero()
+        return SendReviewParam(
+                userId = userSession.userId,
+                rating = rating
+        )
     }
 }
