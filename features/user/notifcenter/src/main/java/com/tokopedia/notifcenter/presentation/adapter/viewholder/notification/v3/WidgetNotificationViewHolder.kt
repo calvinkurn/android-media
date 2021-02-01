@@ -226,7 +226,7 @@ class WidgetNotificationViewHolder constructor(
 /**
  * Adapter for [WidgetNotificationViewHolder] only
  */
-class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>(), TimeLineViewHolder.Listener {
+class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>() {
 
     private var histories: List<TrackHistory> = emptyList()
 
@@ -234,7 +234,7 @@ class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>(), TimeLineViewH
         val layout = LayoutInflater.from(parent.context).inflate(
                 TimeLineViewHolder.LAYOUT, parent, false
         )
-        return TimeLineViewHolder(layout, this)
+        return TimeLineViewHolder(layout)
     }
 
     override fun getItemCount(): Int {
@@ -242,7 +242,9 @@ class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>(), TimeLineViewH
     }
 
     override fun onBindViewHolder(holder: TimeLineViewHolder, position: Int) {
-        holder.bind(histories[position])
+        val isLastItem = isLastItem(position)
+        val isFirstItem = isFirstItem(position)
+        holder.bind(histories[position], isFirstItem, isLastItem)
     }
 
     fun updateHistories(element: NotificationUiModel) {
@@ -250,11 +252,11 @@ class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>(), TimeLineViewH
         notifyDataSetChanged()
     }
 
-    override fun isLastItem(position: Int): Boolean {
+    private fun isLastItem(position: Int): Boolean {
         return histories.isNotEmpty() && position == histories.lastIndex
     }
 
-    override fun isFirstItem(position: Int): Boolean {
+    private fun isFirstItem(position: Int): Boolean {
         return histories.isNotEmpty() && position == 0
     }
 }
@@ -262,26 +264,20 @@ class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>(), TimeLineViewH
 /**
  * ViewHolder for [TimeLineViewHolder] only
  */
-class TimeLineViewHolder(
-        itemView: View,
-        private val listener: Listener
+class TimeLineViewHolder constructor(
+        itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
-
-    interface Listener {
-        fun isLastItem(position: Int): Boolean
-        fun isFirstItem(position: Int): Boolean
-    }
 
     private val title: Typography? = itemView.findViewById(R.id.tp_timeline_title)
     private val desc: Typography? = itemView.findViewById(R.id.tp_timeline_desc)
     private val bottomLine: View? = itemView.findViewById(R.id.view_bottom_line)
     private val topLine: View? = itemView.findViewById(R.id.view_top_line)
 
-    fun bind(trackHistory: TrackHistory) {
+    fun bind(trackHistory: TrackHistory, isFirstItem: Boolean, isLastItem: Boolean) {
         bindTitle(trackHistory)
         bindDesc(trackHistory)
-        bindTopLine()
-        bindBottomLine()
+        bindTopLine(isFirstItem)
+        bindBottomLine(isLastItem)
     }
 
     private fun bindTitle(trackHistory: TrackHistory) {
@@ -292,16 +288,16 @@ class TimeLineViewHolder(
         desc?.text = TimeHelper.getRelativeTimeFromNow(trackHistory.createTimeUnixMillis)
     }
 
-    private fun bindTopLine() {
-        if (listener.isFirstItem(adapterPosition)) {
+    private fun bindTopLine(isFirstItem: Boolean) {
+        if (isFirstItem) {
             topLine?.setBackgroundResource(com.tokopedia.unifycomponents.R.color.Unify_N100)
         } else {
             topLine?.setBackgroundResource(com.tokopedia.unifycomponents.R.color.Unify_G400)
         }
     }
 
-    private fun bindBottomLine() {
-        bottomLine?.showWithCondition(!listener.isLastItem(adapterPosition))
+    private fun bindBottomLine(isLastItem: Boolean) {
+        bottomLine?.showWithCondition(!isLastItem)
     }
 
     companion object {
