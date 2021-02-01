@@ -144,6 +144,7 @@ ext {
             sellerAppWidget                 : ":features:merchant:seller_app_widget",
             sellerHome                      : ":features:merchant:seller_home",
             sellerHomeCommon                : ":features:merchant:seller_home_common",
+            sellerHomeNavigationCommon      : ":features:merchant:seller_home_navigation_common",
             sellerMenu                      : ":features:merchant:seller_menu",
             sellerMenuCommon                : ":features:merchant:seller_menu_common",
             sellerOnboarding                : ":features:merchant:seller_onboarding",
