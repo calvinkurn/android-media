@@ -237,12 +237,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:paddingEnd="@dimen/dp_16"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toStartOf="@+id/btn_new_change_duration"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_new_shipping_duration"
                 app:typographyType="body_3"
-                app:typographyWeight="bold"
+                app:typographyWeight="reguler"
                 tools:ignore="RtlSymmetry"
                 tools:visibility="gone" />
 

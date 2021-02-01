@@ -317,7 +317,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         shippingDurationUiModels.forEach {
             it.isSelected = it.serviceData.serviceId == profileShipment.serviceId
         }
-        val selectedShippingDurationUiModel: ShippingDurationUiModel = shippingDurationUiModels.firstOrNull { it.isSelected } ?: return onRevampNewShippingFromRecommendation(shippingDurationUiModels, profileShipment, shippingRecommendationData)
+        val selectedShippingDurationUiModel: ShippingDurationUiModel = shippingDurationUiModels.firstOrNull { it.isSelected }
+                ?: return onRevampNewShippingFromRecommendation(shippingDurationUiModels, profileShipment, shippingRecommendationData)
         val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
         if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
             return onRevampNewShippingFromRecommendation(shippingDurationUiModels, profileShipment, shippingRecommendationData)
@@ -356,7 +357,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 shippingErrorId,
                 preselectedSpId)
     }
-    
+
     private fun onRevampNewShippingFromRecommendation(shippingDurationUiModels: List<ShippingDurationUiModel>, profileShipment: OrderProfileShipment, shippingRecommendationData: ShippingRecommendationData): Triple<OrderShipment, String?, String?> {
         var selectedShippingDurationUiModel: ShippingDurationUiModel? = null
         var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
@@ -380,6 +381,19 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             return Triple(
                     OrderShipment(serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData),
                     null,
+                    null)
+        }
+        val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
+        if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
+            return Triple(
+                    OrderShipment(
+                            serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
+                            serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
+                            serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
+                            needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
+                            serviceErrorMessage = durationError.errorMessage,
+                            shippingRecommendationData = shippingRecommendationData),
+                    durationError.errorId,
                     null)
         }
         var flagNeedToSetPinpoint = false
