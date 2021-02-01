@@ -184,13 +184,14 @@ object DigitalCheckoutMapper {
                 attributesDigital.voucherAutoCode = attributes.voucher
 
                 val userInputPrice = responseRechargeGetCart.response.openPaymentConfig
-                val userInputPriceDigital = AttributesDigitalData.UserInputPriceDigital()
-                userInputPriceDigital.maxPaymentPlain = userInputPrice.maxPayment
-                userInputPriceDigital.minPaymentPlain = userInputPrice.minPayment
-                userInputPriceDigital.minPayment = userInputPrice.minPaymentText
-                userInputPriceDigital.maxPayment = userInputPrice.maxPaymentText
-                attributesDigital.userInputPrice = userInputPriceDigital
-
+                if (userInputPrice.maxPayment != 0L && userInputPrice.minPayment != 0L) {
+                    val userInputPriceDigital = AttributesDigitalData.UserInputPriceDigital()
+                    userInputPriceDigital.maxPaymentPlain = userInputPrice.maxPayment
+                    userInputPriceDigital.minPaymentPlain = userInputPrice.minPayment
+                    userInputPriceDigital.minPayment = userInputPrice.minPaymentText
+                    userInputPriceDigital.maxPayment = userInputPrice.maxPaymentText
+                    attributesDigital.userInputPrice = userInputPriceDigital
+                }
 
                 if (attributes.autoApply != null) {
                     val entity = attributes.autoApply
