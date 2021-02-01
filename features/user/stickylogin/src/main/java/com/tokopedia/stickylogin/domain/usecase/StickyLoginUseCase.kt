@@ -8,17 +8,18 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.stickylogin.R
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.stickylogin.domain.data.StickyLoginTickerDataModel
+import com.tokopedia.stickylogin.common.StickyLoginConstant
 import javax.inject.Inject
 
+@Deprecated("delete soon")
 class StickyLoginUseCase @Inject constructor(
     val resources: Resources,
     val repository: GraphqlRepository
-): GraphqlUseCase<StickyLoginTickerPojo.TickerResponse>(repository) {
+): GraphqlUseCase<StickyLoginTickerDataModel.TickerResponse>(repository) {
 
     init {
-        setTypeClass(StickyLoginTickerPojo.TickerResponse::class.java)
+        setTypeClass(StickyLoginTickerDataModel.TickerResponse::class.java)
         setGraphqlQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_sticky_login_query))
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).apply {
             setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
