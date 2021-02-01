@@ -10,10 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.TrackHistory
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -50,6 +47,9 @@ class WidgetNotificationViewHolder constructor(
     private val margin_8 = itemView?.context?.resources?.getDimension(
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8
     )
+    private val padding_12 = itemView?.context?.resources?.getDimension(
+            R.dimen.notif_dp_12
+    )
 
     init {
         initRecyclerView()
@@ -72,6 +72,7 @@ class WidgetNotificationViewHolder constructor(
         bindWidgetBox(element)
         bindHistoryBox(element)
         bindMessage(element)
+        bindPaddingBottom(element)
     }
 
     private fun bindTrackHistory(element: NotificationUiModel) {
@@ -181,6 +182,26 @@ class WidgetNotificationViewHolder constructor(
                 element.widgetMessageHtml
             }
             message.text = widgetMessage
+        }
+    }
+
+    private fun bindPaddingBottom(element: NotificationUiModel) {
+        container?.let {
+            if (historyBtn?.isVisible == true) {
+                container.setPadding(
+                        it.paddingLeft,
+                        it.paddingTop,
+                        it.paddingRight,
+                        0
+                )
+            } else {
+                container.setPadding(
+                        it.paddingLeft,
+                        it.paddingTop,
+                        it.paddingRight,
+                        padding_12?.toInt() ?: 0
+                )
+            }
         }
     }
 
