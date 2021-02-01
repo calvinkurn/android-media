@@ -321,7 +321,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                     loadInitialData()
                 }
                 is Fail -> {
-                    // TODO: Show ineligible view
+                    adapter?.showNoAccessView()
                 }
             }
         }
