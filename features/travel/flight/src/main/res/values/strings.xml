@@ -130,6 +130,9 @@
     <string name="flight_booking_meal_toolbar_title">Makanan</string>
     <string name="flight_there_is_no_flight_available_title">Yaah... Rute ini nggak ada</string>
     <string name="flight_there_is_no_flight_available_description">Rute yang kamu cari belum tersedia. Coba cari rute lainnya, yuk!</string>
+    <string name="flight_there_is_no_flight_available_for_return_title">Yaah... Rute ini nggak ada</string>
+    <string name="flight_there_is_no_flight_available_for_return_description">Rute yang kamu cari belum tersedia. Coba cari rute lainnya, yuk!</string>
+    <string name="flight_search_there_is_no_flight_available_for_return_button_label">Ubah Jadwal</string>
     <string name="flight_there_is_zero_flight_for_the_filter_title">Yang kamu cari nggak ada di sini</string>
     <string name="flight_there_is_zero_flight_for_the_filter_description">Jangan panik, coba ubah filter kamu dulu.</string>
     <string name="flight_search_change_search_empty_button_label">Cari Rute Lainnya</string>

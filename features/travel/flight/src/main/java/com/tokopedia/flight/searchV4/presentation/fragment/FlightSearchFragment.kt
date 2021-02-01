@@ -319,6 +319,15 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     onResetFilterClicked()
                 }
             }
+        } else if (flightSearchViewModel.filterModel.departureArrivalTime.isNotEmpty()) {
+            emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_for_return_title)
+            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_for_return_description
+            emptyResultViewModel.buttonTitleRes = R.string.flight_search_there_is_no_flight_available_for_return_button_label
+            emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
+                override fun onEmptyButtonClicked() {
+                    (activity as FlightSearchActivity).showChangeSearchBottomSheet()
+                }
+            }
         } else {
             emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_title)
             emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_description
