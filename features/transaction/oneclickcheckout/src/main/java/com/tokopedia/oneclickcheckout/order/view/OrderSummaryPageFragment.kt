@@ -463,7 +463,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                     })
                                 }
 
-                                override fun onButtonContinueClicked(checkoutType: Int) {
+                                override fun onButtonContinueClicked() {
                                     viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderDataList, onSuccessCheckout())
                                     orderSummaryAnalytics.eventClickLanjutBayarPromoErrorOSP()
                                 }

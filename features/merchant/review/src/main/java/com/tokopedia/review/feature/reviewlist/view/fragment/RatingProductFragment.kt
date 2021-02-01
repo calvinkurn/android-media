@@ -112,7 +112,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private var bottomSheetFilter: BottomSheetUnify? = null
     private var bottomSheetSort: BottomSheetUnify? = null
-    
+
     private var itemViewSummary: View? = null
 
     private var productItemList: List<ProductReviewUiModel>? = null
@@ -225,7 +225,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewSellerPerformanceMonitoringListener? {
-        return if(context is ReviewSellerPerformanceMonitoringListener) {
+        return if (context is ReviewSellerPerformanceMonitoringListener) {
             context
         } else {
             null
@@ -634,18 +634,31 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun initBottomSheetFilter(filterListItemUnify: ArrayList<ListItemUnify>, title: String) {
         tracking.eventClickFilterRatingProduct(userSession.shopId.orEmpty())
+        try {
+            setFilterListUnifyData(filterListItemUnify)
+            setupViewFilterBottomSheet(title)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
-        bottomSheetFilter?.apply {
-            setOnDismissListener {
-                chipsFilter?.toggle()
-            }
-            setTitle(title)
-            showCloseIcon = true
-            setCloseClickListener {
-                dismiss()
+    private fun setupViewFilterBottomSheet(title: String) {
+        fragmentManager?.let { fragmentManager ->
+            bottomSheetFilter?.apply {
+                setOnDismissListener {
+                    chipsFilter?.toggle()
+                }
+                setTitle(title)
+                showCloseIcon = true
+                setCloseClickListener {
+                    dismiss()
+                }
+                show(fragmentManager, title)
             }
         }
+    }
 
+    private fun setFilterListUnifyData(filterListItemUnify: ArrayList<ListItemUnify>) {
         filterListUnify?.let { it ->
             it.onLoadFinish {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -662,26 +675,36 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 }
             }
         }
-
-        fragmentManager?.let {
-            bottomSheetFilter?.show(it, title)
-        }
     }
 
     private fun initBottomSheetSort(sortListItemUnify: ArrayList<ListItemUnify>, title: String) {
         tracking.eventClickSortRatingProduct(userSession.shopId.orEmpty())
 
-        bottomSheetSort?.apply {
-            setOnDismissListener {
-                chipsSort?.toggle()
-            }
-            setTitle(title)
-            showCloseIcon = true
-            setCloseClickListener {
-                dismiss()
-            }
+        try {
+            setSortListUnifyData(sortListItemUnify)
+            setupViewSortBottomSheet(title)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+    }
 
+    private fun setupViewSortBottomSheet(title: String) {
+        fragmentManager?.let { fragmentManager ->
+            bottomSheetSort?.apply {
+                setOnDismissListener {
+                    chipsSort?.toggle()
+                }
+                setTitle(title)
+                showCloseIcon = true
+                setCloseClickListener {
+                    dismiss()
+                }
+            }
+            bottomSheetSort?.show(fragmentManager, title)
+        }
+    }
+
+    private fun setSortListUnifyData(sortListItemUnify: ArrayList<ListItemUnify>) {
         sortListUnify?.let { it ->
             it.onLoadFinish {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -697,10 +720,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                     }
                 }
             }
-        }
-
-        fragmentManager?.let {
-            bottomSheetSort?.show(it, title)
         }
     }
 
