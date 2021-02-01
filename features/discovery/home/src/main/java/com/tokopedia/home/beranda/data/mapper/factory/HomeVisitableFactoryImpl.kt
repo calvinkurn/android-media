@@ -22,7 +22,6 @@ import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
@@ -56,6 +55,8 @@ class HomeVisitableFactoryImpl(
 
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
+
+        private const val LAYOUT_FLOATING = "floating"
     }
 
     override fun buildVisitableList(homeData: HomeData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context, dynamicChannelDataMapper: HomeDynamicChannelDataMapper): HomeVisitableFactory {
@@ -108,7 +109,7 @@ class HomeVisitableFactoryImpl(
             if (defaultTicker != null) {
                 defaultTicker.tickers.let { ticker ->
                     if (!HomeRevampFragment.HIDE_TICKER) {
-                        ticker.filter { it.layout != StickyLoginConstant.LAYOUT_FLOATING }.let {
+                        ticker.filter { it.layout != LAYOUT_FLOATING }.let {
                             if (it.isNotEmpty()) {
                                 visitableList.add(TickerDataModel(tickers = mappingTickerFromServer(it)))
                             }
@@ -118,7 +119,7 @@ class HomeVisitableFactoryImpl(
             } else {
                 homeData?.ticker?.tickers?.let { ticker ->
                     if (!HomeRevampFragment.HIDE_TICKER) {
-                        ticker.filter { it.layout != StickyLoginConstant.LAYOUT_FLOATING }.let {
+                        ticker.filter { it.layout != LAYOUT_FLOATING }.let {
                             if (it.isNotEmpty()) {
                                 visitableList.add(TickerDataModel(tickers = mappingTickerFromServer(it)))
                             }

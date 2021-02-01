@@ -1,4 +1,4 @@
-package com.tokopedia.stickylogin.utils
+package com.tokopedia.stickylogin.common.utils
 
 import android.text.Spannable
 import android.text.SpannableString
