@@ -158,6 +158,12 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun invalidate() {
+        if (!isPrepareDone || !isRenderDone || !isNetworkDone) {
+            overallDuration = 0
+            preparePageDuration = 0
+            requestNetworkDuration = 0
+            renderDuration = 0
+        }
         performanceMonitoring = null
         isPrepareDone = true
         isNetworkDone = true

@@ -41,7 +41,10 @@ data class RecommendationItem(val productId: Int = 0,
                               val freeOngkirImageUrl: String = "",
                               val labelGroupList: List<RecommendationLabel> = listOf(),
                               val isGold: Boolean = false,
-                              val isOfficial:Boolean = false): ImpressHolder(){
+                              val isOfficial:Boolean = false,
+                              // for tracker field
+                              val dimension61: String = ""
+): ImpressHolder(){
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

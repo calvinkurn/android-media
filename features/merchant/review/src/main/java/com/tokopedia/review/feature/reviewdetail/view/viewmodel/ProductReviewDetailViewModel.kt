@@ -198,7 +198,7 @@ class ProductReviewDetailViewModel @Inject constructor(
                 if (productRatingDetailData.productFeedBackResponse?.productrevFeedbackDataPerProduct?.list?.isEmpty() == true || productRatingDetailData.productFeedBackResponse?.productrevFeedbackDataPerProduct?.list == null) {
                     uiData.add(ProductFeedbackErrorUiModel(false))
                 } else {
-                    uiData.addAll(SellerReviewProductDetailMapper.mapToFeedbackUiModel(productRatingDetailData.productFeedBackResponse!!.productrevFeedbackDataPerProduct, userSession))
+                    uiData.addAll(SellerReviewProductDetailMapper.mapToFeedbackUiModel(productRatingDetailData.productFeedBackResponse?.productrevFeedbackDataPerProduct, userSession))
                 }
                 _reviewInitialData.postValue(Success(Triple(uiData, productName, hasNext)))
             }

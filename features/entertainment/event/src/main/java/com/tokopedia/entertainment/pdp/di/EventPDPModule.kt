@@ -30,7 +30,6 @@ import javax.inject.Named
  * Author firman on 06-04-20
  */
 
-@EventPDPScope
 @Module
 class EventPDPModule {
 

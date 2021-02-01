@@ -355,4 +355,15 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_unify"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl8"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/shadow_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

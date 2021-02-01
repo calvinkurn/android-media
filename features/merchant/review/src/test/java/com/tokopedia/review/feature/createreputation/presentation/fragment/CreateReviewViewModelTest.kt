@@ -73,13 +73,13 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         mockkObject(GetProductReputationForm)
 
         coEvery {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyInt(), anyInt()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
         } returns ProductRevGetForm()
 
-        viewModel.getProductReputation(anyInt(), anyInt())
+        viewModel.getProductReputation(anyLong(), anyLong())
 
         coVerify {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyInt(), anyInt()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
         }
 
         assertTrue(viewModel.getReputationDataForm.observeAwaitValue() is Success)
@@ -90,13 +90,13 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         mockkObject(GetProductReputationForm)
 
         coEvery {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyInt(), anyInt()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
         } throws Throwable()
 
-        viewModel.getProductReputation(anyInt(), anyInt())
+        viewModel.getProductReputation(anyLong(), anyLong())
 
         coVerify {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyInt(), anyInt()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
         }
 
         assertTrue(viewModel.getReputationDataForm.observeAwaitValue() is Fail)
@@ -136,7 +136,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getReviewDetails should execute expected use case and get expected data`() {
-        val feedbackId = anyInt()
+        val feedbackId = anyLong()
         val expectedResponse = ProductrevGetReviewDetailResponseWrapper()
 
         onGetReviewDetails_thenReturn(expectedResponse)
@@ -150,7 +150,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getReviewDetails should execute expected use case and fail with expected exception`() {
-        val feedbackId = anyInt()
+        val feedbackId = anyLong()
         val expectedResponse = Throwable()
 
         onGetReviewDetailsFails_thenReturn(expectedResponse)
@@ -401,7 +401,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     private fun fillInImages() {
-        val feedbackId = anyInt()
+        val feedbackId = anyLong()
         val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper(
                 ProductrevGetReviewDetail(
                         review = ProductrevGetReviewDetailReview(

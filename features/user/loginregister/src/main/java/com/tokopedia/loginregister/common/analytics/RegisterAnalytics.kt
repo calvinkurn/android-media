@@ -479,10 +479,7 @@ class RegisterAnalytics @Inject constructor() {
         }
         sendSuccessRegisterToMoengage(
                 userId,
-                name,
-                email,
                 getLoginMethodMoengage(loginMethod),
-                phoneNumber,
                 isGoldMerchant,
                 shopId,
                 shopName)
@@ -547,8 +544,8 @@ class RegisterAnalytics @Inject constructor() {
         sendBranchRegisterEvent(userId, MEDIUM_EMAIL)
     }
 
-    private fun sendSuccessRegisterToMoengage(userId: Int, name: String, email: String, loginMethod: String?, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String){
-        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, userId.toString(),email, loginMethod?:"", phoneNumber,  isGoldMerchant, shopId,shopName)
+    private fun sendSuccessRegisterToMoengage(userId: Int, loginMethod: String?, isGoldMerchant: Boolean, shopId: String,shopName:String){
+        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent("", userId.toString(),"", loginMethod?:"", "",  isGoldMerchant, shopId,shopName)
     }
 
     private fun sendBranchRegisterEvent(userId: String, medium: String) {

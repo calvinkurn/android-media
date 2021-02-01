@@ -16,7 +16,8 @@ import javax.inject.Inject
  */
 class BudgetingAdsViewModel @Inject constructor(
         dispatcher: CoroutineDispatchers,
-        private val bidInfoUseCase: BidInfoUseCase) : BaseViewModel(dispatcher.main) {
+        private val bidInfoUseCase: BidInfoUseCase,
+        private val bidInfoUseCaseDefault: BidInfoUseCase) : BaseViewModel(dispatcher.main) {
 
 
     fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit, onEmpty: (() -> Unit)) {
@@ -37,8 +38,8 @@ class BudgetingAdsViewModel @Inject constructor(
 
     fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
         launch(block = {
-            bidInfoUseCase.setParams(suggestions, PRODUCT, SOURCE_VALUE)
-            bidInfoUseCase.executeQuerySafeMode({
+            bidInfoUseCaseDefault.setParams(suggestions, PRODUCT, SOURCE_VALUE)
+            bidInfoUseCaseDefault.executeQuerySafeMode({
                 onSuccess(it.topadsBidInfo.data)
             }, {
                 it.printStackTrace()

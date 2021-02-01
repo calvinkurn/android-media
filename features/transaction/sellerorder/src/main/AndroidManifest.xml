@@ -179,6 +179,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/WaitingPaymentOrderTheme" />
 
+        <activity
+            android:name=".common.presenter.activities.SomPrintAwbActivity"
+            android:configChanges="uiMode"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
     </application>
 </manifest>
 
