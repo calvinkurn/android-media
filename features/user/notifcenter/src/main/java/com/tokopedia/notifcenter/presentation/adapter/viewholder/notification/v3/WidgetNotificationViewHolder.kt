@@ -228,7 +228,7 @@ class WidgetNotificationViewHolder constructor(
  */
 class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>(), TimeLineViewHolder.Listener {
 
-    val histories: ArrayList<TrackHistory> = arrayListOf()
+    private var histories: List<TrackHistory> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeLineViewHolder {
         val layout = LayoutInflater.from(parent.context).inflate(
@@ -246,10 +246,7 @@ class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>(), TimeLineViewH
     }
 
     fun updateHistories(element: NotificationUiModel) {
-        if (histories.isNotEmpty()) {
-            histories.clear()
-        }
-        histories.addAll(element.trackHistory)
+        histories = element.trackHistory
         notifyDataSetChanged()
     }
 
