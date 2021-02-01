@@ -1712,6 +1712,10 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
             }
         }
 
+        if(!it.merchantVoucherSummary.isShown) {
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.MVC)
+        }
+
         viewModel.getDynamicProductInfoP1?.run {
             DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
         }
