@@ -34,7 +34,6 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
     val recommendationLiveData: MutableLiveData<LiveDataResult<GamingRecommendationParamResponse>> = MutableLiveData()
     val productLiveData: MutableLiveData<LiveDataResult<List<Recommendation>>> = MutableLiveData()
 
-    //    val titleLiveData: MutableLiveData<LiveDataResult<String>> = MutableLiveData()
     var shopId = 0L
     var pageName = ""
     var useEmptyShopId = false
@@ -61,9 +60,6 @@ class PdpDialogViewModel @Inject constructor(val recommendationProductUseCase: G
             val list = recommendationProductUseCase.mapper.recommWidgetToListOfVisitables(item)
 
             productLiveData.postValue(LiveDataResult.success(list))
-//            if (titleLiveData.value == null) {
-//                titleLiveData.postValue(LiveDataResult.success(item.title))
-//            }
         }, onError = {
             productLiveData.postValue(LiveDataResult.error(it))
         })

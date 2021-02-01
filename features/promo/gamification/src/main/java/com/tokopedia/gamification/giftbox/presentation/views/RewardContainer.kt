@@ -60,29 +60,6 @@ class RewardContainer @JvmOverloads constructor(
         imageCircleReward = findViewById(R.id.image_circle_reward)
 
         llRewardTextLayout.alpha = 0f
-//        rvCoupons.alpha = 0f
-
-//        rvCoupons.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-//        var isTablet = context?.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet)
-//        var listItemWidthInTablet = context?.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_rv_coupons_width)
-//        if (isTablet == null) {
-//            isTablet = false
-//        }
-
-//        if (listItemWidthInTablet == null) {
-//            listItemWidthInTablet = 0f
-//        }
-
-//        rvCoupons.addItemDecoration(CouponItemDecoration(isTablet,
-//                listItemWidthInTablet.toInt(),
-//                getScreenWidth(),
-//                rvCoupons.context.resources.getDimension(R.dimen.gami_rv_coupons_top_margin).toInt(),
-//                rvCoupons.context.resources.getDimension(R.dimen.gami_rv_coupons_right_margin).toInt()
-//        ))
-//        couponAdapter = CouponAdapter(sourceType, couponList, isTablet)
-//        rvCoupons.adapter = couponAdapter
-
 
         doOnLayout {
             setGreenGlowImagePosition(imageGreenGlow)
@@ -162,15 +139,6 @@ class RewardContainer @JvmOverloads constructor(
         smallImage?.alpha = 0f
         largeImage?.alpha = 0f
         circleReward?.alpha = 0f
-    }
-
-    fun showSingleLargeRewardAnimation(giftBoxTop: Int): Animator {
-        val anim1 = getGreenGlowingAndTwoCirclesAnimation(giftBoxTop)
-        val anim2 = largeImageRewardAnimation(imageCircleReward)
-
-        val animatorSet = AnimatorSet()
-        animatorSet.playTogether(anim1, anim2)
-        return animatorSet
     }
 
     fun showSingleLargeRewardAnimationFadeOut(startDelay: Long): Pair<Animator, Long> {

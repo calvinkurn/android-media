@@ -86,7 +86,6 @@ class OvoVh(itemView: View) : CouponListVHDaily(itemView) {
     override fun setData(data: CouponType) {
         if (data is OvoListItem) {
             val item = data as OvoListItem
-//            tvTitle.text = item.text
             tvTitle.setTextFuture(PrecomputedTextCompat.getTextFuture(
                     item.text,
                     TextViewCompat.getTextMetricsParams(tvTitle),

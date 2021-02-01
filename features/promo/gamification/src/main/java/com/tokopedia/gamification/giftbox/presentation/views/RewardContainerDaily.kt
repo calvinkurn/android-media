@@ -159,29 +159,19 @@ open class RewardContainerDaily @JvmOverloads constructor(
         var hasPoints = false
         var hasCoupons = false
 
-        //set coupons if available
         val list = rewardEntity.couponDetailResponse?.couponMap?.values
         if (list != null && list.isNotEmpty()) {
             hasCoupons = true
             couponList.clear()
-//            couponList.addAll(list)
-            //todo Rahul remove duplicate bottom (only used for testing)
             couponList.addAll(list)
         }
 
-        //set coins
-//        var iconUrl: String? = ""
         rewardEntity.gamiCrack.benefits?.let {
             it.forEach { benefit ->
                 if (benefit.benefitType == BenefitType.OVO) {
                     hasPoints = true
-//                    tvSmallReward.text = benefit.text
-//                    if (!benefit.color.isNullOrEmpty()) {
-//                        tvSmallReward.setTextColor(Color.parseColor(benefit.color))
-//                    }
                     couponList.add(OvoListItem(benefit.imageUrl, benefit.text))
                     GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
-//                    iconUrl = benefit.imageUrl
                 } else if (benefit.benefitType == BenefitType.COUPON) {
                     benefit.referenceID?.let {
                         GtmEvents.viewRewards(it.toString(), userSession?.userId)
@@ -192,16 +182,9 @@ open class RewardContainerDaily @JvmOverloads constructor(
 
         if (hasPoints && hasCoupons) {
             rewardState = RewardContainer.RewardState.COUPON_WITH_POINTS
-//            if (!iconUrl.isNullOrEmpty()) {
-//                ImageUtils.loadImage(imageSmallReward, iconUrl!!)
-//            }
         } else if (hasPoints) {
             //only points
             rewardState = RewardContainer.RewardState.POINTS_ONLY
-//            if (!iconUrl.isNullOrEmpty()) {
-//                imageSmallReward.loadRemoteImageDrawable("ic_ovo.png", ImageDensityType.SUPPORT_MULTIPLE_DPI)
-//                imageCircleReward.loadRemoteImageDrawable("ic_ovo.png", ImageDensityType.SUPPORT_MULTIPLE_DPI)
-//            }
         } else if (hasCoupons) {
             rewardState = RewardContainer.RewardState.COUPON_ONLY
         }

@@ -37,7 +37,6 @@ class BmPrizeDetailView @JvmOverloads constructor(
         if (!prizDetailList.isNullOrEmpty()) {
             val bigItem = prizDetailList.find { it?.isSpecial == true }
             if (bigItem != null && !bigItem.imageURL.isNullOrEmpty()) {
-                //todo Rahul check with loading read coupon
                 Glide.with(image)
                         .load(bigItem.imageURL)
                         .into(image)

@@ -166,18 +166,6 @@ open class GiftBoxBaseFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(getMenu(), menu)
         super.onCreateOptionsMenu(menu, inflater)
-//        val drawable = menu.getItem(0).icon
-//        drawable.mutate()
-//        context?.let {
-//            val color = ContextCompat.getColor(it, android.R.color.white)
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                drawable.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
-//            } else {
-//                drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
-//            }
-//            drawable.setColorFilter(, PorterDuff.Mode.SRC_IN)
-//            drawable.setColorFilter(ContextCompat.getColor(it, android.R.color.white), PorterDuff.Mode.SRC_ATOP)
-//        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

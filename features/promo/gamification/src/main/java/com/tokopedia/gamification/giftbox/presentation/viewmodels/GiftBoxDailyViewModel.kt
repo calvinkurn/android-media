@@ -58,7 +58,6 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(IO) workerDispatcher: Cor
                 response = giftBoxDailyRewardUseCase.getResponse(params)
 
                 val couponDetail = composeApi(response)
-//                val couponDetail = couponDetailUseCase.getFakeResponse()
                 response.couponDetailResponse = couponDetail
                 rewardLiveData.postValue(LiveDataResult.success(response))
 

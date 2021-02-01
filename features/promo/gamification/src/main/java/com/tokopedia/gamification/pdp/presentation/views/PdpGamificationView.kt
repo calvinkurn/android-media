@@ -158,16 +158,6 @@ class PdpGamificationView : LinearLayout {
             GtmEvents.clickProductRecom(userId)
         }
 
-//        viewModel.titleLiveData.observe(context as AppCompatActivity, Observer {
-//            when (it.status) {
-//                LiveDataResult.STATUS.SUCCESS -> {
-//                    if (!TextUtils.isEmpty(it.data)) {
-//                        tvTitle.text = it.data
-//                    }
-//                }
-//            }
-//        })
-
         viewModel.productLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
