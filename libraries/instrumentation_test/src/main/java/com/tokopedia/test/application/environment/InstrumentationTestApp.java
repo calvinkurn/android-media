@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -116,6 +118,14 @@ public class InstrumentationTestApp extends CoreNetworkApplication
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void setDarkMode(Boolean isDarkMode) {
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
     }
 
