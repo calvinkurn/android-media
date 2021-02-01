@@ -1,6 +1,7 @@
-package com.tokopedia.sellerhomenavigationcommon.plt
+package com.tokopedia.seller.active.common.plt.som
 
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoring
 
 class SomListLoadTimeMonitoring: LoadTimeMonitoring() {
     companion object {

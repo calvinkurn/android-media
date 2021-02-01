@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomenavigationcommon.plt
+package com.tokopedia.seller.active.common.plt
 
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData

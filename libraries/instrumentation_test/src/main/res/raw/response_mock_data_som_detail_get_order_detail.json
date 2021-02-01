@@ -3,10 +3,10 @@
     "data": {
       "get_som_detail": {
         "order_id": 688060798,
-        "status": 220,
-        "status_text": "Pesanan Baru",
-        "status_text_color": "#03AC0E",
-        "status_indicator_color": "#03AC0E",
+        "status": 0,
+        "status_text": "Pesanan Dibatalkan",
+        "status_text_color": "#EF144A",
+        "status_indicator_color": "#B5BBC5",
         "invoice": "INV/20210118/XXI/I/729621539",
         "invoice_url": "https://www.tokopedia.com/invoice.pl?id=688060798&pdf=Invoice-12299749-2664611-20210118142640-eXl5eXl5eXk0",
         "checkout_date": "",
@@ -20,7 +20,7 @@
             "product_url": "https://www.tokopedia.com/b3rl14n-1nd4h/testing-1",
             "snapshot_url": "https://www.tokopedia.com/snapshot_product?order_id=688060798&dtl_id=1027717227",
             "currency_type": 1,
-            "currency_rate": 1,
+            "currency_rate": 0,
             "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/1/12/ee6c686a-a325-4c4a-a6cf-d4c53356d99f.jpg",
             "price": 100000,
             "price_text": "Rp 100.000",
@@ -100,8 +100,8 @@
           "province": "DKI Jakarta"
         },
         "deadline": {
-          "text": "23 Jam",
-          "color": "#FF8B00"
+          "text": "",
+          "color": ""
         },
         "insurance": {
           "type": 2,
@@ -169,48 +169,7 @@
             }
           ]
         },
-        "button": [
-          {
-            "key": "accept_order",
-            "display_name": "Terima Pesanan",
-            "priority": 10,
-            "color": "white",
-            "type": "primary",
-            "bulk_url": "https://www.tokopedia.com/ajax/v1/myshop/action/multi-accept?user_token=1c5c8718518e6fb8a9ff7a15f79d8388",
-            "bulk_method": "POST",
-            "url": "https://ws.tokopedia.com/v4/action/myshop-order/proceed_order.pl",
-            "method": "POST",
-            "complexity": "",
-            "title": "Konfirmasi terima pesanan",
-            "content": "Apakah Anda yakin ingin menerima pesanan ini?",
-            "param": "{\"order_id\":688060798,\"shop_id\":2664611}",
-            "popup": {
-              "title": "",
-              "body": "",
-              "actionButton": []
-            }
-          },
-          {
-            "key": "reject_order",
-            "display_name": "Tolak Pesanan",
-            "priority": 4000,
-            "color": "white",
-            "type": "secondary",
-            "bulk_url": "",
-            "bulk_method": "",
-            "url": "https://ws.tokopedia.com/v4/action/myshop-order/proceed_order.pl",
-            "method": "POST",
-            "complexity": "standard",
-            "title": "Konfirmasi Penolakan Pesanan",
-            "content": "<b>Pilih produk yang stoknya kosong</b><br>Produk dengan status Stok Kosong akan disimpan dan tidak akan diperjual-belikan.",
-            "param": "{\"order_id\":688060798,\"reason\":\"\",\"r_code\":null,\"type\":\"\",\"uri\":\"\",\"list_prd\":\"\",\"close_end\":\"\",\"closed_note\":\"\"}",
-            "popup": {
-              "title": "",
-              "body": "",
-              "actionButton": []
-            }
-          }
-        ],
+        "button": [],
         "online_booking": {
           "is_hide_input_awb": false,
           "is_remove_input_awb": false,
@@ -218,8 +177,8 @@
           "info_text": ""
         },
         "penalty_reject_info": {
-          "is_penalty_reject": false,
-          "penalty_reject_wording": "Performa toko tidak akan berkurang jika kamu menolak pesanan ini."
+          "is_penalty_reject": true,
+          "penalty_reject_wording": "Pembatalan pengiriman akan mendapatkan penalti reputasi. <a href='https://www.tokopedia.com/help/article/a-0522'><b>Pelajari sistem penalti</b></a>"
         },
         "ticker_info": {
           "text": "",
@@ -228,6 +187,35 @@
           "action_key": "",
           "action_url": ""
         }
+      }
+    }
+  },
+  {
+    "data": {
+      "get_som_dynamic_price": {
+        "payment_method": [],
+        "payment_data": {
+          "label": "Total Bayar",
+          "value": "Rp 109.500",
+          "text_color": "#393D43"
+        },
+        "pricing_data": [
+          {
+            "label": "Total Harga (1 barang)",
+            "value": "Rp 100.000",
+            "text_color": ""
+          },
+          {
+            "label": "Total Ongkos Kirim (500 gr)",
+            "value": "Rp 9.000",
+            "text_color": ""
+          },
+          {
+            "label": "Biaya Asuransi",
+            "value": "Rp 500",
+            "text_color": ""
+          }
+        ]
       }
     }
   }
