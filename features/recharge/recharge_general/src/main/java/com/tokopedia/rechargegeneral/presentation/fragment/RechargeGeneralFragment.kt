@@ -381,6 +381,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         val dropdownData = groups.map { TopupBillsInputDropdownData(it.name) }
                         showOperatorSelectDropdown(operator_cluster_select, dropdownData, cluster.text)
                     }
+
+                    override fun onTextChangeInput() {
+                        //do nothing
+                    }
                 }
                 operator_cluster_select.show()
 
@@ -418,6 +422,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         TopupBillsInputDropdownData(it.attributes.name, it.attributes.imageUrl)
                     }
                     showOperatorSelectDropdown(operator_select, dropdownData)
+                }
+
+                override fun onTextChangeInput() {
+                    //do nothing
                 }
             }
 
@@ -797,6 +805,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             rechargeGeneralAnalytics.eventInputManualNumber(categoryName, operatorName, position + 1)
         }
         updateInputData(label, input)
+    }
+
+    override fun onTextChangeInput() {
+        recharge_general_enquiry_button.isEnabled = false
     }
 
     override fun onCustomInputClick(field: TopupBillsInputFieldWidget,

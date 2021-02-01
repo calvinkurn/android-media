@@ -47,6 +47,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -141,8 +142,10 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.stickylogin.common.StickyLoginConstant
+import com.tokopedia.stickylogin.common.helper.isRegisteredFromStickyLogin
+import com.tokopedia.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
+import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -160,7 +163,6 @@ import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
-import org.jetbrains.annotations.NotNull
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -201,6 +203,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_REVIEW = 999
         private const val REQUEST_CODE_LOGIN_TOKOPOINTS = 120
+        private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -275,7 +278,6 @@ open class HomeFragment : BaseDaggerFragment(),
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
     private lateinit var statusBarBackground: View
-    private lateinit var tickerDetail: TickerDetail
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var homeRecyclerView: NestedRecyclerView? = null
@@ -735,6 +737,8 @@ open class HomeFragment : BaseDaggerFragment(),
         initRefreshLayout()
         subscribeHome()
         initEggTokenScrollListener()
+        initStickyLogin()
+
         floatingTextButton.setOnClickListener { view: View? ->
             scrollToRecommendList()
             HomePageTracking.eventClickJumpRecomendation()
@@ -748,32 +752,37 @@ open class HomeFragment : BaseDaggerFragment(),
                 floatingTextButton.resetState()
             }
         })
-        stickyLoginView?.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _  ->
-            val floatingEggButtonFragment = floatingEggButtonFragment
-            if (stickyLoginView.isShowing()) {
-                positionSticky = stickyLoginView.getLocation()
-            }
-            floatingEggButtonFragment?.let {
-                updateEggBottomMargin(it)
-            }
+
+        context?.let {
+            if (isRegisteredFromStickyLogin(it)) gotoNewUserZone()
         }
-        stickyLoginView?.setOnClickListener { v: View? ->
-            if (stickyLoginView.isLoginReminder()) {
-                stickyLoginView?.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.HOME)
-            } else {
-                stickyLoginView?.tracker.clickOnLogin(StickyLoginConstant.Page.HOME)
+    }
+
+    private fun initStickyLogin() {
+        stickyLoginView?.page = StickyLoginConstant.Page.HOME
+        stickyLoginView?.lifecycleOwner = viewLifecycleOwner
+        stickyLoginView?.setStickyAction(object : StickyLoginAction {
+            override fun onClick() {
+                context?.let {
+                    val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+                    startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
+                }
             }
-            onGoToLogin()
-        }
-        stickyLoginView?.setOnDismissListener(View.OnClickListener { v: View? ->
-            stickyLoginView?.dismiss(StickyLoginConstant.Page.HOME)
-            if (stickyLoginView.isLoginReminder()) {
-                stickyLoginView?.trackerLoginReminder.clickOnDismiss(StickyLoginConstant.Page.HOME)
-            } else {
-                stickyLoginView?.tracker.clickOnDismiss(StickyLoginConstant.Page.HOME)
+
+            override fun onDismiss() {
+                floatingEggButtonFragment?.let {
+                    updateEggBottomMargin(it)
+                }
             }
-            val floatingEggButtonFragment = floatingEggButtonFragment
-            floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
+
+            override fun onViewChange(isShowing: Boolean) {
+                if (stickyLoginView.isShowing()) {
+                    positionSticky = stickyLoginView.getLocation()
+                }
+                floatingEggButtonFragment?.let {
+                    updateEggBottomMargin(it)
+                }
+            }
         })
         getHomeViewModel().setRollanceNavigationType(
                 if (isNavRevamp()) {
@@ -910,7 +919,6 @@ open class HomeFragment : BaseDaggerFragment(),
         observePopupIntroOvo()
         observeErrorEvent()
         observeSendLocation()
-        observeStickyLogin()
         observeTrackingData()
         observeRequestImagePlayBanner()
         observeViewModelInitialized()
@@ -1065,16 +1073,6 @@ open class HomeFragment : BaseDaggerFragment(),
                 activity?.let {
                     it.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay)
                 }
-            }
-        })
-    }
-
-    private fun observeStickyLogin() {
-        getHomeViewModel().stickyLogin.observe(viewLifecycleOwner, Observer { (status, data) ->
-            if (status === Result.Status.SUCCESS) {
-                setStickyContent(data!!)
-            } else {
-                hideStickyLogin()
             }
         })
     }
@@ -1478,6 +1476,18 @@ open class HomeFragment : BaseDaggerFragment(),
             REQUEST_CODE_PLAY_ROOM -> {
                 if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW) && data.hasExtra(EXTRA_CHANNEL_ID)) viewModel.get().updateBannerTotalView(data.getStringExtra(EXTRA_CHANNEL_ID), data.getStringExtra(EXTRA_TOTAL_VIEW))
             }
+            REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
+                if (data != null && data.extras != null) {
+                    context?.let {
+                        val isSuccessRegister = data.extras?.getBoolean(PARAM_IS_SUCCESS_REGISTER, false) ?: false
+                        if (isSuccessRegister) {
+                            saveIsRegisteredFromStickyLogin(it, true)
+                        } else {
+                            saveIsRegisteredFromStickyLogin(it,false)
+                        }
+                    }
+                }
+            }
             PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE -> if (data != null) notifyPlayWidgetTotalView(data)
         }
     }
@@ -1490,11 +1500,11 @@ open class HomeFragment : BaseDaggerFragment(),
         if (this::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
             getHomeViewModel().refreshHomeData()
-            stickyContent
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
+        stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
@@ -1507,11 +1517,11 @@ open class HomeFragment : BaseDaggerFragment(),
         homeRecyclerView?.isEnabled = false
         if(::viewModel.isInitialized) {
             getHomeViewModel().refresh(isFirstInstall())
-            stickyContent
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
+        stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
@@ -1526,22 +1536,6 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun showLoading() {
         refreshLayout.isRefreshing = true
-    }
-
-    private val stickyContent: Unit
-        private get(){
-            val stickyContentWeave: WeaveInterface = object : WeaveInterface {
-                @NotNull
-                override fun execute(): Any {
-                    return executeGetStickyContent()
-                }
-            }
-            Weaver.executeWeaveCoRoutineNow(stickyContentWeave)
-        }
-
-    private fun executeGetStickyContent():Boolean{
-        if (!getUserSession().isLoggedIn) getHomeViewModel().getStickyContent()
-        return true
     }
 
     private fun injectCouponTimeBased() {
@@ -1568,7 +1562,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun onPageLoadTimeEnd() {
-        stickyContent
+        stickyLoginView?.loadContent()
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
@@ -2276,39 +2270,6 @@ open class HomeFragment : BaseDaggerFragment(),
         getIrisAnalytics().saveEvent(data)
     }
 
-    private fun setStickyContent(tickerDetail: TickerDetail) {
-        this.tickerDetail = tickerDetail
-        updateStickyState()
-    }
-
-    private fun hideStickyLogin() {
-        stickyLoginView.visibility = View.GONE
-    }
-
-    private fun updateStickyState() {
-        if (isUserLoggedIn) {
-            hideStickyLogin()
-            return
-        }
-
-        var isCanShowing = getRemoteConfig().getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_HOME, true)
-        if (stickyLoginView.isLoginReminder() && isCanShowing) {
-            stickyLoginView.showLoginReminder(StickyLoginConstant.Page.HOME)
-            stickyLoginView?.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.HOME)
-        } else {
-            isCanShowing = getRemoteConfig().getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_HOME, true)
-            if (!isCanShowing) {
-                hideStickyLogin()
-                return
-            }
-            stickyLoginView.setContent(tickerDetail)
-            stickyLoginView.show(StickyLoginConstant.Page.HOME)
-            if (stickyLoginView.isShowing()) {
-                stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
-            }
-        }
-    }
-
     override fun onReviewClick(position: Int, clickReviewAt: Int, delay: Long, applink: String) {
         Handler().postDelayed({
             val newAppLink = Uri.parse(applink)
@@ -2560,6 +2521,13 @@ open class HomeFragment : BaseDaggerFragment(),
         }
         catch(throwable: Throwable) {
             ""
+        }
+    }
+
+    private fun gotoNewUserZone() {
+        context?.let {
+            if (isRegisteredFromStickyLogin(it)) saveIsRegisteredFromStickyLogin(it, false)
+            startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER))
         }
     }
 }

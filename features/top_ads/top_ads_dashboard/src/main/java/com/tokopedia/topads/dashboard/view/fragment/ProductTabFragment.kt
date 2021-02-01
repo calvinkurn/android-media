@@ -332,7 +332,8 @@ class ProductTabFragment : BaseDaggerFragment() {
         if (adIds.isNotEmpty()) {
             val startDate = getDateCallBack?.getStartDate() ?: ""
             val endDate = getDateCallBack?.getEndDate() ?: ""
-            viewModel.getProductStats(resources, startDate, endDate, adIds, ::onSuccessStats)
+            viewModel.getProductStats(resources, startDate, endDate, adIds, ::onSuccessStats, groupFilterSheet.getSelectedSortId(),
+                    groupFilterSheet.getSelectedStatusId())
         }
         setFilterCount()
         (activity as TopAdsGroupDetailViewActivity).setProductCount(totalCount)
