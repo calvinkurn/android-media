@@ -49,7 +49,7 @@ class AddPasswordViewModelTestJunit {
         viewModel.response.observeForever(observer)
         viewModel.validatePassword.observeForever(validatePasswordObserver)
         viewModel.validatePasswordConfirmation.observeForever(validateConfirmPasswordObserver)
-        viewModel.profileDataModel.removeObserver(hasPasswordObserver)
+        viewModel.profileDataModel.observeForever(hasPasswordObserver)
 
     }
 
