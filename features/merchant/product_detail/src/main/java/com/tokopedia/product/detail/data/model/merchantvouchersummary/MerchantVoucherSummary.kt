@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class MerchantVoucherSummary(
         @SerializedName("title")
         @Expose
-        val title: List<String> = listOf(),
+        val title: List<MerchantVoucherTitle> = listOf(),
         @SerializedName("subTitle")
         @Expose
         val subTitle: String = "",
@@ -16,4 +16,10 @@ data class MerchantVoucherSummary(
         @SerializedName("isShown")
         @Expose
         val isShown: Boolean = false
-)
+) {
+        data class MerchantVoucherTitle(
+                @SerializedName("text")
+                @Expose
+                val text: String = ""
+        )
+}
