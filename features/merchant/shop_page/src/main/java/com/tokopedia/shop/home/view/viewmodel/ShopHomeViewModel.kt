@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
+import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -215,7 +216,7 @@ class ShopHomeViewModel @Inject constructor(
                 var uiModel = result.data.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
                 val response =  mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
                 uiModel = uiModel?.copy(
-                        data = ShopPageHomeMapper.mapToVoucherCouponUiModel(response.data, shopId),
+                        data = ShopPageMapper.mapToVoucherCouponUiModel(response.data, shopId),
                         isError = false
                 )
                 val code = response.data?.resultStatus?.code

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.model
+package com.tokopedia.shop.common.data.model
 
 data class MerchantVoucherCouponUiModel (
         var resultStatus: ResultStatus? = null,

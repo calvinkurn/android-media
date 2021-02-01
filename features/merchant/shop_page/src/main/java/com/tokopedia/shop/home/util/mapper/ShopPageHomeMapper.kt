@@ -1,7 +1,6 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.PRODUCT
@@ -283,27 +282,6 @@ object ShopPageHomeMapper {
                 widgetResponse.type,
                 mapToHeaderModel(widgetResponse.header)
         )
-    }
-
-    fun mapToVoucherCouponUiModel(data: TokopointsCatalogMVCSummary?, shopId: String?): MerchantVoucherCouponUiModel? {
-        data?.let {
-            return MerchantVoucherCouponUiModel(
-                    resultStatus = ResultStatus(
-                            code = data.resultStatus?.code,
-                            message = data.resultStatus?.message,
-                            status = data.resultStatus?.status
-                    ),
-                    titles = listOf(Titles(
-                            text = data.titles?.firstOrNull()?.text,
-                            icon = data.titles?.firstOrNull()?.icon
-                    )),
-                    isShown = data.isShown,
-                    subTitle = data.subTitle,
-                    imageURL = data.imageURL,
-                    shopId = shopId
-            )
-        }
-        return null
     }
 
     private fun mapToDisplayWidget(widgetResponse: ShopLayoutWidget.Widget): ShopHomeDisplayWidgetUiModel {

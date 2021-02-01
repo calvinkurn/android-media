@@ -5,7 +5,10 @@ import android.view.View
 import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.product.view.datamodel.ShopMerchantVoucherUiModel
 
@@ -13,34 +16,36 @@ import com.tokopedia.shop.product.view.datamodel.ShopMerchantVoucherUiModel
  * Created by normansyahputa on 2/22/18.
  */
 
-class ShopMerchantVoucherViewHolder(itemView: View, onMerchantVoucherListWidgetListener: MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener?) : AbstractViewHolder<ShopMerchantVoucherUiModel>(itemView) {
+class ShopMerchantVoucherViewHolder(itemView: View) : AbstractViewHolder<ShopMerchantVoucherUiModel>(itemView) {
 
-    private var merchantVoucherListWidget: MerchantVoucherListWidget? = null
+    private var merchantVoucherWidget: MvcView? = null
 
     init {
         findViews(itemView)
-        onMerchantVoucherListWidgetListener?.let { merchantVoucherListWidget?.setOnMerchantVoucherListWidgetListener(it) }
     }
 
-    override fun bind(shopMerchantVoucherUiModel: ShopMerchantVoucherUiModel) {
-        val recyclerViewState = merchantVoucherListWidget?.recyclerView?.layoutManager?.onSaveInstanceState()
-
-        shopMerchantVoucherUiModel.shopMerchantVoucherViewModelArrayList?.let {
-            merchantVoucherListWidget?.setData(ArrayList(it.toMutableList()))
-        }
-
-        recyclerViewState?.let {
-            merchantVoucherListWidget?.recyclerView?.layoutManager?.onRestoreInstanceState(it)
+    override fun bind(model: ShopMerchantVoucherUiModel) {
+        if (model.data != null && model.data.isShown == true) {
+            merchantVoucherWidget?.show()
+            model.data.apply {
+                merchantVoucherWidget?.setData(MvcData(
+                        title = titles?.firstOrNull()?.text ?: "",
+                        subTitle = model.data.subTitle ?: "",
+                        imageUrl = model.data.imageURL ?: ""
+                ),
+                        shopId = model.data.shopId ?: "0"
+                )
+            }
+        } else {
+            merchantVoucherWidget?.hide()
         }
     }
 
     private fun findViews(view: View) {
-        merchantVoucherListWidget = view.findViewById(R.id.merchantVoucherListWidget)
-
+        merchantVoucherWidget = view.findViewById(R.id.merchantVoucherWidget)
     }
 
     companion object {
-
         @LayoutRes
         val LAYOUT = R.layout.item_new_shop_product_merchant_voucher
     }
