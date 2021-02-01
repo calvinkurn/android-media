@@ -6,10 +6,10 @@ package com.tokopedia.play.view.uimodel.recom
 sealed class PlayPinnedUiModel {
 
     data class PinnedMessage(
+            val id: String,
             val applink: String,
             val partnerName: String,
             val title: String,
-            val shouldShow: Boolean
     ) : PlayPinnedUiModel()
 
     data class PinnedProduct(
@@ -22,3 +22,6 @@ sealed class PlayPinnedUiModel {
 
     object NoPinned : PlayPinnedUiModel()
 }
+
+val PlayPinnedUiModel.PinnedMessage.shouldShow: Boolean
+    get() = id.isNotEmpty() && !id.contentEquals("0") && title.isNotEmpty()

@@ -10,7 +10,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
-import com.tokopedia.play.view.uimodel.mapper.PlayChannelResponseMapper
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
@@ -116,7 +115,7 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun providePlayChannelResponseMapper(): PlayChannelResponseMapper {
+    fun providePlayChannelResponseMapper(): PlayChannelDetailsWithRecomMapper {
         return PlayChannelDetailsWithRecomMapper(mContext)
     }
 

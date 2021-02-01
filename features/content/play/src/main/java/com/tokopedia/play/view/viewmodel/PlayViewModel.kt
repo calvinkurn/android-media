@@ -23,7 +23,8 @@ import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
+import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -54,6 +55,8 @@ class PlayViewModel @Inject constructor(
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val playSocket: PlaySocket,
+        private val playSocketToModelMapper: PlaySocketToModelMapper,
+        private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider,
         private val pageMonitoring: PlayPltPerformanceCallback,
@@ -505,11 +508,13 @@ class PlayViewModel @Inject constructor(
     fun focusPage(channelData: PlayChannelData) {
         focusVideoPlayer()
         updateChannelInfo(channelData)
+        startWebSocket(channelData.id)
     }
 
     fun defocusPage() {
         stopJob()
         defocusVideoPlayer()
+        stopWebSocket()
     }
 
     private fun focusVideoPlayer() {
@@ -542,12 +547,12 @@ class PlayViewModel @Inject constructor(
                     return@withContext getChannelInfoUseCase.executeOnBackground()
                 }
 
-                val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
-                        channel = channel,
-                        isBanned = _observableStatusInfo.value?.isBanned ?: false,
-                        exoPlayer = playVideoPlayer.videoPlayer
-                )
-                _observableLatestChannelInfo.value = completeInfoUiModel
+//                val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
+//                        channel = channel,
+//                        isBanned = _observableStatusInfo.value?.isBanned ?: false,
+//                        exoPlayer = playVideoPlayer.videoPlayer
+//                )
+//                _observableLatestChannelInfo.value = completeInfoUiModel
 
 //                _observableGetChannelInfo.value = NetworkResult.Success(completeInfoUiModel.channelInfo)
 //                _observablePartnerInfo.value = completeInfoUiModel.channelInfo.partnerInfo
@@ -567,8 +572,8 @@ class PlayViewModel @Inject constructor(
 
                 startWebSocket(channelId)
 
-                if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
-                else playVideoPlayer.release()
+//                if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
+//                else playVideoPlayer.release()
 
 //                if (completeInfoUiModel.channelInfo.partnerInfo.type == PartnerType.Shop) {
 //                    getFollowStatus(completeInfoUiModel.channelInfo)
@@ -596,29 +601,18 @@ class PlayViewModel @Inject constructor(
 
         val cleanMessage = message.trimMultipleNewlines()
         playSocket.send(cleanMessage)
-        setNewChat(PlayUiMapper.mapPlayChat(userSession.userId,
-                PlayChat(
-                        message = cleanMessage,
-                        user = PlayChat.UserData(
-                                id = userSession.userId,
-                                name = userSession.name,
-                                image = userSession.profilePicture)
+        setNewChat(
+                playUiModelMapper.mapChat(
+                        PlayChat(
+                                message = cleanMessage,
+                                user = PlayChat.UserData(
+                                        id = userSession.userId,
+                                        name = userSession.name,
+                                        image = userSession.profilePicture)
+                        )
                 )
-        ))
+        )
     }
-
-//    fun changeLikeCount(shouldLike: Boolean) {
-//        _observableLikeState.value = NetworkResult.Success(LikeStateUiModel(isLiked = shouldLike, fromNetwork = false))
-//        val currentTotalLike = _observableTotalLikes.value ?: TotalLikeUiModel.empty()
-//        if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLike.totalLikeFormatted)) {
-//            var finalTotalLike = currentTotalLike.totalLike + (if (shouldLike) 1 else -1)
-//            if (finalTotalLike < 0) finalTotalLike = 0
-//            _observableTotalLikes.value = TotalLikeUiModel(
-//                    finalTotalLike,
-//                    finalTotalLike.toAmountString(amountStringStepArray, separator = ".")
-//            )
-//        }
-//    }
 
     fun changeLikeCount(shouldLike: Boolean) {
         val likeInfo = _observableLikeInfo.value
@@ -697,21 +691,34 @@ class PlayViewModel @Inject constructor(
                 }
                 when (result) {
                     is TotalLike -> {
-//                        _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(result)
+                        val currentLikeInfo = _observableLikeInfo.value ?: return@launch
+                        val mappedResult = playSocketToModelMapper.mapTotalLike(result)
+
+                        _observableLikeInfo.value = if (currentLikeInfo is PlayLikeInfoUiModel.Complete) currentLikeInfo.copy(
+                                status = currentLikeInfo.status.copy(
+                                        totalLike = mappedResult.totalLike,
+                                        totalLikeFormatted = mappedResult.totalLikeFormatted,
+                                        source = mappedResult.source
+                                )
+                        ) else currentLikeInfo.param + mappedResult
                     }
                     is TotalView -> {
-//                        _observableTotalViews.value = PlayUiMapper.mapTotalViews(result)
+                        _observableTotalViews.value = PlayTotalViewUiModel.Complete(playSocketToModelMapper.mapTotalView(result))
                     }
                     is PlayChat -> {
-                        setNewChat(PlayUiMapper.mapPlayChat(userSession.userId, result))
+                        setNewChat(playUiModelMapper.mapChat(result))
                     }
                     is PinnedMessage -> {
-                        val partnerName = _observablePartnerInfo.value?.basicInfo?.name.orEmpty()
-//                        _observablePinnedMessage.value = PlayUiMapper.mapPinnedMessage(partnerName, result)
+                        val currentPinnedMessage = _observablePinnedMessage.value ?: return@launch
+                        val mappedResult = playSocketToModelMapper.mapPinnedMessage(result)
+                        _observablePinnedMessage.value = currentPinnedMessage.copy(
+                                id = mappedResult.id,
+                                applink = mappedResult.applink,
+                                title = mappedResult.title,
+                        )
                     }
                     is QuickReply -> {
-                        //TODO("Use separate mapper")
-//                        _observableQuickReply.value = PlayUiMapper.mapQuickReply(result)
+                        _observableQuickReply.value = playSocketToModelMapper.mapQuickReplies(result)
                     }
                     is BannedFreeze -> {
                         if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
@@ -723,23 +730,48 @@ class PlayViewModel @Inject constructor(
                         }
                     }
                     is ProductTag -> {
-//                        val productSheet = _observableProductSheetContent.value
-//                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-//                        val productList = PlayUiMapper.mapItemProducts(result.listOfProducts)
-//                        _observableProductSheetContent.value = PlayResult.Success(
-//                                data = currentProduct.copy(productList = productList)
-//                        )
-//                        trackProductTag(
-//                                channelId = channelId,
-//                                productList = productList
-//                        )
+                        val currentPinnedProduct = _observablePinnedProduct.value ?: return@launch
+                        val (mappedProductTags, shouldShow) = playSocketToModelMapper.mapProductTag(result)
+                        if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
+                            currentPinnedProduct.copy(
+                                    shouldShow = shouldShow,
+                                    productTags = currentPinnedProduct.productTags.copy(
+                                            productList = mappedProductTags
+                                    )
+                            )
+                        } else {
+                            currentPinnedProduct.copy(
+                                    shouldShow = shouldShow,
+                                    productTags = PlayProductTagsUiModel.Complete(
+                                            currentPinnedProduct.productTags.basicInfo,
+                                            mappedProductTags,
+                                            emptyList()
+                                    )
+                            )
+                        }
+                        trackProductTag(
+                                channelId = channelId,
+                                productList = mappedProductTags
+                        )
                     }
                     is MerchantVoucher -> {
-//                        val productSheet = _observableProductSheetContent.value
-//                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-//                        _observableProductSheetContent.value = PlayResult.Success(
-//                                data = currentProduct.copy(voucherList = PlayUiMapper.mapItemVouchers(result.listOfVouchers))
-//                        )
+                        val currentPinnedProduct = _observablePinnedProduct.value ?: return@launch
+                        val mappedVouchers = playSocketToModelMapper.mapMerchantVoucher(result)
+                        if (currentPinnedProduct.productTags is PlayProductTagsUiModel.Complete) {
+                            currentPinnedProduct.copy(
+                                    productTags = currentPinnedProduct.productTags.copy(
+                                            voucherList = mappedVouchers
+                                    )
+                            )
+                        } else {
+                            currentPinnedProduct.copy(
+                                    productTags = PlayProductTagsUiModel.Complete(
+                                            currentPinnedProduct.productTags.basicInfo,
+                                            emptyList(),
+                                            mappedVouchers
+                                    )
+                            )
+                        }
                     }
                 }
             }
@@ -751,19 +783,9 @@ class PlayViewModel @Inject constructor(
         })
     }
 
-//    fun getStateHelper(orientation: ScreenOrientation): StateHelperUiModel {
-//        val pinned = _observablePinned.value
-//        val bottomInsets = _observableBottomInsetsState.value
-//        return StateHelperUiModel(
-//                shouldShowPinned = pinned is PlayPinnedUiModel.PinnedMessage || pinned is PlayPinnedUiModel.PinnedProduct,
-//                channelType = channelType,
-//                videoPlayer = videoPlayer,
-//                bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
-//                screenOrientation = orientation,
-//                videoOrientation = videoOrientation,
-//                videoState = playVideoPlayer.getVideoState()
-//        )
-//    }
+    private fun stopWebSocket() {
+        playSocket.destroy()
+    }
 
     private fun stopJob() {
         channelInfoJob?.cancel()
@@ -977,22 +999,19 @@ class PlayViewModel @Inject constructor(
             getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channelId)
             getProductTagItemsUseCase.executeOnBackground()
         }
-        val productSheet = PlayUiMapper.mapProductSheet(
-                productTagsBasicInfo.bottomSheetTitle,
-                productTagsBasicInfo.partnerId,
-                productTagsResponse
-        )
+        val productTags = playUiModelMapper.mapProductTags(productTagsResponse.listOfProducts)
+        val merchantVouchers = playUiModelMapper.mapMerchantVouchers(productTagsResponse.listOfVouchers)
 
-        //TODO("Handle Mapper")
         val newProductSheet = PlayProductTagsUiModel.Complete(
                 basicInfo = productTagsBasicInfo,
-                productList = productSheet.productList,
-                voucherList = productSheet.voucherList
+                productList = productTags,
+                voucherList = merchantVouchers
         )
         _observableProductSheetContent.value = PlayResult.Success(newProductSheet)
+
         trackProductTag(
                 channelId = channelId,
-                productList = productSheet.productList
+                productList = productTags
         )
     }
 

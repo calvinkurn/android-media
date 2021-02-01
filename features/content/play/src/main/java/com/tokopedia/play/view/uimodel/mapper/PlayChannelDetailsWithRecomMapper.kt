@@ -16,16 +16,14 @@ import com.tokopedia.play_common.player.PlayVideoManager
 /**
  * Created by jegul on 21/01/21
  */
-typealias PlayChannelResponseMapper = PlayViewerMapper<ChannelDetailsWithRecomResponse, List<PlayChannelData>>
-
 class PlayChannelDetailsWithRecomMapper(
         private val context: Context
-) : PlayChannelResponseMapper {
+) {
 
     private val exoPlayer: ExoPlayer
         get() = PlayVideoManager.getInstance(context).videoPlayer
 
-    override fun map(input: ChannelDetailsWithRecomResponse): List<PlayChannelData> {
+    fun map(input: ChannelDetailsWithRecomResponse): List<PlayChannelData> {
         return input.channelDetails.dataList.map {
             PlayChannelData(
                     id = it.id,
@@ -101,12 +99,10 @@ class PlayChannelDetailsWithRecomMapper(
     )
 
     private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPinnedUiModel.PinnedMessage(
+            id = pinnedMessageResponse.id,
             applink = pinnedMessageResponse.redirectUrl,
             partnerName = partnerResponse.name,
             title = pinnedMessageResponse.title,
-            shouldShow = pinnedMessageResponse.id.isNotEmpty() &&
-                    !pinnedMessageResponse.id.contentEquals("0") &&
-                    pinnedMessageResponse.title.isNotEmpty()
     )
 
     private fun mapPinnedProduct(configResponse: ChannelDetailsWithRecomResponse.Config, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPinnedUiModel.PinnedProduct(

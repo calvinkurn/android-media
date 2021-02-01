@@ -14,7 +14,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 /**
  * Created by mzennis on 2020-03-06.
  */
-object PlayUiMapper {
+object PlayUiAMapper {
 
     private const val MS_PER_SECOND = 1000
 

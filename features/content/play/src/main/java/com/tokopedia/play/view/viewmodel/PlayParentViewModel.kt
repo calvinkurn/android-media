@@ -6,7 +6,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.storage.PlayChannelData
-import com.tokopedia.play.view.uimodel.mapper.PlayChannelResponseMapper
+import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play_common.model.result.PageInfo
 import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
@@ -21,14 +21,14 @@ class PlayParentViewModel constructor(
         private val handle: SavedStateHandle,
         private val playChannelStateStorage: PlayChannelStateStorage,
         private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
-        private val playChannelMapper: PlayChannelResponseMapper,
+        private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
         private val dispatchers: CoroutineDispatcherProvider,
 ) : ViewModel() {
 
     class Factory @Inject constructor(
             private val playChannelStateStorage: PlayChannelStateStorage,
             private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
-            private val playChannelMapper: PlayChannelResponseMapper,
+            private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
             private val dispatchers: CoroutineDispatcherProvider,
     ) {
 
