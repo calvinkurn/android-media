@@ -188,6 +188,10 @@ data class NotificationUiModel(
         return typeLink == TYPE_TRACK_HISTORY
     }
 
+    fun hasTrackHistory(): Boolean {
+        return trackHistory.isNotEmpty()
+    }
+
     companion object {
         const val STATUS_UNREAD = 1
         const val STATUS_READ = 2

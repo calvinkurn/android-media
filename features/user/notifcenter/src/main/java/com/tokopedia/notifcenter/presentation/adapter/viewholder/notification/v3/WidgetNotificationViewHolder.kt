@@ -94,11 +94,17 @@ class WidgetNotificationViewHolder constructor(
             bindTrackHistory(element)
             bindTimeLineVisibility(element)
             bindProgressIndicator(element)
-            bindHistoryBtnClick(element)
+            bindHistoryBtn(element)
         } else {
             historyTimeLine?.hide()
             progressIndicator?.hide()
             historyBtn?.hide()
+        }
+    }
+
+    private fun bindHistoryBtn(element: NotificationUiModel) {
+        historyBtn?.shouldShowWithAction(element.hasTrackHistory()) {
+            bindHistoryBtnClick(element)
         }
     }
 
