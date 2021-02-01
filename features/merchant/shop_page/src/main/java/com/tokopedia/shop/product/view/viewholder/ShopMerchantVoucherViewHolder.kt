@@ -5,8 +5,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
@@ -25,19 +23,14 @@ class ShopMerchantVoucherViewHolder(itemView: View) : AbstractViewHolder<ShopMer
     }
 
     override fun bind(model: ShopMerchantVoucherUiModel) {
-        if (model.data != null && model.data.isShown == true) {
-            merchantVoucherWidget?.show()
-            model.data.apply {
-                merchantVoucherWidget?.setData(MvcData(
-                        title = titles?.firstOrNull()?.text ?: "",
-                        subTitle = model.data.subTitle ?: "",
-                        imageUrl = model.data.imageURL ?: ""
-                ),
-                        shopId = model.data.shopId ?: "0"
-                )
-            }
-        } else {
-            merchantVoucherWidget?.hide()
+        model.data?.apply {
+            merchantVoucherWidget?.setData(MvcData(
+                    title = titles?.firstOrNull()?.text ?: "",
+                    subTitle = model.data.subTitle ?: "",
+                    imageUrl = model.data.imageURL ?: ""
+            ),
+                    shopId = model.data.shopId ?: "0"
+            )
         }
     }
 

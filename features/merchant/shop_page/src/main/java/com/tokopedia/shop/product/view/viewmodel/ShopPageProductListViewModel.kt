@@ -64,7 +64,6 @@ class ShopPageProductListViewModel @Inject constructor(
         private const val DISCOUNT_ETALASE = "discount"
         private const val ORDER_BY_LAST_UPDATE = 3
         private const val ORDER_BY_MOST_SOLD = 8
-        private const val NUM_VOUCHER_DISPLAY = 3
         private const val START_PAGE = 1
     }
 
@@ -198,7 +197,11 @@ class ShopPageProductListViewModel @Inject constructor(
                         Throwable(response.data?.resultStatus?.message.toString())
                 )
             }
-            ShopMerchantVoucherUiModel(ShopPageMapper.mapToVoucherCouponUiModel(response.data, shopId))
+            if (response.data?.isShown == true){
+                ShopMerchantVoucherUiModel(ShopPageMapper.mapToVoucherCouponUiModel(response.data, shopId))
+            } else {
+                null
+            }
         } catch (e: Exception) {
             null
         }
