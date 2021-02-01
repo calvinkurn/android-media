@@ -136,12 +136,12 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
     }
 
-    private fun onError(t: Throwable) {
+    private fun onError(error: String) {
         errorTextVisibility(true)
-        if (t.localizedMessage == resources.getString(R.string.duplicate_group_name_error_wrong))
+        if (error == resources.getString(R.string.duplicate_group_name_error_wrong))
             error_text?.text = resources.getString(R.string.duplicate_group_name_error)
         else
-            error_text?.text = t.message
+            error_text?.text = error
     }
 
     private fun onSuccess() {
