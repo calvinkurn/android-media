@@ -694,8 +694,8 @@ class DigitalCartViewModelTest {
 
         // then
         // if fintech product checked, update total price
-        val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain ?: 0
-        val fintechPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ?: 0
+        val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain ?: 0.0
+        val fintechPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ?: 0.0
         assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + fintechPrice)
     }
 
@@ -715,7 +715,7 @@ class DigitalCartViewModelTest {
     @Test
     fun setTotalPrice_afterUserInputNumber() {
         // given
-        val userInput = 100000L
+        val userInput = 100000.0
 
         // when
         digitalCartViewModel.setTotalPrice(userInput)

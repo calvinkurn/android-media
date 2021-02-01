@@ -282,6 +282,8 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                 errorType = NO_CONNECTION
             }
             viewGlobalError.setType(errorType)
+            if (message.isNotEmpty()) viewGlobalError.errorDescription.text = message
+
             viewGlobalError.visibility = View.VISIBLE
         }
     }
