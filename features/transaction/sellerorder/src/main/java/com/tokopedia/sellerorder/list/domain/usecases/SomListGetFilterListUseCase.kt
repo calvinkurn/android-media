@@ -1,8 +1,6 @@
 package com.tokopedia.sellerorder.list.domain.usecases
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerorder.list.domain.mapper.FilterResultMapper
 import com.tokopedia.sellerorder.list.domain.model.SomListFilterResponse
