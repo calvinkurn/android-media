@@ -518,4 +518,15 @@ object ApplinkConstInternalGlobal {
     //FeedbackPageActivity
     @JvmField
     val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
+
+    // OvoAddNameActivity
+    // tokopedia-android-internal://global/ovo-add-name
+    @JvmField
+    val OVO_ADD_NAME = "$INTERNAL_GLOBAL/ovo-add-name"
+
+    // OvoRegisterInitialActivity
+    // tokopedia-android-internal://global/ovo-reg-init
+    @JvmField
+    val OVO_REG_INIT = "$INTERNAL_GLOBAL/ovo-reg-init"
+
 }
