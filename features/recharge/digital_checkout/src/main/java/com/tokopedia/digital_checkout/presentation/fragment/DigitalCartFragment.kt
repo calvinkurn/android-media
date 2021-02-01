@@ -142,6 +142,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         super.onActivityCreated(savedInstanceState)
 
         viewModel.cartDigitalInfoData.observe(viewLifecycleOwner, Observer {
+            showContent()
 
             digitalSubscriptionParams.isSubscribed = it.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
             sendGetCartAndCheckoutAnalytics()
@@ -201,8 +202,8 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         })
 
         viewModel.showLoading.observe(viewLifecycleOwner, Observer { showLoader ->
-            if (showLoader) loaderCheckout.visibility = View.VISIBLE
-            else loaderCheckout.visibility = View.GONE
+            if (showLoader) showLoading()
+            else showContent()
         })
 
         viewModel.isNeedOtp.observe(viewLifecycleOwner, Observer {
@@ -533,6 +534,16 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     private fun getCategoryName(): String = getCartDigitalInfoData().attributes?.categoryName ?: ""
     private fun getOperatorName(): String = getCartDigitalInfoData().attributes?.operatorName ?: ""
     private fun getProductId(): Int = cartPassData?.productId?.toIntOrNull() ?: 0
+
+    private fun showLoading() {
+        contentCheckout.visibility = View.GONE
+        loaderCheckout.visibility = View.VISIBLE
+    }
+
+    private fun showContent() {
+        contentCheckout.visibility = View.VISIBLE
+        loaderCheckout.visibility = View.GONE
+    }
 
     override fun onClickUsePromo() {
         val attributes = getCartDigitalInfoData().attributes

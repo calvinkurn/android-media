@@ -6,28 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/Neutral_N0">
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/viewGlobalError"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/loaderCheckout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/progress_bar"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
-            android:gravity="center" />
-
-    </LinearLayout>
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/contentCheckout"
         android:layout_width="match_parent"
@@ -181,4 +159,29 @@
             app:unifyButtonSize="medium"
             app:unifyButtonType="transaction" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/viewGlobalError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/loaderCheckout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:background="@color/Neutral_N0">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/progress_bar"
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl5"
+            android:gravity="center" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
