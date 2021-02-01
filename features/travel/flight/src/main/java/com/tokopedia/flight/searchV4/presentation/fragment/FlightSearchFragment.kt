@@ -387,6 +387,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             filterModel.also {
                 it.canFilterFreeRapidTest = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST, false)
                 it.canFilterSeatDistancing = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING, false)
+                it.departureArrivalTime = ""
             }
 
     open fun getDepartureAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport
