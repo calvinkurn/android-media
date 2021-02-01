@@ -63,11 +63,8 @@ class GqlAkamaiBotInterceptor : Interceptor {
             }
         }
 
-        val build = newRequest.build()
-        if (build.header("X-TKPD-AKAMAI") == "promorevamp") {
-            throw AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
-        }
-        val response = chain.proceed(build)
+        val response = chain.proceed(newRequest.build())
+
         if (response.code() == ERROR_CODE && response.header(HEADER_AKAMAI_KEY)?.contains(HEADER_AKAMAI_VALUE, true) == true) {
             throw AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
         }
