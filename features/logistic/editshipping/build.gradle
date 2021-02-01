@@ -54,6 +54,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.chips
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
 }
 
 project.ext {

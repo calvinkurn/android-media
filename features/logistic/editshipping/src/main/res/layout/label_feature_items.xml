@@ -5,11 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/lbl_main_address"
+        android:id="@+id/lbl_feature_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_6"
-        android:text="Label"
+        android:text="Bayar di tempat"
         android:visibility="visible"
         app:labelType="general_light_grey"/>
 

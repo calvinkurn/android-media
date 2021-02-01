@@ -6,7 +6,6 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.R
-import com.tokopedia.editshipping.domain.model.shippingEditor.UiContentModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifyprinciples.Typography
@@ -30,15 +29,6 @@ class WarehouseInactiveAdapter: RecyclerView.Adapter<WarehouseInactiveAdapter.Wa
     fun setData(data: List<WarehousesModel>) {
         warehouseData.clear()
         warehouseData.addAll(data)
-        notifyDataSetChanged()
-    }
-
-    fun setInactiveWarehouseValidate(data: UiContentModel) {
-        data.warehouseId?.forEach {
-            warehouseData.find { warehouse ->
-                warehouse.warehouseId == it
-            }?.isShown = true
-        }
         notifyDataSetChanged()
     }
 

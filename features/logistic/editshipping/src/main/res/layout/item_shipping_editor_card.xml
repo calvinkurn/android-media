@@ -94,15 +94,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginEnd="@dimen/dp_18"
                 android:layout_marginBottom="@dimen/dp_18"
+                android:layout_marginEnd="@dimen/dp_18"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/label_feature_items"
-                android:visibility="gone"
+                android:visibility="visible"
+                tools:itemCount="4"
                 app:layout_constraintTop_toBottomOf="@id/layout_coupon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/btn_information"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginStart="@dimen/dp_16"
+                app:layout_constraintStart_toEndOf="@id/rv_shipment_label"
+                app:layout_constraintTop_toTopOf="@id/rv_shipment_label"
+                app:layout_constraintBottom_toBottomOf="@id/rv_shipment_label"
+                app:icon_name="INFORMATION"
+                tools:ignore="ContentDescription" />
+
 
             <FrameLayout
                 android:id="@+id/item_child_layout"

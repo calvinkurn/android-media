@@ -426,11 +426,12 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                             addressDetailUser = normalize(s.toString())
                             detailAddressHelper = normalize(detailAddressHelper)
                             if (validatorAddress(detailAddressHelper, addressDetailUser)) {
-                                validate = false
-                                helper = getString(R.string.detail_alamat_error_helper, detailAddressHelper)
-                            } else {
                                 validate = true
                                 helper = ""
+                            } else {
+                                validate = false
+                                helper = getString(R.string.detail_alamat_error_helper, detailAddressHelper)
+
                             }
                         }
 
@@ -516,7 +517,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         var matchWord = levenshteinDistance(addr1, addr2)
         var minWordLen = minLenSentence(addr1, addr2)
         var verboseTest = matchWord.toDouble()/minWordLen.toDouble()
-        return verboseTest >= 0.4
+        return verboseTest <= 0.4
     }
 
     private fun levenshteinDistance(addr1: String, addr2: String): Int {

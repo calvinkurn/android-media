@@ -8,10 +8,14 @@ import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
+import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.OnDemandModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
@@ -25,7 +29,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
     var shipperOnDemandModel = mutableListOf<OnDemandModel>()
 
     interface ShippingEditorItemAdapterListener {
-        fun onShipperInfoClicked()
+        fun onFeatureInfoOnDemandClicked(data: List<FeatureInfoModel>)
         fun onShipperTickerOnDemandClicked(data: OnDemandModel)
     }
 
@@ -79,7 +83,9 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
 
     inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener): RecyclerView.ViewHolder(itemView) {
         lateinit var onDemandModel: OnDemandModel
-        private var shipperProductChild = ShipperProductItemAdapter()
+        private val productItemAdapter = ShipperProductItemAdapter()
+        private val featureItemAdapter = ShipperFeatureAdapter()
+        private val featureInfoAdapter = FeatureInfoAdapter()
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)
         private val shipmentItemCb = itemView.findViewById<CheckboxUnify>(R.id.cb_shipment_item)
@@ -90,10 +96,13 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         private val couponText = itemView.findViewById<Typography>(R.id.title_coupon)
         private val childLayout = itemView.findViewById<FrameLayout>(R.id.item_child_layout)
         private val flDisableContainer = itemView.findViewById<FrameLayout>(R.id.fl_container)
+        private val shipmentFeatureRv = itemView.findViewById<RecyclerView>(R.id.rv_shipment_label)
+        private val labelInformation = itemView.findViewById<IconUnify>(R.id.btn_information)
 
         fun bindData(data: OnDemandModel) {
             onDemandModel = data
             setItemData(data)
+            setAdapterData(data)
             setItemChecked(data)
         }
 
@@ -117,13 +126,6 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                 couponLayout.visibility = View.VISIBLE
                 couponText.text = data.textPromo
             }
-
-            shipperProductChild = ShipperProductItemAdapter()
-            shipmentProductRv.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = shipperProductChild
-            }
-            shipperProductChild?.addData(data.shipperProduct)
 
             when (data.tickerState) {
                 1 -> {
@@ -151,6 +153,34 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                 }
             }
 
+            if (data.featureInfo.isEmpty()) {
+                shipmentFeatureRv?.gone()
+                labelInformation?.gone()
+            } else {
+                shipmentFeatureRv?.visible()
+                labelInformation?.visible()
+                labelInformation?.setOnClickListener {
+                    listener.onFeatureInfoOnDemandClicked(data.featureInfo)
+                }
+            }
+        }
+
+        private fun setAdapterData(data: OnDemandModel) {
+            shipmentProductRv.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = productItemAdapter
+            }
+
+            productItemAdapter.addData(data.shipperProduct)
+
+            shipmentFeatureRv?.layoutManager = FlexboxLayoutManager(itemView.context).apply {
+                    alignItems = AlignItems.FLEX_START
+                }
+            shipmentFeatureRv?.adapter = featureItemAdapter
+
+            featureItemAdapter.setData(data.featureInfo)
+
+            featureInfoAdapter.setData(data.featureInfo)
 
         }
 
@@ -170,7 +200,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                 shipmentItemCb.isEnabled = true
                 shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
                     data.isActive = isChecked
-                    shipperProductChild?.updateChecked(isChecked)
+                    productItemAdapter?.updateChecked(isChecked)
                     if (isChecked) {
                         childLayout.visible()
                     } else {

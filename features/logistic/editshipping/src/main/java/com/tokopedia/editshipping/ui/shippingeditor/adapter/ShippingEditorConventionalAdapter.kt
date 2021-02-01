@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.ConventionalModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
@@ -25,6 +27,7 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
     private var shipperConventionalModel = mutableListOf<ConventionalModel>()
 
     interface ShippingEditorConventionalListener {
+        fun onFeatureInfoConventionalClicked(data: List<FeatureInfoModel>)
         fun onShipperTickerConventionalClicked(data: ConventionalModel)
     }
 
@@ -38,11 +41,6 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
 
     override fun onBindViewHolder(holder: ShippingEditorConventionalViewHolder, position: Int) {
         holder.binData(shipperConventionalModel[position])
-    }
-
-    override fun onViewRecycled(holder: ShippingEditorConventionalViewHolder) {
-        super.onViewRecycled(holder)
-        holder.shipmentItemCb.setOnCheckedChangeListener(null)
     }
 
     fun updateData(data: List<ConventionalModel>) {
@@ -83,10 +81,12 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
 
     inner class ShippingEditorConventionalViewHolder(itemView: View, private val listener: ShippingEditorConventionalListener) : RecyclerView.ViewHolder(itemView) {
         lateinit var conventionalModel: ConventionalModel
-        private val shipperProductConventionalChild = ShipperProductItemAdapter()
+        private val productItemAdapter = ShipperProductItemAdapter()
+        private val featureItemAdapter = ShipperFeatureAdapter()
+        private val featureInfoAdapter = FeatureInfoAdapter()
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
         private val shipmentName = itemView.findViewById<Typography>(R.id.shipment_name)
-        val shipmentItemCb = itemView.findViewById<CheckboxUnify>(R.id.cb_shipment_item)
+        private val shipmentItemCb = itemView.findViewById<CheckboxUnify>(R.id.cb_shipment_item)
         private val shipmentCategory = itemView.findViewById<Typography>(R.id.shipment_category)
         private val shipmentProductRv = itemView.findViewById<RecyclerView>(R.id.shipment_item_list)
         private val tickerShipper = itemView.findViewById<Ticker>(R.id.ticker_shipper)
@@ -94,10 +94,13 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
         private val couponText = itemView.findViewById<Typography>(R.id.title_coupon)
         private val childLayout = itemView.findViewById<FrameLayout>(R.id.item_child_layout)
         private val flDisableContainer = itemView.findViewById<FrameLayout>(R.id.fl_container)
+        private val shipmentFeatureRv = itemView.findViewById<RecyclerView>(R.id.rv_shipment_label)
+        private val labelInformation = itemView.findViewById<IconUnify>(R.id.btn_information)
 
         fun binData(data: ConventionalModel) {
             conventionalModel = data
             setItemData(data)
+            setAdapterData(data)
             setItemChecked(data)
         }
 
@@ -123,14 +126,7 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
                 couponText.text = data.textPromo
             }
 
-            shipmentProductRv.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = shipperProductConventionalChild
-            }
-
-            shipperProductConventionalChild?.addData(data.shipperProduct)
-
-            when (data.tickerState) {
+             when (data.tickerState) {
                 1 -> {
                     tickerShipper.visibility = View.VISIBLE
                     tickerShipper.tickerType = Ticker.TYPE_ERROR
@@ -156,7 +152,34 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
                 }
             }
 
+            if (data.featureInfo.isEmpty()) {
+                shipmentFeatureRv?.gone()
+                labelInformation?.gone()
+            } else {
+                shipmentFeatureRv?.visible()
+                labelInformation?.visible()
+                labelInformation?.setOnClickListener {
+                    listener.onFeatureInfoConventionalClicked(data.featureInfo)
+                }
+            }
+        }
 
+        private fun setAdapterData(data: ConventionalModel) {
+            shipmentProductRv.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = productItemAdapter
+            }
+
+            productItemAdapter.addData(data.shipperProduct)
+
+            shipmentFeatureRv.apply {
+                layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                adapter = featureItemAdapter
+            }
+
+            featureItemAdapter.setData(data.featureInfo)
+
+            featureInfoAdapter.setData(data.featureInfo)
         }
 
         private fun setItemChecked(data: ConventionalModel) {
@@ -174,7 +197,7 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
                 flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
                 shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
                     data.isActive = isChecked
-                    shipperProductConventionalChild?.updateChecked(isChecked)
+                    productItemAdapter?.updateChecked(isChecked)
                     if (isChecked) {
                         childLayout.visible()
                     } else {
@@ -182,7 +205,6 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
                     }
                 }
             }
-
         }
 
     }

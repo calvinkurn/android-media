@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ShipperProductItemAdapter(): RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
+class ShipperProductItemAdapter : RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
 
     private var shipperProduct = mutableListOf<ShipperProductModel>()
 

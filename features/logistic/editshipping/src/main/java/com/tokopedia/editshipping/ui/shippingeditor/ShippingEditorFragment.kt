@@ -26,10 +26,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.di.shippingeditor.ShippingEditorComponent
 import com.tokopedia.editshipping.domain.model.shippingEditor.*
-import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorConventionalAdapter
-import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorDetailsAdapter
-import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShippingEditorOnDemandItemAdapter
-import com.tokopedia.editshipping.ui.shippingeditor.adapter.WarehouseInactiveAdapter
+import com.tokopedia.editshipping.ui.shippingeditor.adapter.*
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -78,9 +75,11 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private var bottomSheetShipperDetailsRv: RecyclerView? = null
     private var bottomSheetShipperAdapter = ShippingEditorDetailsAdapter()
     private var bottomSheetCourierInactiveAdapter = WarehouseInactiveAdapter()
+    private val bottomSheetFeatureInfoAdapter = FeatureInfoAdapter()
 
     private var bottomSheetCourierInactive: BottomSheetUnify? = null
     private var bottomSheetBOValidation: BottomSheetUnify? = null
+    private var bottomSheetFeatureInfo: BottomSheetUnify? = null
     private var tvCourierInactive: Typography? = null
     private var warehouseListRv: RecyclerView? = null
     private var bottomSheetCourierInactiveState: Int = 0
@@ -334,10 +333,6 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         }
     }
 
-    override fun onShipperInfoClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     private fun openBottomSheetWarehouseInactive(ctx: Context, data: List<WarehousesModel>, shipperName: String) {
         bottomSheetCourierInactive = BottomSheetUnify()
         val viewBottomSheetWarehouseInactive = View.inflate(ctx, R.layout.bottomsheet_courier_inactive, null)
@@ -500,7 +495,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                     data?.uiContent?.ticker?.body?.let { setHtmlDescription(it + getString(R.string.text_bo_link)) }
                     setDescriptionClickEvent(object: TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            startActivity(RouteManager.getIntent(context, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, data?.uiContent?.ticker?.urlLink)))
+                            goToWebView(data?.uiContent?.ticker?.urlLink)
                         }
 
                         override fun onDismiss() {
@@ -513,6 +508,12 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                 btnHorizontalLayout?.visible()
                 tickerChargeBoCourierInactive?.visible()
             }
+        }
+    }
+
+    private fun goToWebView(url: String?) {
+        if (activity != null) {
+            startActivity(RouteManager.getIntent(activity, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, url)))
         }
     }
 
@@ -533,12 +534,38 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         }
     }
 
+
+    private fun openBottomSheetFeatureInfo() {
+        bottomSheetFeatureInfo = BottomSheetUnify()
+        val viewBottomSheetFeatureInfo = View.inflate(context, R.layout.bottomsheet_shipper_detail, null)
+        setupFeatureChild(viewBottomSheetFeatureInfo)
+
+        bottomSheetFeatureInfo?.apply {
+            setCloseClickListener { dismiss() }
+            setChild(viewBottomSheetFeatureInfo)
+            setOnDismissListener { dismiss() }
+        }
+
+        fragmentManager?.let {
+            bottomSheetFeatureInfo?.show(it, "show")
+        }
+    }
+
     private fun setupChild(child: View) {
         bottomSheetShipperDetailsRv = child.findViewById(R.id.rv_shipper_detail)
 
         bottomSheetShipperDetailsRv?.apply {
             layoutManager = LinearLayoutManager(this.context)
             adapter = bottomSheetShipperAdapter
+        }
+    }
+
+    private fun setupFeatureChild(child: View) {
+        bottomSheetShipperDetailsRv = child.findViewById(R.id.rv_shipper_detail)
+
+        bottomSheetShipperDetailsRv?.apply {
+            layoutManager = LinearLayoutManager(this.context)
+            adapter = bottomSheetFeatureInfoAdapter
         }
     }
 
@@ -642,6 +669,16 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         bottomSheetCourierInactiveState = BOTTOMSHEET_SHIPPER_WAREHOUSE_INACTIVE_STATE
         bottomSheetCourierInactiveAdapter.setData(data.warehouseModel)
         context?.let { openBottomSheetWarehouseInactive(it, data.warehouseModel, data.shipperName) }
+    }
+
+    override fun onFeatureInfoOnDemandClicked(data: List<FeatureInfoModel>) {
+        bottomSheetFeatureInfoAdapter.setData(data)
+        openBottomSheetFeatureInfo()
+    }
+
+    override fun onFeatureInfoConventionalClicked(data: List<FeatureInfoModel>) {
+        bottomSheetFeatureInfoAdapter.setData(data)
+        openBottomSheetFeatureInfo()
     }
 
     companion object {
