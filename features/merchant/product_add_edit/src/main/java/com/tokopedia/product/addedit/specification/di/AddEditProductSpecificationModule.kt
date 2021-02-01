@@ -8,7 +8,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-@AddEditProductSpecificationScope
 class AddEditProductSpecificationModule {
 
     @AddEditProductSpecificationScope
