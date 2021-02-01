@@ -13,6 +13,7 @@
         android:layout_width="@dimen/notif_dp_40"
         android:layout_height="@dimen/notif_dp_40"
         tools:src="@tools:sample/avatars"
+        android:contentDescription="@string/notifcenter_cd_icon_trx"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

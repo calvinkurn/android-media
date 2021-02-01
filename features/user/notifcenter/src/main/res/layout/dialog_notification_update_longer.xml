@@ -48,6 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:contentDescription="@string/notifcenter_cd_avatar"
                     android:layout_marginBottom="@dimen/notif_dp_16"
                     android:adjustViewBounds="true"
                     android:contentDescription="@null"
@@ -90,7 +91,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/Unify_N0">
-
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/cta_button"
             android:layout_width="match_parent"

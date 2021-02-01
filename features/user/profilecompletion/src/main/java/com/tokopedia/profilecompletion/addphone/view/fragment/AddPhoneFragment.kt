@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -56,7 +57,14 @@ open class AddPhoneFragment : BaseDaggerFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        splitCompatInstall()
         return inflater.inflate(R.layout.fragment_add_phone, container, false)
+    }
+
+    private fun splitCompatInstall() {
+        activity?.let{
+            SplitCompat.installActivity(it)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -48,11 +48,14 @@ class HomeRevampRepositoryImpl @Inject constructor(
         private val remoteConfig: RemoteConfig
 ): HomeRevampRepository {
 
-    var CHANNEL_LIMIT_FOR_PAGINATION = 1
+    private var CHANNEL_LIMIT_FOR_PAGINATION = 1
+    companion object{
+        private const val TYPE_ATF_1 = "atf-1"
+    }
     var isCacheExist = false
     val gson = Gson()
 
-    val jobList = mutableListOf<Deferred<AtfData>>()
+    private val jobList = mutableListOf<Deferred<AtfData>>()
 
     override fun getHomeData(): Flow<HomeData?> = homeCachedDataSource.getCachedHomeData().map {
         isCacheExist = it != null
@@ -110,14 +113,12 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 if (homeAtfResponse?.dataList == null) {
                     isAtfSuccess = false
                     homeData.atfData = null
-                    emit(Result.errorAtf(Throwable("ATF data list is null"),null))
                 } else {
                     homeData.atfData = homeAtfResponse
                 }
             } catch (e: Exception) {
                 homeData.atfData = null
                 isAtfSuccess = false
-                emit(Result.errorAtf(e,null))
             }
 
             /**
@@ -181,7 +182,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 try {
                                     val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase(atfData.param)
                                     dynamicIcon?.let {
-                                        atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon)
+                                        atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon.copy(type=if(atfData.param.contains(TYPE_ATF_1)) 1 else 2))
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }
                                     homeData.atfData?.isProcessingAtf = false
@@ -238,13 +239,16 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 homeData.isProcessingDynamicChannel = false
                 homeCachedDataSource.saveToDatabase(homeData)
             } else if (dynamicChannelResponseValue == null) {
-                emit(Result.error(Throwable()))
                 /**
                  * 7.1 Emit error pagination only when atf is empty
                  * Because there is no content that we can show, we showing error page
                  */
-                if ((homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) || homeData.atfData?.dataList?.isEmpty() == true) {
+                if (homeData.atfData == null ||
+                        (homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) ||
+                        homeData.atfData?.dataList?.isEmpty() == true) {
                     emit(Result.errorGeneral(Throwable(),null))
+                } else {
+                    emit(Result.error(Throwable(), null))
                 }
                 homeCachedDataSource.saveToDatabase(homeData)
             }
