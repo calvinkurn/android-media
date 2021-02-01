@@ -177,7 +177,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 this,
                 null,
                 null,
-                null,
                 this,
                 this,
                 true,
