@@ -172,7 +172,7 @@ class MultiLineGraphViewHolder(
                 it.gone()
             }
             commonWidgetErrorState.visible()
-            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+            ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
 
         setupTooltip(element)
@@ -185,12 +185,12 @@ class MultiLineGraphViewHolder(
                 tvShcMultiLineGraphTitle.text = title
 
                 val dimen12dp = context.resources.getDimension(R.dimen.shc_dimen_12dp).toInt()
-                val dimen8dp = context.resources.getDimension(R.dimen.layout_lvl1).toInt()
+                val dimen8dp = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).toInt()
                 rvShcGraphMetrics.setMargin(dimen12dp, dimen8dp, dimen12dp, 0)
             } else {
 
                 val dimen12dp = context.resources.getDimension(R.dimen.shc_dimen_12dp).toInt()
-                val dimen16dp = context.resources.getDimension(R.dimen.layout_lvl2).toInt()
+                val dimen16dp = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()
                 tvShcMultiLineGraphTitle.gone()
                 rvShcGraphMetrics.setMargin(dimen12dp, dimen16dp, dimen12dp, 0)
             }
@@ -351,7 +351,7 @@ class MultiLineGraphViewHolder(
             xAxis {
                 val xAxisLabels = lineChartData?.chartEntry?.map { it.xLabel }.orEmpty()
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -359,7 +359,7 @@ class MultiLineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData?.yAxisLabel.orEmpty()
-                textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }
