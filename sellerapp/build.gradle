@@ -211,6 +211,7 @@ dependencies {
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerAppWidget)
     implementation project(rootProject.ext.features.sellerHome)
+    implementation project(rootProject.ext.features.sellerHomeNavigationCommon)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
