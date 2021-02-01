@@ -847,26 +847,28 @@ class PlayViewModel @Inject constructor(
 
     private fun updateLikeAndTotalViewInfo(likeParamInfo: PlayLikeParamInfoUiModel, channelId: String) {
         viewModelScope.launchCatchError(block = {
-            val deferredReportSummaries = async { getReportSummaries(channelId) }
-            val deferredIsLiked = async { getIsLiked(likeParamInfo) }
+            supervisorScope {
+                val deferredReportSummaries = async { getReportSummaries(channelId) }
+                val deferredIsLiked = async { getIsLiked(likeParamInfo) }
 
-            val (totalView, totalLike, totalLikeFormatted) = try {
-                val report = deferredReportSummaries.await().data.first().channel.metrics
-                Triple(report.totalViewFmt, report.totalLike.toIntOrZero(), report.totalLikeFmt)
-            } catch (e: Throwable) {
-                Triple("", 0 , "0")
+                val (totalView, totalLike, totalLikeFormatted) = try {
+                    val report = deferredReportSummaries.await().data.first().channel.metrics
+                    Triple(report.totalViewFmt, report.totalLike.toIntOrZero(), report.totalLikeFmt)
+                } catch (e: Throwable) {
+                    Triple("", 0 , "0")
+                }
+
+                val isLiked = try { deferredIsLiked.await() } catch (e: Throwable) { false }
+
+                val newLikeStatus = PlayLikeStatusInfoUiModel(
+                        totalLike = totalLike,
+                        totalLikeFormatted = totalLikeFormatted,
+                        isLiked = isLiked
+                )
+                _observableLikeInfo.value = likeParamInfo + newLikeStatus
+
+                _observableTotalViews.value = PlayTotalViewUiModel.Complete(totalView)
             }
-
-            val isLiked = try { deferredIsLiked.await() } catch (e: Throwable) { false }
-
-            val newLikeStatus = PlayLikeStatusInfoUiModel(
-                    totalLike = totalLike,
-                    totalLikeFormatted = totalLikeFormatted,
-                    isLiked = isLiked
-            )
-            _observableLikeInfo.value = likeParamInfo + newLikeStatus
-
-            _observableTotalViews.value = PlayTotalViewUiModel.Complete(totalView)
         }, onError = {
             _observableLikeInfo.value = likeParamInfo + PlayLikeStatusInfoUiModel(
                     totalLike = 0,
