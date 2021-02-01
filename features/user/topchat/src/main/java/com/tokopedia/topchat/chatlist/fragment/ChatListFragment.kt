@@ -318,10 +318,16 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         chatItemListViewModel.isChatAdminEligible.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
-                    loadInitialData()
+                    result.data.let { isEligible ->
+                        if (isEligible) {
+                            loadInitialData()
+                        } else {
+                            adapter?.showNoAccessView()
+                        }
+                    }
                 }
                 is Fail -> {
-                    adapter?.showNoAccessView()
+                    showGetListError(result.throwable)
                 }
             }
         }
