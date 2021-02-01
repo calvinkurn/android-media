@@ -51,8 +51,8 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
 
     fun checkUpcomingSaleTimer() {
         val pageEndPoint = components.pageEndPoint
-        getComponent(components.parentComponentId, pageEndPoint)?.let { tabItem ->
-            getComponent(tabItem.parentComponentId, pageEndPoint)?.let { tabs ->
+        getComponent(components.parentComponentId, pageEndPoint)?.let { tabItemParent ->
+            getComponent(tabItemParent.parentComponentId, pageEndPoint)?.let { tabs ->
                 tabs.data?.let { tabItem ->
                     if (tabItem.size >= 2 && !tabItem[1].targetComponentId.isNullOrEmpty()) {
                         val targetComponentIdList = tabItem[1].targetComponentId?.split(",")?.map { it.trim() }
@@ -116,9 +116,10 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
                     timerUnify.onTick = {
                         timerUnify.timer?.let { countDownTimer ->
                             if (countDownTimer != timerWithBannerCounter) {
-                                timerWithBannerCounter = timerUnify.timer
+                                timerWithBannerCounter = countDownTimer
                             }
-                            timerUnify.onTick = {
+                            timerUnify.post {
+                                timerUnify.onTick = null
                             }
                         }
                     }
