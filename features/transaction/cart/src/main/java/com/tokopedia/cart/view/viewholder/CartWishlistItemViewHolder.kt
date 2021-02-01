@@ -6,6 +6,7 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_product_wishlist.view.*
@@ -55,7 +56,7 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
     private fun renderFreeShipping(element: CartWishlistItemHolderData) {
         itemView.img_free_shipping?.apply {
             if (element.freeShipping && element.freeShippingUrl.isNotBlank()) {
-                setImageUrl(element.freeShippingUrl)
+                loadImage(element.freeShippingUrl)
                 show()
             } else {
                 gone()
@@ -79,7 +80,7 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
     private fun renderShopBadge(element: CartWishlistItemHolderData) {
         itemView.img_shop_badge?.apply {
             if (element.badgeUrl.isNotBlank()) {
-                setImageUrl(element.badgeUrl)
+                loadImage(element.badgeUrl)
                 show()
             } else {
                 gone()
@@ -113,7 +114,7 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
     private fun renderProductImage(element: CartWishlistItemHolderData) {
         itemView.img_product?.apply {
             if (element.imageUrl.isNotBlank()) {
-                setImageUrl(element.imageUrl)
+                loadImage(element.imageUrl)
                 show()
             }
         }

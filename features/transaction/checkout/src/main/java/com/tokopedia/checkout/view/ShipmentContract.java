@@ -144,7 +144,7 @@ public interface ShipmentContract {
 
         boolean isTradeInByDropOff();
 
-        void updateButtonPromoCheckout(PromoUiModel promoUiModel);
+        void updateButtonPromoCheckout(PromoUiModel promoUiModel, boolean isNeedToHitValidateFinal);
 
         void resetCourier(ShipmentCartItemModel shipmentCartItemModel);
 

@@ -193,14 +193,6 @@
     <string name="error_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
     <string name="action_end_button">Selesai</string>
 
-    <!--Notif-->
-    <string name="title_notif_product_upload">Upload produk</string>
-    <string name="message_notif_product_upload">Mengupload produk</string>
-    <string name="message_notif_product_upload_success">Produk berhasil di-upload</string>
-    <string name="message_notif_product_upload_error">Product gagal di-upload. Coba lagi</string>
-    <string name="product_name_is_more_than_seventy_character">Nama Produk lebih dari 70 karakter</string>
-    <string name="product_name_should_be_not_empty">Nama produk tidak boleh kosong</string>
-
     <!--Product Add Validation-->
     <string name="error_invalid_category_id">Kategori tidak valid</string>
     <string name="error_invalid_photo_count">Biar selesai, tambah foto dulu, ya!</string>

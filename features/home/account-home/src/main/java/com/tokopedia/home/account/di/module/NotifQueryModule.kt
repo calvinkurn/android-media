@@ -16,7 +16,6 @@ import dagger.multibindings.StringKey
  * ade.hadian@tokopedia.com
  */
 
-@AccountLogoutScope
 @Module
 class NotifQueryModule {
 

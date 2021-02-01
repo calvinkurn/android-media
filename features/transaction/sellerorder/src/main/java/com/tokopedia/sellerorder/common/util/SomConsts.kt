@@ -67,6 +67,7 @@ object SomConsts {
     const val KEY_VIEW_COMPLAINT_SELLER = "view_complaint"
     const val KEY_SET_DELIVERED = "set_delivered"
     const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"
+    const val KEY_PRINT_AWB = "print"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"
@@ -118,8 +119,8 @@ object SomConsts {
 
     const val NOT_YET_PRINTED_LABEL = "Belum Dicetak"
     const val ALREADY_PRINT_LABEL = "Sudah Dicetak"
-    const val NOT_YET_PRINTED = 0
-    const val ALREADY_PRINT = 1
+    const val NOT_YET_PRINTED = 1
+    const val ALREADY_PRINT = 2
 
     const val TODAY_LABEL = "Hari ini"
     const val TOMORROW_LABEL = "Besok"
@@ -175,4 +176,10 @@ object SomConsts {
     // Som List Illustration
     const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_illustration.png"
     const val SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_with_filter_illustration.png"
+
+    // Som print awb
+    const val PATH_PRINT_AWB = "shipping-label"
+    const val PRINT_AWB_ORDER_ID_QUERY_PARAM = "order_id"
+    const val PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM = "mark_as_printed"
+    const val PRINT_AWB_WEBVIEW_TITLE = "Pengaturan Label Pengiriman"
 }

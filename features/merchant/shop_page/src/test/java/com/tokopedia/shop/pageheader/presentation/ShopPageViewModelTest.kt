@@ -6,7 +6,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
@@ -28,10 +27,11 @@ import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -347,12 +347,11 @@ class ShopPageViewModelTest {
             (thirdArg() as CustomTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
 
-        mockkStatic(ImageUtils::class)
+        mockkStatic(ImageProcessingUtil::class)
         every {
-            ImageUtils.writeImageToTkpdPath(
-                    ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
+            ImageProcessingUtil.writeImageToTkpdPath(
                     mockBitmap,
-                    true)
+                    Bitmap.CompressFormat.PNG)
         } returns File("path")
         shopPageViewModel.saveShopImageToPhoneStorage(context, "")
         assert(shopPageViewModel.shopImagePath.value.orEmpty().isNotEmpty())

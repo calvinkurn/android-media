@@ -23,7 +23,6 @@ import javax.inject.Named
 /**
  * @author by furqan on 25/03/19
  */
-@HotelScope
 @Module
 class HotelModule {
 
