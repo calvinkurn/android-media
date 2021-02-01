@@ -54,18 +54,15 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
     }
 
     private fun renderDescription(element: ProductDetailInfoDataModel) = with(view) {
-        val subtitleDescription = element.dataContent.firstOrNull {
+        val descFormatted = element.dataContent.find {
             it.title.toLowerCase() == ProductDetailInfoConstant.DESCRIPTION_DETAIL_KEY
         }?.subtitle ?: ""
-
-        val descFormatted = MethodChecker.fromHtmlPreserveLineBreak(subtitleDescription)
 
         if (descFormatted.isNotEmpty()) {
             (product_detail_info_seemore.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
 
             product_detail_info_description.text = if (descFormatted.length > DESCRIPTION_LIMIT) {
-                val subDescr = descFormatted.toString().substring(0, DESCRIPTION_LIMIT)
-                MethodChecker.fromHtml(subDescr.replace("(\r\n|\n)".toRegex(), "") + "....")
+                MethodChecker.fromHtml(descFormatted.replace("(\r\n|\n)".toRegex(), "") + "....")
             } else descFormatted
             product_detail_info_description?.show()
         } else {
@@ -73,7 +70,4 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
             product_detail_info_description?.hide()
         }
     }
-
-    private fun getComponentTrackData(element: ProductDetailInfoDataModel?) = ComponentTrackDataModel(element?.type
-            ?: "", element?.name ?: "", adapterPosition + 1)
 }
