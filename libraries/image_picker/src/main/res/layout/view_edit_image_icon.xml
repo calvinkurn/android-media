@@ -22,5 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
+        android:textColor="@color/Unify_N700"
         tools:text="Watermark"/>
 </LinearLayout>
