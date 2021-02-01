@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -50,6 +49,7 @@ class WidgetNotificationViewHolder constructor(
     private fun initRecyclerView() {
         historyTimeLine?.apply {
             setHasFixedSize(true)
+            itemAnimator = null
             isNestedScrollingEnabled = false
             setRecycledViewPool(adapterListener?.getWidgetTimelineViewPool())
             layoutManager = LinearLayoutManager(itemView.context)
@@ -175,12 +175,12 @@ class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>(), TimeLineViewH
         notifyDataSetChanged()
     }
 
-    override fun isLastItem(item: TrackHistory): Boolean {
-        return histories.isNotEmpty() && histories.last() == item
+    override fun isLastItem(position: Int): Boolean {
+        return histories.isNotEmpty() && position == histories.lastIndex
     }
 
-    override fun isFirstItem(item: TrackHistory): Boolean {
-        return histories.isNotEmpty() && histories.first() == item
+    override fun isFirstItem(position: Int): Boolean {
+        return histories.isNotEmpty() && position == 0
     }
 }
 
@@ -193,8 +193,8 @@ class TimeLineViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
 
     interface Listener {
-        fun isLastItem(item: TrackHistory): Boolean
-        fun isFirstItem(item: TrackHistory): Boolean
+        fun isLastItem(position: Int): Boolean
+        fun isFirstItem(position: Int): Boolean
     }
 
     private val title: Typography? = itemView.findViewById(R.id.tp_timeline_title)
@@ -205,8 +205,8 @@ class TimeLineViewHolder(
     fun bind(trackHistory: TrackHistory) {
         bindTitle(trackHistory)
         bindDesc(trackHistory)
-        bindTopLine(trackHistory)
-        bindBottomLine(trackHistory)
+        bindTopLine()
+        bindBottomLine()
     }
 
     private fun bindTitle(trackHistory: TrackHistory) {
@@ -217,16 +217,16 @@ class TimeLineViewHolder(
         desc?.text = TimeHelper.getRelativeTimeFromNow(trackHistory.createTimeUnixMillis)
     }
 
-    private fun bindTopLine(trackHistory: TrackHistory) {
-        if (listener.isFirstItem(trackHistory)) {
+    private fun bindTopLine() {
+        if (listener.isFirstItem(adapterPosition)) {
             topLine?.setBackgroundResource(com.tokopedia.unifycomponents.R.color.Unify_N100)
         } else {
             topLine?.setBackgroundResource(com.tokopedia.unifycomponents.R.color.Unify_G400)
         }
     }
 
-    private fun bindBottomLine(trackHistory: TrackHistory) {
-        bottomLine?.showWithCondition(!listener.isLastItem(trackHistory))
+    private fun bindBottomLine() {
+        bottomLine?.showWithCondition(!listener.isLastItem(adapterPosition))
     }
 
     companion object {
