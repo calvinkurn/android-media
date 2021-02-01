@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.content.Context
 import android.os.Bundle
-import androidx.annotation.DrawableRes
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
@@ -58,11 +58,11 @@ data class ProductShopCredibilityDataModel(
         }
 
         val listOfData = mutableListOf(
-                ShopCredibilityUiData(if (shopRating == 0F) "" else shopRating.toString(), context.getString(R.string.product_shop_rating), R.drawable.ic_review_gray),
-                ShopCredibilityUiData(shopSpeed.getRelativeDateByHours(context), context.getString(R.string.product_shop_process_product), R.drawable.ic_time_grey),
-                ShopCredibilityUiData(shopChatSpeed.getRelativeDateByMinute(context), context.getString(R.string.product_shop_chat_reply), R.drawable.ic_chat_grey),
-                ShopCredibilityUiData(shopActiveProduct.productThousandFormatted(0), context.getString(R.string.product_shop_total_product), R.drawable.ic_product_grey),
-                ShopCredibilityUiData(createdDated, context.getString(R.string.product_shop_start_sell), R.drawable.ic_merchant_grey)
+                ShopCredibilityUiData(if (shopRating == 0F) "" else shopRating.toString(), context.getString(R.string.product_shop_rating), IconUnify.STAR),
+                ShopCredibilityUiData(shopSpeed.getRelativeDateByHours(context), context.getString(R.string.product_shop_process_product), IconUnify.CLOCK),
+                ShopCredibilityUiData(shopChatSpeed.getRelativeDateByMinute(context), context.getString(R.string.product_shop_chat_reply), IconUnify.CHAT),
+                ShopCredibilityUiData(shopActiveProduct.productThousandFormatted(0), context.getString(R.string.product_shop_total_product), IconUnify.PRODUCT),
+                ShopCredibilityUiData(createdDated, context.getString(R.string.product_shop_start_sell), IconUnify.SHOP)
         )
 
         return listOfData
@@ -113,6 +113,7 @@ data class ProductShopCredibilityDataModel(
 data class ShopCredibilityUiData(
         val value: String = "",
         val desc: String = "",
-        @DrawableRes
         val icon: Int = 0
-)
+) {
+    fun iconIsNotEmpty(): Boolean = icon != 0
+}
