@@ -534,7 +534,7 @@ class MultiLineGraphViewHolder(
         with(itemView) {
             chartViewShcMultiLine.gone()
             commonWidgetErrorState.visible()
-            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+            ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
     }
 
