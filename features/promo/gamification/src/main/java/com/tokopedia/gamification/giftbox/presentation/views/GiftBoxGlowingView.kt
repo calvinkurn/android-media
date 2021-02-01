@@ -49,7 +49,7 @@ open class GiftBoxGlowingView @JvmOverloads constructor(
 
     override fun dispatchDraw(canvas: Canvas) {
         clipRadius(canvas)
-        drawShadow(canvas)
+//        drawShadow(canvas)
         super.dispatchDraw(canvas)
     }
 
