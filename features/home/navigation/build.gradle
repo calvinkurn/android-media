@@ -130,10 +130,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-
-    debugImplementation (rootProject.ext.testDependencies.fragmentTest, {
-        exclude group: 'androidx.test', module: 'core'
-    })
 }
 
 project.ext {
