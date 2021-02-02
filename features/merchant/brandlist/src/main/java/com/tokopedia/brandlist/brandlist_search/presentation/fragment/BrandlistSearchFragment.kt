@@ -1,5 +1,6 @@
 package com.tokopedia.brandlist.brandlist_search.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
@@ -140,6 +141,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         return view
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getTotalBrands()
