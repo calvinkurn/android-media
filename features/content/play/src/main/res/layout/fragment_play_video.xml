@@ -8,7 +8,7 @@
     >
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_one_tap_post"
+        android:id="@+id/gl_onboarding_post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -39,15 +39,15 @@
         />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_one_tap_finger"
+        android:id="@+id/iv_onboarding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:alpha="0"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gl_one_tap_post"
-        app:srcCompat="@drawable/ic_play_one_tap_finger"
+        app:layout_constraintTop_toBottomOf="@id/gl_onboarding_post"
+        app:srcCompat="@drawable/ic_play_onboarding"
         />
 
     <View

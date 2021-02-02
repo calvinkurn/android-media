@@ -33,7 +33,7 @@ import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
-import com.tokopedia.play.view.viewcomponent.OneTapViewComponent
+import com.tokopedia.play.view.viewcomponent.OnboardingViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
@@ -65,7 +65,7 @@ class PlayVideoFragment @Inject constructor(
 
     private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
-    private val oneTapView by viewComponent { OneTapViewComponent(it, R.id.iv_one_tap_finger) }
+    private val onboardingView by viewComponent { OnboardingViewComponent(it, R.id.iv_onboarding) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
 
     private val blurUtil: ImageBlurUtil by lifecycleBound (
@@ -297,8 +297,8 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun observeOneTapOnboarding() {
-        viewModel.observableOneTapOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            if (!orientation.isLandscape && !playViewModel.videoOrientation.isHorizontal) oneTapView.showAnimated()
+        viewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
+            if (!orientation.isLandscape && !playViewModel.videoOrientation.isHorizontal) onboardingView.showAnimated()
         })
     }
 
@@ -314,7 +314,7 @@ class PlayVideoFragment @Inject constructor(
     private fun observeEventUserInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.isFreeze || it.isBanned) {
-                oneTapView.hide()
+                onboardingView.hide()
             }
 
             videoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)

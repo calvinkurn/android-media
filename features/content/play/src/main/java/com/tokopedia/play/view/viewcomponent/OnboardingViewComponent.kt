@@ -12,7 +12,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 /**
  * Created by jegul on 31/07/20
  */
-class OneTapViewComponent(
+class OnboardingViewComponent(
         container: ViewGroup,
         @IdRes idRes: Int
 ) : ViewComponent(container, idRes) {

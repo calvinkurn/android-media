@@ -62,7 +62,7 @@ class PlayVideoViewModelTest {
 
         val expectedResult = Event(Unit)
 
-        Assertions.assertThat(playVideoViewModel.observableOneTapOnboarding.getOrAwaitValue())
+        Assertions.assertThat(playVideoViewModel.observableOnboarding.getOrAwaitValue())
                 .isEqualToComparingFieldByField(expectedResult)
     }
 
@@ -82,7 +82,7 @@ class PlayVideoViewModelTest {
 
         val expectedResult = Event(Unit)
 
-        Assertions.assertThat(playVideoViewModel.observableOneTapOnboarding.getOrAwaitValue())
+        Assertions.assertThat(playVideoViewModel.observableOnboarding.getOrAwaitValue())
                 .isEqualToComparingFieldByField(expectedResult)
     }
 
@@ -100,7 +100,7 @@ class PlayVideoViewModelTest {
         val testDispatcher = dispatchers.main as TestCoroutineDispatcher
         testDispatcher.advanceTimeBy(5000)
 
-        playVideoViewModel.observableOneTapOnboarding.getOrAwaitValue()
+        playVideoViewModel.observableOnboarding.getOrAwaitValue()
     }
 
 }
