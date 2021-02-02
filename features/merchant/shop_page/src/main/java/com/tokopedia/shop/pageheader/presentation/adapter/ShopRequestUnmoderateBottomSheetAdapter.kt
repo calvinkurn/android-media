@@ -31,6 +31,11 @@ class ShopRequestUnmoderateBottomSheetAdapter(
     )
     private var lastSelectedRadioPosition = 0
 
+    init {
+        // set initial radio picker value
+        bottomsheetViewHolderListener.setOptionValue(requestUnmoderateOptionList[0].optionValue)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopRequestUnmoderateBottomSheetViewHolder {
         return ShopRequestUnmoderateBottomSheetViewHolder(
                 parent.inflateLayout(VIEWHOLDER_LAYOUT)
