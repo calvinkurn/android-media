@@ -26,7 +26,7 @@ data class AutoApplyVoucher(
 
         @SerializedName("discount_amount")
         @Expose
-        val discountAmount: Long = 0,
+        val discountAmount: Double = 0.0,
 
         @SerializedName("discount_price")
         @Expose
@@ -34,7 +34,7 @@ data class AutoApplyVoucher(
 
         @SerializedName("discounted_amount")
         @Expose
-        val discountedAmount: Long = 0,
+        val discountedAmount: Double = 0.0,
 
         @SerializedName("discounted_price")
         @Expose

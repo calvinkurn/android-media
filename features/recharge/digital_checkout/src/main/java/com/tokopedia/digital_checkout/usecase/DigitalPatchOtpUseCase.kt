@@ -6,6 +6,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.akamai_bot_lib.map
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase
@@ -35,9 +36,13 @@ class DigitalPatchOtpUseCase @Inject constructor(@DigitalCartCheckoutQualifier v
         val requestBody = JsonObject()
         requestBody.add("data", jsonElement)
 
+        val mapHeader = mutableMapOf<String, String>()
+        mapHeader[KEY_CONTENT_TYPE] = VALUE_CONTENT_TYPE
+
         val restRequest = RestRequest.Builder(url, token)
                 .setRequestType(RequestType.PATCH)
                 .setBody(requestBody)
+                .setHeaders(mapHeader)
                 .build()
         networkRequest.add(restRequest)
         return networkRequest
@@ -51,5 +56,8 @@ class DigitalPatchOtpUseCase @Inject constructor(@DigitalCartCheckoutQualifier v
 
     companion object {
         const val PARAM_REQUEST_OTP_SUCCESS = "PARAM_REQUEST_OTP_SUCCESS"
+
+        private const val KEY_CONTENT_TYPE = "Content-Type"
+        private const val VALUE_CONTENT_TYPE = "application/json"
     }
 }

@@ -17,8 +17,8 @@ import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 object DigitalCartDummyData {
     fun getDummyGetCartResponse(): RechargeGetCart {
         val openPaymentConfig = RechargeGetCart.OpenPaymentConfig(
-                minPayment = 100,
-                maxPayment = 12500,
+                minPayment = 100.0,
+                maxPayment = 12500.0,
                 minPaymentText = "Rp 100",
                 maxPaymentText = "Rp 12.500",
                 minPaymentErrorText = "Nominal pembayaran di bawah batas pembayaran",
@@ -36,7 +36,7 @@ object DigitalCartDummyData {
 
         val autoApplyVoucher = AutoApplyVoucher(
                 discountedPrice = "Rp 12.500",
-                discountedAmount = 12500,
+                discountedAmount = 12500.0,
                 discountPrice = "Rp 12.500"
         )
 
@@ -59,8 +59,8 @@ object DigitalCartDummyData {
                 optIn = true,
                 checkBoxDisabled = false,
                 allowOVOPoints = false,
-                fintechAmount = 500,
-                fintechPartnerAmount = 500,
+                fintechAmount = 500.0,
+                fintechPartnerAmount = 500.0,
                 info = FintechProduct.FintechProductInfo(
                         title = "Yuk mulai nabung emas",
                         subtitle = "Rp  500",
@@ -77,7 +77,7 @@ object DigitalCartDummyData {
                 operatorName = "JTrust Olympindo Multi Finance",
                 icon = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/9/26/5511722/5511722_36540d36-688d-40db-b3aa-04114e598e14.png",
                 priceText = "Rp 12.500",
-                price = 12500,
+                price = 12500.0,
                 isInstantCheckout = false,
                 isOtpRequired = false,
                 sms_state = "",
@@ -98,8 +98,8 @@ object DigitalCartDummyData {
 
     fun getDummyGetCartResponseWithDefaultCrossSellType(): RechargeGetCart {
         val openPaymentConfig = RechargeGetCart.OpenPaymentConfig(
-                minPayment = 100,
-                maxPayment = 12500,
+                minPayment = 100.0,
+                maxPayment = 12500.0,
                 minPaymentText = "Rp 100",
                 maxPaymentText = "Rp 12.500",
                 minPaymentErrorText = "Nominal pembayaran di bawah batas pembayaran",
@@ -117,7 +117,7 @@ object DigitalCartDummyData {
 
         val autoApplyVoucher = AutoApplyVoucher(
                 discountedPrice = "Rp 12.500",
-                discountedAmount = 12500,
+                discountedAmount = 12500.0,
                 discountPrice = "Rp 12.500"
         )
 
@@ -140,8 +140,8 @@ object DigitalCartDummyData {
                 optIn = true,
                 checkBoxDisabled = false,
                 allowOVOPoints = false,
-                fintechAmount = 500,
-                fintechPartnerAmount = 500,
+                fintechAmount = 500.0,
+                fintechPartnerAmount = 500.0,
                 info = FintechProduct.FintechProductInfo(
                         title = "Yuk mulai nabung emas",
                         subtitle = "Rp  500",
@@ -158,7 +158,7 @@ object DigitalCartDummyData {
                 operatorName = "JTrust Olympindo Multi Finance",
                 icon = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/9/26/5511722/5511722_36540d36-688d-40db-b3aa-04114e598e14.png",
                 priceText = "Rp 12.500",
-                price = 12500,
+                price = 12500.0,
                 isInstantCheckout = false,
                 isOtpRequired = false,
                 sms_state = "",
@@ -179,8 +179,8 @@ object DigitalCartDummyData {
 
     fun getDummyGetCartResponseWithRequiredOtp(): RechargeGetCart {
         val openPaymentConfig = RechargeGetCart.OpenPaymentConfig(
-                minPayment = 100,
-                maxPayment = 12500,
+                minPayment = 100.0,
+                maxPayment = 12500.0,
                 minPaymentText = "Rp 100",
                 maxPaymentText = "Rp 12.500",
                 minPaymentErrorText = "Nominal pembayaran di bawah batas pembayaran",
@@ -198,7 +198,7 @@ object DigitalCartDummyData {
 
         val autoApplyVoucher = AutoApplyVoucher(
                 discountedPrice = "Rp 12.500",
-                discountedAmount = 12500,
+                discountedAmount = 12500.0,
                 discountPrice = "Rp 12.500"
         )
 
@@ -221,8 +221,8 @@ object DigitalCartDummyData {
                 optIn = true,
                 checkBoxDisabled = false,
                 allowOVOPoints = false,
-                fintechAmount = 500,
-                fintechPartnerAmount = 500,
+                fintechAmount = 500.0,
+                fintechPartnerAmount = 500.0,
                 info = FintechProduct.FintechProductInfo(
                         title = "Yuk mulai nabung emas",
                         subtitle = "Rp  500",
@@ -239,7 +239,7 @@ object DigitalCartDummyData {
                 operatorName = "JTrust Olympindo Multi Finance",
                 icon = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/9/26/5511722/5511722_36540d36-688d-40db-b3aa-04114e598e14.png",
                 priceText = "Rp 12.500",
-                price = 12500,
+                price = 12500.0,
                 isInstantCheckout = false,
                 isOtpRequired = true,
                 sms_state = "",
@@ -265,7 +265,7 @@ object DigitalCartDummyData {
         )
 
         val autoApplyVoucher = com.tokopedia.digital_checkout.data.response.atc.AutoApplyVoucher(
-                discountAmount = 2510,
+                discountAmount = 2510.0,
                 messageSuccess = "Success"
         )
 
@@ -294,8 +294,8 @@ object DigitalCartDummyData {
                 optIn = true,
                 checkBoxDisabled = false,
                 allowOVOPoints = false,
-                fintechAmount = 500,
-                fintechPartnerAmount = 500,
+                fintechAmount = 500.0,
+                fintechPartnerAmount = 500.0,
                 info = FintechProduct.FintechProductInfo(
                         title = "Yuk mulai nabung emas",
                         subtitle = "Rp  500",
@@ -310,7 +310,7 @@ object DigitalCartDummyData {
                 categoryName = "Listrik PLN",
                 operatorName = "Tagihan Listrik",
                 price = "Rp 2.510",
-                pricePlain = 100000,
+                pricePlain = 100000.0,
                 isNeedOtp = false,
                 mainInfo = listOf(AttributesCart.InfoDetail("ID Pelanggan",
                         "102111106111")),

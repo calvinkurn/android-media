@@ -16,6 +16,8 @@ import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.atc.ResponseCartData
 import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.track.TrackApp
 
 /**
@@ -23,6 +25,20 @@ import com.tokopedia.track.TrackApp
  */
 
 object DigitalCheckoutMapper {
+
+    fun mapToPromoData(cartInfo: CartDigitalInfoData): PromoData {
+        var promoData: PromoData? = null
+        cartInfo.attributes?.autoApplyVoucher?.let {
+            if (it.isSuccess && !(cartInfo.attributes?.isCouponActive == 0 && it.isCoupon == 1)) {
+                promoData = PromoData(title = it.title ?: "",
+                        description = it.messageSuccess ?: "",
+                        promoCode = it.code ?: "",
+                        typePromo = it.isCoupon,
+                        state = TickerCheckoutView.State.ACTIVE)
+            }
+        }
+        return promoData ?: PromoData()
+    }
 
     fun mapToCartDigitalInfoData(responseCartData: ResponseCartData): CartDigitalInfoData {
         try {
@@ -61,9 +77,9 @@ object DigitalCheckoutMapper {
                 if (attributes.userInputPrice != null) {
                     val userInputPriceDigital = AttributesDigitalData.UserInputPriceDigital()
                     userInputPriceDigital.maxPaymentPlain = attributes.userInputPrice?.maxPaymentPlain
-                            ?: 0
+                            ?: 0.0
                     userInputPriceDigital.minPaymentPlain = attributes.userInputPrice?.minPaymentPlain
-                            ?: 0
+                            ?: 0.0
                     userInputPriceDigital.minPayment = attributes.userInputPrice?.minPayment
                     userInputPriceDigital.maxPayment = attributes.userInputPrice?.maxPayment
                     attributesDigital.userInputPrice = userInputPriceDigital
@@ -111,6 +127,8 @@ object DigitalCheckoutMapper {
 
             responseCartData.attributes?.run {
                 cartDigitalInfoData.crossSellingType = crossSellingType
+                cartDigitalInfoData.showSubscriptionsView = crossSellingType == DigitalCartCrossSellingType.MYBILLS.id ||
+                        crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
                 crossSellingConfig?.run {
                     val crossSellingConfig = CartDigitalInfoData.CrossSellingConfig()
                     crossSellingConfig.isSkipAble = isSkipAble
@@ -184,13 +202,14 @@ object DigitalCheckoutMapper {
                 attributesDigital.voucherAutoCode = attributes.voucher
 
                 val userInputPrice = responseRechargeGetCart.response.openPaymentConfig
-                val userInputPriceDigital = AttributesDigitalData.UserInputPriceDigital()
-                userInputPriceDigital.maxPaymentPlain = userInputPrice.maxPayment
-                userInputPriceDigital.minPaymentPlain = userInputPrice.minPayment
-                userInputPriceDigital.minPayment = userInputPrice.minPaymentText
-                userInputPriceDigital.maxPayment = userInputPrice.maxPaymentText
-                attributesDigital.userInputPrice = userInputPriceDigital
-
+                if (userInputPrice.maxPayment != 0.0 && userInputPrice.minPayment != 0.0) {
+                    val userInputPriceDigital = AttributesDigitalData.UserInputPriceDigital()
+                    userInputPriceDigital.maxPaymentPlain = userInputPrice.maxPayment
+                    userInputPriceDigital.minPaymentPlain = userInputPrice.minPayment
+                    userInputPriceDigital.minPayment = userInputPrice.minPaymentText
+                    userInputPriceDigital.maxPayment = userInputPrice.maxPaymentText
+                    attributesDigital.userInputPrice = userInputPriceDigital
+                }
 
                 if (attributes.autoApply != null) {
                     val entity = attributes.autoApply
@@ -222,6 +241,8 @@ object DigitalCheckoutMapper {
 
             responseRechargeGetCart.response.run {
                 cartDigitalInfoData.crossSellingType = crossSellingType
+                cartDigitalInfoData.showSubscriptionsView = crossSellingType == DigitalCartCrossSellingType.MYBILLS.id ||
+                        crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
                 crossSellingConfig.run {
                     val crossSellingConfig = CartDigitalInfoData.CrossSellingConfig()
                     crossSellingConfig.isSkipAble = canBeSkipped
@@ -280,7 +301,7 @@ object DigitalCheckoutMapper {
         digitalCheckoutDataParameter.relationId = cartDigitalInfoData.id
         digitalCheckoutDataParameter.relationType = cartDigitalInfoData.type
         digitalCheckoutDataParameter.transactionAmount = cartDigitalInfoData.attributes?.pricePlain
-                ?: 0
+                ?: 0.0
         digitalCheckoutDataParameter.userAgent = DeviceUtil.userAgentForApiCall
         digitalCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
         return digitalCheckoutDataParameter
@@ -294,7 +315,7 @@ object DigitalCheckoutMapper {
 
         val attributes = RequestBodyCheckout.AttributesCheckout()
         attributes.voucherCode = checkoutData.voucherCode
-        attributes.transactionAmount = checkoutData.transactionAmount
+        attributes.transactionAmount = checkoutData.transactionAmount.toLong()
         attributes.ipAddress = checkoutData.ipAddress
         attributes.userAgent = checkoutData.userAgent
         attributes.identifier = digitalIdentifierParam
@@ -306,7 +327,8 @@ object DigitalCheckoutMapper {
             attributes.appsFlyer = DeviceUtil.getAppsFlyerIdentifierParam(
                     TrackApp.getInstance().appsFlyer.uniqueId,
                     TrackApp.getInstance().appsFlyer.googleAdId)
-        } catch (e: Throwable) { }
+        } catch (e: Throwable) {
+        }
 
         attributes.subscribe = checkoutData.isSubscriptionChecked
 
@@ -316,8 +338,8 @@ object DigitalCheckoutMapper {
                         transactionType = transactionType,
                         tierId = tierId,
                         userId = attributes.identifier?.userId?.toLongOrNull(),
-                        fintechAmount = fintechAmount,
-                        fintechPartnerAmount = fintechPartnerAmount,
+                        fintechAmount = fintechAmount.toLong(),
+                        fintechPartnerAmount = fintechPartnerAmount.toLong(),
                         productName = info.title
                 ))
             }

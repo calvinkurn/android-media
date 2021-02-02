@@ -18,7 +18,7 @@ data class AttributesDigitalData(
 
         var operatorName: String? = null,
 
-        var pricePlain: Long = 0,
+        var pricePlain: Double = 0.0,
 
         var isInstantCheckout: Boolean = false,
 
@@ -49,9 +49,9 @@ data class AttributesDigitalData(
 
             var maxPayment: String? = null,
 
-            var minPaymentPlain: Long = 0,
+            var minPaymentPlain: Double = 0.0,
 
-            var maxPaymentPlain: Long = 0
+            var maxPaymentPlain: Double = 0.0
     ) : Parcelable
 
     @Parcelize
@@ -62,7 +62,7 @@ data class AttributesDigitalData(
 
             var isCoupon: Int = 0,
 
-            var discountAmount: Long = 0,
+            var discountAmount: Double = 0.0,
 
             var title: String? = null,
 
