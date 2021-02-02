@@ -74,31 +74,135 @@ class InboxViewModelTest {
     }
 
     @Test
-    fun `hasShowOnBoarding should return hasShownBuyer`() {
-        // given
-        every { userSession.hasShop() } returns false
-        every { cacheManager.loadCacheBoolean("key_onboarding_seller") } returns false
-        every { cacheManager.loadCacheBoolean("key_onboarding_buyer") } returns true
+    fun `buyerOnly_hasShowOnBoarding test`() {
+        hasShownGivenHelper(
+                hashShop = false,
+                cacheOnBoardingSeller = true,
+                cacheOnBoardingBuyer = true
+        )
+        assertEquals(true, viewModel.hasShowOnBoarding())
 
-        // when
-        val actualValue = viewModel.hasShowOnBoarding()
+        hasShownGivenHelper(
+                hashShop = false,
+                cacheOnBoardingSeller = true,
+                cacheOnBoardingBuyer = false
+        )
+        assertEquals(true, viewModel.hasShowOnBoarding())
 
-        // then
-        assertEquals(true, actualValue)
+        hasShownGivenHelper(
+                hashShop = false,
+                cacheOnBoardingSeller = true,
+                cacheOnBoardingBuyer = null
+        )
+        assertEquals(true, viewModel.hasShowOnBoarding())
+
+        hasShownGivenHelper(
+                hashShop = false,
+                cacheOnBoardingSeller = false,
+                cacheOnBoardingBuyer = true
+        )
+        assertEquals(true, viewModel.hasShowOnBoarding())
+
+        hasShownGivenHelper(
+                hashShop = false,
+                cacheOnBoardingSeller = false,
+                cacheOnBoardingBuyer = false
+        )
+        assertEquals(false, viewModel.hasShowOnBoarding())
+
+        hasShownGivenHelper(
+                hashShop = false,
+                cacheOnBoardingSeller = false,
+                cacheOnBoardingBuyer = null
+        )
+        assertEquals(false, viewModel.hasShowOnBoarding())
+
+        hasShownGivenHelper(
+                hashShop = false,
+                cacheOnBoardingSeller = null,
+                cacheOnBoardingBuyer = true
+        )
+        assertEquals(true, viewModel.hasShowOnBoarding())
+
+        hasShownGivenHelper(
+                hashShop = false,
+                cacheOnBoardingSeller = null,
+                cacheOnBoardingBuyer = false
+        )
+        assertEquals(false, viewModel.hasShowOnBoarding())
+
+        hasShownGivenHelper(
+                hashShop = false,
+                cacheOnBoardingSeller = null,
+                cacheOnBoardingBuyer = null
+        )
+        assertEquals(false, viewModel.hasShowOnBoarding())
     }
 
     @Test
-    fun `hasShowOnBoarding should return hasShownSeller`() {
-        // given
-        every { userSession.hasShop() } returns true
-        every { cacheManager.loadCacheBoolean("key_onboarding_seller") } returns true
-        every { cacheManager.loadCacheBoolean("key_onboarding_buyer") } returns false
+    fun `buyerWithShop_hasShowOnBoarding test`() {
+        hasShownGivenHelper(
+                hashShop = true,
+                cacheOnBoardingSeller = true,
+                cacheOnBoardingBuyer = true
+        )
+        assertEquals(true, viewModel.hasShowOnBoarding())
 
-        // when
-        val actualValue = viewModel.hasShowOnBoarding()
+        hasShownGivenHelper(
+                hashShop = true,
+                cacheOnBoardingSeller = true,
+                cacheOnBoardingBuyer = false
+        )
+        assertEquals(true, viewModel.hasShowOnBoarding())
 
-        // then
-        assertEquals(true, actualValue)
+        hasShownGivenHelper(
+                hashShop = true,
+                cacheOnBoardingSeller = true,
+                cacheOnBoardingBuyer = null
+        )
+        assertEquals(true, viewModel.hasShowOnBoarding())
+
+        hasShownGivenHelper(
+                hashShop = true,
+                cacheOnBoardingSeller = false,
+                cacheOnBoardingBuyer = true
+        )
+        assertEquals(false, viewModel.hasShowOnBoarding())
+
+        hasShownGivenHelper(
+                hashShop = true,
+                cacheOnBoardingSeller = false,
+                cacheOnBoardingBuyer = false
+        )
+        assertEquals(false, viewModel.hasShowOnBoarding())
+
+        hasShownGivenHelper(
+                hashShop = true,
+                cacheOnBoardingSeller = false,
+                cacheOnBoardingBuyer = null
+        )
+        assertEquals(false, viewModel.hasShowOnBoarding())
+
+        hasShownGivenHelper(
+                hashShop = true,
+                cacheOnBoardingSeller = null,
+                cacheOnBoardingBuyer = true
+        )
+        assertEquals(false, viewModel.hasShowOnBoarding())
+
+        hasShownGivenHelper(
+                hashShop = true,
+                cacheOnBoardingSeller = null,
+                cacheOnBoardingBuyer = false
+        )
+        assertEquals(false, viewModel.hasShowOnBoarding())
+
+        hasShownGivenHelper(
+                hashShop = true,
+                cacheOnBoardingSeller = null,
+                cacheOnBoardingBuyer = null
+        )
+        assertEquals(false, viewModel.hasShowOnBoarding())
     }
 
     @Test
@@ -150,6 +254,18 @@ class InboxViewModelTest {
     }
 
     @Test
+    fun `hasBeenVisited return false if null`() {
+        // given
+        every { cacheManager.loadCacheBoolean(any()) } returns null
+
+        // when
+        val actualValue = viewModel.hasBeenVisited()
+
+        // then
+        assertEquals(false, actualValue)
+    }
+
+    @Test
     fun `markAsVisited should marking the page as visited`() {
         // given
         every { cacheManager.saveCacheBoolean(any(), true) } just runs
@@ -159,6 +275,20 @@ class InboxViewModelTest {
 
         // then
         verify(exactly = 1) { cacheManager.saveCacheBoolean(any(), any()) }
+    }
+
+    private fun hasShownGivenHelper(
+            hashShop: Boolean,
+            cacheOnBoardingSeller: Boolean?,
+            cacheOnBoardingBuyer: Boolean?
+    ) {
+        every { userSession.hasShop() } returns hashShop
+        every { cacheManager.loadCacheBoolean(
+                InboxViewModel.KEY_ONBOARDING_SELLER)
+        } returns cacheOnBoardingSeller
+        every {
+            cacheManager.loadCacheBoolean(InboxViewModel.KEY_ONBOARDING_BUYER)
+        } returns cacheOnBoardingBuyer
     }
 
     companion object {
