@@ -16,21 +16,21 @@ class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener)
         homeCategoryListener.putEEToTrackingQueue(MixLeftComponentTracking.getMixLeftBannerView(channel, parentPos, homeCategoryListener.userId) as java.util.HashMap<String, Any>)
     }
 
-    override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
+    override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int) {
         //because we have empty value at beginning of list, we need to reduce pos by 1
         val itemPos = position - 1
         //GA
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(
-                MixLeftComponentTracking.getMixLeftProductView(channel, channelGrid, itemPos) as HashMap<String, Any>)
+                MixLeftComponentTracking.getMixLeftProductView(channel, channelGrid, itemPos, adapterPosition) as HashMap<String, Any>)
         //iris
-        homeCategoryListener.putEEToIris(MixLeftComponentTracking.getMixLeftIrisProductView(channel, channelGrid, itemPos)as java.util.HashMap<String, Any>)
+        homeCategoryListener.putEEToIris(MixLeftComponentTracking.getMixLeftIrisProductView(channel, channelGrid, itemPos, adapterPosition)as java.util.HashMap<String, Any>)
 
     }
 
-    override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
+    override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int, applink: String) {
         //because we have empty value at beginning of list, we need to reduce pos by 1
         homeCategoryListener.onDynamicChannelClicked(applink = applink)
-        MixLeftComponentTracking.sendMixLeftProductClick(channel, channelGrid, position - 1)
+        MixLeftComponentTracking.sendMixLeftProductClick(channel, channelGrid, position - 1, adapterPosition)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {

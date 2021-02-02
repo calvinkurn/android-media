@@ -2,7 +2,6 @@ package com.tokopedia.topads.edit.view.model
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
 import com.tokopedia.topads.common.data.model.DataSuggestions
@@ -38,7 +37,7 @@ class EditFormDefaultViewModel @Inject constructor(
         private val topAdsCreateUseCase: TopAdsCreateUseCase) : BaseViewModel(dispatcher) {
 
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)) {
-        validGroupUseCase.setParams(userSession.shopId.toIntOrZero(), groupName)
+        validGroupUseCase.setParams(groupName)
         validGroupUseCase.execute(
                 {
                     onSuccess(it.topAdsGroupValidateName)

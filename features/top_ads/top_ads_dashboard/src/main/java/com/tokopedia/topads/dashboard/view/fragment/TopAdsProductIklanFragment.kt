@@ -65,11 +65,6 @@ import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_auto_ads_onboarding_widget.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.app_bar_layout_2
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.hari_ini
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.swipe_refresh_layout
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.tab_layout
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.view_pager_frag
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
@@ -462,7 +457,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
             autoAdsAdapter.items.add(AutoAdsItemsItemViewModel(it))
         }
         if (adIds.isNotEmpty()) {
-            topAdsDashboardPresenter.getProductStats(resources, format.format(startDate), format.format(endDate), adIds, ::OnSuccessStats)
+            topAdsDashboardPresenter.getProductStats(resources, format.format(startDate), format.format(endDate), adIds, groupFilterSheet.getSelectedSortId(), 0, ::OnSuccessStats)
         }
         if (!groupFilterSheet.getFilterCount().isZero()) {
             filterCount.visibility = View.VISIBLE
