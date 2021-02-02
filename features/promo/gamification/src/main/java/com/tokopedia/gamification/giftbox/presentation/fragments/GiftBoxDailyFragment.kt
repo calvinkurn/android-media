@@ -574,13 +574,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 tokoButtonContainer.btnReminder.setText(reminder?.buttonUnset)
                 isReminderSet = true
                 if (showToast && !reminder?.textSet.isNullOrEmpty()) {
-                    CustomToast.show(context, reminder?.textSet!!)
+                    CustomToast.show(context, reminder?.textUnset!!)
                 }
             } else {
                 tokoButtonContainer.btnReminder.setText(reminder?.buttonSet)
                 isReminderSet = false
                 if (showToast && !reminder?.textUnset.isNullOrEmpty()) {
-                    CustomToast.show(context, reminder?.textUnset!!)
+                    CustomToast.show(context, reminder?.textSet!!)
                 }
             }
             tokoButtonContainer.btnReminder.setIcon(isUserReminded)

@@ -26,7 +26,7 @@ class PrizeDetailListItemView @JvmOverloads constructor(
     }
 
     fun setData(prizeDetailListItem: PrizeDetailListItem) {
-        if (prizeDetailListItem.imageURL.isNullOrEmpty()) {
+        if (!prizeDetailListItem.imageURL.isNullOrEmpty()) {
             Glide.with(image)
                     .load(prizeDetailListItem.imageURL)
                     .into(image)

@@ -223,69 +223,9 @@ class PdpGamificationView : LinearLayout {
         val listener = object : GamiPdpRecommendationListener {
 
             override fun onProductImpression(item: RecommendationItem, position: Int) {
-                val resultMap = mutableMapOf<String, Any>()
-                val eCommerceMap = HashMap<Any, Any>()
-                val clickMap = mutableMapOf<Any, Any>()
-                val actionFieldMap = mutableMapOf<Any, Any>()
-
-                val eventName = "productView"
-                val eventCategory = "lucky egg - crack the egg"
-                val eventAction = "click - product recommendation{ - nonlogin}"
-
-
-                val productItemMap = HashMap<Any, Any>()
-                val productArray = mutableListOf<HashMap<Any, Any>>()
-                productArray.add(productItemMap)
-
-                productItemMap[ProductKeys.NAME] = item.name
-                productItemMap[ProductKeys.ID] = item.productId
-                productItemMap[ProductKeys.POSITION] = position
-
-                resultMap[TrackerConstants.EVENT] = eventName
-                resultMap[TrackerConstants.EVENT_CATEGORY] = eventCategory
-                resultMap[TrackerConstants.EVENT_ACTION] = eventAction
-                resultMap[TrackerConstants.ECOMMERCE] = eCommerceMap
-
-                eCommerceMap[EcommerceKeys.CLICK] = clickMap
-
-                clickMap[ClickKeys.ACTION_FIELD] = actionFieldMap
-                clickMap[ClickKeys.PRODUCTS] = productArray
-
-                TrackApp.getInstance().gtm.sendGeneralEvent(resultMap)
-
             }
 
             override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-
-                val resultMap = mutableMapOf<String, Any>()
-                val eCommerceMap = HashMap<Any, Any>()
-                val clickMap = mutableMapOf<Any, Any>()
-                val actionFieldMap = mutableMapOf<Any, Any>()
-
-                val eventName = "productClick"
-                val eventCategory = "lucky egg - crack the egg"
-                val eventAction = "click - product recommendation{ - nonlogin}"
-
-
-                val productItemMap = HashMap<Any, Any>()
-                val productArray = mutableListOf<HashMap<Any, Any>>()
-                productArray.add(productItemMap)
-
-                productItemMap[ProductKeys.NAME] = item.name
-                productItemMap[ProductKeys.ID] = item.productId
-                productItemMap[ProductKeys.POSITION] = position
-
-                resultMap[TrackerConstants.EVENT] = eventName
-                resultMap[TrackerConstants.EVENT_CATEGORY] = eventCategory
-                resultMap[TrackerConstants.EVENT_ACTION] = eventAction
-                resultMap[TrackerConstants.ECOMMERCE] = eCommerceMap
-
-                eCommerceMap[EcommerceKeys.CLICK] = clickMap
-
-                clickMap[ClickKeys.ACTION_FIELD] = actionFieldMap
-                clickMap[ClickKeys.PRODUCTS] = productArray
-
-                TrackApp.getInstance().gtm.sendGeneralEvent(resultMap)
 
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
                 if (position.isNotEmpty()) intent.putExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, position[0])
@@ -307,20 +247,6 @@ class PdpGamificationView : LinearLayout {
                     RouteManager.route(context, ApplinkConst.LOGIN)
                 }
 
-                //send events
-                val resultMap = mutableMapOf<String, Any>()
-
-                val eventName = "productClick"
-                val eventCategory = "lucky egg - crack the egg"
-                val eventAction = "click - product recommendation{ - nonlogin}"
-                val type = if (item.isTopAds) "topads" else "general"
-                val label = "${item.productId} - $type - source : ${item}"
-
-                resultMap[TrackerConstants.EVENT] = eventName
-                resultMap[TrackerConstants.EVENT_CATEGORY] = eventCategory
-                resultMap[TrackerConstants.EVENT_ACTION] = eventAction
-                resultMap[TrackerConstants.EVENT_LABEL] = label
-                TrackApp.getInstance().gtm.sendGeneralEvent(resultMap)
             }
         }
 
