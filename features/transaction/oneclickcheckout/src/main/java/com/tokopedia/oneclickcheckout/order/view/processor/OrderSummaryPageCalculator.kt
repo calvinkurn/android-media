@@ -145,11 +145,13 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                             buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
                 if (isNewFlow) {
+                    var buttonType = OccButtonType.CHOOSE_PAYMENT
                     if (payment.isOvoOnlyCampaign && currentState == OccButtonState.NORMAL) {
                         currentState = OccButtonState.DISABLE
+                        buttonType = OccButtonType.PAY
                     }
                     return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMinimumAmountPaymentErrorMessage(payment.gatewayName, null, false), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
-                            paymentErrorMessage = null, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+                            paymentErrorMessage = null, buttonType = buttonType, buttonState = currentState)
                 }
                 return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
                         paymentErrorMessage = generateMinimumAmountPaymentErrorMessage(payment.gatewayName, payment.minimumAmount, true),
@@ -165,11 +167,13 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                             buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
                 if (isNewFlow) {
+                    var buttonType = OccButtonType.CHOOSE_PAYMENT
                     if (payment.isOvoOnlyCampaign && currentState == OccButtonState.NORMAL) {
                         currentState = OccButtonState.DISABLE
+                        buttonType = OccButtonType.PAY
                     }
                     return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMaximumAmountPaymentErrorMessage(payment.gatewayName, null, false), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
-                            paymentErrorMessage = null, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+                            paymentErrorMessage = null, buttonType = buttonType, buttonState = currentState)
                 }
                 return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
                         paymentErrorMessage = generateMaximumAmountPaymentErrorMessage(payment.gatewayName, payment.maximumAmount, true),
