@@ -53,9 +53,9 @@ class ThanksPageDataViewModel @Inject constructor(
         }
     }
 
-    private fun postGyroRecommendation(engineData: FeatureEngineData?){
+    private fun postGyroRecommendation(engineData: FeatureEngineData?) {
         launchCatchError(block = {
-            val gyroRecommendation : GyroRecommendation? = withContext(dispatcherIO){
+            val gyroRecommendation: GyroRecommendation? = withContext(dispatcherIO) {
                 return@withContext FeatureRecommendationMapper.getFeatureList(engineData)
             }
             gyroRecommendation?.let {
@@ -89,11 +89,10 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
 
-    fun getThanksPageTicker(configList : String?){
-        topTickerDataUseCase.setUseCaseParams(configList)
-        topTickerDataUseCase.execute({
+    fun getThanksPageTicker(configList: String?) {
+        topTickerDataUseCase.getTopTickerData(configList, {
             topTickerLiveData.postValue(Success(it))
-        },{
+        }, {
             topTickerLiveData.postValue(Fail(it))
         })
     }

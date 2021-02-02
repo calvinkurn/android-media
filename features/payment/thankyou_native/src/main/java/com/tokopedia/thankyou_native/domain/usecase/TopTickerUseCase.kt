@@ -12,10 +12,16 @@ class TopTickerUseCase @Inject constructor() : UseCase<ThankPageTopTickerData>()
 
     private val PARAM_THANKS_PAGE_DATA = "param_thanks_page_data"
 
-    fun setUseCaseParams(configList: String?) {
+    fun getTopTickerData(configList: String?, onSuccess: (ThankPageTopTickerData) -> Unit,
+                         onFail: (Throwable) -> Unit) {
         useCaseRequestParams = RequestParams().apply {
             putObject(PARAM_THANKS_PAGE_DATA, configList)
         }
+        execute({
+            onSuccess(it)
+        }, {
+            onFail(it)
+        })
     }
 
     override suspend fun executeOnBackground(): ThankPageTopTickerData {
