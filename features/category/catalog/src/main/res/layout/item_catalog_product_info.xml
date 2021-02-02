@@ -1,6 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/product_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_2"
+        android:paddingEnd="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_2"
+        android:paddingStart="@dimen/dp_4"
+        tools:text="10 HP Terbaik 2021"
+        app:labelType="general_light_orange"
+        android:textSize="@dimen/sp_10"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_name_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/product_label"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_16"
+        tools:text="Apple"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_68"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/product_name_title"
+        app:layout_constraintStart_toStartOf="@id/product_name_title"
+        android:layout_marginTop="@dimen/dp_2"
+        tools:text="iPhone 12 - 64GB"
+        app:typographyType="heading_4"
+        android:textColor="@color/Unify_N700_96"
+        />
+
+    <View
+        android:id="@+id/bottom_spliter"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        app:layout_constraintTop_toBottomOf="@id/product_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:background="@color/catalog_grey_line"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
