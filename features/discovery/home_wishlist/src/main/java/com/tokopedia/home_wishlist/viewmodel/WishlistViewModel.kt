@@ -310,7 +310,7 @@ open class WishlistViewModel @Inject constructor(
                                     AddToCartActionData(
                                             position = productPosition,
                                             isSuccess = false,
-                                            message = e.message ?: ""
+                                            message = ""
                                     )
                             )
                         }
