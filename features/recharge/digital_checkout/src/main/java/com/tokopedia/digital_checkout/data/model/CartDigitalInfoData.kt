@@ -33,6 +33,8 @@ data class CartDigitalInfoData(
 
         var crossSellingType: Int = 0,
 
+        var showSubscriptionsView: Boolean = false,
+
         var crossSellingConfig: CrossSellingConfig? = null
 ) : Parcelable {
 

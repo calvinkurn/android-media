@@ -18,7 +18,7 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
                                                             attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private var priceInput: Long = 0
+    private var priceInput: Double = 0.0
     var actionListener: ActionListener? = null
 
     init {
@@ -29,19 +29,19 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
         tvDigitalCheckoutInputPriceLabel.text = resources.getString(R.string.digital_cart_user_price_info, minPayment, maxPayment)
     }
 
-    fun getPriceInput(): Long = priceInput
+    fun getPriceInput(): Double = priceInput
 
-    fun setMinMaxPayment(totalPayment: String, minPayment: Long, maxPayment: Long) {
+    fun setMinMaxPayment(totalPayment: String, minPayment: Double, maxPayment: Double) {
         etDigitalCheckoutInputPrice.textFieldInput.setText(totalPayment)
         etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {
                 if (s.toString().isNotEmpty()) {
-                    val price: Long = s.toString().toLong()
+                    val price: Double = s.toString().toDouble()
                     if (price <= maxPayment) {
                         priceInput = price
                     }
                 } else {
-                    priceInput = 0
+                    priceInput = 0.0
                 }
                 actionListener?.onInputPriceByUserFilled(priceInput)
 
@@ -62,11 +62,11 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
         })
     }
 
-    private fun isUserInputValid(userInput: String, minPayment: Long, maxPayment: Long): Boolean {
-        var priceInput: Long = 0
+    private fun isUserInputValid(userInput: String, minPayment: Double, maxPayment: Double): Boolean {
+        var priceInput: Double = 0.0
         if (!TextUtils.isEmpty(userInput)) {
             try {
-                priceInput = userInput.toLong()
+                priceInput = userInput.toDouble()
             } catch (e: NumberFormatException) {
                 e.printStackTrace()
             }
@@ -75,7 +75,7 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
     }
 
     interface ActionListener {
-        fun onInputPriceByUserFilled(paymentAmount: Long)
+        fun onInputPriceByUserFilled(paymentAmount: Double)
         fun enableCheckoutButton()
         fun disableCheckoutButton()
     }
