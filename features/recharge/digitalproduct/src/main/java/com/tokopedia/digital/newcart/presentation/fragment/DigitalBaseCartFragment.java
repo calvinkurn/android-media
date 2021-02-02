@@ -474,19 +474,21 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void showError(String message) {
-        if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION)) {
+        if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL) || message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION) || message.equals(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)) {
+            emptyState.setDescription(message);
             emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection));
             emptyState.setTitle(getString(com.tokopedia.globalerror.R.string.noConnectionAction));
         }
-        else if(message.equals(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)){
+        else if(message.equals(ErrorNetMessage.MESSAGE_ERROR_SERVER) || message.equals(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)){
+            emptyState.setDescription(getString(com.tokopedia.globalerror.R.string.error500Desc));
             emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500));
             emptyState.setTitle(getString(com.tokopedia.globalerror.R.string.error500Title));
         }
         else {
+            emptyState.setDescription(message);
             emptyState.setImageDrawable(getResources().getDrawable(R.drawable.digital_ic_digital_cart_transaction_failed));
             emptyState.setTitle(getString(R.string.digital_transaction_failed_title));
         }
-        emptyState.setDescription(message);
         emptyState.setPrimaryCTAText(getString(R.string.digital_empty_state_checkout_btn));
         emptyState.setPrimaryCTAClickListener(() -> {
             emptyState.setVisibility(View.GONE);
