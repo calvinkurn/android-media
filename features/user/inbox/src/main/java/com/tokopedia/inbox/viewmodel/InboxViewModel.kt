@@ -38,8 +38,8 @@ class InboxViewModel @Inject constructor(
         val isBuyerOnly = !userSession.hasShop()
         val hasShownSeller = cacheManager.loadCacheBoolean(KEY_ONBOARDING_SELLER) ?: false
         val hasShownBuyer = cacheManager.loadCacheBoolean(KEY_ONBOARDING_BUYER) ?: false
-        return if (isBuyerOnly && !hasShownSeller) {
-            hasShownBuyer
+        return if (isBuyerOnly) {
+            hasShownBuyer || hasShownSeller
         } else {
             hasShownSeller
         }
@@ -62,7 +62,7 @@ class InboxViewModel @Inject constructor(
     }
 
     companion object {
-        private const val KEY_ONBOARDING_SELLER = "key_onboarding_seller"
-        private const val KEY_ONBOARDING_BUYER = "key_onboarding_buyer"
+        const val KEY_ONBOARDING_SELLER = "key_onboarding_seller"
+        const val KEY_ONBOARDING_BUYER = "key_onboarding_buyer"
     }
 }
