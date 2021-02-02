@@ -88,7 +88,6 @@ class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
 
     fun goToErrorPage(){
         val intent = OvoFinalPageActivity.createIntentError(activity)
-        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
         activity?.finish()
     }
