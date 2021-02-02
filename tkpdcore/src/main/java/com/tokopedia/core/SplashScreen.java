@@ -86,7 +86,7 @@ public class SplashScreen extends AppCompatActivity {
             @NotNull
             @Override
             public Object execute() {
-                return getBranchDefferedDeeplink();
+                return getBranchDefferedDeeplink(false);
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, getApplicationContext());
@@ -171,7 +171,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     @NotNull
-    private boolean getBranchDefferedDeeplink() {
+    private boolean getBranchDefferedDeeplink(boolean isReInit) {
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
         linkerDeeplinkData.setClientId(TrackingUtils.getClientID(SplashScreen.this));
         linkerDeeplinkData.setReferrable(SplashScreen.this.getIntent().getData());
@@ -212,7 +212,7 @@ public class SplashScreen extends AppCompatActivity {
                     @Override
                     public void onError(LinkerError linkerError) {
                     }
-                }, SplashScreen.this));
+                }, SplashScreen.this), isReInit);
         return true;
     }
 
@@ -223,7 +223,7 @@ public class SplashScreen extends AppCompatActivity {
             @NotNull
             @Override
             public Object execute() {
-                return getBranchDefferedDeeplink();
+                return getBranchDefferedDeeplink(true);
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, SplashScreen.this);
