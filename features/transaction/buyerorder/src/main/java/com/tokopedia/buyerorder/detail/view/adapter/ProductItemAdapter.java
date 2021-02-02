@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorder.detail.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.Html;
@@ -17,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.Items;
@@ -26,14 +29,19 @@ import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
+import com.tokopedia.flight.orderlist.data.cloud.entity.Route;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID;
+import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID;
 
 public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Items> itemsList;
     private Context context;
     private Status status;
+    private String userId;
     private OrderListDetailPresenter presenter;
     private boolean isOrderTradeIn;
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
@@ -41,12 +49,15 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final String BUY_AGAIN_ACTION_BUTTON_KEY = "buy_again";
     private static final String CLICK_SIMILAR_PRODUCT_LEVEL_PRODUCT = "click lihat produk serupa - product";
 
-    public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter, boolean isTradeIn, Status status) {
+    // tambahin userId dsini
+    public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter,
+                              boolean isTradeIn, Status status, String userId) {
         this.context = context;
         this.itemsList = itemsList;
         this.presenter = presenter;
         this.isOrderTradeIn = isTradeIn;
         this.status = status;
+        this.userId = userId;
         orderListAnalytics = new OrderListAnalytics();
     }
 
@@ -160,13 +171,13 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 });
             }
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    orderListAnalytics.sendProductClickDetailsEvent(items, getIndex(), status.status());
-                    sini
-                    // RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(items.getId()));
-                }
+            itemView.setOnClickListener(view -> {
+                orderListAnalytics.hitClickProductName(status.status(), userId);
+
+                Intent intentSnapshot = RouteManager.getIntent(context, ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT);
+                intentSnapshot.putExtra(PARAM_ORDER_DETAIL_ID, items.getOrderDetailId());
+                intentSnapshot.putExtra(PARAM_ORDER_ID, items.getId());
+                view.getContext().startActivity(intentSnapshot);
             });
 
         }

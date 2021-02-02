@@ -7,6 +7,10 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Items implements Serializable {
+    @SerializedName("detail_id")
+    @Expose
+    private int orderDetailId;
+
     @SerializedName("categoryID")
     @Expose
     private int categoryID;
@@ -101,6 +105,14 @@ public class Items implements Serializable {
     private boolean isTapActionsLoaded;
 
     private boolean isActionButtonLoaded;
+
+    public int getOrderDetailId() {
+        return orderDetailId;
+    }
+
+    public void setOrderDetailId(int orderDetailId) {
+        this.orderDetailId = orderDetailId;
+    }
 
     public int getCategoryID() {
         return categoryID;

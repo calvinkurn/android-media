@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
 import com.tokopedia.kotlin.extensions.view.gone
@@ -48,7 +49,6 @@ class SnapshotFragment : BaseDaggerFragment() {
     private val REQUEST_CODE_LOGIN = 588
     private var orderId = ""
     private var orderDetailId = ""
-    private var responseSnapshot: SnapshotResponse.Data.GetOrderSnapshot = SnapshotResponse.Data.GetOrderSnapshot()
 
     private val snapshotViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SnapshotViewModel::class.java]
@@ -149,7 +149,13 @@ class SnapshotFragment : BaseDaggerFragment() {
                 is Success -> {
                     snapshotAdapter.snapshotResponse = result.data
                     snapshotAdapter.showContent()
-                    btnSnapshotToPdp?.visible()
+                    btnSnapshotToPdp?.apply {
+                        visible()
+                        setOnClickListener {
+                            RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, result.data.orderDetail.productId.toString())
+                        }
+                    }
+
 
                     userSession.userId?.let { userId ->
                         SnapshotAnalytics.clickLihatHalamanProduk(result.data.orderDetail.productId.toString(), userId)
