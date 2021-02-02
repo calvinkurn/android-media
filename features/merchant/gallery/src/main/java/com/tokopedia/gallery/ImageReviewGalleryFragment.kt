@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.gallery.adapter.GalleryAdapter
@@ -121,6 +122,14 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     override fun loadInitialData() {
         activity!!.bottomSheetImageReviewSlider!!.resetState()
         super.loadInitialData()
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.image_review_gallery_swipe_recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.image_review_gallery_swipe_refresh_layout
     }
 
     companion object {
