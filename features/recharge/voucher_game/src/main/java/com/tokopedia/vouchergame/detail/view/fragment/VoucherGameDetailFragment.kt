@@ -326,6 +326,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             override fun onCustomInputClick() {
                 if (field.isCustomInput && dropdownData.isNotEmpty()) { showInputDropdown(field, dropdownData) }
             }
+
+            override fun onTextChangeInput() {
+                //do nothing
+            }
         }
     }
 
