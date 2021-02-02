@@ -6,6 +6,10 @@ object GiftBoxTrackerConstants {
     const val EVENT_ACTION = "eventAction"
     const val EVENT_LABEL = "eventLabel"
     const val USER_ID = "userId"
+    const val BUSINESS_UNIT = "businessUnit"
+    const val CURRENT_SITE = "currentSite"
+    const val BGP_ENGAGEMENT = "bgp - engagement"
+    const val TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
 }
 
 object GiftBoxEvent {

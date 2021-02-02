@@ -10,7 +10,7 @@ object GtmEvents {
     }
 
     //3
-    fun viewGiftBoxPage(campaignSlug:String, userId:String?) {
+    fun viewGiftBoxPage(campaignSlug: String, userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
@@ -22,12 +22,12 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    fun emptyBoxImpression(userId: String?){
+    fun emptyBoxImpression(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_GIFT_BOX_PAGE
-        map[GiftBoxTrackerConstants.EVENT_LABEL] =  GiftBoxLabel.ALREADY_OPENED
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = GiftBoxLabel.ALREADY_OPENED
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
@@ -40,7 +40,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_BACK_BUTTON
-        map[GiftBoxTrackerConstants.EVENT_LABEL] =  GiftBoxLabel.MAIN_PAGE
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = GiftBoxLabel.MAIN_PAGE
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
@@ -60,12 +60,12 @@ object GtmEvents {
     }
 
     //7
-    fun clickGiftBox(campaignSlug: String,userId: String?) {
+    fun clickGiftBox(campaignSlug: String, userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_GIFT_BOX
-        map[GiftBoxTrackerConstants.EVENT_LABEL] =  campaignSlug
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = campaignSlug
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
@@ -73,12 +73,12 @@ object GtmEvents {
     }
 
     //8
-    fun viewRewards(catalogId: String,userId: String?) {
+    fun viewRewards(catalogId: String, userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_REWARDS
-        map[GiftBoxTrackerConstants.EVENT_LABEL] =  "coupon - $catalogId"
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = "coupon - $catalogId"
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
@@ -86,12 +86,12 @@ object GtmEvents {
     }
 
     //9
-    fun viewRewardsPoints(pointsAmount:String,userId: String?) {
+    fun viewRewardsPoints(pointsAmount: String, userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_REWARDS
-        map[GiftBoxTrackerConstants.EVENT_LABEL] =  "points - $pointsAmount"
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = "points - $pointsAmount"
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
@@ -99,12 +99,12 @@ object GtmEvents {
     }
 
     //10
-    fun clickClaimButton(buttonTitle:String,userId: String?) {
+    fun clickClaimButton(buttonTitle: String, userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_CLAIM_BUTTON
-        map[GiftBoxTrackerConstants.EVENT_LABEL] =  buttonTitle
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = buttonTitle
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
@@ -112,8 +112,11 @@ object GtmEvents {
     }
 
     //11
-    fun clickReminderButton(userId: String?) {
+    fun clickReminderButton(userId: String?, label: String?) {
         val map = mutableMapOf<String, Any>()
+        if(!label.isNullOrEmpty()) {
+            map[GiftBoxTrackerConstants.EVENT_LABEL] = label
+        }
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_REMINDER_BUTTON
@@ -129,7 +132,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_EXIT_BUTTON
-        map[GiftBoxTrackerConstants.EVENT_LABEL] =  GiftBoxLabel.CONNECTION_ERROR
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = GiftBoxLabel.CONNECTION_ERROR
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
@@ -173,7 +176,7 @@ object GtmEvents {
     }
 
     //20
-    fun viewNoInternetError(userId:String?) {
+    fun viewNoInternetError(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
@@ -186,7 +189,7 @@ object GtmEvents {
     }
 
     //21
-    fun viewToastError(userId:String?, errorMessage:String) {
+    fun viewToastError(userId: String?, errorMessage: String) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
@@ -199,11 +202,13 @@ object GtmEvents {
     }
 
     //1
-    fun clickInfoButton(userId:String?){
+    fun clickInfoButton(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_INFO_BUTTON
+        map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
+        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
@@ -211,11 +216,13 @@ object GtmEvents {
     }
 
     //2
-    fun clickRewardDetail(userId:String?){
+    fun clickRewardDetail(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_REWARD_DETAIL
+        map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
+        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
@@ -223,11 +230,13 @@ object GtmEvents {
     }
 
     //3
-    fun clickInfoButtonFromDialog(userId:String?){
+    fun clickInfoButtonFromDialog(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_T_AND_C
+        map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
+        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
@@ -235,11 +244,13 @@ object GtmEvents {
     }
 
     //4
-    fun clickProductRecom(userId:String?){
+    fun clickProductRecom(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_PRODUCT_RECOM
+        map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
+        map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }

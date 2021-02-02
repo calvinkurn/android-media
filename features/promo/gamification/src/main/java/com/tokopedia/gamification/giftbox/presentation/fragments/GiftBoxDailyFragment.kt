@@ -417,11 +417,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         if (!messageList.isNullOrEmpty()) {
                             showRemindMeError(messageList[0], getString(R.string.gami_oke))
                         }
+                        GtmEvents.clickReminderButton(userSession?.userId, null)
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     tokoButtonContainer.btnReminder.stopLoading()
                     showRemindMeError(defaultErrorMessage, getString(R.string.gami_oke))
+                    GtmEvents.clickReminderButton(userSession?.userId, null)
                 }
             }
         })
@@ -534,7 +536,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tokoButtonContainer.btnReminder.setOnClickListener {
             if (!isReminderSet) {
                 viewModel.setReminder()
-                GtmEvents.clickReminderButton(userSession?.userId)
             } else {
                 viewModel.unSetReminder()
             }
@@ -592,14 +593,16 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             if (isUserReminded) {
                 tokoButtonContainer.btnReminder.setText(reminder?.buttonUnset)
                 isReminderSet = true
-                if (showToast && !reminder?.textSet.isNullOrEmpty()) {
+                if (showToast && !reminder?.textUnset.isNullOrEmpty()) {
                     CustomToast.show(context, reminder?.textUnset!!)
+                    GtmEvents.clickReminderButton(userSession?.userId, reminder?.textUnset!!)
                 }
             } else {
                 tokoButtonContainer.btnReminder.setText(reminder?.buttonSet)
                 isReminderSet = false
-                if (showToast && !reminder?.textUnset.isNullOrEmpty()) {
+                if (showToast && !reminder?.textSet.isNullOrEmpty()) {
                     CustomToast.show(context, reminder?.textSet!!)
+                    GtmEvents.clickReminderButton(userSession?.userId, reminder?.textSet!!)
                 }
             }
             tokoButtonContainer.btnReminder.setIcon(isUserReminded)
