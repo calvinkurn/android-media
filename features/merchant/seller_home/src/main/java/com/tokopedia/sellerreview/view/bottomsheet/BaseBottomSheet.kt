@@ -13,7 +13,9 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerreview.common.Const
 import com.tokopedia.sellerreview.view.model.SendReviewParam
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -51,6 +53,12 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
 
     abstract fun show(fm: FragmentManager)
 
+    protected abstract fun getResLayout(): Int
+
+    protected abstract fun setupView(): Unit?
+
+    protected open fun initInjector() {}
+
     protected open fun getParams(rating: Int, feedback: String): SendReviewParam {
         return SendReviewParam(
                 userId = userSession.userId,
@@ -63,11 +71,19 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
         )
     }
 
-    protected open fun initInjector() {}
+    protected open fun showErrorToaster(throwable: Throwable) = childView?.run {
+        val errorMessage = if (throwable is UnknownHostException) {
+            context.getString(R.string.sir_toaster_error_no_connection)
+        } else {
+            context.getString(R.string.sir_toaster_error)
+        }
 
-    protected abstract fun getResLayout(): Int
-
-    protected abstract fun setupView(): Unit?
+        view?.let {
+            Toaster.toasterCustomBottomHeight = context.resources.getDimension(R.dimen.layout_lvl8).toInt()
+            val toaster = Toaster.build(it.rootView, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, context.getString(R.string.sir_ok))
+            toaster.show()
+        }
+    }
 
     private fun setChild(inflater: LayoutInflater, container: ViewGroup?) {
         val child = inflater.inflate(getResLayout(), container, false)
