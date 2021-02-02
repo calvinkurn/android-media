@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 /**
  * @author by furqan on 23/12/2019
  */
-@TravelCountryCodeScope
 @Module
 class TravelCountryCodeModule {
 

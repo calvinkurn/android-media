@@ -60,13 +60,7 @@ import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineKeyFragment
 import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
 import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.*
-import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.app_bar_layout_2
-import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.hari_ini
-import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.header_toolbar
-import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.swipe_refresh_layout
-import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.tab_layout
 import kotlinx.android.synthetic.main.topads_dash_headline_detail_view_widget.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
@@ -145,7 +139,9 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
 
     private fun getViewPagerAdapter(): PagerAdapter {
         val list: MutableList<Fragment> = mutableListOf()
-        tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
+        if(!isDataChanged){
+            tab_layout?.addNewTab(TopAdsDashboardConstant.KATA_KUNCI)
+        }
         tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)

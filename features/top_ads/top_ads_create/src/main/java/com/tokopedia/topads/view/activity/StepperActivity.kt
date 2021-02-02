@@ -33,7 +33,7 @@ class StepperActivity : BaseStepperActivity(), HasComponent<CreateAdsComponent> 
     }
 
     override fun onBackEvent() {
-        if (fragmentList?.get(currentPosition - 1) is BudgetingAdsFragment) {
+        if (currentPosition <= fragmentList?.size ?: 0 && fragmentList?.get(currentPosition - 1) is BudgetingAdsFragment) {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BACK_BUTTON, "")
         }
         super.onBackEvent()

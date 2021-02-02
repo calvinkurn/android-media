@@ -20,6 +20,8 @@ import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
@@ -114,6 +116,11 @@ class HomeTopAdsVerificationTest {
                 for (grid in item.channelModel.channelGrids)
                     if (grid.isTopads) count++
             }
+            is BestSellerDataModel -> {
+                for (recom in item.recommendationItemList){
+                    if(recom.isTopAds) count++
+                }
+            }
         }
         return count
     }
@@ -135,6 +142,10 @@ class HomeTopAdsVerificationTest {
             is HomeRecommendationFeedViewHolder -> {
                 waitForData()
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+            }
+            is BestSellerViewHolder -> {
+                waitForData()
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.best_seller_recommendation_recycler_view, 0)
             }
         }
     }

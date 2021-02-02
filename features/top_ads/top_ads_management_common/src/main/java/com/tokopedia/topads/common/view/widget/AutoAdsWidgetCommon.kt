@@ -2,7 +2,6 @@ package com.tokopedia.topads.common.view.widget
 
 import android.app.Activity
 import android.content.Context
-import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -41,9 +40,6 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_common_auto_edit_status_active_widget.view.*
-import kotlinx.android.synthetic.main.topads_common_auto_edit_status_active_widget.view.btn_switch
-import kotlinx.android.synthetic.main.topads_common_auto_edit_status_active_widget.view.setting
-import kotlinx.android.synthetic.main.topads_common_auto_edit_status_outofcredit_widget.view.*
 import javax.inject.Inject
 
 /**
@@ -314,6 +310,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
         baseLayout?.addView(view)
         view.let { it ->
             imgBg.background = drawable
+            it.setting.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.topads_common_setting))
             it.progress_status1.text = "Rp $dailyUsage"
             it.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), currentBudget)
             it.progress_bar.setValue(dailyUsage, true)

@@ -1,7 +1,8 @@
 {
   "ace_search_product_v4": {
     "header": {
-      "totalData": 734255
+      "totalData": 734255,
+      "additionalParams": "token=token_in_page_2"
     },
     "data": {
       "isQuerySafe": true,

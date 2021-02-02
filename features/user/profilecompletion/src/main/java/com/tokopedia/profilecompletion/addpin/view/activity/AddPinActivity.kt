@@ -2,6 +2,7 @@ package com.tokopedia.profilecompletion.addpin.view.activity
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.app.Activity
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
@@ -29,6 +30,7 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
     var enableBackBtn = true
+    var isFrom2FA = false
 
     override fun getComponent(): ProfileCompletionSettingComponent {
         return DaggerProfileCompletionSettingComponent.builder()
@@ -41,6 +43,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
         intent?.extras?.run {
             if(getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA)){
                 enableBackBtn = getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, true)
+                isFrom2FA = getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, false)
             }
         }
         super.onCreate(savedInstanceState)
@@ -57,7 +60,14 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
 
     override fun onBackPressed() {
         if (fragment != null && fragment is AddPinFragment) {
-            if (!(fragment as AddPinFragment).onBackPressedFromConfirm()) super.onBackPressed()
+            if (!(fragment as AddPinFragment).onBackPressedFromConfirm()) {
+                if (isFrom2FA && enableBackBtn) {
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                } else {
+                    super.onBackPressed()
+                }
+            }
         } else {
             super.onBackPressed()
         }
