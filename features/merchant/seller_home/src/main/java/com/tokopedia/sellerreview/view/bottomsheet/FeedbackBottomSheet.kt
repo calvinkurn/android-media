@@ -11,8 +11,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerreview.common.Const
-import com.tokopedia.sellerreview.view.model.SendReviewParam
-import com.tokopedia.sellerreview.view.viewmodel.ReviewViewModel
+import com.tokopedia.sellerreview.view.viewmodel.SellerReviewViewModel
 import kotlinx.android.synthetic.main.sir_feedback_bottom_sheet.view.*
 
 /**
@@ -35,8 +34,8 @@ class FeedbackBottomSheet : BaseBottomSheet() {
         }
     }
 
-    private val mViewModel: ReviewViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(ReviewViewModel::class.java)
+    private val mViewModel: SellerReviewViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(SellerReviewViewModel::class.java)
     }
     private var onSubmitted: (() -> Unit)? = null
 
@@ -94,15 +93,9 @@ class FeedbackBottomSheet : BaseBottomSheet() {
 
     private fun setOnSubmitClicked() = childView?.run {
         btnSirSubmitFeedback.isLoading = true
-        val param = getParams()
-        mViewModel.submitReview(param)
-    }
-
-    private fun getParams(): SendReviewParam {
         val rating = arguments?.getInt(KEY_RATING).orZero()
-        return SendReviewParam(
-                userId = userSession.userId,
-                rating = rating
-        )
+        val feedback = tauSirFeedback.textAreaInput.text.toString()
+        val param = getParams(rating, feedback)
+        mViewModel.submitReview(param)
     }
 }

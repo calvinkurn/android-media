@@ -6,6 +6,8 @@ package com.tokopedia.sellerreview.common
 
 object Const {
 
+    const val OS_TYPE = "android"
+
     const val LOTTIE_URL_RATING_1 = "https://ecs7.tokopedia.net/img/android/lottie/lottie_anim_sir_pedi_cry.json"
     const val LOTTIE_URL_RATING_2 = "https://ecs7.tokopedia.net/img/android/lottie/lottie_anim_sir_pedi_sad.json"
     const val LOTTIE_URL_RATING_3 = "https://ecs7.tokopedia.net/img/android/lottie/lottie_anim_sir_pedi_standard.json"

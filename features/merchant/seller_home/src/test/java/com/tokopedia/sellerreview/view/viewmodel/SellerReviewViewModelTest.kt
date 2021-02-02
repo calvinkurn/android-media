@@ -21,7 +21,7 @@ import org.junit.Test
  */
 
 @ExperimentalCoroutinesApi
-class ReviewViewModelTest {
+class SellerReviewViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -32,13 +32,13 @@ class ReviewViewModelTest {
     @RelaxedMockK
     lateinit var sendReviewUseCase: SendReviewUseCase
 
-    private lateinit var viewModel: ReviewViewModel
+    private lateinit var viewModel: SellerReviewViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
 
-        viewModel = ReviewViewModel({ sendReviewUseCase }, coroutineTestRule.dispatchers)
+        viewModel = SellerReviewViewModel({ sendReviewUseCase }, coroutineTestRule.dispatchers)
     }
 
     @Test

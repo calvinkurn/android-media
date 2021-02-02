@@ -8,16 +8,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerreview.common.Const
-import com.tokopedia.sellerreview.view.model.SendReviewParam
-import com.tokopedia.sellerreview.view.viewmodel.ReviewViewModel
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.sellerreview.view.viewmodel.SellerReviewViewModel
 import kotlinx.android.synthetic.main.sir_rating_bottom_sheet.view.*
-import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 20/01/21
@@ -35,8 +31,8 @@ class RatingBottomSheet : BaseBottomSheet() {
         }
     }
 
-    private val mViewModel: ReviewViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(ReviewViewModel::class.java)
+    private val mViewModel: SellerReviewViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(SellerReviewViewModel::class.java)
     }
     private var ratingStatus: Array<String>? = null
     private var onSubmitted: ((Int) -> Unit)? = null
@@ -104,20 +100,13 @@ class RatingBottomSheet : BaseBottomSheet() {
         childView?.run {
             if (givenRating >= 4) {
                 btnSirSubmit.isLoading = true
-                val param = getParams()
+                val param = getParams(givenRating, "")
                 mViewModel.submitReview(param)
             } else {
                 onSubmitted?.invoke(givenRating)
                 this@RatingBottomSheet.dismiss()
             }
         }
-    }
-
-    private fun getParams(): SendReviewParam {
-        return SendReviewParam(
-                userId = userSession.userId,
-                rating = givenRating
-        )
     }
 
     private fun initRatingStatus() {
