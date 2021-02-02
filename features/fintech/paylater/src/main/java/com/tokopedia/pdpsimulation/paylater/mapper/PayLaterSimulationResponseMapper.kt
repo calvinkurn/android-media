@@ -1,9 +1,5 @@
 package com.tokopedia.pdpsimulation.paylater.mapper
 
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulationResponse
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterSimulationGatewayItem
-import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationItemDetail
-
 const val ONE_MONTH_TENURE = 1
 const val THREE_MONTH_TENURE = 3
 const val SIX_MONTH_TENURE = 6

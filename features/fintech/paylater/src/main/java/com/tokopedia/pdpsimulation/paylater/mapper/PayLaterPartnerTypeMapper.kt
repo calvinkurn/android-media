@@ -41,10 +41,4 @@ object PayLaterPartnerTypeMapper {
         }
         return partnerStatus.getOrNull(0)
     }
-
-    fun validateProductData(productDataList: PayLaterProductData?): PayLaterProductData? {
-        if (productDataList == null) return null
-        if (productDataList.productList.isNullOrEmpty()) return null
-        return productDataList
-    }
 }

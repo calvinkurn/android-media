@@ -2,24 +2,15 @@ package com.tokopedia.pdpsimulation.creditcard.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.creditcard.domain.model.*
-import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardBankDataUseCase
-import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardPdpMetaInfoUseCase
-import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardSimulationUseCase
-import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardTncMapperUseCase
-import com.tokopedia.pdpsimulation.creditcard.mapper.CreditCardResponseMapper
-import com.tokopedia.pdpsimulation.creditcard.mapper.StatusApiFail
-import com.tokopedia.pdpsimulation.creditcard.mapper.StatusApiSuccess
-import com.tokopedia.pdpsimulation.creditcard.mapper.StatusCCNotAvailable
+import com.tokopedia.pdpsimulation.creditcard.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CreditCardViewModel @Inject constructor(
@@ -27,6 +18,7 @@ class CreditCardViewModel @Inject constructor(
         private val creditCardPdpMetaInfoUseCase: CreditCardPdpMetaInfoUseCase,
         private val creditCardBankDataUseCase: CreditCardBankDataUseCase,
         private val creditCardTncMapperUseCase: CreditCardTncMapperUseCase,
+        private val creditCardSimulationMapperUseCase: CreditCardSimulationMapperUseCase,
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
         @CoroutineBackgroundDispatcher val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
@@ -66,14 +58,11 @@ class CreditCardViewModel @Inject constructor(
 
 
     private fun onCreditCardSimulationSuccess(pdpCreditCardSimulationData: PdpCreditCardSimulation?) {
-        launchCatchError(block = {
-            val dataStatus = withContext(ioDispatcher) {
-                return@withContext CreditCardResponseMapper.handleSimulationResponse(pdpCreditCardSimulationData)
-            }
-            when (dataStatus) {
-                is StatusApiSuccess -> creditCardSimulationResultLiveData.value = Success(pdpCreditCardSimulationData?.creditCardGetSimulationResult!!)
-                is StatusApiFail -> onCreditCardSimulationError(PdpSimulationException.CreditCardNullDataException(SIMULATION_DATA_FAILURE))
-                is StatusCCNotAvailable -> onCreditCardSimulationError(PdpSimulationException.CreditCardSimulationNotAvailableException(CREDIT_CARD_NOT_AVAILABLE))
+        creditCardSimulationMapperUseCase.parseSimulationData(pdpCreditCardSimulationData, onSuccess = {
+            when (it) {
+                is StatusApiSuccess -> creditCardSimulationResultLiveData.value = Success(it.data)
+                StatusApiFail -> onCreditCardSimulationError(PdpSimulationException.CreditCardNullDataException(SIMULATION_DATA_FAILURE))
+                StatusCCNotAvailable -> onCreditCardSimulationError(PdpSimulationException.CreditCardSimulationNotAvailableException(CREDIT_CARD_NOT_AVAILABLE))
             }
         }, onError = {
             onCreditCardSimulationError(it)
@@ -118,6 +107,7 @@ class CreditCardViewModel @Inject constructor(
         creditCardTncMapperUseCase.cancelJobs()
         creditCardBankDataUseCase.cancelJobs()
         creditCardPdpMetaInfoUseCase.cancelJobs()
+        creditCardSimulationMapperUseCase.cancelJobs()
         super.onCleared()
     }
 
