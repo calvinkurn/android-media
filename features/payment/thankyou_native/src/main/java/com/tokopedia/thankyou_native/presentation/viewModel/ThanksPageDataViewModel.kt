@@ -4,13 +4,15 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
-import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey
+import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
+import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.usecase.GyroEngineRequestUseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageDataUseCase
+import com.tokopedia.thankyou_native.domain.usecase.TopTickerUseCase
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -22,11 +24,13 @@ import javax.inject.Inject
 class ThanksPageDataViewModel @Inject constructor(
         private val thanksPageDataUseCase: ThanksPageDataUseCase,
         private val gyroEngineRequestUseCase: GyroEngineRequestUseCase,
+        private val topTickerDataUseCase: TopTickerUseCase,
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
         @CoroutineBackgroundDispatcher val dispatcherIO: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val thanksPageDataResultLiveData = MutableLiveData<Result<ThanksPageData>>()
     val gyroRecommendationLiveData = MutableLiveData<GyroRecommendation>()
+    val topTickerLiveData = MutableLiveData<Result<ThankPageTopTickerData>>()
 
     fun getThanksPageData(paymentId: Long, merchant: String) {
         thanksPageDataUseCase.cancelJobs()
@@ -84,7 +88,18 @@ class ThanksPageDataViewModel @Inject constructor(
         thanksPageDataResultLiveData.value = Fail(throwable)
     }
 
+
+    fun getThanksPageTicker(configList : String?){
+        topTickerDataUseCase.setUseCaseParams(configList)
+        topTickerDataUseCase.execute({
+            topTickerLiveData.postValue(Success(it))
+        },{
+            topTickerLiveData.postValue(Fail(it))
+        })
+    }
+
     override fun onCleared() {
+        topTickerDataUseCase.cancelJobs()
         thanksPageDataUseCase.cancelJobs()
         gyroEngineRequestUseCase.cancelJobs()
         super.onCleared()

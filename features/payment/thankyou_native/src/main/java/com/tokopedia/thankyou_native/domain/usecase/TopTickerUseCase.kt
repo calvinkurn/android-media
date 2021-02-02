@@ -1,0 +1,31 @@
+package com.tokopedia.thankyou_native.domain.usecase
+
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
+
+
+class TopTickerUseCase @Inject constructor() : UseCase<ThankPageTopTickerData>() {
+
+    private val PARAM_THANKS_PAGE_DATA = "param_thanks_page_data"
+
+    fun setUseCaseParams(configList: String?) {
+        useCaseRequestParams = RequestParams().apply {
+            putObject(PARAM_THANKS_PAGE_DATA, configList)
+        }
+    }
+
+    override suspend fun executeOnBackground(): ThankPageTopTickerData {
+        val configList = useCaseRequestParams.getString(PARAM_THANKS_PAGE_DATA, null)
+                ?: throw NullPointerException()
+        val listType = object : TypeToken<List<ThankPageTopTickerData>>() {}.type
+        val topTickerDataList = Gson().fromJson<List<ThankPageTopTickerData>>(configList, listType)
+        if (topTickerDataList.isNotEmpty()) {
+            return topTickerDataList[0]
+        } else
+            throw NullPointerException()
+    }
+}

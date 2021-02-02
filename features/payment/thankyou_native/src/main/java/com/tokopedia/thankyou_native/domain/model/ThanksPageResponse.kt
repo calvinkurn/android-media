@@ -75,6 +75,8 @@ data class ThanksPageData(
         val thanksCustomization: ThanksCustomization?,
         @SerializedName("config_flag")
         val configFlag: String?,
+        @SerializedName("config_list")
+        val configList: String?,
         //created and used locally
         var paymentMethodCount: Int
 ) : Parcelable
@@ -375,4 +377,13 @@ data class ThanksCustomization(
 data class ConfigFlag(
         @SerializedName("enable_thanks_widget")
         val isThanksWidgetEnabled : Boolean
+)
+
+data class ThankPageTopTickerData(
+        @SerializedName("ticker_title")
+        val tickerTitle : String?,
+        @SerializedName("ticker_text")
+        val tickerDescription : String?,
+        @SerializedName("ticker_type")
+        val ticketType : String?
 )

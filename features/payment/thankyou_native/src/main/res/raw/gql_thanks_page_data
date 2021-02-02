@@ -121,6 +121,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
        custom_title_home_button
     }
     config_flag
+    config_list
   }
 }
 
