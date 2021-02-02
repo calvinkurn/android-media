@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,10 +33,11 @@ import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -186,21 +188,20 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     }
 
     private void generateImage(byte[] imageByte) {
-
         if (mCaptureNativeSize == null) {
             mCaptureNativeSize = cameraView.getPictureSize();
         }
         try {
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), bitmap -> {
                 if (bitmap != null) {
-                    File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG);
-                    if (cameraResultFile!= null) {
+                    File cameraResultFile = saveToCacheDirectory(imageByte);
+                    if (cameraResultFile != null) {
                         onSuccessImageTakenFromCamera(cameraResultFile);
                     }
                 }
             });
         } catch (Throwable error) {
-            File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, Bitmap.CompressFormat.JPEG);
+            File cameraResultFile = saveToCacheDirectory(imageByte);
             if (cameraResultFile != null) {
                 onSuccessImageTakenFromCamera(cameraResultFile);
             }
@@ -354,4 +355,39 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         cameraView.close();
         super.onDestroy();
     }
+
+    private File getFileLocationFromDirectory() {
+        File directory = new ContextWrapper(getActivity()).getDir("kyc", Context.MODE_PRIVATE);
+        if (!directory.exists())
+            directory.mkdir();
+
+        String imageName = System.currentTimeMillis() + ".jpg";
+        return new File(directory.getAbsolutePath(), imageName);
+
+    }
+
+
+    private File saveToCacheDirectory(byte[] imageByte) {
+        File file = getFileLocationFromDirectory();
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(file);
+            out.write(imageByte);
+            return file;
+        } catch (Exception e) {
+            if (getActivity() != null)
+                getActivity().finish();
+            return null;
+        } finally {
+            if (out != null) {
+                try {
+                    out.flush();
+                    out.close();
+                } catch (IOException e) {
+                }
+
+            }
+        }
+    }
+
 }
