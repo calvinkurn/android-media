@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.paylater">
+    package="com.tokopedia.pdpsimulation">
 
     <application>
         <activity
-            android:name="com.tokopedia.paylater.common.presentation.activity.PdpSimulationActivity"
+            android:name="com.tokopedia.pdpsimulation.common.presentation.activity.PdpSimulationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
 

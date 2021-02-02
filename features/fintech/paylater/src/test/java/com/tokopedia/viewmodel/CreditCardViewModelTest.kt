@@ -2,11 +2,11 @@ package com.tokopedia.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.paylater.creditcard.domain.model.*
-import com.tokopedia.paylater.creditcard.domain.usecase.CreditCardBankDataUseCase
-import com.tokopedia.paylater.creditcard.domain.usecase.CreditCardPdpMetaInfoUseCase
-import com.tokopedia.paylater.creditcard.domain.usecase.CreditCardSimulationUseCase
-import com.tokopedia.paylater.creditcard.viewmodel.CreditCardViewModel
+import com.tokopedia.pdpsimulation.creditcard.domain.model.*
+import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardBankDataUseCase
+import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardPdpMetaInfoUseCase
+import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardSimulationUseCase
+import com.tokopedia.pdpsimulation.creditcard.viewmodel.CreditCardViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
