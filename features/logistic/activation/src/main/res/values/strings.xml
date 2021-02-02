@@ -24,7 +24,7 @@
     <string name="dialog_secondary_button_inactive">Batal</string>
 
     <string name="dialog_title_active">Aktifkan Bayar di Tempat?</string>
-    <string name="dialog_description_active">Dengan aktifkan layanan ini, kurir SiCepat juga diaktifkan e produk yang memenuhi syarat otomatis terdaftar.&lt;br/&gt; &lt;br/&gt;Kamu tetap bisa ubah kurir di halaman &lt;a href="tokopedia-android-internal://marketplace/shop-settings-shipping"&gt;Pengaturan Pengiriman&lt;/a&gt;.</string>
+    <string name="dialog_description_active">Dengan aktifkan layanan ini, kurir SiCepat juga diaktifkan e produk yang memenuhi syarat otomatis terdaftar.&lt;br/&gt; &lt;br/&gt;Kamu tetap bisa ubah kurir di halaman &lt;a href="sellerapp://setting/shipping-editor"&gt;Pengaturan Pengiriman&lt;/a&gt;.</string>
     <string name="dialog_primary_button_active">Aktifkan Layanan</string>
     <string name="dialog_secondary_button_active">Batal</string>
     <string name="tnc_desc">Syarat adalah blabla</string>

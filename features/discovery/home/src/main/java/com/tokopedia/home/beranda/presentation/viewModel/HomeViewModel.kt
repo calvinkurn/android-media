@@ -61,9 +61,6 @@ import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
@@ -105,7 +102,6 @@ open class HomeViewModel @Inject constructor(
         private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
         private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
         private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
-        private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
         private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
         private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
@@ -147,10 +143,6 @@ open class HomeViewModel @Inject constructor(
     val searchHint: LiveData<SearchPlaceholder>
         get() = _searchHint
     private val _searchHint: MutableLiveData<SearchPlaceholder> = MutableLiveData()
-
-    val stickyLogin: LiveData<Result<StickyLoginTickerPojo.TickerDetail>>
-        get() = _stickyLogin
-    private val _stickyLogin: MutableLiveData<Result<StickyLoginTickerPojo.TickerDetail>> = MutableLiveData()
 
     val injectCouponTimeBasedResult : LiveData<Result<InjectCouponTimeBased>>
         get() = _injectCouponTimeBasedResult
@@ -224,7 +216,6 @@ open class HomeViewModel @Inject constructor(
 // ============================================================================================
 
     private var getHomeDataJob: Job? = null
-    private var getStickyLoginJob: Job? = null
     private var getSearchHintJob: Job? = null
     private var getPlayWidgetJob: Job? = null
     private var getTokopointJob: Job? = null
@@ -1253,25 +1244,6 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getStickyContent() {
-        if(getStickyLoginJob?.isActive == true) return
-        getStickyLoginJob = launchCatchError(coroutineContext, block = {
-            stickyLoginUseCase.get().setParam(RequestParams.create().apply {
-                putString(StickyLoginConstant.PARAMS_PAGE, StickyLoginConstant.Page.HOME.toString())
-            })
-            val response = stickyLoginUseCase.get().executeOnBackground()
-            val data = response.response.tickers.find { it.layout == StickyLoginConstant.LAYOUT_FLOATING }
-            if(data == null){
-                _stickyLogin.postValue(Result.error(Exception()))
-            } else {
-                _stickyLogin.postValue(Result.success(data))
-            }
-
-        }){
-            _stickyLogin.postValue(Result.error(it))
-        }
-    }
-
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
         launchCatchError(coroutineContext, block = {
             val requestParams = RequestParams()
@@ -1455,6 +1427,27 @@ open class HomeViewModel @Inject constructor(
      * Play Widget
      */
     fun getPlayWidget() {
+        val dataModel = homeVisitableListData.find { it is CarouselPlayWidgetDataModel } ?: return
+        if (dataModel !is CarouselPlayWidgetDataModel) return
+
+        val index = homeVisitableListData.indexOfFirst { it is CarouselPlayWidgetDataModel }
+
+        launchCatchError(block = {
+            val response = playWidgetTools.get().getWidgetFromNetwork(
+                    PlayWidgetUseCase.WidgetType.Home,
+                    homeDispatcher.get().io()
+            )
+            val uiModel = playWidgetTools.get().mapWidgetToModel(response)
+            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(dataModel.copy(
+                    widgetUiModel = uiModel
+            ), index, this@HomeViewModel))
+
+        }) {
+            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dataModel, index, this@HomeViewModel))
+        }
+    }
+
+    fun getDynamicChannelData() {
         val dataModel = homeVisitableListData.find { it is CarouselPlayWidgetDataModel } ?: return
         if (dataModel !is CarouselPlayWidgetDataModel) return
 

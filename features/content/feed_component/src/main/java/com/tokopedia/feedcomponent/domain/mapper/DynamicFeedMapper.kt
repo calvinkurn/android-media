@@ -545,5 +545,5 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 }
 
 object TopAdsHeadlineActivityCounter {
-    var page: Int = 0
+    var page: Int = 1
 }

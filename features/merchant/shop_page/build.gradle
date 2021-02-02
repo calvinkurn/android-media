@@ -72,6 +72,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.empty_state
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url

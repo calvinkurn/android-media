@@ -52,7 +52,6 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback

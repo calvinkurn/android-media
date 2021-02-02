@@ -10,7 +10,6 @@ import dagger.Module
 import dagger.Provides
 
 
-@CategoryNavScope
 @Module
 class CategoryRevampModule {
     @Provides
