@@ -364,6 +364,11 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore ?: "")
             subscriptionWidget.hasMoreInfo(false)
 
+            if (!subscriptionWidget.isChecked()) {
+                subscriptionWidget.setChecked(crossSellingConfig.isChecked)
+                viewModel.onSubscriptionChecked(crossSellingConfig.isChecked)
+            }
+
             subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
                 override fun onMoreInfoClicked() {}
 
@@ -375,8 +380,6 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                     viewModel.onSubscriptionChecked(isChecked)
                 }
             }
-
-            if (!subscriptionWidget.isChecked()) subscriptionWidget.setChecked(crossSellingConfig.isChecked)
         }
     }
 
@@ -395,6 +398,13 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             fintechProductWidget.hasMoreInfo(true)
             fintechProductWidget.visibility = View.VISIBLE
 
+            if (fintechProduct.checkBoxDisabled) fintechProductWidget.disableCheckBox() else {
+                if (!fintechProductWidget.isChecked()) {
+                    fintechProductWidget.setChecked(fintechProduct.optIn)
+                    viewModel.updateTotalPriceWithFintechProduct(fintechProduct.optIn, getPriceInput())
+                }
+            }
+
             fintechProductWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
                 override fun onMoreInfoClicked() {
                     renderFintechProductMoreInfo(fintechProduct.info)
@@ -410,9 +420,6 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                 }
             }
 
-            if (fintechProduct.checkBoxDisabled) fintechProductWidget.disableCheckBox() else {
-                if (!fintechProductWidget.isChecked()) fintechProductWidget.setChecked(fintechProduct.optIn)
-            }
         }
     }
 
