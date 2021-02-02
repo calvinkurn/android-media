@@ -162,12 +162,15 @@
             app:unifyButtonType="transaction" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/viewGlobalError"
+    <com.tokopedia.empty_state.EmptyStateUnify
+        xmlns:emptyState="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/viewEmptyState"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:visibility="gone" />
+        android:visibility="gone"
+        emptyState:unifyEmptyStateOrientation="vertical"
+        emptyState:unifyEmptyStateType="page"/>
 
     <LinearLayout
         android:id="@+id/loaderCheckout"
