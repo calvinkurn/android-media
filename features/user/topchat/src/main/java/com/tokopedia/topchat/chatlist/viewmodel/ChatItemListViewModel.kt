@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
@@ -37,7 +38,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -110,7 +110,7 @@ class ChatItemListViewModel @Inject constructor(
         get() = (_isChatAdminEligible.value as? Success)?.data == true
 
     override fun getChatListMessage(page: Int, filterIndex: Int, tab: String) {
-        whenChatAdminAuthorized { isEligible ->
+        whenChatAdminAuthorized(tab) { isEligible ->
             if (isEligible) {
                 queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
             }
@@ -132,12 +132,13 @@ class ChatItemListViewModel @Inject constructor(
         )
     }
 
-    private fun whenChatAdminAuthorized(action: (Boolean) -> Unit) {
+    private fun whenChatAdminAuthorized(tab: String, action: (Boolean) -> Unit) {
+        val isTabUser = tab == ChatListQueriesConstant.PARAM_TAB_USER
         _isChatAdminEligible.value.let { result ->
-            if (result != null && result is Success) {
-                action(result.data)
-            } else {
-                setChatAdminAccessJob()
+            when {
+                isTabUser -> action(true)
+                result != null && result is Success -> action(result.data)
+                else -> setChatAdminAccessJob()
             }
         }
     }
