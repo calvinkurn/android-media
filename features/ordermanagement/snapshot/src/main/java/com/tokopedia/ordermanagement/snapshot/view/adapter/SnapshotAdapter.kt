@@ -10,6 +10,7 @@ import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_CONTENT
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.TYPE_LOADER
 import com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder.*
+import com.tokopedia.ordermanagement.snapshot.view.fragment.SnapshotFragment
 
 /**
  * Created by fwidjaja on 1/15/21.
@@ -17,10 +18,19 @@ import com.tokopedia.ordermanagement.snapshot.view.adapter.viewholder.*
 class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>() {
     var listTypeData = mutableListOf<SnapshotTypeData>()
     var snapshotResponse = SnapshotResponse.Data.GetOrderSnapshot()
+    private var actionListener: ActionListener? = null
 
     companion object {
         const val LAYOUT_LOADER = 0
         const val LAYOUT_CONTENT = 1
+    }
+
+    interface ActionListener {
+        fun onSnapshotImgClicked(position: Int)
+    }
+
+    fun setActionListener(fragment: SnapshotFragment) {
+        this.actionListener = fragment
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -31,7 +41,7 @@ class SnapshotAdapter : RecyclerView.Adapter<SnapshotAdapter.BaseViewHolder<*>>(
             }
             LAYOUT_CONTENT -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.snapshot_content_item, parent, false)
-                SnapshotContentViewHolder(view)
+                SnapshotContentViewHolder(view, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }

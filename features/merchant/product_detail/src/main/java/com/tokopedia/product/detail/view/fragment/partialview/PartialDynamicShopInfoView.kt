@@ -38,7 +38,7 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
             if (isAllowManage == TRUE_VALUE) btn_favorite.visible() else btn_favorite.gone()
             val drawable = when {
                 isOs -> {
-                    androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_official_store_product)
+                    androidx.core.content.ContextCompat.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_official_store_product)
                 }
                 isPm -> {
                     androidx.core.content.ContextCompat.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant)

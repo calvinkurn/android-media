@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.ordermanagement.snapshot.R
@@ -36,7 +37,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
-class SnapshotFragment : BaseDaggerFragment() {
+class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -49,6 +50,7 @@ class SnapshotFragment : BaseDaggerFragment() {
     private val REQUEST_CODE_LOGIN = 588
     private var orderId = ""
     private var orderDetailId = ""
+    private var responseSnapshot = SnapshotResponse.Data.GetOrderSnapshot()
 
     private val snapshotViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SnapshotViewModel::class.java]
@@ -133,7 +135,9 @@ class SnapshotFragment : BaseDaggerFragment() {
     }
 
     private fun prepareLayout() {
-        snapshotAdapter = SnapshotAdapter()
+        snapshotAdapter = SnapshotAdapter().apply {
+            setActionListener(this@SnapshotFragment)
+        }
         rv?.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = snapshotAdapter
@@ -147,6 +151,7 @@ class SnapshotFragment : BaseDaggerFragment() {
         snapshotViewModel.snapshotResponse.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
+                    responseSnapshot = result.data
                     snapshotAdapter.snapshotResponse = result.data
                     snapshotAdapter.showContent()
                     btnSnapshotToPdp?.apply {
@@ -175,6 +180,18 @@ class SnapshotFragment : BaseDaggerFragment() {
         val toasterSuccess = Toaster
         view?.let { v ->
             toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, "").show()
+        }
+    }
+
+    override fun onSnapshotImgClicked(position: Int) {
+        activity?.let {
+            val strings: ArrayList<String> = ArrayList()
+            responseSnapshot.productImageSecondary.forEach {
+                strings.add(it.imageUrl)
+            }
+            it.startActivity(ImagePreviewActivity.getCallingIntent(it,
+                    strings,
+                    null, position))
         }
     }
 }

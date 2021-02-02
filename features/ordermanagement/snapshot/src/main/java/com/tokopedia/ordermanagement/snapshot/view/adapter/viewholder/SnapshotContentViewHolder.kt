@@ -24,7 +24,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by fwidjaja on 1/28/21.
  */
-class SnapshotContentViewHolder(itemView: View) : SnapshotAdapter.BaseViewHolder<SnapshotTypeData>(itemView)  {
+class SnapshotContentViewHolder(itemView: View, private val actionListener: SnapshotAdapter.ActionListener?) : SnapshotAdapter.BaseViewHolder<SnapshotTypeData>(itemView)  {
     @SuppressLint("SetTextI18n")
     override fun bind(item: SnapshotTypeData, position: Int) {
         if (item.dataObject is SnapshotResponse.Data.GetOrderSnapshot) {
@@ -48,11 +48,17 @@ class SnapshotContentViewHolder(itemView: View) : SnapshotAdapter.BaseViewHolder
                     }
                     imgViewPagerAdapter.listImg = arrayListImg
                     viewPager2.adapter = imgViewPagerAdapter
+                    viewPager2.setOnClickListener {
+                        actionListener?.onSnapshotImgClicked(position)
+                    }
 
                 } else {
                     viewPager2.gone()
                     indicator.gone()
                     ivHeader.visible()
+                    ivHeader.setOnClickListener {
+                        actionListener?.onSnapshotImgClicked(position)
+                    }
                     productImages.firstOrNull()?.imageUrl?.let { ivHeader.loadImageWithoutPlaceholder(it) }
                 }
             }
@@ -81,10 +87,10 @@ class SnapshotContentViewHolder(itemView: View) : SnapshotAdapter.BaseViewHolder
 
             val drawable = when {
                 item.dataObject.isOs -> {
-                    androidx.core.content.ContextCompat.getDrawable(itemView.context, R.drawable.ic_snapshot_official_store_product)
+                    androidx.core.content.ContextCompat.getDrawable(itemView.context, com.tokopedia.gm.common.R.drawable.ic_official_store_product)
                 }
                 item.dataObject.isPm -> {
-                    androidx.core.content.ContextCompat.getDrawable(itemView.context, R.drawable.ic_snapshot_power_merchant)
+                    androidx.core.content.ContextCompat.getDrawable(itemView.context, com.tokopedia.gm.common.R.drawable.ic_power_merchant)
                 }
                 else -> {
                     null
