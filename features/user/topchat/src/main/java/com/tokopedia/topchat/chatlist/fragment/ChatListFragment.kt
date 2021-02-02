@@ -325,7 +325,6 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                     result.data.let { isEligible ->
                         if (isEligible) {
                             loadInitialData()
-                            setupSellerBroadcast()
                         } else {
                             onChatAdminNoAccess()
                         }
