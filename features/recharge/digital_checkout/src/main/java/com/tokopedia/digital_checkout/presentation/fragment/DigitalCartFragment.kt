@@ -202,9 +202,9 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         digitalSubscriptionParams.isSubscribed = cartInfo.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
         sendGetCartAndCheckoutAnalytics()
 
+        renderInputPriceView(cartInfo.attributes?.pricePlain?.toLong().toString(), cartInfo.attributes?.userInputPrice)
         renderCrossSellingMyBillsWidget(cartInfo.crossSellingConfig)
         renderFintechProductWidget(cartInfo.attributes?.fintechProduct?.getOrNull(0))
-        renderInputPriceView(cartInfo.attributes?.pricePlain?.toLong().toString(), cartInfo.attributes?.userInputPrice)
         showMyBillsSubscriptionView(cartInfo.showSubscriptionsView)
 
         productTitle.text = cartInfo.attributes?.categoryName
@@ -366,8 +366,8 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
             if (!subscriptionWidget.isChecked()) {
                 subscriptionWidget.setChecked(crossSellingConfig.isChecked)
-                viewModel.onSubscriptionChecked(crossSellingConfig.isChecked)
             }
+            viewModel.onSubscriptionChecked(subscriptionWidget.isChecked())
 
             subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
                 override fun onMoreInfoClicked() {}
@@ -401,8 +401,8 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             if (fintechProduct.checkBoxDisabled) fintechProductWidget.disableCheckBox() else {
                 if (!fintechProductWidget.isChecked()) {
                     fintechProductWidget.setChecked(fintechProduct.optIn)
-                    viewModel.updateTotalPriceWithFintechProduct(fintechProduct.optIn, getPriceInput())
                 }
+                viewModel.updateTotalPriceWithFintechProduct(fintechProductWidget.isChecked(), getPriceInput())
             }
 
             fintechProductWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
