@@ -247,7 +247,7 @@ class WidgetNotificationViewHolder constructor(
     companion object {
         val LAYOUT = R.layout.item_notification_widget_order_history
 
-        private const val enableTrackHistory = true
+        private const val enableTrackHistory = false
     }
 }
 
