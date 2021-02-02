@@ -80,8 +80,7 @@ data class ComponentsItem(
         var pageLoadedCounter: Int = 1,
         var tabName: String? = "",
         var isSticky : Boolean = false,
-        var description : String? = "",
-        var showFilter: Boolean = true,) {
+        var description : String? = "",) {
 
     private var componentsItem: List<ComponentsItem>? = null
 

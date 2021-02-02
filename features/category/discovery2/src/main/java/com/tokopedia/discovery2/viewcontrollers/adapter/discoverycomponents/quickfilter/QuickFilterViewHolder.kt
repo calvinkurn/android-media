@@ -74,12 +74,6 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         quickSortFilter.let {
             it.sortFilterItems.removeAllViews()
             it.addItem(sortFilterItems)
-            if(!quickFilterViewModel.components.showFilter) {
-                it.filterType = SortFilter.TYPE_QUICK
-                it.dismissListener = {
-                    quickFilterViewModel.clearQuickFilters()
-                }
-            }
             it.textView.text = fragment.getString(R.string.filter)
             it.parentListener = { openBottomSheetFilterRevamp() }
         }
