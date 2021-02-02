@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.tokopedia.sellerhomenavigationcommon.plt.LoadTimeMonitoringListener
-import com.tokopedia.sellerhomenavigationcommon.plt.SomListLoadTimeMonitoring
-import com.tokopedia.sellerhomenavigationcommon.plt.SomListLoadTimeMonitoringActivity
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
+import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
+import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment

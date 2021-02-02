@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomenavigationcommon.plt
+package com.tokopedia.seller.active.common.plt
 
 interface LoadTimeMonitoringListener {
     fun onStartPltMonitoring()

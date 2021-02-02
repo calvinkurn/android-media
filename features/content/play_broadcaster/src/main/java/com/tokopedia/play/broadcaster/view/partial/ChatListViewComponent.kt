@@ -25,17 +25,19 @@ class ChatListViewComponent(
     private val rvChatList = findViewById<RecyclerView>(R.id.rv_chat_list)
     private val csDownView = findViewById<ChatScrollDownView>(R.id.csdown_view).apply {
         setOnClickListener {
-            if (rvChatList.canScrollDown) rvChatList.smoothScrollToPosition(chatAdapter.lastIndex)
+            if (rvChatList.canScrollDown) {
+                rvChatList.scrollToPosition(chatAdapter.lastIndex)
+            }
         }
     }
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            if (recyclerView.canScrollDown) {
+            if (recyclerView.canScrollDown && recyclerView.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
                 val offset = recyclerView.computeVerticalScrollOffset()
                 val range = recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollExtent()
                 if (offset + SCROLL_OFFSET_INDICATOR < range - 1) csDownView.visible()
                 else csDownView.gone()
-            } else {
+            } else if (recyclerView.scrollState != RecyclerView.SCROLL_STATE_SETTLING) {
                 csDownView.apply { showIndicatorRed(false) }.gone()
             }
         }
@@ -45,10 +47,9 @@ class ChatListViewComponent(
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             csDownView.showIndicatorRed(rvChatList.canScrollDown)
             if (!csDownView.isVisible) {
-                rvChatList.postDelayed({
-                    rvChatList.smoothScrollToPosition(chatAdapter.lastIndex)
-                    Timber.tag("ChatList").d("Smooth Scroll to Position ${chatAdapter.lastIndex}")
-                }, 100)
+                rvChatList.post {
+                    rvChatList.scrollToPosition(chatAdapter.lastIndex)
+                }
             }
         }
     }
@@ -77,6 +78,6 @@ class ChatListViewComponent(
         get() = canScrollVertically(1)
 
     companion object {
-        private const val SCROLL_OFFSET_INDICATOR = 50
+        private const val SCROLL_OFFSET_INDICATOR = 90
     }
 }
