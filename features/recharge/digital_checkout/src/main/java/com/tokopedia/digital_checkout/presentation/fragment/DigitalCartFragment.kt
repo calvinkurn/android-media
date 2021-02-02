@@ -206,7 +206,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
         renderCrossSellingMyBillsWidget(cartInfo.crossSellingConfig)
         renderFintechProductWidget(cartInfo.attributes?.fintechProduct?.getOrNull(0))
-        renderInputPriceView(cartInfo.attributes?.pricePlain.toString(), cartInfo.attributes?.userInputPrice)
+        renderInputPriceView(cartInfo.attributes?.pricePlain?.toLong().toString(), cartInfo.attributes?.userInputPrice)
         showMyBillsSubscriptionView(cartInfo.showSubscriptionsView)
 
         productTitle.text = cartInfo.attributes?.categoryName
@@ -395,7 +395,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                     } else {
                         digitalAnalytics.eventClickCrossSell(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
                     }
-                    viewModel.updateTotalPriceWithFintechProduct(isChecked)
+                    viewModel.updateTotalPriceWithFintechProduct(isChecked, getPriceInput())
                 }
             }
 
@@ -529,6 +529,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     private fun getCategoryName(): String = getCartDigitalInfoData().attributes?.categoryName ?: ""
     private fun getOperatorName(): String = getCartDigitalInfoData().attributes?.operatorName ?: ""
     private fun getPromoData(): PromoData = viewModel.promoData.value ?: PromoData()
+    private fun getPriceInput(): Double = inputPriceHolderView.getPriceInput().toDouble()
 
     companion object {
         private const val ARG_PASS_DATA = "ARG_PASS_DATA"

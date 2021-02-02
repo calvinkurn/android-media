@@ -697,7 +697,7 @@ class DigitalCartViewModelTest {
 
         // when
         addToCart_onSuccess()
-        digitalCartViewModel.updateTotalPriceWithFintechProduct(true)
+        digitalCartViewModel.updateTotalPriceWithFintechProduct(true, 0.0)
 
         // then
         // if fintech product checked, update total price
@@ -712,11 +712,41 @@ class DigitalCartViewModelTest {
 
         // when
         updateTotalPriceWithFintechProduct_checked()
-        digitalCartViewModel.updateTotalPriceWithFintechProduct(false)
+        digitalCartViewModel.updateTotalPriceWithFintechProduct(false, 0.0)
 
         // then
         val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain ?: 0
         assert(digitalCartViewModel.totalPrice.value == oldTotalPrice)
+    }
+
+    @Test
+    fun updateTotalPriceWithFintechProductAndInputPrice_checked() {
+        // given
+        val userInputPrice = 30000.0
+
+        // when
+        addToCart_onSuccess()
+        digitalCartViewModel.updateTotalPriceWithFintechProduct(true, userInputPrice)
+
+        // then
+        // if fintech product checked, update total price
+        val fintechPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ?: 0.0
+        assert(digitalCartViewModel.totalPrice.value == userInputPrice + fintechPrice)
+    }
+
+    @Test
+    fun updateTotalPriceWithFintechProductAndInputPrice_unChecked() {
+        // given
+        val userInputPrice = 30000.0
+
+        // when
+        addToCart_onSuccess()
+        digitalCartViewModel.updateTotalPriceWithFintechProduct(false, userInputPrice)
+
+        // then
+        // if fintech product checked, update total price
+        val fintechPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ?: 0.0
+        assert(digitalCartViewModel.totalPrice.value == userInputPrice)
     }
 
     @Test

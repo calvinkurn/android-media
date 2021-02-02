@@ -314,11 +314,11 @@ class DigitalCartViewModel @Inject constructor(
         requestCheckoutParam.isSubscriptionChecked = isChecked
     }
 
-    fun updateTotalPriceWithFintechProduct(isChecked: Boolean) {
+    fun updateTotalPriceWithFintechProduct(isChecked: Boolean, inputPrice: Double) {
         requestCheckoutParam.isFintechProductChecked = isChecked
 
         cartDigitalInfoData.value?.attributes?.let { attributes ->
-            var totalPrice = attributes.pricePlain
+            var totalPrice = if (inputPrice > 0) inputPrice else attributes.pricePlain
             if (isChecked) {
                 val fintechProductPrice = attributes.fintechProduct?.getOrNull(0)?.fintechAmount
                         ?: 0.0
