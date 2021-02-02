@@ -83,8 +83,8 @@ class PlayActivity : BaseActivity(),
 
     private val ivLoading by viewComponent { LoadingViewComponent(it, R.id.iv_loading) }
 
-    private val activeFragment: PlayFragment
-        get() = supportFragmentManager.fragments.filterIsInstance<PlayFragment>()[swipeContainerView.getCurrentPos()]
+    private val activeFragment: PlayFragment?
+        get() = try { supportFragmentManager.fragments.filterIsInstance<PlayFragment>()[swipeContainerView.getCurrentPos()] } catch (e: Throwable) { null }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -184,7 +184,7 @@ class PlayActivity : BaseActivity(),
     private fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
         if (swipeContainerView.scrollState != ViewPager2.SCROLL_STATE_IDLE) return true
 
-        return activeFragment.onInterceptOrientationChangedEvent(newOrientation)
+        return activeFragment?.onInterceptOrientationChangedEvent(newOrientation) ?: true
     }
 
     private fun inject() {
