@@ -79,7 +79,7 @@ class CreditCardTncFragment : BaseDaggerFragment() {
     private fun onPdpInfoMetaDataLoaded(data: CreditCardPdpMetaData) {
         rvPdpInfo.visible()
         // pdpInfoContentList is non nullable here in case of Success
-        (rvPdpInfo.adapter as CreditCardTncAdapter).setData(data.pdpInfoContentList!!)
+        (rvPdpInfo.adapter as CreditCardTncAdapter).setData(data.pdpInfoContentList!!, data.ctaRedirectionLabel)
     }
 
     private fun onPdpInfoMetaDataLoadingFailed(throwable: Throwable) {

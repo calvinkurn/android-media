@@ -7,9 +7,7 @@ import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispat
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
-import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterApplicationStatusUseCase
-import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterProductDetailUseCase
-import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationUseCase
+import com.tokopedia.pdpsimulation.paylater.domain.usecase.*
 import com.tokopedia.pdpsimulation.paylater.mapper.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -22,6 +20,7 @@ class PayLaterViewModel @Inject constructor(
         private val payLaterProductDetailUseCase: PayLaterProductDetailUseCase,
         private val payLaterApplicationStatusUseCase: PayLaterApplicationStatusUseCase,
         private val payLaterSimulationDataUseCase: PayLaterSimulationUseCase,
+        private val payLaterTenureMapperUseCase: PayLaterTenureMapperUseCase,
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
         @CoroutineBackgroundDispatcher val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
@@ -57,19 +56,15 @@ class PayLaterViewModel @Inject constructor(
                     ::onPayLaterApplicationStatusSuccess,
                     ::onPayLaterApplicationStatusError
             )
-        else onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(PAY_LATER_DATA_FAILURE))
+        else onPayLaterApplicationStatusError(PdpSimulationException.PayLaterNullDataException(APPLICATION_STATE_DATA_FAILURE))
     }
 
     private fun onPayLaterSimulationDataSuccess(payLaterGetSimulationResponse: PayLaterGetSimulationResponse?) {
-        launchCatchError(block = {
-            val dataStatus = withContext(ioDispatcher) {
-                return@withContext PayLaterSimulationResponseMapper.handleSimulationResponse(payLaterGetSimulationResponse)
-            }
-            when (dataStatus) {
-                StatusSuccess -> payLaterSimulationResultLiveData.value = Success(payLaterGetSimulationResponse?.payLaterGetSimulationGateway?.payLaterGatewayList!!)
+        payLaterTenureMapperUseCase.mapTenureToSimulation(payLaterGetSimulationResponse, onSuccess = {
+            when (it) {
+                is StatusSuccess -> payLaterSimulationResultLiveData.value = Success(it.data)
                 StatusPayLaterNotAvailable -> onPayLaterSimulationDataError(PdpSimulationException.PayLaterNotApplicableException(PAY_LATER_NOT_APPLICABLE))
                 StatusDataFailure -> onPayLaterSimulationDataError(PdpSimulationException.PayLaterNullDataException(SIMULATION_DATA_FAILURE))
-
             }
         }, onError = {
             onPayLaterSimulationDataError(it)
@@ -96,8 +91,9 @@ class PayLaterViewModel @Inject constructor(
         }, onError = { onPayLaterApplicationStatusError(it) })
     }
 
-    private fun onPayLaterDataSuccess(productDataList: PayLaterProductData?) {
-        launchCatchError(block = {
+    private fun onPayLaterDataSuccess(productDataList: PayLaterProductData) {
+        payLaterActivityResultLiveData.value = Success(productDataList)
+        /*launchCatchError(block = {
             val payLaterData: PayLaterProductData? = withContext(ioDispatcher) {
                 return@withContext PayLaterPartnerTypeMapper.validateProductData(productDataList)
             }
@@ -107,7 +103,7 @@ class PayLaterViewModel @Inject constructor(
                     ?: onPayLaterDataError(PdpSimulationException.PayLaterNullDataException(PAY_LATER_DATA_FAILURE))
         }, onError = {
             onPayLaterDataError(it)
-        })
+        })*/
     }
 
     private fun onPayLaterDataError(throwable: Throwable) {
@@ -127,12 +123,12 @@ class PayLaterViewModel @Inject constructor(
         payLaterProductDetailUseCase.cancelJobs()
         payLaterSimulationDataUseCase.cancelJobs()
         payLaterApplicationStatusUseCase.cancelJobs()
+        payLaterTenureMapperUseCase.cancelJobs()
         super.onCleared()
     }
 
     companion object {
         const val SIMULATION_DATA_FAILURE = "NULL DATA"
-        const val PAY_LATER_DATA_FAILURE = "NULL DATA"
         const val APPLICATION_STATE_DATA_FAILURE = "NULL_DATA"
         const val PAY_LATER_NOT_APPLICABLE = "NOT_APPLICABLE"
     }

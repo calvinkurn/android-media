@@ -174,7 +174,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
             is PdpSimulationException.CreditCardSimulationNotAvailableException -> {
                 creditCardTermsEmptyView.visible()
                 context?.let {
-                    ContextCompat.getDrawable(it, R.drawable.ic_paylater_terms_not_matched)?.let { it1 -> creditCardTermsEmptyView.setImageDrawable(it1) }
+                    ContextCompat.getDrawable(it, R.drawable.ic_paylater_terms_not_matched)?.let { drawable -> creditCardTermsEmptyView.setImageDrawable(drawable) }
                 }
                 dividerVertical.visible()
                 tickerSimulation.visible()

@@ -3,17 +3,18 @@ package com.tokopedia.pdpsimulation.creditcard.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
+import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
+import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.creditcard.domain.model.*
+import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardBankDataUseCase
+import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardPdpMetaInfoUseCase
+import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardSimulationUseCase
+import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardTncMapperUseCase
 import com.tokopedia.pdpsimulation.creditcard.mapper.CreditCardResponseMapper
 import com.tokopedia.pdpsimulation.creditcard.mapper.StatusApiFail
 import com.tokopedia.pdpsimulation.creditcard.mapper.StatusApiSuccess
 import com.tokopedia.pdpsimulation.creditcard.mapper.StatusCCNotAvailable
-import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
-import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardBankDataUseCase
-import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardPdpMetaInfoUseCase
-import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardSimulationUseCase
-import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -25,6 +26,7 @@ class CreditCardViewModel @Inject constructor(
         private val creditCardSimulationUseCase: CreditCardSimulationUseCase,
         private val creditCardPdpMetaInfoUseCase: CreditCardPdpMetaInfoUseCase,
         private val creditCardBankDataUseCase: CreditCardBankDataUseCase,
+        private val creditCardTncMapperUseCase: CreditCardTncMapperUseCase,
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
         @CoroutineBackgroundDispatcher val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
@@ -83,14 +85,11 @@ class CreditCardViewModel @Inject constructor(
     }
 
     private fun onPdpInfoMetaDataSuccess(creditCardPdpMetaData: CreditCardPdpMetaData?) {
-        if (creditCardPdpMetaData != null && !creditCardPdpMetaData.pdpInfoContentList.isNullOrEmpty())
-            launchCatchError(block = {
-                withContext(ioDispatcher) {
-                    return@withContext CreditCardResponseMapper.populatePdpInfoMetaDataResponse(creditCardPdpMetaData)
-                }
-                creditCardPdpMetaInfoLiveData.value = Success(creditCardPdpMetaData)
-            }, onError = { onPdpInfoMetaDataError(PdpSimulationException.CreditCardNullDataException(CREDIT_CARD_TNC_DATA_FAILURE)) })
-        else onPdpInfoMetaDataError(PdpSimulationException.CreditCardNullDataException(CREDIT_CARD_TNC_DATA_FAILURE))
+        creditCardTncMapperUseCase.parseTncData(creditCardPdpMetaData, onSuccess = {
+            creditCardPdpMetaInfoLiveData.value = Success(it)
+        }, onError = {
+            creditCardPdpMetaInfoLiveData.value = Fail(it)
+        })
     }
 
     private fun onPdpInfoMetaDataError(throwable: Throwable) {
@@ -116,12 +115,14 @@ class CreditCardViewModel @Inject constructor(
 
     override fun onCleared() {
         creditCardSimulationUseCase.cancelJobs()
+        creditCardTncMapperUseCase.cancelJobs()
+        creditCardBankDataUseCase.cancelJobs()
+        creditCardPdpMetaInfoUseCase.cancelJobs()
         super.onCleared()
     }
 
     companion object {
         const val SIMULATION_DATA_FAILURE = "NULL DATA"
-        const val CREDIT_CARD_TNC_DATA_FAILURE = "NULL DATA"
         const val BANK_CARD_DATA_FAILURE = "NULL DATA"
         const val CREDIT_CARD_NOT_AVAILABLE = "Credit Card Not Applicable"
     }

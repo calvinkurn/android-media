@@ -3,16 +3,14 @@ package com.tokopedia.pdpsimulation.paylater.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulationResponse
 import com.tokopedia.pdpsimulation.common.constants.GQL_PAY_LATER_SIMULATION
-
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulationResponse
 import javax.inject.Inject
 
 @GqlQuery("PayLaterSimulationQuery", GQL_PAY_LATER_SIMULATION)
 class PayLaterSimulationUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository,
-)
-    : GraphqlUseCase<PayLaterGetSimulationResponse>(graphqlRepository) {
+) : GraphqlUseCase<PayLaterGetSimulationResponse>(graphqlRepository) {
 
     fun getSimulationData(
             onSuccess: (PayLaterGetSimulationResponse?) -> Unit,

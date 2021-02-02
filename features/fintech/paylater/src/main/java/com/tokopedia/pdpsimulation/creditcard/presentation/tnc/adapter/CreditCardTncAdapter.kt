@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.credit_card_pdp_meta_info_item.view.*
 
 class CreditCardTncAdapter(val moreInfoListener: () -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var pdpInfoContentList: ArrayList<CreditCardPdpInfoContent> = arrayListOf()
+    private var ctaRedirectionLabel: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -61,11 +62,13 @@ class CreditCardTncAdapter(val moreInfoListener: () -> Unit) : RecyclerView.Adap
                     else holder.view.dividerInstallment.visible()
                 }
             }
+            is CreditCardPdpInfoButtonViewHolder -> holder.bindData(ctaRedirectionLabel)
         }
     }
 
-    fun setData(pdpInfoContentList: ArrayList<CreditCardPdpInfoContent>) {
+    fun setData(pdpInfoContentList: ArrayList<CreditCardPdpInfoContent>, ctaRedirectionLabel: String?) {
         this.pdpInfoContentList = pdpInfoContentList
+        this.ctaRedirectionLabel =  ctaRedirectionLabel
         notifyDataSetChanged()
     }
 

@@ -37,6 +37,7 @@
     <string name="credit_card_simulation_see_all_banks">Lihat Semua (%1$d)</string>
     <string name="credit_card_simulation_offer">Bunga 0% berlaku di semua cicilan</string>
     <string name="credit_card_not_applicable_ticker_text"><![CDATA[Tenang, kamu bisa coba pakai payLater. Ada  bunga 0% juga! <a href=\'https://google.com\'>Lihat Simulasi PayLater</a>]]></string>
+    <string name="credit_card_tnc_more_info_text">Info Selengkapnya</string>
 
 
     <!-- PayLater Products Detail Page -->

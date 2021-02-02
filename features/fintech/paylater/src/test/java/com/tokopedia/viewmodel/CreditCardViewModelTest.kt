@@ -6,6 +6,7 @@ import com.tokopedia.pdpsimulation.creditcard.domain.model.*
 import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardBankDataUseCase
 import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardPdpMetaInfoUseCase
 import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardSimulationUseCase
+import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardTncMapperUseCase
 import com.tokopedia.pdpsimulation.creditcard.viewmodel.CreditCardViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -30,6 +31,7 @@ class CreditCardViewModelTest {
     val creditCardSimulationUseCase = mockk<CreditCardSimulationUseCase>(relaxed = true)
     val creditCardPdpMetaInfoUseCase = mockk<CreditCardPdpMetaInfoUseCase>(relaxed = true)
     val creditCardBankDataUseCase = mockk<CreditCardBankDataUseCase>(relaxed = true)
+    val credittncusecase = mockk<CreditCardTncMapperUseCase>(relaxed = true)
 
     val dispatcher = TestCoroutineDispatcher()
     lateinit var viewModel: CreditCardViewModel
@@ -63,6 +65,7 @@ class CreditCardViewModelTest {
                 creditCardSimulationUseCase,
                 creditCardPdpMetaInfoUseCase,
                 creditCardBankDataUseCase,
+                credittncusecase,
                 dispatcher,
                 dispatcher
         )

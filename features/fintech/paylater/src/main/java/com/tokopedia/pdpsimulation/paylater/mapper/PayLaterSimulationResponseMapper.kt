@@ -1,6 +1,7 @@
 package com.tokopedia.pdpsimulation.paylater.mapper
 
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulationResponse
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterSimulationGatewayItem
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationItemDetail
 
 const val ONE_MONTH_TENURE = 1
@@ -18,42 +19,7 @@ object NineMonthlyInstallment : PayLaterSimulationTenureType(NINE_MONTH_TENURE)
 object TwelveMonthlyInstallment : PayLaterSimulationTenureType(TWELVE_MONTH_TENURE)
 object EmptyInstallment : PayLaterSimulationTenureType(EMPTY_TENURE)
 
-sealed class PayLaterSimulationDataStatus()
-object StatusSuccess : PayLaterSimulationDataStatus()
-object StatusDataFailure : PayLaterSimulationDataStatus()
-object StatusPayLaterNotAvailable : PayLaterSimulationDataStatus()
-
-
 object PayLaterSimulationResponseMapper {
-
-    fun handleSimulationResponse(payLaterSimulationResponse: PayLaterGetSimulationResponse?): PayLaterSimulationDataStatus {
-        payLaterSimulationResponse?.also {
-            it.payLaterGetSimulationGateway?.also { gatewayResponse ->
-                if (gatewayResponse.payLaterGatewayList.isNullOrEmpty()) {
-                    return StatusDataFailure
-                } else {
-                    var isPayLaterApplicable = false
-                    for (gatewayItem in gatewayResponse.payLaterGatewayList) {
-                        val tenureMap = HashMap<PayLaterSimulationTenureType, SimulationItemDetail>()
-                        var isRecommended = false
-                        if (!gatewayItem.simulationDetailList.isNullOrEmpty()) {
-                            isPayLaterApplicable = true
-                            for (itemDetail in gatewayItem.simulationDetailList) {
-                                val tenureType = getSimulationTenureType(itemDetail.tenure)
-                                if (itemDetail.isRecommended == true) isRecommended = true
-                                tenureMap[tenureType] = itemDetail
-                            }
-                        }
-                        gatewayItem.isRecommended = isRecommended
-                        gatewayItem.installmentMap = tenureMap
-                    }
-                    if (isPayLaterApplicable) return StatusSuccess
-                    else return StatusPayLaterNotAvailable
-                }
-            } ?: return StatusDataFailure
-        } ?: return StatusDataFailure
-        return StatusDataFailure
-    }
 
     fun getSimulationTenureType(tenure: Int?): PayLaterSimulationTenureType {
         return when (tenure) {
