@@ -152,10 +152,6 @@ class PdpGamificationView : LinearLayout {
 
     private fun setListeners() {
 
-        setOnClickListener {
-            GtmEvents.clickProductRecom(userId)
-        }
-
         viewModel.productLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {

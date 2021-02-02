@@ -446,12 +446,23 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
         })
 
-        pdpGamificationView.errorListener = object : PdpErrorListener{
+        pdpGamificationView.errorListener = object : PdpErrorListener {
             override fun onError() {
                 setupBottomSheet(false)
             }
 
         }
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    GtmEvents.clickProductRecom(userSession?.userId)
+                }
+            }
+        })
     }
 
     fun handleRecomPage(recommendation: Recommendation?) {
