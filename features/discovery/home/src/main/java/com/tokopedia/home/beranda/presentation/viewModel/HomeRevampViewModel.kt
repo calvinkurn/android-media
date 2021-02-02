@@ -966,7 +966,7 @@ open class HomeRevampViewModel @Inject constructor(
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.postValue(Result.errorGeneral(Throwable(), null))
 
-            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_init_flow;reason='${it.message?:""
+            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_refresh;reason='${it.message?:""
                     .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
                     .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
         }
