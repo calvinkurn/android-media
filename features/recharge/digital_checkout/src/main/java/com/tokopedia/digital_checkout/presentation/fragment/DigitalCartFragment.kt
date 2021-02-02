@@ -42,8 +42,6 @@ import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
-import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
-import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE
@@ -263,17 +261,29 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     }
 
     private fun showError(message: String) {
-        if (viewGlobalError != null) {
-            viewGlobalError.setActionClickListener {
-                viewGlobalError.visibility = View.GONE
+        if (viewEmptyState != null) {
+            viewEmptyState.setPrimaryCTAClickListener {
+                viewEmptyState.visibility = View.GONE
                 loadData()
             }
-            var errorType = SERVER_ERROR
-            if (message == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL) {
-                errorType = NO_CONNECTION
+
+            if (message == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL || message == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                    || message == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT) {
+                viewEmptyState.setTitle(getString(com.tokopedia.globalerror.R.string.noConnectionTitle))
+                viewEmptyState.setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection))
+                viewEmptyState.setDescription(getString(com.tokopedia.globalerror.R.string.noConnectionDesc))
+            } else if (message == ErrorNetMessage.MESSAGE_ERROR_SERVER || message == ErrorNetMessage.MESSAGE_ERROR_DEFAULT) {
+                viewEmptyState.setTitle(getString(com.tokopedia.globalerror.R.string.error500Title))
+                viewEmptyState.setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500))
+                viewEmptyState.setDescription(getString(com.tokopedia.globalerror.R.string.error500Desc))
+            } else {
+                viewEmptyState.setTitle(getString(R.string.digital_checkout_empty_state_title))
+                viewEmptyState.setImageDrawable(resources.getDrawable(R.drawable.ic_digital_checkout_failed_transaction))
+                viewEmptyState.setDescription(message)
             }
-            viewGlobalError.setType(errorType)
-            viewGlobalError.visibility = View.VISIBLE
+
+            viewEmptyState.setPrimaryCTAText(getString(R.string.digital_checkout_empty_state_btn))
+            viewEmptyState.visibility = View.VISIBLE
         }
     }
 

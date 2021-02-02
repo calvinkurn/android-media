@@ -25,4 +25,7 @@
 
     <string name="digital_cart_alert_payment_canceled_or_failed">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="digital_cart_alert_payment_canceled">Pembayaran dibatalkan</string>
+
+    <string name="digital_checkout_empty_state_title">Oops, gagal melanjutkan pembayaran</string>
+    <string name="digital_checkout_empty_state_btn">Coba Lagi</string>
 </resources>
