@@ -106,8 +106,17 @@ class OrderSummaryPageRobot {
         OvoActivationBottomSheetRobot().apply(func)
     }
 
+    fun clickOvoActivationButtonRevamp(func: OvoActivationBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).perform(click())
+        OvoActivationBottomSheetRobot().apply(func)
+    }
+
     fun clickOvoTopUpButton() {
         onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).perform(click())
+    }
+
+    fun clickOvoTopUpButtonRevamp() {
+        onView(withId(R.id.tv_new_payment_error_message)).perform(scrollTo()).perform(click())
     }
 
     fun clickChangeInstallment(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
@@ -281,12 +290,30 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.tv_payment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
     }
 
+    fun assertProfilePaymentErrorRevamp(message: String, buttonText: String?) {
+        var expectedMessage = "$message "
+        if (buttonText != null) {
+            expectedMessage += buttonText
+        }
+        onView(withId(R.id.tv_new_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(expectedMessage)))
+    }
+
     fun assertProfilePaymentOvoError(message: String?, buttonText: String?) {
         if (message != null) {
             onView(withId(R.id.tv_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(message)))
         }
         if (buttonText != null) {
             onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
+        }
+    }
+
+    fun assertProfilePaymentOvoErrorRevamp(message: String?, buttonText: String?) {
+        if (message != null && buttonText != null) {
+            onView(withId(R.id.tv_new_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("$message $buttonText")))
+        } else if (message != null) {
+            onView(withId(R.id.tv_new_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText("$message ")))
+        } else if (buttonText != null) {
+            onView(withId(R.id.tv_new_payment_ovo_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
         }
     }
 
