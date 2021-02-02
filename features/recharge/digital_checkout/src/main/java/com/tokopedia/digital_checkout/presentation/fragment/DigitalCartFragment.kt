@@ -351,8 +351,6 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
             if (crossSellingConfig.isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter ?: "")
             else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore ?: "")
-
-            subscriptionWidget.setChecked(crossSellingConfig.isChecked)
             subscriptionWidget.hasMoreInfo(false)
 
             subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
@@ -366,6 +364,8 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                     viewModel.onSubscriptionChecked(isChecked)
                 }
             }
+
+            if (!subscriptionWidget.isChecked()) subscriptionWidget.setChecked(crossSellingConfig.isChecked)
         }
     }
 
@@ -384,10 +384,6 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             fintechProductWidget.hasMoreInfo(true)
             fintechProductWidget.visibility = View.VISIBLE
 
-            if (fintechProduct.checkBoxDisabled) fintechProductWidget.disableCheckBox() else {
-                fintechProductWidget.setChecked(fintechProduct.optIn)
-            }
-
             fintechProductWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
                 override fun onMoreInfoClicked() {
                     renderFintechProductMoreInfo(fintechProduct.info)
@@ -401,6 +397,10 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                     }
                     viewModel.updateTotalPriceWithFintechProduct(isChecked)
                 }
+            }
+
+            if (fintechProduct.checkBoxDisabled) fintechProductWidget.disableCheckBox() else {
+                if (!fintechProductWidget.isChecked()) fintechProductWidget.setChecked(fintechProduct.optIn)
             }
         }
     }
