@@ -180,20 +180,41 @@
         app:layout_constraintTop_toBottomOf="@+id/tp_message"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tp_history"
+    <LinearLayout
+        android:id="@+id/toggle_history_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:paddingStart="@dimen/unify_space_48"
-        android:paddingTop="@dimen/unify_space_8"
         android:paddingEnd="@dimen/unify_space_48"
-        android:paddingBottom="@dimen/unify_space_8"
-        android:text="@string/cta_widget_notifcenter_see_previous"
-        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_history"
-        app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_history">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tp_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/unify_space_8"
+            android:paddingBottom="@dimen/unify_space_8"
+            android:text="@string/cta_widget_notifcenter_see_previous"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rv_history"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/tp_history_state"
+            android:layout_width="@dimen/notif_dp_30"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/notif_dp_4"
+            android:paddingEnd="@dimen/notif_dp_8"
+            app:icon_color_light_enable="@color/Unify_N500"
+            app:icon_name="CHEVRON_UP"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tp_history"
+            app:layout_constraintTop_toBottomOf="@+id/rv_history" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

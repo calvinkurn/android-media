@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.TrackHistory
@@ -26,7 +28,9 @@ class WidgetNotificationViewHolder constructor(
 ) : BaseNotificationViewHolder(itemView, listener) {
 
     private val widgetBox: ConstraintLayout? = itemView?.findViewById(R.id.view_notification_desc)
-    private val historyBtn: Typography? = itemView?.findViewById(R.id.tp_history)
+    private val toggleHistoryBtn: LinearLayout? = itemView?.findViewById(R.id.toggle_history_btn)
+    private val historyViewTextState: Typography? = itemView?.findViewById(R.id.tp_history)
+    private val historyViewIconState: IconUnify? = itemView?.findViewById(R.id.tp_history_state)
     private val thumbnail: ImageView? = itemView?.findViewById(R.id.iv_product_thumbnail)
     private val widgetTitle: Typography? = itemView?.findViewById(R.id.tp_widget_title)
     private val widgetDesc: Typography? = itemView?.findViewById(R.id.tp_widget_desc)
@@ -99,33 +103,45 @@ class WidgetNotificationViewHolder constructor(
         } else {
             historyTimeLine?.hide()
             progressIndicator?.hide()
-            historyBtn?.hide()
+            toggleHistoryBtn?.hide()
         }
     }
 
     private fun bindHistoryBtn(element: NotificationUiModel) {
-        historyBtn?.shouldShowWithAction(element.hasTrackHistory()) {
-            bindHistoryBtnState(element)
+        toggleHistoryBtn?.shouldShowWithAction(element.hasTrackHistory()) {
+            bindHistoryViewTextState(element)
+            bindHistoryViewIconState(element)
             bindHistoryBtnClick(element)
         }
     }
 
-    private fun bindHistoryBtnState(element: NotificationUiModel) {
+    private fun bindHistoryViewTextState(element: NotificationUiModel) {
         val triggerText = if (element.isHistoryVisible) {
             R.string.cta_widget_notifcenter_close_previous
         } else {
             R.string.cta_widget_notifcenter_see_previous
         }
-        historyBtn?.setText(triggerText)
-        // TODO: Adjust trigger icon
+        historyViewTextState?.setText(triggerText)
+    }
+
+    private fun bindHistoryViewIconState(element: NotificationUiModel) {
+        val icon = if (element.isHistoryVisible) {
+            IconUnify.CHEVRON_UP
+        } else {
+            IconUnify.CHEVRON_DOWN
+        }
+        historyViewIconState?.setImage(
+                newIconId = icon
+        )
     }
 
     private fun bindHistoryBtnClick(element: NotificationUiModel) {
-        historyBtn?.setOnClickListener {
+        toggleHistoryBtn?.setOnClickListener {
             element.toggleHistoryVisibility()
             bindTimeLineVisibility(element)
             bindProgressIndicator(element)
-            bindHistoryBtnState(element)
+            bindHistoryViewTextState(element)
+            bindHistoryViewIconState(element)
         }
     }
 
@@ -199,7 +215,7 @@ class WidgetNotificationViewHolder constructor(
 
     private fun bindPaddingBottom(element: NotificationUiModel) {
         container?.let {
-            if (historyBtn?.isVisible == true) {
+            if (toggleHistoryBtn?.isVisible == true) {
                 container.setPadding(
                         it.paddingLeft,
                         it.paddingTop,
