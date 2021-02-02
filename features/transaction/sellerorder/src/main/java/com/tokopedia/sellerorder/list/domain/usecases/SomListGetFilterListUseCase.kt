@@ -26,7 +26,7 @@ class SomListGetFilterListUseCase @Inject constructor(
 
     companion object {
         private val QUERY = """
-            query OrderFilterSom {
+            query GetOrderFilterSom {
               orderFilterSom {
                 status_list {
                   order_status_id

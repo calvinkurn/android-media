@@ -1,9 +1,9 @@
 package com.tokopedia.sellerhome.analytic.performance
 
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
-import com.tokopedia.analytics.performance.util.PltPerformanceData
 
-class HomeLayoutLoadTimeMonitoring: SellerHomeLoadTimeMonitoring() {
+class HomeLayoutLoadTimeMonitoring: LoadTimeMonitoring() {
 
     companion object {
         private const val SELLER_HOME_LAYOUT_PLT_TRACE = "seller_home_layout_trace"
@@ -40,6 +40,4 @@ class HomeLayoutLoadTimeMonitoring: SellerHomeLoadTimeMonitoring() {
             )
         }
     }
-
-    fun getPltPerformanceMonitoring(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
 }

@@ -1,32 +1,38 @@
-[{
-  "data": {
-    "add_to_cart": {
-      "error_message": ["Produk berhasil dimasukkan ke Keranjang Belanja"],
-      "status": "OK",
-      "data": {
-        "success": 1,
-        "cart_id": "1959253228",
-        "product_id": 1147495748,
-        "quantity": 1,
-        "notes": "",
-        "shop_id": 1882775,
-        "customer_id": 12615359,
-        "warehouse_id": 9876,
-        "tracker_attribution": "",
-        "tracker_list_name": "",
-        "uc_ut_param": "",
-        "is_trade_in": false,
-        "message": ["Produk berhasil dimasukkan ke Keranjang Belanja"]
-      },
-      "error_reporter": {
-        "eligible": false,
-        "texts": {
-          "submit_title": "Barang belum bisa dimasukkan ke keranjang",
-          "submit_description": "Ayo beri tahu kami tentang gangguan ini biar bisa segera diperbaiki!",
-          "submit_button": "Laporkan Gangguan",
-          "cancel_button": "Batal"
+[
+  {
+    "data": {
+      "add_to_cart_v2": {
+        "error_message": [
+          "Produk berhasil dimasukkan ke Keranjang Belanja"
+        ],
+        "status": "OK",
+        "data": {
+          "success": 1,
+          "cart_id": "2303932224",
+          "product_id": 1387992287,
+          "quantity": 2,
+          "notes": "",
+          "shop_id": 1882775,
+          "customer_id": 12615359,
+          "warehouse_id": 9876,
+          "tracker_attribution": "",
+          "tracker_list_name": "",
+          "uc_ut_param": "",
+          "is_trade_in": false,
+          "message": [
+            "Produk berhasil dimasukkan ke Keranjang Belanja"
+          ]
+        },
+        "error_reporter": {
+          "eligible": false,
+          "texts": {
+            "submit_title": "Barang belum bisa dimasukkan ke keranjang",
+            "submit_description": "Ayo beri tahu kami tentang gangguan ini biar bisa segera diperbaiki!",
+            "submit_button": "Laporkan Gangguan",
+            "cancel_button": "Batal"
+          }
         }
       }
     }
   }
-}]
+]

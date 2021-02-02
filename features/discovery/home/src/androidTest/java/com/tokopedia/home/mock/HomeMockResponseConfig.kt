@@ -8,6 +8,9 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawStrin
 class HomeMockResponseConfig: MockModelConfig() {
     companion object {
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL = "homeData"
+        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_1 = "channel_ids=65312"
+        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_2 = "channel_ids=45397"
+
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY = "dynamicHomeChannel"
         const val KEY_QUERY_DYNAMIC_POSITION = "dynamicPosition"
         const val KEY_QUERY_DYNAMIC_POSITION_ICON = "homeIcon"
@@ -31,17 +34,27 @@ class HomeMockResponseConfig: MockModelConfig() {
                 FIND_BY_QUERY_NAME)
 
         addMockResponse(
+                KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_1,
+                getRawString(context, R.raw.response_mock_data_dynamic_home_channel_atf_1),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_2,
+                getRawString(context, R.raw.response_mock_data_dynamic_home_channel_atf_2),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
                 KEY_QUERY_DYNAMIC_POSITION,
                 getRawString(context, R.raw.response_mock_data_dynamic_position),
                 FIND_BY_CONTAINS)
 
         addMockResponse(
-                KEY_QUERY_DYNAMIC_POSITION,
+                KEY_QUERY_DYNAMIC_POSITION_ICON,
                 getRawString(context, R.raw.response_mock_data_dynamic_position_icon),
                 FIND_BY_CONTAINS)
 
         addMockResponse(
-                KEY_QUERY_DYNAMIC_POSITION,
+                KEY_QUERY_DYNAMIC_POSITION_TICKER,
                 getRawString(context, R.raw.response_mock_data_dynamic_position_ticker),
                 FIND_BY_CONTAINS)
 

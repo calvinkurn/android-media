@@ -26,12 +26,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
-import com.tokopedia.purchase_platform.common.feature.insurance.request.*
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -72,9 +66,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val getRecommendationUseCase: GetRecommendationUseCase?,
                                             private val addToCartUseCase: AddToCartUseCase?,
                                             private val addToCartExternalUseCase: AddToCartExternalUseCase?,
-                                            private val getInsuranceCartUseCase: GetInsuranceCartUseCase?,
-                                            private val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase?,
-                                            private val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase?,
                                             private val seamlessLoginUsecase: SeamlessLoginUsecase,
                                             private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                             private val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
@@ -86,7 +77,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     private var view: ICartListView? = null
     private var cartListData: CartListData? = null
     private var hasPerformChecklistChange: Boolean = false
-    private var insuranceChecked = true
 
     // Store last validate use response from promo page
     var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null
@@ -121,9 +111,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         getRecentViewUseCase?.unsubscribe()
         removeWishListUseCase?.unsubscribe()
         getRecommendationUseCase?.unsubscribe()
-        getInsuranceCartUseCase?.unsubscribe()
-        removeInsuranceProductUsecase?.unsubscribe()
-        updateInsuranceProductDataUsecase?.unsubscribe()
         view = null
     }
 
@@ -152,100 +139,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
-    override fun getInsuranceTechCart() {
-        view?.let {
-            getInsuranceCartUseCase?.execute(GetInsuranceCartSubscriber(it))
-        }
-    }
-
-    override fun setAllInsuranceProductsChecked(insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>, isChecked: Boolean) {
-        for (insuranceCartShops in insuranceCartShopsArrayList) {
-            if (insuranceCartShops.shopItemsList.size > 0 && insuranceCartShops.shopItemsList[0].digitalProductList.size > 0) {
-                insuranceCartShops.shopItemsList[0].digitalProductList[0].optIn = isChecked
-            }
-        }
-    }
-
-    override fun processDeleteCartInsurance(insuranceCartShopsArrayList: ArrayList<InsuranceCartDigitalProduct>, showToaster: Boolean) {
-        view?.let {
-            if (insuranceCartShopsArrayList.isNotEmpty()) {
-                view?.showProgressLoading()
-                val cartIdList = ArrayList<String>()
-                val removeInsuranceDataArrayList = ArrayList<RemoveInsuranceData>()
-                val productIdArrayList = ArrayList<Long>()
-                for (insuranceCartDigitalProduct in insuranceCartShopsArrayList) {
-                    var shopid: Long
-                    var productId: Long
-                    try {
-                        shopid = java.lang.Long.parseLong(insuranceCartDigitalProduct.shopId)
-                    } catch (e: Exception) {
-                        shopid = 0
-                    }
-
-                    try {
-                        productId = java.lang.Long.parseLong(insuranceCartDigitalProduct.productId)
-                    } catch (e: Exception) {
-                        productId = 0
-                    }
-
-                    cartIdList.add(insuranceCartDigitalProduct.cartItemId.toString())
-                    val removeInsuranceData = RemoveInsuranceData(insuranceCartDigitalProduct.cartItemId, shopid, productId)
-                    removeInsuranceDataArrayList.add(removeInsuranceData)
-                    productIdArrayList.add(productId)
-                }
-
-                removeInsuranceProductUsecase?.setRequestParams(removeInsuranceDataArrayList, "cart", Build.VERSION.SDK_INT.toString(), cartIdList)
-                removeInsuranceProductUsecase?.execute(GetRemoveMacroInsuranceProductSubscriber(it, productIdArrayList, showToaster))
-            }
-        }
-    }
-
-    override fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops,
-                                            updateInsuranceProductApplicationDetailsArrayList: ArrayList<UpdateInsuranceProductApplicationDetails>) {
-        view?.let {
-            it.showProgressLoading()
-
-            val cartIdList = ArrayList<UpdateInsuranceDataCart>()
-            val updateInsuranceDataArrayList = ArrayList<UpdateInsuranceData>()
-            val updateInsuranceProductItemsArrayList = ArrayList<UpdateInsuranceProductItems>()
-
-            val shopid = insuranceCartShops.shopId
-
-            var productId: Long = 0
-
-            if (insuranceCartShops.shopItemsList.isNotEmpty()) {
-                for (insuranceCartShopItem in insuranceCartShops.shopItemsList) {
-                    val updateInsuranceProductArrayList = ArrayList<UpdateInsuranceProduct>()
-                    for (insuranceCartDigitalProduct in insuranceCartShopItem.digitalProductList) {
-                        if (!insuranceCartDigitalProduct.isProductLevel) {
-                            val cartId = insuranceCartShopItem.digitalProductList[0].cartItemId
-                            productId = insuranceCartShopItem.productId
-                            cartIdList.add(UpdateInsuranceDataCart(cartId.toString(), 1))
-
-                            val updateInsuranceProduct = UpdateInsuranceProduct(insuranceCartDigitalProduct.digitalProductId,
-                                    insuranceCartDigitalProduct.cartItemId,
-                                    insuranceCartDigitalProduct.typeId,
-                                    updateInsuranceProductApplicationDetailsArrayList)
-                            updateInsuranceProductArrayList.add(updateInsuranceProduct)
-
-                            val updateInsuranceProductItems = UpdateInsuranceProductItems(insuranceCartShopItem.productId, 1, updateInsuranceProductArrayList)
-                            updateInsuranceProductItemsArrayList.add(updateInsuranceProductItems)
-                            val updateInsuranceData = UpdateInsuranceData(shopid, updateInsuranceProductItemsArrayList)
-                            updateInsuranceDataArrayList.add(updateInsuranceData)
-                        }
-                    }
-                }
-            }
-
-            updateInsuranceProductDataUsecase?.setRequestParams(updateInsuranceDataArrayList, "cart", Build.VERSION.SDK_INT.toString(), cartIdList)
-            updateInsuranceProductDataUsecase?.execute(GetSubscriberUpdateInsuranceProductData(it, this, productId))
-        }
-    }
-
     override fun processDeleteCartItem(allCartItemData: List<CartItemData>,
                                        removedCartItems: List<CartItemData>,
                                        addWishList: Boolean,
-                                       removeInsurance: Boolean,
                                        forceExpandCollapsedUnavailableItems: Boolean,
                                        isFromGlobalCheckbox: Boolean) {
         view?.let {
@@ -267,7 +163,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             compositeSubscription.add(deleteCartUseCase?.createObservable(requestParams)
                     ?.subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds,
-                            removeAllItem, removeInsurance, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox)))
+                            removeAllItem, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox)))
         }
     }
 
@@ -354,7 +250,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return updateCartRequestList
     }
 
-    override fun reCalculateSubTotal(dataList: List<CartShopHolderData>, insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>) {
+    override fun reCalculateSubTotal(dataList: List<CartShopHolderData>) {
         var totalItemQty = 0
         var subtotalBeforeSlashedPrice = 0.0
         var subtotalPrice = 0.0
@@ -376,16 +272,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         subtotalPrice += returnValueMarketplaceProduct.second.second
         subtotalCashback += returnValueMarketplaceProduct.third
 
-        // Calculate total item and price for insurance product
-        insuranceChecked = true
-        val returnValueInsuranceProduct = calculatePriceInsuranceProduct(insuranceCartShopsArrayList)
-        totalItemQty += returnValueInsuranceProduct.first
-        subtotalPrice += returnValueInsuranceProduct.second
-
         view?.updateCashback(subtotalCashback)
 
-        val selectAllItem = view?.getAllAvailableCartDataList()?.size == allCartItemDataList.size + errorProductCount &&
-                allCartItemDataList.size > 0 && insuranceChecked
+        val selectAllItem = view?.getAllAvailableCartDataList()?.size == allCartItemDataList.size + errorProductCount && allCartItemDataList.size > 0
         val unSelectAllItem = allCartItemDataList.size == 0
         view?.renderDetailInfoSubTotal(totalItemQty.toString(), subtotalBeforeSlashedPrice, subtotalPrice, selectAllItem, unSelectAllItem, dataList.isEmpty())
     }
@@ -607,28 +496,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         val pricePair = Pair(subtotalBeforeSlashedPrice, subtotalPrice)
         return Triple(totalItemQty, pricePair, subtotalCashback)
-    }
-
-    private fun calculatePriceInsuranceProduct(insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>): Pair<Int, Double> {
-        var tmpTotalItemQty = 0
-        var tmpSubTotalPrice = 0.0
-
-        for (insuranceCartShops in insuranceCartShopsArrayList) {
-            if (insuranceCartShops.shopItemsList.size > 0) {
-                for (insuranceCartShopItem in insuranceCartShops.shopItemsList) {
-                    for (insuranceCartDigitalProduct in insuranceCartShopItem.digitalProductList) {
-                        if (insuranceCartDigitalProduct.optIn) {
-                            tmpSubTotalPrice += insuranceCartDigitalProduct.pricePerProduct.toDouble()
-                            tmpTotalItemQty += 1
-                        } else {
-                            insuranceChecked = false
-                        }
-                    }
-                }
-            }
-        }
-
-        return Pair(tmpTotalItemQty, tmpSubTotalPrice)
     }
 
     override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
