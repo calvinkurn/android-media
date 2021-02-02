@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.data.source.cloud.query.param
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop.common.data.model.ProductStock
 
 data class UpdateProductStockWarehouseParam(
         @SerializedName("shopID")
@@ -14,18 +15,18 @@ data class UpdateProductStockWarehouseParam(
     companion object {
         @JvmStatic
         fun mapToParam(shopId: String,
-                       productId: String,
                        warehouseId: String,
-                       stock: String): UpdateProductStockWarehouseParam {
+                       products: List<ProductStock>): UpdateProductStockWarehouseParam {
+            val productWarehouseParam = products.map {
+                ProductWarehouseParam(
+                    productId = it.productId,
+                    warehouseId = warehouseId,
+                    stock = it.stock
+                )
+            }
             return UpdateProductStockWarehouseParam(
                     shopId = shopId,
-                    productWarehouseParam = listOf(
-                            ProductWarehouseParam(
-                                    productId = productId,
-                                    warehouseId = warehouseId,
-                                    stock = stock
-                            )
-                    )
+                    productWarehouseParam = productWarehouseParam
             )
         }
     }

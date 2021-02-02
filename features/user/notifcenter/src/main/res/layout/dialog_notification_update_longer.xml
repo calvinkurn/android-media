@@ -13,7 +13,7 @@
         android:id="@+id/layoutBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
         <ImageView
             android:id="@+id/iv_close"
@@ -50,6 +50,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="fitCenter"
                     android:layout_gravity="center"
+                    android:contentDescription="@string/notifcenter_cd_avatar"
                     android:layout_marginBottom="@dimen/notif_dp_16"
                     tools:src="@tools:sample/avatars"/>
 
@@ -88,7 +89,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/cta_button"
             android:layout_width="match_parent"

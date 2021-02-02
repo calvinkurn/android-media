@@ -1,7 +1,6 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber;
 
-import com.tokopedia.network.utils.ErrorHandler;
-import com.tokopedia.review.R;
+import com.tokopedia.review.common.util.ReviewErrorHandler;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.SendSmileyReputationDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail;
 
@@ -30,7 +29,7 @@ public class SendSmileySubscriber extends Subscriber<SendSmileyReputationDomain>
     @Override
     public void onError(Throwable e) {
         viewListener.finishLoadingDialog();
-        viewListener.onErrorSendSmiley(ErrorHandler.getErrorMessage(viewListener.getContext().getApplicationContext(), e));
+        viewListener.onErrorSendSmiley(ReviewErrorHandler.getErrorMessage(viewListener.getContext(), e));
     }
 
     @Override

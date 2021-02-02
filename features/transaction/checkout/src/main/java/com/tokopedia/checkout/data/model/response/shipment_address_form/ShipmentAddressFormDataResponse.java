@@ -42,9 +42,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("message")
     @Expose
     private Message message;
-    @SerializedName("is_robinhood")
-    @Expose
-    private int isRobinhood;
     @SerializedName("is_hide_courier_name")
     @Expose
     private boolean isHidingCourier;
@@ -125,10 +122,6 @@ public class ShipmentAddressFormDataResponse {
 
     public Message getMessage() {
         return message;
-    }
-
-    public int getIsRobinhood() {
-        return isRobinhood;
     }
 
     public boolean getHideCourier() {

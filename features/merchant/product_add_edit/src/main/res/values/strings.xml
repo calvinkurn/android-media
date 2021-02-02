@@ -314,6 +314,25 @@
     <string name="label_for_dialog_desc_that_shop_has_no_location">Eits, lengkapi dulu lokasi pengirimanmu di halaman Pengaturan agar bisa hitung estimasi ongkir.</string>
     <string name="label_for_dialog_primary_cta_that_shop_has_no_location">Oke, Lanjut</string>
 
+    <!-- Spec -->
+    <string name="title_specification_activity">Spesifikasi</string>
+    <string name="title_specification_activity_action">Hapus Semua</string>
+    <string name="title_specification_bottom_sheet">Jenis</string>
+    <string name="label_specification_search">Cari</string>
+    <string name="label_product_specification">Spesifikasi</string>
+    <string name="label_product_specification_tips">Tambah keterangan secara rinci supaya produkmu makin mudah dikenali pembeli.</string>
+    <string name="label_refresh_specification">Data tidak berhasil ditampilkan,\nklik <b>Muat Ulang</b> untuk coba lagi</string>
+    <string name="label_info_specification">Pelajari tentang Spesifikasi <![CDATA[<font color=\'#42b549\'><b>di sini</b></font>.]]></string>
+    <string name="label_specification_subtitle">Spesifikasi yang lengkap dapat bantu pembeli memilih produk sesuai kebutuhannya.</string>
+    <string name="label_specification_info_title_points">Mengapa perlu tambah Spesifikasi?</string>
+    <string name="label_specification_info_point1">Semakin besar kemungkinan produkmu muncul dalam hasil pencarian.</string>
+    <string name="label_specification_info_point2">Produk dengan Spesifikasi yang lengkap akan lebih disukai pembeli.</string>
+    <string name="action_specification_save">Simpan</string>
+    <string name="action_specification_add">Tambah</string>
+    <string name="action_specification_change">Ubah</string>
+    <string name="action_specification_refresh">Muat Ulang</string>
+    <string name="action_specification_counter">, +%1$d lainnya</string>
+
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>
     <string name="content_desc_tv_add_product_photo">text tambah foto</string>
