@@ -150,11 +150,11 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun onOrientationChanged(screenOrientation: ScreenOrientation, isTilting: Boolean) {
-        if (requestedOrientation != screenOrientation.requestedOrientation && !onInterceptOrientationChangedEvent(screenOrientation))
+        if (requestedOrientation != screenOrientation.requestedOrientation && !onInterceptOrientationChangedEvent(screenOrientation)) {
             requestedOrientation = screenOrientation.requestedOrientation
 
-        //TODO("Tracker")
-//        sendTrackerWhenRotateScreen(screenOrientation, isTilting)
+            if (screenOrientation.isLandscape && isTilting) activeFragment?.sendTrackerWhenRotateFullScreen()
+        }
     }
 
     override fun onEnterFullscreen() {
@@ -239,7 +239,7 @@ class PlayActivity : BaseActivity(),
         val fragment = activeFragment
         if (fragment is PlayFragment) {
             if (!fragment.onBackPressed()) {
-                if (isSystemBack && orientation.isLandscape) fragment.onOrientationChanged(ScreenOrientation.Portrait, false)
+                if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
                     if (isTaskRoot) {
                         val intent = RouteManager.getIntent(this, ApplinkConst.HOME)

@@ -69,7 +69,6 @@ class PlayFragment @Inject constructor(
         private val pageMonitoring: PlayPltPerformanceCallback
 ) :
         TkpdBaseV4Fragment(),
-        PlayOrientationListener,
         PlayFragmentContract,
         FragmentVideoViewComponent.Listener,
         FragmentYouTubeViewComponent.Listener,
@@ -182,13 +181,6 @@ class PlayFragment @Inject constructor(
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onOrientationChanged(screenOrientation: ScreenOrientation, isTilting: Boolean) {
-        if (requestedOrientation != screenOrientation.requestedOrientation && !onInterceptOrientationChangedEvent(screenOrientation))
-            requestedOrientation = screenOrientation.requestedOrientation
-
-        sendTrackerWhenRotateScreen(screenOrientation, isTilting)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -554,13 +546,12 @@ class PlayFragment @Inject constructor(
         playViewModel.hideInsets(isKeyboardHandled = true)
     }
 
-    private fun sendTrackerWhenRotateScreen(screenOrientation: ScreenOrientation, isTilting: Boolean) {
-        if (screenOrientation.isLandscape && isTilting) {
-            PlayAnalytics.userTiltFromPortraitToLandscape(
-                    userId = playViewModel.userId,
-                    channelId = channelId,
-                    channelType = playViewModel.channelType)
-        }
+    fun sendTrackerWhenRotateFullScreen() {
+        PlayAnalytics.userTiltFromPortraitToLandscape(
+                userId = playViewModel.userId,
+                channelId = channelId,
+                channelType = playViewModel.channelType
+        )
     }
 
     private fun setBackground(backgroundUrl: String) {

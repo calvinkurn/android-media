@@ -11,6 +11,7 @@ import com.tokopedia.play_common.model.result.PageInfo
 import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -23,6 +24,7 @@ class PlayParentViewModel constructor(
         private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
         private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
         private val dispatchers: CoroutineDispatcherProvider,
+        private val userSession: UserSessionInterface,
 ) : ViewModel() {
 
     class Factory @Inject constructor(
@@ -30,6 +32,7 @@ class PlayParentViewModel constructor(
             private val getChannelDetailsWithRecomUseCase: GetChannelDetailsWithRecomUseCase,
             private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
             private val dispatchers: CoroutineDispatcherProvider,
+            private val userSession: UserSessionInterface,
     ) {
 
         fun create(handle: SavedStateHandle): PlayParentViewModel {
@@ -38,10 +41,14 @@ class PlayParentViewModel constructor(
                     playChannelStateStorage,
                     getChannelDetailsWithRecomUseCase,
                     playChannelMapper,
-                    dispatchers
+                    dispatchers,
+                    userSession
             )
         }
     }
+
+    val userId: String
+        get() = userSession.userId
 
     /**
      * LiveData
