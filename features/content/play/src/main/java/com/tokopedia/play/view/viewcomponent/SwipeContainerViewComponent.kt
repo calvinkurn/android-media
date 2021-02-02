@@ -60,12 +60,27 @@ class SwipeContainerViewComponent(
         //TODO("Research the best way to handle this")
 
         val destItemPos = vpFragment.currentItem
-        val recyclerView = vpFragment.getChildAt(0) as RecyclerView
-        recyclerView.scrollToPosition(destItemPos)
+        scrollToPosition(destItemPos)
     }
 
     fun setEnableSwiping(shouldEnable: Boolean) {
         vpFragment.isUserInputEnabled = shouldEnable
+    }
+
+    fun scrollTo(direction: ScrollDirection, isSmoothScroll: Boolean = false) {
+        scrollToPosition(
+                position = when (direction) {
+                    ScrollDirection.Prev -> getCurrentPos() - 1
+                    ScrollDirection.Next -> getCurrentPos() + 1
+                },
+                isSmoothScroll = isSmoothScroll
+        )
+    }
+
+    private fun scrollToPosition(position: Int, isSmoothScroll: Boolean = false) {
+        val recyclerView = vpFragment.getChildAt(0) as RecyclerView
+        if (isSmoothScroll) recyclerView.smoothScrollToPosition(position)
+        else recyclerView.scrollToPosition(position)
     }
 
     interface DataSource {
@@ -76,6 +91,12 @@ class SwipeContainerViewComponent(
     interface Listener {
 
         fun onShouldLoadNextPage()
+    }
+
+    enum class ScrollDirection {
+
+        Prev,
+        Next
     }
 
     companion object {

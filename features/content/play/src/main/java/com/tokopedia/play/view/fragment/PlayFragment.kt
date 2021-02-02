@@ -53,12 +53,14 @@ import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -66,13 +68,17 @@ import javax.inject.Inject
  */
 class PlayFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        private val pageMonitoring: PlayPltPerformanceCallback
+        private val pageMonitoring: PlayPltPerformanceCallback,
+        private val dispatchers: CoroutineDispatcherProvider,
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
         FragmentVideoViewComponent.Listener,
         FragmentYouTubeViewComponent.Listener,
         PlayVideoScalingManager.Listener {
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(dispatchers.main + job)
 
     private lateinit var ivClose: ImageView
     private lateinit var loaderPage: PlayUnifyLoader
@@ -96,12 +102,6 @@ class PlayFragment @Inject constructor(
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     private val keyboardWatcher = KeyboardWatcher()
-
-    private var requestedOrientation: Int
-        get() = requireActivity().requestedOrientation
-        set(value) {
-            requireActivity().requestedOrientation = value
-        }
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
@@ -160,6 +160,7 @@ class PlayFragment @Inject constructor(
         )
         onPageDefocused()
         super.onPause()
+        job.cancelChildren()
     }
 
     override fun onDestroyView() {
@@ -168,6 +169,7 @@ class PlayFragment @Inject constructor(
 
         destroyInsets(requireView())
         super.onDestroyView()
+        job.cancelChildren()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -411,6 +413,11 @@ class PlayFragment @Inject constructor(
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.isFreeze) {
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+
+                scope.launch {
+                    delay(DELAY_FREEZE_AUTO_SWIPE)
+                    playNavigation.navigateToNextPage()
+                }
             } else if (it.isBanned) {
                 showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)
             }
@@ -609,5 +616,7 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+
+        private const val DELAY_FREEZE_AUTO_SWIPE = 2500L
     }
 }

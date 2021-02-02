@@ -506,7 +506,7 @@ class PlayViewModel @Inject constructor(
     }
 
     fun focusPage(channelData: PlayChannelData) {
-        focusVideoPlayer()
+        focusVideoPlayer(channelData)
         updateChannelInfo(channelData)
         startWebSocket(channelData.id)
     }
@@ -517,7 +517,9 @@ class PlayViewModel @Inject constructor(
         stopWebSocket()
     }
 
-    private fun focusVideoPlayer() {
+    private fun focusVideoPlayer(channelData: PlayChannelData) {
+        if (channelData.statusInfo.isFreeze) return
+
         playVideoPlayer.addListener(videoManagerListener)
         playVideoPlayer.resume()
     }
@@ -529,10 +531,12 @@ class PlayViewModel @Inject constructor(
 
     private fun updateChannelInfo(channelData: PlayChannelData) {
         updatePartnerInfo(channelData.partnerInfo.basicInfo)
-        updateVideoMetaInfo(channelData.videoMetaInfo)
-        updateLikeAndTotalViewInfo(channelData.likeInfo.param, channelData.id)
         updateCartInfo(channelData.cartInfo)
-        updateProductTagsInfo(channelData.pinnedInfo.pinnedProduct.productTags, channelData.pinnedInfo, channelData.id)
+        if (!channelData.statusInfo.isFreeze) {
+            updateVideoMetaInfo(channelData.videoMetaInfo)
+            updateLikeAndTotalViewInfo(channelData.likeInfo.param, channelData.id)
+            updateProductTagsInfo(channelData.pinnedInfo.pinnedProduct.productTags, channelData.pinnedInfo, channelData.id)
+        }
     }
 
     fun getChannelInfo(channelId: String) {

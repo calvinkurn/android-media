@@ -282,6 +282,10 @@ class PlayActivity : BaseActivity(),
         onBackPressed(true)
     }
 
+    override fun navigateToNextPage() {
+        swipeContainerView.scrollTo(SwipeContainerViewComponent.ScrollDirection.Next, isSmoothScroll = true)
+    }
+
     fun getPltPerformanceResultData(): PltPerformanceData? {
         return pageMonitoring.getPltPerformanceData()
     }

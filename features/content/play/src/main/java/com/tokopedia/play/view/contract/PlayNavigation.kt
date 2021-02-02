@@ -7,6 +7,8 @@ interface PlayNavigation {
 
     fun onBackPressed(isSystemBack: Boolean)
 
+    fun navigateToNextPage()
+
     fun requestEnableNavigation()
 
     fun requestDisableNavigation()
