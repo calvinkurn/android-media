@@ -1,4 +1,4 @@
-package com.tokopedia.cart.journey.simple
+package com.tokopedia.cart.journey.tracking
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
@@ -48,6 +48,8 @@ class CartTrackingTest {
             hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
 
+        // Prevent glide crash
+        Thread.sleep(2000)
     }
 
     @After
