@@ -28,7 +28,6 @@ class FeedbackBottomSheet : BaseBottomSheet() {
 
         fun createInstance(rating: Int): FeedbackBottomSheet {
             return FeedbackBottomSheet().apply {
-                overlayClickDismiss = false
                 arguments = Bundle().apply {
                     putInt(KEY_RATING, rating)
                 }

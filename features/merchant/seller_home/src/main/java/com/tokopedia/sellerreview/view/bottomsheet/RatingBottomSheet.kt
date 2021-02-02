@@ -27,9 +27,7 @@ class RatingBottomSheet : BaseBottomSheet() {
         const val TAG = "SirRatingBottomSheet"
 
         fun createInstance(): RatingBottomSheet {
-            return RatingBottomSheet().apply {
-                overlayClickDismiss = false
-            }
+            return RatingBottomSheet()
         }
     }
 
