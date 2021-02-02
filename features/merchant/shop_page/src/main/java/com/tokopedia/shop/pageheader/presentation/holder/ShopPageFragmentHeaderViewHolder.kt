@@ -285,6 +285,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                         url = voucherUrl,
                         convertIntoSize = 50
                 )
+            } else {
+                if (!followButton.compoundDrawables.isNullOrEmpty()) {
+                    followButton.removeDrawable()
+                }
             }
             if (!coachMarkText.isNullOrBlank() && listener.isFirstTimeVisit() == false) {
                 setCoachMark(coachMarkText)
