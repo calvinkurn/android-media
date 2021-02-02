@@ -5,18 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerreview.domain.usecase.SendReviewUseCase
 import com.tokopedia.sellerreview.view.model.SendReviewParam
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 28/01/21
  */
 
-class ReviewViewModel(
+@SellerHomeScope
+class SellerReviewViewModel @Inject constructor(
         private val reviewUseCase: Lazy<SendReviewUseCase>,
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {

@@ -5,16 +5,19 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
 import com.tokopedia.sellerreview.data.remotemodel.ReviewResponseModel
 import com.tokopedia.sellerreview.view.model.SendReviewParam
 import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 28/01/21
  */
 
-class SendReviewUseCase(
+@SellerHomeScope
+class SendReviewUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository
 ) : BaseGqlUseCase<Boolean>() {
 
