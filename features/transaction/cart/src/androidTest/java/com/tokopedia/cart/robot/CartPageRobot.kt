@@ -161,6 +161,10 @@ class CartPageRobot {
         childRecyclerView.contentDescription = tempStoreDesc
     }
 
+    fun clickPromoButton() {
+        onView(withId(R.id.promo_checkout_btn_cart)).perform(ViewActions.click())
+    }
+
     infix fun buy(func: ResultRobot.() -> Unit): ResultRobot {
         onView(withId(R.id.go_to_courier_page_button)).perform(ViewActions.click())
         return ResultRobot().apply(func)
