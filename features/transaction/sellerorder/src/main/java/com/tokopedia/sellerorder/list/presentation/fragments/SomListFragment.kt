@@ -833,7 +833,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         handleRejectOrderResult(rejectOrderResponse)
                         onActionCompleted()
                     } else {
-                        showToasterError(view, rejectOrderResponse.message.first())
+                        showToasterError(view, rejectOrderResponse.message.first(), canRetry = false)
                     }
                 }
                 is Fail -> {
@@ -852,13 +852,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         showCommonToaster(view, successEditAwbResponse.mpLogisticEditRefNum.listMessage.first())
                         onActionCompleted()
                     } else {
-                        showToasterError(view, getString(R.string.global_error))
+                        showToasterError(view, getString(R.string.global_error), canRetry = false)
                     }
                 }
                 is Fail -> {
                     val message = it.throwable.message.toString()
                     if (message.isNotEmpty()) {
-                        showToasterError(view, message, getString(R.string.som_list_button_ok))
+                        showToasterError(view, message, getString(R.string.som_list_button_ok), canRetry = false)
                     } else {
                         it.throwable.showErrorToaster()
                     }
@@ -1096,7 +1096,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             onActionCompleted()
             showCommonToaster(view, acceptOrderResponse.listMessage.firstOrNull())
         } else {
-            showToasterError(view, acceptOrderResponse.listMessage.firstOrNull().orEmpty())
+            showToasterError(view, acceptOrderResponse.listMessage.firstOrNull().orEmpty(), canRetry = false)
         }
     }
 
@@ -1493,18 +1493,24 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun showToasterError(
             view: View?,
             message: String = getString(R.string.som_list_error_some_information_cannot_be_loaded),
-            buttonMessage: String = getString(R.string.btn_reload)) {
+            buttonMessage: String = getString(R.string.btn_reload),
+            canRetry: Boolean = true) {
         if (errorToaster == null) {
             view?.let {
                 errorToaster = Toaster.build(
                         it,
                         message,
                         Toaster.LENGTH_INDEFINITE,
-                        Toaster.TYPE_ERROR,
-                        buttonMessage,
-                        View.OnClickListener {
-                            refreshFailedRequests()
-                        })
+                        Toaster.TYPE_ERROR)
+            }
+        }
+        if (canRetry) {
+            errorToaster?.setAction(buttonMessage) {
+                refreshFailedRequests()
+            }
+        } else {
+            errorToaster?.setAction(getString(R.string.som_list_button_ok)) {
+                errorToaster?.dismiss()
             }
         }
         if (errorToaster?.isShown == false) {
@@ -1516,7 +1522,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         message?.run {
             view?.let {
                 commonToaster?.dismiss()
-                commonToaster = Toaster.build(it, message, Toaster.LENGTH_SHORT, toasterType, "")
+                commonToaster = Toaster.build(
+                        it,
+                        message,
+                        Toaster.LENGTH_INDEFINITE,
+                        toasterType,
+                        getString(R.string.som_list_button_ok))
                 commonToaster?.show()
             }
         }
@@ -1533,6 +1544,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
         if (viewModel.userRoleResult.value is Fail) {
             viewModel.getUserRoles()
+        }
+        if (viewModel.topAdsCategoryResult.value is Fail) {
+            loadTopAdsCategory()
+        }
+        if (viewModel.acceptOrderResult.value is Fail && selectedOrderId.isNotBlank()) {
+            onAcceptOrderButtonClicked(selectedOrderId)
         }
     }
 
@@ -1619,11 +1636,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun showNoInternetConnectionToaster() {
-        showToasterError(view, getString(R.string.som_error_message_no_internet_connection))
+        showToasterError(view, getString(R.string.som_error_message_no_internet_connection), canRetry = false)
     }
 
     private fun showServerErrorToaster() {
-        showToasterError(view, getString(R.string.som_error_message_server_fault))
+        showToasterError(view, getString(R.string.som_error_message_server_fault), canRetry = false)
     }
 
     private fun getVisiblePercent(v: View): Int {
