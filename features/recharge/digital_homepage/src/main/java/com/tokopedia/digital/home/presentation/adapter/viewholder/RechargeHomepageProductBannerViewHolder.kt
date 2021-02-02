@@ -33,13 +33,15 @@ class RechargeHomepageProductBannerViewHolder(
     override fun bind(element: RechargeHomepageProductBannerModel) {
         val section = element.section
         if (section.items.isNotEmpty()) {
-            itemView.view_recharge_home_product_banner_shimmering.hide()
-
             setBackground(section)
             setHeader(section, element.visitableId())
             setProduct(section)
+
+            itemView.view_recharge_home_product_banner_shimmering.hide()
+            itemView.view_recharge_home_product_banner_layout.show()
         } else {
             itemView.view_recharge_home_product_banner_shimmering.show()
+            itemView.view_recharge_home_product_banner_layout.hide()
 
             listener.loadRechargeSectionData(element.visitableId())
         }

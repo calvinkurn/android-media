@@ -165,7 +165,7 @@ object RechargeHomepageSectionMapper {
     }
 
     private fun isExpired(section: RechargeHomepageSections.Section): Boolean {
-        if (section.template == RechargeHomepageViewModel.SECTION_DYNAMIC_ICONS
+        if (section.template == RechargeHomepageViewModel.SECTION_COUNTDOWN_PRODUCT_BANNER
                 || section.template == RechargeHomepageViewModel.SECTION_COUNTDOWN_SINGLE_BANNER) {
         section.items.firstOrNull()?.run {
             val serverDateMillisecond = getServerTime(serverDate).time

@@ -22,9 +22,6 @@ class RechargeHomepageSingleBannerViewHolder(itemView: View?, val listener: Rech
         val section = element.section
         with(itemView) {
             if (section.items.isNotEmpty()) {
-                view_recharge_home_single_banner_container.show()
-                view_recharge_home_single_banner_shimmering.hide()
-
                 val item = section.items[0]
                 RechargeHomepageSectionMapper.setDynamicHeaderViewChannel(
                         view_recharge_home_single_banner_header, section,
@@ -48,7 +45,15 @@ class RechargeHomepageSingleBannerViewHolder(itemView: View?, val listener: Rech
                 }
 
                 view_recharge_home_single_banner_title.displayTextOrHide(section.items.firstOrNull()?.title ?: "")
-                view_recharge_home_single_banner_label.displayTextOrHide(section.items.firstOrNull()?.subtitle ?: "")
+
+                if ((section.items.firstOrNull()?.subtitle ?: "").isNotEmpty()) {
+                    view_recharge_home_single_banner_label.show()
+                    view_recharge_home_single_banner_label.text = section.items.firstOrNull()?.subtitle
+                } else view_recharge_home_single_banner_label.hide()
+
+                view_recharge_home_single_banner_container.show()
+                view_recharge_home_single_banner_shimmering.hide()
+
             } else {
                 view_recharge_home_single_banner_container.hide()
                 view_recharge_home_single_banner_shimmering.show()
