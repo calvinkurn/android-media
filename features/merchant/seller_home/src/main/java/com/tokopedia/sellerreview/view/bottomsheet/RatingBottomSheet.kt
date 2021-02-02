@@ -13,6 +13,8 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerreview.common.Const
 import com.tokopedia.sellerreview.view.viewmodel.SellerReviewViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.sir_rating_bottom_sheet.view.*
 
 /**
@@ -87,8 +89,20 @@ class RatingBottomSheet : BaseBottomSheet() {
 
     private fun observeReviewState() {
         mViewModel.reviewStatus.observe(viewLifecycleOwner) {
-            onSubmitted?.invoke(givenRating)
-            this.dismiss()
+            when (it) {
+                is Success -> {
+                    onSubmitted?.invoke(givenRating)
+                    this.dismiss()
+                }
+                is Fail -> setOnError(it.throwable)
+            }
+        }
+    }
+
+    private fun setOnError(throwable: Throwable) {
+        childView?.run {
+            btnSirSubmit.isLoading = false
+            showErrorToaster(throwable)
         }
     }
 
@@ -96,16 +110,14 @@ class RatingBottomSheet : BaseBottomSheet() {
      * navigate to play store if user give 4 or 5 stars.
      * or open feedback bottom sheet if else
      * */
-    private fun submitRating() {
-        childView?.run {
-            if (givenRating >= 4) {
-                btnSirSubmit.isLoading = true
-                val param = getParams(givenRating, "")
-                mViewModel.submitReview(param)
-            } else {
-                onSubmitted?.invoke(givenRating)
-                this@RatingBottomSheet.dismiss()
-            }
+    private fun submitRating() = childView?.run {
+        if (givenRating >= 4) {
+            btnSirSubmit.isLoading = true
+            val param = getParams(givenRating, "")
+            mViewModel.submitReview(param)
+        } else {
+            onSubmitted?.invoke(givenRating)
+            this@RatingBottomSheet.dismiss()
         }
     }
 

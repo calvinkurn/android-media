@@ -12,6 +12,8 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerreview.common.Const
 import com.tokopedia.sellerreview.view.viewmodel.SellerReviewViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.sir_feedback_bottom_sheet.view.*
 
 /**
@@ -86,8 +88,20 @@ class FeedbackBottomSheet : BaseBottomSheet() {
 
     private fun observeReviewState() {
         mViewModel.reviewStatus.observe(viewLifecycleOwner) {
-            this.dismiss()
-            onSubmitted?.invoke()
+            when (it) {
+                is Success -> {
+                    onSubmitted?.invoke()
+                    this.dismiss()
+                }
+                is Fail -> setOnError(it.throwable)
+            }
+        }
+    }
+
+    private fun setOnError(throwable: Throwable) {
+        childView?.run {
+            btnSirSubmitFeedback.isLoading = false
+            showErrorToaster(throwable)
         }
     }
 
