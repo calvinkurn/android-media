@@ -1,9 +1,14 @@
 package com.tokopedia.notifcenter.analytics
 
-import com.tokopedia.abstraction.processor.beta.*
+import com.tokopedia.abstraction.processor.beta.ProductListClickBundler
+import com.tokopedia.abstraction.processor.beta.ProductListClickProduct
+import com.tokopedia.abstraction.processor.beta.ProductListImpressionBundler
+import com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.analytic.InboxAnalyticCommon
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -43,6 +48,7 @@ class NotificationAnalytic @Inject constructor(
             const val CLICK_SEE_MORE_NEW = "click on see more at new section"
             const val CLICK_SEE_MORE_EARLIER = "click on see more at earlier section"
             const val CLICK_NOTIF_SETTINGS = "click on notif settings"
+            const val CLICK_FILTER_REQUEST = "click on filter request"
         }
     }
 
@@ -219,7 +225,36 @@ class NotificationAnalytic @Inject constructor(
         )
     }
 
+    fun trackFilterClick(
+            filterType: Long,
+            filterName: String,
+            @RoleType
+            role: Int?
+    ) {
+        if (filterType == NotifcenterDetailUseCase.FILTER_NONE || role == null) return
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                InboxAnalyticCommon.createGeneralEvent(
+                        event = Event.CLICK_NOTIF_CENTER,
+                        eventCategory = EventCategory.NOTIFCENTER,
+                        eventAction = EventAction.CLICK_FILTER_REQUEST,
+                        eventLabel = filterName,
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId,
+                        userRole = getRoleString(role)
+                )
+        )
+    }
+
     private fun getEventLabel(notification: NotificationUiModel): String {
         return "notif_list - ${notification.templateKey} - ${notification.notifId}"
+    }
+
+    private fun getRoleString(@RoleType role: Int): String {
+        return when (role) {
+            RoleType.BUYER -> "buyer"
+            RoleType.SELLER -> "seller"
+            else -> ""
+        }
     }
 }
