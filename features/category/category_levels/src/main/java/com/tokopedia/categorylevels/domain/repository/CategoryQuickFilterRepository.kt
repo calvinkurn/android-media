@@ -32,6 +32,7 @@ class CategoryQuickFilterRepository @Inject constructor() : BaseRepository(), Qu
                         iconUrl = option.icon,
                         key = option.key,
                         value = option.value,
+                        isPopular = option.isPopular,
                         inputType = option.inputType))
             }
             filters.add(Filter(
