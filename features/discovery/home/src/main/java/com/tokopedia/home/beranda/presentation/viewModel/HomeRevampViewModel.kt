@@ -898,7 +898,7 @@ open class HomeRevampViewModel @Inject constructor(
                     homeData?.let {
                         if (it.list.isEmpty()) {
                             Timber.w("${ConstantKey.HomeTimber.TAG}revamp_empty_update;" +
-                                    "reason='Home data list visitables is empty';" +
+                                    "reason='Visitables is empty';" +
                                     "data='isProcessingDynamicChannel=${it.isProcessingDynamicChannle}, isProcessingAtf=${it.isProcessingAtf}, isFirstPage=${it.isFirstPage}, isCache=${it.isCache}'")
                         }
                         homeProcessor.get().sendWithQueueMethod(UpdateHomeData(it, this@HomeRevampViewModel))
