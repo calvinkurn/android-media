@@ -40,7 +40,6 @@ import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.pendingCashBac
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsListQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.walletBalanceQuery
-import com.tokopedia.home.beranda.di.module.query.QueryStickyLogin.stickyLoginQuery
 import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.dismissSuggestedQuery
 import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.suggestedReviewQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
@@ -64,8 +63,6 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilter
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSessionInterface
@@ -110,14 +107,6 @@ class HomeUseCaseModule {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository)
         useCase.setGraphqlQuery(query)
         return GetHomeRecommendationUseCase(useCase, homeRecommendationMapper)
-    }
-
-    @Provides
-    @HomeScope
-    fun provideStickyLoginUseCase(graphqlRepository: GraphqlRepository): StickyLoginUseCase {
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<StickyLoginTickerPojo.TickerResponse>(graphqlRepository)
-        useCase.setGraphqlQuery(stickyLoginQuery)
-        return StickyLoginUseCase(useCase)
     }
 
     @Provides
