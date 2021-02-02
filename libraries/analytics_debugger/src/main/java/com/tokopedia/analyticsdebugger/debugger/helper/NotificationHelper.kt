@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.debugger
+package com.tokopedia.analyticsdebugger.debugger.helper
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
