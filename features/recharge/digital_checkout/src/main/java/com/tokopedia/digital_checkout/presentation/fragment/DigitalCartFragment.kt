@@ -430,9 +430,10 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             inputPriceContainer.visibility = View.VISIBLE
 
             inputPriceHolderView.setLabelText(userInputPriceDigital.minPayment ?: "", userInputPriceDigital.maxPayment ?: "")
-            inputPriceHolderView.setMinMaxPayment(total ?: "", userInputPriceDigital.minPaymentPlain, userInputPriceDigital.maxPaymentPlain)
+            inputPriceHolderView.setMinMaxPayment(total ?: "", userInputPriceDigital.minPaymentPlain.toLong(),
+                    userInputPriceDigital.maxPaymentPlain.toLong())
             inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
-                override fun onInputPriceByUserFilled(paymentAmount: Double) { viewModel.setTotalPrice(paymentAmount) }
+                override fun onInputPriceByUserFilled(paymentAmount: Long) { viewModel.setTotalPrice(paymentAmount.toDouble()) }
                 override fun enableCheckoutButton() { btnCheckout.isEnabled = true }
                 override fun disableCheckoutButton() { btnCheckout.isEnabled = false }
             }
@@ -524,7 +525,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
     }
 
-    private fun getPromoDigitalModel(): PromoDigitalModel = viewModel.getPromoDigitalModel(cartPassData, inputPriceHolderView.getPriceInput())
+    private fun getPromoDigitalModel(): PromoDigitalModel = viewModel.getPromoDigitalModel(cartPassData, getPriceInput())
     private fun getCartDigitalInfoData(): CartDigitalInfoData = viewModel.cartDigitalInfoData.value ?: CartDigitalInfoData()
     private fun getCategoryName(): String = getCartDigitalInfoData().attributes?.categoryName ?: ""
     private fun getOperatorName(): String = getCartDigitalInfoData().attributes?.operatorName ?: ""
