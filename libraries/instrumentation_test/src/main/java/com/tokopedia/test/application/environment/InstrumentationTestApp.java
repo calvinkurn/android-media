@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -41,7 +43,6 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface;
 import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInterceptor;
-import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor;
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;
@@ -120,6 +121,14 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         }
     }
 
+    public void setDarkMode(Boolean isDarkMode) {
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+    }
+
     public void enableTopAdsDetector() {
         if (GlobalConfig.DEBUG) {
             addInterceptor(new TopAdsDetectorInterceptor(new Function1<Integer, Unit>() {
@@ -158,7 +167,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
      * common_network with use case RestRequestSupportInterceptorUseCase
      */
     public void addRestSupportInterceptor(Interceptor interceptor) {
-        NetworkClient.reInitRetrofitWithInterceptors(Collections.singletonList(interceptor), this);
+        NetworkClient.getApiInterfaceCustomInterceptor(Collections.singletonList(interceptor), this);
     }
 
     @Override
@@ -173,6 +182,11 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
+
+    }
+
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
 
     }
 
@@ -463,5 +477,4 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
 
     }
-
 }

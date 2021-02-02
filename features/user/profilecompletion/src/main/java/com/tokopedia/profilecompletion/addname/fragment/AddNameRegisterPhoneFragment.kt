@@ -17,6 +17,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -93,11 +94,19 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        splitCompatInstall()
+
         val view = inflater.inflate(com.tokopedia.profilecompletion.R.layout.fragment_add_name_register, container, false)
         bottomInfo = view.findViewById(R.id.bottom_info)
         progressBar = view.findViewById(R.id.progress_bar)
         mainContent = view.findViewById(R.id.main_content)
         return view
+    }
+
+    private fun splitCompatInstall() {
+        activity?.let{
+            SplitCompat.installActivity(it)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -216,7 +225,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
             span = URLSpanNoUnderline(span.url)
             s.setSpan(span, start, end, 0)
             context?.run {
-                s.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Green_G500)), start, end, 0)
+                s.setSpan(ForegroundColorSpan(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), start, end, 0)
             }
         }
         textView.text = s

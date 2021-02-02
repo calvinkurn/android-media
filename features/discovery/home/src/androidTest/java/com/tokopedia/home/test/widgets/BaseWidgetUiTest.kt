@@ -94,6 +94,7 @@ abstract class BaseWidgetUiTest{
             playWidgetTools = playWidgetTools,
             getRecommendationUseCase = getRecommendationUseCase,
             getRecommendationFilterChips = getRecommendationFilterChips,
+            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
             bestSellerMapper = bestSellerMapper
     )

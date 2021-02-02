@@ -1,11 +1,14 @@
 package com.tokopedia.buyerorder.detail.view;
 
+import android.os.Bundle;
+
 import javax.inject.Inject;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.google.gson.Gson;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
+import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
@@ -44,6 +47,11 @@ public class OrderListAnalytics {
     private static final String EVENT_ACTION_DOWNLOAD_INVOICE = "click button download invoice";
     private static final String EVENT_ACTION_TULIS_REVIEW = "click button tulis review";
     private static final String TEVENT_TICKER_CLOSE_ACTION = "click x on ticker";
+    private static final String EVENT_ACTION_ORDER_DETAIL_IMPRESSION = "impression order detail page";
+    private static final String EVENT_ACTION_CLICK_LIHAT_INVOICE = "click lihat invoice";
+    private static final String EVENT_ACTION_CLICK_COPY_BUTTON = "click copy button";
+    private static final String EVENT_ACTION_CLICK_PRIMARY_BUTTON = "click primary button";
+    private static final String EVENT_ACTION_CLICK_SECONDARY_BUTTON = "click secondary button";
 
     private static final String SEARCH_EVENT_ACTION = "submit search";
     private static final String SEARCH_EVENT_CANCEL_ACTION = "click cancel search";
@@ -61,6 +69,7 @@ public class OrderListAnalytics {
     private static final String EVENT_CATEGORY_BUY_AGAIN_DETAIL = "my purchase list detail - mp";
     private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list - mp";
     private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi";
+    private static final String EVENT_CATEGORY_ORDER_DETAIL_PAGE = "digital - order detail page";
 
     private static final String EVENT_LABEL_BUY_AGAIN_SUCCESS = "success";
     private static final String EVENT_LABEL_BUY_AGAIN_FAILURE = "failure";
@@ -108,6 +117,7 @@ public class OrderListAnalytics {
     private static final String CLICK_ON_WIDGET_RECOMMENDATION = "click on widget recommendation";
     private static final String PRODUCT_VIEW = "productView";
     private static final String IMPRESSION_ON_WIDGET_RECOMMENDATION = "impression on widget recommendation";
+    private static final String CLICK_CHECKOUT = "clickCheckout";
     private static final String EVENT = "event";
     private static final String EVENT_CATEGORY = "eventCategory";
     private static final String EVENT_ACTION = "eventAction";
@@ -122,6 +132,11 @@ public class OrderListAnalytics {
     private static final String BUY_AGAIN_OPTION_PRODUCT = "product";
     private static final String TICKER_EVENT_ACTION = "view ticker";
     private static final String TICKER_EVENT_NAME = "viewPurchaseList";
+
+    private static final String BUSINESS_UNIT = "businessUnit";
+    private static final String CURRENT_SITE = "currentSite";
+    private static final String USER_ID = "userId";
+    private static final String IS_LOGIN_STATUS = "isLoggedInStatus";
 
     private static final String ORDER_LIST = "/order list";
 
@@ -601,4 +616,66 @@ public class OrderListAnalytics {
                                         ))))));
 
     }
+
+    public void sendOrderDetailImpression(String categoryName, String productName, String userId) {
+        String isLoggedInStatus = "true";
+        if (userId.isEmpty()) {
+            isLoggedInStatus = "false";
+        }
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated("order-detail-digital", DataLayer.mapStringsOf(
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId,
+                IS_LOGIN_STATUS, isLoggedInStatus
+        ));
+    }
+
+    public void sendInvoiceClickEvent(String categoryName, String productName, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, CLICK_CHECKOUT,
+                TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE,
+                TrackAppUtils.EVENT_ACTION, EVENT_ACTION_CLICK_LIHAT_INVOICE,
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, productName),
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId
+        ));
+    }
+
+    public void sendCopyButtonClickEvent(String categoryName, String productName, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, CLICK_CHECKOUT,
+                TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE,
+                TrackAppUtils.EVENT_ACTION, EVENT_ACTION_CLICK_COPY_BUTTON,
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, productName),
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId
+        ));
+    }
+
+    public void sendActionButtonClickEvent(
+            String categoryName,
+            String productName,
+            String buttonId,
+            String buttonName,
+            String userId
+    ) {
+        String eventAction;
+        if (buttonId == ActionButton.PRIMARY_BUTTON) {
+            eventAction = EVENT_ACTION_CLICK_PRIMARY_BUTTON;
+        } else {
+            eventAction = EVENT_ACTION_CLICK_SECONDARY_BUTTON;
+        }
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, CLICK_CHECKOUT,
+                TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_ORDER_DETAIL_PAGE,
+                TrackAppUtils.EVENT_ACTION, eventAction,
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s - %s", categoryName, productName, buttonName),
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId
+        ));
+    }
+
 }

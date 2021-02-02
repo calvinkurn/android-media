@@ -48,7 +48,11 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     androidTestImplementation rootProject.ext.supportLibDependencies.constraintLayout
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.supportLibDependencies.exifinterface
+
     implementation rootProject.ext.miscDependencies.sliceCore
+    implementation rootProject.ext.miscDependencies.workManager
 }
 
 project.ext {

@@ -53,6 +53,7 @@ class PlayViewModel @Inject constructor(
         private val getIsLikeUseCase: GetIsLikeUseCase,
         private val getCartCountUseCase: GetCartCountUseCase,
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
+        private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val playSocket: PlaySocket,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider,
@@ -607,8 +608,13 @@ class PlayViewModel @Inject constructor(
                     is ProductTag -> {
                         val productSheet = _observableProductSheetContent.value
                         val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
+                        val productList = PlayUiMapper.mapItemProducts(result.listOfProducts)
                         _observableProductSheetContent.value = PlayResult.Success(
-                                data = currentProduct.copy(productList = PlayUiMapper.mapItemProducts(result.listOfProducts))
+                                data = currentProduct.copy(productList = productList)
+                        )
+                        trackProductTag(
+                                channelId = channelId,
+                                productList = productList
                         )
                     }
                     is MerchantVoucher -> {
@@ -718,17 +724,30 @@ class PlayViewModel @Inject constructor(
                 getProductTagItemsUseCase.executeOnBackground()
             }
             val partnerId = partnerId ?: 0L
-            _observableProductSheetContent.value = PlayResult.Success(
-                    PlayUiMapper.mapProductSheet(
-                            channel.titleBottomSheet,
-                            partnerId,
-                            productTagsItems)
+            val productSheet = PlayUiMapper.mapProductSheet(
+                    channel.titleBottomSheet,
+                    partnerId,
+                    productTagsItems)
+            _observableProductSheetContent.value = PlayResult.Success(productSheet)
+            trackProductTag(
+                    channelId = channel.id,
+                    productList = productSheet.productList
             )
-
         } catch (e: Exception) {
             _observableProductSheetContent.value = PlayResult.Failure(e) {
                 scope.launch { if (channel.showPinnedProduct) getProductTagItems(channel) }
             }
+        }
+    }
+
+    private fun trackProductTag(channelId: String, productList: List<PlayProductUiModel>) {
+        scope.launchCatchError(block = {
+            withContext(dispatchers.io) {
+                val productIds = productList.mapNotNull { product -> if (product is ProductLineUiModel) product.id else null }
+                trackProductTagBroadcasterUseCase.params = TrackProductTagBroadcasterUseCase.createParams(channelId, productIds)
+                trackProductTagBroadcasterUseCase.executeOnBackground()
+            }
+        }) {
         }
     }
 

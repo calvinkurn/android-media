@@ -27,6 +27,7 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
@@ -50,8 +51,6 @@ import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.HashMap;
@@ -100,17 +99,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        TrackApp.getInstance().getAppsFlyer().getAdsID(new AFAdsIDCallback() {
-            @Override
-            public void onGetAFAdsID(String string) {
-                // do nothing
-            }
-
-            @Override
-            public void onErrorAFAdsID() {
-                //do nothing
-            }
-        });
+        DeviceInfo.getAdsIdSuspend(requireContext(), null);
         super.onCreate(savedInstanceState);
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
         DigitalSubscriptionParams subParams = getArguments().getParcelable(ARG_SUBSCRIPTION_PARAMS);
@@ -246,7 +235,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onClickUsePromo() {
-        digitalAnalytics.eventclickUseVoucher(getCategoryName());
+        presenter.onClickPromoButton();
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
         intent.putExtra("EXTRA_COUPON_ACTIVE",
                 Objects.requireNonNull(cartDigitalInfoData.getAttributes()).isCouponActive()
@@ -302,6 +291,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onClickDetailPromo() {
+        presenter.onClickPromoDetail();
         Intent intent;
         String promoCode = promoData.getPromoCode();
         if (!promoCode.isEmpty()) {

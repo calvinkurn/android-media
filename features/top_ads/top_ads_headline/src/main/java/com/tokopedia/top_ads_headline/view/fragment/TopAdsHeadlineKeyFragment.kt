@@ -1,5 +1,7 @@
 package com.tokopedia.top_ads_headline.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,16 +11,21 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.top_ads_headline.Constants.ACTION_CREATE
+import com.tokopedia.top_ads_headline.Constants.ACTIVE_STATUS
+import com.tokopedia.top_ads_headline.Constants.POSITIVE_PHRASE
+import com.tokopedia.top_ads_headline.Constants.TYPE_HEADLINE_KEYWORD
 import com.tokopedia.top_ads_headline.R
-import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
+import com.tokopedia.top_ads_headline.view.activity.EditTopAdsHeadlineKeywordActivity
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeyAdapter
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeySelectedAdapter
 import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsHeadlineKeyViewModel
-import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
@@ -29,6 +36,7 @@ import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.topads_headline_keyword_list_fragment.*
 import javax.inject.Inject
@@ -40,7 +48,7 @@ import javax.inject.Inject
 private const val KEY_LIMIT = 50
 const val SEARCH_NOT_AVAILABLE = "-1"
 
-class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>() {
+class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -54,6 +62,10 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     private lateinit var keywordSelectedAdapter: TopAdsHeadlineKeySelectedAdapter
     private var tvToolTipText: Typography? = null
     private var imgTooltipIcon: ImageUnify? = null
+    private var deletedKeywords: ArrayList<String> = arrayListOf()
+    private var addedKeywords: ArrayList<KeywordDataItem> = arrayListOf()
+    private var editedKeywords: ArrayList<KeywordDataItem> = arrayListOf()
+
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(TopAdsHeadlineKeyViewModel::class.java)
@@ -65,7 +77,17 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         stepperModel?.selectedKeywords = getSelectedKeywords()
         stepperModel?.keywordOperations = getKeyWordOperations()
         stepperModel?.stateRestoreKeyword = true
-        stepperListener?.goToNextPage(stepperModel)
+        if (stepperListener != null) {
+            stepperListener?.goToNextPage(stepperModel)
+        } else {
+            val intent = Intent()
+            intent.putExtra(BaseStepperActivity.STEPPER_MODEL_EXTRA, stepperModel)
+            intent.putParcelableArrayListExtra(ADDED_KEYWORDS, addedKeywords)
+            intent.putParcelableArrayListExtra(EDITED_KEYWORDS, editedKeywords)
+            intent.putStringArrayListExtra(DELETED_KEYWORDS, deletedKeywords)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
     }
 
     private fun getManualAddedKeywords(): MutableList<KeywordDataItem> {
@@ -74,14 +96,14 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         }.toMutableList()
     }
 
-    private fun getKeyWordOperations(): List<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> {
+    private fun getKeyWordOperations(): MutableList<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> {
         return ArrayList<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation>().apply {
             stepperModel?.selectedKeywords?.forEach {
                 add(TopAdsManageHeadlineInput.Operation.Group.KeywordOperation(
-                        action = ParamObject.ACTION_CREATE,
+                        action = ACTION_CREATE,
                         keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword(
-                                type = ParamObject.HEADLINE_KEYWORD_TYPE,
-                                status = ParamObject.ACTIVE_STATUS,
+                                type = POSITIVE_PHRASE,
+                                status = ACTIVE_STATUS,
                                 priceBid = it.bidSuggest,
                                 tag = it.keyword)
                 ))
@@ -104,6 +126,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         setToolTip()
         setInitialSetup()
         addBtn?.setOnClickListener {
+            Utils.dismissKeyboard(context, view)
             addManualKeywords()
         }
         btnNext?.setOnClickListener {
@@ -181,8 +204,13 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     }
 
     override fun updateToolBar() {
-        if (activity is HeadlineStepperActivity) {
-            (activity as HeadlineStepperActivity).updateToolbarTitle(getString(R.string.topads_headline_keywrod_title))
+        when(activity){
+            is HeadlineStepperActivity -> {
+                (activity as HeadlineStepperActivity).updateToolbarTitle(getString(R.string.topads_headline_keywrod_title))
+            }
+            is EditTopAdsHeadlineKeywordActivity -> {
+                (activity as EditTopAdsHeadlineKeywordActivity).updateToolbarTitle(getString(R.string.topads_headline_keywrod_title))
+            }
         }
     }
 
@@ -196,20 +224,25 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        keywordSelectedAdapter = TopAdsHeadlineKeySelectedAdapter(::onItemUnselect, ::onError)
-        keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked, ::onError, stepperModel?.selectedKeywords)
+        keywordSelectedAdapter = TopAdsHeadlineKeySelectedAdapter(::onItemUnselect, ::onKeywordBidChange)
+        keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked, ::onKeywordBidChange, stepperModel?.selectedKeywords)
         getLatestBid()
         viewModel.getSuggestionKeyword(stepperModel?.selectedProductIds?.joinToString(","), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
     }
 
-    private fun onError(enable: Boolean) {
+    private fun onKeywordBidChange(enable: Boolean, keywordData: KeywordDataItem) {
         btnNext?.isEnabled = enable
+        if (enable) {
+            if (!editedKeywords.contains(keywordData)) {
+                editedKeywords.add(keywordData)
+            }
+        }
     }
 
     private fun getLatestBid() {
         val selectedProductIds: MutableList<Int>? = stepperModel?.selectedProductIds
                 ?: mutableListOf()
-        val suggestions = DataSuggestions(ParamObject.TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
+        val suggestions = DataSuggestions(TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
         viewModel.getBidInfo(listOf(suggestions), this::onSuccessSuggestion, this::onEmptySuggestion)
     }
 
@@ -218,8 +251,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
                 data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
         keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: 0)
         stepperModel?.maxBid = data.firstOrNull()?.maxBid ?: 0
-        minSuggestedBid = data.firstOrNull()?.minBid?:0
-
+        minSuggestedBid = data.firstOrNull()?.minBid ?: 0
     }
 
     private fun setAdapter() {
@@ -240,8 +272,23 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
                 item.bidSuggest = minSuggestedBid
                 keywordSelectedAdapter.items.add(item)
                 keywordSelectedAdapter.notifyItemInserted(keywordSelectedAdapter.itemCount - 1)
+                if(!addedKeywords.contains(item)){
+                    addedKeywords.add(item)
+                }
                 setCount()
+            } else {
+                showAlreadyExistError()
             }
+        } else {
+            showAlreadyExistError()
+        }
+    }
+
+    private fun showAlreadyExistError() {
+        view?.let { it1 ->
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
+            Toaster.build(it1, getString(R.string.topads_headline_keyword_already_exist), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                    getString(R.string.topads_headline_oke_button)).show()
         }
     }
 
@@ -256,11 +303,25 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         setCount()
     }
 
-    private fun onItemChecked(pos: Int) {
+    private fun onItemChecked(keywordData: KeywordDataItem) {
+        if(keywordData.onChecked){
+            if(!addedKeywords.contains(keywordData)){
+                addedKeywords.add(keywordData)
+            }
+            deletedKeywords.remove(keywordData.keyword)
+        }else{
+            if(!deletedKeywords.contains(keywordData.keyword)){
+                deletedKeywords.add(keywordData.keyword)
+            }
+            addedKeywords.remove(keywordData)
+        }
         setCount()
     }
 
-    private fun onItemUnselect(pos: Int) {
+    private fun onItemUnselect(pos: Int, keywordData: KeywordDataItem) {
+        if(!deletedKeywords.contains(keywordData.keyword)){
+            deletedKeywords.add(keywordData.keyword)
+        }
         removeFromList(pos)
         setCount()
     }

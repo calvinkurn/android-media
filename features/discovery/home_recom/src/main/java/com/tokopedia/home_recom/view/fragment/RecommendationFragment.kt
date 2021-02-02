@@ -433,13 +433,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     override fun onProductAnchorClick(productInfoDataModel: ProductInfoDataModel) {
         RecommendationPageTracking.eventClickPrimaryProductWithProductId(productInfoDataModel.mapToRecommendationTracking(), "0", ref, internalRef)
-        RouteManager.getIntent(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productId)?.run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, 0)
-            startActivityForResult(this, REQUEST_FROM_PDP)
-        }
+        goToPDP(productId, 0)
     }
 
     override fun onProductAnchorAddToCart(productInfoDataModel: ProductInfoDataModel) {
@@ -531,9 +525,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         lastClickLayoutType = layoutType
         if(position.size > 1){
             lastParentPosition = position[0]
-            goToPDP(item, position[1])
+            goToPDP(item.productId.toString(), position[1])
         }else {
-            goToPDP(item, position[0])
+            goToPDP(item.productId.toString(), position[0])
         }
     }
 
@@ -583,13 +577,17 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     /**
      * Void [goToPDP]
      * It handling routing to PDP
-     * @param item the recommendation item
+     * @param productId the recommendation item
      * @param position the position of the item at adapter
      */
-    private fun goToPDP(item: RecommendationItem, position: Int){
-        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, position)
-            startActivityForResult(this, REQUEST_FROM_PDP)
+    private fun goToPDP(productId: String, position: Int){
+        try {
+            RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId).run {
+                putExtra(PDP_EXTRA_UPDATED_POSITION, position)
+                startActivityForResult(this, REQUEST_FROM_PDP)
+            }
+        }catch (e: Exception){
+
         }
     }
 

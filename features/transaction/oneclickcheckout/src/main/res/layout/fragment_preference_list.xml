@@ -18,6 +18,7 @@
             android:layout_height="match_parent"
             android:visibility="visible">
 
+            <!-- ImageUnify can only adjust height not width -->
             <ImageView
                 android:id="@+id/iv_empty"
                 android:layout_width="0dp"

@@ -6,7 +6,9 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+
 
 /**
  * Created by Rafli Syam on 2020-02-04.
@@ -215,7 +217,11 @@ object DeeplinkMapperMerchant {
         return uri?.let {
             val url = uri.getQueryParameter(PARAM_URL)
             if (url.isNullOrEmpty()) {
-                return ApplinkConst.SELLER_INFO
+                return if (GlobalConfig.isSellerApp()) {
+                    ApplinkConst.SELLER_INFO
+                } else {
+                    ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO
+                }
             } else {
                 return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, url)
             }

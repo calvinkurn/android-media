@@ -339,6 +339,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_new_payment_cc_name" />
 
+            <!-- ImageUnify scaling issue -->
             <ImageView
                 android:id="@+id/iv_new_payment"
                 android:layout_width="@dimen/dp_30"

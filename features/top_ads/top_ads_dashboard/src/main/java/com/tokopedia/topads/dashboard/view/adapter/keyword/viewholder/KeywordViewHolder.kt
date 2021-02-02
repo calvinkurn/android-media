@@ -8,5 +8,5 @@ import androidx.recyclerview.widget.RecyclerView
  */
 
 abstract class KeywordViewHolder<in T>(view: View) : RecyclerView.ViewHolder(view) {
-    open fun bind(item: T, selectMode: Boolean, fromSearch: Boolean, fromHeadline: Boolean) {}
+    open fun bind(item: T, selectMode: Boolean, fromSearch: Boolean) {}
 }

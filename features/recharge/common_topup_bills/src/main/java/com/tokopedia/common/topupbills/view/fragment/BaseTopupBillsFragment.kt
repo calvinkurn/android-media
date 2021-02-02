@@ -66,7 +66,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var promoCode: String = ""
     var isCoupon: Boolean = false
     open var categoryId: Int = 0
-    var productId: Int = 0
+    open var productId: Int = 0
     var price: Int = 0
     var pendingPromoNavigation: String = ""
 

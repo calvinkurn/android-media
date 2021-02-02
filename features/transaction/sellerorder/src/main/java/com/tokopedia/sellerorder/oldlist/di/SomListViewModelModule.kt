@@ -15,7 +15,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@SomListScope
 abstract class SomListViewModelModule {
 
     @SomListScope

@@ -25,4 +25,7 @@ abstract class BaseNotificationDao {
     @Query("SELECT * FROM BaseNotificationModel WHERE notificationId= :notificationId")
     abstract fun getNotificationById(notificationId: Int): BaseNotificationModel?
 
+    @Query("SELECT * FROM BaseNotificationModel")
+    abstract fun getNotification(): List<BaseNotificationModel>
+
 }

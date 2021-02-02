@@ -8,7 +8,6 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
-@SettingBankScope
 @Module
 class GqlRawQueryModule {
 

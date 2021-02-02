@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_dash_select_action_on_group_bottomsheet.*
@@ -16,6 +18,8 @@ import kotlinx.android.synthetic.main.topads_dash_select_action_on_group_bottoms
  * Created by Pika on 3/6/20.
  */
 
+private const val ACTIVATED = 1
+
 class TopadsSelectActionSheet : BottomSheetUnify() {
 
     private var contentView: View? = null
@@ -23,7 +27,6 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
     var onDeleteClick: (() -> Unit)? = null
     var changeStatus: ((active: Int) -> Unit)? = null
     var onEditAction: (() -> Unit)? = null
-    private var ACTIVATED = 1
     private var name = ""
     private var activeStatus = 0
     private var hideDisable = false
@@ -49,11 +52,14 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
             img_active.setImageDrawable(it.getResDrawable(R.drawable.topads_dash_green_dot))
             edit_img.setImageDrawable(it.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon))
             img_delete.setImageDrawable(it.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_delete))
-           if(hideDisable)
-               action_edit.visibility = View.GONE
-            action_edit.setOnClickListener {
-                onEditAction?.invoke()
-                dismiss()
+            if (hideDisable) {
+                action_edit.hide()
+            } else {
+                action_edit.show()
+                action_edit.setOnClickListener {
+                    onEditAction?.invoke()
+                    dismissAllowingStateLoss()
+                }
             }
             action_delete.setOnClickListener {
                 showConfirmationDialog(name)

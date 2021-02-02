@@ -17,7 +17,7 @@
         android:layout_height="match_parent">
 
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ic_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ic_tip" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
             app:typographyType="body_2" />
 
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
             style="@style/TextView.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/lebih_efektif_dengan_kata_kunci_spesifik"
             app:layout_constraintEnd_toEndOf="parent"
@@ -92,7 +92,7 @@
             app:typographyType="body_2" />
 
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
             style="@style/TextView.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/gunakan_kata_kunci_umum_dengan_maksimum_2_kata"
             app:layout_constraintEnd_toEndOf="parent"

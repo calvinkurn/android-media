@@ -21,11 +21,6 @@
         <item name="android:textColorSecondary">@color/Unify_N150</item>
     </style>
 
-    <style name="TransactionCheckboxDisabled" parent="Theme.AppCompat.Light">
-        <item name="colorAccent">@color/Unify_N150</item>
-        <item name="android:textColorSecondary">@color/Unify_N150</item>
-    </style>
-
     <style name="TransactionEditText" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/Unify_N75</item>
         <item name="colorControlActivated">@color/Unify_G500</item>
