@@ -44,8 +44,8 @@ class SendReviewUseCase(
         private const val OS_VERSION = "osVersion"
 
         private val QUERY = """
-            mutation submitReviewSellerApp(${'$'}user_id: Int!, ${'$'}rating: Int!, ${'$'}comment: String, ${'$'}app_version: String, ${'$'}device_model: String, ${'$'}os_type: String, ${'$'}os_version: String) {
-              chipSubmitReviewApp(user_id: ${'$'}user_id, rating: ${'$'}rating, comment: ${'$'}comment, app_version: ${'$'}app_version, device_model: ${'$'}device_model, os_type: ${'$'}os_type, os_version: ${'$'}os_version) {
+            mutation submitReviewSellerApp(${'$'}userId: String!, ${'$'}rating: Int!, ${'$'}comment: String, ${'$'}appVersion: String, ${'$'}deviceModel: String, ${'$'}osType: String, ${'$'}osVersion: String) {
+              chipSubmitReviewApp(userId: ${'$'}userId, rating: ${'$'}rating, comment: ${'$'}comment, appVersion: ${'$'}appVersion, deviceModel: ${'$'}deviceModel, osType: ${'$'}osType, osVersion: ${'$'}osVersion) {
                 messageError
               }
             }
