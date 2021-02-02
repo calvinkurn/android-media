@@ -62,7 +62,6 @@ class RatingBottomSheet : BaseBottomSheet() {
     override fun setupView() = childView?.run {
         val defaultImageIndex = 3
         setOnStarClicked(this, defaultImageIndex)
-        ratePickerSirRating.setDescriptionStatus("")
         ratePickerSirRating.setListener(object : AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
             override fun onClick(position: Int) {
                 setOnStarClicked(this@run, position)
@@ -145,7 +144,7 @@ class RatingBottomSheet : BaseBottomSheet() {
 
     private fun showRatePickerStatus(starPosition: Int) {
         val statusStr = ratingStatus?.get(starPosition.minus(1)) ?: ""
-        childView?.ratePickerSirRating?.setDescriptionStatus(statusStr)
+        childView?.tvSirStatus?.text = statusStr
     }
 
     private fun getAnimationUrlByIndex(position: Int): String {

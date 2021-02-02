@@ -122,13 +122,6 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     }
 
     /**
-     * @param status is text to show at desc status text view
-     * */
-    fun setDescriptionStatus(status: String) {
-        txt_desc_status.text = status
-    }
-
-    /**
      * @param reviewClickAt which star should be animating
      */
     fun renderInitialReviewWithData(reviewClickAt: Int) {

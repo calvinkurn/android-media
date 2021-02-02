@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -51,7 +52,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSirRatingMessage"
-        app:show_description="true" />
+        app:show_description="false" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSirStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_12"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ratePickerSirRating"
+        app:layout_goneMarginTop="@dimen/sah_dimen_12dp"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Memuaskan" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnSirSubmit"
@@ -65,5 +81,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ratePickerSirRating" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSirStatus" />
 </androidx.constraintlayout.widget.ConstraintLayout>
