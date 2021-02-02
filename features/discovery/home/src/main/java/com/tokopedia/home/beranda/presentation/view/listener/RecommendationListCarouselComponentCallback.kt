@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.presentation.view.listener
 
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -30,8 +29,9 @@ class RecommendationListCarouselComponentCallback(val homeCategoryListener: Home
     override fun onRecommendationProductClick(channelModel: ChannelModel,
                                               channelGrid: ChannelGrid,
                                               position: Int,
-                                              applink: String) {
-        RecommendationListTracking.sendRecommendationListHomeComponentClick(channelModel, channelGrid, position, homeCategoryListener.getUserIdFromViewModel())
+                                              applink: String,
+                                              parentPosition: Int) {
+        RecommendationListTracking.sendRecommendationListHomeComponentClick(channelModel, channelGrid, position, homeCategoryListener.getUserIdFromViewModel(), parentPosition)
         homeCategoryListener.onSectionItemClicked(applink)
     }
 
@@ -40,7 +40,7 @@ class RecommendationListCarouselComponentCallback(val homeCategoryListener: Home
     }
 
     override fun onRecommendationCarouselChannelImpression(channelModel: ChannelModel, parentPosition: Int) {
-        homeCategoryListener.putEEToIris(RecommendationListTracking.getRecommendationListImpression(channelModel, true, homeCategoryListener.userId) as HashMap<String, Any>)
+        homeCategoryListener.putEEToIris(RecommendationListTracking.getRecommendationListImpression(channelModel, true, homeCategoryListener.userId, parentPosition ) as HashMap<String, Any>)
     }
 
     override fun onRecommendationCarouselGridImpression(channelModel: ChannelModel, channelGrid: ChannelGrid?, gridPosition: Int, parentPosition: Int, isSeeMoreView: Boolean) {

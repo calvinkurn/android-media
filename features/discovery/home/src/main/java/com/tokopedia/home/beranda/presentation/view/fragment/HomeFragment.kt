@@ -1017,7 +1017,8 @@ open class HomeFragment : BaseDaggerFragment(),
                         dataMap[HomeViewModel.POSITION] as Int,
                         (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
                         "0",
-                        viewModel.get().getUserId()
+                        viewModel.get().getUserId(),
+
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
             }
@@ -1035,7 +1036,8 @@ open class HomeFragment : BaseDaggerFragment(),
                         dataMap[HomeViewModel.POSITION] as Int,
                         (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
                         "0",
-                        getHomeViewModel().getUserId()
+                        getHomeViewModel().getUserId(),
+
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
             }
@@ -2375,7 +2377,7 @@ open class HomeFragment : BaseDaggerFragment(),
             )
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
-            DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId()) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId(), position) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_CATEGORY_WIDGET -> putEEToIris(CategoryWidgetTracking.getCategoryWidgetBannerImpression(
                     channel.grids.toList(),
                     getHomeViewModel().getUserId(),

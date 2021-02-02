@@ -32,7 +32,6 @@ import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 
 class RecommendationListCarouselViewHolder(itemView: View,
                                            private val listCarouselListener: RecommendationListCarouselListener?,
@@ -239,7 +238,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
                             recommendation.channelModel,
                             recommendation.grid,
                             adapterPosition,
-                            recommendation.recommendationApplink
+                            recommendation.recommendationApplink,
+                            adapterPosition
                     )
                 }
             } else if(recommendation is HomeRecommendationListSeeMoreData) {
