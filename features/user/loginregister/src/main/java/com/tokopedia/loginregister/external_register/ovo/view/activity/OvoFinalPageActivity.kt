@@ -25,7 +25,7 @@ class OvoFinalPageActivity: BaseSimpleActivity(), HasComponent<ExternalRegisterC
         const val TYPE_SUCCESS = 1
         const val TYPE_ERROR = 0
         const val TYPE_PARAM = "typeParam"
-
+        const val KEY_GOTO_REGISTER = "goToNormalRegister"
 
         fun createIntentSuccess(activity: FragmentActivity?): Intent {
             return Intent(activity, OvoFinalPageActivity::class.java).apply {
@@ -33,9 +33,10 @@ class OvoFinalPageActivity: BaseSimpleActivity(), HasComponent<ExternalRegisterC
             }
         }
 
-        fun createIntentError(activity: FragmentActivity?): Intent {
+        fun createIntentError(activity: FragmentActivity?, isContinueToRegister: Boolean = false): Intent {
             return Intent(activity, OvoFinalPageActivity::class.java).apply {
                 putExtra(TYPE_PARAM, TYPE_ERROR)
+                putExtra(KEY_GOTO_REGISTER, isContinueToRegister)
             }
         }
     }
@@ -52,7 +53,11 @@ class OvoFinalPageActivity: BaseSimpleActivity(), HasComponent<ExternalRegisterC
 
     override fun getNewFragment(): Fragment? {
         return if(intent?.getIntExtra(TYPE_PARAM, TYPE_SUCCESS) == TYPE_ERROR){
-            OvoErrorFragment.createInstance()
+            OvoErrorFragment.createInstance().apply {
+                arguments  = Bundle().apply {
+                    putBoolean(KEY_GOTO_REGISTER, intent?.getBooleanExtra(KEY_GOTO_REGISTER, false) ?: false)
+                }
+            }
         } else {
             OvoSuccessFragment.createInstance()
         }

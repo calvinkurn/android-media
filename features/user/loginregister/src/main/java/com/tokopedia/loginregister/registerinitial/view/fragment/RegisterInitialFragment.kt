@@ -52,9 +52,11 @@ import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
+import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
 import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
+import com.tokopedia.loginregister.external_register.ovo.view.activity.OvoFinalPageActivity
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -128,6 +130,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private var activityShouldEnd: Boolean = true
     private var enableOvoRegister: Boolean = false
 
+    @Inject
+    lateinit var externalRegisterPreference: ExternalRegisterPreference
+
     @field:Named(SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -156,6 +161,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     lateinit var callbackManager: CallbackManager
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var combineLoginTokenAndValidateToken: LiveData<Unit>
+
+    private var isContinueRegister = false
 
     private val draw: Drawable?
         get() {
@@ -213,6 +220,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         isSmartLogin = getParamBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, arguments, savedInstanceState, false)
         isPending = getParamBoolean(ApplinkConstInternalGlobal.PARAM_IS_PENDING, arguments, savedInstanceState, false)
         email = getParamString(ApplinkConstInternalGlobal.PARAM_EMAIL, arguments, savedInstanceState, "")
+        isContinueRegister = arguments?.getBoolean(OvoFinalPageActivity.KEY_GOTO_REGISTER) ?: false
     }
 
     private fun clearData() {
@@ -264,6 +272,13 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         fetchRemoteConfig()
         initObserver()
         initData()
+
+        if(isContinueRegister) {
+            val mPhone = externalRegisterPreference.getPhone()
+            if(mPhone.isNotEmpty()){
+                goToRegisterWithPhoneNumber(mPhone)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
