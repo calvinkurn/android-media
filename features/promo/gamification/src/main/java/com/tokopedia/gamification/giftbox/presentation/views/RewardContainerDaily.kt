@@ -3,14 +3,17 @@ package com.tokopedia.gamification.giftbox.presentation.views
 import android.animation.*
 import android.app.Activity
 import android.content.Context
+import android.os.Handler
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
@@ -21,6 +24,7 @@ import com.tokopedia.gamification.giftbox.presentation.adapter.CouponAdapter
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
 import com.tokopedia.gamification.giftbox.presentation.helpers.CouponItemDecoration
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
+import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.user.session.UserSession
 
 open class RewardContainerDaily @JvmOverloads constructor(
@@ -40,6 +44,8 @@ open class RewardContainerDaily @JvmOverloads constructor(
 
     var userSession: UserSession? = null
     val FADE_IN_REWARDS_DURATION_TAP_TAP = 400L
+    private var milliSecondsPerInch = 5f
+    private var cancelAutoScroll = false
 
     open val LAYOUT_ID = R.layout.view_reward_container_daily
 
@@ -62,7 +68,20 @@ open class RewardContainerDaily @JvmOverloads constructor(
         this.layoutParams = lp
         rvCoupons.alpha = 0f
         rvCoupons.hasFixedSize()
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        val layoutManager = object : LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false) {
+            override fun smoothScrollToPosition(recyclerView: RecyclerView?, state: RecyclerView.State?, position: Int) {
+                val linearSmoothScroller: LinearSmoothScroller =
+                        object : LinearSmoothScroller(context) {
+
+                            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                                return milliSecondsPerInch / displayMetrics.density
+                            }
+                        }
+
+                linearSmoothScroller.targetPosition = position
+                startSmoothScroll(linearSmoothScroller)
+            }
+        }
         layoutManager.isItemPrefetchEnabled = true
         rvCoupons.layoutManager = layoutManager
 
@@ -82,6 +101,23 @@ open class RewardContainerDaily @JvmOverloads constructor(
                 rvCoupons.context.resources.getDimension(R.dimen.gami_rv_coupons_right_margin).toInt()
         ))
 
+        rvCoupons.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && !cancelAutoScroll) {
+                    rvCoupons.smoothScrollToPosition(0)
+                }
+            }
+        })
+
+        rvCoupons.setOnTouchListener { _, event ->
+            when (event?.action) {
+                MotionEvent.ACTION_DOWN,
+                MotionEvent.ACTION_MOVE -> cancelAutoScroll = true
+            }
+            false
+        }
+
         couponAdapter = CouponAdapter(sourceType, couponList, isTablet)
         rvCoupons.adapter = couponAdapter
 
@@ -91,9 +127,14 @@ open class RewardContainerDaily @JvmOverloads constructor(
 
     open fun showCouponAndRewardAnimation(giftBoxTop: Int): Animator {
         val anim2 = rvCouponsAnimations()
-        val animatorSet = AnimatorSet()
-        animatorSet.playTogether(anim2)
-        return animatorSet
+        anim2.addListener(onEnd = {
+            if (couponList.size > 1) {
+                Handler().postDelayed({
+                    rvCoupons.smoothScrollToPosition(couponList.size - 1)
+                },700L)
+            }
+        })
+        return anim2
     }
 
     fun rvCouponsAnimations(): Animator {
