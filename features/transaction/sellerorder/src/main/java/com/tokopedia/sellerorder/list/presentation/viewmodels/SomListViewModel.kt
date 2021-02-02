@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -20,11 +21,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.jvm.Throws
 
 class SomListViewModel @Inject constructor(
         getUserRoleUseCase: SomGetUserRoleUseCase,
@@ -33,7 +32,7 @@ class SomListViewModel @Inject constructor(
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
         somEditRefNumUseCase: SomEditRefNumUseCase,
         userSession: UserSessionInterface,
-        private val dispatcher: SomDispatcherProvider,
+        dispatcher: SomDispatcherProvider,
         private val somListGetTickerUseCase: SomListGetTickerUseCase,
         private val somListGetFilterListUseCase: SomListGetFilterListUseCase,
         private val somListGetWaitingPaymentUseCase: SomListGetWaitingPaymentUseCase,
@@ -125,38 +124,21 @@ class SomListViewModel @Inject constructor(
 
     var isMultiSelectEnabled: Boolean = false
 
-    private suspend fun <T : Any> getDataFromUseCase(
+    private fun <T : Any> getDataFromUseCase(
             useCase: BaseGraphqlUseCase<T>,
             liveData: MutableLiveData<Result<T>>) {
-        val requests = mutableListOf<Job>()
         if (useCase.isFirstLoad) {
             useCase.isFirstLoad = false
-            requests.add(useCase.executeUseCaseAsync(true, onComplete = {
-                liveData.value = Success(it)
-            }, onError = {
-                // ignore exception from cache
-            }))
+            launchCatchError(block = {
+                liveData.value = Success(useCase.executeOnBackground(true))
+            }, onError = {})
         }
-        requests.add(useCase.executeUseCaseAsync(false, onComplete = {
-            liveData.value = Success(it)
-        }, onError = { throw it }))
-        requests.joinAll()
+        launchCatchError(block = {
+            liveData.value = Success(useCase.executeOnBackground(false))
+        }, onError = {
+            liveData.value = Fail(it)
+        })
     }
-
-    private fun <T : Any> BaseGraphqlUseCase<T>.executeUseCaseAsync(
-            useCache: Boolean,
-            onComplete: (T) -> Unit,
-            onError: (Throwable) -> Unit) = launchCatchError(dispatcher.ui(),
-            block = {
-                val result = executeOnBackground(useCache)
-                withContext(dispatcher.io()) {
-                    onComplete(result)
-                }
-            }, onError = {
-        withContext(dispatcher.io()) {
-            onError(it)
-        }
-    })
 
     private fun getBulkAcceptOrderStatus(batchId: String, wait: Long) {
         launchCatchError(block = {
@@ -205,11 +187,7 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters() {
-        launchCatchError(block = {
-            getDataFromUseCase(somListGetFilterListUseCase, _filterResult)
-        }, onError = {
-            _filterResult.value = Fail(it)
-        })
+        getDataFromUseCase(somListGetFilterListUseCase, _filterResult)
     }
 
     fun getWaitingPaymentCounter() {

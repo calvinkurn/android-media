@@ -5,7 +5,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerorder.list.domain.mapper.FilterResultMapper
 import com.tokopedia.sellerorder.list.domain.model.SomListFilterResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
