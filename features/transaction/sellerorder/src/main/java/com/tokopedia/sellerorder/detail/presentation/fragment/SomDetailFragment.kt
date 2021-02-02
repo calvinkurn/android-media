@@ -38,6 +38,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -99,8 +100,10 @@ import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RES
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
+import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
+import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
@@ -174,6 +177,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     private var failEditAwbResponse = SomEditRefNumResponse.Error()
     private var rejectReasonResponse = listOf<SomReasonRejectData.Data.SomRejectReason>()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
+    private var somDetailLoadTimeMonitoring: SomDetailLoadTimeMonitoring? = null
     private lateinit var somDetailAdapter: SomDetailAdapter
     private lateinit var somBottomSheetRejectOrderAdapter: SomBottomSheetRejectOrderAdapter
     private lateinit var somBottomSheetRejectReasonsAdapter: SomBottomSheetRejectReasonsAdapter
@@ -252,12 +256,14 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getActivityPltPerformanceMonitoring()
         if (arguments != null) {
             orderId = arguments?.getString(PARAM_ORDER_ID).toString()
             val userRoles = arguments?.getParcelable<SomGetUserRoleUiModel?>(PARAM_USER_ROLES)
             if (userRoles != null) {
                 somDetailViewModel.setUserRoles(userRoles)
             } else {
+                somDetailLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
                 checkUserRole()
             }
         }
@@ -349,6 +355,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun observingDetail() {
         somDetailViewModel.orderDetailResult.observe(viewLifecycleOwner, Observer {
+            somDetailLoadTimeMonitoring?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
                     detailResponse = it.data.getSomDetail
@@ -358,6 +365,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     it.throwable.showGlobalError()
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_DETAIL)
+                    stopLoadTimeMonitoring()
                 }
             }
         })
@@ -505,6 +513,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onUserAllowedToViewSOM() {
+        somDetailLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
         loadDetail()
     }
 
@@ -519,6 +528,9 @@ class SomDetailFragment : BaseDaggerFragment(),
         renderButtons()
 
         somDetailAdapter.listDataDetail = listDetailData.toMutableList()
+        rv_detail.addOneTimeGlobalLayoutListener {
+            stopLoadTimeMonitoring()
+        }
         somDetailAdapter.notifyDataSetChanged()
     }
 
@@ -1489,5 +1501,14 @@ class SomDetailFragment : BaseDaggerFragment(),
                 som_detail_toolbar?.title = getString(R.string.title_som_detail)
             }
         }
+    }
+
+    private fun getActivityPltPerformanceMonitoring() {
+        somDetailLoadTimeMonitoring = (activity as? SomDetailActivity)?.somDetailLoadTimeMonitoring
+    }
+
+    private fun stopLoadTimeMonitoring() {
+        somDetailLoadTimeMonitoring?.stopRenderPerformanceMonitoring()
+        (activity as? SomDetailActivity)?.somLoadTimeMonitoringListener?.onStopPltMonitoring()
     }
 }

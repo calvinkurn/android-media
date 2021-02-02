@@ -644,17 +644,22 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun updatePhotoUI(shopBasicDataModel: ShopBasicDataModel?) {
         shopBasicDataModel?.let {
-            if (TextUtils.isEmpty(savedLocalImageUrl)) {
-                val logoUrl = it.logo
-                if (TextUtils.isEmpty(logoUrl)) {
-                    imageAvatar.setImageDrawable(
-                        MethodChecker.getDrawable(imageAvatar.context, R.drawable.ic_shop_edit_avatar))
-                } else {
-                    ImageHandler.LoadImage(imageAvatar, logoUrl)
+            //avoid crash in ImageUnify when image url is returned as base64
+            try {
+                if (imageAvatar?.context?.isValidGlideContext() == true) {
+                    if (TextUtils.isEmpty(savedLocalImageUrl)) {
+                        val logoUrl = it.logo
+                        if (TextUtils.isEmpty(logoUrl)) {
+                            imageAvatar.setImageDrawable(
+                                    MethodChecker.getDrawable(imageAvatar.context, R.drawable.ic_shop_edit_avatar))
+                        } else {
+                            ImageHandler.LoadImage(imageAvatar, logoUrl)
+                        }
+                    } else {
+                        ImageHandler.LoadImage(imageAvatar, savedLocalImageUrl)
+                    }
                 }
-            } else {
-                ImageHandler.LoadImage(imageAvatar, savedLocalImageUrl)
-            }
+            } catch (e: Exception) { }
         }
     }
 

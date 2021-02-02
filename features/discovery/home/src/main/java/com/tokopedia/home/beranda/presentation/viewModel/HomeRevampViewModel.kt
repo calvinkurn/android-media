@@ -48,6 +48,7 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.homenav.mainnav.view.datamodel.InitialShimmerDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
@@ -63,9 +64,6 @@ import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -106,7 +104,6 @@ open class HomeRevampViewModel @Inject constructor(
         private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
         private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
         private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
-        private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
         private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
         private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
@@ -149,10 +146,6 @@ open class HomeRevampViewModel @Inject constructor(
     val searchHint: LiveData<SearchPlaceholder>
         get() = _searchHint
     private val _searchHint: MutableLiveData<SearchPlaceholder> = MutableLiveData()
-
-    val stickyLogin: LiveData<Result<StickyLoginTickerPojo.TickerDetail>>
-        get() = _stickyLogin
-    private val _stickyLogin: MutableLiveData<Result<StickyLoginTickerPojo.TickerDetail>> = MutableLiveData()
 
     val injectCouponTimeBasedResult : LiveData<Result<InjectCouponTimeBased>>
         get() = _injectCouponTimeBasedResult
@@ -226,7 +219,6 @@ open class HomeRevampViewModel @Inject constructor(
 // ============================================================================================
 
     private var getHomeDataJob: Job? = null
-    private var getStickyLoginJob: Job? = null
     private var getSearchHintJob: Job? = null
     private var getPlayWidgetJob: Job? = null
     private var getTokopointJob: Job? = null
@@ -927,13 +919,21 @@ open class HomeRevampViewModel @Inject constructor(
                         takeTicker = false
                     }
                     homeDataModel?.let {
-                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
+                        if (homeDataModel.list.isEmpty()) {
+                            val initialHomeDataModel = HomeDataModel(list = listOf(
+                                    HomeHeaderOvoDataModel(),
+                                    HomeInitialShimmerDataModel()
+                            ))
+                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(initialHomeDataModel, this@HomeRevampViewModel))
+                        } else {
+                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(homeDataModel, this@HomeRevampViewModel))
+                        }
                     }
                     refreshHomeData()
                 }
             }
         }) {
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.errorGeneral(Throwable(), null))
         }
     }
 
@@ -953,7 +953,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.errorGeneral(Throwable(), null))
         }
     }
 
@@ -1288,25 +1288,6 @@ open class HomeRevampViewModel @Inject constructor(
                     productClickUrl = it.adClickUrl,
                     imageUrl = it.headline.shop.products.firstOrNull()?.imageProduct?.imageUrl ?: ""
             )
-        }
-    }
-
-    fun getStickyContent() {
-        if(getStickyLoginJob?.isActive == true) return
-        getStickyLoginJob = launchCatchError(coroutineContext, block = {
-            stickyLoginUseCase.get().setParam(RequestParams.create().apply {
-                putString(StickyLoginConstant.PARAMS_PAGE, StickyLoginConstant.Page.HOME.toString())
-            })
-            val response = stickyLoginUseCase.get().executeOnBackground()
-            val data = response.response.tickers.find { it.layout == StickyLoginConstant.LAYOUT_FLOATING }
-            if(data == null){
-                _stickyLogin.postValue(Result.error(Exception()))
-            } else {
-                _stickyLogin.postValue(Result.success(data))
-            }
-
-        }){
-            _stickyLogin.postValue(Result.error(it))
         }
     }
 

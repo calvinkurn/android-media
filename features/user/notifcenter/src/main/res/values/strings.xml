@@ -8,7 +8,6 @@
     <string name="notif_no_info">Tidak ada info baru</string>
     <string name="notif_no_info_desc">Dapatkan info seputar transaksi penjualan &amp; pembelian, promo, event, update produk, fitur &amp; layanan terbaru untuk Anda.</string>
 
-
     <string name="home">Home</string>
     <string name="feed">Feed</string>
     <string name="inbox">Inbox</string>
@@ -115,4 +114,6 @@
     <string name="notifcenter_title_product_highlight">Produk unggulan dari toko ini</string>
 
     <string name="notifcenter_out_of_stock">Yaah, stok barangnya habis. Coba cek barang serupa lainnya, yuk.</string>
+    <string name="notifcenter_cd_avatar">avatar</string>
+    <string name="notifcenter_cd_icon_trx">transaction item</string>
 </resources>
