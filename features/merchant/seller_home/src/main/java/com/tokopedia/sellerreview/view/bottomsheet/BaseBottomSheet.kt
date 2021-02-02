@@ -1,15 +1,17 @@
 package com.tokopedia.sellerreview.view.bottomsheet
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerreview.view.viewmodel.ReviewViewModel
+import com.tokopedia.sellerreview.common.Const
+import com.tokopedia.sellerreview.view.model.SendReviewParam
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -22,6 +24,7 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -46,9 +49,21 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
         }
     }
 
-    protected open fun initInjector() {}
-
     abstract fun show(fm: FragmentManager)
+
+    protected open fun getParams(rating: Int, feedback: String): SendReviewParam {
+        return SendReviewParam(
+                userId = userSession.userId,
+                rating = rating,
+                feedback = feedback,
+                appVersion = GlobalConfig.VERSION_NAME,
+                deviceModel = Build.BRAND,
+                osType = Const.OS_TYPE,
+                osVersion = Build.VERSION.SDK_INT.toString()
+        )
+    }
+
+    protected open fun initInjector() {}
 
     protected abstract fun getResLayout(): Int
 
