@@ -3,7 +3,7 @@ package com.tokopedia.explore.domain.entity
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class PostKol(
+data class PostKol(
         @SerializedName("isLiked")
         @Expose
         var isIsLiked: Boolean = false,
