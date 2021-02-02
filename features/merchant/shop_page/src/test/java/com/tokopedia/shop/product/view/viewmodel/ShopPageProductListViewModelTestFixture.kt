@@ -1,7 +1,7 @@
 package com.tokopedia.shop.product.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
+import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
@@ -16,7 +16,6 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.shop.sort.domain.interactor.GetShopProductSortUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -38,7 +37,7 @@ abstract class ShopPageProductListViewModelTestFixture {
     @RelaxedMockK
     lateinit var claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase
     @RelaxedMockK
-    lateinit var getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase
+    lateinit var mvcSummaryUseCase: MVCSummaryUseCase
     @RelaxedMockK
     lateinit var getMembershipUseCase: GetMembershipUseCaseNew
     @RelaxedMockK
@@ -57,15 +56,11 @@ abstract class ShopPageProductListViewModelTestFixture {
     @RelaxedMockK
     lateinit var getShopInfoUseCase: GQLGetShopInfoUseCase
     @RelaxedMockK
-    lateinit var getShopProductFilterUseCase: GetShopProductSortUseCase
-    @RelaxedMockK
     lateinit var getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase
     @RelaxedMockK
     lateinit var getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase
     @RelaxedMockK
     lateinit var gqlGetShopSortUseCase: GqlGetShopSortUseCase
-    @RelaxedMockK
-    lateinit var userSession: UserSessionInterface
     @RelaxedMockK
     lateinit var shopProductSortMapper: ShopProductSortMapper
     @RelaxedMockK
@@ -92,7 +87,7 @@ abstract class ShopPageProductListViewModelTestFixture {
 
         viewModelShopPageProductListViewModel = ShopPageProductListViewModel(
                 claimBenefitMembershipUseCase,
-                getMerchantVoucherListUseCase,
+                mvcSummaryUseCase,
                 getMembershipUseCase,
                 userSessionInterface,
                 getShopFeaturedProductUseCase,
