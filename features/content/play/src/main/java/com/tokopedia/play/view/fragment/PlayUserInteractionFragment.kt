@@ -1180,12 +1180,7 @@ class PlayUserInteractionFragment @Inject constructor(
             event: EventUiModel
     ) {
         if(event.isFreeze) {
-            endLiveInfoView.setInfo(
-                    title = event.freezeTitle,
-                    message = event.freezeMessage,
-//                    btnTitle = event.freezeButtonTitle,
-//                    btnUrl = event.freezeButtonUrl
-            )
+            endLiveInfoView.setInfo(title = event.freezeTitle)
             endLiveInfoView.show()
         } else endLiveInfoView.hide()
     }
