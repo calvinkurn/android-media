@@ -125,7 +125,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     }
 
     override fun getRecyclerViewResourceId(): Int {
-        return R.id.image_review_gallery_swipe_recycler_view
+        return R.id.image_review_gallery_recycler_view
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int {
