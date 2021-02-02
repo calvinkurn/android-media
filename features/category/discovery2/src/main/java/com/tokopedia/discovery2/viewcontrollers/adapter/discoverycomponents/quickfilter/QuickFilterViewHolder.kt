@@ -152,7 +152,10 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
-        quickFilterViewModel.filterProductsCount(mapParameter)
+        if(quickFilterViewModel.components.showFilterCount)
+            quickFilterViewModel.filterProductsCount(mapParameter)
+        else
+            sortFilterBottomSheet.setResultCountText(fragment.getString(R.string.discovery_bottom_sheet_filter_finish_button_text))
     }
 
     override fun onViewAttachedToWindow() {
