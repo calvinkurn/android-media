@@ -13,13 +13,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.validator.Utils
-import com.tokopedia.analyticsdebugger.validator.core.GtmLogUi
-import com.tokopedia.analyticsdebugger.validator.core.Validator
-import com.tokopedia.analyticsdebugger.validator.core.toJson
-import com.tokopedia.analyticsdebugger.validator.core.toJsonMap
+import com.tokopedia.analyticsdebugger.validator.core.*
 import timber.log.Timber
 
 class MainValidatorFragment : Fragment() {
+
+    private val testPath: String by lazy {
+        arguments?.getString(ARGUMENT_TEST_PATH)
+                ?: throw IllegalArgumentException("Path not found!!")
+    }
+    private val query: JsonMap by lazy {
+        Utils.getJsonDataFromAsset(requireContext(), testPath)?.toJsonMap()
+                ?: throw QueryTestParseException()
+    }
 
     val viewModel: ValidatorViewModel by lazy {
         activity?.application?.let {
@@ -32,7 +38,6 @@ class MainValidatorFragment : Fragment() {
         val itemAdapter = ValidatorResultAdapter { goToDetail(it) }
         itemAdapter
     }
-
     private var callback: Listener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,38 +46,27 @@ class MainValidatorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var jsonTest: String = ""
-        val testPath = arguments?.getString(ARGUMENT_TEST_PATH)
-        context?.let {
-            jsonTest = Utils.getJsonDataFromAsset(it, testPath!!) ?: ""
-        }
-        Timber.d("Validator Json Query \n %s", jsonTest)
-
-        val testQuery = jsonTest.toJsonMap()
-        Timber.d("Validator Test Query Map \n %s", testQuery)
-
-        val readme = testQuery["readme"]
-        if (readme != null && readme is String && !readme.isEmpty()) {
+        val readme = query["readme"]
+        if (readme != null && readme is String && readme.isNotEmpty()) {
             view.findViewById<View>(R.id.cv_readme).visibility = View.VISIBLE
             view.findViewById<TextView>(R.id.tv_readme).text = readme
         } else {
             view.findViewById<View>(R.id.cv_readme).visibility = View.GONE
+        }
+        val mode = query["mode"] as? String ?: "exact"
+        val value = query["query"] as? List<Map<String, Any>>
+                ?: throw QueryTestParseException("Error while parsing the query")
+        viewModel.run(value, mode)
+        with(view.findViewById<RecyclerView>(R.id.rv)) {
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+            adapter = mAdapter
         }
 
         viewModel.testCases.observe(this, Observer<List<Validator>> {
             Timber.d("Validator got ${it.size}")
             mAdapter.setData(it)
         })
-        val rv = view.findViewById<RecyclerView>(R.id.rv)
-        val mode = testQuery["mode"] as? String
-
-        val value = testQuery["query"]
-        viewModel.run(value as List<Map<String, Any>>, mode ?: "exact")
-        with(rv) {
-            layoutManager = LinearLayoutManager(context)
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-            adapter = mAdapter
-        }
     }
 
     fun setCallback(callback: Listener) {
