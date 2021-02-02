@@ -72,6 +72,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/iv_product_thumbnail"
             app:layout_constraintTop_toTopOf="@+id/iv_product_thumbnail"
+            app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="body_3"
             tools:text="Kursi putih cantik ala modern min asdf asdf sdf asdf asdf"
             tools:visibility="visible" />
