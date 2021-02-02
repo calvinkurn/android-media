@@ -190,10 +190,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
         snapHelper.attachToRecyclerView(recyclerViewItem)
 
-        recyclerViewItem.addOneTimeGlobalLayoutListener {
-            mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
-        }
-
         recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -235,9 +231,18 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
         configureBackgroundOverlay(data.background)
 
+        recyclerViewItem.addOneTimeGlobalLayoutListener {
+            mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
+        }
+
         adapter.setItemsAndAnimateChanges(data.items)
 
         mIsAutoPlay = data.config.autoPlay
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        mWidgetInternalListener?.onWidgetAttached(recyclerViewItem)
     }
 
     /**

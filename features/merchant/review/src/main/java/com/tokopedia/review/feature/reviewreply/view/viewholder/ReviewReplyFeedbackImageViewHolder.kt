@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.reviewreply.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
@@ -20,7 +21,7 @@ class ReviewReplyFeedbackImageViewHolder(
     private var productTitle = ""
 
     fun bind(data: FeedbackUiModel.Attachment) {
-        ivItemFeedback.setImageUrl(data.thumbnailURL.orEmpty())
+        ivItemFeedback.loadImage(data.thumbnailURL.orEmpty())
 
         val imageUrls = SellerReviewProductDetailMapper.mapToItemImageSlider(attachmentUiModel)
         itemView.setOnClickListener {

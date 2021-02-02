@@ -132,7 +132,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // Then
         verify {
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
 
@@ -166,7 +166,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         verifySequence {
             view.showToastError(errorMessage)
             view.resetCourier(shipmentCartItemModel)
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
 

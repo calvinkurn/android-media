@@ -670,10 +670,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     fun removeCartEmptyData() {
         cartEmptyHolderData?.let {
             val index = cartDataList.indexOf(it)
-            cartDataList.remove(it)
-            notifyItemRemoved(index)
-
-            cartEmptyHolderData = null
+            if (index != -1) {
+                cartDataList.remove(it)
+                notifyItemRemoved(index)
+                cartEmptyHolderData = null
+            }
         }
     }
 
@@ -756,15 +757,19 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     it.isVisible = true
                     it.sellerCashbackFmt = CurrencyFormatUtil.convertPriceValueToIdrFormat(cashback.toLong(), false).removeDecimalSuffix()
                     val index = cartDataList.indexOf(it)
-                    notifyItemChanged(index)
+                    if (index != -1) {
+                        notifyItemChanged(index)
+                    }
                 }
             }
         } else {
             shipmentSellerCashbackModel?.let {
                 val index = cartDataList.indexOf(it)
-                cartDataList.remove(it)
-                notifyItemRemoved(index)
-                shipmentSellerCashbackModel = null
+                if (index != -1) {
+                    cartDataList.remove(it)
+                    notifyItemRemoved(index)
+                    shipmentSellerCashbackModel = null
+                }
             }
         }
 
@@ -853,8 +858,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 // Remove wishlist holder & wishlist header
                 cartDataList.removeAt(wishlistIndex)
                 val headerIndex = wishlistIndex - 1
-                cartDataList.removeAt(headerIndex)
-                notifyItemRangeRemoved(headerIndex, 2)
+                if (headerIndex > -1) {
+                    cartDataList.removeAt(headerIndex)
+                    notifyItemRangeRemoved(headerIndex, 2)
+                }
             }
         }
     }
@@ -890,8 +897,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     fun removeCartLoadingData() {
         cartLoadingHolderData?.let {
             val index = cartDataList.indexOf(it)
-            cartDataList.remove(it)
-            notifyItemRemoved(index)
+            if (index != -1) {
+                cartDataList.remove(it)
+                notifyItemRemoved(index)
+            }
         }
     }
 
