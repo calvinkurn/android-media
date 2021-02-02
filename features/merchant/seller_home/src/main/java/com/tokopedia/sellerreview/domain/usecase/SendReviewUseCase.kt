@@ -47,8 +47,8 @@ class SendReviewUseCase @Inject constructor(
         private const val OS_VERSION = "osVersion"
 
         private val QUERY = """
-            mutation submitReviewSellerApp(${'$'}userId: String!, ${'$'}rating: Int!, ${'$'}comment: String, ${'$'}appVersion: String, ${'$'}deviceModel: String, ${'$'}osType: String, ${'$'}osVersion: String) {
-              chipSubmitReviewApp(userId: ${'$'}userId, rating: ${'$'}rating, comment: ${'$'}comment, appVersion: ${'$'}appVersion, deviceModel: ${'$'}deviceModel, osType: ${'$'}osType, osVersion: ${'$'}osVersion) {
+            mutation submitReviewSellerApp(${'$'}userID: String!, ${'$'}rating: Int!, ${'$'}comment: String, ${'$'}appVersion: String, ${'$'}deviceModel: String, ${'$'}osType: String, ${'$'}osVersion: String) {
+              chipSubmitReviewApp(userID: ${'$'}userID, rating: ${'$'}rating, comment: ${'$'}comment, appVersion: ${'$'}appVersion, deviceModel: ${'$'}deviceModel, osType: ${'$'}osType, osVersion: ${'$'}osVersion) {
                 messageError
               }
             }
