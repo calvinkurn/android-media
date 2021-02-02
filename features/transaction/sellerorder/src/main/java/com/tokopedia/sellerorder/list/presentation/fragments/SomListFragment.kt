@@ -1495,22 +1495,27 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             message: String = getString(R.string.som_list_error_some_information_cannot_be_loaded),
             buttonMessage: String = getString(R.string.btn_reload),
             canRetry: Boolean = true) {
-        if (errorToaster == null) {
-            view?.let {
+        view?.let {
+            if (canRetry) {
                 errorToaster = Toaster.build(
                         it,
                         message,
                         Toaster.LENGTH_INDEFINITE,
-                        Toaster.TYPE_ERROR)
-            }
-        }
-        if (canRetry) {
-            errorToaster?.setAction(buttonMessage) {
-                refreshFailedRequests()
-            }
-        } else {
-            errorToaster?.setAction(getString(R.string.som_list_button_ok)) {
-                errorToaster?.dismiss()
+                        Toaster.TYPE_ERROR,
+                        buttonMessage,
+                        View.OnClickListener {
+                            refreshFailedRequests()
+                        })
+            } else {
+                errorToaster = Toaster.build(
+                        it,
+                        message,
+                        Toaster.LENGTH_INDEFINITE,
+                        Toaster.TYPE_ERROR,
+                        getString(R.string.som_list_button_ok),
+                        View.OnClickListener {
+                            errorToaster?.dismiss()
+                        })
             }
         }
         if (errorToaster?.isShown == false) {
