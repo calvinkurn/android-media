@@ -38,6 +38,7 @@
         android:layout_alignTop="@id/tvBuyerRequestCancelNotes"
         android:layout_alignBottom="@id/tvBuyerRequestCancelNotes"
         android:scaleType="fitXY"
+        android:contentDescription="Alasan pembatalan"
         app:srcCompat="@drawable/ic_som_detail_buyer_reason_left_drawable" />
 
     <com.tokopedia.unifyprinciples.Typography
