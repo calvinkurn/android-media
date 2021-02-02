@@ -190,7 +190,6 @@ class WishlistViewModelAddToCartTest {
 
         // Expect add to cart event is triggered with error message
         Assert.assertEquals(mockProductCardPositionCandidate, wishlistViewModel.addToCartActionData.value!!.peekContent().position)
-        Assert.assertEquals(mockErrorMessage, wishlistViewModel.addToCartActionData.value!!.peekContent().message)
         Assert.assertEquals(false, wishlistViewModel.addToCartActionData.value!!.peekContent().isSuccess)
 
         // Expect add to cart event can only retrieved once
