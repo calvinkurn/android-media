@@ -49,9 +49,16 @@ class NewMainPreferenceListViewHolder(itemView: View, private val listener: Pref
         } else {
             cardUnify.cardType = CardUnify.TYPE_SHADOW
             layoutCard.setOnClickListener {
-                listener.onPreferenceSelected(preference)
+                if (preference.enable) {
+                    listener.onPreferenceSelected(preference)
+                }
             }
             dividerHeader.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
+        }
+        if (preference.enable) {
+            itemView.alpha = 1f
+        } else {
+            itemView.alpha = 0.5f
         }
 
         val addressModel = preference.addressModel
@@ -129,8 +136,15 @@ class NewPreferenceListViewHolder(itemView: View, private val listener: Preferen
         } else {
             cardUnify.cardType = CardUnify.TYPE_SHADOW
             layoutCard.setOnClickListener {
-                listener.onPreferenceSelected(preference)
+                if (preference.enable) {
+                    listener.onPreferenceSelected(preference)
+                }
             }
+        }
+        if (preference.enable) {
+            itemView.alpha = 1f
+        } else {
+            itemView.alpha = 0.5f
         }
 
         val addressModel = preference.addressModel
