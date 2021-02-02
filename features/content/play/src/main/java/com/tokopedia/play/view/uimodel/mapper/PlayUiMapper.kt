@@ -50,10 +50,7 @@ object PlayUiMapper {
             bannedMessage = channel.configuration.channelBannedMessage.message,
             bannedTitle = channel.configuration.channelBannedMessage.title,
             bannedButtonTitle = channel.configuration.channelBannedMessage.buttonText,
-            freezeMessage = channel.configuration.channelFreezeScreen.desc,
             freezeTitle = String.format(channel.configuration.channelFreezeScreen.title, channel.title),
-            freezeButtonTitle = channel.configuration.channelFreezeScreen.btnTitle,
-            freezeButtonUrl = channel.configuration.channelFreezeScreen.btnAppLink
     )
 
     private fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
