@@ -10,7 +10,7 @@
     <com.tokopedia.mvcwidget.views.MvcView
         android:id="@+id/merchantVoucherWidget"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_64"
         app:mvlwTitleString="@string/merchant_voucher"
         android:clipToPadding="false"
         android:visibility="gone"

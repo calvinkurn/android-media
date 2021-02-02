@@ -15,8 +15,8 @@ import kotlin.Throws
 class MembershipRegisterUseCase @Inject constructor(val gqlWrapper: GqlUseCaseWrapper) {
 
     suspend fun getResponse(map: HashMap<String, Any>): MembershipRegisterResponse? {
-        return getFakeResponseSuccess()
-//        return gqlWrapper.getResponse(MembershipRegisterResponse::class.java, MvcMembershipRegisterQuery.GQL_QUERY, map)
+//        return getFakeResponseSuccess()
+        return gqlWrapper.getResponse(MembershipRegisterResponse::class.java, MvcMembershipRegisterQuery.GQL_QUERY, map)
     }
 
     @Throws(Exception::class)
@@ -30,19 +30,19 @@ class MembershipRegisterUseCase @Inject constructor(val gqlWrapper: GqlUseCaseWr
         return variables
     }
 
-    suspend fun getFakeResponseSuccess(): MembershipRegisterResponse {
-        delay(1000)
-        return Gson().fromJson(FakeResponse.FakeMemberShipRegisterSuccess, MembershipRegisterResponse::class.java)
-    }
-
-    suspend fun getFakeResponseFail(): MembershipRegisterResponse {
-        delay(1000)
-        return Gson().fromJson(FakeResponse.FakeMemberShipRegisterFail, MembershipRegisterResponse::class.java)
-    }
+//    suspend fun getFakeResponseSuccess(): MembershipRegisterResponse {
+//        delay(1000)
+//        return Gson().fromJson(FakeResponse.FakeMemberShipRegisterSuccess, MembershipRegisterResponse::class.java)
+//    }
+//
+//    suspend fun getFakeResponseFail(): MembershipRegisterResponse {
+//        delay(1000)
+//        return Gson().fromJson(FakeResponse.FakeMemberShipRegisterFail, MembershipRegisterResponse::class.java)
+//    }
 }
 
 object MembershipRegisterParams {
-    const val CARD_ID = "cardId"
+    const val CARD_ID = "cardID"
 //    const val REFERENCE_ID = "referenceID"
 //    const val SOURCE = "source"
 //    const val NAME = "name"
