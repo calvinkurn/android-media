@@ -131,7 +131,7 @@
     <string name="flight_there_is_no_flight_available_title">Yaah... Rute ini nggak ada</string>
     <string name="flight_there_is_no_flight_available_description">Rute yang kamu cari belum tersedia. Coba cari rute lainnya, yuk!</string>
     <string name="flight_there_is_no_flight_available_for_return_title">Yaah… Jadwal nggak tersedia</string>
-    <string name="flight_there_is_no_flight_available_for_return_description">Disarankan untuk pilih jadwal pulang min. 6 jam setelah jadwal keberangkatan. Coba cari maskapai atau jadwal lain, yuk!</string>
+    <string name="flight_there_is_no_flight_available_for_return_description">Disarankan untuk pilih jadwal pulang min. 6 jam setelah jadwal kedatangan sebelumnya. Coba cari maskapai atau jadwal lain, yuk!</string>
     <string name="flight_search_there_is_no_flight_available_for_return_button_label">Ubah Jadwal</string>
     <string name="flight_there_is_zero_flight_for_the_filter_title">Yang kamu cari nggak ada di sini</string>
     <string name="flight_there_is_zero_flight_for_the_filter_description">Jangan panik, coba ubah filter kamu dulu.</string>

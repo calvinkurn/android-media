@@ -325,7 +325,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             emptyResultViewModel.buttonTitleRes = R.string.flight_search_there_is_no_flight_available_for_return_button_label
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyButtonClicked() {
-                    (activity as FlightSearchActivity).showChangeSearchBottomSheet()
+                    activity?.finish()
                 }
             }
         } else {
