@@ -72,7 +72,7 @@ class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
             val intent = Intent(this, ExternalRegisterWebViewActivity::class.java).apply {
                 putExtra(ExternalRegisterConstants.PARAM.URL, url)
             }
-            intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
+            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             startActivity(intent)
         }
     }
@@ -88,7 +88,7 @@ class OvoAddNameFragment: BaseAddNameFragment(), BaseAddNameListener {
 
     fun goToErrorPage(){
         val intent = OvoFinalPageActivity.createIntentError(activity)
-        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
         activity?.finish()
     }
