@@ -492,6 +492,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun onUserNotAllowedToViewSOM() {
         progressBarSom?.hide()
+        setLoadingIndicator(false)
         refreshHandler?.run {
             setPullEnabled(false)
             finishRefresh()
