@@ -43,7 +43,6 @@ class PdpGamificationView : LinearLayout {
 
     private val CONTAINER_LIST = 0
     private val CONTAINER_LOADING = 1
-    private val CONTAINER_ERROR = 2
 
     private var spanCount = 2
 
@@ -51,7 +50,6 @@ class PdpGamificationView : LinearLayout {
     private lateinit var recyclerView: RecyclerView
     private lateinit var loadingView: LinearLayout
     private lateinit var viewFlipper: ViewFlipper
-    private lateinit var globalError: GlobalError
     var fragment: Fragment? = null
 
     private lateinit var adapter: PdpGamificationAdapter
@@ -60,6 +58,8 @@ class PdpGamificationView : LinearLayout {
     var pageName = ""
     var shopId = 0L
     var userId: String? = null
+    var errorListener: PdpErrorListener?=null
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -103,9 +103,7 @@ class PdpGamificationView : LinearLayout {
         recyclerView = root.findViewById(R.id.recyclerView)
         viewFlipper = root.findViewById(R.id.viewFlipper)
         tvTitle = root.findViewById(R.id.tvTitle)
-        globalError = root.findViewById(R.id.globalError)
         loadingView = root.findViewById(R.id.loadingView)
-        globalError.setType(GlobalError.SERVER_ERROR)
         viewFlipper.displayedChild = CONTAINER_LOADING
 
         prepareShimmer()
@@ -184,8 +182,7 @@ class PdpGamificationView : LinearLayout {
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
-                    //Do nothing
-                    viewFlipper.displayedChild = CONTAINER_ERROR
+                    hidePdp()
                 }
             }
         })
@@ -193,15 +190,14 @@ class PdpGamificationView : LinearLayout {
         viewModel.recommendationLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.ERROR -> {
-                    viewFlipper.displayedChild = CONTAINER_ERROR
+                    hidePdp()
                 }
             }
         })
+    }
 
-        globalError.setOnClickListener {
-            viewFlipper.displayedChild = CONTAINER_LOADING
-            getRecommendationParams(pageName, shopId)
-        }
+    fun hidePdp(){
+        errorListener?.onError()
     }
 
     fun updateList(oldSize: Int, list: List<Recommendation>) {
@@ -273,4 +269,8 @@ object Wishlist {
     const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
     const val PDP_WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
     const val REQUEST_FROM_PDP = 138
+}
+
+interface PdpErrorListener{
+    fun onError()
 }

@@ -43,6 +43,7 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParam
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyViewModel
 import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
+import com.tokopedia.gamification.pdp.presentation.views.PdpErrorListener
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -444,6 +445,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
 
         })
+
+        pdpGamificationView.errorListener = object : PdpErrorListener{
+            override fun onError() {
+                setupBottomSheet(false)
+            }
+
+        }
     }
 
     fun handleRecomPage(recommendation: Recommendation?) {
