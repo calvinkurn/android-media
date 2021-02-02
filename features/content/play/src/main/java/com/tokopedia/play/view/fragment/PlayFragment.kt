@@ -88,9 +88,6 @@ class PlayFragment @Inject constructor(
     private val fragmentYouTubeView by viewComponent {
         FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
     }
-    private val fragmentErrorView by viewComponent {
-        FragmentErrorViewComponent(channelId, it, R.id.fl_global_error, childFragmentManager)
-    }
 
     private lateinit var playParentViewModel: PlayParentViewModel
     private lateinit var playViewModel: PlayViewModel
@@ -605,17 +602,6 @@ class PlayFragment @Inject constructor(
         if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
             fragmentYouTubeView.safeInit()
             fragmentYouTubeView.show()
-        }
-    }
-
-    private fun fragmentErrorViewOnStateChanged(
-            shouldShow: Boolean
-    ) {
-        if (shouldShow) {
-            fragmentErrorView.safeInit()
-            fragmentErrorView.show()
-        } else {
-            fragmentErrorView.hide()
         }
     }
     //endregion

@@ -24,6 +24,7 @@ import com.tokopedia.play.view.contract.*
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.viewcomponent.FragmentErrorViewComponent
 import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
 import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
@@ -80,8 +81,13 @@ class PlayActivity : BaseActivity(),
                 listener = this
         )
     }
-
     private val ivLoading by viewComponent { LoadingViewComponent(it, R.id.iv_loading) }
+    private val fragmentErrorView by viewComponent {
+        FragmentErrorViewComponent(startChannelId, it, R.id.fl_global_error, supportFragmentManager)
+    }
+
+    private val startChannelId: String
+        get() = intent?.getStringExtra(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     private val activeFragment: PlayFragment?
         get() = try { supportFragmentManager.fragments.filterIsInstance<PlayFragment>()[swipeContainerView.getCurrentPos()] } catch (e: Throwable) { null }
@@ -228,8 +234,18 @@ class PlayActivity : BaseActivity(),
     private fun observeChannelList() {
         viewModel.observableChannelIdsResult.observe(this, Observer {
             when (it.state) {
-                PageResultState.Loading -> if (it.currentValue.isEmpty()) ivLoading.show() else ivLoading.hide()
-                else -> ivLoading.hide()
+                PageResultState.Loading -> {
+                    fragmentErrorViewOnStateChanged(shouldShow = false)
+                    if (it.currentValue.isEmpty()) ivLoading.show() else ivLoading.hide()
+                }
+                is PageResultState.Fail -> {
+                    ivLoading.hide()
+                    if (it.currentValue.isEmpty()) fragmentErrorViewOnStateChanged(shouldShow = true)
+                }
+                is PageResultState.Success -> {
+                    ivLoading.hide()
+                    fragmentErrorViewOnStateChanged(shouldShow = false)
+                }
             }
             swipeContainerView.setChannelIds(it.currentValue)
         })
@@ -273,6 +289,15 @@ class PlayActivity : BaseActivity(),
     private fun startPageMonitoring() {
         pageMonitoring.startPlayMonitoring()
         pageMonitoring.startPreparePagePerformanceMonitoring()
+    }
+
+    private fun fragmentErrorViewOnStateChanged(shouldShow: Boolean) {
+        if (shouldShow) {
+            fragmentErrorView.safeInit()
+            fragmentErrorView.show()
+        } else {
+            fragmentErrorView.hide()
+        }
     }
 
     companion object {

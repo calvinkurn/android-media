@@ -895,7 +895,6 @@ class PlayViewModel @Inject constructor(
                 _observableTotalViews.value = PlayTotalViewUiModel.Complete(totalView)
             }
         }, onError = {
-            //TODO("Handle difference for first time and subsequent")
             _observableLikeInfo.value = likeParamInfo + PlayLikeStatusInfoUiModel(
                     totalLike = 0,
                     totalLikeFormatted = "0",
