@@ -187,7 +187,7 @@ object RecommendationListTracking: BaseTrackerConst(){
             ChannelId.KEY,channel.id
     )
 
-    fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, quantity: String = "0", userId: String = "", parentPosition: Int) = DataLayer.mapOf(
+    fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, quantity: String = "0", userId: String = "") = DataLayer.mapOf(
             Event.KEY, Event.PRODUCT_ADD_TO_CART,
             Category.KEY, Category.HOMEPAGE,
             Label.KEY, Label.FORMAT_2_ITEMS.format(channel.id, channel.header.name),
@@ -219,13 +219,13 @@ object RecommendationListTracking: BaseTrackerConst(){
                     )
             ),
             list = String.format(
-                    "/ - p%s - %s - product", parentPosition, RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                    "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
             )
     )
 
     )
 
-    fun getAddToCartOnDynamicListCarouselHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int, cartId: String, quantity: String = "0", userId: String = "", parentPosition: Int) = DataLayer.mapOf(
+    fun getAddToCartOnDynamicListCarouselHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int, cartId: String, quantity: String = "0", userId: String = "") = DataLayer.mapOf(
             Event.KEY, Event.PRODUCT_ADD_TO_CART,
             Category.KEY, Category.HOMEPAGE,
             Label.KEY, Label.FORMAT_2_ITEMS.format(channel.id, channel.channelHeader.name),
@@ -260,7 +260,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                     )
             ),
             list = String.format(
-                    "/ - p%s - %s - product", parentPosition, RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                    "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
             )
     )
 
