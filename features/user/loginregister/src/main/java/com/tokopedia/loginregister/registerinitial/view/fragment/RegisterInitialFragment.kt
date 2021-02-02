@@ -1040,7 +1040,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 dialog.setPrimaryCTAClickListener {
                     registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
                     dialog.dismiss()
-                    startActivity(LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email))
+                    val intent = LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email)
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+                    startActivity(intent)
                     it.finish()
                 }
                 dialog.setSecondaryCTAText(getString(R.string.already_registered_no))

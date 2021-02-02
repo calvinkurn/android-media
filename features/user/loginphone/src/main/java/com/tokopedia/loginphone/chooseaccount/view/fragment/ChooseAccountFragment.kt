@@ -86,8 +86,8 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 
     lateinit var mIris: Iris
-    lateinit var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel
 
+    private var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel = com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel()
     private var selectedAccount: UserDetail? = null
     private var selectedPhoneNo: String? = null
 

@@ -739,7 +739,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if(userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS){
                 seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
             }else {
-                analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister)
+                analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister())
             }
 
             setTrackingUserId(userSession.userId)

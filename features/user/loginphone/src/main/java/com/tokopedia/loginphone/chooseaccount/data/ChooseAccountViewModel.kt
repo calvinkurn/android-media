@@ -3,9 +3,10 @@ package com.tokopedia.loginphone.chooseaccount.data
 /**
  * @author by nisie on 12/5/17.
  */
-object ChooseAccountViewModel {
+
+class ChooseAccountViewModel {
         var phoneNumber: String? = ""
-            get() = phoneNumber?.replace("-", "")
+                get() = field?.replace("-", "")
         var accessToken: String? = ""
         var loginType: String? = ""
         var accountList: AccountList? = AccountList()
