@@ -1,65 +1,64 @@
-package com.tokopedia.topads.common.fragment
+package com.tokopedia.topads.common.view.sheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.R
-import com.tokopedia.topads.common.activity.EXTRA_BUTTON
-import com.tokopedia.topads.common.activity.EXTRA_SUBTITLE
-import com.tokopedia.topads.common.activity.EXTRA_TITLE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_PRODUK_IKLAN
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_create_activity_success.*
 
-class OnSuccessFragment : TkpdBaseV4Fragment() {
+const val TOPADS_SUCCESS_BOTTOMSHEET = "topads_success_bottomsheet"
 
-    companion object {
-        fun newInstance(args: Bundle): OnSuccessFragment {
-            val fragment = OnSuccessFragment()
-            fragment.arguments = args
-            return fragment
-
-        }
-    }
-
-    override fun getScreenName(): String {
-        return OnSuccessFragment::class.java.name
-    }
+class TopAdsSuccessSheet : BottomSheetUnify() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(resources.getLayout(R.layout.topads_create_activity_success), container, false)
+        initChildLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initChildLayout() {
+        val contentView = View.inflate(context, R.layout.topads_create_activity_success, null)
+        setChild(contentView)
+        showCloseIcon = false
+        //    setTitle(name)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
+    }
+
+    private fun initView() {
         ic_ilustration?.setImageDrawable(view?.context?.getResDrawable(R.drawable.ill_success))
+        subtitle?.text = getString(R.string.topads_common_success_bs_subtitle)
         goToDashboard?.setOnClickListener {
+            dismiss()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
                 if (isFromPdpSellerMigration(activity?.intent?.extras)) {
                     putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
                     putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                } else {
+                    putExtra(TOPADS_MOVE_TO_DASHBOARD, PARAM_PRODUK_IKLAN)
                 }
             }
             startActivity(intent)
             activity?.finish()
         }
-        arguments?.run {
-            if(!getString(EXTRA_TITLE).isNullOrEmpty()){
-               title.text = getString(EXTRA_TITLE)
-            }
-            if(!getString(EXTRA_SUBTITLE).isNullOrEmpty()){
-               subtitle.text = getString(EXTRA_SUBTITLE)
-            }
-            if(!getString(EXTRA_BUTTON).isNullOrEmpty()){
-               goToDashboard.text = getString(EXTRA_BUTTON)
-            }
-        }
+    }
+
+    fun show(
+            fragmentManager: FragmentManager, ) {
+        show(fragmentManager, TOPADS_SUCCESS_BOTTOMSHEET)
     }
 }

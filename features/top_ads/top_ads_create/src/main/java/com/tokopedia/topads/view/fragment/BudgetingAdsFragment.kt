@@ -14,6 +14,9 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
+import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
@@ -24,7 +27,6 @@ import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapterTypeFactoryImpl
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoEmptyViewModel
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
 import com.tokopedia.topads.view.model.BudgetingAdsViewModel
-import com.tokopedia.topads.view.sheet.TipSheetBudgetList
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -261,8 +263,18 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
         tip_btn?.addItem(tooltipView)
         tip_btn?.setOnClickListener {
-            val tipSheetBugList = TipSheetBudgetList.newInstance()
-            tipSheetBugList.show(fragmentManager!!, "")
+            val tipsList: ArrayList<TipsUiModel> = ArrayList()
+            tipsList.apply {
+                add(TipsUiRowModel(R.string.makin_tinggi_biaya_iklan_makin_besar_kemungkinan_produkmu_tampil_di_halaman_pencarian, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.gunakan_rekomendasi_biaya_agar_produkmu_lebih_bersaing, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.bayar_hanya_jika_iklan_produkmu_di_klik_dari_hasil_pencarian_kata_kunci_pilihan, R.drawable.topads_create_ic_checklist))
+            }
+            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
+            tipsListSheet?.showHeader = true
+            tipsListSheet?.showKnob = false
+            tipsListSheet?.isDragable = false
+            tipsListSheet?.setTitle(getString(R.string.tip_biaya_iklan))
+            tipsListSheet?.show(childFragmentManager, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID, userID)
         }
 

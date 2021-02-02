@@ -9,7 +9,7 @@
     <string name="ilustration">Ilustration</string>
     <string name="tambah_kredit_topads">Tambah Kredit TopAds</string>
     <string name="yuk_isi_kredit_sekarang">Yuk, isi kredit sekarang</string>
-    <string name="yay_produkmu_berhasil_diiklankan">Yay, produkmu\nberhasil diiklankan!</string>
+    <string name="yay_produkmu_berhasil_diiklankan">Yay, produkmu berhasil diiklankan!</string>
     <string name="pantau_terus_performa_iklan_produkmu_di_dashboard_topads">Pantau terus performa iklan produkmu di\nDashboard TopAds</string>
     <string name="tambah_kredit_topads_agar_iklanmu_nselalu_tampil_dan_lebih_bersaing">Tambah kredit TopAds agar iklanmu\nselalu tampil dan lebih bersaing</string>
     <string name="tip_memilih_produk">Tip memilih produk</string>
@@ -113,9 +113,10 @@
     <string name="topads_common_search_hint_activity">Cari kata kunci di sini</string>
     <string name="topads_common_new_manual_key">Kata kunci &lt;b>%s&lt;/b> tidak tersedia. </string>
     <string name="topads_common_tambah_button">Tambahkan</string>
-    <string name="topads_common_confirmation_switch_manual_description">Dengan Iklan Otomatis, pasti lebih mudah dan cepat untuk promosikan produkmu di halaman teratas.</string>
-    <string name="topads_common_confirmation_switch_manual">Yakin beralih dari Iklan Otomatis?</string>
-    <string name="topads_common_gunakan_iklan_manual">Mulai Iklan Manual</string>
+    <string name="topads_common_confirmation_switch_manual_description">Iklan Otomatis butuh waktu setidaknya<![CDATA["<font color='#fa31353b'><b> 2</b></font> ]]>minggu untuk memaksimalkan penjualanmu.</string>
+    <string name="topads_common_confirmation_switch_manual">Yakin matikan Iklan Otomatis?</string>
+    <string name="topads_common_gunakan_iklan_manual">Ya, Matikan</string>
+    <string name="topads_common_confirmation_sheet_cancel">Tetep Gunakan</string>
     <string name="topads_common_anggaran_harian">Anggaran harian</string>
     <string name="topads_common_total_search">Total Pencarian</string>
     <string name="topads_common_iklan_otomatis">Iklan Otomatis</string>
@@ -136,6 +137,9 @@
     <string name="topads_common_bs_title">Atur Biaya Iklan</string>
     <string name="topads_common_atur_anngaran">Atur Anggaran</string>
     <string name="topads_common_nama_group">Nama Grup</string>
+
+    <!-- bottomsheet success/outofcredit -->
+    <string name="topads_common_success_bs_subtitle">Jangan lupa pantau terus performa iklan produkmu di Dashboard TopAds.</string>
 
 
     <string-array name="sort_product_list_array">

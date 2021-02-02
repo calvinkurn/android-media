@@ -31,6 +31,7 @@ import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
+import com.tokopedia.topads.common.view.sheet.TopAdsSuccessSheet
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -99,9 +100,9 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
             budgetViewModel.getBudgetInfo(requestType, source, this::onSuccessBudgetInfo)
         })
         budgetViewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
-            if (topAdsDeposit <= 0) {
-                insufficientCredit()
-            } else
+//            if (topAdsDeposit <= 0) {
+//                insufficientCredit()
+//            } else
                 eligible()
         })
 
@@ -162,7 +163,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         })
     }
 
-    fun onSuccessPotentialEstimation(data: EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) {
+    private fun onSuccessPotentialEstimation(data: EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) {
         lowClickDivider = data.lowClickDivider
         priceRange.text = convertToCurrencyString(replace(getPotentialReach().toString()).toLong())
         hideLoading()
@@ -216,14 +217,17 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     }
 
     private fun eligible() {
-        val intent = Intent(context, SuccessActivity::class.java).apply {
-            if (isFromPdpSellerMigration(activity?.intent?.extras)) {
-                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
-                putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
-            }
-        }
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        val sheet = TopAdsSuccessSheet()
+        sheet.show(childFragmentManager)
+
+//        val intent = Intent(context, SuccessActivity::class.java).apply {
+//            if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+//                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+//                putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+//            }
+//        }
+//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//        startActivity(intent)
     }
 
     private fun insufficientCredit() {

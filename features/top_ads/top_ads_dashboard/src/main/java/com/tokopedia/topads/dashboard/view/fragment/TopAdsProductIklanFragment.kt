@@ -25,7 +25,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
@@ -322,11 +324,18 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         /*ad switching in progress*/
         adTypeCallBack?.adInfo(MANUAL_AD)
         if (STATUS_IN_PROGRESS_ACTIVE == adCurrentState || STATUS_IN_PROGRESS_AUTOMANAGE == adCurrentState || STATUS_IN_PROGRESS_INACTIVE == adCurrentState) {
-            app_bar_layout_2.visibility = View.VISIBLE
-            autoads_layout.visibility = View.VISIBLE
+           showProgressLayout()
         } else {
             manualAds()
         }
+    }
+
+    private fun showProgressLayout() {
+        loaderImage?.setImageDrawable(context?.getResDrawable(R.drawable.topads_loader))
+        app_bar_layout_2?.gone()
+        progressView?.visible()
+        autoads_layout?.gone()
+        graph_layout?.gone()
     }
 
     private fun setEmptyView() {
@@ -351,6 +360,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun manualAds() {
+        progressView?.gone()
         adTypeCallBack?.adInfo(MANUAL_AD)
         empty_view.visibility = View.GONE
         view_pager_frag.visibility = View.VISIBLE
@@ -359,6 +369,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         if (adCurrentState == STATUS_IN_PROGRESS_INACTIVE) {
             imgBg.background = AppCompatResources.getDrawable(context!!, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg)
             autoadsDeactivationProgress?.visibility = View.VISIBLE
+            showProgressLayout()
             autoadsOnboarding.visibility = View.GONE
         } else {
             autoadsDeactivationProgress?.visibility = View.GONE
@@ -386,6 +397,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         tab_layout?.visibility = View.GONE
         empty_view.visibility = View.GONE
         autoadsOnboarding.visibility = View.GONE
+        progressView?.gone()
         fetchData()
     }
 

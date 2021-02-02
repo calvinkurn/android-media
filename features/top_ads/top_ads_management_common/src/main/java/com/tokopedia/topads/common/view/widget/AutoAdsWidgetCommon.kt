@@ -58,6 +58,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var baseLayout: FrameLayout? = null
@@ -80,11 +81,11 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
         initView(context)
         renderUI()
     }
-    companion object{
+
+    companion object {
         private const val TOGGLE_OFF = "toggle_off"
         private const val CHANNEL = "topchat"
         private const val SOURCE = "sellerapp_autoads_creation"
-        private const val requestType = "auto_ads"
         private const val source = "update_auto_ads"
         private const val TOPUP_LINK = " TopUp Sekarang"
         private const val MANAGE_PRODUCT = " Tambah Stok"
@@ -239,7 +240,6 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
             ENTRY_FROM_DETAIL_SHEET -> {
                 switch.visibility = View.INVISIBLE
                 setting.visibility = View.INVISIBLE
-
             }
             else -> {
                 setting.visibility = View.VISIBLE
@@ -292,8 +292,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
         )
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
         imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_common_blue_bg)
-        view.findViewById<TextView>(R.id.status_desc).
-        text = context.getString(R.string.topads_common_autoads_inprogress_deactivate_desc)
+        view.findViewById<TextView>(R.id.status_desc).text = context.getString(R.string.topads_common_autoads_inprogress_deactivate_desc)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
     }
@@ -308,37 +307,12 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
         val drawable = AppCompatResources.getDrawable(context, R.drawable.topads_common_green_bg)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
-        view.let { it ->
+        view.let {
             imgBg.background = drawable
-            it.setting.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.topads_common_setting))
             it.progress_status1.text = "Rp $dailyUsage"
             it.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), currentBudget)
             it.progress_bar.setValue(dailyUsage, true)
-            it.btn_switch.isChecked = true
-            when (entryPoint) {
-                ENTRY_FROM_EDIT_PAGE -> {
-                    it.setting.visibility = View.GONE
-                    it.btn_switch.visibility = View.VISIBLE
-                    it.btn_switch.setOnClickListener {
-                        val man = ManualAdsConfirmationCommonSheet.newInstance()
-                        man.show((view.context as FragmentActivity).supportFragmentManager, "")
-                        man.dismissed = { it.btn_switch.isChecked = true }
-                        man.manualClick = { switchToManual() }
-                    }
-                }
-                ENTRY_FROM_DETAIL_SHEET -> {
-                    it.setting.visibility = View.INVISIBLE
-                    it.btn_switch.visibility = View.INVISIBLE
-                }
-                else -> {
-                    it.setting.visibility = View.VISIBLE
-                    it.btn_switch.visibility = View.INVISIBLE
-                    it.setting.setOnClickListener {
-                        startEditActivity()
-                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
-                    }
-                }
-            }
+            setSwitchAction(view)
         }
     }
 

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -15,19 +14,19 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
 import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.AdChooserViewModel
-import com.tokopedia.topads.view.sheet.ManualAdsConfirmationSheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.UnifyImageButton
 import kotlinx.android.synthetic.main.topads_create_ads_chooser_fragment.*
 import kotlinx.android.synthetic.main.topads_create_ads_chooser_fragment.view.*
-import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.view.*
 import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.view.imageView7
 import javax.inject.Inject
 
@@ -83,11 +82,13 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
     private fun onSuccessAutoAds(data: AutoAdsResponse) {
         when (data.topAdsGetAutoAds.data.status) {
+            //TODO
             ACTIVE -> setActiveStatus(R.string.ads_active, R.drawable.active_status_green)
             NON_ACTIVE -> setActiveStatus(R.string.ads_not_delivered, R.drawable.active_status_orange)
             else -> {
-//                tv_shop_status.text = ""
-//                tv_shop_status.setBackgroundResource(0)
+                auto_ads?.isEnabled = false
+                manual_ads?.isEnabled = false
+                ticker_info?.visible()
             }
         }
 
@@ -102,8 +103,9 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     }
 
     private fun setActiveStatus(adsActive: Int, bg: Int) {
-//        tv_shop_status.setText(adsActive)
-//        tv_shop_status.setBackgroundResource(bg)
+        auto_ads?.isEnabled = true
+        manual_ads?.isEnabled = true
+        ticker_info?.gone()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -112,7 +114,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
         })
         view.imageView7.setImageDrawable(view.context.getResDrawable(R.drawable.ill_header))
-        view.topads_choose_ads.apply {
+        view.topAdsCaraousel.apply {
             slideToShow = 1.2f
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
             centerMode = true
@@ -132,7 +134,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                 icon3.setImageResource(R.drawable.topads_create_ic_checklist_blue)
                 icon4.setImageResource(R.drawable.topads_create_ic_checklist_blue)
 
-                auto_ads = this.findViewById<UnifyButton>(R.id.btn_start_auto_ads)
+                auto_ads = this.findViewById(R.id.btn_start_auto_ads)
                 auto_ads?.setOnClickListener {
                     if (adStatus == AUTO) {
                         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
@@ -143,7 +145,6 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                     }
                 }
             }
-
 
             val manualAutoAds = layoutInflater.inflate(R.layout.topads_automatic_onboarding_manual_ads, null).apply {
                 val image = this.findViewById<ImageUnify>(R.id.top_corner_icon2)
@@ -159,14 +160,14 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                 icon7.setImageResource(R.drawable.topads_create_ic_checklist_blue)
                 icon8.setImageResource(R.drawable.topads_create_ic_checklist_blue)
 
-                manual_ads = this.findViewById<UnifyButton>(R.id.btn_start_manual_ads)
+                manual_ads = this.findViewById(R.id.btn_start_manual_ads)
                 manual_ads?.setOnClickListener {
                     if (adStatus == MANAUAL || adStatus == NO_ADS) {
                         startActivity(Intent(activity, StepperActivity::class.java))
                     }
                     if (adStatus == AUTO) {
-                        val sheet = ManualAdsConfirmationSheet.newInstance()
-                        sheet.show(fragmentManager!!, "")
+                        val sheet = ManualAdsConfirmationCommonSheet.newInstance()
+                        sheet.show(childFragmentManager, "")
                         sheet.manualClick = {
                             viewModel.postAutoAds(TOGGLE_OFF, dailyBudget)
                         }

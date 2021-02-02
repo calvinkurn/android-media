@@ -18,7 +18,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.getPdpAppLink
 import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.dashboard.R
@@ -182,9 +184,14 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     }
 
     private fun renderTabAndViewPager() {
+        val bundle = intent.extras
         view_pager.adapter = getViewPagerAdapter()
         view_pager.offscreenPageLimit = 3
-        view_pager.currentItem = 0
+        view_pager.currentItem = bundle?.getInt(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, 0)
+                ?: 0
+        if (view_pager.currentItem != 0) {
+            bottom.gone()
+        }
         view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
@@ -205,7 +212,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         })
         tab_layout?.setupWithViewPager(view_pager)
     }
-
 
     private fun showFirstTimeDialog(context: Context) {
         val dialog = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
@@ -254,7 +260,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             }
         }
     }
-
 
     override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
             (application as BaseMainApplication).baseAppComponent).build()

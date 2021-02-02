@@ -5,7 +5,10 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
-import com.tokopedia.topads.auto.view.sheet.AutoAdsCreateSheet
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiHeaderModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
+import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -82,7 +85,18 @@ class EditAutoAdsBudgetFragment : AutoAdsBaseBudgetFragment(), View.OnClickListe
             activatedAds()
         }
         if (v?.id == R.id.tip_btn) {
-            AutoAdsCreateSheet.newInstance().show(childFragmentManager, "")
+            val tipsList: ArrayList<TipsUiModel> = ArrayList()
+            tipsList.apply {
+                add(TipsUiHeaderModel(R.string.tip_title))
+                add(TipsUiRowModel(R.string.edit_auto_ads_sheet_desc1, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.edit_auto_ads_sheet_desc2, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.edit_auto_ads_sheet_desc3, R.drawable.topads_create_ic_checklist))
+            }
+            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
+            tipsListSheet?.isDragable = false
+            tipsListSheet?.showHeader = true
+            tipsListSheet?.showKnob = false
+            tipsListSheet?.show(childFragmentManager, "")
         }
     }
 
