@@ -265,7 +265,11 @@ class ChatItemListViewModel @Inject constructor(
                 repository.getReseponse(listOf(request))
             }.getSuccessData<BlastSellerMetaDataResponse>()
             getChatAdminAccessJob?.join()
-            onSuccessLoadChatBlastSellerMetaData(data.chatBlastSellerMetadata)
+            if (isAdminHasAccess) {
+                onSuccessLoadChatBlastSellerMetaData(data.chatBlastSellerMetadata)
+            } else {
+                onErrorLoadChatBlastSellerMetaData()
+            }
         }) {
             onErrorLoadChatBlastSellerMetaData(it)
         }
@@ -277,7 +281,7 @@ class ChatItemListViewModel @Inject constructor(
         setBroadcastButtonUrl(broadCastUrl)
     }
 
-    private fun onErrorLoadChatBlastSellerMetaData(throwable: Throwable) {
+    private fun onErrorLoadChatBlastSellerMetaData(throwable: Throwable? = null) {
         broadCastButtonVisibility(false)
     }
 
