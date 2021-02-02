@@ -203,7 +203,13 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     private fun showShopStatusTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean = false) {
         view.tickerShopStatus.show()
         view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
-        view.tickerShopStatus.setHtmlDescription(shopPageHeaderDataModel.statusMessage)
+        view.tickerShopStatus.setHtmlDescription(
+                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED) {
+                    generateShopModerateTickerDescription(shopPageHeaderDataModel.statusMessage)
+                } else {
+                    shopPageHeaderDataModel.statusMessage
+                }
+        )
         view.tickerShopStatus.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 // set tracker data based on shop status
@@ -226,17 +232,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                                 ))
                     }
                 }
-                // set ticker click action based on shop status
-                when (shopPageHeaderDataModel.shopStatus) {
-                    ShopStatusDef.MODERATED -> {
-                        if(isMyShop) {
-                            // set request unmoderate bottomsheet
-                            listener.setShopUnmoderateRequestBottomSheet(ShopRequestUnmoderateBottomSheet.createInstance().apply {
-                                init(listener)
-                            })
-                        }
-                    }
-                    else -> listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
+                if(linkUrl == context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url)) {
+                    // linkUrl is from appended moderate description, show bottomsheet to request open moderate
+                    listener.setShopUnmoderateRequestBottomSheet(ShopRequestUnmoderateBottomSheet.createInstance().apply {
+                        init(listener)
+                    })
+                } else {
+                    // original url, open web view
+                    listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
                 }
             }
 
@@ -248,6 +251,16 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         } else {
             view.tickerShopStatus.closeButtonVisibility = View.VISIBLE
         }
+    }
+
+    private fun generateShopModerateTickerDescription(originalStatusMessage: String) : String {
+        // append action text to request open moderation
+        val appendedText = context.getString(
+                R.string.shop_page_header_request_unmoderate_appended_text,
+                context.getString(R.string.shop_page_header_request_unmoderate_appended_text_dummy_url),
+                context.getString(R.string.new_shop_page_header_shop_close_description_seller_clickable_text)
+        )
+        return originalStatusMessage + appendedText
     }
 
     private fun showShopOperationalHourStatusTicker(shopOperationalHourStatus: ShopOperationalHourStatus) {
