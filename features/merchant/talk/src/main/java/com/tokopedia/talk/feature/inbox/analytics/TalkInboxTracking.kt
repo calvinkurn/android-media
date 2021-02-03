@@ -14,7 +14,7 @@ class TalkInboxTracking @Inject constructor() {
 
     private val tracker = TrackApp.getInstance().gtm
 
-    fun eventClickFilter(filter: String, tab: String, counter: Int, filterStatus: Boolean, shopId: String, userId: String) {
+    fun eventClickFilter(filter: String, tab: String, counter: Long, filterStatus: Boolean, shopId: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TalkEventTracking(
                         category = getEventCategoryInbox(tab),
@@ -48,7 +48,7 @@ class TalkInboxTracking @Inject constructor() {
         )
     }
 
-    fun eventClickTab(tab: String, userId: String, shopId: String, countUnreadMessages: Int) {
+    fun eventClickTab(tab: String, userId: String, shopId: String, countUnreadMessages: Long) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TalkEventTracking(
                         category = getEventCategoryInbox(tab),
@@ -63,7 +63,7 @@ class TalkInboxTracking @Inject constructor() {
         )
     }
 
-    fun eventClickThread(tab: String, talkId: String, productId: String, filterActive: String, isRead: Boolean, shopId: String, countUnreadMessages: Int, userId: String) {
+    fun eventClickThread(tab: String, talkId: String, productId: String, filterActive: String, isRead: Boolean, shopId: String, countUnreadMessages: Long, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TalkEventTracking(
                         category = getEventCategoryInbox(tab),
@@ -144,9 +144,6 @@ class TalkInboxTracking @Inject constructor() {
             TalkInboxTab.SHOP_OLD -> {
                 String.format(TalkInboxTrackingConstants.EVENT_CATEGORY_INBOX, TalkInboxTrackingConstants.TAB_SELLER)
             }
-            TalkInboxTab.SHOP_TAB -> {
-                String.format(TalkInboxTrackingConstants.EVENT_CATEGORY_INBOX, TalkInboxTrackingConstants.TAB_SELLER)
-            }
             TalkInboxTab.BUYER_TAB -> {
                 String.format(TalkInboxTrackingConstants.EVENT_CATEGORY_INBOX, TalkInboxTrackingConstants.TAB_BUYER)
             }
@@ -161,9 +158,6 @@ class TalkInboxTracking @Inject constructor() {
             TalkInboxTab.SHOP_OLD -> {
                 String.format(TalkInboxTrackingConstants.EVENT_ACTION_CLICK_TAB, TalkInboxTrackingConstants.TAB_SELLER)
             }
-            TalkInboxTab.SHOP_TAB -> {
-                String.format(TalkInboxTrackingConstants.EVENT_ACTION_CLICK_TAB, TalkInboxTrackingConstants.TAB_SELLER)
-            }
             TalkInboxTab.BUYER_TAB -> {
                 String.format(TalkInboxTrackingConstants.EVENT_ACTION_CLICK_TAB, TalkInboxTrackingConstants.TAB_BUYER)
             }
@@ -176,9 +170,6 @@ class TalkInboxTracking @Inject constructor() {
     private fun getInboxType(inboxType: String): String {
         return when (inboxType) {
             TalkInboxTab.SHOP_OLD -> {
-                TalkInboxTrackingConstants.TAB_SELLER
-            }
-            TalkInboxTab.SHOP_TAB -> {
                 TalkInboxTrackingConstants.TAB_SELLER
             }
             TalkInboxTab.BUYER_TAB -> {
@@ -202,7 +193,7 @@ class TalkInboxTracking @Inject constructor() {
                 TalkInboxTrackingConstants.FILTER_PROBLEM
             }
             TalkInboxFilter.UNRESPONDED_FILTER -> {
-                TalkInboxTrackingConstants.FILTER_UNRESPONDED
+                TalkInboxTrackingConstants.FILTER_UNREAD
             }
             else -> {
                 ""

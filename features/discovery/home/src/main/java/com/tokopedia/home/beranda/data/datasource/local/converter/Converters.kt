@@ -1,16 +1,15 @@
 package com.tokopedia.home.beranda.data.datasource.local.converter
 
 import androidx.room.TypeConverter
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_HOME_DATA_TO_STRING
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_STRING_TO_HOME_DATA
 import java.util.*
 
-
 class Converters {
-    private val gson = Gson()
+    private val gson = GsonBuilder().serializeNulls().create()
 
     @TypeConverter
     fun convertHomeData(data: String): HomeData {

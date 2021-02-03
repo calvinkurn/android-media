@@ -57,6 +57,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_inbox_empty.*
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapterTypeFactory>(),
@@ -110,7 +111,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     override fun getAdapterTypeFactory(): TalkInboxAdapterTypeFactory {
-        return TalkInboxAdapterTypeFactory(this, isNewView())
+        return TalkInboxAdapterTypeFactory(this, isNewView() && isNewNav())
     }
 
     override fun getScreenName(): String {
@@ -175,8 +176,11 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     override fun onInboxItemClicked(talkInboxUiModel: TalkInboxUiModel?, talkInboxOldUiModel: TalkInboxOldUiModel?, position: Int) {
         talkInboxUiModel?.inboxDetail?.let {
-            talkInboxTracking.eventClickThreadEcommerce(viewModel.getType(), it.questionID,  viewModel.getUserId(), position, !it.isUnread)
+            talkInboxTracking.eventClickThreadEcommerce(viewModel.getType(), it.questionID,  viewModel.getUserId(), position, it.isUnread)
             goToReply(it.questionID)
+            if(it.isUnread || it.state.isUnresponded || it.state.hasProblem) {
+                containerListener?.decreaseDiscussionUnreadCounter()
+            }
         }
         talkInboxOldUiModel?.inboxDetail?.let {
             talkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,
@@ -191,9 +195,10 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     override fun onRoleChanged(role: Int) {
+        if (!::viewModel.isInitialized) return
         when (role) {
             RoleType.BUYER -> inboxType = TalkInboxTab.BUYER_TAB
-            RoleType.SELLER -> inboxType = TalkInboxTab.SHOP_TAB
+            RoleType.SELLER -> inboxType = TalkInboxTab.SHOP_OLD
         }
         clearAllData()
         setInboxType()
@@ -236,6 +241,8 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        stopPreparePerfomancePageMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
         initSortFilter()
@@ -268,8 +275,10 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         viewModel.inboxList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is TalkInboxViewState.Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     with(it.data) {
-                        if(!isNewView()) {
+                        if(!isNewView() || !isNewNav()) {
                             talkInboxTracking.eventLazyLoad(viewModel.getType(), it.page, inbox.count { inbox -> inbox.isUnread }, inbox.count { inbox -> !inbox.isUnread }, shopID, viewModel.getUserId())
                         }
                         hideFullPageError()
@@ -278,7 +287,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                         if (it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                             hitOnRoleChangeTracker()
                             talkInboxListener?.updateUnreadCounter(it.data.sellerUnread, it.data.buyerUnread)
-                            setFilterCounter()
                             hideLoading()
                             if (it.data.inbox.isEmpty()) {
                                 when (it.filter) {
@@ -301,7 +309,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                                 return@Observer
                             }
                         }
-                        if (isNewView()) {
+                        if (isNewView() && isNewNav()) {
                             renderData(inbox.map { inbox -> TalkInboxUiModel(inbox, isSellerView()) }, it.data.hasNext)
                         } else {
                             renderOldData(inbox.map { inbox -> TalkInboxOldUiModel(inbox, isSellerView()) }, it.data.hasNext)
@@ -365,7 +373,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun showEmptyInbox() {
         talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
-        if (isSellerView() && isNewView()) {
+        if (isSellerView() && isNewView() && isNewNav()) {
             talkInboxEmptyImage.loadImage(EMPTY_SELLER_DISCUSSION)
             talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_subtitle)
         } else {
@@ -396,7 +404,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun showFullPageLoading() {
-        if (isNewView()) {
+        if (isNewView() && isNewNav()) {
             unifiedInboxPageLoading.show()
             return
         }
@@ -404,7 +412,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun hideFullPageLoading() {
-        if (isNewView()) {
+        if (isNewView() && isNewNav()) {
             unifiedInboxPageLoading.hide()
             return
         }
@@ -421,10 +429,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         talkInboxSortFilter?.apply {
             sortFilterItems.removeAllViews()
             sortFilterPrefix.removeAllViews()
-            if (isSellerView() && isNewView()) {
-                addItem(getSellerFilterList())
-                return
-            }
             addItem(getFilterList())
         }
     }
@@ -449,36 +453,8 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         return arrayListOf(unreadFilter, readFilter)
     }
 
-    private fun getSellerFilterList(): ArrayList<SortFilterItem> {
-        val unrespondedFilter = if (getUnrespondedCount() != 0) {
-            SortFilterItem(getString(R.string.inbox_unresponded) + " (${getUnrespondedCount()})")
-        } else {
-            SortFilterItem(getString(R.string.inbox_unresponded))
-        }
-        val problemFilter = if (getUnrespondedCount() != 0) {
-            SortFilterItem(getString(R.string.inbox_problem) + " (${getProblemCount()})")
-        } else {
-            SortFilterItem(getString(R.string.inbox_problem))
-        }
-        unrespondedFilter.listener = {
-            unrespondedFilter.toggle()
-            selectFilter(TalkInboxFilter.TalkInboxUnrespondedFilter())
-            if (unrespondedFilter.type == ChipsUnify.TYPE_SELECTED) {
-                problemFilter.type = ChipsUnify.TYPE_NORMAL
-            }
-        }
-        problemFilter.listener = {
-            problemFilter.toggle()
-            selectFilter(TalkInboxFilter.TalkInboxProblemFilter())
-            if (problemFilter.type == ChipsUnify.TYPE_SELECTED) {
-                unrespondedFilter.type = ChipsUnify.TYPE_NORMAL
-            }
-        }
-        return arrayListOf(unrespondedFilter, problemFilter)
-    }
-
     private fun selectFilter(filter: TalkInboxFilter) {
-        viewModel.setFilter(filter, isSellerView())
+        viewModel.setFilter(filter)
         showFullPageLoading()
         clearAllData()
     }
@@ -492,9 +468,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun initToolbar() {
-        if (!userSession.hasShop() && !GlobalConfig.isSellerApp() && !isNewView()) {
+        if (!userSession.hasShop() && !GlobalConfig.isSellerApp() && !isNewView() && !isNewNav()) {
             setupToolbar()
-        } else if (userSession.hasShop() && GlobalConfig.isSellerApp() && !isNewView()) {
+        } else if (userSession.hasShop() && GlobalConfig.isSellerApp() && !isNewView() && !isNewNav()) {
             setupToolbar()
         } else {
             headerTalkInbox?.hide()
@@ -513,61 +489,44 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
 
     private fun setInboxType() {
-        if(isNewView()) {
+        if(isNewView() && isNewNav()) {
             inboxType = if (containerListener?.role == RoleType.BUYER) {
                 TalkInboxTab.BUYER_TAB
             } else {
-                TalkInboxTab.SHOP_TAB
+                TalkInboxTab.SHOP_OLD
             }
         }
         viewModel.setInboxType(inboxType)
     }
 
     private fun isNewView(): Boolean {
-        return getAbTestPlatform().getString(
+        return getAbTestPlatform()?.getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
         ) == AbTestPlatform.VARIANT_NEW_INBOX
     }
 
+    private fun isNewNav(): Boolean {
+        return getAbTestPlatform()?.getString(
+                AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
+        ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+    }
+
     private fun isSellerView(): Boolean {
-        return viewModel.getType() == TalkInboxTab.SHOP_TAB || viewModel.getType() == TalkInboxTab.SHOP_OLD
+        return viewModel.getType() == TalkInboxTab.SHOP_OLD
     }
 
-    private fun getProblemCount(): Int {
-        return (viewModel.inboxList.value as? TalkInboxViewState.Success)?.data?.problemTotal ?: 0
-    }
-
-    private fun getUnrespondedCount(): Int {
-        return (viewModel.inboxList.value as? TalkInboxViewState.Success)?.data?.unrespondedTotal
-                ?: 0
-    }
-
-    private fun setFilterCounter() {
-        if(isSellerView() && isNewView()) {
-            if (getUnrespondedCount() != 0) {
-                talkInboxSortFilter?.chipItems?.getOrNull(0)?.title = getString(R.string.inbox_unresponded) + " (${getUnrespondedCount()})"
-            } else {
-                talkInboxSortFilter?.chipItems?.getOrNull(0)?.title = getString(R.string.inbox_unresponded)
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        return try {
+            if (!::remoteConfigInstance.isInitialized) {
+                remoteConfigInstance = RemoteConfigInstance(activity?.application)
             }
-            if (getProblemCount() != 0) {
-                talkInboxSortFilter?.chipItems?.getOrNull(1)?.title = getString(R.string.inbox_problem) + " (${getProblemCount()})"
-            } else {
-                talkInboxSortFilter?.chipItems?.getOrNull(1)?.title = getString(R.string.inbox_problem)
-            }
+            remoteConfigInstance.abTestPlatform
+        } catch (e: IllegalStateException) {
+            null
         }
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfigInstance.abTestPlatform
-    }
-
-    private fun getCounterForTracking(): Int {
-        if(isSellerView() && isNewView()) {
-            return viewModel.getUnrespondedCount()
-        }
+    private fun getCounterForTracking(): Long {
         return viewModel.getUnreadCount()
     }
 

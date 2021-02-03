@@ -30,7 +30,7 @@ class TalkInboxOldViewHolder(
             setQuestion(content, isMasked)
             setNotification(isUnread)
             setCountAndDate(totalAnswer, lastReplyTime, element.isSellerView)
-            itemView.addOnImpressionListener(ImpressHolder()) {
+            itemView.addOnImpressionListener(element.impressHolder) {
                 talkInboxViewHolderListener.onInboxItemImpressed(questionID, adapterPosition, isUnread)
             }
             itemView.setOnClickListener {

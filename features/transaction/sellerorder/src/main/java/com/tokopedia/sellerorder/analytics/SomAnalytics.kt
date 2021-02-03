@@ -41,13 +41,20 @@ object SomAnalytics {
     private const val CLICK_START_ADVERTISE = "click start advertise"
     private const val CLICK_WAITING_FOR_PAYMENT = "click waiting for payment"
     private const val CLICK_CHECK_MANAGE_STOCK = "click check and manage stock"
+    private const val CLICK_BULK_PRINT_ACTION = "click print labels at once"
+    private const val CLICK_BULK_PRINT_ACTION_YES = "click print labels - yes"
+    private const val CLICK_BULK_PRINT_ACTION_CANCEL = "click print labels - cancel"
     private const val TO_APP_ORDER = "To App - Order"
     private const val SELLER_WIDGET = "sellerWidget"
     private const val SELLER_APP_WIDGET = "Seller App Widget"
     private const val CUSTOM_DIMENSION_USER_ID = "userId"
     private const val CUSTOM_DIMENSION_SHOP_ID = "shopId"
+    private const val CUSTOM_DIMENSION_BUSINESS_UNIT = "businessUnit"
+    private const val CUSTOM_DIMENSION_CURRENT_SITE = "currentSite"
     private const val AWAITING_PAYMENT = "awaiting payment"
     private const val WAITING_FOR_PAYMENT = "waiting for payment"
+    private const val BUSINESS_UNIT_PHYSICAL_GOODS = "physicalgoods"
+    private const val CURRENT_SITE_TOKOPEDIA_SELLER = "tokopediaseller"
 
     @JvmStatic
     fun sendScreenName(screenName: String) {
@@ -219,6 +226,45 @@ object SomAnalytics {
                 TrackAppUtils.EVENT_LABEL to "$orderStatus - $orderStatusName - $acceptedOrderCount",
                 CUSTOM_DIMENSION_USER_ID to userId,
                 CUSTOM_DIMENSION_SHOP_ID to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun eventClickBulkPrintAwb(userId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to CLICK_SOM,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                TrackAppUtils.EVENT_ACTION to CLICK_BULK_PRINT_ACTION,
+                TrackAppUtils.EVENT_LABEL to "",
+                CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
+                CUSTOM_DIMENSION_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_SELLER,
+                CUSTOM_DIMENSION_USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun eventClickYesOnBulkPrintAwb(userId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to CLICK_SOM,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                TrackAppUtils.EVENT_ACTION to CLICK_BULK_PRINT_ACTION_YES,
+                TrackAppUtils.EVENT_LABEL to "",
+                CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
+                CUSTOM_DIMENSION_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_SELLER,
+                CUSTOM_DIMENSION_USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun eventClickCancelOnBulkPrintAwb(userId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to CLICK_SOM,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                TrackAppUtils.EVENT_ACTION to CLICK_BULK_PRINT_ACTION_CANCEL,
+                TrackAppUtils.EVENT_LABEL to "",
+                CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
+                CUSTOM_DIMENSION_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_SELLER,
+                CUSTOM_DIMENSION_USER_ID to userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }

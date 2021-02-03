@@ -16,7 +16,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@ChatListScope
 abstract class ChatListViewsModelModule {
 
     @Binds

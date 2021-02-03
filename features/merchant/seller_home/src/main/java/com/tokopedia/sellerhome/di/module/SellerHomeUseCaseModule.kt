@@ -18,7 +18,6 @@ import dagger.Provides
  * Created By @ilhamsuaib on 2020-01-15
  */
 
-@SellerHomeScope
 @Module
 class SellerHomeUseCaseModule {
 
@@ -154,7 +153,7 @@ class SellerHomeUseCaseModule {
             shopStatusTypeUseCase: ShopStatusTypeUseCase,
             topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
             topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
-            dispatcher: CoroutineDispatchers
+            dispatchers: CoroutineDispatchers
     ): GetAllShopInfoUseCase {
         return GetAllShopInfoUseCase(
                 userSession,
@@ -164,7 +163,7 @@ class SellerHomeUseCaseModule {
                 shopStatusTypeUseCase,
                 topAdsAutoTopupUseCase,
                 topAdsDashboardDepositUseCase,
-                dispatcher
+                dispatchers
         )
     }
 }

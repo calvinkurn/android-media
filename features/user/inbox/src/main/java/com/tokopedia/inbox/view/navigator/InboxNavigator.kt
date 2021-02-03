@@ -63,6 +63,17 @@ class InboxNavigator constructor(
         }
     }
 
+    fun cleanupNavigator() {
+        val transaction = fm.beginTransaction()
+        fm.fragments.forEach {
+            if (it.isAdded) {
+                transaction.remove(it)
+            }
+        }
+        transaction.commitAllowingStateLoss()
+        pages.clear()
+    }
+
     private fun showPage(page: Int) {
         val transaction = fm.beginTransaction()
         val fragment = getPageFragment(page)
@@ -86,7 +97,7 @@ class InboxNavigator constructor(
     }
 
     fun notifyRoleChanged(@RoleType role: Int) {
-        pages.keys.forEach { fragment ->
+        fm.fragments.forEach { fragment ->
             if (fragment is InboxFragment) {
                 fragment.onRoleChanged(role)
             }

@@ -7,7 +7,6 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
-@InitialStateScope
 @Module(includes = [InitialStateOkHttpClientModule::class])
 class InitialStateNetModule {
     @InitialStateScope

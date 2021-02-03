@@ -1,0 +1,31 @@
+[
+  {
+    "data": {
+      "get_som_dynamic_price": {
+        "payment_method": [],
+        "payment_data": {
+          "label": "Total Bayar",
+          "value": "Rp 109.500",
+          "text_color": "#393D43"
+        },
+        "pricing_data": [
+          {
+            "label": "Total Harga (1 barang)",
+            "value": "Rp 100.000",
+            "text_color": ""
+          },
+          {
+            "label": "Total Ongkos Kirim (500 gr)",
+            "value": "Rp 9.000",
+            "text_color": ""
+          },
+          {
+            "label": "Biaya Asuransi",
+            "value": "Rp 500",
+            "text_color": ""
+          }
+        ]
+      }
+    }
+  }
+]

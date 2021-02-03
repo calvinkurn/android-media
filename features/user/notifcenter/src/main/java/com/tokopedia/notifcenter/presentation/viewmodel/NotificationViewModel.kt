@@ -59,7 +59,7 @@ class NotificationViewModel @Inject constructor(
         private val dispatcher: DispatcherProvider
 ) : BaseViewModel(dispatcher.io()), INotificationViewModel {
 
-    var filter = NotifcenterDetailUseCase.FILTER_NONE
+    var filter: Long = NotifcenterDetailUseCase.FILTER_NONE
         set(value) {
             field = value
             cancelAllUseCase()

@@ -35,7 +35,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="@string/string_empty_feed"
-            android:textColor="@color/black_70"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="14sp"
             android:textStyle="normal"
             tools:text="Oops, feed masih kosong"/>
@@ -48,7 +48,7 @@
             android:gravity="center_horizontal"
             android:lineSpacingExtra="8sp"
             android:text="@string/empty_feed_subtitle"
-            android:textColor="@color/black_54"
+            android:textColor="@color/Unify_N700_44"
             android:textSize="12sp"
             android:textStyle="normal"
             tools:text="Segera favoritkan toko yang Anda sukai untuk
@@ -63,7 +63,7 @@ mendapatkan update produk terbaru di isini."/>
             android:background="@drawable/green_button_rounded"
             android:text="@string/search_shop"
             android:textAllCaps="false"
-            android:textColor="@color/white"/>
+            android:textColor="@color/Unify_N0"/>
 
     </LinearLayout>
 

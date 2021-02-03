@@ -109,6 +109,11 @@
     <string name="title_filter">Filter</string>
     <string name="title_report">Laporkan</string>
 
+    <string name="drawer_title_home">Home</string>
+    <string name="welcome_text_1">Ini adalah aplikasi khusus untuk berjualan di Tokopedia.</string>
+    <string name="welcome_text_2">Yuk mulai kelola tokomu di Tokopedia, mudah &amp; gratis!</string>
+    <string name="title_activity_shop_transaction_new">Penjualan</string>
+
     <!-- Product Detail -->
     <string name="title_activity_product_detail">Rincian Produk</string>
     <string name="product_detail_courier">Pengiriman</string>
