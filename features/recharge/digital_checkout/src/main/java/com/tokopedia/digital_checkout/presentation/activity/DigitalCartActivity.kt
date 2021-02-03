@@ -95,4 +95,16 @@ class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutCo
         }
         return super.dispatchTouchEvent(ev)
     }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_digital_checkout
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.digital_checkout_toolbar
+    }
 }

@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/spacing_lvl4">
+    android:padding="@dimen/spacing_lvl4"
+    android:background="@color/Neutral_N0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDigitalCheckoutInputPriceLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/Neutral_N700_96"
-        app:typographyType="body_2"
+        app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Masukkan jumlah yang dibayar" />
 

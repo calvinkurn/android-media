@@ -43,6 +43,7 @@ import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE
@@ -207,6 +208,7 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         renderInputPriceView(cartInfo.attributes?.pricePlain.toString(), cartInfo.attributes?.userInputPrice)
         showMyBillsSubscriptionView(cartInfo.showSubscriptionsView)
 
+        cartInfo.attributes?.icon?.let { iconCheckout.loadImage(it) }
         productTitle.text = cartInfo.attributes?.categoryName
         cartDetailInfoAdapter.setInfoItems(cartInfo.mainInfo ?: listOf())
 
@@ -383,13 +385,11 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
     private fun showMyBillsSubscriptionView(show: Boolean) {
         if (show) {
             subscriptionWidget.visibility = View.VISIBLE
-            myBillsSeperator.visibility = View.VISIBLE
         } else subscriptionWidget.visibility = View.GONE
     }
 
     private fun renderFintechProductWidget(fintechProduct: FintechProduct?) {
         fintechProduct?.let {
-            myBillsSeperator.visibility = View.VISIBLE
             fintechProductWidget.setTitle(fintechProduct.info.title)
             fintechProductWidget.setDescription(fintechProduct.info.subtitle)
             fintechProductWidget.hasMoreInfo(true)
@@ -437,7 +437,6 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
     private fun renderInputPriceView(total: String?, userInputPriceDigital: AttributesDigitalData.UserInputPriceDigital?) {
         userInputPriceDigital?.let {
-            inputViewSeperator.visibility = View.VISIBLE
             inputPriceContainer.visibility = View.VISIBLE
 
             inputPriceHolderView.setLabelText(userInputPriceDigital.minPayment ?: "", userInputPriceDigital.maxPayment ?: "")
