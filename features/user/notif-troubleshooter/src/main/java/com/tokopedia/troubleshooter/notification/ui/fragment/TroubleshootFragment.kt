@@ -297,7 +297,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             }
         }
 
-        if (newToken.isNotEmpty() && !fcmManager.isNewToken(newToken)) {
+        if (newToken.isNotEmpty() && fcmManager.isNewToken(newToken)) {
             viewModel.updateToken(newToken)
         }
     }
