@@ -197,9 +197,6 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         swipe_refresh_layout.setOnRefreshListener {
             loadData()
         }
-        btnReload?.setOnClickListener {
-            loadData()
-        }
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
         snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, com.tokopedia.design.R.color.green_400))
 
@@ -333,7 +330,15 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun showProgressLayout() {
+        btnReload?.setOnClickListener {
+            swipe_refresh_layout.isRefreshing = true
+            loadData()
+        }
         loaderImage?.setImageDrawable(context?.getResDrawable(R.drawable.topads_loader))
+        if (STATUS_IN_PROGRESS_ACTIVE == adCurrentState)
+            description?.text = getString(R.string.topads_dash_auto_ads_enable_msg)
+        else if (STATUS_IN_PROGRESS_INACTIVE == adCurrentState)
+            description?.text = getString(R.string.topads_dash_auto_ads_disable_msg)
         autoadsOnboarding?.gone()
         graph_layout?.gone()
         progressView?.visible()

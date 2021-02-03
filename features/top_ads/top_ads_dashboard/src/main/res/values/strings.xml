@@ -303,7 +303,8 @@
     <string name="topads_auto_topup_widget">Dapatkan bonus kredit 10% dengan Tambah Kredit Otomatis</string>
     <string name="topads_dash_reload_btn">Muat Ulang Halaman</string>
     <string name="topads_dash_reload_title">Sedang diproses</string>
-    <string name="topads_dash_reload_msg">Tunggu ya, iklanmu sedang dimatikan</string>
+    <string name="topads_dash_auto_ads_enable_msg">Iklanmu sedang dibuat. Setelah 5-10 menit, coba muat ulang halaman.</string>
+    <string name="topads_dash_auto_ads_disable_msg">Iklanmu sedang dimatikan. Setelah 5-10 menit, coba muat ulang halaman.</string>
     <string name="topads_dashboard_ad_type_selection_title">Tambah Iklan</string>
     <string name="topads_dashboard_ad_product_type_selection_title">Iklan Produk</string>
     <string name="topads_dashboard_ad_product_type_selection_subtitle">Produk pilihanmu akan tampil di halaman strategis Tokopedia.</string>
