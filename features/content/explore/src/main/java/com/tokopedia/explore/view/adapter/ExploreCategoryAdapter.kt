@@ -1,19 +1,14 @@
 package com.tokopedia.explore.view.adapter
 
-import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.explore.R
 import com.tokopedia.explore.view.listener.ContentExploreContract
-import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel
-
-import java.util.ArrayList
-
+import com.tokopedia.explore.view.uimodel.ExploreCategoryViewModel
 import javax.inject.Inject
 
 /**
@@ -38,7 +33,7 @@ constructor() : RecyclerView.Adapter<ExploreCategoryAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.tag.context
         holder.tag.text = list[position].name
-        holder.tag.setOnClickListener { v ->
+        holder.tag.setOnClickListener {
             listener.onCategoryClicked(
                     position,
                     list[position].id,
@@ -64,9 +59,6 @@ constructor() : RecyclerView.Adapter<ExploreCategoryAdapter.ViewHolder>() {
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var tag: TextView
-        init {
-            tag = itemView.findViewById(R.id.tag)
-        }
+        var tag: TextView = itemView.findViewById(R.id.tag)
     }
 }
