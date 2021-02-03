@@ -26,8 +26,21 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
 
+        @JvmStatic
+        fun createInstance(isBroadCastChatPossible: Boolean, quota: Int): ShareVoucherBottomSheet {
+            return ShareVoucherBottomSheet().apply {
+                this.isBroadCastChatPossible = isBroadCastChatPossible
+                this.quota = quota
+                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+            }
+        }
+
         const val TAG = "ShareVoucherBottomSheet"
     }
+
+    private var isBroadCastChatPossible = false
+
+    private var quota = 0
 
     private var onItemClickListener: (Int) -> Unit = {}
 
@@ -75,14 +88,21 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
     }
 
     private fun getSocmedList(): List<ShareVoucherUiModel> {
-        return listOf(
-                ShareVoucherUiModel(R.drawable.ic_mvc_link, context?.getString(R.string.mvc_copy_link).toBlankOrString(), SocmedType.COPY_LINK),
-                ShareVoucherUiModel(R.drawable.ic_mvc_instagram, context?.getString(R.string.mvc_instagram).toBlankOrString(), SocmedType.INSTAGRAM),
-                ShareVoucherUiModel(R.drawable.ic_mvc_facebook, context?.getString(R.string.mvc_facebook).toBlankOrString(), SocmedType.FACEBOOK),
-                ShareVoucherUiModel(R.drawable.ic_mvc_whatsapp, context?.getString(R.string.mvc_whatsapp).toBlankOrString(), SocmedType.WHATSAPP),
-                ShareVoucherUiModel(R.drawable.ic_mvc_line, context?.getString(R.string.mvc_line).toBlankOrString(), SocmedType.LINE),
-                ShareVoucherUiModel(R.drawable.ic_mvc_twitter, context?.getString(R.string.mvc_twitter).toBlankOrString(), SocmedType.TWITTER),
-                ShareVoucherUiModel(R.drawable.ic_mvc_lainnya, context?.getString(R.string.mvc_others).toBlankOrString(), SocmedType.LAINNYA)
+        val socmedList = mutableListOf<ShareVoucherUiModel>()
+        if (isBroadCastChatPossible) {
+            socmedList.add(ShareVoucherUiModel(R.drawable.ic_mvc_broadcast_chat, context?.getString(R.string.mvc_broadcast_chat).toBlankOrString(), SocmedType.BROADCAST))
+        }
+        socmedList.addAll(
+                listOf(
+                        ShareVoucherUiModel(R.drawable.ic_mvc_link, context?.getString(R.string.mvc_copy_link).toBlankOrString(), SocmedType.COPY_LINK),
+                        ShareVoucherUiModel(R.drawable.ic_mvc_instagram, context?.getString(R.string.mvc_instagram).toBlankOrString(), SocmedType.INSTAGRAM),
+                        ShareVoucherUiModel(R.drawable.ic_mvc_facebook, context?.getString(R.string.mvc_facebook).toBlankOrString(), SocmedType.FACEBOOK),
+                        ShareVoucherUiModel(R.drawable.ic_mvc_whatsapp, context?.getString(R.string.mvc_whatsapp).toBlankOrString(), SocmedType.WHATSAPP),
+                        ShareVoucherUiModel(R.drawable.ic_mvc_line, context?.getString(R.string.mvc_line).toBlankOrString(), SocmedType.LINE),
+                        ShareVoucherUiModel(R.drawable.ic_mvc_twitter, context?.getString(R.string.mvc_twitter).toBlankOrString(), SocmedType.TWITTER),
+                        ShareVoucherUiModel(R.drawable.ic_mvc_lainnya, context?.getString(R.string.mvc_others).toBlankOrString(), SocmedType.LAINNYA)
+                )
         )
+        return socmedList
     }
 }

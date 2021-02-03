@@ -118,9 +118,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
         GeneralExpensesInfoBottomSheetFragment.createInstance(context)
     }
 
-    private val shareVoucherBottomSheet by lazy {
-        ShareVoucherBottomSheet.createInstance()
-    }
+    private var shareVoucherBottomSheet: ShareVoucherBottomSheet? = null
 
     private val impressHolder = ImpressHolder()
 
@@ -159,7 +157,9 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 .inject(this)
     }
 
-    override fun loadData(page: Int) {}
+    override fun loadData(page: Int) {
+        viewModel.getBroadCastMetaData()
+    }
 
     override fun onInfoContainerCtaClick(dataKey: String) {
         val editStep: Int
@@ -399,6 +399,17 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                     is Fail -> MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_DETAIL)
                 }
             }
+            observe(viewModel.broadCastMetadata) { result ->
+                shareVoucherBottomSheet = when(result) {
+                    is Success -> {
+                        val broadCastMetaData = result.data
+                        setupShareBottomSheet(broadCastMetaData.quota, broadCastMetaData.url)
+                    }
+                    is Fail -> {
+                        setupShareBottomSheet()
+                    }
+                }
+            }
         }
     }
 
@@ -410,6 +421,11 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
         }
     }
 
+    private fun setupShareBottomSheet(quota: Int = 0, url: String = ""): ShareVoucherBottomSheet? {
+        val isBroadCastChatPossible = viewModel.isBroadCastChatPossible(url)
+        return ShareVoucherBottomSheet.createInstance(isBroadCastChatPossible, quota)
+    }
+
     private fun showLoadingState() {
         adapter.clearAllElements()
         renderList(listOf(
@@ -419,13 +435,12 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
 
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        shareVoucherBottomSheet
-                .setOnItemClickListener { socmedType ->
+        shareVoucherBottomSheet?.setOnItemClickListener { socmedType ->
                     context?.run {
                         shopBasicData?.shareVoucher(this, socmedType, voucher, userSession.userId, userSession.shopId)
                     }
                 }
-                .show(childFragmentManager)
+        shareVoucherBottomSheet?.show(childFragmentManager)
     }
 
     private fun setToolbarTitle(toolbarTitle: String) {

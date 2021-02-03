@@ -186,6 +186,11 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         observeLiveData()
     }
 
+    private fun setupShareBottomSheet(quota: Int = 0, url: String = ""): ShareVoucherBottomSheet? {
+        val isBroadCastChatPossible = mViewModel.isBroadCastChatPossible(url)
+        return ShareVoucherBottomSheet.createInstance(isBroadCastChatPossible, quota)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         mViewModel.flush()
@@ -247,6 +252,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         } else {
             mViewModel.getVoucherListHistory(voucherType, voucherTarget, voucherSort, page, isInverted)
         }
+        mViewModel.getBroadCastMetaData()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -1066,6 +1072,17 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                     }
                 }
                 is Fail -> MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_GET_VOUCHER)
+            }
+        })
+        mViewModel.broadCastMetadata.observe(viewLifecycleOwner, Observer { result ->
+            when(result) {
+                is Success -> {
+                    val broadCastMetaData = result.data
+                    setupShareBottomSheet(broadCastMetaData.quota, broadCastMetaData.url)
+                }
+                is Fail -> {
+                    setupShareBottomSheet()
+                }
             }
         })
     }

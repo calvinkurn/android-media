@@ -16,8 +16,10 @@ import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResul
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherListParam
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherStatus
+import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
+import com.tokopedia.vouchercreation.voucherlist.model.remote.ChatBlastSellerMetadata
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -33,6 +35,7 @@ class VoucherListViewModel @Inject constructor(
         private val cancelVoucherUseCase: CancelVoucherUseCase,
         private val shopBasicDataUseCase: ShopBasicDataUseCase,
         private val voucherDetailUseCase: VoucherDetailUseCase,
+        private val getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -63,6 +66,9 @@ class VoucherListViewModel @Inject constructor(
         get() = _localVoucherListLiveData
 
     private val _fullVoucherListLiveData = MutableLiveData<MutableList<VoucherUiModel>>().apply { value = mutableListOf() }
+
+    private val _broadCastMetaData = MutableLiveData<Result<ChatBlastSellerMetadata>>()
+    val broadCastMetadata: LiveData<Result<ChatBlastSellerMetadata>> get() = _broadCastMetaData
 
     private val _cancelVoucherResponseLiveData = MediatorLiveData<Result<Int>>().apply {
         addSource(_cancelledVoucherLiveData) { id ->
@@ -188,6 +194,21 @@ class VoucherListViewModel @Inject constructor(
 
     private fun searchVoucherByKeyword(keyword: String) {
         _localVoucherListLiveData.value = _fullVoucherListLiveData.value?.filter {
-            it.name.contains(keyword, true) } ?: listOf()
+            it.name.contains(keyword, true)
+        } ?: listOf()
+    }
+
+    fun getBroadCastMetaData() {
+        launchCatchError(block = {
+            _broadCastMetaData.value = Success(withContext(dispatchers.io){
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            })
+        }, onError = {
+            _broadCastMetaData.value = Fail(it)
+        })
+    }
+
+    fun isBroadCastChatPossible(url: String): Boolean {
+        return url.isNotBlank()
     }
 }

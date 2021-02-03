@@ -78,6 +78,10 @@ object SharingUtil {
         }
     }
 
+    fun shareToBroadCastChat() {
+
+    }
+
     fun shareToSocialMedia(socmed: Socmed,
                            context: Context,
                            urlString: String,

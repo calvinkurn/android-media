@@ -120,6 +120,9 @@ private fun shareVoucherByType(context: Context,
                 }.toString()
             }
     when(socmedType) {
+        SocmedType.BROADCAST -> {
+            SharingUtil.shareToBroadCastChat()
+        }
         SocmedType.COPY_LINK -> {
             SharingUtil.copyTextToClipboard(context, VoucherDetailFragment.COPY_PROMO_CODE_LABEL, shareMessage)
         }
