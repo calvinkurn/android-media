@@ -23,7 +23,6 @@
             android:id="@+id/shopWidgetImageViewShopAvatar"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -56,7 +55,6 @@
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/shopWidgetImageViewShopAvatar"
@@ -67,9 +65,8 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_2"
             android:layout_marginStart="@dimen/dp_2"
-            android:layout_marginRight="@dimen/dp_8"
+            app:layout_goneMarginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:gravity="center_vertical"
             android:ellipsize="end"
@@ -142,6 +139,7 @@
             android:layout_height="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_4"
+            app:layout_goneMarginStart="@dimen/dp_0"
             android:visibility="gone"
             app:layout_constraintLeft_toRightOf="@id/shopWidgetLabelVoucherFreeShipping"
             app:layout_constraintTop_toBottomOf="@id/shopWidgetImageViewShopReputation"
@@ -149,6 +147,13 @@
             app:labelTitle="@string/shopwidget_shop_voucher_cashback_percentage"
             tools:visibility="visible"
             tools:text="@string/shopwidget_shop_voucher_cashback_percentage" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/shopWidgetLabelBarrier"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="shopWidgetLabelVoucherFreeShipping,shopWidgetLabelVoucherCashback" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shopWidgetImageViewShopItemProductImage1"
@@ -160,7 +165,7 @@
             android:foreground="?attr/selectableItemBackground"
             app:srcCompat="@color/Unify_N50"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toBottomOf="@id/shopWidgetLabelVoucherFreeShipping"
+            app:layout_constraintTop_toBottomOf="@id/shopWidgetLabelBarrier"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/shopWidgetImageViewShopItemProductImage2"
             app:layout_constraintHorizontal_bias="0.5" />
@@ -194,7 +199,7 @@
             android:foreground="?attr/selectableItemBackground"
             app:srcCompat="@color/Unify_N50"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toBottomOf="@id/shopWidgetLabelVoucherFreeShipping"
+            app:layout_constraintTop_toBottomOf="@id/shopWidgetLabelBarrier"
             app:layout_constraintStart_toEndOf="@id/shopWidgetImageViewShopItemProductImage1"
             app:layout_constraintEnd_toStartOf="@+id/shopWidgetImageViewShopItemProductImage3" />
 
@@ -227,7 +232,7 @@
             android:foreground="?attr/selectableItemBackground"
             app:srcCompat="@color/Unify_N50"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toBottomOf="@id/shopWidgetLabelVoucherFreeShipping"
+            app:layout_constraintTop_toBottomOf="@id/shopWidgetLabelBarrier"
             app:layout_constraintStart_toEndOf="@id/shopWidgetImageViewShopItemProductImage2"
             app:layout_constraintEnd_toEndOf="parent" />
 
