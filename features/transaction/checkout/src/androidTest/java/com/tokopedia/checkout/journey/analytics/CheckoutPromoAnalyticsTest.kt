@@ -1,5 +1,9 @@
-package com.tokopedia.checkout.journey.simple
+package com.tokopedia.checkout.journey.analytics
 
+import android.app.Activity
+import android.app.Instrumentation
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -15,7 +19,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class CheckoutTrackingTest {
+class CheckoutPromoAnalyticsTest {
 
     @get:Rule
     var activityRule = object : IntentsTestRule<ShipmentActivity>(ShipmentActivity::class.java, false, false) {
@@ -33,28 +37,23 @@ class CheckoutTrackingTest {
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
-            addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, R.raw.saf_tracking_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ratesv3_tracking_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.validate_use_tracking_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.checkout_tracking_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, R.raw.saf_analytics_promo_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
     @Test
-    fun loadCartAndGoToShipment_PassedAnalyticsTest() {
+    fun checkoutPromoJourney_PassedAnalyticsTest() {
         activityRule.launchActivity(null)
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null))
 
         checkoutPage {
             waitForData()
-            openDurationBottomsheet()
-            waitForData()
-            selectFirstShippingDurationOption()
-            waitForData()
-            scrollToLastPosition(activityRule)
-        } choosePayment  {
-            waitForData()
+            clickPromoButton(activityRule)
+        } validateAnalytics  {
             hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
+
+        Thread.sleep(5000)
     }
 
     @After
@@ -65,11 +64,8 @@ class CheckoutTrackingTest {
 
     companion object {
         private const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form"
-        private const val RATES_V3_KEY = "ratesV3"
-        private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"
-        private const val CHECKOUT_KEY = "checkout"
 
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout_promo.json"
     }
 
 }

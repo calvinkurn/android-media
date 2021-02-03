@@ -165,8 +165,11 @@ class CartPageRobot {
         onView(withId(R.id.promo_checkout_btn_cart)).perform(ViewActions.click())
     }
 
-    infix fun buy(func: ResultRobot.() -> Unit): ResultRobot {
+    fun clickBuyButton() {
         onView(withId(R.id.go_to_courier_page_button)).perform(ViewActions.click())
+    }
+
+    infix fun validateAnalytics(func: ResultRobot.() -> Unit): ResultRobot {
         return ResultRobot().apply(func)
     }
 
