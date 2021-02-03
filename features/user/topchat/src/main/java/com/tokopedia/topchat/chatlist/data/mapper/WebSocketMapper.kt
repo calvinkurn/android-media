@@ -18,14 +18,14 @@ object WebSocketMapper {
         val time = responseData.message.timeStampUnix.toEmptyStringIfNull()
 
         val contact = ItemChatAttributesContactPojo(
-                responseData?.fromUid.toString(),
-                responseData?.fromRole.toString(),
-                "",
-                responseData?.from.toString(),
-                0,
-                responseData?.fromRole.toString(),
-                responseData?.imageUri.toString(),
-                responseData.isAutoReply
+                contactId = responseData?.fromUid.toString(),
+                role = responseData?.fromRole.toString(),
+                domain = "",
+                contactName = responseData?.from.toString(),
+                shopStatus = 0,
+                tag = responseData?.fromRole.toString(),
+                thumbnail = responseData?.imageUri.toString(),
+                isAutoReply = responseData.isAutoReply
         )
         return IncomingChatWebSocketModel(msgId, message, time, contact)
     }
