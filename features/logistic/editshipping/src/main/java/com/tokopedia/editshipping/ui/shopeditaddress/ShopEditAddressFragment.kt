@@ -85,7 +85,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var getSavedInstanceState: Bundle? = null
     private var googleMap: GoogleMap? = null
     private var validate: Boolean = true
-    private val FINISH_PINPOINT_FLAG = 8888
+    private var uncoveredCourierFlag: Boolean = false
 
     override fun getScreenName(): String = ""
 
@@ -147,17 +147,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 }
             }
-
-            /*if (data != null) {
-                if (data.hasExtra(EXTRA_WAREHOUSE_DATA)) {
-                    warehouseModel = data.getParcelableExtra(EXTRA_WAREHOUSE_DATA)
-                    warehouseModel?.let {
-                        currentLat = it.latLon.substringBefore(",").toDouble()
-                        currentLong = it.latLon.substringAfter(",").toDouble()
-                    }
-                }
-            }*/
-
         }
     }
 
@@ -270,10 +259,13 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 is ShopEditAddressState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     view?.let { view -> Toaster.build(view, "Detail lokasi telah diubah", Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
-                    activity?.run {
-                        setResult(Activity.RESULT_OK)
-                        finish()
+                    if (!uncoveredCourierFlag) {
+                        activity?.setResult(Activity.RESULT_OK)
+
+                    } else {
+                        startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING))
                     }
+                    activity?.finish()
                 }
                 is ShopEditAddressState.Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -322,6 +314,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             setDescription("Aktifkan kurir lainnya lewat Atur Pengiriman agar lokasi tokomu yang baru dapat melakukan pengiriman.")
             setPrimaryCTAText("Simpan & Atur Pengiriman")
             setPrimaryCTAClickListener {
+                uncoveredCourierFlag = true
                 val latLong = "$currentLat,$currentLong"
                 warehouseModel?.let {
                     viewModel.saveEditShopLocation(userSession.shopId.toInt(), it.warehouseId, etShopLocation?.text.toString(),
