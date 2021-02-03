@@ -354,7 +354,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         }
     }
 
-    private fun show() {
+    fun show() {
         if (isDarkModeOn()) {
             onDarkMode()
         } else {
@@ -366,7 +366,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         if (::stickyLoginAction.isInitialized) stickyLoginAction.onViewChange(true)
     }
 
-    private fun hide() {
+    fun hide() {
         if (isShowing()) {
             this.visibility = View.GONE
             layoutContainer.hide()
