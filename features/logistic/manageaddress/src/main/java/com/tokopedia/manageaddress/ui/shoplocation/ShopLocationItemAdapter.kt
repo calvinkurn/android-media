@@ -88,7 +88,7 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
 
             if (shopLocation.status == 1) {
                 tvShopLabel.text = itemView.context.getString(R.string.shop_active)
-                tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Green_G600))
+                tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G600))
                 iconShopLabel.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico))
             } else if (shopLocation.status == 2) {
                 tvShopLabel.text = itemView.context.getString(R.string.shop_inactive)

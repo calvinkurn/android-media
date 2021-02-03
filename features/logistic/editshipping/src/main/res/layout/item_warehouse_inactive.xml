@@ -21,7 +21,7 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_12"
         android:text="Kopi Kenangan PIK"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/img_location"
         app:layout_constraintTop_toBottomOf="@id/img_location"
@@ -36,7 +36,7 @@
         android:layout_marginTop="@dimen/dp_2"
         android:ellipsize="end"
         android:text="Jaksel, Setiabudi"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="@id/tv_warehouse_name"
         app:layout_constraintTop_toBottomOf="@id/tv_warehouse_name"
         app:typographyType="body_3" />
@@ -49,7 +49,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="14045"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="@id/tv_warehouse_district"
         app:layout_constraintTop_toBottomOf="@id/tv_warehouse_district"
         app:typographyType="body_3" />
