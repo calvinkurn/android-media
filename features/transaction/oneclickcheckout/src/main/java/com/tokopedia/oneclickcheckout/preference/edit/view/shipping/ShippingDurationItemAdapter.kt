@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.shipping
 
-import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -95,7 +94,6 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
             }
         }
 
-        @SuppressLint("SetTextI18n")
         fun bind(data: ServicesItemModel, isNewFlow: Boolean) {
             val shouldShowEta = isNewFlow && data.texts?.textEta != null
             if (shouldShowEta) {
