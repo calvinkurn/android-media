@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seller.menu.common.R
@@ -119,7 +120,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
                 is Success -> {
                     result.data.let { isEligible ->
                         if (isEligible) {
-                            adminErrorView?.visibility = View.GONE
+                            adminErrorView?.gone()
                             goToDestination()
                         } else {
                             adminErrorView?.show(true)
@@ -135,6 +136,9 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
 
     private fun observeIsLoading() {
         viewModel.isLoadingLiveData.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                adminErrorView?.gone()
+            }
             adminLoadingView?.showWithCondition(isLoading)
         }
     }
@@ -176,6 +180,8 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
 
     private fun GlobalError.showAdminError() {
         setType(GlobalError.SERVER_ERROR)
+        errorTitle.text = context?.getString(R.string.admin_error_title)
+        errorDescription.text = context?.getString(R.string.admin_error_desc)
         errorAction.text = context?.getString(R.string.admin_error_refresh_page)
 
         setActionClickListener {
