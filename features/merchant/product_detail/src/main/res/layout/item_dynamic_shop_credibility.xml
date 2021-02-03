@@ -29,6 +29,7 @@
             android:layout_width="@dimen/dp_55"
             android:layout_height="@dimen/dp_55"
             android:scaleType="centerCrop"
+            android:contentDescription="null"
             app:layout_constraintEnd_toStartOf="@+id/iv_badge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
