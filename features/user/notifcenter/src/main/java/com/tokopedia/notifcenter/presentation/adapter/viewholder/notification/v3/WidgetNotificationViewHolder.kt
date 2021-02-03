@@ -43,7 +43,7 @@ class WidgetNotificationViewHolder constructor(
     private val historyTimeLine: RecyclerView? = itemView?.findViewById(R.id.rv_history)
     private val historyAdapter: HistoryAdapter = HistoryAdapter()
 
-    private val height_38 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_30)
+    private val height_38 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_38)
     private val height_50 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_50)
     private val margin_4 = itemView?.context?.resources?.getDimension(
             com.tokopedia.unifyprinciples.R.dimen.unify_space_4

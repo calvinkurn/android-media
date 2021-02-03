@@ -163,12 +163,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8"
+        android:ellipsize="end"
+        android:maxLines="2"
         app:layout_constraintEnd_toEndOf="@+id/txt_notification_title"
         app:layout_constraintStart_toStartOf="@+id/txt_notification_title"
         app:layout_constraintTop_toBottomOf="@+id/view_notification_desc"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Dana akan dikembalikan ke Saldo (1x24 jam) atau ke limit kartu kredit (14 hari kerja)." />
+        tools:text="@tools:sample/lorem/random" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_history"
