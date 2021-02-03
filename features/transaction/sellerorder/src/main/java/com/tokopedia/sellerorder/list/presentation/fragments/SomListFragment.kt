@@ -413,7 +413,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         loadTopAdsCategory()
         loadTickers()
         loadWaitingPaymentOrderCounter()
-        loadFilters()
+        loadFilters(loadOrders = true)
         if (shouldReloadOrderListImmediately()) {
             loadOrderList()
         }
@@ -521,7 +521,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             textChangeJob?.cancel()
             viewModel.setSearchParam(text.orEmpty())
             shouldScrollToTop = true
-            loadFilters(false)
+            loadFilters(showShimmer = false, loadOrders = true)
             if (shouldReloadOrderListImmediately()) {
                 refreshOrderList()
             } else {
@@ -538,7 +538,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             viewModel.setSearchParam(text.orEmpty())
             if (!skipSearch) {
                 shouldScrollToTop = true
-                loadFilters(false)
+                loadFilters(showShimmer = false, loadOrders = true)
                 if (shouldReloadOrderListImmediately()) {
                     refreshOrderList()
                 } else {
@@ -714,7 +714,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         toggleBulkActionButtonVisibility()
                         toggleBulkActionCheckboxVisibility()
                         toggleTvSomListBulkText()
-                        loadFilters()
+                        loadFilters(loadOrders = true)
                         if (shouldReloadOrderListImmediately()) {
                             loadOrderList()
                         } else {
@@ -803,7 +803,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                                         1. 2nd..n-th realtime data
                                         2. First realtime data with any differences from the previous cached data (if first realtime data is coming after cached data)
                                      */
-                                    if (realtimeDataChangeCount >= 1 || (realtimeDataChangeCount == 0 && viewModel.isOrderStatusIdsChanged(orderStatusIds))) {
+                                    if (result.data.refreshOrder && (realtimeDataChangeCount >= 1 || (realtimeDataChangeCount == 0 && viewModel.isOrderStatusIdsChanged(orderStatusIds)))) {
                                         onTabClicked(activeFilter, shouldScrollToTop, false)
                                     }
                                 }
@@ -1073,7 +1073,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 isRefreshing = true
             }
             viewModel.refreshSelectedOrder(selectedOrder.orderResi)
-            viewModel.getFilters()
+            loadFilters(showShimmer = false, loadOrders = false)
         }
     }
 
@@ -1099,12 +1099,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.getWaitingPaymentCounter()
     }
 
-    private fun loadFilters(showShimmer: Boolean = true) {
+    private fun loadFilters(showShimmer: Boolean = true, loadOrders: Boolean) {
         if (showShimmer) {
             sortFilterSomList.invisible()
             shimmerViews.show()
         }
-        viewModel.getFilters()
+        viewModel.getFilters(loadOrders)
     }
 
     private fun loadOrderList() {
@@ -1662,7 +1662,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }?.key
         tabActive = selectedStatusFilterKey.orEmpty()
         viewModel.updateGetOrderListParams(filterData)
-        loadFilters(false)
+        loadFilters(showShimmer = false, loadOrders = true)
         if (shouldReloadOrderListImmediately()) {
             loadOrderList()
         } else {
@@ -1912,7 +1912,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun refreshOrdersOnTabClicked(shouldScrollToTop: Boolean, refreshFilter: Boolean) {
         this.shouldScrollToTop = shouldScrollToTop
         if (refreshFilter) {
-            loadFilters(false)
+            loadFilters(showShimmer = false, loadOrders = true)
         }
         if (shouldReloadOrderListImmediately() || !refreshFilter) {
             refreshOrderList()

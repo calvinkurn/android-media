@@ -186,7 +186,7 @@ class SomListViewModel @Inject constructor(
         })
     }
 
-    fun getFilters() {
+    fun getFilters(refreshOrders: Boolean) {
         getDataFromUseCase(somListGetFilterListUseCase, _filterResult)
     }
 

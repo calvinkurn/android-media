@@ -430,14 +430,14 @@ class SomListViewModelTest {
         coEvery {
             somListGetFilterListUseCase.executeOnBackground(any())
         } answers {
-            SomListFilterUiModel(emptyList(), args.first() as Boolean)
+            SomListFilterUiModel(emptyList(), fromCache = args.first() as Boolean)
         }
 
         every {
             somListGetFilterListUseCase.isFirstLoad
         } returns true
 
-        viewModel.getFilters()
+        viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
             somListGetFilterListUseCase.executeOnBackground(true)
@@ -452,14 +452,14 @@ class SomListViewModelTest {
         coEvery {
             somListGetFilterListUseCase.executeOnBackground(any())
         } answers {
-            SomListFilterUiModel(emptyList(), args.first() as Boolean)
+            SomListFilterUiModel(emptyList(), fromCache = args.first() as Boolean)
         }
 
         every {
             somListGetFilterListUseCase.isFirstLoad
         } returns false
 
-        viewModel.getFilters()
+        viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
             somListGetFilterListUseCase.executeOnBackground(false)
@@ -480,7 +480,7 @@ class SomListViewModelTest {
             somListGetFilterListUseCase.isFirstLoad
         } returns true
 
-        viewModel.getFilters()
+        viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
             somListGetFilterListUseCase.executeOnBackground(true)
@@ -500,7 +500,7 @@ class SomListViewModelTest {
             somListGetFilterListUseCase.isFirstLoad
         } returns false
 
-        viewModel.getFilters()
+        viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
             somListGetFilterListUseCase.executeOnBackground(false)
