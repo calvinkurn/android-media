@@ -27,6 +27,11 @@ class OvoFinalPageActivity: BaseSimpleActivity(), HasComponent<ExternalRegisterC
         const val TYPE_PARAM = "typeParam"
         const val KEY_GOTO_REGISTER = "goToNormalRegister"
 
+        const val KEY_QUERY_IS_SUCCESS = "isSuccess"
+        const val KEY_QUERY_IS_CONTINUE = "isContinue"
+
+        const val QUERY_TRUE = "1"
+        const val QUERY_FALSE = "0"
         fun createIntentSuccess(activity: FragmentActivity?): Intent {
             return Intent(activity, OvoFinalPageActivity::class.java).apply {
                 putExtra(TYPE_PARAM, TYPE_SUCCESS)
@@ -52,25 +57,44 @@ class OvoFinalPageActivity: BaseSimpleActivity(), HasComponent<ExternalRegisterC
     }
 
     override fun getNewFragment(): Fragment? {
-        return if(intent?.getIntExtra(TYPE_PARAM, TYPE_SUCCESS) == TYPE_ERROR){
-            OvoErrorFragment.createInstance().apply {
-                arguments  = Bundle().apply {
-                    putBoolean(KEY_GOTO_REGISTER, intent?.getBooleanExtra(KEY_GOTO_REGISTER, false) ?: false)
+        intent?.run {
+            if(data?.queryParameterNames?.isNotEmpty() == true){
+                val isSuccess = data?.getQueryParameter(KEY_QUERY_IS_SUCCESS) ?: "0"
+                val isContinue = data?.getQueryParameter(KEY_QUERY_IS_CONTINUE) ?: "0"
+                if(isSuccess == QUERY_TRUE){
+                    return OvoSuccessFragment.createInstance()
+                } else if(isSuccess == QUERY_FALSE){
+                    return OvoErrorFragment.createInstance().apply {
+                        arguments = Bundle().apply {
+                            putBoolean(KEY_GOTO_REGISTER, isContinue == QUERY_TRUE)
+                        }
+                    }
+                }
+            } else {
+                if(intent?.getIntExtra(TYPE_PARAM, TYPE_ERROR) == TYPE_ERROR){
+                    return OvoErrorFragment.createInstance().apply {
+                        arguments  = Bundle().apply {
+                            putBoolean(KEY_GOTO_REGISTER, intent?.getBooleanExtra(KEY_GOTO_REGISTER, false) ?: false)
+                        }
+                    }
+                } else if(intent?.getIntExtra(TYPE_PARAM, TYPE_ERROR) == TYPE_SUCCESS) {
+                    return OvoSuccessFragment.createInstance()
                 }
             }
-        } else {
-            OvoSuccessFragment.createInstance()
         }
+        return OvoErrorFragment.createInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(intent?.getIntExtra(TYPE_PARAM, TYPE_SUCCESS) == TYPE_SUCCESS){
-            supportActionBar?.setDisplayHomeAsUpEnabled(false)
-            supportActionBar?.title = "    ${getString(R.string.title_external_register)}"
-        } else {
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.title = getString(R.string.title_external_register_verify)
+        intent?.run {
+            if (getIntExtra(TYPE_PARAM, TYPE_SUCCESS) == TYPE_SUCCESS) {
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                supportActionBar?.title = "    ${getString(R.string.title_external_register)}"
+            } else {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                supportActionBar?.title = getString(R.string.title_external_register_verify)
+            }
         }
     }
 

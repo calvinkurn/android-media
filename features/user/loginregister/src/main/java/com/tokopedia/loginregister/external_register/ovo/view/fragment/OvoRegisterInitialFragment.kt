@@ -96,7 +96,7 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
     fun goToErrorPage(){
         externalRegisterPreference.isNeedContinue(true)
         val intent = OvoFinalPageActivity.createIntentError(activity)
-        intent.flags = (Intent.FLAG_ACTIVITY_FORWARD_RESULT)
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
         startActivity(intent)
         activity?.finish()
     }
