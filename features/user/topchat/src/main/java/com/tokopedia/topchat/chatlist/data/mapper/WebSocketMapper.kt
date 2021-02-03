@@ -25,7 +25,8 @@ object WebSocketMapper {
                 shopStatus = 0,
                 tag = responseData?.fromRole.toString(),
                 thumbnail = responseData?.imageUri.toString(),
-                isAutoReply = responseData.isAutoReply
+                isAutoReply = responseData.isAutoReply,
+                toUid = responseData.toUid
         )
         return IncomingChatWebSocketModel(msgId, message, time, contact)
     }
@@ -36,13 +37,14 @@ object WebSocketMapper {
         val msgId = responseData?.msgId.toString()
 
         val contact = ItemChatAttributesContactPojo(
-                responseData?.fromUid.toString(),
-                responseData?.fromRole.toString(),
-                "",
-                responseData?.from.toString(),
-                0,
-                responseData?.fromRole.toString(),
-                ""
+                contactId = responseData?.fromUid.toString(),
+                role = responseData?.fromRole.toString(),
+                domain = "",
+                contactName = responseData?.from.toString(),
+                shopStatus = 0,
+                tag = responseData?.fromRole.toString(),
+                thumbnail = "",
+                toUid = responseData.toUid
         )
 
         return IncomingTypingWebSocketModel(msgId, isTyping, contact)
