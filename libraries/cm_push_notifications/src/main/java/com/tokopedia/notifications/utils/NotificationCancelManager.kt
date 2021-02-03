@@ -73,9 +73,9 @@ open class NotificationCancelManager: CoroutineScope {
 
     companion object {
         /*
-        * TARGET_ACTIVITIES;
-        * the NotificationCancelManager only called in the specific current activity
-        * to preventing multiple called every another activity opened.
+        * The NotificationCancelManager only called in the specific current activity,
+        * to preventing multiple called in another activity opened we need to make a
+        * list of TARGET_ACTIVITIES to specify of main activity.
         * */
         val TARGET_ACTIVITIES = listOf(
                 "com.tokopedia.navigation.presentation.activity.MainParentActivity",
@@ -84,8 +84,8 @@ open class NotificationCancelManager: CoroutineScope {
 
         /*
         * NotificationCancelManager will trigger every main activity opened,
-        * so there's case where remote config value didn't get the value, so
-        * we need a internal exclude items.
+        * so there's case where remote config value didn't get the value well,
+        * so we need a internal exclude items.
         * */
         private val excludeIds = listOf("-1854")
     }
