@@ -123,6 +123,33 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/shopWidgetImageViewShopReputation" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/shopWidgetLabelVoucherFreeShipping"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_8"
+            android:visibility="gone"
+            app:labelTitle="@string/shopwidget_shop_voucher_free_shipping"
+            app:labelType="general_light_green"
+            app:layout_constraintLeft_toLeftOf="@id/shopWidgetImageViewShopAvatar"
+            app:layout_constraintTop_toBottomOf="@id/shopWidgetImageViewShopReputation"
+            tools:text="@string/shopwidget_shop_voucher_free_shipping"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/shopWidgetLabelVoucherCashback"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_4"
+            android:visibility="gone"
+            app:layout_constraintLeft_toRightOf="@id/shopWidgetLabelVoucherFreeShipping"
+            app:layout_constraintTop_toBottomOf="@id/shopWidgetImageViewShopReputation"
+            app:labelType="general_light_green"
+            app:labelTitle="@string/shopwidget_shop_voucher_cashback_percentage"
+            tools:visibility="visible"
+            tools:text="@string/shopwidget_shop_voucher_cashback_percentage" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shopWidgetImageViewShopItemProductImage1"
             android:layout_width="@dimen/dp_0"
@@ -133,7 +160,7 @@
             android:foreground="?attr/selectableItemBackground"
             app:srcCompat="@color/Unify_N50"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toBottomOf="@id/shopWidgetImageViewShopReputation"
+            app:layout_constraintTop_toBottomOf="@id/shopWidgetLabelVoucherFreeShipping"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/shopWidgetImageViewShopItemProductImage2"
             app:layout_constraintHorizontal_bias="0.5" />
@@ -143,7 +170,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_18"
             android:layout_marginTop="@dimen/dp_4"
-            android:textColor="@color/Unify_Y500"
+            android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
             android:singleLine="true"
             android:ellipsize="end"
@@ -167,7 +194,7 @@
             android:foreground="?attr/selectableItemBackground"
             app:srcCompat="@color/Unify_N50"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toBottomOf="@id/shopWidgetImageViewShopReputation"
+            app:layout_constraintTop_toBottomOf="@id/shopWidgetLabelVoucherFreeShipping"
             app:layout_constraintStart_toEndOf="@id/shopWidgetImageViewShopItemProductImage1"
             app:layout_constraintEnd_toStartOf="@+id/shopWidgetImageViewShopItemProductImage3" />
 
@@ -178,7 +205,7 @@
             android:layout_marginTop="@dimen/dp_4"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="@color/Unify_Y500"
+            android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@id/shopWidgetImageViewShopItemProductImage2"
             app:layout_constraintStart_toStartOf="@id/shopWidgetImageViewShopItemProductImage2"
@@ -200,7 +227,7 @@
             android:foreground="?attr/selectableItemBackground"
             app:srcCompat="@color/Unify_N50"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toBottomOf="@id/shopWidgetImageViewShopReputation"
+            app:layout_constraintTop_toBottomOf="@id/shopWidgetLabelVoucherFreeShipping"
             app:layout_constraintStart_toEndOf="@id/shopWidgetImageViewShopItemProductImage2"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -209,7 +236,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_18"
             android:layout_marginTop="@dimen/dp_4"
-            android:textColor="@color/Unify_Y500"
+            android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
             android:singleLine="true"
             android:ellipsize="end"
@@ -239,34 +266,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             tools:visibility="gone" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/shopWidgetLabelVoucherFreeShipping"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_4"
-            android:visibility="gone"
-            app:labelTitle="@string/shopwidget_shop_voucher_free_shipping"
-            app:labelType="general_light_green"
-            app:layout_constraintLeft_toLeftOf="@id/shopWidgetImageViewShopAvatar"
-            app:layout_constraintTop_toBottomOf="@id/shopWidgetTextViewShopItemProductPrice1"
-            tools:text="@string/shopwidget_shop_voucher_free_shipping"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/shopWidgetLabelVoucherCashback"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_4"
-            android:visibility="gone"
-            app:layout_constraintLeft_toRightOf="@id/shopWidgetLabelVoucherFreeShipping"
-            app:layout_constraintTop_toBottomOf="@id/shopWidgetTextViewShopItemProductPrice1"
-            app:labelType="general_light_green"
-            app:labelTitle="@string/shopwidget_shop_voucher_cashback_percentage"
-            tools:visibility="visible"
-            tools:text="@string/shopwidget_shop_voucher_cashback_percentage"
-            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
