@@ -72,6 +72,9 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     private static int IMAGE_QUALITY = 95;
 
+    private static final String FOLDER_NAME = "extras";
+    private static final String FILE_EXTENSIONS = ".jpg";
+
     @Override
     protected void initInjector() {
 
@@ -357,20 +360,20 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     }
 
     private File getFileLocationFromDirectory() {
-        File directory = new ContextWrapper(getActivity()).getDir("kyc", Context.MODE_PRIVATE);
+        File directory = new ContextWrapper(getActivity()).getDir(FOLDER_NAME, Context.MODE_PRIVATE);
         if (!directory.exists())
             directory.mkdir();
 
-        String imageName = System.currentTimeMillis() + ".jpg";
+        String imageName = System.currentTimeMillis() + FILE_EXTENSIONS;
         return new File(directory.getAbsolutePath(), imageName);
 
     }
 
 
     private File saveToCacheDirectory(byte[] imageByte) {
-        File file = getFileLocationFromDirectory();
         FileOutputStream out = null;
         try {
+            File file = getFileLocationFromDirectory();
             out = new FileOutputStream(file);
             out.write(imageByte);
             return file;
