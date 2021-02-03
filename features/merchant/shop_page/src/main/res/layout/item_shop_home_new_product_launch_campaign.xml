@@ -73,7 +73,7 @@
         app:typographyType="body_3"
         tools:text="12 orang tertarik dengan barang inias adas das as das as dasd as das d" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.shop.home.ShopCarouselBannerImageUnify
         android:id="@+id/banner_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
