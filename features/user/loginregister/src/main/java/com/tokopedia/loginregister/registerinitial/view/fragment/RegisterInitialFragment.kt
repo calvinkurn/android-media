@@ -56,7 +56,6 @@ import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterP
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
 import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
-import com.tokopedia.loginregister.external_register.ovo.view.activity.OvoFinalPageActivity
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -162,7 +161,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var combineLoginTokenAndValidateToken: LiveData<Unit>
 
-    private var isContinueRegister = false
+    private var isRegisterOvo = false
 
     private val draw: Drawable?
         get() {
@@ -220,16 +219,24 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         isSmartLogin = getParamBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, arguments, savedInstanceState, false)
         isPending = getParamBoolean(ApplinkConstInternalGlobal.PARAM_IS_PENDING, arguments, savedInstanceState, false)
         email = getParamString(ApplinkConstInternalGlobal.PARAM_EMAIL, arguments, savedInstanceState, "")
-        isContinueRegister = arguments?.getBoolean(OvoFinalPageActivity.KEY_GOTO_REGISTER) ?: false
     }
 
     private fun clearData() {
         userSession.logoutSession()
     }
 
+    fun checkForOvoResume(){
+        if(isRegisterOvo){
+            if(externalRegisterPreference.isNeedContinue()){
+                goToRegisterWithPhoneNumber(externalRegisterPreference.getPhone())
+                externalRegisterPreference.isNeedContinue(false)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-
+        checkForOvoResume()
         activity?.run {
             if (userSession.isLoggedIn && activity != null && activityShouldEnd) {
                 setResult(Activity.RESULT_OK)
@@ -272,13 +279,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         fetchRemoteConfig()
         initObserver()
         initData()
-
-        if(isContinueRegister) {
-            val mPhone = externalRegisterPreference.getPhone()
-            if(mPhone.isNotEmpty()){
-                goToRegisterWithPhoneNumber(mPhone)
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -552,6 +552,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             phoneNumber?.run {
                 OvoAccountDialog.showRegisterDialogUnify(it, this, object: BaseDialogConnectAccListener {
                     override fun onDialogPositiveBtnClicked() {
+                        isRegisterOvo = true
                         ovoCreationAnalytics.trackClickCreateOvo()
                         goToOvoAddName(this@run)
                     }
@@ -572,6 +573,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             ovoCreationAnalytics.trackViewOvoConnectDialog()
             OvoAccountDialog.showConnectDialogUnify(this, object: BaseDialogConnectAccListener {
                 override fun onDialogPositiveBtnClicked() {
+                    isRegisterOvo = true
                     ovoCreationAnalytics.trackClickConnectOvo()
                     goToOvoAddName(phoneNumber ?: "")
                 }
