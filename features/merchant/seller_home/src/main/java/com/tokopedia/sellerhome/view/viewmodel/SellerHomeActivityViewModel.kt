@@ -47,8 +47,31 @@ class SellerHomeActivityViewModel @Inject constructor(
         get() = _isOrderShopAdmin
 
     fun getNotifications() = executeCall(_notifications) {
-        getNotificationUseCase.params = GetNotificationUseCase.getRequestParams()
-        getNotificationUseCase.executeOnBackground()
+        val notificationUiModelDeferred = async {
+            getNotificationUseCase.params = GetNotificationUseCase.getRequestParams()
+            getNotificationUseCase.executeOnBackground()
+        }
+        val isRoleChatAdminDeferred = async { getIsRoleChatAdmin() }
+        val isRoleOrderAdminDeferred = async { getIsRoleOrderAdmin() }
+        notificationUiModelDeferred.await().let {
+            it.copy(
+                    chat =
+                        if (isRoleChatAdminDeferred.await()) {
+                            it.chat
+                        } else {
+                            0
+                        },
+                    sellerOrderStatus =
+                        if (isRoleOrderAdminDeferred.await()) {
+                            it.sellerOrderStatus
+                        } else {
+                            it.sellerOrderStatus.copy(
+                                    newOrder = 0,
+                                    readyToShip = 0
+                            )
+                        }
+            )
+        }
     }
 
     fun getShopInfo() = executeCall(_shopInfo) {
@@ -57,26 +80,46 @@ class SellerHomeActivityViewModel @Inject constructor(
     }
 
     fun getAdminInfo() = executeCall(_isRoleEligible) {
-        when {
-            userSession.isShopOwner -> true
-            userSession.isLocationAdmin -> false
-            else -> {
-                val adminRoleType = async {
-                    sellerAdminUseCase.executeOnBackground().let { adminDataResponse ->
-                        adminDataResponse.data.detail.roleType.also { roleType ->
-                            updateUserSessionAdminValues(roleType, adminDataResponse.isMultiLocationShop)
-                        }
-                    }
+        getEligiblityOnlyWhenAdminShouldCheckRole {
+            sellerAdminUseCase.executeOnBackground().let { adminDataResponse ->
+                adminDataResponse.data.detail.roleType.also { roleType ->
+                    updateUserSessionAdminValues(roleType, adminDataResponse.isMultiLocationShop)
                 }
-                val isRoleEligible = async {
-                    val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST)
-                    authorizeAccessUseCase.execute(requestParams)
-                }
-                _isOrderShopAdmin.value = isRoleEligible.await()
-                adminRoleType.await().run {
-                    isShopOwner || !isLocationAdmin
-                }
+            }.run {
+                isShopOwner || !isLocationAdmin
             }
+        }
+    }
+
+    private suspend fun getIsRoleChatAdmin(): Boolean {
+        return getEligiblityOnlyWhenAdminShouldCheckRole {
+            try {
+                val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.CHAT_REPLY)
+                authorizeAccessUseCase.execute(requestParams)
+            } catch (ex: Exception) {
+                false
+            }
+        }
+    }
+
+    private suspend fun getIsRoleOrderAdmin(): Boolean {
+        return getEligiblityOnlyWhenAdminShouldCheckRole {
+            try {
+                val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toIntOrZero(), AccessId.SOM_LIST)
+                authorizeAccessUseCase.execute(requestParams)
+            } catch (ex: Exception) {
+                false
+            }
+        }
+    }
+
+    private suspend fun getEligiblityOnlyWhenAdminShouldCheckRole(action: suspend () -> Boolean): Boolean {
+        return when {
+            userSession.isShopOwner -> true
+            userSession.isShopAdmin -> {
+                action.invoke()
+            }
+            else -> false
         }
     }
 
