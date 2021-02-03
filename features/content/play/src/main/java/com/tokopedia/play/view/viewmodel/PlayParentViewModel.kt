@@ -112,4 +112,10 @@ class PlayParentViewModel constructor(
         data class ChannelId(val channelId: String) : ChannelDetailNextKey()
         data class Cursor(val cursor: String) : ChannelDetailNextKey()
     }
+
+    companion object {
+
+        private const val KEY_SOURCE_TYPE = "source_type"
+        private const val KEY_SOURCE_ID = "source_id"
+    }
 }
