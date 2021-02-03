@@ -14,7 +14,7 @@ import java.util.HashMap
 object DynamicIconTracking : BaseTracking(){
     private const val DYNAMIC_ICON = "dynamic icon"
     private const val DYNAMIC_ICON_PROMOTION_NAME = "/ - p%s - dynamic icon"
-    fun sendDynamicIconImpress(trackingQueue: TrackingQueue, userId: String, dynamicIcons: List<DynamicIconComponent.DynamicIcon>, position: Int){
+    fun sendDynamicIconImpress(trackingQueue: TrackingQueue, userId: String, dynamicIcons: List<DynamicIconComponent.DynamicIcon>, position: Int, type: Int){
         val tracker = BaseTrackerBuilder().constructBasicPromotionView(
                 event = Event.PROMO_VIEW,
                 eventAction = Action.IMPRESSION_ON.format(DYNAMIC_ICON),
@@ -24,7 +24,7 @@ object DynamicIconTracking : BaseTracking(){
                     BaseTrackerConst.Promotion(
                             id = dynamicIcon.id,
                             name = DYNAMIC_ICON_PROMOTION_NAME.format(position),
-                            position = (position + 1).toString() + " - " + (index + 1).toString(),
+                            position = type.toString() + " - " + (index + 1).toString(),
                             creative = dynamicIcon.businessUnitIdentifier,
                             creativeUrl = dynamicIcon.imageUrl
                     )
@@ -37,7 +37,7 @@ object DynamicIconTracking : BaseTracking(){
         trackingQueue.putEETracking(tracker as HashMap<String, Any>)
     }
 
-    fun sendDynamicIconClick(userId: String, dynamicIcon: DynamicIconComponent.DynamicIcon, position: Int, iconPosition: Int){
+    fun sendDynamicIconClick(userId: String, dynamicIcon: DynamicIconComponent.DynamicIcon, position: Int, iconPosition: Int, type: Int){
         val tracker = BaseTrackerBuilder().constructBasicPromotionClick(
                 event = Event.PROMO_CLICK,
                 eventAction = Action.CLICK_ON.format(DYNAMIC_ICON),
@@ -47,7 +47,7 @@ object DynamicIconTracking : BaseTracking(){
                         BaseTrackerConst.Promotion(
                                 id = dynamicIcon.id,
                                 name = DYNAMIC_ICON_PROMOTION_NAME.format(position),
-                                position = position.toString() + " - " + (iconPosition + 1).toString(),
+                                position = type.toString() + " - " + (iconPosition + 1).toString(),
                                 creative = dynamicIcon.businessUnitIdentifier,
                                 creativeUrl = dynamicIcon.imageUrl
                         )
