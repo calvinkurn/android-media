@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.buyerorder.R;
@@ -172,15 +173,8 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             itemView.setOnClickListener(view -> {
                 orderListAnalytics.hitClickProductName(status.status(), userId);
 
-                String internalApplink = ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT;
-
-                String snapshotInternal = Uri.parse(internalApplink)
-                        .buildUpon()
-                        .appendQueryParameter(PATH_ORDER_ID, String.valueOf(items.getId()))
-                        .appendQueryParameter(PATH_ORDER_DETAIL_ID, String.valueOf(items.getOrderDetailId()))
-                        .build()
-                        .toString();
-                RouteManager.route(context, snapshotInternal);
+                String applinkSnapshot = ApplinkConst.SNAPSHOT_ORDER+"/"+ items.getId() +"/"+ items.getOrderDetailId();
+                RouteManager.route(context, applinkSnapshot);
             });
 
         }
