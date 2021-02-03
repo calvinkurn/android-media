@@ -25,7 +25,7 @@ data class CartDigitalInfoData(
 
         var relationProduct: RelationshipData? = null,
 
-        var relationCategory: RelationshipData? = null,
+        var relationCategory: RelationshipData? = RelationshipData(),
 
         var relationOperator: RelationshipData? = null,
 
@@ -71,8 +71,8 @@ data class CartDigitalInfoData(
 
     @Parcelize
     data class RelationshipData(
-            var type: String? = null,
+            var type: String = "",
 
-            var id: String? = null
+            var id: String = ""
     ) : Parcelable
 }
