@@ -506,7 +506,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun trackClickCtaWidget(element: NotificationUiModel) {
-        analytic.trackClickCtaWidget(element)
+        analytic.trackClickCtaWidget(element, containerListener?.role)
     }
 
     private fun createViewHolderState(
