@@ -772,8 +772,8 @@ open class HomeFragment : BaseDaggerFragment(),
             }
 
             override fun onViewChange(isShowing: Boolean) {
-                if (stickyLoginView.isShowing()) {
-                    positionSticky = stickyLoginView.getLocation()
+                if (stickyLoginView?.isShowing() == true) {
+                    positionSticky = stickyLoginView?.getLocation()
                 }
                 floatingEggButtonFragment?.let {
                     updateEggBottomMargin(it)
@@ -2274,8 +2274,8 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
         val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
-        if (stickyLoginView.isShowing()) {
-            params.setMargins(0, 0, 0, stickyLoginView.height)
+        if (stickyLoginView?.isShowing() == true) {
+            stickyLoginView?.height?.let { params.setMargins(0, 0, 0, it) }
             val positionEgg = IntArray(2)
             val eggHeight = floatingEggButtonFragment.egg.height
             floatingEggButtonFragment.egg.getLocationOnScreen(positionEgg)
