@@ -593,16 +593,16 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             if (isUserReminded) {
                 tokoButtonContainer.btnReminder.setText(reminder?.buttonUnset)
                 isReminderSet = true
-                if (showToast && !reminder?.textUnset.isNullOrEmpty()) {
-                    CustomToast.show(context, reminder?.textUnset!!)
-                    GtmEvents.clickReminderButton(userSession?.userId, reminder?.textUnset!!)
+                if (showToast && !reminder?.textSet.isNullOrEmpty()) {
+                    CustomToast.show(context, reminder?.textSet!!)
+                    GtmEvents.clickReminderButton(userSession?.userId, reminder?.textSet!!)
                 }
             } else {
                 tokoButtonContainer.btnReminder.setText(reminder?.buttonSet)
                 isReminderSet = false
-                if (showToast && !reminder?.textSet.isNullOrEmpty()) {
-                    CustomToast.show(context, reminder?.textSet!!)
-                    GtmEvents.clickReminderButton(userSession?.userId, reminder?.textSet!!)
+                if (showToast && !reminder?.textUnset.isNullOrEmpty()) {
+                    CustomToast.show(context, reminder?.textUnset!!)
+                    GtmEvents.clickReminderButton(userSession?.userId, reminder?.textUnset!!)
                 }
             }
             tokoButtonContainer.btnReminder.setIcon(isUserReminded)
