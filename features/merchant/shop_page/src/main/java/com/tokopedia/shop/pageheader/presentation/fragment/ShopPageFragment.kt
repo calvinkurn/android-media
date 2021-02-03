@@ -567,9 +567,9 @@ class ShopPageFragment :
 
     private fun initStickyLogin(view: View) {
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
-        stickyLoginView.page = StickyLoginConstant.Page.SHOP
-        stickyLoginView.lifecycleOwner = viewLifecycleOwner
-        stickyLoginView.setStickyAction(object : StickyLoginAction {
+        stickyLoginView?.page = StickyLoginConstant.Page.SHOP
+        stickyLoginView?.lifecycleOwner = viewLifecycleOwner
+        stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
             }
@@ -584,7 +584,7 @@ class ShopPageFragment :
             }
         })
 
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
     }
 
     private fun getInitialData() {
@@ -1224,7 +1224,7 @@ class ShopPageFragment :
             setViewState(VIEW_LOADING)
         swipeToRefresh.isRefreshing = true
 
-        stickyLoginView.loadContent()
+        stickyLoginView?.loadContent()
     }
 
     fun collapseAppBar() {
@@ -1399,8 +1399,8 @@ class ShopPageFragment :
 
     private fun updateFloatingChatButtonMargin() {
         val buttonChatLayoutParams = (chatButton.layoutParams as ViewGroup.MarginLayoutParams)
-        if (stickyLoginView.isShowing()) {
-            val stickyLoginViewHeight = stickyLoginView.height
+        if (stickyLoginView?.isShowing()) {
+            val stickyLoginViewHeight = stickyLoginView?.height
             buttonChatLayoutParams.setMargins(
                     buttonChatLayoutParams.leftMargin,
                     buttonChatLayoutParams.topMargin,
@@ -1419,8 +1419,8 @@ class ShopPageFragment :
     }
 
     private fun updateViewPagerPadding() {
-        if (stickyLoginView.isShowing()) {
-            viewPager.setPadding(0, 0, 0, stickyLoginView.height)
+        if (stickyLoginView?.isShowing()) {
+            viewPager.setPadding(0, 0, 0, stickyLoginView?.height)
         } else {
             viewPager.setPadding(0, 0, 0, 0)
         }

@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
@@ -43,7 +44,6 @@ import com.tokopedia.stickylogin.common.helper.getPrefStickyLogin
 import com.tokopedia.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.stickylogin.view.viewModel.StickyLoginViewModel
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -64,8 +64,8 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     private lateinit var remoteConfig: RemoteConfig
 
     private lateinit var layoutContainer: ConstraintLayout
-    private lateinit var imageViewLeft: ImageUnify
-    private lateinit var imageViewRight: ImageUnify
+    private lateinit var imageViewLeft: ImageView
+    private lateinit var imageViewRight: ImageView
     private lateinit var textContent: EllipsizedTextView
 
     private var leftImage: Drawable? = null
