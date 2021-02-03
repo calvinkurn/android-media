@@ -77,8 +77,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     private void sendCampaignTrack(Uri uriData) {
-        String applink = DeeplinkMapper.getRegisteredNavigation(this, uriData.toString());
-        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(applink));
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(uriData.toString()));
         presenter.sendAuthenticatedEvent(uriData, campaign, getScreenName());
     }
 
