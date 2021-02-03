@@ -70,35 +70,74 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/name"
-        android:background="@drawable/right_bubble">
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:background="@drawable/chatbot_right_bubble">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/message"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:linksClickable="true"
-            android:maxWidth="@dimen/chat_width"
-            android:padding="@dimen/dp_10"
-            android:textColor="@color/white"
-            android:textColorLink="@color/white"
-            android:textIsSelectable="true"
-            app:typographyType="body_2"
-            tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk" />
+            android:layout_height="wrap_content">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/bottom_view"
-            android:layout_width="270dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/message"
-            android:gravity="start"
-            android:paddingStart="@dimen/dp_10"
-            android:paddingEnd="@dimen/dp_10"
-            android:paddingBottom="@dimen/dp_8"
-            android:text="@string/read_more"
-            android:textColor="@color/read_more_color"
-            android:textStyle="bold"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:linksClickable="true"
+                android:maxWidth="@dimen/chat_width"
+                android:paddingBottom="@dimen/dp_8"
+                android:textColor="@color/Unify_N700_96"
+                android:textColorLink="@color/white"
+                android:textIsSelectable="true"
+                app:typographyType="body_2"
+                app:layout_constraintRight_toRightOf="@id/main"
+                app:layout_constraintLeft_toLeftOf="@id/main"
+                app:layout_constraintTop_toTopOf="@id/main"
+                tools:text="Guawsssssssssssssssssssssssssssssssssssssssssswwsqwswqswqswqswqsxw" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/bottom_view"
+                android:layout_width="@dimen/chat_width"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_8"
+                android:text="@string/read_more"
+                android:textColor="@color/read_more_color"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="@id/message"
+                app:layout_constraintTop_toBottomOf="@id/message"
+                tools:visibility="visible" />
+
+
+            <ImageView
+                android:id="@+id/chat_status"
+                android:layout_width="11dp"
+                android:layout_height="6dp"
+                android:layout_marginLeft="@dimen/dp_4"
+                app:layout_constraintBottom_toBottomOf="@id/message"
+                app:layout_constraintLeft_toRightOf="@id/message"
+
+                tools:ignore="ContentDescription"
+                tools:src="@drawable/ic_read_thin" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_N700_32"
+                android:layout_marginLeft="@dimen/dp_4"
+                app:layout_goneMarginLeft="@dimen/dp_4"
+                app:layout_constraintBottom_toBottomOf="@+id/chat_status"
+                app:layout_constraintStart_toEndOf="@+id/chat_status"
+                app:layout_constraintTop_toTopOf="@+id/chat_status"
+                app:typographyType="heading_6"
+                tools:text="10:13 pm"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </RelativeLayout>
 
     <com.tokopedia.unifycomponents.ProgressBarUnify
@@ -112,28 +151,4 @@
         android:visibility="gone"
         tools:visibility="gone" />
 
-    <ImageView
-        android:id="@+id/chat_status"
-        android:layout_width="11dp"
-        android:layout_height="6dp"
-        android:layout_below="@+id/main"
-        android:layout_alignTop="@+id/hour"
-        android:layout_alignBottom="@+id/hour"
-        android:layout_marginEnd="5dp"
-        android:layout_toStartOf="@+id/hour"
-        android:adjustViewBounds="true"
-        tools:ignore="ContentDescription"
-        tools:src="@drawable/ic_read_thin" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/hour"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@id/card_group_chat_message"
-        android:layout_below="@id/main"
-        android:layout_marginTop="@dimen/dp_3"
-        android:textColor="@color/time_color"
-        android:textSize="@dimen/sp_10"
-        tools:text="10:13 pm"
-        tools:visibility="visible" />
 </RelativeLayout>

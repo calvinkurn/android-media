@@ -24,7 +24,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
 
     private Context context;
     protected TextView message;
-    private ImageView chatStatus;
+    protected ImageView chatStatus;
     private View chatBalloon;
     private TextView name;
     private TextView label;

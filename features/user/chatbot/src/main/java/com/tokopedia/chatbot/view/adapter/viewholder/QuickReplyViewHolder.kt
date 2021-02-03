@@ -1,8 +1,8 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
 import android.view.View
-import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
@@ -25,12 +25,12 @@ class QuickReplyViewHolder(itemView: View,
 
     private val message: TextView
     private val mesageBottom: TextView
-    private val mesageLayout: RelativeLayout
+    private val mesageLayout: ConstraintLayout
 
     init {
         message = itemView.findViewById<View>(R.id.message) as TextView
         mesageBottom = itemView.findViewById<View>(R.id.bottom_view) as TextView
-        mesageLayout = itemView.findViewById<View>(R.id.message_layout) as RelativeLayout
+        mesageLayout = itemView.findViewById<View>(R.id.message_layout) as ConstraintLayout
     }
 
     override fun bind(element: QuickReplyListViewModel) {
@@ -59,7 +59,7 @@ class QuickReplyViewHolder(itemView: View,
 
                 } else {
                     mesageBottom.visibility = View.GONE
-                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,com.tokopedia.chat_common.R.drawable.left_bubble))
+                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context, R.drawable.chatbot_left_bubble))
                 }
             }
 
