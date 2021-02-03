@@ -40,6 +40,7 @@ class SellerReviewHelper @Inject constructor(
     }
 
     private val handler by lazy { Handler() }
+    private var popupAlreadyShown = false
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
@@ -69,8 +70,9 @@ class SellerReviewHelper @Inject constructor(
 
     private fun showInAppReviewBottomSheet(context: Context, fm: FragmentManager) {
         //we can't show bottom sheet if FragmentManager's state has already been saved
-        if (fm.isStateSaved) return
+        if (fm.isStateSaved || popupAlreadyShown) return
 
+        popupAlreadyShown = true
         resetQuotaCheck()
 
         val ratingBottomSheet = (fm.findFragmentByTag(RatingBottomSheet.TAG) as? RatingBottomSheet)
