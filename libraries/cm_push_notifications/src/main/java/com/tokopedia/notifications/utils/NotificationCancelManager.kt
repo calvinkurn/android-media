@@ -48,11 +48,12 @@ open class NotificationCancelManager: CoroutineScope {
         launch {
             val notifications = pushRepository(context).getNotification()
             withContext(Dispatchers.Main) {
-                val result = notifications
+                invoke(notifications
+                        .filter { it.campaignId != 0L }
                         .intersect(excludeIds(remoteConfig)) { notification, excludedItem ->
                             notification.campaignId == excludedItem.toLong()
                         }
-                invoke(result)
+                )
             }
         }
     }
