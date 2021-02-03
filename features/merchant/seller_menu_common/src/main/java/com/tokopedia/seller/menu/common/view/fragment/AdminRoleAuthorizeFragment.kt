@@ -180,8 +180,6 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
 
     private fun GlobalError.showAdminError() {
         setType(GlobalError.SERVER_ERROR)
-        errorTitle.text = context?.getString(R.string.admin_error_title)
-        errorDescription.text = context?.getString(R.string.admin_error_desc)
         errorAction.text = context?.getString(R.string.admin_error_refresh_page)
 
         setActionClickListener {
