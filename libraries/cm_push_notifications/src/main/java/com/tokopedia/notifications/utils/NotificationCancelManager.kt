@@ -86,9 +86,11 @@ open class NotificationCancelManager: CoroutineScope {
         /*
         * NotificationCancelManager will trigger every main activity opened,
         * so there's case where remote config value didn't get the value well,
-        * so we need a internal exclude items.
+        * so we need a internal exclude static items of campaignId.
         * */
-        private val excludeIds = listOf("-1854")
+        private val excludeIds = listOf(
+                "-1854" // OTP Push Notification
+        )
     }
 
 }
