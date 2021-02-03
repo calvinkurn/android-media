@@ -218,6 +218,8 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     fun loadContent(page: StickyLoginConstant.Page, lifecycleOwner: LifecycleOwner) {
         this.page = page
 
+        if (isShowing()) return
+
         if (!::userSession.isInitialized) {
             userSession = UserSession(context)
         }
