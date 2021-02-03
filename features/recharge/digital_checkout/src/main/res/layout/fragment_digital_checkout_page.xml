@@ -118,8 +118,8 @@
         android:focusableInTouchMode="true"
         android:background="@color/Neutral_N0">
 
-        <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
-            android:id="@+id/digitalPromoTickerView"
+        <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
+            android:id="@+id/digitalPromoBtnView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent" />
@@ -130,11 +130,11 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:text="@string/digital_cart_total_payment_label"
+            android:text="@string/digital_checkout_total_payment_label"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/digitalPromoTickerView"
+            app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
             app:typographyType="body_3"
             app:typographyWeight="bold"/>
 
@@ -168,7 +168,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/digitalPromoTickerView"
+            app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
             app:unifyButtonSize="medium"
             app:unifyButtonType="transaction" />
     </androidx.constraintlayout.widget.ConstraintLayout>

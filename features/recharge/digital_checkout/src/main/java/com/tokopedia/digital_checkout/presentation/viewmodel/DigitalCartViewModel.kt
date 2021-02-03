@@ -267,7 +267,7 @@ class DigitalCartViewModel @Inject constructor(
         return {
             if (it.response.success) {
                 _isSuccessCancelVoucherCart.postValue(Success(true))
-                applyPromoData(PromoData(state = TickerCheckoutView.State.EMPTY))
+                applyPromoData(PromoData(state = TickerCheckoutView.State.EMPTY, description = ""))
             } else {
                 _isSuccessCancelVoucherCart.postValue(Fail(Throwable("")))
             }
