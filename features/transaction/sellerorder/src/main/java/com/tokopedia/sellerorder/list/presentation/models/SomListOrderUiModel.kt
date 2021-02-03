@@ -16,7 +16,7 @@ data class SomListOrderUiModel(
         val orderId: String = "",
         val orderProduct: List<OrderProduct> = listOf(),
         val orderResi: String = "",
-        val orderStatusId: Long = 0,
+        val orderStatusId: Int = 0,
         val status: String = "",
         val statusColor: String = "#FFFFFF",
         val statusIndicatorColor: String = "#FFFFFF",
