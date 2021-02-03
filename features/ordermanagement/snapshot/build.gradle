@@ -59,7 +59,7 @@ dependencies {
 
 project.ext {
     artifactId = "snapshot"
-    groupId = "com.tokopedia.snapshot"
+    groupId = "com.tokopedia.ordermanagement.snapshot"
     versionName = "0.0.1"
     artifactName = "snapshot-release"
 }
