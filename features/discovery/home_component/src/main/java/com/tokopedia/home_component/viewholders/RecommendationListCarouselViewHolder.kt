@@ -195,7 +195,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
     class HomeRecommendationListViewHolder(
             itemView: View,
             val listCarouselListener: RecommendationListCarouselListener?,
-            val isCacheData: Boolean
+            val isCacheData: Boolean,
     ): RecommendationListCarouselItem(itemView) {
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
@@ -239,7 +239,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                             recommendation.grid,
                             adapterPosition,
                             recommendation.recommendationApplink,
-                            adapterPosition
+                            recommendation.parentPosition
                     )
                 }
             } else if(recommendation is HomeRecommendationListSeeMoreData) {
