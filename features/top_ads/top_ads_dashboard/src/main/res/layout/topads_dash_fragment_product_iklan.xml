@@ -22,39 +22,44 @@
         android:id="@+id/progressView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:visibility="gone"
+        android:gravity="center_horizontal|center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/loaderImage"
             android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24" />
+            android:layout_height="@dimen/dp_24"
+            android:layout_gravity="center_horizontal" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/loader_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_16"
-            app:typographyType="heading_4"
-            android:text="@string/topads_dash_reload_title" />
+            android:text="@string/topads_dash_reload_title"
+            app:typographyType="heading_4" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_8"
-            app:typographyType="body_3"
-            android:text="@string/topads_dash_reload_msg" />
+            android:text="@string/topads_dash_reload_msg"
+            app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnReload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:unifyButtonSize="small"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_16"
             android:text="@string/topads_dash_reload_btn"
-            android:layout_marginTop="@dimen/dp_16" />
+            app:unifyButtonSize="small" />
 
     </LinearLayout>
 

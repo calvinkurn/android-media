@@ -38,9 +38,8 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     lateinit var viewModel: AdChooserViewModel
     private var adStatus = 0
     private var dailyBudget = 0
-    private var current_auto_ads_status = 0
-    private var manual_ads: UnifyButton? = null
-    private var auto_ads: UnifyButton? = null
+    private var manualAds: UnifyButton? = null
+    private var autoAds: UnifyButton? = null
 
     companion object {
 
@@ -51,17 +50,15 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         private const val IN_PROGRESS_200 = 200
         private const val IN_PROGRESS_300 = 300
         private const val IN_PROGRESS_400 = 400
-        private const val MANAUAL = 3
+        private const val MANUAL = 3
         private const val AUTO = 4
         private const val NO_ADS = 2
-        private const val NO_PRODUCT = 1
 
         fun newInstance(): AdCreationChooserFragment {
             val args = Bundle()
             val fragment = AdCreationChooserFragment()
             fragment.arguments = args
             return fragment
-
         }
     }
 
@@ -82,18 +79,11 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
     private fun onSuccessAutoAds(data: AutoAdsResponse) {
         when (data.topAdsGetAutoAds.data.status) {
-            //TODO
-            ACTIVE -> setActiveStatus(R.string.ads_active, R.drawable.active_status_green)
-            NON_ACTIVE -> setActiveStatus(R.string.ads_not_delivered, R.drawable.active_status_orange)
-            else -> {
-                auto_ads?.isEnabled = false
-                manual_ads?.isEnabled = false
-                ticker_info?.visible()
-            }
+            ACTIVE -> setActiveStatus()
+            NON_ACTIVE -> setActiveStatus()
+            else -> inProgress()
         }
-
         dailyBudget = data.topAdsGetAutoAds.data.dailyBudget
-        current_auto_ads_status = data.topAdsGetAutoAds.data.status
         when (data.topAdsGetAutoAds.data.status) {
             IN_PROGRESS_200 -> inProgress()
             IN_PROGRESS_300 -> inProgress()
@@ -102,9 +92,9 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setActiveStatus(adsActive: Int, bg: Int) {
-        auto_ads?.isEnabled = true
-        manual_ads?.isEnabled = true
+    private fun setActiveStatus() {
+        autoAds?.isEnabled = true
+        manualAds?.isEnabled = true
         ticker_info?.gone()
     }
 
@@ -114,6 +104,10 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
         })
         view.imageView7.setImageDrawable(view.context.getResDrawable(R.drawable.ill_header))
+        setCaraouselView(view)
+    }
+
+    private fun setCaraouselView(view: View) {
         view.topAdsCaraousel.apply {
             slideToShow = 1.2f
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
@@ -134,13 +128,13 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                 icon3.setImageResource(R.drawable.topads_create_ic_checklist_blue)
                 icon4.setImageResource(R.drawable.topads_create_ic_checklist_blue)
 
-                auto_ads = this.findViewById(R.id.btn_start_auto_ads)
-                auto_ads?.setOnClickListener {
+                autoAds = this.findViewById(R.id.btn_start_auto_ads)
+                autoAds?.setOnClickListener {
                     if (adStatus == AUTO) {
                         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
                         startActivityForResult(intent, AUTO_ADS_DISABLED)
                     }
-                    if (adStatus == MANAUAL || adStatus == NO_ADS) {
+                    if (adStatus == MANUAL || adStatus == NO_ADS) {
                         RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
                     }
                 }
@@ -160,9 +154,9 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                 icon7.setImageResource(R.drawable.topads_create_ic_checklist_blue)
                 icon8.setImageResource(R.drawable.topads_create_ic_checklist_blue)
 
-                manual_ads = this.findViewById(R.id.btn_start_manual_ads)
-                manual_ads?.setOnClickListener {
-                    if (adStatus == MANAUAL || adStatus == NO_ADS) {
+                manualAds = this.findViewById(R.id.btn_start_manual_ads)
+                manualAds?.setOnClickListener {
+                    if (adStatus == MANUAL || adStatus == NO_ADS) {
                         startActivity(Intent(activity, StepperActivity::class.java))
                     }
                     if (adStatus == AUTO) {
@@ -180,19 +174,15 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     }
 
     private fun autoAdsDisableConfirm() {
-        ticker_info.visibility = View.GONE
-        auto_ads?.isEnabled = true
-        manual_ads?.isEnabled = true
-        auto_ads?.alpha = 1f
-        manual_ads?.alpha = 1f
+        ticker_info.gone()
+        autoAds?.isEnabled = true
+        manualAds?.isEnabled = true
     }
 
     private fun inProgress() {
-        ticker_info.visibility = View.VISIBLE
-        auto_ads?.isEnabled = false
-        manual_ads?.isEnabled = false
-        auto_ads?.alpha = 0.5f
-        manual_ads?.alpha = 0.5f
+        ticker_info.visible()
+        autoAds?.isEnabled = false
+        manualAds?.isEnabled = false
     }
 
     override fun getScreenName(): String {

@@ -28,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.common.data.internal.NonDeliveryReason
 import com.tokopedia.topads.common.data.model.AutoAdsParam
@@ -109,6 +110,10 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
                 setUi(it.statusDetail)
         })
         widgetViewModel.autoAdsStatus.observe(context as BaseActivity, Observer {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
+                putExtra(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, TopAdsCommonConstant.PARAM_PRODUK_IKLAN)
+            }
+            (context as BaseActivity).startActivity(intent)
             (context as BaseActivity).setResult(Activity.RESULT_OK)
             (context as BaseActivity).finish()
         })

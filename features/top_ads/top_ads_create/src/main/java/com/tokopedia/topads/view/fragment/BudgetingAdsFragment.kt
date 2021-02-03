@@ -273,6 +273,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             tipsListSheet?.showHeader = true
             tipsListSheet?.showKnob = false
             tipsListSheet?.isDragable = false
+            tipsListSheet?.isHideable = false
             tipsListSheet?.setTitle(getString(R.string.tip_biaya_iklan))
             tipsListSheet?.show(childFragmentManager, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID, userID)

@@ -58,8 +58,8 @@
     <string name="topads_dash_group_item_progress_status"> dari Rp %d</string>
     <string name="topads_common_topads_common_autoads_outofbudget_desc_edit">Anggaran Harian Habis. Naikan anggaran untuk mulai tampil lagi.</string>
     <string name="topads_common_topads_common_autoads_outofbudget_desc">Iklan tidak tampil karena anggaran harian habis.</string>
-    <string name="topads_common_autoads_inprogress_desc">Tunggu ya, proses pembuatan iklanmu membutuhkan waktu.</string>
-    <string name="topads_common_autoads_inprogress_deactivate_desc">Tunggu ya, Iklan Otomatis kamu akan dinonaktifkan sesaat lagi.</string>
+    <string name="topads_common_autoads_inprogress_desc">Tunggu ya, iklanmu sedang dibuat.</string>
+    <string name="topads_common_autoads_inprogress_deactivate_desc">Tunggu ya, iklanmu sedang dimatikan</string>
     <string name="topads_common_autoads_outofstock_desc">Iklan tidak tampil karena stok barang habis.</string>
     <string name="topads_common_autoads_outofcredit_desc">Iklan tidak tampil karena kredit kurang.</string>
     <string name="topads_common_autoads_merchant_closed_desc">Iklan tidak tampil karena toko sedang tutup.</string>
@@ -113,7 +113,7 @@
     <string name="topads_common_search_hint_activity">Cari kata kunci di sini</string>
     <string name="topads_common_new_manual_key">Kata kunci &lt;b>%s&lt;/b> tidak tersedia. </string>
     <string name="topads_common_tambah_button">Tambahkan</string>
-    <string name="topads_common_confirmation_switch_manual_description">Iklan Otomatis butuh waktu setidaknya<![CDATA["<font color='#fa31353b'><b> 2</b></font> ]]>minggu untuk memaksimalkan penjualanmu.</string>
+    <string name="topads_common_confirmation_switch_manual_description">Iklan Otomatis butuh waktu setidaknya<![CDATA["<font color='#fa31353b'><b> 2 minggu</b></font> ]]> untuk memaksimalkan penjualanmu.</string>
     <string name="topads_common_confirmation_switch_manual">Yakin matikan Iklan Otomatis?</string>
     <string name="topads_common_gunakan_iklan_manual">Ya, Matikan</string>
     <string name="topads_common_confirmation_sheet_cancel">Tetep Gunakan</string>
@@ -140,6 +140,9 @@
 
     <!-- bottomsheet success/outofcredit -->
     <string name="topads_common_success_bs_subtitle">Jangan lupa pantau terus performa iklan produkmu di Dashboard TopAds.</string>
+    <string name="topads_common_later">Nanti saja</string>
+    <string name="topads_common_out_of_creadit_btn">Top up sekarang</string>
+    <string name="topads_common_out_of_credit_subtitle">Tinggal 1 langkah lagi! Isi kredit TopAds untuk mengaktifkan iklan produkmu </string>
 
 
     <string-array name="sort_product_list_array">

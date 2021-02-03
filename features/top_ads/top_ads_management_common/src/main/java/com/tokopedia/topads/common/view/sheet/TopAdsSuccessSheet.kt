@@ -31,7 +31,6 @@ class TopAdsSuccessSheet : BottomSheetUnify() {
         val contentView = View.inflate(context, R.layout.topads_create_activity_success, null)
         setChild(contentView)
         showCloseIcon = false
-        //    setTitle(name)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,11 +47,13 @@ class TopAdsSuccessSheet : BottomSheetUnify() {
                 if (isFromPdpSellerMigration(activity?.intent?.extras)) {
                     putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
                     putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
-                } else {
-                    putExtra(TOPADS_MOVE_TO_DASHBOARD, PARAM_PRODUK_IKLAN)
                 }
+                putExtra(TOPADS_MOVE_TO_DASHBOARD, PARAM_PRODUK_IKLAN)
             }
             startActivity(intent)
+            activity?.finish()
+        }
+        setOnDismissListener {
             activity?.finish()
         }
     }
