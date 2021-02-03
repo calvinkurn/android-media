@@ -1621,7 +1621,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean) {
         dPresenter.setHasPerformChecklistChange(true)
         cartAdapter.setShopSelected(itemPosition, checked)
-        cartAdapter.notifyItemChanged(itemPosition)
+        onNeedToUpdateViewItem(itemPosition)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
         cartAdapter.checkForShipmentForm()
         dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
@@ -1749,12 +1749,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onNeedToRefreshSingleShop(parentPosition: Int) {
-        cartAdapter.notifyItemChanged(parentPosition)
+        onNeedToUpdateViewItem(parentPosition)
     }
 
     override fun onNeedToRefreshMultipleShop() {
         val firstShopIndexAndCount = cartAdapter.getFirstShopAndShopCount()
-        cartAdapter.notifyItemRangeChanged(firstShopIndexAndCount.first, firstShopIndexAndCount.second)
+        onNeedToUpdateMultipleViewItem(firstShopIndexAndCount.first, firstShopIndexAndCount.second)
     }
 
     override fun onNeedToRecalculate() {
@@ -2977,6 +2977,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onNeedToRemoveViewItem(position: Int) {
+        if (position == RecyclerView.NO_POSITION) return
         if (cartRecyclerView.isComputingLayout) {
             cartRecyclerView.post { cartAdapter.notifyItemRemoved(position) }
         } else {
@@ -2985,10 +2986,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onNeedToUpdateViewItem(position: Int) {
+        if (position == RecyclerView.NO_POSITION) return
         if (cartRecyclerView.isComputingLayout) {
             cartRecyclerView.post { cartAdapter.notifyItemChanged(position) }
         } else {
             cartAdapter.notifyItemChanged(position)
+        }
+    }
+
+    private fun onNeedToUpdateMultipleViewItem(positionStart: Int, count: Int) {
+        if (positionStart == RecyclerView.NO_POSITION) return
+        if (cartRecyclerView.isComputingLayout) {
+            cartRecyclerView.post { cartAdapter.notifyItemRangeChanged(positionStart, count) }
+        } else {
+            cartAdapter.notifyItemRangeChanged(positionStart, count)
         }
     }
 
@@ -3369,7 +3380,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onEditNoteDone(parentPosition: Int) {
-        cartAdapter.notifyItemChanged(parentPosition)
+        onNeedToUpdateViewItem(parentPosition)
     }
 
     override fun onCashbackUpdated(amount: Int) {

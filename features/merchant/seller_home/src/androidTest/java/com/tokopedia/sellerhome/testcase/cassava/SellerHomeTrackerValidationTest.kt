@@ -8,17 +8,15 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeIdlingResource
-import com.tokopedia.sellerhome.analytic.performance.SellerHomeLoadTimeMonitoringListener
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.test.application.util.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -33,7 +31,7 @@ class SellerHomeTrackerValidationTest {
         override fun afterActivityLaunched() {
             super.afterActivityLaunched()
             sellerHomeLoadTimeMonitoringListener.onStartPltMonitoring()
-            activity.sellerHomeLoadTimeMonitoringListener = sellerHomeLoadTimeMonitoringListener
+            activity.loadTimeMonitoringListener = sellerHomeLoadTimeMonitoringListener
             markAsIdleIfPltIsSucceed()
         }
     }
@@ -42,7 +40,7 @@ class SellerHomeTrackerValidationTest {
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
     // this is only to make the test wait until widgets rendered
-    val sellerHomeLoadTimeMonitoringListener = object : SellerHomeLoadTimeMonitoringListener {
+    val sellerHomeLoadTimeMonitoringListener = object : LoadTimeMonitoringListener {
         override fun onStartPltMonitoring() {
             SellerHomeIdlingResource.increment()
         }
@@ -226,7 +224,9 @@ class SellerHomeTrackerValidationTest {
     private fun login() {
         InstrumentationAuthHelper.loginToAnUser(
                 InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application,
-                SellerHomeIdlingResource.idlingResource
+                SellerHomeIdlingResource.idlingResource,
+                "try.sugiharto+02@tokopedia.com",
+                "tokopedia789"
         )
     }
 

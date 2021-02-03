@@ -37,6 +37,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
     companion object {
         const val CREATE_REVIEW_SOURCE_ID = "bjFkPX"
+        const val LOCAL_IMAGE_SOURCE = "storage"
     }
 
     private var imageData: MutableList<BaseImageReviewUiModel> = mutableListOf()
@@ -95,20 +96,24 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getAfterEditImageList(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, edited: ArrayList<Boolean>): MutableList<BaseImageReviewUiModel> {
-        val pictureList = CreateReviewImageMapper.getEditedImages(originalImageUrl, originalImages, edited)
-        val imageUrlOrPathList = CreateReviewImageMapper.getImageUrlList(imagePickerResult, edited, pictureList, originalImageUrl)
+    fun getAfterEditImageList(imagePickerResult: MutableList<String>, imagesFedIntoPicker: MutableList<String>): MutableList<BaseImageReviewUiModel> {
+        // Remove old image
+        originalImages = imagesFedIntoPicker.filter { !it.contains(LOCAL_IMAGE_SOURCE) }.toMutableList()
+        val imagesToDisplay = originalImages.toMutableList()
+        imagePickerResult.forEachIndexed { index, s ->
+            if(s.contains(LOCAL_IMAGE_SOURCE) && index > originalImages.lastIndex) {
+                imagesToDisplay.add(s)
+            }
+        }
 
-        originalImages = originalImageUrl
-
-        when (imagePickerResult.size) {
+        when (imagesToDisplay.size) {
             5 -> {
-                imageData = (imageUrlOrPathList.map {
+                imageData = (imagesToDisplay.map {
                     ImageReviewUiModel(it)
                 }).toMutableList()
             }
             else -> {
-                imageData.addAll(imageUrlOrPathList.map {
+                imageData.addAll(imagesToDisplay.map {
                     ImageReviewUiModel(it)
                 })
                 imageData.add(DefaultImageReviewUiModel())

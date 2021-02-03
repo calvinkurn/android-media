@@ -71,7 +71,9 @@ class ProductDetailTopAdsVerificationTest {
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
         if(viewHolder is ProductRecommendationViewHolder) {
             waitForData()
-            clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
+            if(viewHolder.itemView.findViewById<RecyclerView>(R.id.carouselProductCardRecyclerView) != null) {
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 0)
+            }
         }
     }
 
