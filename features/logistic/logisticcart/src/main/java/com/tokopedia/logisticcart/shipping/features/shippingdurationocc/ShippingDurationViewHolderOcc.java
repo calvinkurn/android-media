@@ -174,7 +174,7 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
                 .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
                 .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                 .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .circleIndicatorBackgroundDrawableRes(com.tokopedia.showcase.R.drawable.selector_circle_green)
                 .textSizeRes(R.dimen.sp_12)
                 .finishStringRes(R.string.label_shipping_show_case_finish)
                 .useCircleIndicator(true)

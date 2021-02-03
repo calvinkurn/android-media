@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
+import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.text.SpannableString
@@ -121,6 +122,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showShipping() {
         val shipmentModel = preference.preference.shipment
 
@@ -352,6 +354,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupPaymentInstallment(creditCard: OrderPaymentCreditCard) {
         val selectedTerm = creditCard.selectedTerm
         if (!creditCard.isDebit && selectedTerm != null) {
@@ -423,6 +426,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showAddress() {
         val addressModel = preference.preference.address
         val receiverName = addressModel.receiverName

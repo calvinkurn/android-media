@@ -403,6 +403,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_14"
+                android:contentDescription="@string/content_description_img_payment"
                 android:scaleType="fitCenter"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/divider_new_cc_payment" />

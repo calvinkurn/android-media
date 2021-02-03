@@ -224,7 +224,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     tvPreferenceName?.text = preferenceIndex
                     tvPreferenceName?.visible()
                 } else if (preferenceIndex.isNotEmpty()) {
-                    tvPreferenceName?.text = "Template ${preferenceIndex.replace("[^0-9]".toRegex(), "")}"
+                    tvPreferenceName?.text = getString(R.string.lbl_occ_profile_name_with_suffix, preferenceIndex.replace("[^0-9]".toRegex(), ""))
                     tvPreferenceName?.visible()
                 }
             }
