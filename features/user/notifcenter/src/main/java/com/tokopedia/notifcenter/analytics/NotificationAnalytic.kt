@@ -49,6 +49,7 @@ class NotificationAnalytic @Inject constructor(
             const val CLICK_SEE_MORE_EARLIER = "click on see more at earlier section"
             const val CLICK_NOTIF_SETTINGS = "click on notif settings"
             const val CLICK_FILTER_REQUEST = "click on filter request"
+            const val CLICK_WIDGET_CTA = "click cta on notif"
         }
     }
 
@@ -238,6 +239,26 @@ class NotificationAnalytic @Inject constructor(
                         eventCategory = EventCategory.NOTIFCENTER,
                         eventAction = EventAction.CLICK_FILTER_REQUEST,
                         eventLabel = filterName,
+                        businessUnit = BusinessUnit.COMMUNICATION,
+                        currentSite = CurrentSite.MARKETPLACE,
+                        userId = userSession.userId,
+                        userRole = getRoleString(role)
+                )
+        )
+    }
+
+    fun trackClickCtaWidget(
+            element: NotificationUiModel,
+            @RoleType
+            role: Int?
+    ) {
+        if (role == null) return
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                InboxAnalyticCommon.createGeneralEvent(
+                        event = Event.CLICK_NOTIF_CENTER,
+                        eventCategory = EventCategory.NOTIFCENTER,
+                        eventAction = "${EventAction.CLICK_WIDGET_CTA} - ${element.widgetCtaText}",
+                        eventLabel = getEventLabel(element),
                         businessUnit = BusinessUnit.COMMUNICATION,
                         currentSite = CurrentSite.MARKETPLACE,
                         userId = userSession.userId,

@@ -112,6 +112,7 @@ data class NotificationUiModel(
     val product: ProductData? get() = productData.getOrNull(0)
     val expireTimeUnixMillis: Long get() = expireTimeUnix * 1000
     val createTimeUnixMillis: Long get() = createTimeUnix * 1000
+    val widgetCtaText: String get() = widget.buttonText
     var isHistoryVisible = false
         private set
 

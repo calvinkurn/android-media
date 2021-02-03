@@ -505,6 +505,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         onRetryClicked()
     }
 
+    override fun trackClickCtaWidget(element: NotificationUiModel) {
+        analytic.trackClickCtaWidget(element)
+    }
+
     private fun createViewHolderState(
             notification: NotificationUiModel,
             adapterPosition: Int,

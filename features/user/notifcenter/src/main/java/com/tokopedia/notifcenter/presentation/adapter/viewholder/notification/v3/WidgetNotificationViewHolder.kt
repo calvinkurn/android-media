@@ -23,7 +23,7 @@ import com.tokopedia.utils.time.TimeHelper
 
 class WidgetNotificationViewHolder constructor(
         itemView: View?,
-        listener: NotificationItemListener?,
+        private val listener: NotificationItemListener?,
         private val adapterListener: NotificationAdapterListener?
 ) : BaseNotificationViewHolder(itemView, listener) {
 
@@ -196,6 +196,7 @@ class WidgetNotificationViewHolder constructor(
         widgetCta?.shouldShowWithAction(element.widget.buttonText.isNotEmpty()) {
             widgetCta.text = element.widget.buttonText
             widgetCta.setOnClickListener {
+                listener?.trackClickCtaWidget(element)
                 RouteManager.route(itemView.context, element.widget.androidButtonLink)
             }
         }
