@@ -103,7 +103,12 @@ class AddPasswordFragment : BaseDaggerFragment() {
                     hasPasswordProcess(it.data.profileData.isCreatedPassword)
                 }
                 is Fail -> {
-                    activity?.finish()
+                    val message = it.throwable.message.toString()
+                    if (message.isEmpty()) {
+                        onError(getString(R.string.message_something_wrong))
+                    } else {
+                        onError(message)
+                    }
                 }
             }
         })
@@ -200,9 +205,13 @@ class AddPasswordFragment : BaseDaggerFragment() {
     }
 
     private fun onFailedAdd(message: String) {
+        tracker.onFailedAddPassword(message)
+        onError(message)
+    }
+
+    private fun onError(message: String) {
         hideLoading()
         btnSubmit?.isEnabled = true
-        tracker.onFailedAddPassword(message)
         view?.let {
             Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
