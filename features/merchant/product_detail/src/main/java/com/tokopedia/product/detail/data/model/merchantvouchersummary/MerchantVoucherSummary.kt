@@ -7,7 +7,7 @@ data class MerchantVoucherSummary(
         @SerializedName("title")
         @Expose
         val title: List<MerchantVoucherTitle> = listOf(),
-        @SerializedName("subTitle")
+        @SerializedName("subtitle")
         @Expose
         val subTitle: String = "",
         @SerializedName("imageURL")
