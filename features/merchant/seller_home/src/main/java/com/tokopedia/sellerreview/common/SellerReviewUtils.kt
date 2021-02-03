@@ -11,14 +11,6 @@ import java.util.*
 
 object SellerReviewUtils {
 
-    fun saveFlagHasSubmittedReview(context: Context?) {
-        context?.let {
-            val localCacheHandler = LocalCacheHandler(it, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
-            localCacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_SUBMITTED_REVIEW, true)
-            localCacheHandler.applyEditor()
-        }
-    }
-
     fun saveFlagHasOpenedReviewApp(context: Context?) {
         context?.let {
             val localCacheHandler = LocalCacheHandler(it, TkpdCache.SellerInAppReview.PREFERENCE_NAME)

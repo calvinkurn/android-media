@@ -56,10 +56,9 @@ class SellerReviewHelper @Inject constructor(
             val hasPostedFeed = cacheHandler.getBoolean(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED, false)
             val hasReplied5Chats = cacheHandler.getStringSet(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO, emptySet()).size >= 5
             val hasOpenedReview = cacheHandler.getBoolean(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW, false)
-            val hasSubmittedReview = cacheHandler.getBoolean(TkpdCache.SellerInAppReview.KEY_HAS_SUBMITTED_REVIEW, false)
 
             withContext(Dispatchers.Main) {
-                if (!hasSubmittedReview && (getAskReviewStatus() || !hasOpenedReview) && (hasAddedProduct || hasPostedFeed || hasReplied5Chats)) {
+                if ((getAskReviewStatus() || !hasOpenedReview) && (hasAddedProduct || hasPostedFeed || hasReplied5Chats)) {
                     showInAppReviewBottomSheet(context, fm)
                 }
             }

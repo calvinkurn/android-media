@@ -100,7 +100,6 @@ class RatingBottomSheet : BaseBottomSheet() {
                 is Success -> {
                     onSubmitted?.invoke(givenRating)
                     this.dismiss()
-                    SellerReviewUtils.saveFlagHasSubmittedReview(activity?.applicationContext)
                 }
                 is Fail -> setOnError(it.throwable)
             }
