@@ -35,7 +35,7 @@
     <string name="shop_page_header_request_unmoderate_option_2_text">Saya sudah melakukan perbaikan toko.</string>
     <string name="shop_page_header_request_unmoderate_option_2_value">Have Fixed</string>
     <string name="shop_page_header_request_unmoderate_btn_send_text">Kirim</string>
-    <string name="shop_page_header_request_unmoderate_appended_text">&lt;br /&gt;&lt;br /&gt;Anda dapat mengajukan permohonan buka toko dengan mengklik link berikut <![CDATA[<a href="%1$s">%2$s</a>]]></string>
+    <string name="shop_page_header_request_unmoderate_appended_text">&lt;br /&gt;&lt;br /&gt;Permohonan buka toko dapat dilakukan dengan mengklik link berikut <![CDATA[<a href="%1$s">%2$s</a>]]></string>
     <string name="shop_page_header_request_unmoderate_appended_text_dummy_url">https://tokopedia.com/#req-shop-moderate-bottomsheet</string>
 
     <string name="shop_page_bottom_sheet_reputation_title">Reputasi Toko</string>
