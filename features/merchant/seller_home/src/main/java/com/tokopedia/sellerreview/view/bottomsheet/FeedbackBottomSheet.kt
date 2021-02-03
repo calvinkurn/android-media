@@ -11,10 +11,12 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerreview.common.Const
+import com.tokopedia.sellerreview.common.SellerReviewUtils
 import com.tokopedia.sellerreview.view.viewmodel.SellerReviewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.sir_feedback_bottom_sheet.view.*
+import java.net.UnknownHostException
 
 /**
  * Created By @ilhamsuaib on 22/01/21
@@ -25,6 +27,7 @@ class FeedbackBottomSheet : BaseBottomSheet() {
     companion object {
         const val TAG = "SirFeedbackBottomSheet"
         private const val KEY_RATING = "key_rating"
+        private const val PAGE_NAME = "feedback_page"
 
         fun createInstance(rating: Int): FeedbackBottomSheet {
             return FeedbackBottomSheet().apply {
@@ -48,6 +51,13 @@ class FeedbackBottomSheet : BaseBottomSheet() {
         observeReviewState()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!isSubmitted) {
+            tracker.sendClickDismissBottomSheetEvent(PAGE_NAME)
+        }
+    }
+
     override fun initInjector() {
         val baseComponent = (requireContext().applicationContext as BaseMainApplication).baseAppComponent
         DaggerSellerHomeComponent.builder()
@@ -57,7 +67,23 @@ class FeedbackBottomSheet : BaseBottomSheet() {
     }
 
     override fun setupView() = childView?.run {
+        setOnTextAreaTextChanged()
+        btnSirSubmitFeedback.setOnClickListener {
+            setOnSubmitClicked()
+        }
         imgSirFeedback.setImageUrl(Const.IMG_REQUEST_FEEDBACK)
+    }
+
+    override fun show(fm: FragmentManager) {
+        show(fm, TAG)
+    }
+
+    fun setOnSubmittedListener(action: () -> Unit): FeedbackBottomSheet {
+        onSubmitted = action
+        return this
+    }
+
+    private fun setOnTextAreaTextChanged() = childView?.run {
         tauSirFeedback.textAreaInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -71,18 +97,6 @@ class FeedbackBottomSheet : BaseBottomSheet() {
                 btnSirSubmitFeedback.isEnabled = !s.isNullOrBlank()
             }
         })
-        btnSirSubmitFeedback.setOnClickListener {
-            setOnSubmitClicked()
-        }
-    }
-
-    override fun show(fm: FragmentManager) {
-        show(fm, TAG)
-    }
-
-    fun setOnSubmittedListener(action: () -> Unit): FeedbackBottomSheet {
-        onSubmitted = action
-        return this
     }
 
     private fun observeReviewState() {
@@ -91,6 +105,7 @@ class FeedbackBottomSheet : BaseBottomSheet() {
                 is Success -> {
                     onSubmitted?.invoke()
                     this.dismiss()
+                    SellerReviewUtils.saveFlagHasSubmittedReview(activity?.applicationContext)
                 }
                 is Fail -> setOnError(it.throwable)
             }
@@ -98,17 +113,26 @@ class FeedbackBottomSheet : BaseBottomSheet() {
     }
 
     private fun setOnError(throwable: Throwable) {
+        isSubmitted = false
         childView?.run {
             btnSirSubmitFeedback.isLoading = false
             showErrorToaster(throwable)
         }
+
+        if (throwable is UnknownHostException) {
+            tracker.sendImpressionNoNetworkEvent(PAGE_NAME)
+        } else {
+            tracker.sendImpressionErrorStateEvent(PAGE_NAME)
+        }
     }
 
     private fun setOnSubmitClicked() = childView?.run {
+        isSubmitted = true
         btnSirSubmitFeedback.isLoading = true
         val rating = arguments?.getInt(KEY_RATING).orZero()
         val feedback = tauSirFeedback.textAreaInput.text.toString()
         val param = getParams(rating, feedback)
         mViewModel.submitReview(param)
+        tracker.sendImpressionLoadingStateEvent(PAGE_NAME)
     }
 }

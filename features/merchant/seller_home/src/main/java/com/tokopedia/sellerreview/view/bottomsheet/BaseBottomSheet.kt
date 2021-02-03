@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerreview.analytics.SellerReviewTracking
 import com.tokopedia.sellerreview.common.Const
 import com.tokopedia.sellerreview.view.model.SendReviewParam
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -25,12 +26,16 @@ import javax.inject.Inject
 abstract class BaseBottomSheet : BottomSheetUnify() {
 
     @Inject
+    lateinit var tracker: SellerReviewTracking
+
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     protected var childView: View? = null
+    protected var isSubmitted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

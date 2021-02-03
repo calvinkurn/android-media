@@ -12,10 +12,12 @@ import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerreview.common.Const
+import com.tokopedia.sellerreview.common.SellerReviewUtils
 import com.tokopedia.sellerreview.view.viewmodel.SellerReviewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.sir_rating_bottom_sheet.view.*
+import java.net.UnknownHostException
 
 /**
  * Created By @ilhamsuaib on 20/01/21
@@ -25,6 +27,7 @@ class RatingBottomSheet : BaseBottomSheet() {
 
     companion object {
         const val TAG = "SirRatingBottomSheet"
+        private const val PAGE_NAME = "rating_page"
 
         fun createInstance(): RatingBottomSheet {
             return RatingBottomSheet()
@@ -49,6 +52,13 @@ class RatingBottomSheet : BaseBottomSheet() {
         super.onViewCreated(view, savedInstanceState)
 
         observeReviewState()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!isSubmitted) {
+            tracker.sendClickDismissBottomSheetEvent(PAGE_NAME)
+        }
     }
 
     override fun initInjector() {
@@ -90,6 +100,7 @@ class RatingBottomSheet : BaseBottomSheet() {
                 is Success -> {
                     onSubmitted?.invoke(givenRating)
                     this.dismiss()
+                    SellerReviewUtils.saveFlagHasSubmittedReview(activity?.applicationContext)
                 }
                 is Fail -> setOnError(it.throwable)
             }
@@ -97,9 +108,15 @@ class RatingBottomSheet : BaseBottomSheet() {
     }
 
     private fun setOnError(throwable: Throwable) {
+        isSubmitted = false
         childView?.run {
             btnSirSubmit.isLoading = false
             showErrorToaster(throwable)
+        }
+        if (throwable is UnknownHostException) {
+            tracker.sendImpressionNoNetworkEvent(PAGE_NAME)
+        } else {
+            tracker.sendImpressionErrorStateEvent(PAGE_NAME)
         }
     }
 
@@ -108,10 +125,12 @@ class RatingBottomSheet : BaseBottomSheet() {
      * or open feedback bottom sheet if else
      * */
     private fun submitRating() = childView?.run {
+        isSubmitted = true
         if (givenRating >= 4) {
             btnSirSubmit.isLoading = true
             val param = getParams(givenRating, "")
             mViewModel.submitReview(param)
+            tracker.sendImpressionLoadingStateEvent(PAGE_NAME)
         } else {
             onSubmitted?.invoke(givenRating)
             this@RatingBottomSheet.dismiss()
