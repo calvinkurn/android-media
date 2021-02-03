@@ -9,6 +9,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -146,7 +147,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     if (tickerUrl.isNotBlank()) {
-                        RouteManager.route(context, String.format("%s?=url", ApplinkConst.WEBVIEW, tickerUrl))
+                        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, tickerUrl)
                     }
                 }
 

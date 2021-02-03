@@ -200,6 +200,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/top_margin_default"
+            android:layout_marginBottom="@dimen/dp_16"
             android:orientation="horizontal">
 
             <ImageView

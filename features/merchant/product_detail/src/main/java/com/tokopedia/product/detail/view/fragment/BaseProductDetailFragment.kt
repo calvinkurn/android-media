@@ -75,7 +75,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         observeData()
     }
 
-    fun remoteConfig(): RemoteConfig? = (activity as ProductDetailActivity).remoteConfig
+    fun remoteConfig(): RemoteConfig? = (activity as? ProductDetailActivity)?.remoteConfig
 
     fun submitInitialList(visitables: List<DynamicPdpDataModel>) {
         hideSwipeLoading()
@@ -104,6 +104,16 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     fun <T : DynamicPdpDataModel> getComponentPosition(data: T?): Int {
         return if (data != null) {
             productAdapter?.currentList?.indexOf(data) ?: RecyclerView.NO_POSITION
+        } else {
+            RecyclerView.NO_POSITION
+        }
+    }
+
+    fun <T : DynamicPdpDataModel> getComponentPositionBeforeUpdate(data: T?): Int {
+        return if (data != null) {
+            productAdapter?.currentList?.indexOfFirst {
+                it.name() == data.name()
+            } ?: RecyclerView.NO_POSITION
         } else {
             RecyclerView.NO_POSITION
         }

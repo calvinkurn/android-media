@@ -128,10 +128,9 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
             shop_info_title_1.text = data.getOrNull(0)?.value.orEmpty()
             shop_info_desc_1.text = data.getOrNull(0)?.desc.orEmpty()
 
-            if (data.getOrNull(0)?.icon != null) {
+            if (data.getOrNull(0)?.iconIsNotEmpty() == true) {
                 shop_info_ic_1.show()
-                shop_info_ic_1.setImageDrawable(MethodChecker.getDrawable(context, data.getOrNull(0)?.icon
-                        ?: 0))
+                shop_info_ic_1.setImage(data.getOrNull(0)?.icon)
             } else {
                 shop_info_ic_1.hide()
             }
@@ -144,10 +143,9 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
             shop_info_title_2.text = data.getOrNull(1)?.value.orEmpty()
             shop_info_desc_2.text = data.getOrNull(1)?.desc.orEmpty()
 
-            if (data.getOrNull(1)?.icon != null) {
+            if (data.getOrNull(1)?.iconIsNotEmpty() == true) {
                 shop_info_ic_2.show()
-                shop_info_ic_2.setImageDrawable(MethodChecker.getDrawable(context, data.getOrNull(1)?.icon
-                        ?: 0))
+                shop_info_ic_2.setImage(data.getOrNull(1)?.icon)
             } else {
                 shop_info_ic_2.hide()
             }

@@ -27,6 +27,7 @@
     <string name="error_max_length">Maksimum 70 karakter</string>
     <string name="format_selected_keyword" tools:ignore="PluralsCandidate">%d kata kunci dipilih</string>
     <string name="format_selected_produk">%d produk dipilih</string>
+    <string name="topads_common_selected_product">Produk dipilih (%d)</string>
     <string name="no_promoted_product">Produkmu belum\ndiiklankan</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %d</string>
     <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%d&lt;/b></string>
@@ -116,6 +117,7 @@
     <string name="topads_common_confirmation_switch_manual">Yakin beralih dari Iklan Otomatis?</string>
     <string name="topads_common_gunakan_iklan_manual">Mulai Iklan Manual</string>
     <string name="topads_common_anggaran_harian">Anggaran harian</string>
+    <string name="topads_common_total_search">Total Pencarian</string>
     <string name="topads_common_iklan_otomatis">Iklan Otomatis</string>
     <string name="filter">Filter</string>
     <string name="topads_edit_urutkan">Urutkan</string>
@@ -126,6 +128,14 @@
     <string name="topads_common_maximum_daily_budget">Batas maksimum Rp %s</string>
     <string name="topads_common_keyword_avg_cost">Biaya rata-rata kompetitor %s</string>
 
+    <string name="topads_common_recommended_budget">Rekomendasi Biaya</string>
+    <string name="topads_common_klik_">/klik</string>
+    <string name="topads_common_hari_">/hari</string>
+    <string name="topads_biaya_iklan">Biaya Iklan</string>
+    <string name="topads_iklankan_button">Iklankan</string>
+    <string name="topads_common_bs_title">Atur Biaya Iklan</string>
+    <string name="topads_common_atur_anngaran">Atur Anggaran</string>
+    <string name="topads_common_nama_group">Nama Grup</string>
 
 
     <string-array name="sort_product_list_array">

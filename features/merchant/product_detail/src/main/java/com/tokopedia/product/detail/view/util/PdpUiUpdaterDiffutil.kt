@@ -438,7 +438,7 @@ class PdpUiUpdaterDiffutil(var mapOfData: MutableMap<String, DynamicPdpDataModel
         updateData(ProductDetailConstant.TICKER_INFO) {
             tickerInfoMap?.run {
                 if (it.tickerInfo.isNotEmpty()) {
-                    generalTickerInfo = it.tickerInfo
+                    generalTickerInfoDataModel = it.tickerInfo
                 }
             }
         }

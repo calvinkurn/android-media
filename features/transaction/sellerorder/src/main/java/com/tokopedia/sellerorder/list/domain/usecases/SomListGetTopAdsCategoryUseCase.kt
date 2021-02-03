@@ -27,7 +27,7 @@ class SomListGetTopAdsCategoryUseCase @Inject constructor(
         private const val PARAM_SHOP_ID = "shop_id"
 
         private val QUERY = """
-           query topAdsGetShopInfo(${'$'}shop_id: Int!) {
+            query GetTopAdsGetShopInfo(${'$'}shop_id: Int!) {
               topAdsGetShopInfo(shop_id: ${'$'}shop_id) {
                 data {
                   category

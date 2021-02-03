@@ -46,7 +46,6 @@ import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.domain.model.checkout.TrackerData;
-import com.tokopedia.checkout.subfeature.cod_bottomsheet.CodBottomSheetFragment;
 import com.tokopedia.checkout.subfeature.webview.CheckoutWebViewActivity;
 import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
@@ -59,7 +58,6 @@ import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.component.Tooltip;
@@ -100,16 +98,8 @@ import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.cod.Data;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
-import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener;
-import com.tokopedia.purchase_platform.common.feature.insurance.request.UpdateInsuranceProductApplicationDetails;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShopItems;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
@@ -129,14 +119,11 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotE
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.time.TimeHelper;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -165,13 +152,10 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_USER
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_DROP_OFF_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
-import static com.tokopedia.logisticcart.cod.view.CodActivity.EXTRA_COD_DATA;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
-import static com.tokopedia.purchase_platform.common.constant.Constant.EXTRA_CHECKOUT_REQUEST;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -181,15 +165,13 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RE
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
         ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
-        PromoNotEligibleActionListener, InsuranceItemActionListener, SellerCashbackListener,
+        PromoNotEligibleActionListener, SellerCashbackListener,
         ExpireTimeDialogListener {
 
     private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_PROMO = 954;
 
-    private static final int REQUEST_CODE_NORMAL_CHECKOUT = 0;
-    private static final int REQUEST_CODE_COD = 1218;
     private static final String SHIPMENT_TRACE = "mp_shipment";
 
     public static final String ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT";
@@ -249,8 +231,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     LastApplyUiModel savedLastApplyData;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
-    private boolean hasInsurance = false;
-    private boolean isInsuranceEnabled = false;
     private boolean hasRunningApiCall = false;
     private ArrayList<String> bboPromoCodes = new ArrayList<>();
 
@@ -318,9 +298,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentSelectionStateDataHashSet = new HashSet<>(shipmentSelectionStateData);
             }
         }
-
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-        isInsuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false);
 
         shipmentPresenter.attachView(this);
         shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE);
@@ -489,18 +466,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.addTickerAnnouncementdata(tickerAnnouncementHolderData);
         }
 
-        CodModel tempCod = shipmentPresenter.getCodData();
-        if (tempCod != null && tempCod.isCod()) {
-            shipmentAdapter.addNotifierData(new ShipmentNotifierModel(
-                    tempCod.getMessageInfo(),
-                    tempCod.getMessageLink()
-            ));
-            mTrackerCod.eventViewBayarDiTempat();
-            mTrackerCod.eventImpressionEligibleCod();
-            shipmentPresenter.getShipmentButtonPaymentModel().setCod(true);
-            onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
-        }
-
         if (recipientAddressModel != null) {
             shipmentAdapter.addAddressShipmentData(recipientAddressModel);
         }
@@ -516,7 +481,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
-        shipmentAdapter.setCartIds(cartIdsStringBuilder.toString());
 
         if (shipmentDonationModel != null) {
             shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
@@ -635,7 +599,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 dataCheckoutRequests,
                 null,
-                hasInsurance,
                 EnhancedECommerceActionField.STEP_2,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
@@ -745,28 +708,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             intent.putExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE, message);
             getActivity().setResult(CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED, intent);
             getActivity().finish();
-        }
-    }
-
-    @Override
-    public void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse) {
-        if (shipmentAdapter != null) {
-            hasInsurance = false;
-            if (insuranceCartResponse != null &&
-                    !insuranceCartResponse.getCartShopsList().isEmpty()) {
-                for (InsuranceCartShops insuranceCartShops : insuranceCartResponse.getCartShopsList()) {
-                    for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
-                        for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
-                            if (!insuranceCartDigitalProduct.isProductLevel()) {
-                                hasInsurance = true;
-                                shipmentAdapter.addInsuranceDataList(insuranceCartShops);
-                            }
-                        }
-                    }
-                }
-                shipmentAdapter.notifyDataSetChanged();
-                shipmentAdapter.updateShipmentCostModel();
-            }
         }
     }
 
@@ -944,28 +885,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
         setCourierPromoApplied(itemPosition);
-        updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
+        updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), true);
     }
 
     @Override
     public void setCourierPromoApplied(int itemPosition) {
         shipmentAdapter.setCourierPromoApplied(itemPosition);
-    }
-
-    @Override
-    public void showBottomSheetError(String htmlMessage) {
-        if (getFragmentManager() != null) {
-            CodBottomSheetFragment bottomSheet = CodBottomSheetFragment.newInstance(htmlMessage);
-            bottomSheet.show(getFragmentManager(), BOTTOM_SHEET_TAG);
-        }
-    }
-
-    @Override
-    public void navigateToCodConfirmationPage(Data data, CheckoutRequest checkoutRequest) {
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.COD);
-        intent.putExtra(EXTRA_CHECKOUT_REQUEST, checkoutRequest);
-        intent.putExtra(EXTRA_COD_DATA, data);
-        startActivity(intent);
     }
 
     @Override
@@ -1013,6 +938,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 !ordersItem.getCodes().contains(courierItemData.getLogPromoCode())) {
                             ordersItem.getCodes().add(courierItemData.getLogPromoCode());
                             break;
+                        }
+                    }
+                }
+
+                List<ShipmentCartItemModel> shipmentCartItemModelLists = shipmentAdapter.getShipmentCartItemModelList();
+                if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size() > 0) {
+                    for (ShipmentCartItemModel tmpShipmentCartItemModel : shipmentCartItemModelLists) {
+                        for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                            if (!shipmentCartItemModel.getCartString().equals(tmpShipmentCartItemModel.getCartString()) &&
+                                    tmpShipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId()) &&
+                                    tmpShipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                                    tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                                ordersItem.getCodes().remove(tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getLogPromoCode());
+                            }
                         }
                     }
                 }
@@ -1175,7 +1114,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 if (object.get(i) instanceof ShipmentCartItemModel) {
                     ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) object.get(i);
                     if (appliedMvcCartStrings != null && appliedMvcCartStrings.contains(shipmentCartItemModel.getCartString())) {
-                        Log.d("reloadCourierForMvc", "Pos: " + i + " | Cart String: " + shipmentCartItemModel.getCartString());
                         prepareReloadRates(i, false);
                     } else {
                         prepareReloadRates(i, true);
@@ -1195,7 +1133,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     showToastNormal(messageInfo);
                 }
                 shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
-                updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
+                updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), false);
             }
 
             ValidateUsePromoRequest validateUsePromoRequest = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_LAST_VALIDATE_USE_REQUEST);
@@ -1589,7 +1527,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                     dataCheckoutRequests,
                     null,
-                    hasInsurance,
                     EnhancedECommerceActionField.STEP_3,
                     ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                     ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
@@ -1622,8 +1559,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCheckoutValidationResult(boolean result, Object shipmentData,
-                                           int errorPosition, int requestCode) {
+    public void onCheckoutValidationResult(boolean result, Object shipmentData, int errorPosition) {
         if (shipmentData == null && result) {
             if (shipmentPresenter.isIneligiblePromoDialogEnabled()) {
                 ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList = new ArrayList<>();
@@ -1677,9 +1613,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 if (notEligiblePromoHolderdataList.size() > 0) {
-                    shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList, requestCode);
+                    shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList);
                 } else {
-                    doCheckout(requestCode);
+                    doCheckout();
                 }
             } else {
                 boolean hasRedStatePromo = false;
@@ -1709,16 +1645,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     showToastError(errorMessage);
                     sendAnalyticsPromoRedState();
                 } else {
-                    doCheckout(requestCode);
+                    doCheckout();
                 }
             }
         } else if (shipmentData != null && !result) {
             hasRunningApiCall = false;
             hideLoading();
             sendAnalyticsDropshipperNotComplete();
-            if (requestCode == REQUEST_CODE_COD) {
-                mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
-            }
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
                 onDataDisableToCheckout(null);
@@ -1735,29 +1668,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 checkoutTradeInAnalytics.eventClickBayarCourierNotComplete();
             }
             sendAnalyticsCourierNotComplete();
-            if (requestCode == REQUEST_CODE_COD) {
-                mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
-            }
             checkShippingCompletion(true);
         }
     }
 
-    private void doCheckout(int requestCode) {
-        if (hasInsurance) {
-            mTrackerMacroInsurance.eventClickPaymentMethodWithInsurance(shipmentAdapter.getInsuranceProductId(),
-                    shipmentAdapter.getInsuranceTitle());
-        }
+    private void doCheckout() {
+        shipmentPresenter.processSaveShipmentState();
+        shipmentPresenter.processCheckout(isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId());
 
-        switch (requestCode) {
-            case REQUEST_CODE_NORMAL_CHECKOUT:
-                shipmentPresenter.processSaveShipmentState();
-                shipmentPresenter.processCheckout(hasInsurance, isOneClickShipment(),
-                        isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId());
-                break;
-            case REQUEST_CODE_COD:
-                shipmentPresenter.proceedCodCheckout(hasInsurance, isOneClickShipment(),
-                        isTradeIn(), getDeviceId(), getCheckoutLeasingId());
-        }
     }
 
     @Override
@@ -1848,7 +1766,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChoosePaymentMethodButtonClicked() {
-        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
+        shipmentAdapter.checkDropshipperValidation();
     }
 
     @Override
@@ -1920,6 +1838,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
             }
+
+            List<ShipmentCartItemModel> shipmentCartItemModelLists = shipmentAdapter.getShipmentCartItemModelList();
+            if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size() > 0) {
+                for (ShipmentCartItemModel tmpShipmentCartItemModel : shipmentCartItemModelLists) {
+                    for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                        if (!shipmentCartItemModel.getCartString().equals(tmpShipmentCartItemModel.getCartString()) &&
+                                tmpShipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId()) &&
+                                tmpShipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                            ordersItem.getCodes().remove(tmpShipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                        }
+                    }
+                }
+            }
+
             shipmentPresenter.doValidateuseLogisticPromo(cartPosition, cartString, validateUsePromoRequest);
         }
     }
@@ -2286,13 +2218,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onProcessToPayment() {
         showLoading();
-        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
-    }
-
-    @Override
-    public void onProcessToPaymentCod() {
-        showLoading();
-        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_COD);
+        shipmentAdapter.checkDropshipperValidation();
     }
 
     public int getResultCode() {
@@ -2350,13 +2276,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 validateUsePromoRequest.setTradeIn(1);
                 validateUsePromoRequest.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
             }
-            shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
-            this.bboPromoCodes = bboPromoCodes;
             if (isOneClickShipment()) {
                 validateUsePromoRequest.setCartType("ocs");
             } else {
                 validateUsePromoRequest.setCartType("default");
             }
+            shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+            this.bboPromoCodes = bboPromoCodes;
             return validateUsePromoRequest;
         } else {
             // First param data generation / initialization
@@ -2426,13 +2352,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
                 validateUsePromoRequest.setCodes(globalPromoCodes);
             }
-            shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
-            this.bboPromoCodes = bboPromoCodes;
             if (isOneClickShipment()) {
                 validateUsePromoRequest.setCartType("ocs");
             } else {
                 validateUsePromoRequest.setCartType("default");
             }
+            shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+            this.bboPromoCodes = bboPromoCodes;
             return validateUsePromoRequest;
         }
     }
@@ -2584,7 +2510,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 dataCheckoutRequests,
                 tradeInCustomDimension,
-                hasInsurance,
                 EnhancedECommerceActionField.STEP_4,
                 eventCategory,
                 eventAction,
@@ -2622,12 +2547,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onButtonContinueClicked(int checkoutType) {
+    public void onButtonContinueClicked() {
         if (promoNotEligibleBottomsheet != null) {
             checkoutAnalyticsCourierSelection.eventClickLanjutkanOnErrorPromoConfirmation();
             ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList = promoNotEligibleBottomsheet.getNotEligiblePromoHolderDataList();
             promoNotEligibleBottomsheet.dismiss();
-            shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList, checkoutType);
+            shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList);
         }
     }
 
@@ -2673,12 +2598,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public boolean isInsuranceEnabled() {
-        return isInsuranceEnabled;
-    }
-
-    @Override
-    public void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList) {
+    public void removeIneligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList) {
         ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
         if (validateUsePromoRevampUiModel != null) {
             if (validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getState().equals("red")) {
@@ -2700,42 +2620,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
 
-        doCheckout(checkoutType);
-    }
-
-    @Override
-    public void deleteMacroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductList, boolean showconfirmationDialog) {
-
-    }
-
-    @Override
-    public void sendEventChangeInsuranceState(boolean isChecked, String title) {
-
-    }
-
-    @Override
-    public void sendEventDeleteInsurance(String title) {
-
-    }
-
-    @Override
-    public void updateInsuranceProductData(@NotNull InsuranceCartShops insuranceCartShops, @NotNull ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
-
-    }
-
-    @Override
-    public void onInsuranceSelectStateChanges() {
-
-    }
-
-    @Override
-    public void sendEventInsuranceImpression(String title) {
-
-    }
-
-    @Override
-    public void sendEventInsuranceImpressionForShipment(String title) {
-        mTrackerMacroInsurance.eventImpressionOfInsuranceProductOnCheckout(title);
+        doCheckout();
     }
 
     @Override
@@ -2925,7 +2810,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void updateButtonPromoCheckout(PromoUiModel promoUiModel) {
+    public void updateButtonPromoCheckout(PromoUiModel promoUiModel, boolean isNeedToHitValidateFinal) {
         doUpdateButtonPromoCheckout(promoUiModel);
         updatePromoTrackingData(promoUiModel.getTrackingDetailUiModels());
         sendEEStep3();
@@ -2934,6 +2819,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             resetPromoBenefit();
             setPromoBenefit(promoUiModel.getBenefitSummaryInfoUiModel().getSummaries());
             shipmentAdapter.updateShipmentCostModel();
+
+            // Check if need to hit validate final, if so then hit validate final by checking is all courier have been selected
+            if (isNeedToHitValidateFinal) {
+                shipmentAdapter.checkHasSelectAllCourier(false, -1, "");
+            }
         }
     }
 
@@ -2964,7 +2854,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentCartItemModels == null) return;
         List<PromoCheckoutVoucherOrdersItemUiModel> voucherOrdersItemUiModels = promoUiModel.getVoucherOrderUiModels();
         for (PromoCheckoutVoucherOrdersItemUiModel promoCheckoutVoucherOrdersItemUiModel : voucherOrdersItemUiModels) {
-            if (promoCheckoutVoucherOrdersItemUiModel.getType().equals("logistic")) {
+            if (promoCheckoutVoucherOrdersItemUiModel.getSuccess() && promoCheckoutVoucherOrdersItemUiModel.getType().equals("logistic")) {
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
                     if (shipmentCartItemModel.getCartString().equals(promoCheckoutVoucherOrdersItemUiModel.getUniqueId())) {
                         VoucherLogisticItemUiModel log = new VoucherLogisticItemUiModel();
@@ -2982,6 +2872,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         onNeedUpdateViewItem(shipmentAdapter.getShipmentCartItemModelPosition(shipmentCartItemModel));
                     }
                 }
+            } else if (!promoCheckoutVoucherOrdersItemUiModel.getSuccess() && UtilsKt.isNullOrEmpty(promoCheckoutVoucherOrdersItemUiModel.getType())) {
+                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
+                    if (shipmentCartItemModel.getCartString().equals(promoCheckoutVoucherOrdersItemUiModel.getUniqueId()) &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData() != null && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getLogPromoCode().equals(promoCheckoutVoucherOrdersItemUiModel.getCode())) {
+                        resetCourier(shipmentCartItemModel);
+                    }
+                }
             }
         }
     }
@@ -2990,6 +2888,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void resetCourier(ShipmentCartItemModel shipmentCartItemModel) {
         int index = shipmentAdapter.getShipmentDataList().indexOf(shipmentCartItemModel);
         if (index != -1) {
+            ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
+            if (validateUsePromoRequest != null) {
+                for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                    if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                            shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                        String redStateBBOCode = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getLogPromoCode();
+                        ordersItem.getCodes().remove(redStateBBOCode);
+                    }
+                }
+            }
+
             shipmentAdapter.resetCourier(index);
             addShippingCompletionTicker(shipmentCartItemModel.isEligibleNewShippingExperience());
         }

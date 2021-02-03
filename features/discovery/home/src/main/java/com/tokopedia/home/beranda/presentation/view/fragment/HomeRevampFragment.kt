@@ -16,7 +16,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
@@ -40,7 +39,6 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
@@ -142,8 +140,10 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.stickylogin.common.StickyLoginConstant
+import com.tokopedia.stickylogin.common.helper.isRegisteredFromStickyLogin
+import com.tokopedia.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
+import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -163,7 +163,6 @@ import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
-import org.jetbrains.annotations.NotNull
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -201,6 +200,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val SCROLL_STATE_DRAG = 0
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
+        private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val REQUEST_CODE_REVIEW = 999
         private const val REQUEST_CODE_LOGIN_TOKOPOINTS = 120
         private const val VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1
@@ -284,7 +284,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
     private lateinit var statusBarBackground: View
-    private lateinit var tickerDetail: TickerDetail
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var backgroundViewImage: ImageView
@@ -737,6 +736,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         initRefreshLayout()
         subscribeHome()
         initEggTokenScrollListener()
+        initStickyLogin()
+
         floatingTextButton.setOnClickListener { view: View? ->
             scrollToRecommendList()
             HomePageTracking.eventClickJumpRecomendation()
@@ -750,32 +751,44 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 floatingTextButton.resetState()
             }
         })
-        stickyLoginView?.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _  ->
-            val floatingEggButtonFragment = floatingEggButtonFragment
-            if (stickyLoginView.isShowing()) {
-                positionSticky = stickyLoginView.getLocation()
-            }
-            floatingEggButtonFragment?.let {
-                updateEggBottomMargin(it)
-            }
+
+        context?.let {
+            if (isRegisteredFromStickyLogin(it)) gotoNewUserZone()
         }
-        stickyLoginView?.setOnClickListener { v: View? ->
-            if (stickyLoginView.isLoginReminder()) {
-                stickyLoginView?.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.HOME)
-            } else {
-                stickyLoginView?.tracker.clickOnLogin(StickyLoginConstant.Page.HOME)
+
+        getHomeViewModel().setRollanceNavigationType(
+                if (isNavRevamp()) {
+                    AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+                } else {
+                    AbTestPlatform.NAVIGATION_VARIANT_OLD
+                })
+    }
+
+    private fun initStickyLogin() {
+        stickyLoginView?.page = StickyLoginConstant.Page.HOME
+        stickyLoginView?.lifecycleOwner = viewLifecycleOwner
+        stickyLoginView?.setStickyAction(object : StickyLoginAction {
+            override fun onClick() {
+                context?.let {
+                    val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+                    startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
+                }
             }
-            onGoToLogin()
-        }
-        stickyLoginView?.setOnDismissListener(View.OnClickListener { v: View? ->
-            stickyLoginView?.dismiss(StickyLoginConstant.Page.HOME)
-            if (stickyLoginView.isLoginReminder()) {
-                stickyLoginView?.trackerLoginReminder.clickOnDismiss(StickyLoginConstant.Page.HOME)
-            } else {
-                stickyLoginView?.tracker.clickOnDismiss(StickyLoginConstant.Page.HOME)
+
+            override fun onDismiss() {
+                floatingEggButtonFragment?.let {
+                    updateEggBottomMargin(it)
+                }
             }
-            val floatingEggButtonFragment = floatingEggButtonFragment
-            floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
+
+            override fun onViewChange(isShowing: Boolean) {
+                if (stickyLoginView.isShowing()) {
+                    positionSticky = stickyLoginView.getLocation()
+                }
+                floatingEggButtonFragment?.let {
+                    updateEggBottomMargin(it)
+                }
+            }
         })
         getHomeViewModel().setRollanceNavigationType(
                 if (isNavRevamp()) {
@@ -910,7 +923,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observePopupIntroOvo()
         observeErrorEvent()
         observeSendLocation()
-        observeStickyLogin()
         observeTrackingData()
         observeRequestImagePlayBanner()
         observeViewModelInitialized()
@@ -1085,16 +1097,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 activity?.let {
                     it.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay)
                 }
-            }
-        })
-    }
-
-    private fun observeStickyLogin() {
-        getHomeViewModel().stickyLogin.observe(viewLifecycleOwner, Observer { (status, data) ->
-            if (status === Result.Status.SUCCESS) {
-                setStickyContent(data!!)
-            } else {
-                hideStickyLogin()
             }
         })
     }
@@ -1503,11 +1505,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (this::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
             getHomeViewModel().refreshHomeData()
-            stickyContent
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
+        stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
@@ -1520,11 +1522,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.isEnabled = false
         if(::viewModel.isInitialized) {
             getHomeViewModel().refresh(isFirstInstall(), forceRefresh)
-            stickyContent
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
+        stickyLoginView?.loadContent()
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
@@ -1539,22 +1541,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showLoading() {
         refreshLayout.isRefreshing = true
-    }
-
-    private val stickyContent: Unit
-        private get(){
-            val stickyContentWeave: WeaveInterface = object : WeaveInterface {
-                @NotNull
-                override fun execute(): Any {
-                    return executeGetStickyContent()
-                }
-            }
-            Weaver.executeWeaveCoRoutineNow(stickyContentWeave)
-        }
-
-    private fun executeGetStickyContent():Boolean{
-        if (!getUserSession().isLoggedIn) getHomeViewModel().getStickyContent()
-        return true
     }
 
     private fun injectCouponTimeBased() {
@@ -1582,7 +1568,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun onPageLoadTimeEnd() {
-        stickyContent
+        stickyLoginView?.loadContent()
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
@@ -2287,39 +2273,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getIrisAnalytics().saveEvent(data)
     }
 
-    private fun setStickyContent(tickerDetail: TickerDetail) {
-        this.tickerDetail = tickerDetail
-        updateStickyState()
-    }
-
-    private fun hideStickyLogin() {
-        stickyLoginView.visibility = View.GONE
-    }
-
-    private fun updateStickyState() {
-        if (isUserLoggedIn) {
-            hideStickyLogin()
-            return
-        }
-
-        var isCanShowing = getRemoteConfig().getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_HOME, true)
-        if (stickyLoginView.isLoginReminder() && isCanShowing) {
-            stickyLoginView.showLoginReminder(StickyLoginConstant.Page.HOME)
-            stickyLoginView?.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.HOME)
-        } else {
-            isCanShowing = getRemoteConfig().getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_HOME, true)
-            if (!isCanShowing) {
-                hideStickyLogin()
-                return
-            }
-            stickyLoginView.setContent(tickerDetail)
-            stickyLoginView.show(StickyLoginConstant.Page.HOME)
-            if (stickyLoginView.isShowing()) {
-                stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
-            }
-        }
-    }
-
     override fun onReviewClick(position: Int, clickReviewAt: Int, delay: Long, applink: String) {
         Handler().postDelayed({
             val newAppLink = Uri.parse(applink)
@@ -2441,7 +2394,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             )
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
-            DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId()) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId(), position) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_CATEGORY_WIDGET -> putEEToIris(CategoryWidgetTracking.getCategoryWidgetBannerImpression(
                     channel.grids.toList(),
                     getHomeViewModel().getUserId(),
@@ -2571,6 +2524,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         catch(throwable: Throwable) {
             ""
+        }
+    }
+
+    private fun gotoNewUserZone() {
+        context?.let {
+            if (isRegisteredFromStickyLogin(it)) saveIsRegisteredFromStickyLogin(it, false)
+            startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER))
         }
     }
 }
