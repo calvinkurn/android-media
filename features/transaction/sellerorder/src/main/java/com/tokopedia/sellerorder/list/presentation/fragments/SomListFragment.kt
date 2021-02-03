@@ -412,7 +412,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         loadTopAdsCategory()
         loadTickers()
         loadWaitingPaymentOrderCounter()
-        loadFilters()
+        loadFilters(loadOrders = true)
         if (shouldReloadOrderListImmediately()) {
             loadOrderList()
         }
@@ -520,7 +520,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             textChangeJob?.cancel()
             viewModel.setSearchParam(text.orEmpty())
             shouldScrollToTop = true
-            loadFilters(false)
+            loadFilters(showShimmer = false, loadOrders = true)
             if (shouldReloadOrderListImmediately()) {
                 refreshOrderList()
             } else {
@@ -537,7 +537,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             viewModel.setSearchParam(text.orEmpty())
             if (!skipSearch) {
                 shouldScrollToTop = true
-                loadFilters(false)
+                loadFilters(showShimmer = false, loadOrders = true)
                 if (shouldReloadOrderListImmediately()) {
                     refreshOrderList()
                 } else {
@@ -713,7 +713,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         toggleBulkActionButtonVisibility()
                         toggleBulkActionCheckboxVisibility()
                         toggleTvSomListBulkText()
-                        loadFilters()
+                        loadFilters(loadOrders = true)
                         if (shouldReloadOrderListImmediately()) {
                             loadOrderList()
                         } else {
@@ -790,7 +790,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     if (tabActive.isNotBlank() && tabActive != SomConsts.STATUS_ALL_ORDER) {
                         result.data.statusList.find { it.key == tabActive }?.let { activeFilter ->
                             activeFilter.isChecked = true
-                            onTabClicked(activeFilter, shouldScrollToTop, false)
+                            if (result.data.refreshOrder) {
+                                onTabClicked(activeFilter, shouldScrollToTop, false)
+                            }
                         }
                     }
                     somListSortFilterTab?.show(result.data)
@@ -1054,7 +1056,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 isRefreshing = true
             }
             viewModel.refreshSelectedOrder(selectedOrder.orderResi)
-            viewModel.getFilters()
+            loadFilters(showShimmer = false, loadOrders = false)
         }
     }
 
@@ -1080,12 +1082,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.getWaitingPaymentCounter()
     }
 
-    private fun loadFilters(showShimmer: Boolean = true) {
+    private fun loadFilters(showShimmer: Boolean = true, loadOrders: Boolean) {
         if (showShimmer) {
             sortFilterSomList.invisible()
             shimmerViews.show()
         }
-        viewModel.getFilters()
+        viewModel.getFilters(loadOrders)
     }
 
     private fun loadOrderList() {
@@ -1643,7 +1645,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }?.key
         tabActive = selectedStatusFilterKey.orEmpty()
         viewModel.updateGetOrderListParams(filterData)
-        loadFilters(false)
+        loadFilters(showShimmer = false, loadOrders = true)
         if (shouldReloadOrderListImmediately()) {
             loadOrderList()
         } else {
@@ -1893,7 +1895,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun refreshOrdersOnTabClicked(shouldScrollToTop: Boolean, refreshFilter: Boolean) {
         this.shouldScrollToTop = shouldScrollToTop
         if (refreshFilter) {
-            loadFilters(false)
+            loadFilters(showShimmer = false, loadOrders = true)
         }
         if (shouldReloadOrderListImmediately() || !refreshFilter) {
             refreshOrderList()
