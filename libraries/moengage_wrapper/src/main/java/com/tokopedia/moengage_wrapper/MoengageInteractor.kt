@@ -51,8 +51,8 @@ object MoengageInteractor {
                         .optOutTokenRegistration()
                         .build()
                 MoEngage.initialise(moEngage)
-                sendTokenToServerIfNotSent()
                 isMoengageInitialised = true
+                sendTokenToServerIfNotSent()
                 println("MoengageInteractor: Moengage Initialized")
                 println("MoengageInteractor: $smallIcon $largeIcon")
                 println("MoengageInteractor: MoengageKey $keyMoengage ")
