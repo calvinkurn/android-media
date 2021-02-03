@@ -80,7 +80,7 @@ object GetSomFilterMapper {
     private fun mapToFilterCourierUiModel(shippingList: List<SomFilterResponse.OrderFilterSom.Shipping>): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
             shippingList.map {
-                add(SomFilterChipsUiModel(id = it.shippingId, key = it.shippingCode.orEmpty(), name = it.shippingName.orEmpty(), idFilter = FILTER_COURIER))
+                add(SomFilterChipsUiModel(id = it.shippingId.toInt(), key = it.shippingCode.orEmpty(), name = it.shippingName.orEmpty(), idFilter = FILTER_COURIER))
             }
         }
     }

@@ -47,7 +47,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var currOrderId = ""
-    private var currShipmentId = 0
+    private var currShipmentId = 0L
     private var currShipmentProductId = "0"
     private var currIsChangeShipping = false
     private var confirmShippingResponseMsg = ""
@@ -294,7 +294,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         }
     }
 
-    private fun setCourierServiceListData(shipmentId: Int) {
+    private fun setCourierServiceListData(shipmentId: Long) {
         bottomSheetUnify.setTitle(SomConsts.TITLE_JENIS_LAYANAN)
         courierListResponse.forEach {
             if (it.shipmentId == shipmentId) {
@@ -312,7 +312,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         somBottomSheetCourierListAdapter.notifyDataSetChanged()
     }
 
-    override fun onChooseCourierAgent(shipmentId: Int, courierName: String) {
+    override fun onChooseCourierAgent(shipmentId: Long, courierName: String) {
         bottomSheetUnify.dismiss()
         currShipmentId = shipmentId
         label_choosen_courier?.text = courierName

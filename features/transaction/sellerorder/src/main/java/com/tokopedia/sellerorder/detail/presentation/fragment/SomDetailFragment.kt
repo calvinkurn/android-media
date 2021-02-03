@@ -1392,7 +1392,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onClickProduct(productId: Int) {
+    override fun onClickProduct(productId: Long) {
         startActivity(RouteManager.getIntent(
                 activity,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,

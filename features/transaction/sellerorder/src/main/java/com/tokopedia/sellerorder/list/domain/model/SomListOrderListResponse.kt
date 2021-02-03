@@ -54,7 +54,7 @@ data class SomListOrderListResponse(
                     val orderResi: String = "",
                     @SerializedName("order_status_id")
                     @Expose
-                    val orderStatusId: Int = 0,
+                    val orderStatusId: Long = 0,
                     @SerializedName("status")
                     @Expose
                     val status: String = "",

@@ -95,7 +95,7 @@ class SomDetailViewModelTest {
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Success)
-        assert((somDetailViewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == 123)
+        assert((somDetailViewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == 123L)
     }
 
     @Test

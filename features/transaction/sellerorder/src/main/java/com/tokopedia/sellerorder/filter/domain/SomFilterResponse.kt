@@ -32,7 +32,7 @@ data class SomFilterResponse(
                 val shippingDesc: String? = "",
                 @Expose
                 @SerializedName("shipping_id")
-                val shippingId: Int = 0,
+                val shippingId: Long = 0,
                 @Expose
                 @SerializedName("shipping_name")
                 val shippingName: String? = "",

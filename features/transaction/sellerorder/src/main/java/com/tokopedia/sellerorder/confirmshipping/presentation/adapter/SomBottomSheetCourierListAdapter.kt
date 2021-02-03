@@ -17,7 +17,7 @@ class SomBottomSheetCourierListAdapter(private var listener: ActionListener): Re
     var isServiceCourier = false
 
     interface ActionListener {
-        fun onChooseCourierAgent(shipmentId: Int, courierName: String)
+        fun onChooseCourierAgent(shipmentId: Long, courierName: String)
         fun onChooseCourierService(spId:String, courierServiceName: String)
     }
 
