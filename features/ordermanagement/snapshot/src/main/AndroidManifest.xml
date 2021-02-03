@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.ordermanagement.snapshot">
+    package="com.tokopedia.snapshot">
 
     <application>
-        <activity
-            android:name=".view.activity.SnapshotActivity"
+        <activity android:name=".view.activity.SnapshotActivity"
             android:label="@string/title_snapshot"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
