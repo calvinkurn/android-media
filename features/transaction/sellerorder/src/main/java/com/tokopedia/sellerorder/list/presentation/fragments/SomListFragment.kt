@@ -789,33 +789,39 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             var realtimeDataChangeCount = 0
             override fun onChanged(result: Result<SomListFilterUiModel>?) {
                 when (result) {
-                    is Success -> {
-                        /* apply result only if:
-                           1. First filter data (cache or cloud)
-                           2. Any filter data that is not from cache
-                         */
-                        if (realtimeDataChangeCount == 0 || !result.data.fromCache) {
-                            if (tabActive.isNotBlank() && tabActive != SomConsts.STATUS_ALL_ORDER) {
-                                result.data.statusList.find { it.key == tabActive }?.let { activeFilter ->
-                                    activeFilter.isChecked = true
-                                    /*  refresh only on:
-                                        1. 2nd..n-th realtime (cloud) data
-                                        2. First realtime (cloud) data with any differences from the previous cached data (if first realtime data is coming after cached data)
-                                        3. First data
-                                     */
-                                    if (shouldRefreshOrders(activeFilter.id, result.data.refreshOrder)) {
-                                        onTabClicked(activeFilter, shouldScrollToTop, false)
-                                    }
-                                }
-                            }
-                            somListSortFilterTab?.show(result.data)
-                        }
-                        if (!result.data.fromCache) realtimeDataChangeCount++
-                    }
+                    is Success -> onSuccessGetFilter(result)
                     is Fail -> showGlobalError(result.throwable)
                     else -> showGlobalError(Throwable())
                 }
                 shimmerViews.gone()
+            }
+
+            private fun onSuccessGetFilter(result: Success<SomListFilterUiModel>) {
+                /* apply result only if:
+                   1. First filter data (cache or cloud)
+                   2. Any filter data that is not from cache
+                 */
+                if (realtimeDataChangeCount == 0 || !result.data.fromCache) {
+                    selectFilterTab(result)
+                    somListSortFilterTab?.show(result.data)
+                }
+                if (!result.data.fromCache) realtimeDataChangeCount++
+            }
+
+            private fun selectFilterTab(result: Success<SomListFilterUiModel>) {
+                if (tabActive.isNotBlank() && tabActive != SomConsts.STATUS_ALL_ORDER) {
+                    result.data.statusList.find { it.key == tabActive }?.let { activeFilter ->
+                        activeFilter.isChecked = true
+                        /*  refresh only on:
+                            1. 2nd..n-th realtime (cloud) data
+                            2. First realtime (cloud) data with any differences from the previous cached data (if first realtime data is coming after cached data)
+                            3. First data
+                         */
+                        if (shouldRefreshOrders(activeFilter.id, result.data.refreshOrder)) {
+                            onTabClicked(activeFilter, shouldScrollToTop, false)
+                        }
+                    }
+                }
             }
 
             private fun shouldRefreshOrders(ids: List<Int>, refreshOrder: Boolean): Boolean {
