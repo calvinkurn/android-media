@@ -273,13 +273,13 @@ open class HomeFragment : BaseDaggerFragment(),
     private lateinit var root: FrameLayout
     private lateinit var refreshLayout: ToggleableSwipeRefreshLayout
     private lateinit var floatingTextButton: FloatingTextButton
-    private lateinit var stickyLoginView: StickyLoginView
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
     private lateinit var statusBarBackground: View
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var oldToolbar: HomeMainToolbar? = null
     private var navToolbar: NavToolbar? = null
@@ -744,6 +744,14 @@ open class HomeFragment : BaseDaggerFragment(),
         context?.let {
             if (isRegisteredFromStickyLogin(it)) gotoNewUserZone()
         }
+
+        getHomeViewModel().setRollanceNavigationType(
+                if (isNavRevamp()) {
+                    AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+                } else {
+                    AbTestPlatform.NAVIGATION_VARIANT_OLD
+                }
+        )
     }
 
     private fun initStickyLogin() {
@@ -772,12 +780,6 @@ open class HomeFragment : BaseDaggerFragment(),
                 }
             }
         })
-        getHomeViewModel().setRollanceNavigationType(
-                if (isNavRevamp()) {
-                    AbTestPlatform.NAVIGATION_VARIANT_REVAMP
-                } else {
-                    AbTestPlatform.NAVIGATION_VARIANT_OLD
-                })
     }
 
     private fun scrollToRecommendList() {
