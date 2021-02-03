@@ -242,16 +242,6 @@ class RecommendationListCarouselViewHolder(itemView: View,
                             recommendation.parentPosition
                     )
                 }
-            } else if(recommendation is HomeRecommendationListSeeMoreData) {
-                itemView.addOnImpressionListener(recommendation) {
-                    listCarouselListener?.onRecommendationCarouselGridImpression(
-                            recommendation.channel,
-                            null,
-                            adapterPosition,
-                            recommendation.parentPosition,
-                            true
-                    )
-                }
             }
         }
     }

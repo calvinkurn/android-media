@@ -40,9 +40,11 @@ class RecommendationListCarouselComponentCallback(val homeCategoryListener: Home
     }
 
     override fun onRecommendationCarouselChannelImpression(channelModel: ChannelModel, parentPosition: Int) {
+        homeCategoryListener.putEEToIris(RecommendationListTracking.getRecommendationListImpression(channelModel,true, homeCategoryListener.userId, parentPosition ) as HashMap<String, Any>)
+
     }
 
     override fun onRecommendationCarouselGridImpression(channelModel: ChannelModel, channelGrid: ChannelGrid?, gridPosition: Int, parentPosition: Int, isSeeMoreView: Boolean) {
-        homeCategoryListener.putEEToIris(RecommendationListTracking.getRecommendationListImpression(channelModel, true, homeCategoryListener.userId, parentPosition ) as HashMap<String, Any>)
+        homeCategoryListener.putEEToTrackingQueue(RecommendationListTracking.getRecommendationListProductImpression(channelModel, channelGrid!!,false, homeCategoryListener.userId, gridPosition, parentPosition ) as HashMap<String, Any>)
     }
 }

@@ -60,7 +60,7 @@ object RecommendationListTracking: BaseTrackerConst(){
     }
 
     fun getRecommendationListImpression(channel: ChannelModel, isToIris: Boolean = false, userId: String, parentPosition: Int): Map<String, Any> {
-        val baseTracker =  BaseTrackerBuilder()
+        val baseTracker = BaseTrackerBuilder()
         return baseTracker.constructBasicProductView(
                 event = if (isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
@@ -86,6 +86,41 @@ object RecommendationListTracking: BaseTrackerConst(){
                             recommendationType = grid.recommendationType
                     )
                 },
+                list = String.format(
+                        "/ - p%s - %s - product", parentPosition, RECOMMENDATION_LIST_CAROUSEL_PRODUCT
+                ))
+                .appendChannelId(channel.id)
+                .appendUserId(userId)
+                .appendScreen(Screen.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .build()
+    }
+    fun getRecommendationListProductImpression(channel: ChannelModel, grid: ChannelGrid, isToIris: Boolean = false, userId: String, itemPosition: Int, parentPosition: Int): Map<String, Any> {
+        val baseTracker =  BaseTrackerBuilder()
+        return baseTracker.constructBasicProductView(
+                event = if (isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION,
+                eventLabel = Label.NONE,
+                products = listOf(
+                    Product(
+                            name = grid.name,
+                            id = grid.id,
+                            productPrice = convertRupiahToInt(grid.price).toString(),
+                            brand = Value.NONE_OTHER,
+                            category = Value.NONE_OTHER,
+                            variant = Value.NONE_OTHER,
+                            productPosition = (itemPosition + 1).toString(),
+                            channelId = channel.id,
+                            isFreeOngkir = grid.isFreeOngkirActive,
+                            persoType = channel.trackingAttributionModel.persoType,
+                            categoryId = channel.trackingAttributionModel.categoryId,
+                            isTopAds = grid.isTopads,
+                            headerName = channel.channelHeader.name,
+                            isCarousel = true,
+                            pageName = channel.pageName,
+                            recommendationType = grid.recommendationType)),
                 list = String.format(
                         "/ - p%s - %s - product", parentPosition, RECOMMENDATION_LIST_CAROUSEL_PRODUCT
                 ))
