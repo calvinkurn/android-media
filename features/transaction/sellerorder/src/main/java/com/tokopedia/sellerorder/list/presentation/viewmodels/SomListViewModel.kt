@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.list.presentation.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -23,7 +22,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
-import kotlin.jvm.Throws
 
 class SomListViewModel @Inject constructor(
         getUserRoleUseCase: SomGetUserRoleUseCase,
@@ -124,22 +122,6 @@ class SomListViewModel @Inject constructor(
 
     var isMultiSelectEnabled: Boolean = false
 
-    private fun <T : Any> getDataFromUseCase(
-            useCase: BaseGraphqlUseCase<T>,
-            liveData: MutableLiveData<Result<T>>) {
-        if (useCase.isFirstLoad) {
-            useCase.isFirstLoad = false
-            launchCatchError(block = {
-                liveData.value = Success(useCase.executeOnBackground(true))
-            }, onError = {})
-        }
-        launchCatchError(block = {
-            liveData.value = Success(useCase.executeOnBackground(false))
-        }, onError = {
-            liveData.value = Fail(it)
-        })
-    }
-
     private fun getBulkAcceptOrderStatus(batchId: String, wait: Long) {
         launchCatchError(block = {
             delay(wait)
@@ -187,7 +169,17 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters(refreshOrders: Boolean) {
-        getDataFromUseCase(somListGetFilterListUseCase, _filterResult)
+        if (somListGetFilterListUseCase.isFirstLoad) {
+            somListGetFilterListUseCase.isFirstLoad = false
+            launchCatchError(block = {
+                _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(true).apply { refreshOrder = refreshOrders })
+            }, onError = {})
+        }
+        launchCatchError(block = {
+            _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(false).apply { refreshOrder = refreshOrders })
+        }, onError = {
+            _filterResult.value = Fail(it)
+        })
     }
 
     fun getWaitingPaymentCounter() {
