@@ -20,6 +20,8 @@ open class NotificationCancelManager: CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + jobs
 
+    fun cancel() = jobs.cancelChildren()
+
     fun isCancellable(activity: Activity): Boolean {
         return !TARGET_ACTIVITIES.singleOrNull {
             it == activity.javaClass.canonicalName
@@ -36,10 +38,6 @@ open class NotificationCancelManager: CoroutineScope {
                 }
             }
         }
-    }
-
-    fun cancel() {
-        jobs.cancelChildren()
     }
 
     private fun cancellableItems(
@@ -61,14 +59,16 @@ open class NotificationCancelManager: CoroutineScope {
 
     private fun excludeIds(remoteConfig: CMRemoteConfigUtils): List<String> {
         val campaignIds = remoteConfig.getStringRemoteConfig(CM_CAMPAIGN_ID_EXCLUDE_LIST)
-        return campaignIds.split(",").map { it.trim() }
+        return if (campaignIds.isNotEmpty()) {
+            campaignIds.split(",").map { it.trim() }
+        } else {
+            excludeIds
+        }
     }
 
     private fun cancelNotificationManager(context: Context, notificationId: Int) {
         NotificationManagerCompat.from(context).cancel(notificationId)
-        (context.getSystemService(NOTIFICATION_SERVICE) as? NotificationManager?)?.let {
-            it.cancel(notificationId)
-        }
+        (context.getSystemService(NOTIFICATION_SERVICE) as? NotificationManager?)?.cancel(notificationId)
     }
 
     companion object {
@@ -81,6 +81,13 @@ open class NotificationCancelManager: CoroutineScope {
                 "com.tokopedia.navigation.presentation.activity.MainParentActivity",
                 "com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
         )
+
+        /*
+        * NotificationCancelManager will trigger every main activity opened,
+        * so there's case where remote config value didn't get the value, so
+        * we need a internal exclude items.
+        * */
+        private val excludeIds = listOf("-1854")
     }
 
 }
