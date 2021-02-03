@@ -74,8 +74,7 @@ class CartTopAdsVerificationTest {
             checkItemType(cartRecyclerView, i)
         }
 
-//        waitForData()
-        Thread.sleep(60000)
+        waitForData()
 
         topAdsAssertion?.assert()
     }
