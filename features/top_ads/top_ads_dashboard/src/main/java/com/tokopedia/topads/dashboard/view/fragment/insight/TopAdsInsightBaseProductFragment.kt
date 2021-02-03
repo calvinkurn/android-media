@@ -163,7 +163,7 @@ class TopAdsInsightBaseProductFragment(private val productRecommendData: Product
     private fun setAdapter() {
         rvRecomProduct?.adapter = adapter
         rvRecomProduct?.layoutManager = LinearLayoutManager(context)
-        rvRecomProduct?.isNestedScrollingEnabled = false
+        rvRecomProduct?.isNestedScrollingEnabled = true
     }
 
     private fun onSuccessProductRecommendation(productRecommendationModel: ProductRecommendationModel) {
