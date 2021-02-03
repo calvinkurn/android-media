@@ -11,6 +11,10 @@ interface Constants {
         const val SELLERAPP_PACKAGE = "com.tokopedia.sellerapp"
     }
 
+    object SharedPreference {
+        const val TOKEN_SENT = "isTokenSentToMoeServer"
+    }
+
     object MOENGAGE {
         const val PRODUCT = "product"
         const val PRICE = "price"

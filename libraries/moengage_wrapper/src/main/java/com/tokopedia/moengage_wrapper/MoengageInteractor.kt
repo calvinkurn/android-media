@@ -11,17 +11,21 @@ import com.moengage.inapp.InAppManager
 import com.moengage.push.PushManager
 import com.moengage.pushbase.push.MoEPushCallBacks
 import com.moengage.pushbase.push.MoEngageNotificationUtils
+import com.tokopedia.moengage_wrapper.cache.MoengageWrapperCacheHandler
 import com.tokopedia.moengage_wrapper.constants.Constants
 import com.tokopedia.moengage_wrapper.interfaces.*
 import com.tokopedia.moengage_wrapper.util.DateFormatUtils
+import com.tokopedia.user.session.UserSession
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
 
 object MoengageInteractor {
+    private lateinit var userSessionInterface: UserSession
     private var isMoengageInitialised = false
     private lateinit var context: Application
+    private val moengageWrapperCacheHandler: MoengageWrapperCacheHandler by lazy { MoengageWrapperCacheHandler(context) }
     var keyMoengage: String = ""
     var smallIcon = 0
     var largeIcon = 0
@@ -47,6 +51,7 @@ object MoengageInteractor {
                         .optOutTokenRegistration()
                         .build()
                 MoEngage.initialise(moEngage)
+                sendTokenToServerIfNotSent()
                 isMoengageInitialised = true
                 println("MoengageInteractor: Moengage Initialized")
                 println("MoengageInteractor: $smallIcon $largeIcon")
@@ -55,6 +60,14 @@ object MoengageInteractor {
             }
         }
         return false
+    }
+
+    private fun sendTokenToServerIfNotSent() {
+        val tokenSent = moengageWrapperCacheHandler.getBoolean(Constants.SharedPreference.TOKEN_SENT)
+        if (!::userSessionInterface.isInitialized)
+            userSessionInterface = UserSession(context)
+        if (!tokenSent)
+            refreshToken(userSessionInterface.deviceId)
     }
 
     fun sendExistingUserAndInstallTrackingEvent(isLoggedIn: Boolean) {
@@ -289,10 +302,11 @@ object MoengageInteractor {
     fun refreshToken(token: String?) {
         val moengageValidator = MoengageValidator()
         initialiseMoengageIfEnabled(moengageValidator)
-        if (moengageValidator.checkIfMoengageEnabled(context)) {
+        if (moengageValidator.checkIfMoengageEnabled(context) && !token.isNullOrEmpty()) {
             PushManager.getInstance().refreshToken(context, token)
             println("MoengageInteractor: refreshToken $token")
-        }
+            moengageWrapperCacheHandler.putBoolean(Constants.SharedPreference.TOKEN_SENT, true)
+        } else moengageWrapperCacheHandler.putBoolean(Constants.SharedPreference.TOKEN_SENT, false)
     }
 
     fun handlePushPayload(token: Map<String, String>) {
