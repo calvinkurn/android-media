@@ -79,13 +79,12 @@ object ImageUtils {
                                        url: String?) {
         context?.let {
             Glide.with(context)
+                    .asBitmap()
                     .load(url)
                     .dontAnimate()
-                    .circleCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.ic_loading_placeholder)
                     .error(R.drawable.ic_loading_error)
-                    .into(imageView)
+                    .into(getCircleImageViewTarget(imageView))
         }
     }
 
