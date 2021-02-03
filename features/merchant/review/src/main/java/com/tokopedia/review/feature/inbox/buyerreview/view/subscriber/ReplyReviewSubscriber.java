@@ -1,7 +1,6 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber;
 
-import com.tokopedia.network.utils.ErrorHandler;
-import com.tokopedia.review.R;
+import com.tokopedia.review.common.util.ReviewErrorHandler;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.SendReplyReviewDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail;
 
@@ -26,7 +25,7 @@ public class ReplyReviewSubscriber extends Subscriber<SendReplyReviewDomain> {
     @Override
     public void onError(Throwable e) {
         viewListener.finishLoadingDialog();
-        viewListener.onErrorReplyReview(ErrorHandler.getErrorMessage(viewListener.getContext().getApplicationContext(), e));
+        viewListener.onErrorReplyReview(ReviewErrorHandler.getErrorMessage(viewListener.getContext().getApplicationContext(), e));
     }
 
     @Override

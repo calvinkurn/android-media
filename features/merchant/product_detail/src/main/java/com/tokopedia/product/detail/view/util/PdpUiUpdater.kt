@@ -377,7 +377,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
 
         tickerInfoMap?.run {
-            generalTickerInfo = it.tickerInfo
+            generalTickerInfoDataModel = it.tickerInfo
         }
     }
 

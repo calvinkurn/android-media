@@ -205,8 +205,9 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun clearAttachmentPreview() {
-        hideProductPreviewLayout()
+        attachmentPreviewAdapter.clear()
         sendListener.onEmptyProductPreview()
+        hideProductPreviewLayout()
     }
 
     override fun hideProductPreviewLayout() {

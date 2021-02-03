@@ -128,7 +128,7 @@
                 android:id="@+id/budgetEditText"
                 style="@style/TextInputLayout"
                 android:layout_width="0dp"
-                android:inputType="number"
+                app:text_field_input_type="number"
                 android:layout_marginTop="@dimen/dp_24"
                 android:maxLines="1"
                 app:layout_constraintStart_toStartOf="parent"

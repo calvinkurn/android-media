@@ -142,14 +142,6 @@ class RecommendationListCarouselViewHolder(itemView: View,
                     )
                 }.toMutableList()
                 if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listCarouselListener, adapterPosition))
-                launch {
-                    try {
-                        setHeightBasedOnProductCardMaxHeight(tempDataList)
-                    }
-                    catch (throwable: Throwable) {
-                        throwable.printStackTrace()
-                    }
-                }
                 adapter = RecommendationListAdapter(newList, listCarouselListener, isCacheData)
                 setRecycledViewPool(parentRecycledViewPool)
                 clearItemRecyclerViewDecoration(this)
@@ -158,15 +150,6 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 }
             }
         }
-    }
-
-    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardModel>) {
-        val productCardHeight = getProductCardMaxHeight(productCardModelList)
-
-        val carouselLayoutParams = this.layoutParams
-        carouselLayoutParams?.height = productCardHeight
-        this.layoutParams = carouselLayoutParams
     }
 
     suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
