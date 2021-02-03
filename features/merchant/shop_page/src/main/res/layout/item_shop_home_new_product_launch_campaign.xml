@@ -32,6 +32,7 @@
         android:id="@+id/image_tnc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="null"
         android:layout_marginStart="@dimen/dp_5"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_2"
