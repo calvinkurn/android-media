@@ -129,8 +129,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             RouteManager.route(this, ApplinkConst.CREATE_SHOP)
             finish()
         }
-
-        sellerReviewHelper.checkForReview(this, supportFragmentManager)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -164,6 +162,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                 UpdateShopActiveService.startService(this)
                 onBottomNavSelected(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
                 showToolbarNotificationBadge()
+                checkForSellerAppReview(FragmentType.HOME)
             }
             FragmentType.PRODUCT -> {
                 UpdateShopActiveService.startService(this)
@@ -233,6 +232,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         if (intent?.data == null) {
             showToolbar(initialPageType)
             showInitialPage(initialPageType)
+            checkForSellerAppReview(initialPageType)
         } else {
             handleAppLink(intent)
         }
@@ -261,6 +261,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             setCurrentFragmentType(pageType)
             sahBottomNav.setSelected(pageType)
             navigator?.navigateFromAppLink(page)
+            checkForSellerAppReview(pageType)
         }
     }
 
@@ -432,5 +433,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun initPerformanceMonitoringSellerHome() {
         performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
         performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()
+    }
+
+    private fun checkForSellerAppReview(pageType: Int) {
+        if (pageType == FragmentType.HOME) {
+            sellerReviewHelper.checkForReview(this, supportFragmentManager)
+        }
     }
 }
