@@ -12,13 +12,4 @@
         <attr name="isAll" format="boolean"/>
         <attr name="isWithPhoto" format="boolean"/>
     </declare-styleable>
-
-    <declare-styleable name="UserReputationView">
-        <attr name="usv_show_tooltip" format="boolean" />
-    </declare-styleable>
-
-    <declare-styleable name="ShopReputationView">
-        <attr name="srv_show_tooltip" format="boolean" />
-        <attr name="srv_medal_width" format="dimension" />
-    </declare-styleable>
 </resources>

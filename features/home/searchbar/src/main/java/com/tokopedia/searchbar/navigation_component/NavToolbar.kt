@@ -147,6 +147,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navIconAdapter?.setHasStableIds(true)
         val navIconRecyclerView = rv_icon_list
         navIconRecyclerView.adapter = navIconAdapter
+        navIconRecyclerView.itemAnimator = null
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         toolbarThemeCondition(
