@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.login.view.presenter
+package com.tokopedia.loginregister.login.view.viewmodel
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -7,35 +7,28 @@ import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
-import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
 import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.data.ResponseConverter
-import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
-import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
-import com.tokopedia.loginregister.login.domain.StatusFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinPojo
-import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
+import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
-import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
-import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
@@ -48,7 +41,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
@@ -68,7 +60,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val dispatcherProvider: DispatcherProvider
-): BaseViewModel(dispatcherProvider.ui()) {
+) : BaseViewModel(dispatcherProvider.ui()) {
 
     private var job: Job = SupervisorJob()
 
@@ -81,8 +73,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val registerCheckResponse: LiveData<Result<RegisterCheckData>>
         get() = mutableRegisterCheckResponse
 
-    private val mutableDiscoverResponse = MutableLiveData<Result<DiscoverViewModel>>()
-    val discoverResponse: LiveData<Result<DiscoverViewModel>>
+    private val mutableDiscoverResponse = MutableLiveData<Result<DiscoverDataModel>>()
+    val discoverResponse: LiveData<Result<DiscoverDataModel>>
         get() = mutableDiscoverResponse
 
     private val mutableActivateResponse = MutableLiveData<Result<ActivateUserData>>()
@@ -182,7 +174,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     ) {
         launchCatchError(coroutineContext, {
             val params = activateUserUseCase.getParams(email, validateToken)
-             mutableActivateResponse.value = Success(activateUserUseCase.getData(params).data)
+            mutableActivateResponse.value = Success(activateUserUseCase.getData(params).data)
         }, {
             mutableActivateResponse.value = Fail(it)
         })
@@ -191,27 +183,27 @@ class LoginEmailPhoneViewModel @Inject constructor(
     fun getUserInfo() {
         idlingResourceProvider?.increment()
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
-            {
-                mutableProfileResponse.value = Success(it)
-            }, {
-                mutableProfileResponse.value = Fail(it)
-            }, {
-                idlingResourceProvider?.decrement()
-            }
+                {
+                    mutableProfileResponse.value = Success(it)
+                }, {
+            mutableProfileResponse.value = Fail(it)
+        }, {
+            idlingResourceProvider?.decrement()
+        }
         ))
     }
 
     fun loginFacebook(accessToken: AccessToken, email: String) {
-         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
-         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
-             accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
-             LoginTokenSubscriber(userSession,
-                     { onSuccessLoginTokenFacebook(it) },
-                     { onFailedLoginTokenFacebook(it) },
-                     { showPopup(it.loginToken.popupError) },
-                     { onGoToActivationPage(email) },
-                     { onGoToSecurityQuestion(email) }
-             ))
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
+        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
+                accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
+                LoginTokenSubscriber(userSession,
+                        { onSuccessLoginTokenFacebook(it) },
+                        { onFailedLoginTokenFacebook(it) },
+                        { showPopup(it.loginToken.popupError) },
+                        { onGoToActivationPage(email) },
+                        { onGoToSecurityQuestion(email) }
+                ))
     }
 
     fun loginFacebookPhone(accessToken: AccessToken, phone: String) {
