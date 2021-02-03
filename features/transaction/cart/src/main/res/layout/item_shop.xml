@@ -51,7 +51,8 @@
                     android:layout_height="@dimen/dp_18"
                     android:layout_marginEnd="@dimen/dp_4"
                     tools:src="@drawable/ic_badge_shop_official"
-                    tools:visibility="visible" />
+                    tools:visibility="visible"
+                    tools:ignore="ContentDescription" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_shop_name"
