@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.network.utils.ErrorHandler
@@ -246,7 +247,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         } else {
             changePinInput?.pinSecondaryActionView?.apply {
                 text = getString(R.string.change_pin_forgot_btn)
-                setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 setOnClickListener(onForgotPinClick)
                 isEnabled = true
             }

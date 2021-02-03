@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker.picker.main.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
@@ -10,8 +11,8 @@ import com.bumptech.glide.request.FutureTarget;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
-import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.utils.image.ImageUtil;
+import com.tokopedia.utils.file.FileUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,15 +58,25 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                 .concatMap(new Func1<String, Observable<String>>() {
                     @Override
                     public Observable<String> call(String path) {
-                        if (convertToWebp) {
-                            path = ImageUtil.convertToWebp(getView().getContext(), path, 100);
-                        }
-                        if (ImageUtils.getFileSizeInKb(path) > maxFileSize) {
-                            if (ImageUtils.isImageType(getView().getContext(), path)) {
+                        if (FileUtil.getFileSizeInKb(path) > maxFileSize) {
+                            if (FileUtil.isImageType(getView().getContext(), path)) {
+                                String pathResult = "";
                                 //resize image
-                                String pathResult = ImageUtils.resizeBitmap(path, ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT,
-                                        true, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
-                                if (recheckSizeAfterResize && ImageUtils.getFileSizeInKb(pathResult) > maxFileSize) {
+                                if (convertToWebp) {
+                                    pathResult = ImageProcessingUtil.resizeBitmap(path,
+                                            ImageProcessingUtil.DEF_WIDTH,
+                                            ImageProcessingUtil.DEF_HEIGHT,
+                                            true,
+                                            Bitmap.CompressFormat.WEBP);
+                                } else {
+                                    pathResult = ImageProcessingUtil.resizeBitmap(path,
+                                            ImageProcessingUtil.DEF_WIDTH,
+                                            ImageProcessingUtil.DEF_HEIGHT,
+                                            true,
+                                            ImageProcessingUtil.getCompressFormat(path));
+                                }
+
+                                if (recheckSizeAfterResize && FileUtil.getFileSizeInKb(pathResult) > maxFileSize) {
                                     throw new FileSizeAboveMaximumException();
                                 }
                                 return Observable.just(pathResult);
@@ -177,7 +188,7 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                             }
                             FutureTarget<File> future = Glide.with(getView().getContext())
                                     .load(url)
-                                    .downloadOnly(ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT);
+                                    .downloadOnly(ImageProcessingUtil.DEF_WIDTH, ImageProcessingUtil.DEF_HEIGHT);
                             try {
                                 return future.get();
                             } catch (InterruptedException | ExecutionException e) {

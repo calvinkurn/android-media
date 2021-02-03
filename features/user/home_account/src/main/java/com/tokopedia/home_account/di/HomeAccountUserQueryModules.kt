@@ -15,7 +15,6 @@ import javax.inject.Named
  * ade.hadian@tokopedia.com
  */
 
-@HomeAccountUserScope
 @Module
 class HomeAccountUserQueryModules {
 

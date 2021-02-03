@@ -34,9 +34,9 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
     }
 
     @GqlQuery(OVO_INCENTIVE_QUERY_CLASS_NAME, OVO_INCENTIVE_QUERY)
-    suspend fun getIncentiveOvo(productId: Int = 0, reputationId: Int = 0): ProductRevIncentiveOvoDomain? {
+    suspend fun getIncentiveOvo(productId: Long = 0, reputationId: Long = 0): ProductRevIncentiveOvoDomain? {
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val graphqlRequest = if (productId != 0 && reputationId != 0) {
+        val graphqlRequest = if (productId != 0L && reputationId != 0L) {
             val requestParams = RequestParams.create().apply {
                 putString(PARAM_PRODUCT_ID, productId.toString())
                 putString(PARAM_REPUTATION_ID, reputationId.toString())

@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.deeplink.activity;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.core.app.TActivity;
 
 /**
  * Created by Angga.Prasetiyo on 09/11/2015.

@@ -24,7 +24,6 @@ import retrofit2.Retrofit;
  * Created by hadi.putra on 24/04/18.
  */
 
-@TopAdsScope
 @Module
 public class TopAdsShopModule {
 

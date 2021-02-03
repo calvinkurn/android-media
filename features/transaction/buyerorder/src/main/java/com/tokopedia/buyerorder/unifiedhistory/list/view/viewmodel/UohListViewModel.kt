@@ -24,6 +24,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import rx.Subscriber
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -87,11 +88,16 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     fun loadRecommendationList(pageNumber: Int) {
         UohIdlingResource.increment()
         launch {
-            val recommendationData = getRecommendationUseCase.getData(
-                    GetRecommendationRequestParam(
-                            pageNumber = pageNumber,
-                            pageName = UohConsts.PAGE_NAME))
-            _recommendationListResult.value = (recommendationData.asSuccess())
+            try {
+                val recommendationData = getRecommendationUseCase.getData(
+                        GetRecommendationRequestParam(
+                                pageNumber = pageNumber,
+                                pageName = UohConsts.PAGE_NAME))
+                _recommendationListResult.value = (recommendationData.asSuccess())
+            } catch (e: Exception) {
+                Timber.d(e)
+                _recommendationListResult.value = Fail(e.fillInStackTrace())
+            }
             UohIdlingResource.decrement()
         }
     }
@@ -138,7 +144,6 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
 
     fun doRechargeSetFail(orderId: Int) {
         UohIdlingResource.increment()
-
         launch {
             _rechargeSetFailResult.value = (rechargeSetFailUseCase.executeSuspend(orderId))
             UohIdlingResource.decrement()
@@ -150,20 +155,26 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         UohIdlingResource.increment()
         val requestParams = RequestParams.create()
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
-        atcUseCase.execute(requestParams, object : Subscriber<AddToCartDataModel>() {
-            override fun onNext(addToCartDataModel: AddToCartDataModel?) {
-                addToCartDataModel?.let {
-                    _atcResult.value = (Success(it))
+        try {
+            atcUseCase.execute(requestParams, object : Subscriber<AddToCartDataModel>() {
+                override fun onNext(addToCartDataModel: AddToCartDataModel?) {
+                    addToCartDataModel?.let {
+                        _atcResult.value = (Success(it))
+                        UohIdlingResource.decrement()
+                    }
+                }
+
+                override fun onCompleted() {}
+
+                override fun onError(e: Throwable?) {
+                    _atcResult.value = (e?.let { Fail(it) })
                     UohIdlingResource.decrement()
                 }
-            }
-
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable?) {
-                _atcResult.value = (e?.let { Fail(it) })
-                UohIdlingResource.decrement()
-            }
-        })
+            })
+        } catch (e: Exception) {
+            Timber.d(e)
+            _atcResult.value = Fail(e.fillInStackTrace())
+            UohIdlingResource.decrement()
+        }
     }
 }

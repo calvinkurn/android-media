@@ -5,9 +5,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.StepperListener
-import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 
-abstract class BaseHeadlineStepperFragment<T : CreateHeadlineAdsStepperModel>: BaseDaggerFragment() {
+abstract class BaseHeadlineStepperFragment<T : HeadlineAdStepperModel>: BaseDaggerFragment() {
     protected var stepperModel: T? = null
 
     protected val stepperListener: StepperListener? by lazy {

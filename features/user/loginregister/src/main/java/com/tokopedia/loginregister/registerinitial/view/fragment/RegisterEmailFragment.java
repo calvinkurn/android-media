@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -39,7 +40,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
-import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
@@ -69,6 +69,9 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY;
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION;
+
 /**
  * @author by nisie on 10/25/18.
  */
@@ -90,15 +93,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     String PRIVACY_POLICY_URL = "launch.TermPrivacy://parent?param=1";
 
     private static final String ALREADY_REGISTERED = "sudah terdaftar";
-
-    private static final int GO_TO_REGISTER = 0;
-    private static final int GO_TO_ACTIVATION_PAGE = 1;
-    private static final int GO_TO_LOGIN = 2;
-    private static final int GO_TO_RESET_PASSWORD = 3;
-
-    private static final int STATUS_ACTIVE = 1;
-    private static final int STATUS_PENDING = -1;
-    private static final int STATUS_INACTIVE = 0;
 
     View redirectView;
     UnifyButton registerButton;
@@ -196,58 +190,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         }
 
         initObserver();
-
-        String sourceString = getActivity().getString(R.string.bottom_info_terms_and_privacy2);
-
-        SpannableString spannable = new SpannableString(sourceString);
-
-        ClickableSpan clickableSpanTermCondition = new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View textView) {
-                registerAnalytics.trackClickTermConditionButton();
-                if(getActivity() != null){
-                    Intent intent = new Intent (Intent.ACTION_VIEW);
-                    intent.setData (Uri.parse(TERM_CONDITION_URL));
-                    getActivity().startActivity(intent);
-                }
-            }
-
-            @Override
-            public void updateDrawState(@NonNull TextPaint textPaint) {
-                super.updateDrawState(textPaint);
-                textPaint.setColor(MethodChecker.getColor(registerNextTAndC.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
-            }
-        };
-
-        ClickableSpan clickableSpanPrivacyPolicy = new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View textView) {
-                registerAnalytics.trackClickPrivacyPolicyButton();
-                if(getActivity() != null){
-                    Intent intent = new Intent (Intent.ACTION_VIEW);
-                    intent.setData (Uri.parse(PRIVACY_POLICY_URL));
-                    getActivity().startActivity(intent);
-                }
-            }
-
-            @Override
-            public void updateDrawState(@NonNull TextPaint textPaint) {
-                super.updateDrawState(textPaint);
-                textPaint.setColor(MethodChecker.getColor(registerNextTAndC.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
-            }
-        };
-
-        spannable.setSpan(clickableSpanTermCondition, sourceString.indexOf(TERM_CONDITION),
-                sourceString.indexOf(TERM_CONDITION) + TERM_CONDITION.length(), 0);
-
-        spannable.setSpan(clickableSpanPrivacyPolicy, sourceString.indexOf(PRIVACY_POLICY),
-                sourceString.indexOf(PRIVACY_POLICY) + PRIVACY_POLICY.length(), 0);
-
-        registerNextTAndC.setText(spannable, TextView.BufferType.SPANNABLE);
-        registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
-
+        initTermPrivacyView();
         showPasswordHint();
-        showEmailHint();
         showNameHint();
     }
 
@@ -291,6 +235,38 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
                 }
             }
         });
+    }
+
+    private void initTermPrivacyView() {
+        if (getContext() != null) {
+            SpannableString termPrivacy = new SpannableString(getString(R.string.detail_term_and_privacy));
+            termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0);
+            termPrivacy.setSpan(privacyClickAction(), 61, 78, 0);
+            termPrivacy.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0);
+            termPrivacy.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0);
+
+            registerNextTAndC.setText(termPrivacy, TextView.BufferType.SPANNABLE);
+            registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
+            registerNextTAndC.setSelected(false);
+        }
+    }
+
+    private ClickableSpan termConditionClickAction() {
+        return new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                startActivity(RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_TERM_AND_CONDITION));
+            }
+        };
+    }
+
+    private ClickableSpan privacyClickAction() {
+        return new ClickableSpan () {
+            @Override
+            public void onClick(@NonNull View widget) {
+                startActivity(RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.TERM_PRIVACY, PAGE_PRIVACY_POLICY));
+            }
+        };
     }
 
     private Spannable getSpannable(String sourceString, String hyperlinkString) {
@@ -418,7 +394,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                showEmailHint();
                 if (s.length() == 0) {
                     setWrapperErrorNew(wrapper, getString(R.string.error_field_required));
                 } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(wrapperEmail.getTextFieldInput().getText().toString()).matches()) {
@@ -548,7 +523,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         setWrapperErrorNew(wrapperName, null);
         setWrapperErrorNew(wrapperEmail, null);
         showPasswordHint();
-        showEmailHint();
         showNameHint();
     }
 
@@ -559,10 +533,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
     public void showNameHint() {
         setWrapperHint(wrapperName, "  ");
-    }
-
-    public void showEmailHint() {
-        setWrapperHint(wrapperEmail, getResources().getString(R.string.send_verif_to_email));
     }
 
     public void setActionsEnabled(boolean isEnabled) {
@@ -581,17 +551,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     public void dismissLoadingProgress() {
         setActionsEnabled(true);
         progressBar.setVisibility(View.GONE);
-    }
-
-    public void goToActivationPage(String email, String password) {
-        if (getActivity() != null) {
-            Intent intent = ActivationActivity.getCallingIntent(getActivity(),
-                    email,
-                    password,
-                    source
-            );
-            startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
-        }
     }
 
     public void goToAutomaticLogin() {

@@ -12,7 +12,6 @@ import dagger.multibindings.IntoMap
 /**
  * @author by furqan on 12/11/2020
  */
-@FlightOrderScope
 @Module
 abstract class FlightOrderViewModelModule {
 

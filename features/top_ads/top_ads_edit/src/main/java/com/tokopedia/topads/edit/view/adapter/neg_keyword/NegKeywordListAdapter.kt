@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_EXISTS
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_SOURCE
 import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_NEGATIVE_PHRASE

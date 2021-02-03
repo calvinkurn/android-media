@@ -9,7 +9,6 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
-@NormalCheckoutScope
 @Module
 class GqlRawQueryModule {
 
@@ -33,12 +32,5 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_MULTI_ORIGIN)
     fun provideRawMultiOrigin(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, com.tokopedia.product.detail.common.R.raw.gql_get_nearest_warehouse)
-
-    @NormalCheckoutScope
-    @Provides
-    @IntoMap
-    @StringKey(RawQueryKeyConstant.QUERY_INSURANCE_RECOMMENDATION)
-    fun provideRawInsuranceRecommendation(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_insurance_recommendation)
 
 }

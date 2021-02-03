@@ -9,7 +9,7 @@
       android:fillType="evenOdd"/>
   <path
       android:pathData="M-280,-109L40,-109L40,459L-280,459z"
-      android:fillColor="#FFF"
+      android:fillColor="@color/Unify_N0"
       android:fillType="evenOdd"/>
   <group>
     <clip-path android:pathData="M0,0L24,0 24,24 0,24z M 0,0"/>
