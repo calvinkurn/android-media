@@ -48,7 +48,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_shop_open_revamp_input_shop.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -141,15 +140,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         return view
     }
 
-    private fun setupToolbarActions(view: View?) {
-        view?.findViewById<HeaderUnify>(R.id.toolbar_input_shop)?.apply {
-            setNavigationOnClickListener {
-                shopOpenRevampTracking?.clickBackButtonFromInputShopPage()
-                fragmentNavigationInterface?.showExitDialog()
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
@@ -214,6 +204,15 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         }
         adapter?.selectedPosition = position
         adapter?.notifyDataSetChanged()
+    }
+
+    private fun setupToolbarActions(view: View?) {
+        view?.findViewById<HeaderUnify>(R.id.toolbar_input_shop)?.apply {
+            setNavigationOnClickListener {
+                shopOpenRevampTracking?.clickBackButtonFromInputShopPage()
+                fragmentNavigationInterface?.showExitDialog()
+            }
+        }
     }
 
     private fun reselectChipSuggestionDomainName() {
