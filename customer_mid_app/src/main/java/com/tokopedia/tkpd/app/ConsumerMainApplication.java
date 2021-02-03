@@ -53,6 +53,7 @@ import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallback
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.devicefingerprint.appauth.AppAuthActivityLifecycleCallbacks;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -133,6 +134,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         createAndCallPreSeq();
         super.onCreate();
         createAndCallPostSeq();
@@ -287,6 +289,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new AppAuthActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
@@ -347,7 +350,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     @NotNull
     private Boolean executePreCreateSequence() {
         initReact();
-        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
+
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
         FpmLogger.init(ConsumerMainApplication.this);
         return true;
@@ -589,6 +592,17 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         new CacheApiWhiteListUseCase(this).executeSync(CacheApiWhiteListUseCase.createParams(
                 CacheApiWhiteList.getWhiteList(),
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
+    }
+
+    public int getCurrentVersion(Context context) {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public Class<?> getDeeplinkClass() {

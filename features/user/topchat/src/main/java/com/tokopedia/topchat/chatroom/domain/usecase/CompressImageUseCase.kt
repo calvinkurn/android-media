@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
-import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.utils.image.ImageProcessingUtil
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -14,7 +14,7 @@ class CompressImageUseCase @Inject constructor(){
     fun compressImage(imageUrl: String): Observable<String> {
         return Observable.just(imageUrl)
                 .concatMap {
-                    val file = ImageUtils.compressImageFile(it, QUALITY_COMPRESS)
+                    val file = ImageProcessingUtil.compressImageFile(it, QUALITY_COMPRESS)
                     Observable.just(file.absolutePath)
                 }
                 .subscribeOn(Schedulers.io())

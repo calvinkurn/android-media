@@ -71,11 +71,13 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
                 listener.onShopInfoClicked(it.id, componentTrackDataModel)
             }
             btn_favorite.setOnClickListener {
+                view.btn_favorite.isClickable = false
                 listener.onShopInfoClicked(it.id, componentTrackDataModel)
             }
             send_msg_shop.setOnClickListener {
                 listener.onShopInfoClicked(it.id, componentTrackDataModel)
             }
+            view.btn_favorite.isClickable = true
             visible()
         }
     }
@@ -122,10 +124,11 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
                 btn_favorite.setCompoundDrawablesWithIntrinsicBounds(
                         androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_plus_add_white_24), null, null, null)
             }
+            view.btn_favorite.isClickable = true
         }
     }
 
-    fun toggleClickableFavoriteBtn(enable: Boolean) {
-        view.btn_favorite.isClickable = enable
+    fun enableButton() {
+        view.btn_favorite.isClickable = true
     }
 }

@@ -106,7 +106,8 @@ class SmallGridInspirationCardViewHolder(
         itemView.smallGridCardViewInspirationCard?.recyclerViewInspirationCardOptionList?.let {
             it.layoutManager = createLayoutManager()
             it.adapter = createAdapter(element.options)
-            it.addItemDecorationIfNotExists(spacingItemDecoration)
+            if (!element.isRelated())
+                it.addItemDecorationIfNotExists(spacingItemDecoration)
         }
     }
 
@@ -116,7 +117,7 @@ class SmallGridInspirationCardViewHolder(
 
     private fun createAdapter(
             inspirationCarouselProductList: List<InspirationCardOptionViewModel>
-    ): RecyclerView.Adapter<InspirationCardOptionChipViewHolder> {
+    ): RecyclerView.Adapter<RecyclerView.ViewHolder> {
         val inspirationCardOptionAdapter = InspirationCardOptionAdapter(inspirationCardListener)
         inspirationCardOptionAdapter.setItemList(inspirationCarouselProductList)
 

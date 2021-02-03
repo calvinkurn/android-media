@@ -52,7 +52,6 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
@@ -481,9 +480,12 @@ class OfficialHomeFragment :
 
     private fun goToPDP(item: RecommendationItem, position: Int) {
         eventTrackerClickListener(item, position)
-        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, position)
-            startActivityForResult(this, REQUEST_FROM_PDP)
+        try {
+            RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
+                putExtra(PDP_EXTRA_UPDATED_POSITION, position)
+                startActivityForResult(this, REQUEST_FROM_PDP)
+            }
+        }catch (e: Exception){
         }
     }
 

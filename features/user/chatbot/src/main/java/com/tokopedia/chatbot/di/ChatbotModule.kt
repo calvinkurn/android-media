@@ -22,7 +22,6 @@ import dagger.Provides
 /**
  * @author by nisie on 12/12/18.
  */
-@ChatbotScope
 @Module(includes = arrayOf(ImageUploaderModule::class))
 class ChatbotModule {
 

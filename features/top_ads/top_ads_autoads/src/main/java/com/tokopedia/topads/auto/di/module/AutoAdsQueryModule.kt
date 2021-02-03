@@ -16,7 +16,6 @@ import dagger.multibindings.StringKey
  * Author errysuprayogi on 20,May,2019
  */
 @Module
-@AutoAdsScope
 class AutoAdsQueryModule(val context: Context) {
 
     @Provides

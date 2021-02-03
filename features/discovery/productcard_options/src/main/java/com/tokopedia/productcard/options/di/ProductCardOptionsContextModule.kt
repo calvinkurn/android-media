@@ -4,7 +4,6 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 
-@ProductCardOptionsScope
 @Module
 internal class ProductCardOptionsContextModule(private val context: Context) {
 

@@ -10,7 +10,6 @@ import dagger.Module
  */
 
 @Module
-@SomScope
 abstract class SomViewModelModule {
 
     @SomScope

@@ -22,13 +22,10 @@ import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
 import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
-import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
-import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
@@ -52,7 +49,6 @@ import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -73,7 +69,6 @@ import timber.log.Timber;
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         SellerApplinkModule.class,
-        FeedDeeplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
@@ -97,7 +92,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ConsumerDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
-                    new FeedDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
@@ -272,12 +266,10 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
                 if (isTaskRoot()) {
                     TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
-                    if (getApplicationContext() instanceof TkpdCoreRouter) {
-                        taskStackBuilder.addNextIntent(
-                                ((com.tokopedia.core.TkpdCoreRouter) getApplicationContext()).getHomeIntent(this)
-                        );
-                        getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    }
+                    taskStackBuilder.addNextIntent(
+                            RouteManager.getIntent(this, ApplinkConst.HOME)
+                    );
+                    getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     taskStackBuilder.addNextIntent(nextIntent);
                     taskStackBuilder.startActivities();
                 } else {
