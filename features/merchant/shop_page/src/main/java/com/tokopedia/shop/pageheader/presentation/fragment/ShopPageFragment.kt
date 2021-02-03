@@ -976,9 +976,9 @@ class ShopPageFragment :
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 selectedPosition = tab.position
-                viewPagerAdapter.handleSelectedTab(tab, true)
+                viewPagerAdapter?.handleSelectedTab(tab, true)
                 shopPageTracking?.clickTab(
-                        shopViewModel.isMyShop(shopId),
+                        shopViewModel?.isMyShop(shopId) ?: false,
                         listShopPageTabModel[tab.position].tabTitle,
                         CustomDimensionShopPage.create(
                                 shopId,
