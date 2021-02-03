@@ -15,7 +15,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainSuggestionResult
 import com.tokopedia.shop.open.R
@@ -48,6 +48,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_shop_open_revamp_input_shop.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -70,7 +71,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     private lateinit var txtInputDomainName: TextFieldUnify
     private lateinit var txtTermsAndConditions: TextView
     private lateinit var btnShopRegistration: UnifyButton
-    private lateinit var btnBack : ImageView
     private var recyclerView: RecyclerView? = null
     private var layoutManager: LinearLayoutManager? = null
     private var adapter: ShopOpenRevampShopsSuggestionAdapter? = null
@@ -94,10 +94,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_open_revamp_input_shop, container, false)
+        setupToolbarActions(view)
         txtTermsAndConditions = view.findViewById(R.id.txt_shop_open_revamp_tnc)
         txtInputShopName = view.findViewById(R.id.text_input_shop_open_revamp_shop_name)
         txtInputDomainName = view.findViewById(R.id.text_input_shop_open_revamp_domain_name)
-        btnBack = view.findViewById(R.id.btn_back_input_shop)
         btnShopRegistration = view.findViewById(R.id.shop_registration_button)
         recyclerView = view.findViewById(R.id.recycler_view_shop_suggestions)
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -141,6 +141,15 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         return view
     }
 
+    private fun setupToolbarActions(view: View?) {
+        view?.findViewById<HeaderUnify>(R.id.toolbar_input_shop)?.apply {
+            setNavigationOnClickListener {
+                shopOpenRevampTracking?.clickBackButtonFromInputShopPage()
+                fragmentNavigationInterface?.showExitDialog()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
@@ -165,11 +174,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 viewModel.createShop(domainNameValue, shopNameValue)
             }
         }
-        btnBack.setOnClickListener {
-            shopOpenRevampTracking?.clickBackButtonFromInputShopPage()
-            fragmentNavigationInterface?.showExitDialog()
-        }
-
         observeShopNameValidationData()
         observeDomainNameValidationData()
         observeDomainShopNameSuggestions()
