@@ -39,7 +39,6 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         initViews()
 
         val startPadding = 0
-//        val startPadding = dpToPx(16).toInt() - promoCouponView.defaultPadding
         val topPadding = dpToPx(8).toInt() - promoCouponView.topPadding
         setPadding(startPadding, topPadding, startPadding, 0)
 
@@ -55,10 +54,10 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     }
 
     private fun setClicks() {
-        imageChevron.setOnClickListener {
+        promoCouponView.setOnClickListener {
             val bottomSheet = BottomSheetUnify()
 
-            bottomSheet.setTitle("Daftar Kupon Toko")
+            bottomSheet.setTitle(context.getString(R.string.mvc_daftar_kupon_toko))
             val childView = MvcDetailView(context)
             bottomSheet.setChild(childView)
             bottomSheet.show((context as AppCompatActivity).supportFragmentManager, "BottomSheet Tag")
