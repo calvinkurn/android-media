@@ -7,7 +7,7 @@
     <com.tokopedia.mvcwidget.views.MvcView
         android:id="@+id/productDetailMerchantVoucherWidget"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl7"
         app:mvlwTitleString="Testing"
         android:clipToPadding="false"
         android:visibility="gone"
