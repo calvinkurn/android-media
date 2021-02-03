@@ -43,6 +43,7 @@
     <string name="path_image_picker">/image-picker</string>
     <string name="path_image_editor">/image-editor</string>
     <string name="path_webview" translatable="false">/webview</string>
+    <string name="path_webview_download_html" translatable="false">/webview-download-html</string>
     <string name="path_setting_profile_phone_verification" translatable="false">/setting-profile-phone-verification</string>
     <string name="path_setting_referral_phone_verification" translatable="false">/setting-referral-phone-verification</string>
     <string name="path_dynamic_features_install" translatable="false">/dynamic-features-install/.*\\/</string>
