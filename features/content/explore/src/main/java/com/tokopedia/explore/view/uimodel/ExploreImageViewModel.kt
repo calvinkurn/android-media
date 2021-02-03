@@ -1,4 +1,4 @@
-package com.tokopedia.explore.view.viewmodel
+package com.tokopedia.explore.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory
