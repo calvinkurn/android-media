@@ -111,7 +111,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -185,7 +184,7 @@ class ShopPageFragment :
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
     private var tabPosition = TAB_POSITION_HOME
-    lateinit var stickyLoginView: StickyLoginView
+    private var stickyLoginView: StickyLoginView? = null
     private lateinit var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
@@ -1399,8 +1398,8 @@ class ShopPageFragment :
 
     private fun updateFloatingChatButtonMargin() {
         val buttonChatLayoutParams = (chatButton.layoutParams as ViewGroup.MarginLayoutParams)
-        if (stickyLoginView?.isShowing()) {
-            val stickyLoginViewHeight = stickyLoginView?.height
+        if (stickyLoginView?.isShowing() == true) {
+            val stickyLoginViewHeight = stickyLoginView?.height ?: 0
             buttonChatLayoutParams.setMargins(
                     buttonChatLayoutParams.leftMargin,
                     buttonChatLayoutParams.topMargin,
@@ -1419,8 +1418,8 @@ class ShopPageFragment :
     }
 
     private fun updateViewPagerPadding() {
-        if (stickyLoginView?.isShowing()) {
-            viewPager.setPadding(0, 0, 0, stickyLoginView?.height)
+        if (stickyLoginView?.isShowing() == true) {
+            stickyLoginView?.height?.let { viewPager.setPadding(0, 0, 0, it) }
         } else {
             viewPager.setPadding(0, 0, 0, 0)
         }
