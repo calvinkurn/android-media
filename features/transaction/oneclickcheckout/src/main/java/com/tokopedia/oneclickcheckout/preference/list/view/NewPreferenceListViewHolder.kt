@@ -50,7 +50,7 @@ class NewMainPreferenceListViewHolder(itemView: View, private val listener: Pref
             cardUnify.cardType = CardUnify.TYPE_SHADOW
             layoutCard.setOnClickListener {
                 if (preference.enable) {
-                    listener.onPreferenceSelected(preference)
+                    listener.onPreferenceSelected(preference, true)
                 }
             }
             dividerHeader.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
@@ -137,7 +137,7 @@ class NewPreferenceListViewHolder(itemView: View, private val listener: Preferen
             cardUnify.cardType = CardUnify.TYPE_SHADOW
             layoutCard.setOnClickListener {
                 if (preference.enable) {
-                    listener.onPreferenceSelected(preference)
+                    listener.onPreferenceSelected(preference, false)
                 }
             }
         }
