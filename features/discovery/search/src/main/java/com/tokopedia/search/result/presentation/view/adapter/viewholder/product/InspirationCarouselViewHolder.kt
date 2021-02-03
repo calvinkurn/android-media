@@ -49,8 +49,17 @@ class InspirationCarouselViewHolder(
     }
 
     override fun bind(element: InspirationCarouselViewModel) {
+        setDefaultHeightInspirationCarouselOptionList()
         bindTitle(element)
         bindContent(element)
+    }
+
+    private fun setDefaultHeightInspirationCarouselOptionList() {
+        itemView.inspirationCarousel?.inspirationCarouselOptionList?.let {
+            val carouselLayoutParams = it.layoutParams
+            carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
+            it.layoutParams = carouselLayoutParams
+        }
     }
 
     private fun bindTitle(element: InspirationCarouselViewModel) {
