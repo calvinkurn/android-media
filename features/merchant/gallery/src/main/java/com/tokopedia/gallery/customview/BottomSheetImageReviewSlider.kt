@@ -134,13 +134,8 @@ class BottomSheetImageReviewSlider : FrameLayout, ImageReviewSliderView {
 
     private fun showBottomSheet() {
         if (bottomSheetBehavior != null) {
-            bottomSheetBehavior!!.peekHeight = getScreenHeight()
             bottomSheetBehavior!!.state = BottomSheetBehavior.STATE_EXPANDED
         }
-    }
-
-    private fun getScreenHeight(): Int {
-        return Resources.getSystem().displayMetrics.heightPixels
     }
 
     override fun onLoadDataSuccess(imageReviewItems: List<ImageReviewItem>, isHasNextPage: Boolean) {
