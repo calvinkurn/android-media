@@ -138,11 +138,12 @@ class OrderSummaryPageActivityCampaignRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
+            assertProfilePaymentInfoRevamp("Pembelian barang Sale ini hanya bisa menggunakan metode pembayaran tertentu.")
             assertPayment("Rp115.000", "Bayar")
 
             clickAddProductQuantity()
 
-            assertProfilePaymentOvoErrorRevamp("Rp200.000. OVO Cash kamu tidak cukup.", "Top-Up")
+            assertProfilePaymentOvoErrorRevamp("OVO Cash kamu tidak cukup.", "Top-Up")
             assertPaymentButtonEnable(false)
 
             cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_TOP_UP_WALLET_REVAMP_RESPONSE_PATH
@@ -166,6 +167,7 @@ class OrderSummaryPageActivityCampaignRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
+            assertProfilePaymentInfoRevamp("Pembelian barang Sale ini hanya bisa menggunakan metode pembayaran tertentu.")
             assertProfilePaymentOvoErrorRevamp(message = "Masukkan No. HP di halaman akun", buttonText = null)
             assertPaymentButtonEnable(false)
         }
@@ -179,10 +181,11 @@ class OrderSummaryPageActivityCampaignRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-            assertProfilePaymentOvoErrorRevamp(message = null, buttonText = "Aktivasi")
             assertPaymentButtonEnable(false)
+            assertProfilePaymentInfoRevamp("Pembelian barang Sale ini hanya bisa menggunakan metode pembayaran tertentu.")
+            assertProfilePaymentOvoErrorRevamp(message = null, buttonText = "Aktivasi")
 
-            clickOvoActivationButton {
+            clickOvoActivationButtonRevamp {
                 cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_ACTIVATED_REVAMP_RESPONSE_PATH
                 performActivation(true)
             }
@@ -205,6 +208,7 @@ class OrderSummaryPageActivityCampaignRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
+            assertProfilePaymentInfoRevamp("Pembelian barang Sale ini hanya bisa menggunakan metode pembayaran tertentu.")
             assertProfilePaymentErrorRevamp(message = "OVO Error Ticker", buttonText = null)
             assertPaymentButtonEnable(false)
         }

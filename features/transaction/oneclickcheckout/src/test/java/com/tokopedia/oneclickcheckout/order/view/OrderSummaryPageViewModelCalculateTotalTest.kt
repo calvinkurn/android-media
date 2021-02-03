@@ -489,7 +489,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
-                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, message = errorMessage, type = OrderPaymentOvoErrorData.TYPE_MISSING_PHONE)
+                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = errorMessage, type = OrderPaymentOvoErrorData.TYPE_MISSING_PHONE)
         ), orderSummaryPageViewModel.orderPayment.value)
     }
 
@@ -540,7 +540,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
-                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, buttonTitle = buttonTitle, type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = callbackUrl)
+                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, buttonTitle = buttonTitle, type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = callbackUrl)
         ), orderSummaryPageViewModel.orderPayment.value)
     }
 

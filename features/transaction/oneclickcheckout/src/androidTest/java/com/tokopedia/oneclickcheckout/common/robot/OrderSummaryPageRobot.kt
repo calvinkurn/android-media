@@ -107,7 +107,7 @@ class OrderSummaryPageRobot {
     }
 
     fun clickOvoActivationButtonRevamp(func: OvoActivationBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).perform(click())
+        onView(withId(R.id.tv_new_payment_ovo_error_action)).perform(scrollTo()).perform(click())
         OvoActivationBottomSheetRobot().apply(func)
     }
 
@@ -315,6 +315,10 @@ class OrderSummaryPageRobot {
         } else if (buttonText != null) {
             onView(withId(R.id.tv_new_payment_ovo_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
         }
+    }
+
+    fun assertProfilePaymentInfoRevamp(message: String) {
+        onView(withId(R.id.tv_new_payment_info)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(message)))
     }
 
     fun assertPayment(total: String, buttonText: String) {
