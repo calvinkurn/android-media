@@ -139,7 +139,7 @@ object SomAnalytics {
     }
 
     // SOM Revamp
-    fun eventClickOrderCard(orderStatus: Int, orderStatusName: String) {
+    fun eventClickOrderCard(orderStatus: Long, orderStatusName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_ORDER_CARD_ON_ORDER_LIST, "$orderStatus - $orderStatusName")
     }
 

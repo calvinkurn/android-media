@@ -20,7 +20,7 @@ class SomOrderRequestCancelBottomSheet : BottomSheetUnify() {
     private var popUp: PopUp? = null
 
     private var cancelReason: String = ""
-    private var orderStatusCode: Int = 0
+    private var orderStatusCode: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +39,11 @@ class SomOrderRequestCancelBottomSheet : BottomSheetUnify() {
             view: View,
             reasonBuyer: String,
             actionButtons: List<PopUp.ActionButton>,
-            statusCode: Int
+            statusCode: Long
     ) {
         with(view) {
             when (statusCode) {
-                SomConsts.STATUS_CODE_ORDER_CREATED, SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> {
+                SomConsts.STATUS_CODE_ORDER_CREATED.toLong(), SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED.toLong() -> {
                     val primaryButtonText = actionButtons.find {
                         it.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON
                     }?.displayName.orEmpty()
@@ -61,10 +61,10 @@ class SomOrderRequestCancelBottomSheet : BottomSheetUnify() {
                                 primaryButtonClickAction = {
                                     dismiss()
                                     when (statusCode) {
-                                        SomConsts.STATUS_CODE_ORDER_CREATED -> {
+                                        SomConsts.STATUS_CODE_ORDER_CREATED.toLong() -> {
                                             listener?.onAcceptOrder()
                                         }
-                                        SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> {
+                                        SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED.toLong() -> {
                                             listener?.onRejectCancelRequest()
                                         }
                                     }
@@ -80,26 +80,26 @@ class SomOrderRequestCancelBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun getBuyerRequestCancellationRejectButton(statusCode: Int): String {
+    private fun getBuyerRequestCancellationRejectButton(statusCode: Long): String {
         return when (statusCode) {
-            SomConsts.STATUS_CODE_ORDER_CREATED -> getString(R.string.som_buyer_cancellation_confirm_accept_order_button)
-            SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> getString(R.string.som_buyer_cancellation_confirm_shipping_button)
+            SomConsts.STATUS_CODE_ORDER_CREATED.toLong() -> getString(R.string.som_buyer_cancellation_confirm_accept_order_button)
+            SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED.toLong() -> getString(R.string.som_buyer_cancellation_confirm_shipping_button)
             else -> ""
         }
     }
 
-    private fun getBuyerRequestCancellationPopUpDescription(statusCode: Int): String {
+    private fun getBuyerRequestCancellationPopUpDescription(statusCode: Long): String {
         return when (statusCode) {
-            SomConsts.STATUS_CODE_ORDER_CREATED -> getString(R.string.som_buyer_cancellation_confirm_accept_order_description)
-            SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> getString(R.string.som_buyer_cancellation_confirm_shipping_description)
+            SomConsts.STATUS_CODE_ORDER_CREATED.toLong() -> getString(R.string.som_buyer_cancellation_confirm_accept_order_description)
+            SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED.toLong() -> getString(R.string.som_buyer_cancellation_confirm_shipping_description)
             else -> ""
         }
     }
 
-    private fun getBuyerRequestCancellationPopupTitle(statusCode: Int): String {
+    private fun getBuyerRequestCancellationPopupTitle(statusCode: Long): String {
         return when (statusCode) {
-            SomConsts.STATUS_CODE_ORDER_CREATED -> getString(R.string.som_buyer_cancellation_confirm_accept_order_title)
-            SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> getString(R.string.som_buyer_cancellation_confirm_shipping_title)
+            SomConsts.STATUS_CODE_ORDER_CREATED.toLong() -> getString(R.string.som_buyer_cancellation_confirm_accept_order_title)
+            SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED.toLong() -> getString(R.string.som_buyer_cancellation_confirm_shipping_title)
             else -> ""
         }
     }
@@ -139,7 +139,7 @@ class SomOrderRequestCancelBottomSheet : BottomSheetUnify() {
         )
     }
 
-    fun init(popUp: PopUp, reason: String, orderStatusCode: Int) {
+    fun init(popUp: PopUp, reason: String, orderStatusCode: Long) {
         this.popUp = popUp
         this.cancelReason = reason
         this.orderStatusCode = orderStatusCode

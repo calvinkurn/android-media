@@ -206,7 +206,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 val visibleRange = firstVisibleIndex..lastVisibleIndex
                 (visibleRange.takeIf { !isReversed } ?: visibleRange.reversed()).forEach {
                     val order = adapter.data.getOrNull(it)
-                    if (order is SomListOrderUiModel && order.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
+                    if (order is SomListOrderUiModel && order.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED.toLong() &&
                             order.buttons.firstOrNull()?.key == SomConsts.KEY_ACCEPT_ORDER && order.cancelRequest == 0) {
                         layoutManager.findViewByPosition(it)?.findViewById<View>(R.id.btnQuickAction)?.takeIf {
                             it.isVisible
@@ -1015,7 +1015,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun getSelectedOrderStatusCodes(): List<Int> {
         return adapter.data.filterIsInstance<SomListOrderUiModel>()
                 .filter { it.isChecked }
-                .map { it.orderStatusId }
+                .map { it.orderStatusId.toInt() }
                 .distinct()
     }
 
@@ -1429,7 +1429,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun getFirstNewOrder(orders: List<SomListOrderUiModel>): Int {
         return orders.indexOfFirst {
-            it.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED && it.buttons.isNotEmpty() && it.cancelRequest == 0
+            it.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED.toLong() && it.buttons.isNotEmpty() && it.cancelRequest == 0
         }
     }
 
