@@ -1,8 +1,10 @@
 package com.tokopedia.sellerreview.view.bottomsheet
 
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerreview.common.Const
 import kotlinx.android.synthetic.main.sir_thank_you_bottom_sheet.view.*
 
@@ -28,5 +30,13 @@ class ThankYouBottomSheet : BaseBottomSheet() {
 
     override fun show(fm: FragmentManager) {
         show(fm, TAG)
+    }
+
+    override fun initInjector() {
+        val baseComponent = (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+        DaggerSellerHomeComponent.builder()
+                .baseAppComponent(baseComponent)
+                .build()
+                .inject(this)
     }
 }
