@@ -42,7 +42,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/changephonenumber_dp_1"
-            android:background="@color/changephonenumber_white_two"/>
+            android:background="@color/Unify_N100"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"

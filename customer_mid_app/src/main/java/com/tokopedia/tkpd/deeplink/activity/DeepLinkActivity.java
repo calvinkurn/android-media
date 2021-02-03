@@ -160,9 +160,14 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void initDeepLink() {
         if (uriData != null || getIntent().getBooleanExtra(EXTRA_STATE_APP_WEB_VIEW, false)) {
-            if (getIntent().getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
-                Bundle bundle = getIntent().getExtras();
-                uriData = DeepLinkChecker.getRemoveAmpLink(this, Uri.parse(bundle.getString(APPLINK_URL)));
+            Bundle bundle = getIntent().getExtras();
+            boolean deeplink = getIntent().getBooleanExtra(DeepLink.IS_DEEP_LINK, false);
+            String applinkUrl = null;
+            if (bundle != null) {
+                applinkUrl = bundle.getString(APPLINK_URL);
+            }
+            if (deeplink && !TextUtils.isEmpty(applinkUrl)) {
+                uriData = DeepLinkChecker.getRemoveAmpLink(this, Uri.parse(applinkUrl));
                 presenter.actionGotUrlFromApplink(uriData);
             } else {
                 presenter.checkUriLogin(uriData);

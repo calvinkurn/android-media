@@ -20,6 +20,10 @@ object DeepLinkMapperProductManage {
     const val QUERY_PARAM_ADD_AS_FEATURED = "add_as_featured"
     const val QUERY_PARAM_IS_PRODUCT_FEATURED = "is_product_featured"
     const val QUERY_PARAM_SELECTED_PRODUCT_ID = "selected_product_id"
+    const val QUERY_PARAM_PRODUCT_ID = "product_id"
+    const val QUERY_PARAM_PRODUCT_STOCK = "product_stock"
+    const val QUERY_PARAM_PRODUCT_ACTIVE = "product_active"
+    const val QUERY_PARAM_PRODUCT_VARIANT = "product_variant"
     private const val PATH_SEGMENT_EDIT = "edit"
     private const val PATH_RESERVED_STOCK = "reserved_stock"
 

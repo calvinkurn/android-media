@@ -104,6 +104,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIF
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SCORE
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
@@ -141,6 +142,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -306,6 +308,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(BRAND_LIST)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(BRAND_LIST_WITH_SLASH)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) || it.startsWith(PRODUCT_ADD) }, DF_MERCHANT_SELLER, R.string.title_product_add_edit))
+            add(DFP({ it.startsWith(MERCHANT_PRODUCT_DRAFT)}, DF_MERCHANT_SELLER, R.string.title_product_add_edit))
             add(DFP({ it.startsWith(SELLER_MENU) }, DF_MERCHANT_SELLER, R.string.title_seller_menu))
             add(DFP({
                 it.startsWithPattern(SHOP_PAGE_BASE) ||
@@ -336,6 +339,14 @@ object DeeplinkDFMapper : CoroutineScope {
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.PATH_PRODUCT_REVIEW && uri.pathSegments.last() == ReviewApplinkConst.PATH_CREATE)
             }, DF_BASE, R.string.title_create_review))
+
+            add(DFP({
+                it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
+            }, DF_BASE, R.string.title_product_detail))
 
             // Operational
             add(DFP({
@@ -544,6 +555,13 @@ object DeeplinkDFMapper : CoroutineScope {
                 (uri.host == ReviewApplinkConst.PATH_PRODUCT_REVIEW && uri.pathSegments.last() == ReviewApplinkConst.PATH_CREATE)
             }, DF_BASE_SELLER_APP, R.string.title_create_review))
 
+            add(DFP({
+                it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
+                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
+            }, DF_BASE_SELLER_APP, R.string.title_product_detail))
             // User
             add(DFP({ it.startsWithPattern(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
         }

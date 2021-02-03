@@ -13,7 +13,7 @@ object FlightOrderDetailGqlConst {
     """.trimIndent()
     val QUERY_GET_ORDER_INVOICE = """
         query FlightGetInvoice(${'$'}data: FlightInvoiceArgs!) {
-            flightInvoice(input:${'$'}data) {
+            flightGetInvoice(input:${'$'}data) {
                 data
             }
         }

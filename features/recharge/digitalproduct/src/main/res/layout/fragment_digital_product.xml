@@ -23,7 +23,7 @@
                 android:id="@+id/digital_holder_check_emoney_balance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/layout_lvl1"
                 tools:visibility="visible"
                 android:visibility="gone" />
 
@@ -44,27 +44,27 @@
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/layout_lvl2"
                 android:orientation="vertical">
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/indicator"
                     style="@style/Tabs.Secondary"
-                    footerColor="@color/colorPrimary"
+                    footerColor="@color/Unify_G500"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:elevation="@dimen/dp_2"
-                    app:tabIndicatorColor="@color/colorPrimary"
+                    android:background="@color/Unify_N0"
+                    android:elevation="@dimen/spacing_lvl1"
+                    app:tabIndicatorColor="@color/Unify_G500"
                     app:tabMode="scrollable"
-                    app:tabSelectedTextColor="@color/colorPrimary"
+                    app:tabSelectedTextColor="@color/Unify_G500"
                     app:tabTextAppearance="@style/TitlePageWhiteIndicator"
-                    app:tabTextColor="@color/font_black_disabled_38" />
+                    app:tabTextColor="@color/Unify_N700_32" />
 
                 <com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager
                     android:id="@+id/pager"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_350">
+                    android:layout_height="@dimen/digital_dimen_350">
 
                 </com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager>
 

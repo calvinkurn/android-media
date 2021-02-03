@@ -74,6 +74,7 @@ dependencies {
     //Merchant
 //    implementation project(rootProject.ext.features.report)
 //    implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.reviewProduct)
 

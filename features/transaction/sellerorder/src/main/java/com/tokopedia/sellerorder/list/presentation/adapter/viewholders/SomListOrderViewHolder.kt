@@ -5,10 +5,13 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.MotionEvent
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -17,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
@@ -42,54 +46,104 @@ class SomListOrderViewHolder(
 
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
+        private val endedOrderStatusCode = completedOrderStatusCodes.plus(cancelledOrderStatusCodes)
     }
-
-    private var shouldContinueDraw = false
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
-            itemView.cardSomOrder.alpha = if (listener.isMultiSelectEnabled() && element.cancelRequest != 0) 0.5f else 1f
-            itemView.setOnClickListener {
-                if (!listener.isMultiSelectEnabled()) listener.onOrderClicked(element)
-                else touchCheckBox(element)
-            }
+            setupOrderCard(element)
             // header
             setupStatusIndicator(element)
             setupCheckBox(element)
             setupOrderStatus(element)
             setupInvoice(element)
+            setupBuyerName(element)
             setupDeadline(element)
             // body
             setupTicker(element)
             setupProductList(element)
             // footer
-            val isOrderEnded = element.orderStatusId in completedOrderStatusCodes.plus(cancelledOrderStatusCodes)
+            val isOrderEnded = element.orderStatusId in endedOrderStatusCode
             setupCourierInfo(element, isOrderEnded)
             setupDestinationInfo(element, isOrderEnded)
             setupQuickActionButton(element)
-            if (element.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
-                    element.buttons.firstOrNull()?.key == KEY_ACCEPT_ORDER &&
-                    itemView.btnQuickAction.isVisible) {
-                listener.onFinishBindNewOrder(itemView.btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
-            }
+            onBindFinished(element)
         }
     }
 
     override fun bind(element: SomListOrderUiModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
         payloads.firstOrNull()?.let {
-            it as Bundle
-            if (it.containsKey(TOGGLE_SELECTION)) {
-                itemView.container?.layoutTransition?.enableTransitionType(CHANGING)
-                bind(element)
-                itemView.container?.layoutTransition?.disableTransitionType(CHANGING)
+            if (it is Bundle) {
+                if (it.containsKey(TOGGLE_SELECTION)) {
+                    itemView.container?.layoutTransition?.enableTransitionType(CHANGING)
+                    element?.let {
+                        setupOrderCard(it)
+                        setupStatusIndicator(it)
+                        setupCheckBox(it)
+                        setupQuickActionButton(element)
+                    }
+                    itemView.container?.layoutTransition?.disableTransitionType(CHANGING)
+                    return
+                }
+            } else if (it is Pair<*, *>) {
+                val oldItem = it.first
+                val newItem = it.second
+                if (oldItem is SomListOrderUiModel && newItem is SomListOrderUiModel) {
+                    setupOrderCard(newItem)
+                    val oldIsEnded = oldItem.orderStatusId in endedOrderStatusCode
+                    val newIsEnded = newItem.orderStatusId in endedOrderStatusCode
+                    itemView.container?.layoutTransition?.enableTransitionType(CHANGING)
+                    if (oldItem.statusIndicatorColor != newItem.statusIndicatorColor) {
+                        setupStatusIndicator(newItem)
+                    }
+                    if (oldItem.isChecked != newItem.isChecked || oldItem.cancelRequest != newItem.cancelRequest) {
+                        setupCheckBox(newItem)
+                    }
+                    if (oldItem.status != newItem.status) {
+                        setupOrderStatus(newItem)
+                    }
+                    if (oldItem.orderResi != newItem.orderResi) {
+                        setupInvoice(newItem)
+                    }
+                    if (oldItem.buyerName != newItem.buyerName) {
+                        setupBuyerName(newItem)
+                    }
+                    if (oldItem.deadlineText != newItem.deadlineText || oldItem.deadlineColor != newItem.deadlineColor || oldItem.preOrderType != newItem.preOrderType) {
+                        setupDeadline(newItem)
+                    }
+                    if (oldItem.tickerInfo != newItem.tickerInfo) {
+                        setupTicker(newItem)
+                    }
+                    if (oldItem.tickerInfo != newItem.tickerInfo || oldItem.orderProduct != newItem.orderProduct) {
+                        setupProductList(newItem)
+                    }
+                    if (oldItem.tickerInfo != newItem.tickerInfo || oldItem.orderProduct != newItem.orderProduct) {
+                        setupProductList(newItem)
+                    }
+                    if (oldIsEnded != newIsEnded || oldItem.courierName != newItem.courierName || oldItem.courierProductName != newItem.courierProductName) {
+                        setupCourierInfo(newItem, newIsEnded)
+                    }
+                    if (oldIsEnded != newIsEnded || oldItem.destinationProvince != newItem.destinationProvince) {
+                        setupDestinationInfo(newItem, newIsEnded)
+                    }
+                    if (oldItem.buttons.firstOrNull() != newItem.buttons.firstOrNull()) {
+                        setupQuickActionButton(newItem)
+                    }
+                    onBindFinished(newItem)
+                    itemView.container?.layoutTransition?.disableTransitionType(CHANGING)
+                    return
+                }
             }
         }
+        super.bind(element, payloads)
     }
 
-    override fun onViewRecycled() {
-        shouldContinueDraw = true
-        super.onViewRecycled()
+    private fun setupOrderCard(element: SomListOrderUiModel) {
+        itemView.cardSomOrder.alpha = if (listener.isMultiSelectEnabled() && element.cancelRequest != 0) 0.5f else 1f
+        itemView.setOnClickListener {
+            if (listener.isMultiSelectEnabled()) touchCheckBox(element)
+            else listener.onOrderClicked(element)
+        }
     }
 
     private fun touchCheckBox(element: SomListOrderUiModel) {
@@ -121,7 +175,7 @@ class SomListOrderViewHolder(
     private fun setupDestinationInfo(element: SomListOrderUiModel, orderEnded: Boolean) {
         with(itemView) {
             tvSomListDestinationValue.text = element.destinationProvince
-            tvSomListDestinationLabel.showWithCondition(element.destinationProvince.isNotBlank() && !orderEnded)
+            icSomListDestination.showWithCondition(element.destinationProvince.isNotBlank() && !orderEnded)
             tvSomListDestinationValue.showWithCondition(element.destinationProvince.isNotBlank() && !orderEnded)
         }
     }
@@ -130,7 +184,7 @@ class SomListOrderViewHolder(
     private fun setupCourierInfo(element: SomListOrderUiModel, orderEnded: Boolean) {
         with(itemView) {
             tvSomListCourierValue.text = "${element.courierName}${" - ${element.courierProductName}".takeIf { element.courierProductName.isNotBlank() }.orEmpty()}"
-            tvSomListCourierLabel.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
+            icSomListCourier.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
             tvSomListCourierValue.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
         }
     }
@@ -154,31 +208,27 @@ class SomListOrderViewHolder(
                     if (productVariant.isBlank()) {
                         maxLines = 2
                         isSingleLine = false
-                        if (element.orderProduct.size > 1) {
-                            setPadding(0, 0, 0, 0)
-                        } else {
-                            setPadding(0, 0, 0, 1.5f.dpToPx().toInt())
-                        }
                     } else {
                         maxLines = 1
                         isSingleLine = true
                     }
+                    if (element.orderProduct.size == 1 && productVariant.isBlank()) {
+                        setPadding(0, 0, 1.5f.dpToPx().toInt(), 0)
+                    } else {
+                        setPadding(0, 0, 0, 0)
+                    }
                     text = productName
-                    val layoutParams = layoutParams as ConstraintLayout.LayoutParams
-                    layoutParams.verticalBias = if (element.orderProduct.size == 1) {
-                        0.5f
-                    } else 0f
-                    this.layoutParams = layoutParams
                     return@apply
                 }
                 tvSomListProductVariant.apply {
                     text = productVariant
                     showWithCondition(productVariant.isNotBlank())
                 }
+                tvSomListProductExtra.apply {
+                    text = getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
+                    showWithCondition(element.orderProduct.size > 1)
+                }
             }
-            tvSomListProductExtra.text = if (element.orderProduct.size > 1) {
-                getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
-            } else ""
         }
     }
 
@@ -194,6 +244,7 @@ class SomListOrderViewHolder(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupDeadline(element: SomListOrderUiModel) {
         with(itemView) {
             val deadlineText = element.deadlineText
@@ -218,6 +269,7 @@ class SomListOrderViewHolder(
                     val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                     setPadding(padding, padding, 0, padding)
                 }
+                tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
                 tvSomListResponseLabel.show()
                 tvSomListDeadline.show()
                 icDeadline.show()
@@ -230,17 +282,27 @@ class SomListOrderViewHolder(
     }
 
     private fun setupInvoice(element: SomListOrderUiModel) {
-        with(itemView) {
-            tvSomListInvoice.text = element.orderResi
+        itemView.tvSomListInvoice.apply {
+            text = element.orderResi
+            showWithCondition(element.orderResi.isNotBlank())
+        }
+    }
+
+    private fun setupBuyerName(element: SomListOrderUiModel) {
+        itemView.tvSomListBuyerName.apply {
+            text = element.buyerName
+            showWithCondition(element.buyerName.isNotBlank())
         }
     }
 
     private fun setupOrderStatus(element: SomListOrderUiModel) {
-        with(itemView) {
-            tvSomListOrderStatus.text = element.status
+        itemView.tvSomListOrderStatus.apply {
+            text = element.status
+            showWithCondition(element.status.isNotBlank())
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupCheckBox(element: SomListOrderUiModel) {
         with(itemView) {
             checkBoxSomListMultiSelect.showWithCondition(listener.isMultiSelectEnabled())
@@ -284,7 +346,26 @@ class SomListOrderViewHolder(
                 KEY_RESPOND_TO_CANCELLATION -> listener.onRespondToCancellationButtonClicked(element)
                 KEY_VIEW_COMPLAINT_SELLER -> listener.onViewComplaintButtonClicked(element)
                 KEY_UBAH_NO_RESI -> listener.onEditAwbButtonClicked(element.orderId)
+                KEY_CHANGE_COURIER -> listener.onChangeCourierClicked(element.orderId)
             }
+        }
+    }
+
+    private fun composeDeadlineLabel(isPreOrder: Boolean): SpannableStringBuilder {
+        return SpannableStringBuilder(getString(R.string.som_list_response_before_label)).apply {
+            if (isPreOrder) {
+                val preOrderFlagString = getString(R.string.som_list_pre_order_flag)
+                append(" $preOrderFlagString")
+                setSpan(StyleSpan(Typeface.BOLD), length - preOrderFlagString.length - 1, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+    }
+
+    private fun onBindFinished(element: SomListOrderUiModel) {
+        if (element.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
+                element.buttons.firstOrNull()?.key == KEY_ACCEPT_ORDER &&
+                itemView.btnQuickAction.isVisible) {
+            listener.onFinishBindNewOrder(itemView.btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
         }
     }
 
@@ -299,6 +380,7 @@ class SomListOrderViewHolder(
         fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel)
         fun onViewComplaintButtonClicked(order: SomListOrderUiModel)
         fun onEditAwbButtonClicked(orderId: String)
+        fun onChangeCourierClicked(orderId: String)
         fun onFinishBindNewOrder(view: View, itemIndex: Int)
         fun isMultiSelectEnabled(): Boolean
     }

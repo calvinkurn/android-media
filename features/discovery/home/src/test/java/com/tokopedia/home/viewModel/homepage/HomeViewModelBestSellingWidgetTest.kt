@@ -41,7 +41,7 @@ class HomeViewModelBestSellingWidgetTest {
         )
         coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
         coEvery { getRecommendationUsecase.getData(any()) } returns listOf(RecommendationWidget(recommendationItemList = listOf(RecommendationItem())))
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
+        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
 
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
@@ -63,7 +63,7 @@ class HomeViewModelBestSellingWidgetTest {
         )
         coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
         coEvery { getRecommendationUsecase.getData(any()) } throws TimeoutException()
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
+        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
 
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
@@ -84,7 +84,7 @@ class HomeViewModelBestSellingWidgetTest {
         )
         coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
         coEvery { getRecommendationUsecase.getData(any()) } returns listOf()
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
+        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
 
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
@@ -106,7 +106,7 @@ class HomeViewModelBestSellingWidgetTest {
         )
         coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
         coEvery { getRecommendationUsecase.getData(any()) } returns listOf(RecommendationWidget(recommendationItemList = listOf(RecommendationItem())))
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
+        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
 
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
@@ -133,7 +133,7 @@ class HomeViewModelBestSellingWidgetTest {
         )
         coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
         coEvery { getRecommendationUsecase.getData(any()) } returns listOf(RecommendationWidget(recommendationItemList = listOf(RecommendationItem())))
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
+        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
 
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
@@ -154,7 +154,7 @@ class HomeViewModelBestSellingWidgetTest {
         )
         coEvery { bestSellerMapper.mappingRecommendationWidget(any()) } returns bestSellerDataModel
         coEvery { getRecommendationUsecase.getData(any()) } returns listOf(RecommendationWidget(recommendationItemList = listOf(RecommendationItem())))
-        coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
+        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
 
         coEvery { getHomeUseCase.getHomeData() } returns flow{
             emit(null)

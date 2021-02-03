@@ -110,7 +110,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
         })
 
         dealBrandCategoryActivityViewModel.errorMessage.observe(this, Observer {
-            Toaster.make(container, it.localizedMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(container, it.localizedMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         })
     }
 
@@ -121,7 +121,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             observer.dispatchOnGlobalLayout()
             observer.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    observer.removeOnGlobalLayoutListener(this)
+                    tab_deals_brand_category.getUnifyTabLayout().viewTreeObserver.removeOnGlobalLayoutListener(this)
                     isEnableTabClickAnalytics = true
                     position?.let { tabLayout.getTabAt(it)?.select() }
                 }

@@ -4,7 +4,7 @@
     android:background="@drawable/btn_plain"
     android:layout_height="match_parent">
 
-    <com.tokopedia.core.util.TkpdWebView android:id="@+id/additional_option_dialog"
+    <com.tokopedia.webview.TkpdWebView android:id="@+id/additional_option_dialog"
         android:orientation="vertical" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_10"

@@ -2,9 +2,9 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval" >
 
-    <solid android:color="#f3f4f5" />
+    <solid android:color="@color/Unify_N50" />
 
     <size
-        android:width="40dp"
-        android:height="40dp" />
+        android:width="@dimen/layout_lvl5"
+        android:height="@dimen/layout_lvl5" />
 </shape>

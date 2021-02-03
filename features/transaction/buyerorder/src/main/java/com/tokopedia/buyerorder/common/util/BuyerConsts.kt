@@ -9,6 +9,7 @@ object BuyerConsts {
     const val PARAM_SHOP_NAME = "param_shop_name"
     const val PARAM_LIST_PRODUCT = "param_list_product"
     const val PARAM_INVOICE = "param_invoice"
+    const val INVOICE = "invoice"
     const val PARAM = "param"
     const val PARAM_INPUT = "input"
     const val PARAM_ORDER_ID = "order_id"
@@ -61,4 +62,12 @@ object BuyerConsts {
     const val HOST_FLIGHT = "pesawat"
 
     const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
+
+    const val PRODUCT_ID = "product_id"
+    const val QUANTITY = "quantity"
+    const val NOTES = "notes"
+    const val SHOP_ID = "shop_id"
+    const val PRODUCT_PRICE = "product_price"
+    const val CATEGORY = "category"
+    const val PRODUCT_NAME = "product_name"
 }

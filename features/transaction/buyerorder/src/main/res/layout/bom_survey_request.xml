@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:gravity="center_horizontal"
         android:text="@string/bom_survey_description"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_12" />
 
     <LinearLayout
@@ -54,7 +54,7 @@
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/dp_16"
-            android:tint="@color/tkpd_survey_icon_gray"
+            android:tint="@color/Unify_N300"
             app:srcCompat="@drawable/ic_good_rating" />
 
         <ImageView
@@ -74,7 +74,7 @@
         android:visibility="invisible"
         android:enabled="false"
         tools:visibility="visible"
-        android:textColor="@color/tkpd_main_green"
+        android:textColor="@color/Unify_G400"
         android:textSize="@dimen/sp_12" />
 
 
@@ -84,7 +84,7 @@
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/survey_suggestion_text"
-        android:textColor="@color/black_56"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_12" />
 
 
@@ -94,8 +94,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
         android:hint="@string/survey_suggestion_hint"
-        android:textColor="@color/black_56"
-        android:textColorHint="@color/grey_400"
+        android:textColor="@color/Unify_N700_68"
+        android:textColorHint="@color/Unify_N150"
         android:textSize="@dimen/sp_16" />
 
 
@@ -111,7 +111,7 @@
         android:text="@string/submit_survey_bom"
         android:alpha="0.5"
         android:enabled="false"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         android:textSize="@dimen/sp_14"
         android:visibility="visible" />
 

@@ -73,6 +73,9 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
 
     private fun renderInvoiceId() {
         tgFlightOrderInvoice.text = invoiceId
+        tgFlightOrderInvoice.setOnClickListener {
+            listener?.onInvoiceIdClicked()
+        }
         ivFlightOrderInvoiceCopy.setOnClickListener {
             listener?.onCopyInvoiceIdClicked(invoiceId)
         }
@@ -100,6 +103,7 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
     interface Listener {
         fun onCopyInvoiceIdClicked(invoiceId: String)
         fun onDetailPaymentClicked()
+        fun onInvoiceIdClicked()
     }
 
 }

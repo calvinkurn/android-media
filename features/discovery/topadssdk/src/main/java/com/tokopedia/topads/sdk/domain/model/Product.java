@@ -144,7 +144,7 @@ public class Product implements Parcelable {
 
     @SerializedName(KEY_IMAGE_PRODUCT)
     @Expose
-    private ImageProduct imageProduct;
+    private ImageProduct imageProduct = new ImageProduct();
 
     @SerializedName(KEY_CAMPAIGN)
     @Expose

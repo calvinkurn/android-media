@@ -29,6 +29,7 @@ import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.EMOJI_STATE
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.SELECTED_ITEM
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -391,10 +392,12 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                     val ticketReplyData = createTicketResponse.ticketReply?.ticketReplyData
                     if (ticketReplyData?.status.equals(REPLY_TICKET_RESPONSE_STATUS)) {
                         if (ticketReplyData?.postKey?.isNotEmpty() == true) {
-                            val queryMap2 = postMessageUseCase2.setQueryMap(
+                            val requestParams = postMessageUseCase2.createRequestParams(
+                                    mTicketDetail?.id ?: "",
+                                    userSession.userId,
                                     getUtils().getFileUploaded(list),
                                     ticketReplyData.postKey)
-                            sendImages(queryMap2)
+                            sendImages(requestParams)
                         } else {
                             mView?.hideSendProgress()
                             mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong)
@@ -415,17 +418,16 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
         )
     }
 
-    private fun sendImages(queryMap: MutableMap<String, Any>) {
+    private fun sendImages(requestParams: RequestParams) {
         launchCatchError(
                 block = {
-                    val response = postMessageUseCase2.getInboxDataResponse(queryMap)
-                    val stepTwoResponse = response?.data as StepTwoResponse
-                    if (stepTwoResponse.isSuccess > 0) {
+                    val stepTwoResponse = postMessageUseCase2.getInboxDataResponse(requestParams)
+                    if (stepTwoResponse?.ticketReplyAttach?.ticketReplyAttachData?.isSuccess ?: 0 > 0) {
                         mView?.hideSendProgress()
                         addNewLocalComment()
                     } else {
                         mView?.hideSendProgress()
-                        mView?.setSnackBarErrorMessage(response.errorMessage?.get(0) ?: "", true)
+                        mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_step_two_response_failure_message)?:"", true)
                     }
                 },
                 onError = {

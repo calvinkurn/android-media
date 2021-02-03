@@ -6,6 +6,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewM
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 
 /**
@@ -19,6 +20,8 @@ interface DynamicFeedTypeFactory {
     fun type(bannerViewModel: BannerViewModel): Int
 
     fun type(topadsShopViewModel: TopadsShopViewModel): Int
+
+    fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int
 
     fun type(highlightViewModel: HighlightViewModel): Int
 

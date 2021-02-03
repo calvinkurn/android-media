@@ -5,11 +5,15 @@ import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
+import com.tokopedia.product.addedit.draft.presentation.model.ProductDraftUiModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.manage.common.draft.data.model.detail.ShowCaseInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.feature.draft.data.model.description.VideoLinkListModel
+import com.tokopedia.product.manage.common.feature.draft.data.model.detail.SpecificationInputModel as DraftSpecificationInputModel
+import com.tokopedia.product.manage.common.feature.draft.mapper.AddEditProductDraftMapper
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.product.manage.common.feature.draft.data.model.detail.WholeSaleInputModel as DraftWholeSaleInputModel
 
@@ -74,6 +78,9 @@ object AddEditProductMapper {
         productDraft.detailInputModel.productShowCases = productInputModel.detailInputModel.productShowCases.map {showCaseItem ->
             ShowCaseInputModel(showcaseId = showCaseItem.showcaseId, showcaseName = showCaseItem.showcaseName)
         }
+        productDraft.detailInputModel.specification = productInputModel.detailInputModel.specifications?.map {
+            DraftSpecificationInputModel(it.id, it.data)
+        }
         productDraft.detailInputModel.status = productInputModel.detailInputModel.status
         productDraft.descriptionInputModel.apply {
             productDescription = productInputModel.descriptionInputModel.productDescription
@@ -127,6 +134,9 @@ object AddEditProductMapper {
         productInputModel.detailInputModel.productShowCases = productDraft.detailInputModel.productShowCases.map { showCase ->
             ShowcaseItemPicker(showcaseId = showCase.showcaseId, showcaseName = showCase.showcaseName)
         }
+        productInputModel.detailInputModel.specifications = productDraft.detailInputModel.specification?.map { specification ->
+            SpecificationInputModel(specification.id, specification.data)
+        }
         productInputModel.detailInputModel.status = productDraft.detailInputModel.status
         productInputModel.descriptionInputModel.apply {
             productDescription = productDraft.descriptionInputModel.productDescription
@@ -147,6 +157,15 @@ object AddEditProductMapper {
         }
         productInputModel.draftId = productDraft.draftId
         return productInputModel
+    }
+
+    fun mapProductDraftToProductDraftUiModel(draft: ProductDraft): ProductDraftUiModel {
+        return ProductDraftUiModel(
+                draft.draftId,
+                draft.detailInputModel.imageUrlOrPathList.firstOrNull() ?: "",
+                draft.detailInputModel.productName,
+                AddEditProductDraftMapper.getCompletionPercent(draft),
+        )
     }
 
     private fun mapProductInputModelToJsonString(productVariantInputModel: VariantInputModel): String {

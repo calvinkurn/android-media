@@ -29,8 +29,8 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.review.R;
+import com.tokopedia.review.common.util.ReviewErrorHandler;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
 import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationComponent;
@@ -42,10 +42,10 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.i
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.SellerMigrationReviewViewHolder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputation;
 import com.tokopedia.review.feature.inbox.buyerreview.view.presenter.InboxReputationPresenter;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.ReputationDataViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.SellerMigrationReviewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDataUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.SellerMigrationReviewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailPassModel;
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity;
 import com.tokopedia.user.session.UserSession;
@@ -246,21 +246,21 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onErrorGetFirstTimeInboxReputation(Throwable throwable) {
         if (getActivity() != null & getView() != null) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), ErrorHandler.getErrorMessage(getContext(), throwable),
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), ReviewErrorHandler.getErrorMessage(getContext(), throwable),
                     () -> presenter.getFirstTimeInboxReputation(getTab()));
         }
     }
 
     @Override
-    public void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
+    public void onSuccessGetFirstTimeInboxReputation(InboxReputationUiModel inboxReputationUiModel) {
         searchView.setVisibility(View.VISIBLE);
         filterButton.setVisibility(View.VISIBLE);
         if (!GlobalConfig.isSellerApp() && getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW) {
-            adapter.setList(inboxReputationViewModel.getList(), sellerMigrationReviewModel);
+            adapter.setList(inboxReputationUiModel.getList(), sellerMigrationReviewModel);
         } else {
-            adapter.setList(inboxReputationViewModel.getList(), null);
+            adapter.setList(inboxReputationUiModel.getList(), null);
         }
-        presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+        presenter.setHasNextPage(inboxReputationUiModel.isHasNextPage());
     }
 
     @Override
@@ -273,32 +273,32 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onErrorGetNextPage(Throwable throwable) {
         adapter.removeLoading();
         NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                ErrorHandler.getErrorMessage(getContext(), throwable),
+                ReviewErrorHandler.getErrorMessage(getContext(), throwable),
                 () -> presenter.getFirstTimeInboxReputation(getTab())).showRetrySnackbar();
     }
 
     @Override
-    public void onSuccessGetNextPage(InboxReputationViewModel inboxReputationViewModel) {
+    public void onSuccessGetNextPage(InboxReputationUiModel inboxReputationUiModel) {
         adapter.removeLoading();
-        adapter.addList(inboxReputationViewModel.getList());
-        presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+        adapter.addList(inboxReputationUiModel.getList());
+        presenter.setHasNextPage(inboxReputationUiModel.isHasNextPage());
     }
 
     @Override
     public void onErrorRefresh(Throwable throwable) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), ErrorHandler.getErrorMessage(getContext(), throwable),
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), ReviewErrorHandler.getErrorMessage(getContext(), throwable),
                 () -> presenter.refreshPage(getQuery(), timeFilter, scoreFilter, getTab()));
     }
 
     @Override
-    public void onSuccessRefresh(InboxReputationViewModel inboxReputationViewModel) {
+    public void onSuccessRefresh(InboxReputationUiModel inboxReputationUiModel) {
         adapter.removeEmpty();
         if (!GlobalConfig.isSellerApp() && getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW) {
-            adapter.setList(inboxReputationViewModel.getList(), sellerMigrationReviewModel);
+            adapter.setList(inboxReputationUiModel.getList(), sellerMigrationReviewModel);
         } else {
-            adapter.setList(inboxReputationViewModel.getList());
+            adapter.setList(inboxReputationUiModel.getList());
         }
-        presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+        presenter.setHasNextPage(inboxReputationUiModel.isHasNextPage());
     }
 
     @Override
@@ -316,12 +316,12 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onGoToDetail(String reputationId, String invoice, String createTime,
                              String revieweeName, String revieweeImage,
-                             ReputationDataViewModel reputationDataViewModel, String textDeadline,
+                             ReputationDataUiModel reputationDataUiModel, String textDeadline,
                              int adapterPosition, int role) {
 
         savePassModelToDB(getInboxReputationDetailPassModel(reputationId, invoice, createTime,
                 revieweeImage, revieweeName, textDeadline,
-                reputationDataViewModel, role));
+                reputationDataUiModel, role));
 
         startActivityForResult(
                 InboxReputationDetailActivity.getCallingIntent(
@@ -358,10 +358,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
             String revieweeImage,
             String revieweeName,
             String textDeadline,
-            ReputationDataViewModel reputationDataViewModel,
+            ReputationDataUiModel reputationDataUiModel,
             int role) {
         return new InboxReputationDetailPassModel(reputationId, revieweeName, revieweeImage,
-                textDeadline, invoice, createTime, reputationDataViewModel, role);
+                textDeadline, invoice, createTime, reputationDataUiModel, role);
 
     }
 
@@ -371,15 +371,15 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetFilteredInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
+    public void onSuccessGetFilteredInboxReputation(InboxReputationUiModel inboxReputationUiModel) {
         adapter.removeEmpty();
-        adapter.setList(inboxReputationViewModel.getList());
-        presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+        adapter.setList(inboxReputationUiModel.getList());
+        presenter.setHasNextPage(inboxReputationUiModel.isHasNextPage());
     }
 
     @Override
     public void onErrorGetFilteredInboxReputation(Throwable throwable) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), ErrorHandler.getErrorMessage(getContext(), throwable),
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), ReviewErrorHandler.getErrorMessage(getContext(), throwable),
                 () -> presenter.getFilteredInboxReputation(getQuery(), timeFilter, scoreFilter, getTab())).showRetrySnackbar();
     }
 

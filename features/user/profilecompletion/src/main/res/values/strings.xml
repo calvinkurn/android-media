@@ -93,6 +93,7 @@
     <string name="phone_number_already_exist">Akun lain telah menggunakan nomor HP ini</string>
     <string name="success_add_phone">Nomor telepon berhasil ditambah</string>
     <string name="button_next">Selanjutnya</string>
+    <string name="success_verify_phone_number">Verifikasi nomor ponsel sudah berhasil.</string>
 
     <!-- CHANGE PHONE -->
     <string name="success_change_phone_number">Nomor telepon berhasil diubah</string>

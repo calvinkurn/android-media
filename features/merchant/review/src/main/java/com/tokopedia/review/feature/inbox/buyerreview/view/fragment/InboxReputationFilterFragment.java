@@ -23,8 +23,8 @@ import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationCompone
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationFilterActivity;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.InboxReputationFilterAdapter;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.filter.HeaderOptionViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.filter.OptionViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.HeaderOptionUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.OptionUiModel;
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
     RecyclerView list;
     Button saveButton;
     InboxReputationFilterAdapter adapter;
-    ArrayList<OptionViewModel> listOption;
+    ArrayList<OptionUiModel> listOption;
 
     String timeFilter;
     String timeFilterName;
@@ -139,31 +139,31 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
         return AppScreen.SCREEN_INBOX_REPUTATION_FILTER;
     }
 
-    private ArrayList<OptionViewModel> createListOption() {
-        ArrayList<OptionViewModel> list = new ArrayList<OptionViewModel>();
-        list.add(new HeaderOptionViewModel(getString(R.string.filter_time)));
-        list.add(new OptionViewModel(getString(R.string.filter_all_time),
+    private ArrayList<OptionUiModel> createListOption() {
+        ArrayList<OptionUiModel> list = new ArrayList<OptionUiModel>();
+        list.add(new HeaderOptionUiModel(getString(R.string.filter_time)));
+        list.add(new OptionUiModel(getString(R.string.filter_all_time),
                 GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, FILTER_ALL_TIME, list.size
                 ()));
-        list.add(new OptionViewModel(getString(R.string.filter_last_7_days),
+        list.add(new OptionUiModel(getString(R.string.filter_last_7_days),
                 GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, FILTER_LAST_WEEK, list.size
                 ()));
-        list.add(new OptionViewModel(getString(R.string.filter_this_month),
+        list.add(new OptionUiModel(getString(R.string.filter_this_month),
                 GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, FILTER_THIS_MONTH, list.size
                 ()));
-        list.add(new OptionViewModel(getString(R.string.filter_last_3_month),
+        list.add(new OptionUiModel(getString(R.string.filter_last_3_month),
                 GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER, FILTER_LAST_3_MONTH, list.size
                 ()));
 
         if (getArguments() != null
                 && getArguments().getInt(InboxReputationFragment.PARAM_TAB) ==
                 ReviewInboxConstants.TAB_BUYER_REVIEW) {
-            list.add(new HeaderOptionViewModel(getString(R.string.filter_status)));
-            list.add(new OptionViewModel(getString(R.string.filter_given_reputation),
+            list.add(new HeaderOptionUiModel(getString(R.string.filter_status)));
+            list.add(new OptionUiModel(getString(R.string.filter_given_reputation),
                     GetFirstTimeInboxReputationUseCase.PARAM_SCORE_FILTER, FILTER_GIVEN_SCORE, list
                     .size
                             ()));
-            list.add(new OptionViewModel(getString(R.string.filter_no_reputation),
+            list.add(new OptionUiModel(getString(R.string.filter_no_reputation),
                     GetFirstTimeInboxReputationUseCase.PARAM_SCORE_FILTER, FILTER_NO_SCORE, list.size
                     ()));
         }
@@ -171,22 +171,22 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
     }
 
 
-    private void setSelected(ArrayList<OptionViewModel> listOption) {
+    private void setSelected(ArrayList<OptionUiModel> listOption) {
         if (!getArguments().getString(SELECTED_TIME_FILTER, "").equals("")
                 || !getArguments().getString(SELECTED_SCORE_FILTER, "").equals("")) {
-            for (OptionViewModel optionViewModel : listOption) {
-                if (optionViewModel.getKey().equals(
+            for (OptionUiModel optionUiModel : listOption) {
+                if (optionUiModel.getKey().equals(
                         GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER)
-                        && optionViewModel.getValue().equals(
+                        && optionUiModel.getValue().equals(
                         getArguments().getString(SELECTED_TIME_FILTER))) {
-                    optionViewModel.setSelected(true);
+                    optionUiModel.setSelected(true);
                 }
 
-                if (optionViewModel.getKey().equals(
+                if (optionUiModel.getKey().equals(
                         GetFirstTimeInboxReputationUseCase.PARAM_SCORE_FILTER)
-                        && optionViewModel.getValue().equals(
+                        && optionUiModel.getValue().equals(
                         getArguments().getString(SELECTED_SCORE_FILTER))) {
-                    optionViewModel.setSelected(true);
+                    optionUiModel.setSelected(true);
                 }
             }
         }
@@ -201,22 +201,22 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onFilterSelected(OptionViewModel optionViewModel) {
-        if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER)) {
-            timeFilter = optionViewModel.getValue();
-            timeFilterName = optionViewModel.getName();
-        } else if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase
+    public void onFilterSelected(OptionUiModel optionUiModel) {
+        if (optionUiModel.getKey().equals(GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER)) {
+            timeFilter = optionUiModel.getValue();
+            timeFilterName = optionUiModel.getName();
+        } else if (optionUiModel.getKey().equals(GetFirstTimeInboxReputationUseCase
                 .PARAM_SCORE_FILTER)) {
-            scoreFilter = optionViewModel.getValue();
+            scoreFilter = optionUiModel.getValue();
         }
     }
 
     @Override
-    public void onFilterUnselected(OptionViewModel optionViewModel) {
-        if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER)) {
+    public void onFilterUnselected(OptionUiModel optionUiModel) {
+        if (optionUiModel.getKey().equals(GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER)) {
             timeFilter = "";
             timeFilterName = "";
-        } else if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase
+        } else if (optionUiModel.getKey().equals(GetFirstTimeInboxReputationUseCase
                 .PARAM_SCORE_FILTER)) {
             scoreFilter = "";
         }

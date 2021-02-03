@@ -1,9 +1,11 @@
 package com.tokopedia.home_account.view
 
+import android.Manifest
 import android.app.ActivityManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
@@ -52,13 +54,17 @@ import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
+import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
+import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
+import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
 import com.tokopedia.home_account.view.custom.HomeAccountEndlessScrollListener
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -75,7 +81,6 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.home_account_user_fragment.*
 import javax.inject.Inject
 
@@ -87,10 +92,20 @@ import javax.inject.Inject
 class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     var adapter: HomeAccountUserAdapter? = null
+    var financialAdapter: HomeAccountFinancialAdapter? = null
+    var memberAdapter: HomeAccountMemberAdapter? = null
+
+    var commonAdapter: HomeAccountUserCommonAdapter? = null
+
+    var isProfileSectionBinded = false
 
     val coachMarkItem = ArrayList<CoachMark2Item>()
 
     var appBarCollapseListener: onAppBarCollapseListener? = null
+
+    var isNeedRefreshProfileItems = true
+
+    var coachMark: CoachMark2? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -174,15 +189,70 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
             }
         })
+
+        viewModel.walletData.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is Success -> {
+                    val mappedMember = mapper.mapToFinancialData(activity, it.data).toMutableList()
+                    viewModel.internalBuyerData?.run {
+                        val saldo = mapper.mapSaldo(activity, this).items
+                        mappedMember.addAll(saldo)
+                    }
+                    financialAdapter?.addItems(mappedMember)
+                    financialAdapter?.notifyDataSetChanged()
+                    adapter?.notifyItemChanged(0)
+                }
+
+                is Fail -> {
+                    financialAdapter?.addSingleItem(CommonDataView(
+                        type = AccountConstants.LAYOUT.TYPE_ERROR
+                    ))
+                    adapter?.notifyItemChanged(0)
+                }
+            }
+        })
+
+        viewModel.shortcutData.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is Success -> {
+                    val mappedMember = mapper.mapMemberItemDataView(it.data)
+                    memberAdapter?.addItems(mappedMember)
+                    memberAdapter?.notifyDataSetChanged()
+                    adapter?.notifyItemChanged(0)
+                }
+
+                is Fail -> {
+                    memberAdapter?.addItems(listOf(MemberItemDataView(
+                            type = AccountConstants.LAYOUT.TYPE_ERROR
+                    )))
+                    adapter?.notifyItemChanged(0)
+                }
+            }
+        })
+    }
+
+    override fun onMemberErrorClicked() {
+        viewModel.getShortcutData()
+    }
+
+    override fun onFinancialErrorClicked() {
+        viewModel.getWalletBalance()
     }
 
     private fun onFailGetData(throwable: Throwable) {
-        val message = throwable.message?: ""
-        if(message.contains("UnknownHostException") || message.contains("SocketTimeoutException")) {
-            showErrorNoConnection()
-        } else {
-            showError(throwable)
+        adapter?.run {
+            if(adapter?.getItem(0) is ProfileDataView) {
+                adapter?.removeItemAt(0)
+            }
+            addItem(0, ProfileDataView(
+                    name = userSession.name,
+                    phone = userSession.phoneNumber,
+                    email = userSession.email,
+                    avatar = userSession.profilePicture
+            ))
+            adapter?.notifyDataSetChanged()
         }
+        hideLoading()
     }
 
     private fun setStatusBarAlpha(alpha: Float) {
@@ -196,7 +266,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             if(adapter?.getItem(0) is ProfileDataView) {
                 adapter?.removeItemAt(0)
             }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount))
+            addItem(0, mapper.mapToProfileDataView(activity, buyerAccount))
             adapter?.notifyDataSetChanged()
         }
         hideLoading()
@@ -258,7 +328,15 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
         setupStatusBar()
         setupObserver()
-        adapter = HomeAccountUserAdapter(this)
+
+        context?.run {
+            coachMark = CoachMark2(this)
+        }
+
+        financialAdapter = HomeAccountFinancialAdapter(this)
+        memberAdapter = HomeAccountMemberAdapter(this)
+
+        adapter = HomeAccountUserAdapter(this, financialAdapter, memberAdapter)
         setupList()
         setLoadMore()
         showLoading()
@@ -279,14 +357,24 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
                     override fun onSwitchToLightToolbar() {
                     }
+
+                    override fun onYposChanged(yOffset: Int) {
+                    }
                 }
         ))
 
         home_account_user_fragment_rv?.swipeLayout = home_account_user_fragment_swipe_refresh
         home_account_user_fragment_swipe_refresh?.setOnRefreshListener {
+            coachMark?.dismissCoachMark()
             onRefresh()
             getData()
+            isNeedRefreshProfileItems = true
         }
+    }
+
+    private fun getProfileData(){
+        viewModel.getWalletBalance()
+        viewModel.getShortcutData()
     }
 
     private fun getData(){
@@ -348,17 +436,27 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         if (GlobalConfig.isAllowDebuggingTools()) {
             addItem(menuGenerator.generateDeveloperOptionsSettingMenu(), addSeparator = true)
         }
-        addItem(SettingDataView("", mutableListOf(
-                CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = getString(R.string.menu_account_title_sign_out), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_sign_out, endText = "Versi ${GlobalConfig.VERSION_NAME}")
+        addItem(SettingDataView("", arrayListOf(
+                CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = getString(R.string.menu_account_title_sign_out), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SIGN_OUT, endText = "Versi ${GlobalConfig.VERSION_NAME}")
         ), isExpanded = true), addSeparator = true)
         adapter?.notifyDataSetChanged()
     }
 
-    private fun addItem(item: Any, addSeparator: Boolean) {
-        adapter?.addItem(item)
-        if(addSeparator) {
-            adapter?.addItem(SeparatorView())
+    private fun addItem(item: Any, addSeparator: Boolean, position: Int = -1) {
+        if(position != -1){
+            adapter?.removeItemAt(position)
+            adapter?.notifyItemRemoved(position)
+            adapter?.addItem(position, item)
+            if(addSeparator) {
+                adapter?.addItem(position, SeparatorView())
+            }
+        }else {
+            adapter?.addItem(item)
+            if(addSeparator) {
+                adapter?.addItem(SeparatorView())
+            }
         }
+        adapter?.notifyDataSetChanged()
     }
 
     override fun onEditProfileClicked() {
@@ -389,6 +487,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 if(isActive) {
                     switch.isChecked = false
                     createAndShowLocationAlertDialog(isActive)
+                }else{
+                    goToApplicationDetailActivity()
                 }
             }
             AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID -> {
@@ -560,25 +660,49 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
-    private fun askPermissionLocation() {
-        activity?.run {
-            permissionChecker.askLocationPermission(this, object : PermissionCheckerHelper.PermissionCheckListener {
-                override fun onPermissionDenied(permissionText: String) {
-
-                }
-                override fun onNeverAskAgain(permissionText: String) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when(requestCode){
+            888 -> {
+                if(grantResults.isNotEmpty() &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    updateLocationSwitch(true)
+                }else {
                     goToApplicationDetailActivity()
                 }
-                override fun onPermissionGranted() {
-                    updateLocationSwitch(true)
-                }
-            })
+            }
         }
     }
 
+    private fun askPermissionLocation() {
+        requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
+                888)
+
+//        activity?.run {
+//            permissionChecker.askLocationPermission(this, object : PermissionCheckerHelper.PermissionCheckListener {
+//                override fun onPermissionDenied(permissionText: String) {
+//
+//                }
+//                override fun onNeverAskAgain(permissionText: String) {
+//                    goToApplicationDetailActivity()
+//                }
+//                override fun onPermissionGranted() {
+//                    updateLocationSwitch(true)
+//                }
+//            })
+//        }
+    }
+
     private fun updateLocationSwitch(isEnable: Boolean){
-        (adapter?.getItem(2) as SettingDataView).items.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked = isEnable
-        adapter?.notifyItemChanged(2)
+//        val newGeo = CommonDataView(id = AccountConstants.SettingCode.SETTING_GEOLOCATION_ID, title = getString(R.string.menu_account_title_geolocation), body = getString(R.string.menu_account_desc_geolocation),
+//                type = CommonViewHolder.TYPE_SWITCH, icon = R.drawable.ic_account_location,
+//                isChecked = permissionChecker.hasLocationPermission())
+
+        commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked = isEnable
+//        commonAdapter?.list?.add(1, newGeo)
+        commonAdapter?.notifyDataSetChanged()
+//        addItem(menuGenerator.generateApplicationSettingMenu(accountPref, permissionChecker), addSeparator = true, position = 2)
+//        (adapter?.getItem(2) as SettingDataView).items.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked = isEnable
+        adapter?.notifyDataSetChanged()
     }
 
     private fun goToApplicationDetailActivity() {
@@ -630,48 +754,54 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
-    override fun onItemViewBinded(position: Int, itemView: View) {
+    override fun onProfileAdapterReady(financialAdapter: HomeAccountFinancialAdapter, memberAdapter: HomeAccountMemberAdapter) {
+        this.financialAdapter = financialAdapter
+        this.memberAdapter = memberAdapter
+        if(isNeedRefreshProfileItems){
+            getProfileData()
+        }
+        isNeedRefreshProfileItems = false
+    }
+
+    override fun onItemViewBinded(position: Int, itemView: View, data: Any) {
         if(accountPref.isShowCoachmark()) {
-            when (position) {
-                0 -> {
-                    coachMarkItem.add(
-                            CoachMark2Item(
-                                    itemView.findViewById(R.id.account_user_item_profile_edit),
-                                    "Ubah data diri",
-                                    "Kamu bisa ubah nama, foto profil, kontak, dan biodata di sini.",
-                                    CoachMark2.POSITION_BOTTOM
-                            )
-                    )
-
-                    coachMarkItem.add(
-                            CoachMark2Item(
-                                    itemView.findViewById(R.id.home_account_profile_financial_section),
-                                    "Cek jumlah dana dan investasimu",
-                                    "Punya dana dan investasi di Tokopedia? Mulai dari Saldo Tokopedia sampai emas, bisa cek di sini.",
-                                    CoachMark2.POSITION_BOTTOM
-                            )
-                    )
-
-                    coachMarkItem.add(
-                            CoachMark2Item(
-                                    itemView.findViewById(R.id.home_account_profile_member_section),
-                                    "Lihat keuntunganmu di sini",
-                                    "Cek keuntunganmu di TokoMember, Membership, dan daftar kupon, atau selesaikan tantangan untuk dapatkan keuntungan baru.",
-                                    CoachMark2.POSITION_TOP
-                            )
-                    )
-                }
-            }
-
-            if (position == 0) {
-                context?.run {
-                    val coachMark = CoachMark2(this)
-                    coachMark.onFinishListener = {
-                        accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
+            if(!isProfileSectionBinded) {
+                if(coachMarkItem.count() < 3) {
+                    if (position == 0 && data is ProfileDataView) {
+                        coachMarkItem.add(
+                                CoachMark2Item(
+                                        itemView.findViewById(R.id.account_user_item_profile_email),
+                                        "Info tentang akunmu ada di sini",
+                                        "Kamu bisa ubah data diri, lihat saldo atau investasi, dan cek keuntungan dari promo Tokopedia, lho!",
+                                        CoachMark2.POSITION_BOTTOM
+                                )
+                        )
                     }
-                    coachMark.showCoachMark(coachMarkItem)
+                    if (position == 1 && data is SettingDataView) {
+                        coachMarkItem.add(
+                                CoachMark2Item(
+                                        itemView.findViewById(R.id.home_account_expandable_layout_title),
+                                        "Ubah pengaturan dan cek info lainnya",
+                                        "Mau atur akun dan aplikasi sesuai seleramu atau lihat info tentang Tokopedia? Lewat sini aja!",
+                                        CoachMark2.POSITION_TOP
+                                )
+                        )
+                        showCoachMark()
+                    }
+                } else {
+                    showCoachMark()
                 }
             }
+        }
+    }
+
+    private fun showCoachMark(){
+        context?.run {
+            coachMark?.onFinishListener = {
+                accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
+            }
+            coachMark?.showCoachMark(coachMarkItem)
+            isProfileSectionBinded = true
         }
     }
 
@@ -863,6 +993,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         }
         fpmBuyer?.run { stopTrace() }
+    }
+
+    override fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter) {
+        if(position == 2)
+            this.commonAdapter = commonAdapter
     }
 
     private fun showError(e: Throwable) {

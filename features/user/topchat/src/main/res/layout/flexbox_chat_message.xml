@@ -11,7 +11,7 @@
         android:layout_gravity="top"
         android:gravity="left|top"
         android:lineSpacingMultiplier="1.1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="true"
         app:typographyType="body_1"
         tools:ignore="RtlHardcoded"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:includeFontPadding="false"
-            android:textColor="@color/topchat_grey"
+            android:textColor="@color/Unify_N700_44"
             app:typographyType="body_3"
             tools:text="11:00" />
     </LinearLayout>
@@ -54,7 +54,7 @@
         android:layout_gravity="bottom|start"
         android:layout_marginTop="@dimen/dp_topchat_6"
         android:text="@string/tittle_info_auto_reply"
-        android:textColor="@color/topchat_grey"
+        android:textColor="@color/Unify_N700_44"
         android:textIsSelectable="true"
         android:visibility="gone"
         app:typographyType="body_3"

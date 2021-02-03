@@ -22,9 +22,6 @@ data class PageInfo(
         @SerializedName("Id")
         val id: Int = 0,
 
-        @SerializedName("Tags")
-        val tags: String? = "",
-
         @SerializedName("share_config", alternate = ["share"])
         val share: Share? = null,
 
@@ -34,5 +31,11 @@ data class PageInfo(
         @SerializedName("search_title")
         val searchTitle: String = "Cari di Tokopedia",
 
-        var additionalInfo: AdditionalInfo? = null
+        var additionalInfo: AdditionalInfo? = null,
+
+        var redirectionUrl: String? = null,
+
+        var isAdult: Int = 0,
+
+        var origin: Int = 0
 )

@@ -17,11 +17,4 @@
         <item name="android:windowBackground">@color/white</item>
     </style>
 
-    <style name="Theme.White.Hotel">
-        <item name="titleTextAppearance">@style/HotelTitleTextAppearance</item>
-    </style>
-
-    <style name="HotelTitleTextAppearance" parent="TitleTextAppearance.White">
-        <item name="android:textColor">@color/Unify_N700_96</item>
-    </style>
 </resources>

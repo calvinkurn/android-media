@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -37,11 +38,12 @@ import com.tokopedia.talk.feature.write.presentation.decorator.SpacingItemDecora
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
 import com.tokopedia.talk.feature.write.presentation.viewmodel.TalkWriteViewModel
 import com.tokopedia.talk.feature.write.presentation.widget.TalkWriteCategoryChipsWidget
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import kotlinx.android.synthetic.main.fragment_talk_write.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
@@ -101,6 +103,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
         initView()
         initRecycleView()
         initTnC()
@@ -389,6 +392,16 @@ class TalkWriteFragment : BaseDaggerFragment(),
         writeCategoryDetails.apply {
             show()
             setContent(content)
+        }
+    }
+
+    private fun initToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(headerTalkWrite)
+                headerTalkWrite?.title = getString(R.string.title_write_page)
+            }
         }
     }
 }

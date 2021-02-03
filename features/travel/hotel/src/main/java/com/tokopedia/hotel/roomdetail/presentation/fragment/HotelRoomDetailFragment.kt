@@ -19,8 +19,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -45,6 +43,8 @@ import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -119,7 +119,10 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                             showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
                         }
                         ErrorHandlerHotel.isEmailNotVerifiedError(it.throwable) -> navigateToAddEmailPage()
-                        else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                        else -> view?.let { v ->
+                            Toaster.build(v, ErrorHandler.getErrorMessage(activity, it.throwable), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        }
                     }
                 }
             }

@@ -9,6 +9,7 @@ import com.android.installreferrer.api.ReferrerDetails
 import com.google.android.gms.analytics.CampaignTrackingReceiver
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.track.TrackApp
+import timber.log.Timber
 import java.lang.Exception
 
 const val KEY_INSTALL_REF_SHARED_PREF_FILE_NAME = "install_ref"
@@ -23,60 +24,64 @@ class InstallReferral {
     fun initilizeInstallReferral(context: Context) {
         referrerClient = InstallReferrerClient.newBuilder(context.applicationContext).build()
         val applicationContext = context.applicationContext
-        referrerClient?.startConnection(object : InstallReferrerStateListener {
+        try {
+            referrerClient?.startConnection(object : InstallReferrerStateListener {
 
-            override fun onInstallReferrerSetupFinished(responseCode: Int) {
-                try {
-                    when (responseCode) {
+                override fun onInstallReferrerSetupFinished(responseCode: Int) {
+                    try {
+                        when (responseCode) {
 
 
-                        InstallReferrerClient.InstallReferrerResponse.OK -> {
-                            // Connection established.
+                            InstallReferrerClient.InstallReferrerResponse.OK -> {
+                                // Connection established.
 
-                            referrerClient?.let {
-                                val response: ReferrerDetails? = it.installReferrer
+                                referrerClient?.let {
+                                    val response: ReferrerDetails? = it.installReferrer
 
-                                if (response != null) {
-                                    response.installReferrer?.let { installReferrer ->
-                                        trackIfFromCampaignUrl(installReferrer)
-                                        sendToGA(context, installReferrer)
+                                    if (response != null) {
+                                        response.installReferrer?.let { installReferrer ->
+                                            trackIfFromCampaignUrl(installReferrer)
+                                            sendToGA(context, installReferrer)
+                                        }
                                     }
+                                    InstallUtils.sendIrisInstallEvent(context)
+                                    updateReferralCache()
+
                                 }
-                                InstallUtils.sendIrisInstallEvent(context)
+                            }
+                            InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED -> {
+                                // API not available on the current Play Store app.
                                 updateReferralCache()
+                            }
+                            InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE -> {
+                                // Connection couldn't be established.
+                                updateReferralCache()
+                            }
+                            else -> {
 
                             }
                         }
-                        InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED -> {
-                            // API not available on the current Play Store app.
-                            updateReferralCache()
-                        }
-                        InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE -> {
-                            // Connection couldn't be established.
-                            updateReferralCache()
-                        }
-                        else -> {
+                    } catch (e: Exception) {
 
-                        }
                     }
-                } catch (e: Exception) {
-
                 }
-            }
 
-            private fun updateReferralCache() {
-                val localCacheHandler = LocalCacheHandler(applicationContext, KEY_INSTALL_REF_SHARED_PREF_FILE_NAME)
-                val installRefInitialised = localCacheHandler.getBoolean(KEY_INSTALL_REF_INITIALISED)
+                private fun updateReferralCache() {
+                    val localCacheHandler = LocalCacheHandler(applicationContext, KEY_INSTALL_REF_SHARED_PREF_FILE_NAME)
+                    val installRefInitialised = localCacheHandler.getBoolean(KEY_INSTALL_REF_INITIALISED)
 
-                if (!installRefInitialised) {
-                    localCacheHandler.putBoolean(KEY_INSTALL_REF_INITIALISED, true)
-                    localCacheHandler.applyEditor()
+                    if (!installRefInitialised) {
+                        localCacheHandler.putBoolean(KEY_INSTALL_REF_INITIALISED, true)
+                        localCacheHandler.applyEditor()
+                    }
                 }
-            }
 
-            override fun onInstallReferrerServiceDisconnected() {
-            }
-        })
+                override fun onInstallReferrerServiceDisconnected() {
+                }
+            })
+        }catch (ex:SecurityException) {
+            Timber.d(ex)
+        }
     }
 
     fun sendToGA(context: Context, referral: String) {

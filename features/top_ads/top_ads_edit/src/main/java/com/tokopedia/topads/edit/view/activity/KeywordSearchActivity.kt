@@ -28,12 +28,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.SearchData
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.data.util.Utils.validateKeywordCountAndChars
 import com.tokopedia.topads.common.view.sheet.TipSheetKeywordList
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
-import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.KeywordSearchAdapter
 import com.tokopedia.topads.edit.view.fragment.select.KeywordAdsListFragment.Companion.PRODUCT_IDS_SELECTED
@@ -61,7 +61,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
     private lateinit var search: SearchBarUnify
     private var groupId: String = ""
     private var userID: String = ""
-    private var manualKeywords:MutableList<SearchData> = mutableListOf()
+    private var manualKeywords: MutableList<SearchData> = mutableListOf()
     private var tvToolTipText: Typography? = null
     private var imgTooltipIcon: ImageUnify? = null
 
@@ -86,8 +86,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
         keyword_list.layoutManager = LinearLayoutManager(this)
         val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
             tvToolTipText = this.findViewById(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.topads_common_tip_memilih_kata_kunci)
-
+            tvToolTipText?.text = getString(com.tokopedia.topads.common.R.string.topads_common_tip_memilih_kata_kunci)
             imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
             imgTooltipIcon?.setImageDrawable(AppCompatResources.getDrawable(this.context, com.tokopedia.topads.common.R.drawable.topads_ic_tips))
         }
@@ -149,53 +148,47 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
         manualAd.visibility = View.GONE
         if (search.searchBarTextField.text.toString().isNotEmpty()) {
             adapter.items.clear()
-            txtError.text = validateKeyword(search.searchBarTextField.text.toString().trim())
+            txtError.text = validateKeywordCountAndChars(this, search.searchBarTextField.text.toString().trim())
             if (txtError.text.isNotEmpty()) {
                 setEmpty(true)
                 txtError.visibility = View.VISIBLE
                 onSelectedItem()
             } else {
                 txtError.visibility = View.GONE
+                if (!intent?.getStringExtra(PRODUCT_IDS_SELECTED).isNullOrEmpty()) {
+                    viewModel.searchKeyword(search.searchBarTextField.text.toString(), intent?.getStringExtra(PRODUCT_IDS_SELECTED)
+                            ?: "", ::onSuccessSearch)
+                } else {
+                    setEmpty(true)
+                    if (manualKeywords.isNotEmpty())
+                        adapter.items.addAll(manualKeywords)
+                    checkIfNeedsManualAddition(null)
+                }
             }
-            viewModel.searchKeyword(search.searchBarTextField.text.toString(), intent?.getStringExtra(PRODUCT_IDS_SELECTED)
-                    ?: "", ::onSuccessSearch)
-
-        }
-    }
-
-    private fun validateKeyword(text: CharSequence?): CharSequence? {
-        return if (!text.isNullOrBlank() && text.split(" ").size > 5) {
-            getString(R.string.error_max_length_keyword)
-        } else if (!text.isNullOrBlank() && !text.matches(Constants.REGEX.toRegex())) {
-            getString(R.string.error_keyword)
-        } else if (text!!.length > Constants.COUNT) {
-            getString(R.string.error_max_length)
-        } else {
-            null
         }
     }
 
     private fun onSuccessSearch(data: List<SearchData>) {
-        val listKeywords:MutableList<String> = mutableListOf()
-        if(manualKeywords.isNotEmpty())
+        val listKeywords: MutableList<String> = mutableListOf()
+        if (manualKeywords.isNotEmpty())
             adapter.items.addAll(manualKeywords)
         data.forEach {
             adapter.items.add(it)
             listKeywords.add(it.keyword ?: "")
         }
         checkIfNeedsManualAddition(listKeywords)
-        if(manualKeywords.isEmpty())
+        if (manualKeywords.isEmpty())
             setEmpty(data.isEmpty())
         onSelectedItem()
         adapter.notifyDataSetChanged()
     }
 
-    private fun checkIfNeedsManualAddition(listKeywords: MutableList<String>) {
-        if (listKeywords.find { key -> search.searchBarTextField.text.toString() == key } == null) {
+    private fun checkIfNeedsManualAddition(listKeywords: MutableList<String>?) {
+        if (listKeywords?.find { key -> search.searchBarTextField.text.toString() == key } == null) {
             manualAd.visibility = View.VISIBLE
             dividerManual.visibility = View.VISIBLE
             manualAd.text = Html.fromHtml(String.format(getString(R.string.topads_common_new_manual_key), search.searchBarTextField.text.toString()))
-            setSpannable(getString(R.string.topads_common_tambah_button),rootView)
+            setSpannable(getString(R.string.topads_common_tambah_button), rootView)
         }
     }
 
@@ -223,9 +216,9 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
     }
 
     private fun addManualKeyword() {
-        if(adapter.getSelectedItem().find { it.keyword == search.searchBarTextField.text.toString() }!=null){
+        if (adapter.getSelectedItem().find { it.keyword == search.searchBarTextField.text.toString() } != null) {
             makeToast()
-        }else {
+        } else {
             headlineList.visibility = View.VISIBLE
             manualAd.visibility = View.GONE
             dividerManual.visibility = View.GONE

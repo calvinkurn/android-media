@@ -50,10 +50,12 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     private val mAdapter: CouponListStackedBaseAdapter by lazy { CouponListStackedBaseAdapter(presenter, this) }
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private var redeemMessage: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        redeemMessage = arguments?.getString(CommonConstant.CATALOG_CLAIM_MESSAGE, "") ?: ""
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -65,6 +67,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListener()
+        ToasterHelper.showCouponClaimToast(redeemMessage,view)
     }
 
     override fun onResume() {

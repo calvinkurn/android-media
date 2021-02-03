@@ -15,7 +15,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_wallet.balance.data.CacheUtil;
-import com.tokopedia.customer_mid_app.BuildConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.nps.helper.InAppReviewHelper;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -72,7 +72,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         If there is savedVersion in sharedpreferences, then check if currentVersion - savedVersion equals to 4
         If it is equals to 4 then show appRating */
     private static boolean isShowAppRating(SharedPreferences sharedPreferences, Context context) {
-        String GlobalVersionName = BuildConfig.VERSION_NAME;
+        String GlobalVersionName = GlobalConfig.VERSION_NAME;
         sharedPreferences = context.getSharedPreferences(REACT_NAVIGATION_MODULE, Context.MODE_PRIVATE);
         String savedVersion = sharedPreferences.getString(SAVED_VERSION, "");
         if (savedVersion.isEmpty()) {

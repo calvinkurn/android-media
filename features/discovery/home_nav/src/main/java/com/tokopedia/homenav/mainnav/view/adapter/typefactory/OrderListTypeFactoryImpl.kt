@@ -7,10 +7,10 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderPaym
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderProductViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OtherTransactionViewHolder
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OrderNavVisitable
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OrderPaymentModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OrderProductModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OtherTransactionModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderNavVisitable
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 
 class OrderListTypeFactoryImpl(val mainNavListener: MainNavListener) : BaseAdapterTypeFactory(), OrderListTypeFactory {
 

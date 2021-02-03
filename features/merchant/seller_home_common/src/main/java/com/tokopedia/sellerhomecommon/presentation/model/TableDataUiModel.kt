@@ -13,7 +13,11 @@ data class TableDataUiModel(
         override var error: String = "",
         val dataSet: List<TablePageUiModel> = emptyList(),
         override var isFromCache: Boolean = false
-) : BaseDataUiModel
+) : BaseDataUiModel {
+    override fun shouldRemove(): Boolean {
+        return !isFromCache && dataSet.all { it.rows.isEmpty() }
+    }
+}
 
 data class TablePageUiModel(
         val headers: List<TableHeaderUiModel> = emptyList(),

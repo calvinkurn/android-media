@@ -32,6 +32,11 @@ data class OrderShipment(
         return getRealShipperProductId() > 0 && !serviceName.isNullOrEmpty()
     }
 
+    fun getRealServiceId(): Int {
+        return logisticPromoShipping?.serviceData?.serviceId
+                ?: serviceId.toZeroIfNull()
+    }
+
     fun getRealShipperProductId(): Int {
         return logisticPromoShipping?.productData?.shipperProductId
                 ?: shipperProductId.toZeroIfNull()

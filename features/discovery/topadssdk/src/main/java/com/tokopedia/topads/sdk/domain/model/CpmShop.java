@@ -27,6 +27,8 @@ public class CpmShop implements Parcelable {
     private static final String KEY_IMAGE_SHOP = "image_shop";
     private static final String KEY_IS_OFFICIAL_STORE = "shop_is_official";
     private static final String KEY_IS_POWER_MERCHANT = "gold_shop";
+    private static final String KEY_MERCHANT_VOUCHERS = "merchant_vouchers";
+    private static final String KEY_IS_FOLLOWED = "is_followed";
 
     @SerializedName(KEY_ID)
     private String id;
@@ -46,6 +48,13 @@ public class CpmShop implements Parcelable {
     private boolean isOfficial;
     @SerializedName(KEY_IS_POWER_MERCHANT)
     private boolean isPowerMerchant;
+    @SerializedName(KEY_IS_FOLLOWED)
+    private boolean isFollowed;
+    @SerializedName(KEY_MERCHANT_VOUCHERS)
+    private List<String> merchantVouchers = new ArrayList<>();
+
+    public CpmShop(){
+    }
 
     public CpmShop(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)){
@@ -78,6 +87,12 @@ public class CpmShop implements Parcelable {
         if(!object.isNull(KEY_IS_POWER_MERCHANT)){
             setPowerMerchant(object.getBoolean(KEY_IS_POWER_MERCHANT));
         }
+        if(!object.isNull(KEY_MERCHANT_VOUCHERS)){
+            JSONArray merchantVouchersArray = object.getJSONArray(KEY_MERCHANT_VOUCHERS);
+            for (int i = 0; i < merchantVouchersArray.length(); i++) {
+                merchantVouchers.add(merchantVouchersArray.getString(i));
+            }
+        }
     }
 
 
@@ -91,6 +106,7 @@ public class CpmShop implements Parcelable {
         imageShop = in.readParcelable(ImageShop.class.getClassLoader());
         isOfficial = in.readByte() != 0;
         isPowerMerchant = in.readByte() != 0;
+        in.readStringList(merchantVouchers);
     }
 
     @Override
@@ -104,6 +120,7 @@ public class CpmShop implements Parcelable {
         dest.writeParcelable(imageShop, flags);
         dest.writeByte((byte) (isOfficial ? 1 : 0));
         dest.writeByte((byte) (isPowerMerchant ? 1 : 0));
+        dest.writeStringList(merchantVouchers);
     }
 
     @Override
@@ -193,5 +210,21 @@ public class CpmShop implements Parcelable {
 
     public void setSlogan(String slogan) {
         this.slogan = slogan;
+    }
+
+    public void setMerchantVouchers(List<String> merchantVouchers) {
+        this.merchantVouchers = merchantVouchers;
+    }
+
+    public List<String> getMerchantVouchers() {
+        return this.merchantVouchers;
+    }
+
+    public boolean isFollowed() {
+        return isFollowed;
+    }
+
+    public void setFollowed(boolean followed) {
+        isFollowed = followed;
     }
 }

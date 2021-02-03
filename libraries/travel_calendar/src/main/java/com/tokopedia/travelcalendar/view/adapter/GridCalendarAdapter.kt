@@ -76,24 +76,24 @@ class GridCalendarAdapter(private val monthlyDates: List<CellDate>,
 
             if (cellDate.isSelected) {
                 cellNumber.background = context.resources.getDrawableCalendar(context, R.drawable.bg_calendar_picker_today_selected)
-                cellNumber.setTextColor(context.resources.getColorCalendar(context, R.color.white))
+                cellNumber.setTextColor(context.resources.getColorCalendar(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             } else {
                 if (isDateOutOfRange(dateCal.time)) {
-                    cellNumber.setTextColor(context.resources.getColorCalendar(context, R.color.grey_300))
+                    cellNumber.setTextColor(context.resources.getColorCalendar(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
                 } else {
                     cellNumber.background = context.resources.getDrawableCalendar(context, R.drawable.bg_calendar_picker_default)
-                    cellNumber.setTextColor(context.resources.getColorCalendar(context, R.color.font_black_primary_70))
+                    cellNumber.setTextColor(context.resources.getColorCalendar(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
 
                     //set holiday in sunday as red color
                     val dayAtDate = SimpleDateFormat(DAY_DATE_FORMAT, Locale.ENGLISH).format(dateCal.time)
                     if (dayAtDate.equals(SUNDAY, ignoreCase = true)) {
-                        cellNumber.setTextColor(context.resources.getColorCalendar(context, R.color.red_a700))
+                        cellNumber.setTextColor(context.resources.getColorCalendar(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
                     }
                     val dateNumber = Calendar.getInstance()
                     for (i in holidayResultList.indices) {
                         dateNumber.time = holidayResultList[i].attributes.dateHoliday
                         if (dayValue == dateNumber.get(Calendar.DATE)) {
-                            cellNumber.setTextColor(context.resources.getColorCalendar(context, R.color.red_a700))
+                            cellNumber.setTextColor(context.resources.getColorCalendar(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
                         }
                     }
                 }

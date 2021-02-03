@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -93,7 +94,7 @@ class ToolbarViewComponent(
     }
 
     fun setCartInfo(cartUiModel: CartUiModel) {
-        if (cartUiModel.isShow) rlCart.show() else rlCart.invisible()
+        if (cartUiModel.isShow) rlCart.show() else rlCart.gone()
         if (cartUiModel.count > 0) {
             tvBadgeCart.show()
             tvBadgeCart.text =  if (cartUiModel.count > 99) getString(R.string.play_mock_cart) else cartUiModel.count.toString()

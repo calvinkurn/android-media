@@ -2,8 +2,6 @@ package com.tokopedia.flight.cancellation.view.viewmodel;
 
 import android.os.Parcel;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPassengerAdapterTypeFactory;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderAmenityViewModel;
 
 import java.util.List;
@@ -12,8 +10,7 @@ import java.util.List;
  * @author by furqan on 30/04/18.
  */
 
-public class FlightCancellationListPassengerModel extends FlightCancellationPassengerModel
-        implements Visitable<FlightCancellationDetailPassengerAdapterTypeFactory> {
+public class FlightCancellationListPassengerModel extends FlightCancellationPassengerModel {
 
     private List<FlightOrderAmenityViewModel> amenities;
     private long journeyId;
@@ -59,11 +56,6 @@ public class FlightCancellationListPassengerModel extends FlightCancellationPass
             return new FlightCancellationListPassengerModel[size];
         }
     };
-
-    @Override
-    public int type(FlightCancellationDetailPassengerAdapterTypeFactory typeFactory) {
-        return typeFactory.type(this);
-    }
 
     public long getJourneyId() {
         return journeyId;

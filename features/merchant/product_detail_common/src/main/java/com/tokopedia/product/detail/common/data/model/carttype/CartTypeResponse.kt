@@ -23,12 +23,7 @@ data class CartRedirection(
         val errorMessage: List<Any> = listOf(),
         @SerializedName("status")
         val status: String = ""
-) {
-
-    fun getCartTypeAtPosition(position: Int): CartTypeData? {
-        return data.getOrNull(position)
-    }
-}
+)
 
 data class AvailableButton(
         @SerializedName("cart_type")

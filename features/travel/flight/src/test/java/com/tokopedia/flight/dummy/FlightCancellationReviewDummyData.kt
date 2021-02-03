@@ -82,7 +82,8 @@ val DUMMY_CANCELLATION_WRAPPER =
                                 ),
                                 arrayListOf()
                         )
-                )
+                ),
+                "1234567890"
         )
 
 val DUMMY_EMPTY_FILEPATH_CANCELLATION_WRAPPER =

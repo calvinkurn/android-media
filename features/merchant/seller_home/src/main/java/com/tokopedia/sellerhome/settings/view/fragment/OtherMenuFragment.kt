@@ -10,8 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +32,16 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
+import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.*
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.StatusbarHelper
@@ -37,20 +49,8 @@ import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
-import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
-import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
-import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
-import com.tokopedia.seller.menu.common.view.uimodel.base.*
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.StatusBarCallback
@@ -248,6 +248,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    override fun onFreeShippingClicked() {
+        val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
+        if (isActivityResumed()) {
+            freeShippingBottomSheet.show(childFragmentManager)
+        }
+    }
+
     private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
         val bottomSheetInfix: String
         val bottomSheetDescription: String
@@ -295,7 +302,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private fun observeFreeShippingStatus() {
         observe(otherMenuViewModel.isFreeShippingActive) { freeShippingActive ->
             if(freeShippingActive) {
-                otherMenuViewHolder?.setupFreeShippingLayout(childFragmentManager)
+                otherMenuViewHolder?.setupFreeShippingLayout()
             } else {
                 otherMenuViewHolder?.hideFreeShippingLayout()
             }
@@ -514,6 +521,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             putExtra(EXTRA_SHOP_ID, userSession.shopId)
         }
         startActivity(shopFavouriteListIntent)
+    }
+
+    private fun isActivityResumed(): Boolean {
+        val state = (activity as? AppCompatActivity)?.lifecycle?.currentState
+        return state == Lifecycle.State.STARTED || state == Lifecycle.State.RESUMED
     }
 
 }

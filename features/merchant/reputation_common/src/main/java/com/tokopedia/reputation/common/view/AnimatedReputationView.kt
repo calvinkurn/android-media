@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.reputation.common.R
@@ -24,6 +25,12 @@ class AnimatedReputationView @JvmOverloads constructor(
     var countMinus = 5
     var lastReview = 0
     var clickAt = 0
+
+    /**
+     * Determine whether the stars is reviewable (clickable) or not
+     */
+    var reviewable = true
+
     private var handle = Handler()
     private var listener: AnimatedReputationListener? = null
     private var shouldShowDesc = false
@@ -144,6 +151,14 @@ class AnimatedReputationView @JvmOverloads constructor(
         listOfStarsView.forEach {
             it.reviewView.resetStars()
             it.isAnimated = false
+        }
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        return if (reviewable) {
+            super.onInterceptTouchEvent(ev)
+        } else {
+            !reviewable
         }
     }
 

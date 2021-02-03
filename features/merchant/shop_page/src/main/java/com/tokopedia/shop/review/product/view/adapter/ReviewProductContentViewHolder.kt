@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
-import com.tokopedia.shop.review.shop.view.uimodel.ImageAttachmentViewModel
+import com.tokopedia.shop.review.shop.view.uimodel.ImageAttachmentUiModel
 import com.tokopedia.shop.review.shop.view.uimodel.ImageUpload
 import com.tokopedia.shop.review.util.TimeUtil
 import java.util.*
@@ -113,7 +113,7 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
         }
     }
 
-    private fun convertToAdapterViewModel(reviewAttachment: List<ImageAttachmentViewModel?>?): ArrayList<ImageUpload> {
+    private fun convertToAdapterViewModel(reviewAttachment: List<ImageAttachmentUiModel?>?): ArrayList<ImageUpload> {
         val list = ArrayList<ImageUpload>()
         for (vm in reviewAttachment!!) {
             list.add(ImageUpload(

@@ -85,9 +85,9 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         bottomSheetBehaviorKnob(view, true)
         saveButton?.setOnClickListener {
             dismiss()
-            if (isTopUp)
+            if (isTopUp && creditData?.credit?.isNotEmpty() == true)
                 onSaved?.invoke(topUpChoice)
-            else
+            else if (!isTopUp && autoTopUpData != null && autoTopUpData?.availableNominals?.isNotEmpty() == true)
                 onSavedAutoTopUp?.invoke(defPosition)
         }
         if (isTopUp) {

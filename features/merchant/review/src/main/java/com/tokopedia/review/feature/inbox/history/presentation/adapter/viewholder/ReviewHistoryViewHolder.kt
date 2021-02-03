@@ -77,13 +77,13 @@ class ReviewHistoryViewHolder(view: View,
         if(reviewDescription.isNullOrBlank()) {
             itemView.reviewHistoryDescription.apply {
                 text = getString(R.string.no_reviews_yet)
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             }
             return
         }
         itemView.reviewHistoryDescription.apply {
             text = reviewDescription.removeNewLine()
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         }
     }
 

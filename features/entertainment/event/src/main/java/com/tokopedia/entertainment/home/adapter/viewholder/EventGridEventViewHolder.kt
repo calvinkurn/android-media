@@ -17,6 +17,7 @@ import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.*
 
@@ -39,6 +40,11 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
     }
 
     override fun bind(element: EventGridModel) {
+        if(element.items.isEmpty()){
+            itemView.ent_title_card.gone()
+            itemView.btn_see_all.gone()
+            itemView.ent_recycle_view_grid.gone()
+        }
         itemView.ent_title_card.text = element.title
         itemAdapter.titleGrid = element.title
         itemAdapter.setList(element.items)

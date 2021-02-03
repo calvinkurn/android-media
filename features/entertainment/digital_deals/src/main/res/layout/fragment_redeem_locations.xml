@@ -5,19 +5,19 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bottomnav_bg">
+    android:background="@color/Unify_N0">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/base_main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bottomnav_bg">
+        android:background="@color/Unify_N0">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/bottomnav_bg">
+            android:background="@color/Unify_N0">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -32,7 +32,7 @@
                 android:id="@+id/divider1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/divider_height_thinv"
-                android:background="@color/divider_color" />
+                android:background="@color/Unify_N75" />
 
             <com.tokopedia.digital_deals.view.customview.SearchInputView
                 android:id="@+id/search_input_view"
@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/margin_error_text"
-            android:background="@color/deals_backgroud_color"
+            android:background="@color/Unify_N0"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:visibility="gone"
@@ -80,7 +80,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:gravity="center_horizontal"
                 android:text="@string/empty_location_list_text_lower"
-                android:textColor="@color/black_38" />
+                android:textColor="@color/Unify_N700_32" />
 
         </LinearLayout>
 
@@ -91,7 +91,7 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_12"
+        android:background="@color/Unify_N700_20"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone">

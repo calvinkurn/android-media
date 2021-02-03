@@ -3,8 +3,11 @@ package com.tokopedia.home_account.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
+import com.tokopedia.home_account.view.viewholder.ErrorItemViewHolder
 import com.tokopedia.home_account.view.viewholder.FinancialItemViewHolder
 
 /**
@@ -12,19 +15,45 @@ import com.tokopedia.home_account.view.viewholder.FinancialItemViewHolder
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener): RecyclerView.Adapter<FinancialItemViewHolder>() {
+class HomeAccountFinancialAdapter(val listener: HomeAccountUserListener): RecyclerView.Adapter<BaseViewHolder>() {
 
-    var list: List<CommonDataView> = mutableListOf()
+    var list: MutableList<CommonDataView> = arrayListOf()
 
     override fun getItemCount(): Int = list.size
 
-    override fun onBindViewHolder(holder: FinancialItemViewHolder, position: Int) {
-        holder.bind(list[position])
+    override fun getItemViewType(position: Int): Int {
+        return list[position].type
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinancialItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(FinancialItemViewHolder.LAYOUT, parent, false)
+    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
+        when(holder){
+            is FinancialItemViewHolder -> {
+                holder.bind(list[position])
+            }
+        }
+    }
 
-        return FinancialItemViewHolder(view, listener)
+    fun addItems(itemList: List<CommonDataView>) {
+        this.list.clear()
+        this.list.addAll(itemList)
+    }
+
+    fun addSingleItem(item: CommonDataView){
+        this.list.add(item)
+        notifyDataSetChanged()
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
+        return when(viewType){
+            AccountConstants.LAYOUT.TYPE_ERROR -> {
+                val view = LayoutInflater.from(parent.context).inflate(ErrorItemViewHolder.LAYOUT, parent, false)
+                view.setOnClickListener { listener.onFinancialErrorClicked() }
+                ErrorItemViewHolder(view, listener)
+            }
+            else -> {
+                val view = LayoutInflater.from(parent.context).inflate(FinancialItemViewHolder.LAYOUT, parent, false)
+                FinancialItemViewHolder(view, listener)
+            }
+        }
     }
 }

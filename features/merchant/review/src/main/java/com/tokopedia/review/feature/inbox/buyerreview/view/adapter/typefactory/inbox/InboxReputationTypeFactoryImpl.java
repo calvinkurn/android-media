@@ -11,9 +11,9 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.In
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.LoadingInboxReputationViewholder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.SellerMigrationReviewViewHolder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputation;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.EmptySearchModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationItemViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.SellerMigrationReviewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.EmptySearchModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.SellerMigrationReviewModel;
 
 /**
  * @author by nisie on 8/19/17.
@@ -37,7 +37,7 @@ public class InboxReputationTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(InboxReputationItemViewModel viewModel) {
+    public int type(InboxReputationItemUiModel viewModel) {
         return InboxReputationViewHolder.LAYOUT;
     }
 

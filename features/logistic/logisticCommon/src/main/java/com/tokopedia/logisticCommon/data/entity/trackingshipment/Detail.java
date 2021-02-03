@@ -29,6 +29,9 @@ public class Detail {
     @SerializedName("service_code")
     @Expose
     private String serviceCode;
+    @SerializedName("tracking_url")
+    @Expose
+    private String trackingUrl;
 
     public String getShipperCity() {
         return shipperCity;
@@ -78,4 +81,7 @@ public class Detail {
         this.serviceCode = serviceCode;
     }
 
+    public String getTrackingUrl() { return trackingUrl; }
+
+    public void setTrackingUrl(String trackingUrl) { this.trackingUrl = trackingUrl; }
 }

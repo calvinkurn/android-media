@@ -3,7 +3,7 @@ package com.tokopedia.home.explore.data.repository;
 import android.content.Context;
 
 import com.tokopedia.home.explore.data.source.ExploreDataSource;
-import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.ExploreSectionDataModel;
 
 import java.util.List;
 
@@ -24,11 +24,11 @@ public class ExploreRepositoryImpl implements ExploreRepository {
     }
 
     @Override
-    public Observable<List<ExploreSectionViewModel>> getExploreData(String userId) {
+    public Observable<List<ExploreSectionDataModel>> getExploreData(String userId) {
         return dataSource.getExploreData(userId);
     }
 
-    public Observable<List<ExploreSectionViewModel>> getExploreDataCache() {
+    public Observable<List<ExploreSectionDataModel>> getExploreDataCache() {
         return dataSource.getDataCache();
     }
 }

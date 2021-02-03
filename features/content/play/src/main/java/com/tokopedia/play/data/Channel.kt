@@ -121,7 +121,7 @@ data class Channel(
 
     data class TotalView(
             @SerializedName("value")
-            val value: Long = 0L,
+            val value: String = "",
             @SerializedName("formatted")
             val formatted: String = ""
     )

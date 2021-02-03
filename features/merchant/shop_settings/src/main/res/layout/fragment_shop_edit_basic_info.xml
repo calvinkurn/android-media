@@ -58,7 +58,7 @@
                     android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_toEndOf="@id/cardView"
                     android:text="@string/shop_edit_avatar_label"
-                    android:textColor="@color/Neutral_N700_96" />
+                    android:textColor="@color/Unify_N700_96" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/labelAvatarDesc"
@@ -70,7 +70,7 @@
                     android:layout_marginEnd="@dimen/spacing_lvl4"
                     android:layout_toEndOf="@id/cardView"
                     android:text="@string/shop_edit_avatar_description"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -82,7 +82,7 @@
                     android:layout_marginTop="@dimen/spacing_lvl3"
                     android:layout_toEndOf="@id/cardView"
                     android:text="@string/shop_edit_change_avatar"
-                    android:textColor="@color/g_500"
+                    android:textColor="@color/Unify_G500"
                     app:typographyType="body_3"
                     app:typographyWeight="bold" />
             </RelativeLayout>
@@ -185,10 +185,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
         android:layout_centerVertical="true"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 </RelativeLayout>

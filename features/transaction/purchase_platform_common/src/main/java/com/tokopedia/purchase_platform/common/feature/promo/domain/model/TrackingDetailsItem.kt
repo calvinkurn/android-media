@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.model
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
+import javax.annotation.Generated
 
 @Generated("com.robohorse.robopojogenerator")
 data class TrackingDetailsItem(
@@ -10,7 +10,7 @@ data class TrackingDetailsItem(
 	val promoDetailsTracking: String? = null,
 
 	@field:SerializedName("product_id")
-	val productId: Int? = null,
+	val productId: Long? = null,
 
 	@field:SerializedName("promo_codes_tracking")
 	val promoCodesTracking: String? = null

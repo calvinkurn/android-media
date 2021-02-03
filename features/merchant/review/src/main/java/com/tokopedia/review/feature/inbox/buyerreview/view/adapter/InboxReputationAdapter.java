@@ -11,9 +11,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.EmptySearchModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationItemViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.SellerMigrationReviewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.EmptySearchModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.SellerMigrationReviewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,13 +58,13 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
         return list.size();
     }
 
-    public void setList(List<InboxReputationItemViewModel> list) {
+    public void setList(List<InboxReputationItemUiModel> list) {
         this.list.clear();
         this.list.addAll(list);
         notifyDataSetChanged();
     }
 
-    public void setList(List<InboxReputationItemViewModel> list,
+    public void setList(List<InboxReputationItemUiModel> list,
                         SellerMigrationReviewModel sellerMigrationReviewModel) {
         this.list.clear();
         if (sellerMigrationReviewModel != null) {
@@ -74,7 +74,7 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
         notifyDataSetChanged();
     }
 
-    public void addList(List<InboxReputationItemViewModel> list) {
+    public void addList(List<InboxReputationItemUiModel> list) {
         this.list.addAll(list);
         notifyDataSetChanged();
     }

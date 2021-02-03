@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.view.adapter.TrafficMetricReportAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -72,8 +73,8 @@ class SummaryInfoViewComponent(
         ivCover.loadImageRounded(coverUrl)
     }
 
-    fun setLiveDuration(duration: String) {
-        tvDuration.text = duration
+    fun setLiveDuration(data: LiveDurationUiModel) {
+        tvDuration.text = data.duration
     }
 
     fun setSummaryInfo(dataList: List<TrafficMetricUiModel>) {

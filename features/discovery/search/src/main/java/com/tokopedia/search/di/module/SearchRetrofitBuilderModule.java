@@ -2,10 +2,9 @@ package com.tokopedia.search.di.module;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
-import com.tokopedia.search.di.scope.SearchScope;
-import com.tokopedia.network.CoroutineCallAdapterFactory;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.search.di.qualifier.SearchQualifier;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.network.converterfactory.GeneratedHostConverter;
 
 import dagger.Module;
@@ -14,7 +13,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-@SearchScope
 @Module
 public class SearchRetrofitBuilderModule {
 
@@ -27,7 +25,6 @@ public class SearchRetrofitBuilderModule {
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addCallAdapterFactory(CoroutineCallAdapterFactory.create());
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
 }

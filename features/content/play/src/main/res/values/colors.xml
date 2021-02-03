@@ -19,4 +19,6 @@
     <color name="play_atc_image_disabled">#DBDEE2</color>
     <color name="play_solid_black">#000000</color>
 
+    <color name="play_dms_pip_control_bg">#AD31353B</color>
+
 </resources>

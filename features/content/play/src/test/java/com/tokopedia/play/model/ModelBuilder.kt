@@ -420,11 +420,19 @@ class ModelBuilder {
 
     private val totalLikeCount = """
         {
-            "like": {
-                "fmt": "48",
-                "value": 48
+        "broadcasterReportSummariesBulk": {
+          "reportData": [
+            {
+              "channel": {
+                "metrics": {
+                  "totalLike": "48",
+                  "totalLikeFmt": "48"
+                }
+              }
             }
+          ]
         }
+      }
     """.trimIndent()
 
     private val isLike = """
@@ -880,7 +888,7 @@ class ModelBuilder {
 
     fun buildNewChat() = gson.fromJson(newChatJson, PlayChat::class.java)
 
-    fun buildTotalLike() = gson.fromJson(totalLikeCount, TotalLikeContent.Data::class.java)
+    fun buildTotalLike() = gson.fromJson(totalLikeCount, TotalLikeContent.Response::class.java)
 
     fun buildIsLike() = gson.fromJson(isLike, IsLikedContent.Data::class.java)
 

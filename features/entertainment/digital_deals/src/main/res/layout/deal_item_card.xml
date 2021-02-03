@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/image_width_deal"
             android:scaleType="centerCrop"
-            android:src="@color/grey_1100"
+            android:src="@color/Unify_N50"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -142,7 +142,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
-            android:background="@color/divider_color"
+            android:background="@color/Unify_N75"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_available_locations" />
@@ -167,7 +167,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_8"
             android:includeFontPadding="false"
-            android:textColor="@color/red_800"
+            android:textColor="@color/Unify_Y500"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_mrp"
             tools:text="Rp40.000.000" />

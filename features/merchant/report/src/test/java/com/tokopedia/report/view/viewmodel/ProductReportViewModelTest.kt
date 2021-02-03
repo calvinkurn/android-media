@@ -26,7 +26,7 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
                 false
         )
         onGetReportReasonSuccess_thenReturn(expectedResponse)
-        viewModel = ProductReportViewModel(graphqlRepository, anyString(), CoroutineTestDispatchersProvider)
+        viewModel = ProductReportViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
         verifyUseCaseCalled()
         verifyGetReportReasonSuccess(Success(expectedResponse.getSuccessData<ProductReportReason.Response>().data))
     }
@@ -36,7 +36,7 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
         val errorGql = GraphqlError()
         errorGql.message = "Error getReportReason"
         onGetReportReasonError_thenReturn(errorGql)
-        viewModel = ProductReportViewModel(graphqlRepository, anyString(), CoroutineTestDispatchersProvider)
+        viewModel = ProductReportViewModel(graphqlRepository, CoroutineTestDispatchersProvider)
         verifyUseCaseCalled()
         verifyGetReportReasonFails(Fail(MessageErrorException(errorGql.message)))
     }

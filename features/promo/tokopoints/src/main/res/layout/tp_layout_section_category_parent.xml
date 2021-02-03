@@ -49,7 +49,7 @@
         android:textColor="@color/tp_tab_indicator_text_color_"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_sectionTitle"
-        app:typographyType="heading_5"
+        app:typographyType="heading_6"
         app:typographyWeight="bold" />
 
 

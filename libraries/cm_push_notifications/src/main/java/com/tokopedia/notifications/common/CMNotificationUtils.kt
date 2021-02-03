@@ -3,6 +3,7 @@ package com.tokopedia.notifications.common
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
@@ -297,6 +298,26 @@ object CMNotificationUtils {
                 it[CMConstant.UTMParams.SCREEN_NAME] = CMConstant.UTMParams.SCREEN_NAME_VALUE
         }
         TrackApp.getInstance().gtm.sendCampaign(campaign as Map<String, Any>?)
+    }
+
+
+    fun isDarkMode(context: Context): Boolean {
+        return try {
+            when (context.resources.configuration.uiMode and
+                    Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_YES -> true
+                Configuration.UI_MODE_NIGHT_NO -> false
+                Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+                else -> false
+            }
+        } catch (ignored: Exception) {
+            false
+        }
+    }
+
+
+    fun checkTokenValidity(token: String): Boolean {
+        return token.length <= 36
     }
 }
 

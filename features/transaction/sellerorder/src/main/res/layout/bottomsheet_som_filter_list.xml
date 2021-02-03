@@ -25,7 +25,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnShowOrder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/btn_show_order_height"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"

@@ -646,22 +646,24 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     }
 
     private fun showOnBoarding() {
-        if (!coachMark.hasShown(activity, COACH_MARK_TAG)) {
-            Handler().postDelayed({
-                val manageMenu = view?.rootView?.findViewById<View>(R.id.text_manage)
+        context?.let { context ->
+            if (!coachMark.hasShown(activity, COACH_MARK_TAG)) {
+                Handler().postDelayed({
+                    val manageMenu = view?.rootView?.findViewById<View>(R.id.text_manage)
 
-                manageMenu?.post {
-                    val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
-                    coachMarkItems.add(
-                            CoachMarkItem(
-                                    manageMenu,
-                                    getString(R.string.wishlist_coach_mark_title),
-                                    getString(R.string.wishlist_coach_mark_description)
-                            )
-                    )
-                    coachMark.show(activity, "wishlist", coachMarkItems)
-                }
-            }, 100)
+                    manageMenu?.post {
+                        val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
+                        coachMarkItems.add(
+                                CoachMarkItem(
+                                        manageMenu,
+                                        context.getString(R.string.wishlist_coach_mark_title),
+                                        context.getString(R.string.wishlist_coach_mark_description)
+                                )
+                        )
+                        coachMark.show(activity, "wishlist", coachMarkItems)
+                    }
+                }, 100)
+        }
         }
     }
 

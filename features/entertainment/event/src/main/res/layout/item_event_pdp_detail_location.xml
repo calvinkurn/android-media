@@ -26,7 +26,7 @@
         tools:text="Dari Hotel"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        android:textColor="@color/Neutral_N400"
+        android:textColor="@color/Unify_N400"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl3"
         />

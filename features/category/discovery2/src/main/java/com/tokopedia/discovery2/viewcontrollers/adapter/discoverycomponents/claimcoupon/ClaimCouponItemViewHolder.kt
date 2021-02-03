@@ -15,6 +15,7 @@ import com.tokopedia.discovery2.Constant.ClaimCouponConstant.NOT_LOGGEDIN
 import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -33,6 +34,7 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         claimCouponItemViewModel = discoveryBaseViewModel as ClaimCouponItemViewModel
+        getSubComponent().inject(claimCouponItemViewModel)
         claimCouponItemViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer {
             setData(it, claimCouponItemViewModel.getIsDouble())
         })

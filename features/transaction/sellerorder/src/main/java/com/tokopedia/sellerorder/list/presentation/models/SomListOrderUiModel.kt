@@ -23,6 +23,8 @@ data class SomListOrderUiModel(
         val destinationProvince: String = "",
         val courierName: String = "",
         val courierProductName: String = "",
+        val preOrderType: Int = 0,
+        val buyerName: String = "",
         val tickerInfo: TickerInfo = TickerInfo(),
         val buttons: List<Button> = emptyList(),
         var isChecked: Boolean = false,

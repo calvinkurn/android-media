@@ -52,10 +52,10 @@ data class Contact(
         val role: String = "",
         @Expose
         @SerializedName("userId")
-        val userId: Int = 0,
+        val userId: Long = 0L,
         @Expose
         @SerializedName("shopId")
-        val shopId: Int = 0,
+        val shopId: Long = 0L,
         @Expose
         @SerializedName("interlocutor")
         val isInterlocutor: Boolean = false,
@@ -118,13 +118,13 @@ data class Chat(
 data class Reply(
         @Expose
         @SerializedName("msgId")
-        val msgId: Int = 0,
+        val msgId: Long = 0,
         @Expose
         @SerializedName("replyId")
-        val replyId: String,
+        val replyId: String = "",
         @Expose
         @SerializedName("senderId")
-        val senderId: Int = 0,
+        val senderId: Long = 0,
         @Expose
         @SerializedName("senderName")
         val senderName: String = "",
@@ -145,7 +145,7 @@ data class Reply(
         val status: Int = 0,
         @Expose
         @SerializedName("attachment")
-        val attachment: Attachment?,
+        val attachment: Attachment = Attachment(),
         @Expose
         @SerializedName("isOpposite")
         val isOpposite: Boolean = false,
@@ -157,7 +157,7 @@ data class Reply(
         val isRead: Boolean = true,
         @Expose
         @SerializedName("blastId")
-        val blastId: Int = 0,
+        val blastId: Long = 0,
         @Expose
         @SerializedName("source")
         val source: String = ""

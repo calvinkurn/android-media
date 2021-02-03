@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/setting_title_padding_top"
         android:paddingBottom="@dimen/setting_title_padding_bottom"
-        android:textColor="@color/setting_title_color"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/guideline"
         app:typographyType="body_3"

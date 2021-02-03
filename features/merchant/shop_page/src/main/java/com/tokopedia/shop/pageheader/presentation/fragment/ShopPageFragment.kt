@@ -3,7 +3,6 @@ package com.tokopedia.shop.pageheader.presentation.fragment
 import android.app.Activity
 import android.content.ClipData
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -31,6 +30,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -38,6 +38,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
@@ -55,7 +56,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
@@ -64,7 +64,7 @@ import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpa
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOPPAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
@@ -103,14 +103,15 @@ import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.stickylogin.common.StickyLoginConstant
+import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -118,6 +119,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.*
 import kotlinx.android.synthetic.main.shop_page_main.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
 import javax.inject.Inject
 
@@ -132,12 +134,14 @@ class ShopPageFragment :
         const val SHOP_REF = "EXTRA_SHOP_REF"
         const val SHOP_DOMAIN = "domain"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
+        const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
         const val TAB_POSITION_FEED = 1
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
+        const val FORCE_NOT_SHOWING_HOME_TAB = "FORCE_NOT_SHOWING_HOME_TAB"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val REQUEST_CODE_USER_LOGIN_CART = 102
@@ -155,6 +159,10 @@ class ShopPageFragment :
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
+
+        private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
+
+        private const val MARGIN_BOTTOM_STICKY_LOGIN = 16
 
         @JvmStatic
         fun createInstance() = ShopPageFragment()
@@ -178,11 +186,11 @@ class ShopPageFragment :
     var createPostUrl: String = ""
     private var tabPosition = TAB_POSITION_HOME
     lateinit var stickyLoginView: StickyLoginView
-    private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private lateinit var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
     private lateinit var errorButton: View
+    private var isForceNotShowingTab: Boolean = false
     private val iconTabHomeInactive: Int
         get() = R.drawable.ic_shop_tab_home_inactive.takeIf {
             isUsingNewNavigation()
@@ -245,7 +253,7 @@ class ShopPageFragment :
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
-
+    var selectedPosition = -1
     val isMyShop: Boolean
         get() = if (::shopViewModel.isInitialized) {
             shopViewModel.isMyShop(shopId)
@@ -284,6 +292,7 @@ class ShopPageFragment :
         outState.putParcelable(SAVED_INITIAL_FILTER,  initialProductFilterParameter)
     }
 
+    @ExperimentalCoroutinesApi
     private fun initViews(view: View) {
         context?.let{
             activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
@@ -301,51 +310,12 @@ class ShopPageFragment :
         viewPager.adapter = viewPagerAdapter
         viewPager.offscreenPageLimit = PAGE_LIMIT
         tabLayout.setupWithViewPager(viewPager)
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab) {
-                viewPagerAdapter.handleSelectedTab(tab, true)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-                viewPagerAdapter.handleSelectedTab(tab, false)
-            }
-
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPagerAdapter.handleSelectedTab(tab, true)
-                if (isFirstLoading) {
-                    isFirstLoading = false
-                } else {
-                    shopPageTracking?.clickTab(
-                            shopViewModel.isMyShop(shopId),
-                            listShopPageTabModel[tab.position].tabTitle,
-                            CustomDimensionShopPage.create(
-                                    shopId,
-                                    shopPageHeaderDataModel?.isOfficial ?: false,
-                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
-                            )
-                    )
-                }
-                if (isSellerMigrationEnabled(context)) {
-                    if(isMyShop && viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)){
-                        val tabFeedPosition = viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
-                        if (tab.position == tabFeedPosition) {
-                            showBottomSheetSellerMigration()
-                        } else {
-                            hideBottomSheetSellerMigration()
-                        }
-                    }else{
-                        hideBottomSheetSellerMigration()
-                    }
-                }
-            }
-        })
         swipeToRefresh.setOnRefreshListener {
             refreshData()
-            updateStickyContent()
         }
         mainLayout.requestFocus()
-        initStickyLogin(view)
         getChatButtonInitialMargin()
+        if (!shopViewModel.isUserSessionActive) initStickyLogin(view)
     }
 
     private fun setupBottomSheetSellerMigration(view: View) {
@@ -363,7 +333,10 @@ class ShopPageFragment :
             val ivTabFeedHasPost: ImageUnify = sellerMigrationLayout.findViewById(R.id.ivTabFeedHasPost)
             val tvTitleTabFeedHasPost: Typography = sellerMigrationLayout.findViewById(R.id.tvTitleTabFeedHasPost)
             tvTitleTabFeedHasPost.movementMethod = LinkMovementMethod.getInstance()
-            ivTabFeedHasPost.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK)
+            try {
+                if(ivTabFeedHasPost.context.isValidGlideContext())
+                    ivTabFeedHasPost.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK)
+            } catch (e: Throwable) { }
             tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
                 val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
                 val appLinkShopPageFeed = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, shopId).orEmpty()
@@ -449,16 +422,7 @@ class ShopPageFragment :
 
     private fun onSuccessGetShopIdFromDomain(shopId: String) {
         this.shopId = shopId
-        shopViewModel.getShopPageTabData(
-                shopId.toIntOrZero(),
-                shopDomain.orEmpty(),
-                START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
-                initialProductFilterParameter ?: ShopProductFilterParameter(),
-                "",
-                "",
-                isRefresh
-        )
+        getShopPageP1Data()
     }
 
     private fun onErrorGetShopPageHeaderContentData(error: Throwable) {
@@ -477,6 +441,7 @@ class ShopPageFragment :
     }
 
     private fun getShopPageHeaderContentData() {
+        if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
         startMonitoringPltCustomMetric(SHOP_TRACE_HEADER_CONTENT_DATA_MIDDLE)
         shopViewModel.getShopPageHeaderContentData(shopId, shopDomain ?: "", isRefresh)
     }
@@ -500,6 +465,7 @@ class ShopPageFragment :
                 shopAttribution = getStringExtra(SHOP_ATTRIBUTION)
                 tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
                 isFirstCreateShop = getBooleanExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, false)
+                isForceNotShowingTab = getBooleanExtra(FORCE_NOT_SHOWING_HOME_TAB, false)
                 data?.run {
                     if (shopId.isEmpty()) {
                         if (pathSegments.size > 1) {
@@ -526,6 +492,7 @@ class ShopPageFragment :
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                 }
+                handlePlayBroadcastExtra(this@run)
             }
             if (GlobalConfig.isSellerApp()) {
                 shopId = shopViewModel.userShopId
@@ -600,28 +567,24 @@ class ShopPageFragment :
 
     private fun initStickyLogin(view: View) {
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
-        stickyLoginView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            updateViewPagerPadding()
-            updateFloatingChatButtonMargin()
-        }
-        stickyLoginView.setOnClickListener {
-            if (stickyLoginView.isLoginReminder()) {
-                stickyLoginView.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.SHOP)
-            } else {
-                stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.SHOP)
+        stickyLoginView.page = StickyLoginConstant.Page.SHOP
+        stickyLoginView.lifecycleOwner = viewLifecycleOwner
+        stickyLoginView.setStickyAction(object : StickyLoginAction {
+            override fun onClick() {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
             }
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
-        }
-        stickyLoginView.setOnDismissListener(View.OnClickListener {
-            if (stickyLoginView.isLoginReminder()) {
-                stickyLoginView.trackerLoginReminder.clickOnDismiss(StickyLoginConstant.Page.SHOP)
-            } else {
-                stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
+
+            override fun onDismiss() {
+
             }
-            stickyLoginView.dismiss(StickyLoginConstant.Page.SHOP)
-            updateStickyContent()
+
+            override fun onViewChange(isShowing: Boolean) {
+                updateViewPagerPadding()
+                updateFloatingChatButtonMargin()
+            }
         })
-        updateStickyContent()
+
+        stickyLoginView.loadContent()
     }
 
     private fun getInitialData() {
@@ -631,17 +594,22 @@ class ShopPageFragment :
         if (shopId.isEmpty()) {
             shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
         } else {
-            shopViewModel.getShopPageTabData(
-                    shopId.toIntOrZero(),
-                    shopDomain.orEmpty(),
-                    START_PAGE,
-                    ShopPageConstant.DEFAULT_PER_PAGE,
-                    initialProductFilterParameter ?: ShopProductFilterParameter(),
-                    "",
-                    "",
-                    isRefresh
-            )
+            getShopPageP1Data()
         }
+    }
+
+    private  fun getShopPageP1Data(){
+        if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
+        shopViewModel.getShopPageTabData(
+                shopId.toIntOrZero(),
+                shopDomain.orEmpty(),
+                START_PAGE,
+                ShopPageConstant.DEFAULT_PER_PAGE,
+                initialProductFilterParameter ?: ShopProductFilterParameter(),
+                "",
+                "",
+                isRefresh
+        )
     }
 
     private fun initToolbar() {
@@ -669,7 +637,7 @@ class ShopPageFragment :
             setIcon(iconBuilder)
             if(shopViewModel.isUserSessionActive)
                 setBadgeCounter(IconList.ID_CART, getCartCounter())
-            setToolbarPageName("$SHOPPAGE - $shopId")
+            setToolbarPageName(SHOP_PAGE)
         }
     }
 
@@ -735,7 +703,6 @@ class ShopPageFragment :
     override fun onResume() {
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
-        updateStickyState()
         setShopName()
     }
 
@@ -912,7 +879,7 @@ class ShopPageFragment :
             shopId = this@ShopPageFragment.shopId
             isOfficial = shopPageP1Data.isOfficial
             isGoldMerchant = shopPageP1Data.isGoldMerchant
-            shopHomeType = shopPageP1Data.shopHomeType
+            shopHomeType = shopPageP1Data.shopHomeType.takeIf { !isForceNotShowingTab } ?: ShopHomeType.NONE
             topContentUrl = shopPageP1Data.topContentUrl
             shopName = shopPageP1Data.shopName
             shopDomain = shopPageP1Data.shopDomain
@@ -945,7 +912,6 @@ class ShopPageFragment :
         setViewState(VIEW_CONTENT)
         swipeToRefresh.isRefreshing = false
         shopPageHeaderDataModel?.let {
-            shopPageFragmentHeaderViewHolder.hideFollowButton()
             shopPageFragmentHeaderViewHolder.bind(it, isMyShop, remoteConfig)
         }
     }
@@ -1000,42 +966,88 @@ class ShopPageFragment :
     private fun setupTabs() {
         listShopPageTabModel = createListShopPageTabModel()
         viewPagerAdapter.setTabData(listShopPageTabModel)
+        selectedPosition = getSelectedTabPosition()
         viewPagerAdapter.notifyDataSetChanged()
-        var selectedPosition = viewPager.currentItem
-        if (shouldOverrideTabToHome) {
-            selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)) {
-                viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
-            } else {
-                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                viewPagerAdapter.handleSelectedTab(tab, true)
             }
-        }
-        if (shouldOverrideTabToReview) {
-            selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(ReviewShopFragment::class.java)) {
-                viewPagerAdapter.getFragmentPosition(ReviewShopFragment::class.java)
-            } else {
-                selectedPosition
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                viewPagerAdapter.handleSelectedTab(tab, false)
             }
-        }
-        if (shouldOverrideTabToProduct) {
-            selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(ShopPageProductListFragment::class.java)) {
-                viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
-            } else {
-                selectedPosition
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                selectedPosition = tab.position
+                viewPagerAdapter.handleSelectedTab(tab, true)
+                if (isFirstLoading) {
+                    isFirstLoading = false
+                } else {
+                    shopPageTracking?.clickTab(
+                            shopViewModel.isMyShop(shopId),
+                            listShopPageTabModel[tab.position].tabTitle,
+                            CustomDimensionShopPage.create(
+                                    shopId,
+                                    shopPageHeaderDataModel?.isOfficial ?: false,
+                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
+                            )
+                    )
+                }
+                if (isSellerMigrationEnabled(context)) {
+                    if(isMyShop && viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)){
+                        val tabFeedPosition = viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
+                        if (tab.position == tabFeedPosition) {
+                            showBottomSheetSellerMigration()
+                        } else {
+                            hideBottomSheetSellerMigration()
+                        }
+                    }else{
+                        hideBottomSheetSellerMigration()
+                    }
+                }
             }
-        }
-        if (shouldOverrideTabToFeed) {
-            selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)) {
-                viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
-            } else {
-                selectedPosition
-            }
-        }
+        })
         tabLayout?.apply {
             for (i in 0 until tabCount) {
                 getTabAt(i)?.customView = viewPagerAdapter.getTabView(i, selectedPosition)
             }
         }
         viewPager.setCurrentItem(selectedPosition, false)
+    }
+
+    private fun getSelectedTabPosition(): Int {
+        var selectedPosition = viewPager.currentItem
+        if(tabLayout.tabCount == 0){
+            if (shouldOverrideTabToHome) {
+                selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)) {
+                    viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
+                } else {
+                    viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
+                }
+            }
+            if (shouldOverrideTabToReview) {
+                selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(ReviewShopFragment::class.java)) {
+                    viewPagerAdapter.getFragmentPosition(ReviewShopFragment::class.java)
+                } else {
+                    selectedPosition
+                }
+            }
+            if (shouldOverrideTabToProduct) {
+                selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(ShopPageProductListFragment::class.java)) {
+                    viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
+                } else {
+                    selectedPosition
+                }
+            }
+            if (shouldOverrideTabToFeed) {
+                selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)) {
+                    viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
+                } else {
+                    selectedPosition
+                }
+            }
+        }
+        return selectedPosition
     }
 
     private fun createListShopPageTabModel(): List<ShopPageTabModel> {
@@ -1111,7 +1123,9 @@ class ShopPageFragment :
                         shopPageHeaderDataModel?.shopName.orEmpty(),
                         shopAttribution ?: "",
                         shopRef
-                )
+                ).apply{
+                    setInitialProductListData(shopViewModel.productListData)
+                }
             } else {
                 HomeProductFragment.createInstance(
                         shopId,
@@ -1147,16 +1161,10 @@ class ShopPageFragment :
 
     private fun updateFavouriteResult(isFavorite: Boolean) {
         activity?.run {
+            val userSession = UserSession(this)
             setResult(Activity.RESULT_OK, intentData.apply {
                 putExtra(SHOP_STATUS_FAVOURITE, isFavorite)
-            })
-        }
-    }
-
-    private fun updateStickyResult() {
-        activity?.run {
-            setResult(Activity.RESULT_OK, intentData.apply {
-                putExtra(SHOP_STICKY_LOGIN, true)
+                putExtra(SHOP_STICKY_LOGIN, userSession.isLoggedIn)
             })
         }
     }
@@ -1191,6 +1199,8 @@ class ShopPageFragment :
                 refreshData()
                 goToCart()
             }
+        } else if (requestCode == REQUEST_CODE_START_LIVE_STREAMING) {
+            if (data != null) handleResultVideoFromLiveStreaming(resultCode, data)
         }
     }
 
@@ -1213,6 +1223,25 @@ class ShopPageFragment :
         if (!swipeToRefresh.isRefreshing)
             setViewState(VIEW_LOADING)
         swipeToRefresh.isRefreshing = true
+
+        stickyLoginView.loadContent()
+    }
+
+    fun collapseAppBar() {
+        appBarLayout.post {
+            appBarLayout.setExpanded(false)
+        }
+    }
+
+    fun isNewlyBroadcastSaved(): Boolean? {
+        val args = arguments
+        return args?.containsKey(NEWLY_BROADCAST_CHANNEL_SAVED)?.let {
+            args.getBoolean(NEWLY_BROADCAST_CHANNEL_SAVED)
+        }
+    }
+
+    fun clearIsNewlyBroadcastSaved() {
+        arguments?.remove(NEWLY_BROADCAST_CHANNEL_SAVED)
     }
 
     override fun onFollowerTextClicked(shopFavourited: Boolean) {
@@ -1368,70 +1397,25 @@ class ShopPageFragment :
         }
     }
 
-    private fun updateStickyContent() {
-        shopViewModel.getStickyLoginContent(
-                onSuccess = {
-                    this.tickerDetail = it
-                    updateStickyState()
-                    updateStickyResult()
-                },
-                onError = {
-                    stickyLoginView.hide()
-                }
-        )
-    }
-
     private fun updateFloatingChatButtonMargin() {
-        val stickyLoginViewHeight = stickyLoginView.height.takeIf { stickyLoginView.isShowing() }
-                ?: 0
         val buttonChatLayoutParams = (chatButton.layoutParams as ViewGroup.MarginLayoutParams)
-        buttonChatLayoutParams.setMargins(
-                buttonChatLayoutParams.leftMargin,
-                buttonChatLayoutParams.topMargin,
-                buttonChatLayoutParams.rightMargin,
-                initialFloatingChatButtonMarginBottom + stickyLoginViewHeight
-        )
-        chatButton.layoutParams = buttonChatLayoutParams
-    }
-
-    private fun updateStickyState() {
-        if (this.tickerDetail == null) {
-            stickyLoginView.hide()
-            updateViewPagerPadding()
-            updateFloatingChatButtonMargin()
-            return
-        }
-
-        val userSession = UserSession(context)
-        if (userSession.isLoggedIn) {
-            stickyLoginView.hide()
-            updateViewPagerPadding()
-            updateFloatingChatButtonMargin()
-            return
-        }
-
-        var isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_SHOP, true)
-        if (stickyLoginView.isLoginReminder() && isCanShowing) {
-            stickyLoginView.showLoginReminder(StickyLoginConstant.Page.SHOP)
-            if (stickyLoginView.isShowing()) {
-                stickyLoginView.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.SHOP)
-            }
+        if (stickyLoginView.isShowing()) {
+            val stickyLoginViewHeight = stickyLoginView.height
+            buttonChatLayoutParams.setMargins(
+                    buttonChatLayoutParams.leftMargin,
+                    buttonChatLayoutParams.topMargin,
+                    buttonChatLayoutParams.rightMargin,
+                    stickyLoginViewHeight + MARGIN_BOTTOM_STICKY_LOGIN
+            )
         } else {
-            isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_SHOP, true)
-            if (!isCanShowing) {
-                stickyLoginView.hide()
-                updateViewPagerPadding()
-                updateFloatingChatButtonMargin()
-                return
-            }
-
-            this.tickerDetail?.let { stickyLoginView.setContent(it) }
-            stickyLoginView.show(StickyLoginConstant.Page.SHOP)
-            stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
+            buttonChatLayoutParams.setMargins(
+                    buttonChatLayoutParams.leftMargin,
+                    buttonChatLayoutParams.topMargin,
+                    buttonChatLayoutParams.rightMargin,
+                    initialFloatingChatButtonMarginBottom + MARGIN_BOTTOM_STICKY_LOGIN
+            )
         }
-        updateViewPagerPadding()
-        updateFloatingChatButtonMargin()
-
+        chatButton.layoutParams = buttonChatLayoutParams
     }
 
     private fun updateViewPagerPadding() {
@@ -1462,5 +1446,63 @@ class ShopPageFragment :
             shopPageHeaderDataModel?.shopName = shopViewModel.ownerShopName
             shopPageFragmentHeaderViewHolder.setShopName(shopViewModel.ownerShopName)
         }
+    }
+
+    /**
+     * Play Widget "Start Live Streaming"
+     */
+    override fun onStartLiveStreamingClicked() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+        startActivityForResult(intent, REQUEST_CODE_START_LIVE_STREAMING)
+    }
+
+    private fun handleResultVideoFromLiveStreaming(resultCode: Int, data: Intent) {
+        if (resultCode == Activity.RESULT_OK) {
+            handlePlayBroadcastExtra(data)
+            refreshData()
+        }
+    }
+
+    private fun handlePlayBroadcastExtra(data: Intent) {
+        val isChannelSaved: Boolean = if (data.hasExtra(NEWLY_BROADCAST_CHANNEL_SAVED)) {
+            data.getBooleanExtra(NEWLY_BROADCAST_CHANNEL_SAVED, false)
+        } else return
+
+        if (arguments == null) arguments = Bundle()
+        arguments?.putBoolean(NEWLY_BROADCAST_CHANNEL_SAVED, isChannelSaved)
+
+        if (isChannelSaved) showWidgetTranscodingToaster()
+        else showWidgetDeletedToaster()
+    }
+
+    private fun showWidgetTranscodingToaster() {
+        Toaster.build(
+                view = requireView(),
+                text = getString(R.string.shop_page_play_widget_sgc_save_video),
+                duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_NORMAL
+        ).show()
+    }
+
+    private fun showWidgetDeletedToaster() {
+        Toaster.build(
+                requireView(),
+                getString(R.string.shop_page_play_widget_sgc_video_deleted),
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL
+        ).show()
+    }
+
+    fun isTabSelected(tabFragmentClass: Class<out Any>): Boolean {
+        return if(::viewPagerAdapter.isInitialized){
+            if (viewPagerAdapter.isFragmentObjectExists(tabFragmentClass)) {
+                viewPagerAdapter.getFragmentPosition(tabFragmentClass) == selectedPosition
+            } else {
+                false
+            }
+        }else{
+            false
+        }
+
     }
 }

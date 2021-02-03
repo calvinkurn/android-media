@@ -2,11 +2,11 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
     <item>
         <shape>
-            <solid android:color="#fffbcd">
+            <solid android:color="@color/Unify_Y100">
             </solid>
             <stroke
                 android:width="2dp"
-                android:color="#ecdb77" />
+                android:color="@color/Unify_Y200" />
             <corners
                 android:bottomLeftRadius="1dp"
                 android:bottomRightRadius="1dp"

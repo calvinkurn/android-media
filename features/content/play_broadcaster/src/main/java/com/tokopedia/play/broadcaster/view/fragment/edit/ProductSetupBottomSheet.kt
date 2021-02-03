@@ -188,14 +188,14 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
         destFragment.arguments = extras
         onFragment(destFragment as T)
         fragmentTransaction
-//                .apply {
-//                    sharedElements.forEach {
-//                        val transitionName = it.compatTransitionName
-//                        if (transitionName != null) addSharedElement(it, transitionName)
-//                    }
-//
-//                    if (sharedElements.isNotEmpty()) setReorderingAllowed(true)
-//                }
+                .apply {
+                    sharedElements.forEach {
+                        val transitionName = it.compatTransitionName
+                        if (transitionName != null) addSharedElement(it, transitionName)
+                    }
+
+                    if (sharedElements.isNotEmpty()) setReorderingAllowed(true)
+                }
                 .replace(flFragment.id, destFragment, fragmentClass.name)
                 .addToBackStack(fragmentClass.name)
                 .commit()

@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kategori.R
 import com.tokopedia.kategori.analytics.CategoryAnalytics.Companion.categoryAnalytics
 import com.tokopedia.kategori.view.fragments.CategoryLevelOneFragment
-import com.tokopedia.kategori.model.CategoriesItem
+import com.tokopedia.common_category.data.kategorymodel.CategoriesItem
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.item_category_level_one.view.*
@@ -56,7 +56,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
 
     private fun initShimmerViewHolder(shimmerViewHolder: ShimmerViewHolder, position: Int) {
         if (position == 0) {
-            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, R.color.white))
+            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         } else {
             shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, R.color.category_unselected_background))
         }
@@ -74,7 +74,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
         }
         if (item.isSelected) {
             ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, item.iconImageUrl, R.drawable.square_shimmer)
-            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.white))
+            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         } else {
             ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, item.iconImageUrlGray, R.drawable.square_shimmer)
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.category_background))

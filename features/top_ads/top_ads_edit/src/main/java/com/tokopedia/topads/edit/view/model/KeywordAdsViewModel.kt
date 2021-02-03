@@ -1,16 +1,13 @@
 package com.tokopedia.topads.edit.view.model
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.usecase.SuggestionKeywordUseCase
-import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordItemViewModel
-import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordViewModel
+import com.tokopedia.topads.common.domain.usecase.SuggestionKeywordUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject

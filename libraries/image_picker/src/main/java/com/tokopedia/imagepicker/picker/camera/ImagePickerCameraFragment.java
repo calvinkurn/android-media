@@ -12,10 +12,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresPermission;
-import androidx.core.app.ActivityCompat;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +19,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
+import androidx.core.app.ActivityCompat;
 
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
@@ -33,11 +34,11 @@ import com.otaliastudios.cameraview.controls.Flash;
 import com.otaliastudios.cameraview.controls.Mode;
 import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
-import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.ImageRatioType;
+import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -304,12 +305,14 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
                         imageByte,
                         mCaptureNativeSize.getWidth(),
                         mCaptureNativeSize.getHeight(), bitmap -> {
-                            File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
-                            onSuccessImageTakenFromCamera(cameraResultFile);
+                            if (bitmap!= null) {
+                                File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG);
+                                onSuccessImageTakenFromCamera(cameraResultFile);
+                            }
                         });
             }
         } catch (Throwable error) {
-            File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
+            File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, Bitmap.CompressFormat.JPEG);
             onSuccessImageTakenFromCamera(cameraResultFile);
         }
     }
@@ -320,10 +323,9 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
             initCropPresenter();
             ArrayList<String> list = new ArrayList<>();
             list.add(file.getAbsolutePath());
-            ArrayList<ImageRatioTypeDef> ratioList = new ArrayList<>();
-            ratioList.add(ImageRatioTypeDef.RATIO_1_1);
-            imageRatioCropPresenter.cropBitmapToExpectedRatio(list, ratioList, false,
-                    ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
+            ArrayList<ImageRatioType> ratioList = new ArrayList<>();
+            ratioList.add(ImageRatioType.RATIO_1_1);
+            imageRatioCropPresenter.cropBitmapToExpectedRatio(list, ratioList, false);
         } else {
             onFinishEditAfterTakenFromCamera(file.getAbsolutePath());
         }

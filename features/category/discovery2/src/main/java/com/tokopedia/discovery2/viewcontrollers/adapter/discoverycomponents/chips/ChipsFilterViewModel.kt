@@ -28,7 +28,6 @@ class ChipsFilterViewModel(val application: Application, val components: Compone
         components.data?.let {
             components.setComponentsItem(DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.ChipsFilterItem.componentName, components.name, position))
         }
-        initDaggerInject()
     }
 
     override fun onAttachToViewHolder() {
@@ -38,13 +37,6 @@ class ChipsFilterViewModel(val application: Application, val components: Compone
 
     fun getListDataLiveData(): MutableLiveData<ArrayList<ComponentsItem>> {
         return listData
-    }
-
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
     }
 
     fun onChipSelected(id: String?) {

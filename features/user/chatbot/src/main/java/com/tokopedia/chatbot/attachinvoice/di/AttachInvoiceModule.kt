@@ -9,7 +9,6 @@ import dagger.Provides
 /**
  * Created by Hendri on 05/04/18.
  */
-@AttachInvoiceScope
 @Module
 class AttachInvoiceModule constructor(val context: Context) {
 

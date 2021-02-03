@@ -8,13 +8,13 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.Divider
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel
 
 class ProductMenuAdapterFactoryImpl(
     private val listener: ProductMenuListener
 ) : BaseAdapterTypeFactory(), ProductMenuAdapterFactory {
 
-    override fun type(item: ProductMenuViewModel): Int = ProductMenuViewHolder.LAYOUT
+    override fun type(item: ProductMenuUiModel): Int = ProductMenuViewHolder.LAYOUT
 
     override fun type(item: ProductItemDivider): Int = DividerViewHolder.LAYOUT
 

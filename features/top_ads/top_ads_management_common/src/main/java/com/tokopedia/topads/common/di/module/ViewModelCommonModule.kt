@@ -16,7 +16,6 @@ import dagger.multibindings.IntoMap
 
 
 @Module
-@TopAdsCommonScope
 abstract class ViewModelCommonModule {
 
     @Binds

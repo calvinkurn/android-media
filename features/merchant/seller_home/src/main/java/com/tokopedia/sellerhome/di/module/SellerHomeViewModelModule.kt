@@ -17,7 +17,6 @@ import dagger.multibindings.IntoMap
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-@SellerHomeScope
 @Module(includes = [CentralizedPromoViewModelModule::class])
 abstract class SellerHomeViewModelModule {
 

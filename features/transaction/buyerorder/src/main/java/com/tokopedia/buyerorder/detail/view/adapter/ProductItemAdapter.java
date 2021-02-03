@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -105,11 +106,11 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
             if (items != null && items.getFreeShipping() != null && items.getFreeShipping().isEligible()) {
                 freeShippingImage.setVisibility(View.VISIBLE);
-                ImageHandler.loadImage(context, freeShippingImage, items.getFreeShipping().getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                ImageHandler.loadImage(context, freeShippingImage, items.getFreeShipping().getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
             }
             if (items != null) {
                 if (!TextUtils.isEmpty(items.getImageUrl())) {
-                    ImageHandler.loadImage(context, productImage, items.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                    ImageHandler.loadImage(context, productImage, items.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                 }
                 if (!TextUtils.isEmpty(items.getTitle())) {
                     productName.setText(Html.fromHtml(items.getTitle()));
@@ -154,7 +155,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     } else if (actionButton.getKey().equalsIgnoreCase(BUY_AGAIN_ACTION_BUTTON_KEY)) {
                         List<Items> itemsList = new ArrayList<>();
                         itemsList.add(items);
-                        presenter.onBuyAgainItems(itemsList, " - product", status.status());
+                        presenter.onBuyAgainItems(GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), itemsList, " - product", status.status());
                     }
                 });
             }

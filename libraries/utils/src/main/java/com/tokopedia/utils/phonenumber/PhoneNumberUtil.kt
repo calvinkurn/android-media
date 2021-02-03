@@ -6,7 +6,7 @@ package com.tokopedia.utils.phonenumber
 object PhoneNumberUtil {
     @JvmStatic
     fun transform(phoneRawString: String): String {
-        var phoneRaw = checkStart(phoneRawString)
+        var phoneRaw = replace62with0(phoneRawString)
         phoneRaw = phoneRaw.replace("-", "")
         val phoneNumArr = StringBuilder()
         var index = 0
@@ -23,8 +23,8 @@ object PhoneNumberUtil {
         }
         return phoneNumArr.toString()
     }
-
-    private fun checkStart(phoneRawString: String): String {
+    @JvmStatic
+    fun replace62with0(phoneRawString: String): String {
         var phoneRaw = phoneRawString
         if (phoneRaw.startsWith("62")) {
             phoneRaw = phoneRaw.replaceFirst("62".toRegex(), "0")

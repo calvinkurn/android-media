@@ -1,6 +1,6 @@
 package com.tokopedia.home.explore.data.repository;
 
-import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.ExploreSectionDataModel;
 
 import java.util.List;
 
@@ -12,6 +12,6 @@ import rx.Observable;
 
 public interface ExploreRepository {
 
-    Observable<List<ExploreSectionViewModel>> getExploreData(String userId);
+    Observable<List<ExploreSectionDataModel>> getExploreData(String userId);
 
 }

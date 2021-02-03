@@ -13,6 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -33,6 +34,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         multiBannerViewModel = discoveryBaseViewModel as MultiBannerViewModel
+        getSubComponent().inject(multiBannerViewModel)
         multiBannerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { item ->
 
             if (!item.data.isNullOrEmpty()) {

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerSawChatListLoading"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/saw_shape_rectangle_white_radius_16dp"
+    android:visibility="visible">
+
+    <RelativeLayout
+        android:id="@+id/shimmerSawLoading1"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/saw_dimen_12dp"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@drawable/saw_shape_oval_shimmer" />
+
+    <RelativeLayout
+        android:layout_width="@dimen/saw_dimen_148dp"
+        android:layout_height="@dimen/saw_dimen_10dp"
+        android:layout_alignTop="@+id/shimmerSawLoading1"
+        android:layout_marginStart="@dimen/saw_dimen_10dp"
+        android:layout_toEndOf="@+id/shimmerSawLoading1"
+        android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+    <RelativeLayout
+        android:id="@+id/shimmerSawLoading3"
+        android:layout_width="@dimen/saw_dimen_98dp"
+        android:layout_height="@dimen/saw_dimen_10dp"
+        android:layout_alignBottom="@+id/shimmerSawLoading1"
+        android:layout_marginStart="@dimen/saw_dimen_10dp"
+        android:layout_toEndOf="@+id/shimmerSawLoading1"
+        android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+    <RelativeLayout
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_alignTop="@+id/shimmerSawLoading1"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/saw_dimen_12dp"
+        android:background="@drawable/saw_shape_oval_shimmer" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/shimmerSawLoading3"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/shimmerSawLoadingItem1"
+            layout="@layout/saw_app_widget_chat_item_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2" />
+
+        <include
+            android:id="@+id/shimmerSawLoadingItem2"
+            layout="@layout/saw_app_widget_chat_item_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
+            android:id="@+id/shimmerSawLoadingItem3"
+            layout="@layout/saw_app_widget_chat_item_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
+            android:id="@+id/shimmerSawLoadingItem4"
+            layout="@layout/saw_app_widget_chat_item_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
+            android:id="@+id/shimmerSawLoadingItem5"
+            layout="@layout/saw_app_widget_chat_item_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <include
+            android:id="@+id/shimmerSawLoadingItem6"
+            layout="@layout/saw_app_widget_chat_item_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <include
+            android:id="@+id/shimmerSawLoadingItem7"
+            layout="@layout/saw_app_widget_chat_item_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <include
+            android:id="@+id/shimmerSawLoadingItem8"
+            layout="@layout/saw_app_widget_chat_item_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </LinearLayout>
+</RelativeLayout>

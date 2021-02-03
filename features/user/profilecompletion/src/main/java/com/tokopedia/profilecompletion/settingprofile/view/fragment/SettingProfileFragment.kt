@@ -17,8 +17,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
@@ -118,28 +119,28 @@ class SettingProfileFragment : BaseDaggerFragment() {
         dialog.setTitle(getString(R.string.add_and_verify_phone))
         dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
         dialog.setOk(getString(R.string.title_verify_phone))
-        dialog.setOkOnClickListner(View.OnClickListener { goToVerifyPhone() })
+        dialog.setOkOnClickListner(View.OnClickListener { goToAddPhone() })
         dialog.setSecondary(getString(R.string.label_cancel))
         dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
         dialog.show()
     }
 
     private fun initObserver() {
-        profileInfoViewModel.userProfileInfo.observe(this, Observer {
+        profileInfoViewModel.userProfileInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetUserProfileInfo(it.data)
                 is Fail -> onErrorGetProfileInfo(it.throwable)
             }
         })
 
-        profileInfoViewModel.uploadProfilePictureResponse.observe(this, Observer {
+        profileInfoViewModel.uploadProfilePictureResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessUploadProfilePicture(it.data)
                 is Fail -> onErrorUploadProfilePicture(it.throwable)
             }
         })
 
-        profileRoleViewModel.userProfileRole.observe(this, Observer {
+        profileRoleViewModel.userProfileRole.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetProfileRole(it.data)
                 is Fail -> onErrorGetProfileRole(it.throwable)
@@ -291,8 +292,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun onSuccessGetProfilePhoto(data: Intent?) {
         if (data != null) {
-            val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-            if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
+            val imageUrlOrPathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+            if (imageUrlOrPathList.size > 0) {
                 val savedLocalImageUrl = imageUrlOrPathList[0]
                 val file = File(savedLocalImageUrl)
 
@@ -439,7 +440,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                         if (profileCompletionData.isMsisdnVerified) {
                             goToChangePhone(profileCompletionData.msisdn, profileCompletionData.email)
                         } else {
-                            goToVerifyPhone()
+                            goToAddPhoneBy(PhoneNumberUtil.replace62with0(profileCompletionData.msisdn))
                         }
                     }
             )
@@ -453,7 +454,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 )
                 tickerPhoneVerification.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        goToVerifyPhone()
+                        goToAddPhoneBy(PhoneNumberUtil.replace62with0(profileCompletionData.msisdn))
                     }
 
                     override fun onDismiss() {
@@ -499,9 +500,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
-    private fun goToVerifyPhone() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.SETTING_PROFILE_PHONE_VERIFICATION)
-        startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
+    private fun goToAddPhoneBy(phone: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE_WITH, phone)
+        startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
     private fun goToChangePhone(phone: String, email: String) {
@@ -545,11 +546,12 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     inner class EditUserProfilePhotoListener : View.OnClickListener {
         override fun onClick(v: View?) {
-            val MAX_SIZE = 2048
-            val builder = ImagePickerBuilder.getDefaultBuilder(context)
-            builder.maxFileSizeInKB = 2048
-            builder.imagePickerMultipleSelectionBuilder = null
-            val intent = ImagePickerActivity.getIntent(context, builder)
+            val ctx = context ?: return
+            val builder = ImagePickerBuilder.getSquareImageBuilder(ctx).apply {
+                maxFileSizeInKB = 2048
+            }
+            val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE_PHOTO)
         }
     }

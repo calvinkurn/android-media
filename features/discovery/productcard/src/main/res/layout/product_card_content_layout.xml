@@ -65,6 +65,19 @@
         tools:text="Product Name"
         tools:visibility="visible" />
 
+    <LinearLayout
+        android:id="@+id/labelVariantContainer"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/product_card_label_variant_height"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/product_card_label_variant_margin_top"
+        app:layout_constraintTop_toBottomOf="@id/textViewProductName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelDiscount"
         android:layout_width="wrap_content"
@@ -74,7 +87,7 @@
         android:visibility="gone"
         app:labelType="general_light_red"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewProductName"
+        app:layout_constraintTop_toBottomOf="@id/labelVariantContainer"
         tools:text="20%"
         tools:visibility="visible" />
 
@@ -91,7 +104,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/labelDiscount"
-        app:layout_constraintTop_toBottomOf="@id/textViewProductName"
+        app:layout_constraintTop_toBottomOf="@id/labelVariantContainer"
         app:layout_goneMarginLeft="@dimen/dp_0"
         app:typographyType="small"
         tools:text="Rp8.499.000"
@@ -108,14 +121,6 @@
         app:layout_constraintTop_toBottomOf="@id/textViewSlashedPrice"
         tools:visibility="visible"
         tools:text="Cashback" />
-
-<!--    Keep commented for now    -->
-<!--    <androidx.constraintlayout.widget.Barrier-->
-<!--        android:id="@+id/barrierPromo"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:barrierDirection="bottom"-->
-<!--        app:constraint_referenced_ids="textViewSlashedPrice,labelDiscount,labelPrice" />-->
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewPrice"

@@ -25,7 +25,7 @@ class FlightPriceEditText @JvmOverloads constructor(
         super.onDraw(canvas)
 
         val mPaint = Paint()
-        mPaint.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
+        mPaint.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
         mPaint.typeface = com.tokopedia.unifyprinciples.getTypeface(context, "NunitoSansExtraBold.ttf")
         mPaint.textSize = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3).toFloat()
 

@@ -42,9 +42,7 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    init {
-        initDaggerInject()
-    }
+
 
     fun getComponentData(): LiveData<DataItem> {
         val status = getClaimStatus(components.data?.getOrElse(0) { DataItem() })
@@ -61,12 +59,6 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
         return couponCode
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()

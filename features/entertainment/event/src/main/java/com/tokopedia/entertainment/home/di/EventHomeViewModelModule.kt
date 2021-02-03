@@ -11,7 +11,6 @@ import dagger.multibindings.IntoMap
  * Author errysuprayogi on 06,February,2020
  */
 
-@EventHomeScope
 @Module
 abstract class EventHomeViewModelModule {
 

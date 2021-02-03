@@ -10,7 +10,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.graphql.CommonUtils
-import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.const.Unify.Unify_N700_68
+import com.tokopedia.settingnotif.usersetting.const.Unify.Unify_N700_96
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
@@ -92,8 +93,8 @@ fun Context?.inflateView(@LayoutRes layoutId: Int): View {
  * switch any view colors with grey if component is disabled,
  * and switch the color back if component is enabled
  */
-fun componentTextColor(state: Boolean): Int {
-    return if (state) R.color.charcoal_grey_96 else R.color.grey_600
+fun componentTextColor(isEnabled: Boolean): Int {
+    return if (isEnabled) Unify_N700_96 else Unify_N700_68
 }
 
 

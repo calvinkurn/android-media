@@ -12,6 +12,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import org.junit.Before
@@ -189,6 +190,24 @@ class FlightCancellationReviewViewModelTest {
         // then
         assert(viewmodel.requestCancel.value is Success)
         (viewmodel.requestCancel.value as Success).data shouldBe true
+    }
+
+    @Test
+    fun trackOnSubmit() {
+        // given
+        viewmodel.cancellationWrapperModel = DUMMY_CANCELLATION_WRAPPER
+        coEvery { userSession.userId } returns "0987654321"
+
+        // when
+        viewmodel.trackOnSubmit()
+
+        // then
+        coVerify {
+            flightAnalytics.eventClickNextOnCancellationSubmit(
+                    "0 - 1234567890",
+                    "0987654321"
+            )
+        }
     }
 
 }

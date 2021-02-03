@@ -71,6 +71,14 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                     formatted
                   }
                 }
+                share {
+                  text
+                  redirect_url
+                  use_short_url
+                  meta_title
+                  meta_description
+                  is_show_button
+                }
               }
               __typename ... on PlayWidgetBanner {
                 backgroundURL
@@ -84,7 +92,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
               widgetTitle
               buttonText
               widgetBackground
-            autoplayAmount
+              autoplayAmount
               autoplay
               buttonApplink
               buttonWeblink
@@ -96,6 +104,8 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
               maxAutoplayCell
               maxAutoplayWifi
               template
+              isButtonVisible
+              businessWidgetPosition
             }
           }
         }
@@ -150,6 +160,16 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
             override val authorType: String
                 get() = ""
+        }
+        data class SellerApp(val shopId: String) : WidgetType() {
+            override val typeKey: String
+                get() = "SELLER_APP"
+
+            override val authorId: String
+                get() = shopId
+
+            override val authorType: String
+                get() = "shop"
         }
     }
 }

@@ -6,12 +6,12 @@
     android:orientation="horizontal"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_location_event_gradient"
-    android:paddingTop="16dp"
-    android:paddingStart="16dp"
-    android:paddingLeft="16dp"
-    android:paddingBottom="16dp"
-    android:paddingEnd="16dp"
-    android:paddingRight="16dp">
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl4">
 
     <ImageView
         android:id="@+id/imgToped"
@@ -24,11 +24,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtFirstTimeFirstHeading"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:text="@string/ent_search_search_first_time_first_heading"
-        android:textColor="#31353b"
-        android:layout_marginLeft="10dp"
+        android:textColor="@color/Unify_N700"
+        android:layout_marginLeft="@dimen/dimen_dp_10"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         app:layout_constraintStart_toEndOf="@id/imgToped"
@@ -37,9 +37,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtFirstTimeSecondHeading"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginLeft="10dp"
         android:text="@string/ent_search_search_first_time_second_heading"
         app:typographyType="body_3"

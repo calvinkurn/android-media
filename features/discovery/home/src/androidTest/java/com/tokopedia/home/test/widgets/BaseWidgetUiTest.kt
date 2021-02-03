@@ -46,6 +46,7 @@ abstract class BaseWidgetUiTest{
     open val declineRechargeRecommendationUseCase = mockk<Lazy<DeclineRechargeRecommendationUseCase>>(relaxed = true)
     open val getSalamWIdgetUseCase = mockk<Lazy<GetSalamWidgetUseCase>>(relaxed = true)
     open val declineSalamWIdgetUseCase = mockk<Lazy<DeclineSalamWIdgetUseCase>>(relaxed = true)
+    open val getRechargeBUWidgetUseCase = mockk<Lazy<GetRechargeBUWidgetUseCase>>(relaxed = true)
     open val closeChannelUseCase = mockk<Lazy<CloseChannelUseCase>>(relaxed = true)
     open val topAdsImageViewUseCase = mockk<Lazy<TopAdsImageViewUseCase>>(relaxed = true)
     open val injectCouponTimeBasedUseCase = mockk<Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
@@ -68,7 +69,6 @@ abstract class BaseWidgetUiTest{
             getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
             getBusinessWidgetTab = getBusinessWidgetTab,
             getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
-            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getKeywordSearchUseCase = getKeywordSearchUseCase,
             getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
             getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
@@ -86,6 +86,7 @@ abstract class BaseWidgetUiTest{
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
             getSalamWidgetUseCase = getSalamWIdgetUseCase,
             declineSalamWidgetUseCase = declineSalamWIdgetUseCase,
+            getRechargeBUWidgetUseCase = getRechargeBUWidgetUseCase,
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase,
             topAdsImageViewUseCase = topAdsImageViewUseCase,
             getDisplayHeadlineAds = getDisplayHeadlineAds,
@@ -93,6 +94,7 @@ abstract class BaseWidgetUiTest{
             playWidgetTools = playWidgetTools,
             getRecommendationUseCase = getRecommendationUseCase,
             getRecommendationFilterChips = getRecommendationFilterChips,
+            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
             bestSellerMapper = bestSellerMapper
     )

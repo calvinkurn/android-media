@@ -44,7 +44,7 @@ class TickerReadMoreEtalaseViewHolder(
         val spannableText = SpannableString(readMoreText)
         val startIndex = 0
         val endIndex = spannableText.length
-        val color = itemView.resources.getColor(R.color.merchant_green)
+        val color = itemView.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
         spannableText.setSpan(color, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(p0: View) {

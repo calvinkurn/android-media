@@ -46,7 +46,7 @@ class SomListGetOrderListUseCase @Inject constructor(
 
     companion object {
         val QUERY = """
-            query OrderList(${'$'}input: OrderListArgs!) {
+            query GetOrderList(${'$'}input: OrderListArgs!) {
               orderList(input: ${'$'}input) {
                 cursor_order_id
                 list {
@@ -65,6 +65,8 @@ class SomListGetOrderListUseCase @Inject constructor(
                   destination_province
                   courier_name
                   courier_product_name
+                  preorder_type
+                  buyer_name
                   order_product {
                     product_id
                     product_name

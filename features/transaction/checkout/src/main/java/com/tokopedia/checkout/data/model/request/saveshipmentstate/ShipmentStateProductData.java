@@ -11,7 +11,7 @@ public class ShipmentStateProductData {
 
     @SerializedName("product_id")
     @Expose
-    private int productId;
+    private long productId;
     @SerializedName("product_preorder")
     @Expose
     private ShipmentStateProductPreorder productPreorder;
@@ -22,13 +22,13 @@ public class ShipmentStateProductData {
     }
 
     public static final class Builder {
-        private int productId;
+        private long productId;
         private ShipmentStateProductPreorder productPreorder;
 
         public Builder() {
         }
 
-        public Builder productId(int productId) {
+        public Builder productId(long productId) {
             this.productId = productId;
             return this;
         }

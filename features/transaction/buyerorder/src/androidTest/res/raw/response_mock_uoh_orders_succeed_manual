@@ -1790,6 +1790,58 @@
           "Tidak Berhasil",
           "E-tiket \u0026 E-voucher Aktif"
         ],
+        "filtersV2": [
+            {
+              "label": "Semua Status Transaksi",
+              "value": "",
+              "isPrimary": true
+            },
+            {
+              "label": "Transaksi Berlangsung",
+              "value": "Dalam Proses",
+              "isPrimary": true
+            },
+            {
+              "label": "Menunggu Konfirmasi",
+              "value": "menunggu_konfirmasi",
+              "isPrimary": false
+            },
+            {
+              "label": "Diproses",
+              "value": "diproses",
+              "isPrimary": false
+            },
+            {
+              "label": "Dikirim",
+              "value": "dikirim",
+              "isPrimary": false
+            },
+            {
+              "label": "Tiba di Tujuan",
+              "value": "tiba_di_tujuan",
+              "isPrimary": false
+            },
+            {
+              "label": "Dikomplain",
+              "value": "dikomplain",
+              "isPrimary": false
+            },
+            {
+              "label": "Berhasil",
+              "value": "Berhasil",
+              "isPrimary": true
+            },
+            {
+              "label": "Tidak Berhasil",
+              "value": "Tidak Berhasil",
+              "isPrimary": true
+            },
+            {
+              "label": "E-tiket & E-voucher Aktif",
+              "value": "E-tiket & E-voucher Aktif",
+              "isPrimary": true
+            }
+          ],
         "categories": [
           {
             "value": "marketplace",

@@ -20,7 +20,7 @@ data class OvoInsufficientBalance(
 
 @Parcelize
 data class OvoInsufficientDetails(
-        var productPrice: Int = 0,
+        var productPrice: Long = 0,
         var shippingEstimation: Int = 0,
         var ovoBalance: Int = 0,
         var topupBalance: Int = 0

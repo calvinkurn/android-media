@@ -164,6 +164,19 @@
               },
               "cart_string": "480176-0-2034-4678943",
               "payment_profile": "TKPDPAY",
+              "purchase_protection_plan_data": {
+                "protection_available": false,
+                "protection_type_id": 0,
+                "protection_price_per_product": 0,
+                "protection_price": 0,
+                "protection_title": "",
+                "protection_subtitle": "",
+                "protection_link_text": "",
+                "protection_link_url": "",
+                "protection_opt_in": false,
+                "protection_checkbox_disabled": false,
+                "unit": ""
+              },
               "shop": {
                 "shop_id": 480176,
                 "user_id": 5513284,

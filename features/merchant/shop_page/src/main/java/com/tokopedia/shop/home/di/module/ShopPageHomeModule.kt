@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
@@ -40,7 +41,6 @@ import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Named
 
-@ShopPageHomeScope
 @Module(includes = [ShopPageHomeViewModelModule::class, PlayWidgetModule::class])
 class ShopPageHomeModule {
 
@@ -371,8 +371,9 @@ class ShopPageHomeModule {
     @Provides
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
                           playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+                          playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
                           mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
-        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, mapperProviders)
+        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, playWidgetUpdateChannelUseCase, mapperProviders)
     }
 
 

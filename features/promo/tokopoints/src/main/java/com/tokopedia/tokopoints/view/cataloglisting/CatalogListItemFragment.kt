@@ -115,8 +115,14 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
     private fun addCatalogListObserver() = viewModel.listCatalogItem.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it.let {
-            hideLoader()
-            populateCatalog(it)
+            when (it) {
+                is Loading -> showLoader()
+                is ErrorMessage -> showError()
+                is Success -> {
+                    hideLoader()
+                    populateCatalog(it.data)
+                }
+            }
         }
     })
 

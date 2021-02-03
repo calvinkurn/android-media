@@ -7,11 +7,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.product.detail.common.data.model.product.Video
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
+import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
@@ -22,10 +20,17 @@ interface DynamicProductDetailListener {
     fun isNavOld(): Boolean
 
     /**
+     * ProductMediaViewHolder
+     */
+    fun onVideoFullScreenClicked()
+    fun onVideoVolumeCLicked(isMute: Boolean)
+    fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
+    fun getProductVideoCoordinator(): ProductVideoCoordinator?
+    /**
      * ProductSnapshotViewHolder
      */
     fun onImageClicked(position: Int)
-    fun onImageClickedTrack(componentTrackDataModel: ComponentTrackDataModel?)
+    fun onMainImageClicked(componentTrackDataModel: ComponentTrackDataModel?, position: Int)
     fun onFabWishlistClicked(isActive: Boolean, componentTrackDataModel: ComponentTrackDataModel)
     fun getProductFragmentManager(): FragmentManager
     fun showAlertCampaignEnded()
@@ -37,7 +42,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductInfoViewHolder
      */
-    fun gotoVideoPlayer(videos: List<Video>, index: Int)
+    fun gotoVideoPlayer(youtubeVideos: List<YoutubeVideo>, index: Int)
     fun gotoDescriptionTab(descriptionText: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onCategoryClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
@@ -50,7 +55,7 @@ interface DynamicProductDetailListener {
      */
     fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?)
     fun onDiscussionRefreshClicked()
-    fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel)
+    fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel?)
     fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
     fun goToTalkReply(questionId: String, componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
 
@@ -106,7 +111,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductDefaultErrorViewHolder
      */
-    fun onRetryClicked(forceRefresh:Boolean)
+    fun onRetryClicked(forceRefresh: Boolean)
     fun goToHomePageClicked()
     fun goToWebView(url: String)
 
@@ -137,6 +142,11 @@ interface DynamicProductDetailListener {
      */
     fun onTopAdsImageViewClicked(model: TopAdsImageDataModel, applink: String?, bannerId: String, bannerName: String)
     fun onTopAdsImageViewImpression(model: TopAdsImageDataModel, bannerId: String, bannerName: String)
+
+    /**
+     * ProductDetailInfoViewHolder
+     */
+    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>)
 
     /**
      * ProductReportViewHolder

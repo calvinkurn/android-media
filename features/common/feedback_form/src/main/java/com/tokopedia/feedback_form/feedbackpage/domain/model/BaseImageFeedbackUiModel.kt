@@ -1,0 +1,3 @@
+package com.tokopedia.feedback_form.feedbackpage.domain.model
+
+interface BaseImageFeedbackUiModel

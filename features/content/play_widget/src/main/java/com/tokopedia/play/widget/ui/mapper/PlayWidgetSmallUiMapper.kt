@@ -14,11 +14,11 @@ class PlayWidgetSmallUiMapper @Inject constructor(
         private val videoMapper: PlayWidgetVideoMapper
 ) : PlayWidgetMapper {
 
-    override fun mapWidget(data: PlayWidget): PlayWidgetUiModel = PlayWidgetUiModel.Small(
+    override fun mapWidget(data: PlayWidget, prevModel: PlayWidgetUiModel?): PlayWidgetUiModel = PlayWidgetUiModel.Small(
             title = data.meta.widgetTitle,
             actionTitle = data.meta.buttonText,
             actionAppLink = data.meta.buttonApplink,
-            actionWebLink = data.meta.overlayImageWebLink,
+            isActionVisible = data.meta.isButtonVisible,
             config = configMapper.mapWidgetConfig(data),
             items = mapWidgetItem(data.data),
             useHeader = true

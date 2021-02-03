@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ticker"
-    android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp_16">
@@ -14,13 +13,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/dp_6"
-        android:textColor="@color/charcoal_grey_68"
+        android:textColor="@color/Unify_N700_68"
         android:layout_marginEnd="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnActivation"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_1"
+        app:typographyType="body_2"
         android:maxLines="3"
         app:typographyWeight="reguler"
         tools:text="@string/lorem" />

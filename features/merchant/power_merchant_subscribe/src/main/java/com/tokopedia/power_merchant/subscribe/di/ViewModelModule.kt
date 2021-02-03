@@ -12,7 +12,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@PowerMerchantSubscribeScope
 abstract class ViewModelModule {
 
     @PowerMerchantSubscribeScope

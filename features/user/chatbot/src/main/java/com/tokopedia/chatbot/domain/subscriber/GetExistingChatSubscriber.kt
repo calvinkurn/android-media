@@ -4,13 +4,15 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.util.handleError
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
-import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_OPTIONS
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import rx.Subscriber
 
 /**
@@ -31,17 +33,17 @@ class GetExistingChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
         return {
             val pojo = graphqlResponse.getData<GetExistingChatPojo>(GetExistingChatPojo::class.java)
             val mappedPojo = mapper.map(pojo)
-            val ids = getChatCaseIds(mappedPojo)
-            if (ids.isNotEmpty()) {
-                getChatRatingList(ids, mappedPojo)
+            val inputList = getChatRatingData(mappedPojo)
+            if (!inputList.list.isNullOrEmpty()) {
+                getChatRatingList(inputList, mappedPojo)
             } else {
                 onSuccessGetChat(mappedPojo)
             }
         }
     }
 
-    private fun getChatRatingList(ids: String, mappedPojo: ChatroomViewModel) {
-        val input = ChipGetChatRatingListInput().apply { caseChatIDs = ids }
+    private fun getChatRatingList(inputList: ChipGetChatRatingListInput, mappedPojo: ChatroomViewModel) {
+        val input = inputList
         chipGetChatRatingListUseCase.execute(chipGetChatRatingListUseCase.generateParam(input),
                 ChipGetChatRatingListSubscriber(onGetChatRatingListError, onChatRatingListSuccess(mappedPojo)))
     }
@@ -55,23 +57,24 @@ class GetExistingChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
         if (ratings?.ratingListData?.isSuccess == 1) {
             for (rate in ratings.ratingListData.list ?: listOf()) {
                 val rateListMsgs = mappedPojo.listChat.filter { msg ->
-                    when (msg) {
-                        is HelpFullQuestionsViewModel -> (msg.helpfulQuestion?.caseChatId == rate.caseChatID)
-                        is CsatOptionsViewModel -> (msg.csat?.caseChatId == rate.caseChatID)
+                    when {
+                        msg is HelpFullQuestionsViewModel && rate.attachmentType == TYPE_OPTION_LIST.toIntOrZero()
+                        -> (msg.helpfulQuestion?.caseChatId == rate.caseChatID)
+                        msg is CsatOptionsViewModel && rate.attachmentType == TYPE_CSAT_OPTIONS.toIntOrZero()
+                        -> (msg.csat?.caseChatId == rate.caseChatID)
                         else -> false
                     }
                 }
                 rateListMsgs.forEach {
                     if (it is HelpFullQuestionsViewModel) {
-                        it.isSubmited = rate.isSubmitted ?: false
+                        it.isSubmited = rate.isSubmitted ?: true
                     }else if (it is CsatOptionsViewModel){
-                        it.isSubmited = rate.isSubmitted ?: false
+                        it.isSubmited = rate.isSubmitted ?: true
                     }
                 }
 
             }
         } else if (!ratings?.messageError.isNullOrEmpty()) {
-            print(ratings?.messageError?.get(0))
             onGetChatRatingListMessageError(ratings?.messageError?.get(0) ?: "")
         }
 
@@ -81,24 +84,16 @@ class GetExistingChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
         it.printStackTrace()
     }
 
-    private fun getChatCaseIds(mappedPojo: ChatroomViewModel): String {
-        var chatCaseIds = ""
+    private fun getChatRatingData(mappedPojo: ChatroomViewModel): ChipGetChatRatingListInput {
+        val input = ChipGetChatRatingListInput()
         for (message in mappedPojo.listChat) {
             if (message is HelpFullQuestionsViewModel) {
-                if (chatCaseIds.isEmpty()) {
-                    chatCaseIds = message.helpfulQuestion?.caseChatId ?: ""
-                } else {
-                    chatCaseIds = chatCaseIds + "," + message.helpfulQuestion?.caseChatId
-                }
+                input.list.add(ChipGetChatRatingListInput.ChatRating(TYPE_OPTION_LIST.toIntOrZero(),message.helpfulQuestion?.caseChatId ?: "" ))
             }else if (message is CsatOptionsViewModel) {
-                if (chatCaseIds.isEmpty()) {
-                    chatCaseIds = message.csat?.caseChatId?:""
-                } else {
-                    chatCaseIds = chatCaseIds + "," + message.csat?.caseChatId
-                }
+                input.list.add(ChipGetChatRatingListInput.ChatRating(TYPE_CSAT_OPTIONS.toIntOrZero(),message.csat?.caseChatId ?: "" ))
             }
         }
-        return chatCaseIds
+        return input
     }
 
     override fun onCompleted() {

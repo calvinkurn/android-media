@@ -15,26 +15,21 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrder
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
 import com.tokopedia.sellerorder.util.observeAwaitValue
-import com.tokopedia.shop.common.constant.AccessId
-import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.shop.common.constant.AdminPermissionGroup
+import com.tokopedia.shop.common.domain.interactor.AdminPermissionUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.Ordering
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
+import java.lang.reflect.Field
 
 class SomListViewModelTest {
     @get:Rule
@@ -80,11 +75,13 @@ class SomListViewModelTest {
     lateinit var bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase
 
     @RelaxedMockK
-    lateinit var authorizeAccessUseCase: AuthorizeAccessUseCase
+    lateinit var adminPermissionUseCase: AdminPermissionUseCase
 
     private val dispatcher: SomDispatcherProvider = SomTestDispatcherProvider()
 
     private lateinit var viewModel: SomListViewModel
+
+    private lateinit var somGetOrderListJobField: Field
 
     @Before
     fun setUp() {
@@ -93,7 +90,11 @@ class SomListViewModelTest {
                 somRejectOrderUseCase, somRejectCancelOrderRequest, somEditRefNumUseCase, userSession,
                 dispatcher, somListGetTickerUseCase, somListGetFilterListUseCase, somListGetWaitingPaymentUseCase,
                 somListGetOrderListUseCase, somListGetTopAdsCategoryUseCase, bulkAcceptOrderStatusUseCase,
-                bulkAcceptOrderUseCase, authorizeAccessUseCase)
+                bulkAcceptOrderUseCase, adminPermissionUseCase)
+
+        somGetOrderListJobField = viewModel::class.java.getDeclaredField("getOrderListJob").apply {
+            isAccessible = true
+        }
     }
 
     private fun doGetTopAdsCategory_shouldSuccess(result: Int = 1) {
@@ -116,8 +117,8 @@ class SomListViewModelTest {
             startDate = "12/12/2014"
             endDate = "12/12/2017"
             statusList = listOf(220, 400, 500)
-            shippingList = listOf(12)
-            orderTypeList = listOf(12)
+            shippingList = mutableSetOf(12)
+            orderTypeList = mutableSetOf(12)
             sortBy = SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING
             nextOrderId = 123456
         }
@@ -534,13 +535,32 @@ class SomListViewModelTest {
             somListGetOrderListUseCase.execute()
         } returns (0 to listOf())
 
+        somGetOrderListJobField.set(viewModel, null)
         viewModel.getOrderList()
 
         coVerify {
             somListGetOrderListUseCase.execute()
         }
 
-        assert(viewModel.orderListResult.observeAwaitValue() is Success)
+        assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage())
+    }
+
+    @Test
+    fun getOrderList_shouldCancelOldJobAndSuccess() {
+        val getOrderListJob = mockk<Job>(relaxed = true)
+        coEvery {
+            somListGetOrderListUseCase.execute()
+        } returns (0 to listOf())
+
+        somGetOrderListJobField.set(viewModel, getOrderListJob)
+        viewModel.getOrderList()
+
+        coVerify {
+            somListGetOrderListUseCase.execute()
+            getOrderListJob.cancel()
+        }
+
+        assert(viewModel.orderListResult.observeAwaitValue() is Success && !viewModel.hasNextPage())
     }
 
     @Test
@@ -658,17 +678,42 @@ class SomListViewModelTest {
     }
 
     @Test
-    fun getUserRoles_shouldSkippedWhenAlreadyRunning() = runBlocking {
-        viewModel::class.java.superclass!!.getDeclaredField("getUserRolesJob").apply {
-            isAccessible = true
-        }.set(viewModel, launch { delay(10000) })
+    fun loadUserRoles_shouldNeverSendRequestWhenAnotherLoadUserRolesRequestIsOnProgress() = runBlocking {
+        val getUserRolesJob = mockk<Job>()
 
+        every {
+            getUserRolesJob.isCompleted
+        } returns false
+
+        viewModel.setUserRolesJob(getUserRolesJob)
         viewModel.getUserRoles()
 
-        coVerify(inverse = true) { getUserRoleUseCase.execute() }
+        coVerify(inverse = true) {
+            getUserRoleUseCase.execute()
+        }
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-        return@runBlocking
+        assert(viewModel.userRoleResult.observeAwaitValue() == null)
+    }
+
+    @Test
+    fun loadUserRoles_shouldSuccessWhenAnotherLoadUserRolesRequestIsCompleted() = runBlocking {
+        val getUserRolesJob = mockk<Job>()
+        coEvery {
+            getUserRoleUseCase.execute()
+        } returns Success(SomGetUserRoleUiModel())
+
+        every {
+            getUserRolesJob.isCompleted
+        } returns true
+
+        viewModel.setUserRolesJob(getUserRolesJob)
+        viewModel.getUserRoles()
+
+        coVerify {
+            getUserRoleUseCase.execute()
+        }
+
+        assert(viewModel.userRoleResult.observeAwaitValue() is Success)
     }
 
     @Test
@@ -682,11 +727,8 @@ class SomListViewModelTest {
     @Test
     fun getAdminPermission_shouldSuccess() {
         coEvery {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
         } returns true
-        coEvery {
-            userSession.isShopOwner
-        } returns false
         coEvery {
             userSession.isShopAdmin
         } returns true
@@ -694,68 +736,32 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
         }
 
-        assert(viewModel.isOrderManageEligible.observeAwaitValue() is Success)
+        assert(viewModel.isAdminEligible.observeAwaitValue() is Success)
     }
 
     @Test
     fun getAdminPermission_shouldFail() {
         coEvery {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
         } throws Throwable()
         coEvery {
-            userSession.isShopOwner
-        } returns false
-        coEvery {
             userSession.isShopAdmin
         } returns true
 
         viewModel.getAdminPermission()
 
         coVerify {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
         }
 
-        assert(viewModel.isOrderManageEligible.observeAwaitValue() is Fail)
+        assert(viewModel.isAdminEligible.observeAwaitValue() is Fail)
     }
 
     @Test
-    fun getAdminPermission_whenIsShopOwner_shouldNotRunAndUserShouldEligible() {
-        coEvery {
-            userSession.isShopOwner
-        } returns true
-
-        viewModel.getAdminPermission()
-
-        coVerify(exactly = 0) {
-            adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
-        }
-        assert((viewModel.isAdminEligible.value as? Success)?.data == true)
-    }
-
-    @Test
-    fun getAdminPermission_whenIsNotShopOwnerButIsShopAdmin_shouldRun() {
-        coEvery {
-            userSession.isShopOwner
-        } returns false
-        coEvery {
-            userSession.isShopAdmin
-        } returns true
-
-        viewModel.getAdminPermission()
-
-        coVerify {
-            adminPermissionUseCase.execute(AdminPermissionGroup.ORDER)
-        }
-    }
-
-    @Test
-    fun getAdminPermission_whenIsNotShopOwnerOrAdmin_shouldNotRunAndShouldNotEligible() {
-        coEvery {
-            userSession.isShopOwner
-        } returns false
+    fun getAdminPermission_whenIsNotShopAdmin_shouldNotRun() {
         coEvery {
             userSession.isShopAdmin
         } returns false
@@ -763,14 +769,20 @@ class SomListViewModelTest {
         viewModel.getAdminPermission()
 
         coVerify(exactly = 0) {
-            authorizeAccessUseCase.execute(anyInt(), AccessId.SOM_LIST)
+            adminPermissionUseCase.execute(any(), AdminPermissionGroup.ORDER)
         }
-        assert((viewModel.isAdminEligible.value as? Success)?.data == false)
     }
 
     @Test
     fun isTopAdsActive_shouldReturnFalseWhenSuccess() {
-        doGetTopAdsCategory_shouldSuccess(0)
+        doGetTopAdsCategory_shouldSuccess()
+
+        assert(!viewModel.isTopAdsActive())
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnFalse() {
+        doGetTopAdsCategory_shouldSuccess(2)
 
         assert(!viewModel.isTopAdsActive())
     }
@@ -783,10 +795,22 @@ class SomListViewModelTest {
     }
 
     @Test
-    fun isTopAdsActive_shouldReturnTrue() {
-        getTopAdsCategory_shouldSuccess()
-
+    fun isTopAdsActive_shouldReturnFalseWhenValueIsNull() {
         assert(!viewModel.isTopAdsActive())
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnTrueWhenUsingManualAds() {
+        doGetTopAdsCategory_shouldSuccess(3)
+
+        assert(viewModel.isTopAdsActive())
+    }
+
+    @Test
+    fun isTopAdsActive_shouldReturnTrueWhenUsingAutoAds() {
+        doGetTopAdsCategory_shouldSuccess(4)
+
+        assert(viewModel.isTopAdsActive())
     }
 
     @Test
@@ -829,7 +853,7 @@ class SomListViewModelTest {
 
     @Test
     fun setOrderTypeFilterTest() {
-        val orderTypes = listOf(1, 2, 3, 4, 5)
+        val orderTypes = mutableSetOf(1, 2, 3, 4, 5)
         setGetDataOrderListParams()
         viewModel.setOrderTypeFilter(orderTypes)
         assert(viewModel.getDataOrderListParams().orderTypeList == orderTypes)

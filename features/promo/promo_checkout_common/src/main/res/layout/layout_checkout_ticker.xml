@@ -10,36 +10,42 @@
         android:id="@+id/layoutUsePromo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_4"
-        app:cardCornerRadius="@dimen/dp_4"
+        android:layout_margin="@dimen/spacing_lvl2"
+        app:cardCornerRadius="@dimen/spacing_lvl2"
         android:visibility="gone"
         tools:visibility="visible">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/Unify_N0"
-            android:padding="16dp">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="@dimen/spacing_lvl4">
 
-            <com.tokopedia.design.component.TextViewCompat
+            <ImageView
+                android:id="@+id/image_voucher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/unify_space_12"
+                app:srcCompat="@drawable/ic_coupon_green_promo_checkout" />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textview_voucher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:drawablePadding="@dimen/dp_8"
-                android:gravity="center"
                 android:text="@string/use_promo_code_or_coupon"
-                android:textStyle="bold"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
                 android:textColor="@color/Unify_G400"
-                app:drawableLeftCompat="@drawable/ic_coupon_green_promo_checkout"
                 tools:text="Gunakan Kode Promo atau Kupon" />
 
-        </FrameLayout>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <FrameLayout
         android:id="@+id/layoutTicker"
-        android:layout_margin="@dimen/dp_4"
+        android:layout_margin="@dimen/spacing_lvl2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_checkout_ticker_view">
@@ -65,12 +71,12 @@
 
             <ImageView
                 android:id="@+id/imageClose"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
+                android:layout_width="@dimen/spacing_lvl5"
+                android:layout_height="@dimen/spacing_lvl5"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_8"
+                android:paddingLeft="@dimen/spacing_lvl3"
+                android:paddingBottom="@dimen/spacing_lvl3"
                 app:srcCompat="@drawable/ic_close_green_promo_checkout" />
 
             <LinearLayout
@@ -97,9 +103,12 @@
                         tools:src="@drawable/ic_coupon_grey_promo_checkout"
                         />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
                         android:id="@+id/titleCoupon"
-                        style="@style/TextView.Micro.Bold"
+                        app:typographyType="body_3"
+                        app:typographyWeight="bold"
                         android:layout_marginLeft="@dimen/dp_10"
                         android:layout_marginStart="@dimen/dp_10"
                         android:maxLines="1"
@@ -108,10 +117,13 @@
                         tools:text="Kupon Gratis Ongkir JT Rp 50000" />
                 </LinearLayout>
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/descCoupon"
-                    style="@style/TextView.Micro"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    app:typographyType="body_3"
                     tools:text="Pilih Kurir terlebih dahulu untuk memastikan benefit yang akan didapat" />
+
             </LinearLayout>
         </RelativeLayout>
     </FrameLayout>

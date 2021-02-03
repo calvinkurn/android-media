@@ -152,7 +152,6 @@ class GetSearchQueryUseCase @Inject constructor(
                   msgId
                   oppositeId
                   oppositeType
-                  replyId
                   roomId
                   productId
                 }
@@ -188,7 +187,6 @@ class GetSearchQueryUseCase @Inject constructor(
                   msgId
                   oppositeId
                   oppositeType
-                  replyId
                   roomId
                   productId
                 }

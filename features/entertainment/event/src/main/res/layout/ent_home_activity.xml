@@ -7,17 +7,17 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            app:elevation="0dp"
-            android:elevation="0dp"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
+            app:elevation="@dimen/unify_space_0"
+            android:elevation="@dimen/unify_space_0"
+            app:contentInsetLeft="@dimen/unify_space_0"
+            app:contentInsetStart="@dimen/unify_space_0"
+            app:contentInsetStartWithNavigation="@dimen/unify_space_0"
             app:subtitleTextAppearance="?subtitleTextAppearance"
             app:titleTextAppearance="?titleTextAppearance" />
 
@@ -25,11 +25,11 @@
             android:id="@+id/txt_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             app:search_bar_placeholder="@string/ent_home_page_cari_kegiatan_atau_lokasi"
             app:search_bar_show_icon="false" />
 

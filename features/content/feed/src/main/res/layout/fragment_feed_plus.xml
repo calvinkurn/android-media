@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/you_have_new_feed"
-                android:textColor="@color/font_black_secondary_54"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="@dimen/sp_12" />
         </LinearLayout>
 

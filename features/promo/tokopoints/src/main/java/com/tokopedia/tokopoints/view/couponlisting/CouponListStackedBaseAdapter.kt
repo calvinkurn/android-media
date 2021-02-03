@@ -311,7 +311,11 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
                     holder.timer = object : CountDownTimer(item.usage.expiredCountDown * 1000, 1000) {
                         override fun onTick(l: Long) {
                             item.usage.expiredCountDown = l / 1000
-                            holder.value.text = convertLongToHourMinuteSec(l)
+                            val timeToExpire = convertLongToHourMinuteSec(l)
+                            val hours = timeToExpire.first
+                            val minutes = timeToExpire.second
+                            val seconds = timeToExpire.third
+                            holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
                             try {
                                 holder.value.setTextColor(ContextCompat.getColor(holder.value.context, R.color.tp_coupon_flash_sale_timer_text_color))
                             } catch (e: Exception) {

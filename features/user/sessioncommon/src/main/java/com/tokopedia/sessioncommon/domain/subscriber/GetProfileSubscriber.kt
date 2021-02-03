@@ -3,7 +3,7 @@ package com.tokopedia.sessioncommon.domain.subscriber
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.sessioncommon.data.admin.AdminData
+import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -59,16 +59,34 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         ))
     }
 
-    private fun onSuccessGetAdminType(profile: ProfilePojo): (AdminData) -> Unit {
+    private fun onSuccessGetAdminType(profile: ProfilePojo): (AdminDataResponse) -> Unit {
         return {
-            val isLocationAdmin = it.detail.roleType.isLocationAdmin
+            val shopId = profile.shopInfo.shopData.shopId
+            val isLocationAdmin = it.data.detail.roleType.isLocationAdmin
+
+            // If shopId in profile is empty, set shopId from admin data response
+            // for user other than location admin.
+            val userProfile = if(!isLocationAdmin && shopId.isEmpty()) {
+                setShopIdFromAdminData(profile, it)
+            } else {
+                profile
+            }
+
             if(GlobalConfig.isSellerApp() && isLocationAdmin) {
                 showLocationAdminPopUp?.invoke()
             } else {
-                saveProfileData(profile)
-                onSuccessGetProfile(profile)
+                saveProfileData(userProfile)
+                onSuccessGetProfile(userProfile)
             }
         }
+    }
+
+    private fun setShopIdFromAdminData(profile: ProfilePojo, adminData: AdminDataResponse): ProfilePojo {
+        val shopId = adminData.shopId
+        val shopInfo = profile.shopInfo
+        val shopData = shopInfo.shopData.copy(shopId = shopId)
+        val shopBasicData = shopInfo.copy(shopData = shopData)
+        return profile.copy(shopInfo = shopBasicData)
     }
 
     private fun onErrorGetAdminType(): (Throwable) -> Unit = {

@@ -18,13 +18,6 @@ import org.junit.Test
 class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
 
     @Test
-    fun `when detach view should unsubscribe use case`() {
-        shopSettingsInfoViewModel.detachView()
-
-        verifyUnsubscribeUseCase()
-    }
-
-    @Test
     fun `when validate os merchant type with provided shopId should return success`() {
         runBlocking {
             mockkObject(CheckOfficialStoreTypeUseCase)
@@ -82,6 +75,17 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
         val isSuccessSubscribe = shopSettingsInfoViewModel.updateScheduleResult.observeAwaitValue()
 
         assertTrue(isSuccessSubscribe is Success)
+    }
+
+    @Test
+    fun `when reset all live data to be null`() {
+        shopSettingsInfoViewModel.resetAllLiveData()
+
+        assertTrue(shopSettingsInfoViewModel.shopBasicData.value == null)
+        assertTrue(shopSettingsInfoViewModel.checkOsMerchantTypeData.value == null)
+        assertTrue(shopSettingsInfoViewModel.shopStatusData.value == null)
+        assertTrue(shopSettingsInfoViewModel.updateScheduleResult.value == null)
+
     }
 
 }

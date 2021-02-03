@@ -27,8 +27,6 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     companion object {
         const val KEY_FILTER_DATE = "key_filter_date"
         const val KEY_ID_FILTER = "key_id_filter"
-        const val KEY_SOM_LIST_ORDER_PARAM = "key_som_list_order_param"
-        const val KEY_SOM_ORDER_PARAM_CACHE = "key_som_order_param_cache"
         const val KEY_SOM_LIST_FILTER_CHIPS = "key_som_list_filter"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
         const val ALL_FILTER = "Semua"
@@ -37,12 +35,10 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         fun newInstance(context: Context?,
                         filterDate: String,
                         idFilter: String,
-                        somSubFilterList: List<SomFilterChipsUiModel>,
                         cacheManagerId: String
         ) = Intent(context, SomSubFilterActivity::class.java).apply {
             putExtra(KEY_FILTER_DATE, filterDate)
             putExtra(KEY_ID_FILTER, idFilter)
-            putParcelableArrayListExtra(KEY_SOM_LIST_FILTER_CHIPS, ArrayList(somSubFilterList))
             putExtra(KEY_CACHE_MANAGER_ID, cacheManagerId)
         }
     }
@@ -64,13 +60,13 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         filterDate = intent?.getStringExtra(KEY_FILTER_DATE) ?: ""
         idFilter = intent?.getStringExtra(KEY_ID_FILTER) ?: ""
+        cacheManagerId = intent?.getStringExtra(KEY_CACHE_MANAGER_ID) ?: ""
         val manager = SaveInstanceCacheManager(this, savedInstanceState)
-        val cacheManager =
-                if (savedInstanceState == null) SaveInstanceCacheManager(this, cacheManagerId) else manager
-        somListGetOrderListParam = cacheManager.get(KEY_SOM_LIST_ORDER_PARAM, SomListGetOrderListParam::class.java)
+        val cacheManager = if (savedInstanceState == null) SaveInstanceCacheManager(this, cacheManagerId) else manager
+        somListGetOrderListParam = cacheManager.get(SomFilterBottomSheet.KEY_SOM_LIST_GET_ORDER_PARAM, SomListGetOrderListParam::class.java)
                 ?: SomListGetOrderListParam()
-        somSubFilterList = intent?.getParcelableArrayListExtra(KEY_SOM_LIST_FILTER_CHIPS)
-                ?: arrayListOf()
+        val somSubFilterListWrapper: SomSubFilterListWrapper? = cacheManager.get(KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper::class.java)
+        somSubFilterList = somSubFilterListWrapper?.somSubFilterList
         super.onCreate(savedInstanceState)
         window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         btnSaveSubFilter()
@@ -111,7 +107,7 @@ class SomSubFilterActivity : BaseSimpleActivity(),
             intent.putExtra(KEY_FILTER_DATE, filterDate)
             intent.putExtra(KEY_ID_FILTER, idFilter)
             intent.putExtra(KEY_CACHE_MANAGER_ID, cacheManagerId)
-            cacheManager.put(KEY_SOM_ORDER_PARAM_CACHE, somListGetOrderListParam)
+            cacheManager.put(SomFilterBottomSheet.KEY_SOM_LIST_GET_ORDER_PARAM, somListGetOrderListParam)
             cacheManager.put(KEY_SOM_LIST_FILTER_CHIPS, somSubFilterList?.let { it1 -> SomSubFilterListWrapper(it1) })
             setResult(SomFilterBottomSheet.RESULT_CODE_FILTER_SEE_ALL, intent)
             this.finish()
@@ -168,12 +164,12 @@ class SomSubFilterActivity : BaseSimpleActivity(),
                             somSubFilterList = subFilterRadioButtonAdapter?.getSubFilterList()
                         }
                         SomConsts.FILTER_TYPE_ORDER -> {
-                            somListGetOrderListParam.orderTypeList = emptyList()
+                            somListGetOrderListParam.orderTypeList = mutableSetOf()
                             subFilterCheckboxAdapter?.resetCheckboxFilter()
                             somSubFilterList = subFilterCheckboxAdapter?.getSubFilterList()
                         }
                         SomConsts.FILTER_COURIER -> {
-                            somListGetOrderListParam.shippingList = emptyList()
+                            somListGetOrderListParam.shippingList = mutableSetOf()
                             subFilterCheckboxAdapter?.resetCheckboxFilter()
                             somSubFilterList = subFilterCheckboxAdapter?.getSubFilterList()
                         }
@@ -198,13 +194,21 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         }
     }
 
-    override fun onCheckboxItemClicked(idList: List<Int>, position: Int) {
+    override fun onCheckboxItemClicked(id: Int, position: Int, checked: Boolean) {
         when (idFilter) {
             SomConsts.FILTER_TYPE_ORDER -> {
-                somListGetOrderListParam.orderTypeList = idList
+                if (checked) {
+                    somListGetOrderListParam.orderTypeList.add(id)
+                } else {
+                    somListGetOrderListParam.orderTypeList.remove(id)
+                }
             }
             SomConsts.FILTER_COURIER -> {
-                somListGetOrderListParam.shippingList = idList
+                if (checked) {
+                    somListGetOrderListParam.shippingList.add(id)
+                } else {
+                    somListGetOrderListParam.shippingList.remove(id)
+                }
             }
         }
         setToggleResetSubFilter()

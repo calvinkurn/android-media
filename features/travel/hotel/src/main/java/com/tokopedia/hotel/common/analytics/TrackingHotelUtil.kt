@@ -145,12 +145,6 @@ class TrackingHotelUtil {
         return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
-    fun hotelUserClickFilter(context: Context?, screenName: String) {
-        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
-        map.addGeneralEvent(CLICK_HOTEL, USER_CLICK_FILTER,"$HOTEL_LABEL - true")
-        TrackApp.getInstance().gtm.sendGeneralEvent(map)
-    }
-
     fun hotelUserClickSort(context: Context?, sortValue: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, USER_CLICK_SORT, "$HOTEL_LABEL - $sortValue")
@@ -505,8 +499,8 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun clickOnQuickFilter(context: Context?, screenName: String, filterName: String, position: Int, isAdvancedFilter: Boolean) {
-        val pos = if (isAdvancedFilter) position + 2 else position + 1
+    fun clickOnQuickFilter(context: Context?, screenName: String, filterName: String, position: Int) {
+        val pos = position + 2
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $filterName - $pos"
         map.addGeneralEvent(CLICK_HOTEL, CLICK_QUICK_FILTER_ON_SRP, eventLabel)

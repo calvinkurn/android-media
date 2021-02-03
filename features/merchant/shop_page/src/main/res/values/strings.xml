@@ -243,6 +243,14 @@
     <string name="message_share_shop">Klik link ini untuk menemukan toko dari Tokopedia. </string>
     <string name="shop_page_play_widget_title"><![CDATA[Ayo cobain <b>live streaming</b>]]></string>
     <string name="shop_page_play_widget_sgc_content">dan bikin tokomu makin terkenal!</string>
+    <string name="shop_page_play_widget_sgc_save_video">Sedang menyimpan video. Kami akan infokan jika berhasil disimpan.</string>
+    <string name="shop_page_play_widget_sgc_video_deleted">Video telah dihapus.</string>
+    <string name="shop_page_play_widget_sgc_video_saved_success">Yay, video berhasil disimpan!</string>
+    <string name="shop_page_play_widget_sgc_video_saved_fail">Ada sedikit kendala pada sistem.</string>
+    <string name="shop_page_play_widget_sgc_delete_video">Hapus video</string>
+    <string name="shop_page_play_widget_sgc_try_again">Coba Lagi</string>
+    <string name="shop_page_play_widget_sgc_copy_link">Salin link</string>
+    <string name="shop_page_play_widget_sgc_link_copied">Link disalin!</string>
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
     <string name="shop_page_retry">Ulangi</string>

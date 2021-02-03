@@ -33,9 +33,7 @@ data class VariantMultiOriginWarehouse(
         @SerializedName("warehouse_info")
         @Expose
         val warehouseInfo: WarehouseInfo = WarehouseInfo()
-) {
-        fun getOriginStock(): String = if (productId.isEmpty()) "" else stock.toString()
-}
+)
 
 data class WarehouseInfo(
         @SerializedName("warehouse_id")

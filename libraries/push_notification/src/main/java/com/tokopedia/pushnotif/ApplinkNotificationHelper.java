@@ -161,10 +161,17 @@ public class ApplinkNotificationHelper {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT;
     }
 
+    private static final int CONSUMER_PRO_APPLICATION = 3;
+
     public static Boolean isTargetApp(ApplinkNotificationModel applinkNotificationModel) {
-        return true;
-//        return (applinkNotificationModel.getTargetApp() == null) ||
-//                (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.APPLICATION_ID));
+        if (GlobalConfig.APPLICATION_TYPE == CONSUMER_PRO_APPLICATION) {
+            return (applinkNotificationModel.getTargetApp() == null) ||
+                    (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.PACKAGE_CONSUMER_APP));
+        }
+        else {
+            return (applinkNotificationModel.getTargetApp() == null) ||
+                    (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.APPLICATION_ID));
+        }
     }
 }
 

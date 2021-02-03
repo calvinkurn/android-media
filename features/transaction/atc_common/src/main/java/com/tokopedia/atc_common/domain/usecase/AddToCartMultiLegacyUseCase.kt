@@ -44,7 +44,7 @@ class AddToCartMultiLegacyUseCase @Inject constructor(private val graphqlUseCase
                     for (jsonElement in jsonArray) {
                         try {
                             val product = jsonElement.asJsonObject
-                            val productId = product[PRODUCT_ID_KEY].asInt
+                            val productId = product[PRODUCT_ID_KEY].asLong
                             val productName = product[PRODUCT_NAME_KEY].asString
                             val quantity = product[QUANTITY_KEY].asInt
                             val productPrice = product[PRODUCT_PRICE_KEY].asString

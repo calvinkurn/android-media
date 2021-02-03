@@ -4,19 +4,20 @@
     android:layout_height="match_parent"
     android:id="@+id/swipe_refresh"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:enabled="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
-        <com.tokopedia.design.text.SearchInputView
+        <com.tokopedia.unifycomponents.SearchBarUnify
             android:layout_marginTop="@dimen/dp_8"
             android:id="@+id/search_input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             app:layout_constraintEnd_toEndOf="parent"

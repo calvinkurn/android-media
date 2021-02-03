@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -49,11 +50,12 @@ import com.tokopedia.talk.feature.reading.presentation.widget.OnCategoryModified
 import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSortListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
@@ -69,7 +71,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val TOASTER_CTA_WIDTH = 300
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
         const val DEFAULT_INITIAL_PAGE = 1
-        const val DONT_LOAD_INITAL_DATA = false
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
         const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
         const val LOGIN_ACTIVITY_REQUEST_CODE = 204
@@ -88,8 +89,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     @Inject
     lateinit var viewModel: TalkReadingViewModel
-
-    private var remoteConfigInstance: RemoteConfigInstance? = null
 
     private var productId: String = ""
     private var shopId: String = ""
@@ -123,8 +122,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         observeSortOptions()
         observeDiscussionData()
         observeFilterCategories()
-        getHeaderData()
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
     }
 
     override fun getScreenName(): String {
@@ -155,10 +154,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onFinishChooseSort(sortOption: SortOption) {
         TalkReadingTracking.eventClickSort(sortOption.displayName, viewModel.getUserId(), productId)
         viewModel.updateSelectedSort(sortOption)
-    }
-
-    override fun callInitialLoadAutomatically(): Boolean {
-        return DONT_LOAD_INITAL_DATA
     }
 
     override fun onSwipeRefresh() {
@@ -289,7 +284,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun loadInitialData() {
         isLoadingInitialData = true
-        getDiscussionData(isRefresh = true)
+        getHeaderData()
     }
 
     override fun onStart() {
@@ -318,7 +313,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         pageError.show()
         reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         pageError.talkConnectionErrorRetryButton.setOnClickListener {
-            getHeaderData()
+            loadInitialData()
         }
     }
 
@@ -343,9 +338,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     initSortOptions()
                     initFilterCategories(TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingCategories(it.data))
                     showContainer()
-                    if(!isLoadingInitialData) {
-                        loadInitialData()
-                    }
                 }
             }
 
@@ -587,6 +579,16 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getSelectedCategoryDisplayName(): String {
         return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString(separator = ",") { it.displayName } ?: ""
+    }
+
+    private fun initToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(headerTalkReading)
+                headerTalkReading?.title = getString(R.string.title_talk_discuss)
+            }
+        }
     }
 
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.sellerorder.list.presentation.filtertabs
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
@@ -21,6 +23,7 @@ class SomListSortFilterTab(
     private var somListFilterUiModel: SomListFilterUiModel? = null
     private var somFilterUiModelList: MutableList<SomFilterUiModel> = mutableListOf()
     private var selectedCount: Int = 0
+    var isStatusFilterAppliedFromAdvancedFilter: Boolean = false
 
     init {
         sortFilter.chipItems = arrayListOf()
@@ -81,6 +84,7 @@ class SomListSortFilterTab(
     }
 
     private fun onTabClicked(sortFilterItem: SortFilterItem, status: SomListFilterUiModel.Status) {
+        isStatusFilterAppliedFromAdvancedFilter = false
         status.isChecked = if (sortFilterItem.type == ChipsUnify.TYPE_NORMAL) {
             sortFilter.chipItems.onEach { if (it.type == ChipsUnify.TYPE_SELECTED) it.type = ChipsUnify.TYPE_NORMAL }
             selectTab(status)
@@ -154,24 +158,35 @@ class SomListSortFilterTab(
         updateCounter(selectedCount)
     }
 
-    fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER
+    fun shouldShowBulkAction() = (selectedTab?.key == STATUS_NEW_ORDER || selectedTab?.key == KEY_CONFIRM_SHIPPING) && GlobalConfig.isSellerApp()
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
     fun getSelectedFilterStatus(): String = selectedTab?.key.orEmpty()
     fun getSelectedFilterStatusName(): String = selectedTab?.status.orEmpty()
 
+    fun getSelectedFilterKeys() = somFilterUiModelList.filter { it.nameFilter != SomConsts.FILTER_STATUS_ORDER }
+            .map { it.somFilterData.filter { it.isSelected }.map { it.key } }.flatten()
 
     fun getSomFilterUi() = somFilterUiModelList
 
     fun updateSomListFilterUi(somFilterUiModelList: List<SomFilterUiModel>) {
         this.somFilterUiModelList.clear()
         this.somFilterUiModelList.addAll(somFilterUiModelList)
+        this.isStatusFilterAppliedFromAdvancedFilter = isStatusFilterSelected()
     }
 
     fun isSortByAppliedManually(): Boolean {
         return this.somFilterUiModelList.any {
             it.nameFilter == SomConsts.FILTER_SORT && it.somFilterData.any {
                 it.isSelected
+            }
+        }
+    }
+
+    private fun isStatusFilterSelected(): Boolean {
+        return this.somFilterUiModelList.any {
+            it.nameFilter == SomConsts.FILTER_STATUS_ORDER && it.somFilterData.any { chips ->
+                chips.isSelected
             }
         }
     }
@@ -195,6 +210,11 @@ class SomListSortFilterTab(
 
     fun isEmpty(): Boolean {
         return filterItems.isEmpty()
+    }
+
+    fun getAllStatusCodes(): List<String> {
+        return somListFilterUiModel?.statusList?.find { it.key == SomConsts.STATUS_ALL_ORDER }
+                ?.id?.map { it.toString() }.orEmpty()
     }
 
     interface SomListSortFilterTabClickListener {

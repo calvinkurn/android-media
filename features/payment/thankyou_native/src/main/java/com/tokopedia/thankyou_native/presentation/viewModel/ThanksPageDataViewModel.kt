@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
@@ -62,7 +63,21 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
     private fun onThanksPageDataSuccess(thanksPageData: ThanksPageData) {
-        thanksPageDataResultLiveData.value = Success(thanksPageData)
+        launchCatchError(block = {
+            withContext(dispatcherIO) {
+                thanksPageData.paymentDeductions?.forEach {
+                    if (it.itemName == PaymentDeductionKey.REWARDS_POINT) {
+                        thanksPageData.paymentMethodCount++
+                    }
+                }
+                thanksPageData.paymentDetails?.apply {
+                    thanksPageData.paymentMethodCount += (size - 1)
+                }
+            }
+            thanksPageDataResultLiveData.postValue(Success(thanksPageData))
+        }, onError = {
+            thanksPageDataResultLiveData.postValue(Fail(it))
+        })
     }
 
     private fun onThanksPageDataError(throwable: Throwable) {

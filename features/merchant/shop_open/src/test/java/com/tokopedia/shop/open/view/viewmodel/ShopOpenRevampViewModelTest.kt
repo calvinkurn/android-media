@@ -1,9 +1,11 @@
 package com.tokopedia.shop.open.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
 import com.tokopedia.shop.open.data.model.*
 import com.tokopedia.shop.open.domain.*

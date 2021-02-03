@@ -56,13 +56,15 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
 
-    // CategoryPickerActivity
+    // AddEditProductCategoryActivity
     @JvmField
     val PRODUCT_CATEGORY_PICKER = "$INTERNAL_MARKETPLACE/product-category-picker/{id}/"
 
     // ProductDetailActivity
     @JvmField
     val PRODUCT_DETAIL = "$INTERNAL_MARKETPLACE/product-detail/{id}/"
+    @JvmField
+    val PRODUCT_DETAIL_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{product_id}/?is_from_explore_affiliate={isAffiliate}"
     @JvmField
     val PRODUCT_DETAIL_WITH_WAREHOUSE_ID = "$INTERNAL_MARKETPLACE/product-detail/{id}/?warehouse_id={whid}"
     @JvmField
@@ -99,6 +101,9 @@ object ApplinkConstInternalMarketplace {
 
     //ReviewDetailActivity
     val REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/review/detail/{feedback_id}/"
+
+    //SellerReviewDetailActivity
+    val SELLER_REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/seller-review-detail"
 
     // InboxReputationDetailActivity
     val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/reputation/{reputation_id}/"
@@ -271,10 +276,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SELLER_APP_DASHBOARD = "$INTERNAL_MARKETPLACE/sellerapp-dashboard"
 
-    // CategoryDynamicPickerActivity
-    // tokopedia-android-internal://marketplace/category-dynamic-picker
-    @JvmField
-    val CATEGORY_DYNAMIC_PICKER = "$INTERNAL_MARKETPLACE/category-dynamic-picker"
     // ActivitySellingTransaction
     @JvmField
     val SELLING_TRANSACTION = "$INTERNAL_MARKETPLACE/selling-transaction/{tab_position}/"

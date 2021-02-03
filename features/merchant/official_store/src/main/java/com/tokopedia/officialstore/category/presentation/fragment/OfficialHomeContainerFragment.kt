@@ -60,9 +60,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
 
         const val KEY_CATEGORY = "key_category"
-        private const val EXP_TOP_NAV = "Navigation Revamp"
-        private const val VARIANT_OLD = "Existing Navigation"
-        private const val VARIANT_REVAMP = "Navigation Revamp"
+        private const val EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
+        private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
+        private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 
     }
 

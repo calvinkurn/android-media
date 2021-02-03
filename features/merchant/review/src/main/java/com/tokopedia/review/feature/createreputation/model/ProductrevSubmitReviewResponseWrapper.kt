@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class ProductrevSubmitReviewResponseWrapper(
         @SerializedName("productrevSubmitReview")
         @Expose
-        val productrevSuccessIndicator: ProductRevSuccessIndicator? = null
+        val productrevSuccessIndicator: ProductRevSuccessSubmitReview? = null
 )

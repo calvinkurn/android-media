@@ -85,8 +85,7 @@ object RouteManagerKt{
                 return RouteManager.route(activity, url)
             }
             DeepLinkChecker.ORDER_LIST -> {
-                RouteManager.route(activity, ApplinkConstInternalOrderDetail.ORDER_LIST_URL, url)
-                return true
+                return RouteManager.route(activity, url)
             }
             DeepLinkChecker.TRAVEL_HOMEPAGE -> {
                 return RouteManager.route(activity, url)

@@ -2,8 +2,8 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
@@ -103,18 +103,22 @@ class SellerHomeViewModel @Inject constructor(
     val announcementWidgetData: LiveData<Result<List<AnnouncementDataUiModel>>>
         get() = _announcementWidgetData
 
+    private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
+        executeOnBackground()
+    }
+
     private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>, liveData: MutableLiveData<Result<T>>) {
         if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
             useCase.isFirstLoad = false
             try {
                 useCase.setUseCache(true)
-                liveData.value = Success(useCase.executeOnBackground())
+                liveData.value = Success(useCase.executeUseCase())
             } catch (_: Exception) {
                 // ignore exception from cache
             }
         }
         useCase.setUseCache(false)
-        liveData.value = Success(useCase.executeOnBackground())
+        liveData.value = Success(useCase.executeUseCase())
     }
 
     fun getTicker() {

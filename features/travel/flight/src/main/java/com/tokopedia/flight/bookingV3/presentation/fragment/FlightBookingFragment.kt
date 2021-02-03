@@ -1,5 +1,6 @@
 package com.tokopedia.flight.bookingV3.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
@@ -354,7 +355,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun renderErrorToast(resId: Int) {
         view?.let {
-            Toaster.make(it, getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.flight_booking_action_okay), View.OnClickListener { /* do nothing */ })
+            Toaster.build(it, getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.flight_booking_action_okay),
+                    View.OnClickListener { /* do nothing */ }).show()
         }
     }
 
@@ -820,6 +823,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         layout_full_page_error.button_error_action.setOnClickListener { finishActivityToSearchPage() }
     }
 
+    @SuppressLint("DialogUnifyUsage")
     private fun showErrorDialog(e: FlightError, action: () -> Unit) {
         if (activity != null) {
             if (e.id != null) {
@@ -970,7 +974,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
                 val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
                 loadingDialog.setChild(loadingView)
-                loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
+                loadingText = loadingView.findViewById(R.id.tv_loading_subtitle)
                 loadingText.text = list[0]
 
                 loadingDialog.show()

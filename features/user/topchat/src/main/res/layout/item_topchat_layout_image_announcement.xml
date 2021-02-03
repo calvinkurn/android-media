@@ -29,7 +29,7 @@
         android:focusable="true"
         android:text="@string/title_chatcommon_check"
         android:textAllCaps="false"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_N0"
         android:textStyle="bold" />
 
 </LinearLayout>

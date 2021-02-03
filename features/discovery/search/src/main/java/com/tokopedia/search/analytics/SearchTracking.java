@@ -703,6 +703,26 @@ public class SearchTracking {
         );
     }
 
+    public static void trackEventClickInspirationCarouselGridBanner(
+            String type, String keyword, Object bannerData, String userId
+    ) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PROMO_CLICK,
+                        EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_GRID_BANNER,
+                        EVENT_LABEL, type + " - " + keyword,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, SEARCH,
+                        USER_ID, userId,
+                        ECOMMERCE, DataLayer.mapOf(
+                                SearchEventTracking.Event.PROMO_CLICK, DataLayer.mapOf(
+                                        PROMOTIONS, DataLayer.listOf(bannerData)
+                                )
+                        )
+                )
+        );
+    }
+
     public static void trackEventImpressionBroadMatch(TrackingQueue trackingQueue, String keyword, String alternativeKeyword, String userId, List<Object> broadMatchItems) {
         HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, SearchEventTracking.Event.PRODUCT_VIEW,

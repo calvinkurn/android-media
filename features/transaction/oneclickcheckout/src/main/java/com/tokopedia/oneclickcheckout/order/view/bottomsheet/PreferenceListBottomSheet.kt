@@ -25,6 +25,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class PreferenceListBottomSheet(
+        private val isNewFlow: Boolean,
         private val getPreferenceListUseCase: GetPreferenceListUseCase,
         private val paymentProfile: String,
         private val listener: PreferenceListBottomSheetListener) {
@@ -94,7 +95,11 @@ class PreferenceListBottomSheet(
                 bottomSheet = BottomSheetUnify().apply {
                     isDragable = true
                     isHideable = true
-                    setTitle(context.getString(R.string.lbl_osp_secondary_header))
+                    if (isNewFlow) {
+                        setTitle(context.getString(R.string.lbl_new_occ_profile_name))
+                    } else {
+                        setTitle(context.getString(R.string.lbl_osp_secondary_header))
+                    }
                     val child = View.inflate(context, R.layout.bottom_sheet_preference_list, null)
                     setupChild(child, profileId)
                     fragment.view?.height?.div(2)?.let { height ->
@@ -125,6 +130,9 @@ class PreferenceListBottomSheet(
                 outRect.bottom = child.context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_6)?.toInt() ?: 0
             }
         })
+        if (isNewFlow) {
+            btnAddPreference?.text = child.context?.getString(R.string.lbl_add_new_occ_profile_name)
+        }
         btnAddPreference?.setOnClickListener {
             bottomSheet?.dismiss()
             listener.onAddPreference(adapter?.itemCount ?: 1)
@@ -144,7 +152,10 @@ class PreferenceListBottomSheet(
     }
 
     private fun updateList(preferences: PreferenceListResponseModel) {
-        adapter?.submitList(preferences.profiles)
+        adapter?.submitList(preferences.profiles, isNewFlow)
+        if (isNewFlow) {
+            listener.onShowNewLayout()
+        }
         progressBar?.gone()
         val tickerMessage = preferences.ticker
         if (tickerMessage != null) {
@@ -170,5 +181,7 @@ class PreferenceListBottomSheet(
         fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int)
 
         fun onAddPreference(itemCount: Int)
+
+        fun onShowNewLayout()
     }
 }

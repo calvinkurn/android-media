@@ -30,7 +30,7 @@ data class FeatureEngineData (
 
 data class FeatureEngineItem (
         @SerializedName("id")
-        val id: Int,
+        val id: Long,
         @SerializedName("detail")
         val detail : String
 )

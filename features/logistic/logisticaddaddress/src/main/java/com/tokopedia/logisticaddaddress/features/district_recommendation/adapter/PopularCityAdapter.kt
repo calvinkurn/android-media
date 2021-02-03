@@ -37,7 +37,7 @@ class PopularCityAdapter(context: Context?, private var actionListener: ActionLi
             text = cityList[position]
             setOnClickListener {
                 background = drawablePressed
-                setTextColor(res.getColor(R.color.tkpd_green))
+                setTextColor(res.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G300))
                 actionListener.onCityChipClicked(cityList[position])
             }
         }

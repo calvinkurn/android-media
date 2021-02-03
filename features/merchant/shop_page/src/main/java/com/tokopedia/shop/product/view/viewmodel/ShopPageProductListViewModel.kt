@@ -19,6 +19,9 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -31,9 +34,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
 import java.lang.Exception
 import javax.inject.Inject
@@ -46,11 +46,9 @@ class ShopPageProductListViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
     private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
-    private val addWishListUseCase: AddWishListUseCase,
     private val getShopProductUseCase: GqlGetShopProductUseCase,
     @ShopProductGetHighlightProductQualifier
         private val getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>,
-    private val removeWishlistUseCase: RemoveWishListUseCase,
     private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
     private val dispatcherProvider: CoroutineDispatchers,
     private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
@@ -71,14 +69,12 @@ class ShopPageProductListViewModel @Inject constructor(
     val userId: String
         get() = userSession.userId
     val shopSortFilterData = MutableLiveData<Result<ShopStickySortFilter>>()
-    val membershipData = MutableLiveData<Result<MembershipStampProgressViewModel>>()
-    val newMembershipData = MutableLiveData<Result<MembershipStampProgressViewModel>>()
-    val merchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
-    val newMerchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherViewModel>>()
-    val shopProductFeaturedData = MutableLiveData<Result<ShopProductFeaturedViewModel>>()
-    val shopProductEtalaseHighlightData = MutableLiveData<Result<ShopProductEtalaseHighlightViewModel>>()
-    val shopProductEtalaseTitleData = MutableLiveData<Result<ShopProductEtalaseTitleViewModel>>()
-    val shopProductChangeProductGridSectionData = MutableLiveData<Result<Int>>()
+    val membershipData = MutableLiveData<Result<MembershipStampProgressUiModel>>()
+    val newMembershipData = MutableLiveData<Result<MembershipStampProgressUiModel>>()
+    val merchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherUiModel>>()
+    val newMerchantVoucherData = MutableLiveData<Result<ShopMerchantVoucherUiModel>>()
+    val shopProductFeaturedData = MutableLiveData<Result<ShopProductFeaturedUiModel>>()
+    val shopProductEtalaseHighlightData = MutableLiveData<Result<ShopProductEtalaseHighlightUiModel>>()
     val productListData = MutableLiveData<Result<GetShopProductUiModel>>()
     val claimMembershipResp = MutableLiveData<Result<MembershipClaimBenefitResponse>>()
     val bottomSheetFilterLiveData = MutableLiveData<Result<DynamicFilterModel>>()
@@ -87,15 +83,13 @@ class ShopPageProductListViewModel @Inject constructor(
         get() = userSession.isLoggedIn
     val userDeviceId: String
         get() = userSession.deviceId
-    private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase?>()
+    private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase>()
+    private var shopSortList = mutableListOf<ShopProductSortModel>()
 
-    fun getBuyerShopPageProductTabData(
+    fun getBuyerViewContentData(
             shopId: String,
             etalaseList: List<ShopEtalaseItemDataModel>,
-            shopEtalaseItemDataModel: ShopEtalaseItemDataModel,
-            isShowNewShopHomeTab: Boolean,
-            initialProductListData: GetShopProductUiModel?,
-            shopProductFilterParameter: ShopProductFilterParameter
+            isShowNewShopHomeTab: Boolean
     ) {
         launchCatchError(coroutineContext, {
             coroutineScope {
@@ -118,24 +112,6 @@ class ShopPageProductListViewModel @Inject constructor(
                     if (isShowNewShopHomeTab) null
                     else getShopProductEtalaseHighlightData(shopId, etalaseList)
                 }
-                val productListDataAsync = async(Dispatchers.IO) {
-                    if (initialProductListData == null) {
-                        getProductList(
-                                getShopProductUseCase,
-                                shopId,
-                                START_PAGE,
-                                ShopPageConstant.DEFAULT_PER_PAGE,
-                                shopEtalaseItemDataModel.etalaseId,
-                                "",
-                                shopProductFilterParameter.getSortId().toIntOrZero(),
-                                shopProductFilterParameter.getRating(),
-                                shopProductFilterParameter.getPmax(),
-                                shopProductFilterParameter.getPmax()
-                        )
-                    } else {
-                        null
-                    }
-                }
                 membershipStampProgressDataAsync.await()?.let {
                     membershipData.postValue(Success(it))
                 }
@@ -148,25 +124,6 @@ class ShopPageProductListViewModel @Inject constructor(
                 shopProductEtalaseHighlightDataAsync.await()?.let {
                     shopProductEtalaseHighlightData.postValue(Success(it))
                 }
-                var totalProductData = 0
-                val isProductListNotEmpty = if (null != initialProductListData) {
-                    totalProductData = initialProductListData.totalProductData
-                    initialProductListData.listShopProductUiModel.isNotEmpty()
-                } else {
-                    val productListDataModel = productListDataAsync.await()
-                    productListDataModel?.let {
-                        productListData.postValue(Success(productListDataModel))
-                        totalProductData = productListDataModel.totalProductData
-                        productListDataModel.listShopProductUiModel.isNotEmpty()
-                    } ?: false
-                }
-                if (isProductListNotEmpty) {
-                    shopProductEtalaseTitleData.postValue(Success(ShopProductEtalaseTitleViewModel(
-                            shopEtalaseItemDataModel.etalaseName,
-                            shopEtalaseItemDataModel.etalaseBadge
-                    )))
-                    shopProductChangeProductGridSectionData.postValue(Success(totalProductData))
-                }
             }
         },
                 {
@@ -177,7 +134,7 @@ class ShopPageProductListViewModel @Inject constructor(
     private suspend fun getShopProductEtalaseHighlightData(
             shopId: String,
             etalaseList: List<ShopEtalaseItemDataModel>
-    ): ShopProductEtalaseHighlightViewModel? {
+    ): ShopProductEtalaseHighlightUiModel? {
         try {
             val listEtalaseHighlight = etalaseList
                     .filter { it.highlighted }
@@ -196,16 +153,16 @@ class ShopPageProductListViewModel @Inject constructor(
                     ).listShopProductUiModel
                 }
             }.awaitAll()
-            val listEtalaseHighlightCarouselViewModel = mutableListOf<EtalaseHighlightCarouselViewModel>()
+            val listEtalaseHighlightCarouselViewModel = mutableListOf<EtalaseHighlightCarouselUiModel>()
             listProductEtalaseHighlightResponse.forEachIndexed { index, shopProductResponse ->
                 if (shopProductResponse.isNotEmpty()) {
-                    listEtalaseHighlightCarouselViewModel.add(EtalaseHighlightCarouselViewModel(
+                    listEtalaseHighlightCarouselViewModel.add(EtalaseHighlightCarouselUiModel(
                             shopProductResponse,
                             listEtalaseHighlight[index]
                     ))
                 }
             }
-            return ShopProductEtalaseHighlightViewModel(
+            return ShopProductEtalaseHighlightUiModel(
                     listEtalaseHighlightCarouselViewModel
             )
         } catch (error: Exception) {
@@ -213,7 +170,7 @@ class ShopPageProductListViewModel @Inject constructor(
         }
     }
 
-    private fun getSort(etalaseId: String?): Int {
+    private fun getSort(etalaseId: String): Int {
         return when (etalaseId) {
             SOLD_ETALASE -> ORDER_BY_MOST_SOLD
             DISCOUNT_ETALASE -> ORDER_BY_LAST_UPDATE
@@ -223,31 +180,31 @@ class ShopPageProductListViewModel @Inject constructor(
 
     private fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData
 
-    private suspend fun getMembershipData(shopId: String): MembershipStampProgressViewModel {
+    private suspend fun getMembershipData(shopId: String): MembershipStampProgressUiModel {
         getMembershipUseCase.params = GetMembershipUseCaseNew.createRequestParams(shopId.toIntOrZero())
         val memberShipResponse = getMembershipUseCase.executeOnBackground()
-        return MembershipStampProgressViewModel(ShopPageProductListMapper.mapTopMembershipViewModel(memberShipResponse))
+        return MembershipStampProgressUiModel(ShopPageProductListMapper.mapTopMembershipViewModel(memberShipResponse))
     }
 
-    private fun getMerchantVoucherListData(shopId: String, numVoucher: Int = 0): ShopMerchantVoucherViewModel? {
+    private fun getMerchantVoucherListData(shopId: String, numVoucher: Int?): ShopMerchantVoucherUiModel? {
         return try {
             val merchantVoucherResponse = getMerchantVoucherListUseCase.createObservable(
-                    GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)
+                    GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher.orZero())
             ).toBlocking().first()
-            ShopMerchantVoucherViewModel(ShopPageProductListMapper.mapToMerchantVoucherViewModel(merchantVoucherResponse))
+            ShopMerchantVoucherUiModel(ShopPageProductListMapper.mapToMerchantVoucherViewModel(merchantVoucherResponse))
         } catch (e: Exception) {
             null
         }
     }
 
-    private suspend fun getFeaturedProductData(shopId: String, userId: String): ShopProductFeaturedViewModel? {
+    private suspend fun getFeaturedProductData(shopId: String, userId: String): ShopProductFeaturedUiModel? {
         try {
             getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(
                     shopId.toIntOrZero(),
                     userId.toIntOrZero()
             )
             val featuredProductResponse = getShopFeaturedProductUseCase.executeOnBackground()
-            return ShopProductFeaturedViewModel(
+            return ShopProductFeaturedUiModel(
                     featuredProductResponse.map { shopFeaturedProduct ->
                         ShopPageProductListMapper.mapShopFeaturedProductToProductViewModel(
                                 shopFeaturedProduct,
@@ -307,37 +264,10 @@ class ShopPageProductListViewModel @Inject constructor(
         }
     }
 
-    fun getNewProductListData(
+    fun getProductListData(
             shopId: String,
-            selectedEtalaseId: String,
-            shopProductFilterParameter: ShopProductFilterParameter
-    ) {
-        launchCatchError(block = {
-            val listShopProduct = withContext(dispatcherProvider.io) {
-                getProductList(
-                        getShopProductUseCase,
-                        shopId,
-                        START_PAGE,
-                        ShopPageConstant.DEFAULT_PER_PAGE,
-                        selectedEtalaseId,
-                        "",
-                        shopProductFilterParameter.getSortId().toIntOrZero(),
-                        shopProductFilterParameter.getRating(),
-                        shopProductFilterParameter.getPmax(),
-                        shopProductFilterParameter.getPmin()
-                )
-            }
-            shopProductChangeProductGridSectionData.postValue(Success(listShopProduct.totalProductData))
-            productListData.postValue(Success(listShopProduct))
-        }) {
-            productListData.postValue(Fail(it))
-        }
-    }
-
-    fun getNextProductListData(
-            shopId: String,
-            selectedEtalaseId: String,
             page: Int,
+            selectedEtalaseId: String,
             shopProductFilterParameter: ShopProductFilterParameter
     ) {
         launchCatchError(block = {
@@ -355,19 +285,10 @@ class ShopPageProductListViewModel @Inject constructor(
                         shopProductFilterParameter.getPmin()
                 )
             }
-            shopProductChangeProductGridSectionData.postValue(Success(listShopProduct.totalProductData))
             productListData.postValue(Success(listShopProduct))
         }) {
             productListData.postValue(Fail(it))
         }
-    }
-
-    fun removeWishList(productId: String, listener: WishListActionListener) {
-        removeWishlistUseCase.createObservable(productId, userId, listener)
-    }
-
-    fun addWishList(productId: String, listener: WishListActionListener) {
-        addWishListUseCase.createObservable(productId, userId, listener)
     }
 
     fun getNewMembershipData(shopId: String) {
@@ -398,7 +319,7 @@ class ShopPageProductListViewModel @Inject constructor(
         getShopEtalaseByShopUseCase.clearCache()
         clearGetShopProductUseCase()
         listGetShopHighlightProductUseCase.forEach {
-            it?.clearCache()
+            it.clearCache()
         }
         listGetShopHighlightProductUseCase.clear()
         getShopFeaturedProductUseCase.clearCache()
@@ -432,6 +353,7 @@ class ShopPageProductListViewModel @Inject constructor(
             )
             etalaseResponse.await()?.let { etalase ->
                 sortResponse.await()?.let{sort ->
+                    shopSortList = sort
                     shopSortFilterData.postValue(Success(ShopStickySortFilter(etalase, sort)))
                 }
             }
@@ -444,8 +366,23 @@ class ShopPageProductListViewModel @Inject constructor(
         getShopProductUseCase.clearCache()
     }
 
-    fun setInitialProductList(initialProductListData: GetShopProductUiModel) {
-        productListData.postValue(Success(initialProductListData))
+    fun setInitialProductList(
+            shopId: String,
+            initialProductListData: ShopProduct.GetShopProduct
+    ) {
+        productListData.postValue(Success(
+                GetShopProductUiModel(
+                        ShopUtil.isHasNextPage(
+                                START_PAGE,
+                                ShopPageConstant.DEFAULT_PER_PAGE,
+                                initialProductListData.totalData
+                        ),
+                        initialProductListData.data.map {
+                            ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), "")
+                        },
+                        initialProductListData.totalData
+                )
+        ))
     }
 
     fun getBottomSheetFilterData() {
@@ -496,7 +433,7 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     fun getSortNameById(sortId: String): String {
-        return (shopSortFilterData.value as? Success)?.data?.sortList?.firstOrNull {
+        return shopSortList.firstOrNull {
             it.value == sortId
         }?.name.orEmpty()
     }

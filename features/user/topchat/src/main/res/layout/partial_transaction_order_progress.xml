@@ -10,7 +10,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/chatcommon_1dp"
-        android:background="@color/Neutral_N75"
+        android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,7 +19,7 @@
         android:id="@+id/card_order_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_order_status"
@@ -31,7 +31,7 @@
             android:paddingTop="@dimen/spacing_lvl3"
             android:paddingEnd="@dimen/dp_topchat_12"
             android:paddingBottom="@dimen/spacing_lvl3"
-            android:textColor="@color/topchat_charcoal_grey_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toStartOf="@+id/tp_order_visibility"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -47,7 +47,7 @@
             android:paddingTop="@dimen/spacing_lvl3"
             android:paddingEnd="@dimen/dp_topchat_12"
             android:paddingBottom="@dimen/spacing_lvl3"
-            android:textColor="@color/topchat_charcoal_grey_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
@@ -84,7 +84,7 @@
                 android:ellipsize="end"
                 android:includeFontPadding="false"
                 android:maxLines="1"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/btn_action_label"
                 app:layout_constraintStart_toEndOf="@id/iv_order_thumbnail"
                 app:layout_constraintTop_toTopOf="@id/iv_order_thumbnail"
@@ -117,7 +117,7 @@
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4"
                 android:includeFontPadding="false"
-                android:textColor="@color/topchat_charcoal_grey_68"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintStart_toStartOf="@+id/tp_order_name"
                 app:layout_constraintTop_toBottomOf="@+id/tp_order_name"
                 app:typographyType="body_3"
@@ -134,7 +134,7 @@
                 android:ellipsize="end"
                 android:includeFontPadding="false"
                 android:maxLines="1"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toBottomOf="@+id/tp_estimate_label"
                 app:layout_constraintEnd_toStartOf="@+id/btn_action_label"
                 app:layout_constraintStart_toEndOf="@+id/tp_estimate_label"

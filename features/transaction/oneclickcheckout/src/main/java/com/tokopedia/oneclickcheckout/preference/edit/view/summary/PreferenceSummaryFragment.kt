@@ -2,15 +2,16 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.summary
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -64,7 +65,6 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
     private var tvPreferenceName: Typography? = null
     private var tvAddressName: Typography? = null
-    private var tvAddressReceiver: Typography? = null
     private var tvAddressDetail: Typography? = null
     private var buttonChangeAddress: Typography? = null
 
@@ -82,6 +82,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private var tvMainPreference: Typography? = null
 
     private var globalError: GlobalError? = null
+
+    private var isNewFlow = false
 
     companion object {
 
@@ -118,7 +120,6 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         buttonSavePreference = null
         tvPreferenceName = null
         tvAddressName = null
-        tvAddressReceiver = null
         tvAddressDetail = null
         buttonChangeAddress = null
         tvShippingName = null
@@ -147,7 +148,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     }
 
     private fun initViewModel() {
-        viewModel.preference.observe(viewLifecycleOwner, Observer {
+        viewModel.preference.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -170,7 +171,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 }
             }
         })
-        viewModel.editResult.observe(viewLifecycleOwner, Observer {
+        viewModel.editResult.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     progressDialog?.dismiss()
@@ -193,12 +194,16 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 }
                 is OccState.Loading -> {
                     if (progressDialog == null) {
-                        progressDialog = AlertDialog.Builder(context!!)
-                                .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
-                                .setCancelable(false)
-                                .create()
+                        context?.let { ctx ->
+                            progressDialog = AlertDialog.Builder(ctx)
+                                    .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
+                                    .setCancelable(false)
+                                    .create()
+                        }
                     }
-                    progressDialog?.show()
+                    if (progressDialog?.isShowing == false) {
+                        progressDialog?.show()
+                    }
                 }
             }
         })
@@ -209,7 +214,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             val parent = activity
             if (parent is PreferenceEditParent) {
                 val preferenceIndex = parent.getPreferenceIndex()
-                if (preferenceIndex.isNotEmpty()) {
+                if (!isNewFlow && preferenceIndex.isNotEmpty()) {
                     tvPreferenceName?.text = preferenceIndex
                     tvPreferenceName?.visible()
                 }
@@ -221,7 +226,6 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         }
 
         val addressModel = data.addressModel
-        tvAddressName?.text = addressModel.addressName
         val receiverName = addressModel.receiverName
         val phone = addressModel.phone
         var receiverText = ""
@@ -231,12 +235,9 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 receiverText = "$receiverText ($phone)"
             }
         }
-        if (receiverText.isNotEmpty()) {
-            tvAddressReceiver?.text = receiverText
-            tvAddressReceiver?.visible()
-        } else {
-            tvAddressReceiver?.gone()
-        }
+        val span = SpannableString(addressModel.addressName + receiverText)
+        span.setSpan(StyleSpan(Typeface.BOLD), 0, addressModel.addressName.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tvAddressName?.text = span
         tvAddressDetail?.text = addressModel.fullAddress
 
         val shipmentModel = data.shipmentModel
@@ -275,6 +276,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             cbMainPreference?.setOnCheckedChangeListener { _, isChecked ->
                 buttonSavePreference?.isEnabled = viewModel.isDataChanged() || isChecked
             }
+            tvMainPreference?.text = if (isNewFlow) getString(R.string.lbl_new_make_default_preference) else getString(R.string.lbl_default_preference_profile)
         }
     }
 
@@ -316,14 +318,15 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     }
 
     private fun initViews() {
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         mainContent = view?.findViewById(R.id.main_content)
         buttonSavePreference = view?.findViewById(R.id.btn_save)
 
         tvPreferenceName = view?.findViewById(R.id.tv_preference_name)
         tvAddressName = view?.findViewById(R.id.tv_address_name)
-        tvAddressReceiver = view?.findViewById(R.id.tv_address_receiver)
         tvAddressDetail = view?.findViewById(R.id.tv_address_detail)
         buttonChangeAddress = view?.findViewById(R.id.btn_change_address)
 
@@ -388,6 +391,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private fun initHeader() {
         val parent = activity
         if (parent is PreferenceEditParent) {
+            isNewFlow = parent.isNewFlow()
             parent.hideAddButton()
             val profileId = parent.getProfileId()
             if (arguments?.getBoolean(ARG_IS_EDIT) == true && profileId > -1) {
@@ -398,8 +402,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                         context?.let {
                             if (viewModel.preference.value is OccState.Success) {
                                 DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                                    setTitle(getString(R.string.lbl_delete_preference_title))
-                                    setDescription(getString(R.string.lbl_delete_preference_desc))
+                                    setTitle(if (isNewFlow) getString(R.string.lbl_new_delete_preference_title) else getString(R.string.lbl_delete_preference_title))
+                                    setDescription(if (isNewFlow) getString(R.string.lbl_new_delete_preference_desc) else getString(R.string.lbl_delete_preference_desc))
                                     setPrimaryCTAText(getString(R.string.lbl_delete_preference_ok))
                                     setSecondaryCTAText(getString(com.tokopedia.purchase_platform.common.R.string.text_button_negative))
                                     setPrimaryCTAClickListener {
@@ -417,8 +421,11 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 } else {
                     parent.hideDeleteButton()
                 }
-
-                parent.setHeaderTitle(getString(R.string.lbl_summary_preference_with_number_title) + " " + parent.getPreferenceIndex())
+                if (isNewFlow) {
+                    parent.setHeaderTitle(getString(R.string.lbl_new_summary_preference))
+                } else {
+                    parent.setHeaderTitle(getString(R.string.lbl_summary_preference_with_number_title) + " " + parent.getPreferenceIndex())
+                }
                 parent.hideStepper()
             } else {
                 parent.hideDeleteButton()

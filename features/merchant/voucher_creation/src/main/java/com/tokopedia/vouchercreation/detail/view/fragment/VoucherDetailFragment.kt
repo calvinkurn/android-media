@@ -31,6 +31,7 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
+import com.tokopedia.vouchercreation.common.consts.VoucherCreationConst.JPEG_EXT
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -619,7 +620,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
     private fun downloadFiles(uri: String) {
         activity?.let {
             try {
-                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this)
+                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString() + JPEG_EXT, this)
                 helper.downloadFile { true }
             } catch (se: SecurityException) {
                 MvcErrorHandler.logToCrashlytics(se, MvcError.ERROR_SECURITY)

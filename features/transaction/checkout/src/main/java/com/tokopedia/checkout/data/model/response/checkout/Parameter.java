@@ -15,9 +15,6 @@ public class Parameter {
     @SerializedName("profile_code")
     @Expose
     private String profileCode;
-    @SerializedName("customer_id")
-    @Expose
-    private int customerId;
     @SerializedName("customer_name")
     @Expose
     private String customerName;
@@ -42,9 +39,6 @@ public class Parameter {
     @SerializedName("user_defined_value")
     @Expose
     private String userDefinedValue;
-    @SerializedName("amount")
-    @Expose
-    private int amount;
     @SerializedName("currency")
     @Expose
     private String currency;
@@ -67,10 +61,6 @@ public class Parameter {
 
     public String getProfileCode() {
         return profileCode;
-    }
-
-    public int getCustomerId() {
-        return customerId;
     }
 
     public String getCustomerName() {
@@ -103,10 +93,6 @@ public class Parameter {
 
     public String getUserDefinedValue() {
         return userDefinedValue;
-    }
-
-    public int getAmount() {
-        return amount;
     }
 
     public String getCurrency() {

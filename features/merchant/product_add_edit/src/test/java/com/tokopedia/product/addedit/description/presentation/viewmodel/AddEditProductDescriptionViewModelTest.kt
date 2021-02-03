@@ -8,6 +8,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.description.domain.model.ValidateProductDescriptionResponse
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
@@ -96,6 +97,7 @@ class AddEditProductDescriptionViewModelTest {
         AddEditProductDescriptionViewModel(CoroutineTestDispatchersProvider, resourceProvider, getYoutubeVideoUseCase, validateProductDescriptionUseCase)
     }
 
+    private val productDescription = "testing"
     private val youtubeAppHost = "youtu.be"
     private val youtubeWebsiteHost = "www.youtube.com"
     private val youtubeWebsiteHostWithoutWww = "youtube.com"
@@ -133,6 +135,30 @@ class AddEditProductDescriptionViewModelTest {
                         sizecharts= PictureVariantInputModel(),
                         isRemoteDataHasVariant=true)
         )
+    }
+
+    @Test
+    fun `When user insert product description and usecase is success expect validate product description response`() = runBlocking {
+        var message = ""
+        val validateProductDescriptionResponse = ValidateProductDescriptionResponse().apply {
+            productValidateV3.data.validationResults = listOf("nice", "info")
+            message = productValidateV3.data.validationResults.joinToString("\n")
+        }
+
+        coEvery {
+            validateProductDescriptionUseCase.executeOnBackground()
+        } returns validateProductDescriptionResponse
+
+        viewModel.validateProductDescriptionInput(productDescription)
+
+        coVerify {
+            validateProductDescriptionUseCase.executeOnBackground()
+        }
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        val result = viewModel.descriptionValidationMessage.value
+        assert(result != null && result == message)
     }
 
     @Test
@@ -206,14 +232,30 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When the url is null expect failed get youtube video data`() {
+    fun `When the url host is null expect failed get youtube video data`() {
         usedYoutubeVideoUrl = unknownYoutubeUrl
+
+        every {
+            Uri.parse(any()).host
+        } returns null
 
         viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
 
         val result = viewModel.videoYoutube.value
         assert(result != null && result.second is Fail)
     }
+
+    @Test
+    fun `When the response is map containing no values expect failed get youtube video data`() = runBlocking {
+        usedYoutubeVideoUrl = youtubeVideoUrlFromWebsiteWithoutWww
+
+        coEvery {
+            getYoutubeVideoUseCase.executeOnBackground()
+        } returns mapOf()
+
+        viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
+    }
+
 
     @Test
     fun `When get youtube video usecase is throwing an error expect failed get youtube video data`() {
@@ -314,6 +356,16 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
+    fun `When getVariantTypeMessage Expect return empty string`() {
+        viewModel.setPrivateProperty("_productInputModel", MutableLiveData(null))
+        var isValid = viewModel.getVariantTypeMessage(0).isEmpty()
+        assert(isValid)
+
+        isValid = viewModel.getVariantCountMessage(999).isEmpty()
+        assert(isValid)
+    }
+
+    @Test
     fun `When getVariantCountMessage Expect return variant count message`() {
         every { resourceProvider.getVariantCountSuffix() }  returns "suffix"
         val productInput = getTestProductInputModel()
@@ -380,12 +432,10 @@ class AddEditProductDescriptionViewModelTest {
         Assert.assertFalse(viewModel.isEditMode)
 
         // test description input & category id
-        Assert.assertTrue(viewModel.descriptionInputModel.productDescription.isEmpty())
-        Assert.assertTrue(viewModel.categoryId.isEmpty())
+        Assert.assertTrue(viewModel.descriptionInputModel?.productDescription?.isEmpty() ?: false)
 
         viewModel.updateProductInputModel(getTestProductInputModel())
-        Assert.assertTrue(viewModel.descriptionInputModel.productDescription.isNotEmpty())
-        Assert.assertTrue(viewModel.categoryId.isNotEmpty())
+        Assert.assertTrue(viewModel.descriptionInputModel?.productDescription?.isNotEmpty() ?: false)
 
         // VideoData
         viewModel.isFetchingVideoData = mutableMapOf(0 to false)
@@ -399,9 +449,8 @@ class AddEditProductDescriptionViewModelTest {
     @Test
     fun `constant variables should empty when productInputModel is null`() {
         viewModel.setPrivateProperty("_productInputModel", MutableLiveData(null))
-        Assert.assertTrue(viewModel.categoryId.isEmpty())
-        Assert.assertEquals(viewModel.descriptionInputModel, DescriptionInputModel())
-        Assert.assertEquals(viewModel.variantInputModel, VariantInputModel())
+        Assert.assertEquals(viewModel.descriptionInputModel, null)
+        Assert.assertEquals(viewModel.variantInputModel, null)
         Assert.assertFalse(viewModel.hasVariant)
     }
 }

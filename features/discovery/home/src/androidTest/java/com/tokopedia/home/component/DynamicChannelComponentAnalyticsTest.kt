@@ -1,5 +1,6 @@
 package com.tokopedia.home.component
 
+import android.content.Context
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +31,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.clearUserSession
@@ -72,6 +74,7 @@ class DynamicChannelComponentAnalyticsTest {
     var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             gtmLogDBSource.deleteAll().subscribe()
+            disableCoachMark()
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(HomeMockResponseConfig())
         }
@@ -116,6 +119,12 @@ class DynamicChannelComponentAnalyticsTest {
     private fun initTest() {
         clearUserSession()
         waitForData()
+    }
+
+    private fun disableCoachMark(){
+        val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean(
+                NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
     }
 
     private fun initTestWithLogin() {

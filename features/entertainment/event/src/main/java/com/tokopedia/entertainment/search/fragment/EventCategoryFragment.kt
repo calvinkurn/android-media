@@ -1,11 +1,9 @@
 package com.tokopedia.entertainment.search.fragment
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.entertainment.R
@@ -79,7 +76,6 @@ class EventCategoryFragment : BaseDaggerFragment() {
         initializePerformance()
         activity?.run {
             viewModel = ViewModelProviders.of(this,factory).get(EventDetailViewModel::class.java)
-            viewModel.resources = resources
         }
     }
 
@@ -159,7 +155,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
     }
 
     private fun observeErrorReport(){
-        viewModel.errorReport.observe(this, Observer {
+        viewModel.errorReport.observe(viewLifecycleOwner, Observer {
             NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)) {
                 recycler_viewParent.addOnScrollListener(endlessScroll)
                 viewModel.page = "1"
@@ -192,7 +188,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
     private fun observeLiveData(){
         observeViewState()
 
-        viewModel.catLiveData.observe(this, Observer {
+        viewModel.catLiveData.observe(viewLifecycleOwner, Observer {
             categoryTextAdapter.listCategory = it.listCategory
             categoryTextAdapter.hashSet = it.hashSet
             categoryTextAdapter.notifyDataSetChanged()
@@ -203,7 +199,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
 
         })
 
-        viewModel.eventLiveData.observe(this, Observer {
+        viewModel.eventLiveData.observe(viewLifecycleOwner, Observer {
             if(it.isNotEmpty()){
 
                 if(viewModel.page == "1") eventGridAdapter.listEvent = it
@@ -215,11 +211,11 @@ class EventCategoryFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewState(){
-        viewModel.isItRefreshing.observe(this, Observer { swipe_refresh_layout.isRefreshing = it })
-        viewModel.isItShimmering.observe(this, Observer { showOrHideShimmer(it) })
-        viewModel.showParentView.observe(this, Observer { showOrHideParentView(it) })
-        viewModel.showResetFilter.observe(this, Observer { showOrHideResetFilter(it) })
-        viewModel.showProgressBar.observe(this, Observer { showOrHideProgressBar(it) })
+        viewModel.isItRefreshing.observe(viewLifecycleOwner, Observer { swipe_refresh_layout.isRefreshing = it })
+        viewModel.isItShimmering.observe(viewLifecycleOwner, Observer { showOrHideShimmer(it) })
+        viewModel.showParentView.observe(viewLifecycleOwner, Observer { showOrHideParentView(it) })
+        viewModel.showResetFilter.observe(viewLifecycleOwner, Observer { showOrHideResetFilter(it) })
+        viewModel.showProgressBar.observe(viewLifecycleOwner, Observer { showOrHideProgressBar(it) })
     }
 
     private fun showOrHideProgressBar(state: Boolean){

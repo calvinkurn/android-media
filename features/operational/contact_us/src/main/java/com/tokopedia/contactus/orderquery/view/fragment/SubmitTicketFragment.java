@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -36,12 +38,12 @@ import com.tokopedia.contactus.orderquery.di.OrderQueryComponent;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketContract;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketPresenter;
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.imagepicker.common.ImagePickerBuilder;
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor;
+import com.tokopedia.imagepicker.common.ImagePickerRouterKt;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -264,8 +266,8 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
-            if (imagePathList == null || imagePathList.size() <= 0) {
+            List<String> imagePathList = ImagePickerResultExtractor.extract(data).getImageUrlOrPathList();
+            if (imagePathList.size() <= 0) {
                 return;
             }
             String imagePath = imagePathList.get(0);
@@ -285,11 +287,9 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     }
 
     private void showImagePickerDialog() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
-                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
-                null, null);
-        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        ImagePickerBuilder builder = ImagePickerBuilder.getOriginalImageBuilder(requireContext());
+        Intent intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER);
+        ImagePickerRouterKt.putImagePickerBuilder(intent, builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 

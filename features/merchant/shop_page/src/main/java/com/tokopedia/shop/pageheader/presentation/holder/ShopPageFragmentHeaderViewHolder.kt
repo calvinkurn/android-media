@@ -7,8 +7,6 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -59,6 +57,8 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
+        view.shop_page_follow_unfollow_button?.hide()
+        view.shop_page_follow_unfollow_button_old?.hide()
         view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavorite) }
         val shopLocation = shopPageHeaderDataModel.location
         if(shopLocation.isNotEmpty()){
@@ -122,7 +122,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    fun hideFollowButton(){
+    private fun hideFollowButton(){
         followButton.visibility = View.GONE
     }
 
@@ -144,7 +144,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         if(shopPageHeaderDataModel.broadcaster.streamAllowed) shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
         view.container_lottie?.setOnClickListener {
             shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
-            RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+            listener.onStartLiveStreamingClicked()
         }
     }
 
@@ -316,6 +316,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean)
         fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
         fun openShopInfo()
+        fun onStartLiveStreamingClicked()
     }
 
 

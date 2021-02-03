@@ -111,29 +111,29 @@ class FlightOrderDetailWebCheckInViewHolder(view: View,
     private fun renderCheckInStatus(element: FlightOrderDetailJourneyModel) {
         with(itemView) {
             if (element.webCheckIn.webUrl.isNotEmpty()) {
-                val checkInOpenDate = FlightDateUtil.stringToDate(element.webCheckIn.startTime)
-                val checkInCloseDate = FlightDateUtil.stringToDate(element.webCheckIn.endTime)
+                val checkInOpenDate = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, element.webCheckIn.startTime)
+                val checkInCloseDate = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, element.webCheckIn.endTime)
                 val currentTime = FlightDateUtil.getCurrentDate()
 
                 when {
                     currentTime.before(checkInOpenDate) -> {
-                        tgFlightOrderWebCheckInStatus.text = context.getString(R.string.flight_order_detaiil_web_checkin_not_open)
+                        tgFlightOrderWebCheckInStatus.text = context.getString(R.string.flight_order_detail_web_checkin_not_open)
                         setupCheckInStatusGrey()
                         viewDisabled()
                     }
                     currentTime.after(checkInCloseDate) -> {
-                        tgFlightOrderWebCheckInStatus.text = context.getString(R.string.flight_order_detaiil_web_checkin_closed)
+                        tgFlightOrderWebCheckInStatus.text = context.getString(R.string.flight_order_detail_web_checkin_closed)
                         setupCheckInStatusGrey()
                         viewDisabled()
                     }
                     else -> {
-                        tgFlightOrderWebCheckInStatus.text = context.getString(R.string.flight_order_detaiil_web_checkin_available)
+                        tgFlightOrderWebCheckInStatus.text = context.getString(R.string.flight_order_detail_web_checkin_available)
                         setupCheckInStatusBlue()
                         viewEnabled()
                     }
                 }
             } else {
-                tgFlightOrderWebCheckInStatus.text = context.getString(R.string.flight_order_detaiil_web_checkin_not_available)
+                tgFlightOrderWebCheckInStatus.text = context.getString(R.string.flight_order_detail_web_checkin_not_available)
                 setupCheckInStatusGrey()
                 viewDisabled()
             }

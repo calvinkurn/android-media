@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     tools:visibility="visible">
 
@@ -24,27 +24,23 @@
             app:typographyType="body_2"
             tools:ignore="SmallSp" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_detail_option_chevron"
-            android:contentDescription="@string/content_desc_iv_detail_option_chevron"
-            android:layout_width="@dimen/dp_10"
-            android:layout_height="@dimen/dp_10"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginStart="@dimen/dp_5"
-            app:srcCompat="@drawable/checkout_module_ic_down"
-            tools:ignore="ContentDescription" />
+            android:contentDescription="@string/content_desc_iv_detail_option_chevron"
+            app:icon_name="CHEVRON_DOWN" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_sub_total_price"
-            android:textColor="@color/Neutral_N700_96"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/iv_detail_option_chevron"
             android:layout_toStartOf="@id/iv_detail_option_chevron"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             tools:text="Rp200.000" />
@@ -53,14 +49,12 @@
             android:id="@+id/tv_shipment_option"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/dp_84"
+            android:layout_alignParentBottom="true"
             android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_84"
             android:gravity="end"
-            android:textColor="@color/medium_green"
+            android:textColor="@color/Unify_G400"
             android:visibility="gone"
             app:typographyType="small"
             app:typographyWeight="reguler"
@@ -92,9 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_toEndOf="@id/tv_total_item"
-            android:layout_toRightOf="@id/tv_total_item"
             android:gravity="end"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
@@ -114,9 +106,8 @@
             android:id="@+id/tv_shipping_fee_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_below="@id/tv_total_item"
+            android:layout_alignParentEnd="true"
             android:gravity="end"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
@@ -130,15 +121,14 @@
             android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/label_insurance_price"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"/>
+            app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_insurance_fee_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_below="@id/tv_shipping_fee"
+            android:layout_alignParentEnd="true"
             android:gravity="end"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
@@ -158,9 +148,8 @@
             android:id="@+id/tv_purchase_protection_fee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_below="@id/tv_insurance_fee"
+            android:layout_alignParentEnd="true"
             android:gravity="end"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
@@ -174,15 +163,14 @@
             android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/label_seller_additional_cost"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"/>
+            app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_additional_fee_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_below="@id/tv_purchase_protection_label"
+            android:layout_alignParentEnd="true"
             android:gravity="end"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
@@ -196,15 +184,14 @@
             android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/label_order_priority_cost"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"/>
+            app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_priority_fee_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_below="@id/tv_additional_fee"
+            android:layout_alignParentEnd="true"
             android:gravity="end"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
@@ -226,9 +213,8 @@
             android:id="@+id/tv_promo_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_below="@id/tv_insurance_fee"
+            android:layout_alignParentEnd="true"
             android:gravity="end"
             android:visibility="gone"
             app:typographyType="body_3"

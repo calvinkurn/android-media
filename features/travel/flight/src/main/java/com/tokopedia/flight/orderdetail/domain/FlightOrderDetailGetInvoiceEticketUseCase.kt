@@ -34,7 +34,7 @@ class FlightOrderDetailGetInvoiceEticketUseCase @Inject constructor(
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
         useCase.clearRequest()
 
-        val params = mapOf(PARAM_INVOICE_ID to invoiceId)
+        val params = mapOf(PARAM_DATA to mapOf(PARAM_INVOICE_ID to invoiceId))
         val graphqlRequest = GraphqlRequest(FlightOrderDetailGqlConst.QUERY_GET_ORDER_INVOICE,
                 FlightOrderDetailInvoiceEntity.Response::class.java, params)
         useCase.addRequest(graphqlRequest)

@@ -11,7 +11,11 @@ data class CarouselDataUiModel (
         val items: List<CarouselItemUiModel> = emptyList(),
         override var error: String = "",
         override var isFromCache: Boolean = false
-): BaseDataUiModel
+): BaseDataUiModel {
+    override fun shouldRemove(): Boolean {
+        return !isFromCache && items.isEmpty()
+    }
+}
 
 class CarouselItemUiModel (
         val id: String,

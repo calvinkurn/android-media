@@ -5,17 +5,17 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/dp_20"
+    android:padding="@dimen/flight_dp_20"
     android:gravity="center"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:clickable="true"
     android:focusable="true"
     >
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_error_page"
-        android:layout_width="@dimen/dp_280"
-        android:layout_height="@dimen/dp_210"
+        android:layout_width="@dimen/flight_error_iv_width"
+        android:layout_height="@dimen/flight_error_iv_height"
         android:layout_gravity="center"
         tools:background="@drawable/ic_travel_no_ticket"
         />
@@ -24,9 +24,9 @@
         android:id="@+id/tv_error_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:typographyType="heading_2"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         tools:text="Error Title"
         android:gravity="center"/>
 
@@ -36,16 +36,16 @@
         android:layout_height="wrap_content"
         app:typographyType="body_3"
         android:gravity="center"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         tools:text="Maaf nomor yang anda tuju tidak menjawab cobalah beberapa saat lagi atau blablabla"
         />
     
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_error_action"
-        android:layout_width="@dimen/dp_220"
+        android:layout_width="@dimen/flight_error_button_width"
         android:layout_height="wrap_content"
         tools:text="Cari Tiket Ulang"
-        android:layout_marginTop="@dimen/dp_24"/>
+        android:layout_marginTop="@dimen/spacing_lvl5"/>
 
 
 

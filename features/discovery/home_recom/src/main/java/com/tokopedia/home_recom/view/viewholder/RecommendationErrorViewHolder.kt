@@ -19,7 +19,10 @@ class RecommendationErrorViewHolder(view: View, val listener: RecommendationErro
     override fun bind(element: RecommendationErrorDataModel) {
         itemView.global_error?.run {
             setType(if(element.throwable is TimeoutException) GlobalError.NO_CONNECTION else GlobalError.PAGE_NOT_FOUND)
-            setActionClickListener { listener.refresh() }
+            setActionClickListener {
+                if(element.throwable is TimeoutException) listener.onRefreshRecommendation()
+                else listener.onCloseRecommendation()
+            }
             errorSecondaryAction.hide()
         }
     }

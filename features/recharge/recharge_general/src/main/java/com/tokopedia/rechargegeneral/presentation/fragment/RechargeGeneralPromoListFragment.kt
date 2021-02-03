@@ -78,8 +78,8 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
             clipboard.setPrimaryClip(clip)
 
             view?.run {
-                Toaster.make(this,
-                        getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied), Snackbar.LENGTH_LONG)
+                Toaster.build(this,
+                        getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied), Snackbar.LENGTH_LONG).show()
             }
         }
     }

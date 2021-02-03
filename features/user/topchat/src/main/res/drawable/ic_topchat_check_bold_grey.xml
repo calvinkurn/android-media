@@ -4,13 +4,13 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
     <path
-        android:fillColor="#9FA6B0"
+        android:fillColor="@color/Unify_N200"
         android:fillType="evenOdd"
         android:pathData="M21,6.004c-0.55,-0.55 -1.478,-0.522 -2.061,0.062l-8.378,8.378 -1.061,1.06 -1.061,-1.06 -3.378,-3.378c-0.583,-0.584 -1.511,-0.611 -2.061,-0.061s-0.522,1.477 0.062,2.06l5.377,5.37a1.506,1.506 0,0 0,2.122 0l5.189,-5.185 5.189,-5.185c0.583,-0.583 0.611,-1.51 0.061,-2.061" />
     <group>
         <clip-path android:pathData="M21,6.004c-0.55,-0.55 -1.478,-0.522 -2.061,0.062l-8.378,8.378 -1.061,1.06 -1.061,-1.06 -3.378,-3.378c-0.583,-0.584 -1.511,-0.611 -2.061,-0.061s-0.522,1.477 0.062,2.06l5.377,5.37a1.506,1.506 0,0 0,2.122 0l5.189,-5.185 5.189,-5.185c0.583,-0.583 0.611,-1.51 0.061,-2.061 M 0,0" />
         <path
-            android:fillColor="#6C727C"
+            android:fillColor="@color/Unify_N400"
             android:fillType="nonZero"
             android:pathData="M1,1h22v22H1z" />
     </group>

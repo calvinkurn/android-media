@@ -20,7 +20,6 @@
     <string name="flight_order_payment_label">Metode Pembayaran</string>
     <string name="flight_order_a_n_prefix">a.n.</string>
     <string name="flight_order_branch_prefix">Cabang</string>
-    <string name="flight_order_detail_due_date_label">Batas Akhir Pembayaran</string>
     <string name="flight_order_list_button_send_eticket">Kirim E-Ticket</string>
 
     <string name="flight_order_refund_button_card">Order Detail</string>
@@ -28,9 +27,6 @@
     <string name="flight_order_detail_button_label">Order Detail</string>
     <string name="flight_order_failed_button_label">Pesan Ulang</string>
 
-    <string name="flight_order_waiting_for_confirmation_title">Menunggu Konfirmasi Pemesanan</string>
-    <string name="flight_order_in_progress_title">Pemesanan Dalam Proses</string>
-    <string name="flight_order_waiting_for_payment_title">Menunggu Pembayaran</string>
     <string name="flight_order_departure_schedule">Jadwal Penerbangan</string>
 
     <string name="flight_cancellation_dialog_title">Batalkan Pesanan</string>
@@ -45,11 +41,9 @@
     <string name="flight_order_detail_applink_pattern" formatted="false">%1$s/%2$s</string>
 
     <string name="flight_resend_eticket_email_label">E-mail</string>
-    <string name="flight_resend_eticket_dialog_abort">BATAL</string>
     <string name="flight_resend_eticket_dialog_send">KIRIM</string>
     <string name="flight_resend_eticket_dialog_email_hint">Johndoe@tokopedia.com</string>
     <string name="resend_eticket_success" translatable="false">Hore! E-mail berhasil dikirim.</string>
-    <string name="resend_eticket_failed" translatable="false">E-mail gagal dikirim, coba kirim ulang ya.</string>
 
     <string name="resend_eticket_bottomsheet_title">Kirim lewat e-mail</string>
 

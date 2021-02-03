@@ -31,7 +31,7 @@ class PlayWidgetViewHolder(
     fun bind(item: PlayWidgetUiModel, holderWrapper: RecyclerView.ViewHolder) {
         if (item is ImpressionableModel) {
             coordinator.getImpressionHelper().impress(itemView, item) {
-                mListener?.onWidgetImpressed(playWidgetView, holderWrapper.adapterPosition)
+                mListener?.onWidgetImpressed(playWidgetView, item, holderWrapper.adapterPosition)
             }
         }
 
@@ -54,7 +54,8 @@ class PlayWidgetViewHolder(
 
         fun onWidgetImpressed(
                 view: PlayWidgetView,
-                position: Int
+                item: PlayWidgetUiModel,
+                position: Int,
         )
     }
 }

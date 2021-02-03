@@ -14,7 +14,7 @@
             android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Neutral_N100"
+            android:background="@color/Unify_N100"
             android:orientation="vertical">
 
             <include

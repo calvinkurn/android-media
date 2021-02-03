@@ -104,8 +104,8 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_minimum_order_cant_be_zero)
     }
 
-    fun getMaxLimitOrderQuantityErrorMessage(): String? {
-        return getString(R.string.error_maximum_order_exceeding_max_limit)
+    fun getMinOrderExceedLimitQuantityErrorMessage(): String? {
+        return getString(R.string.error_minimum_order_exceed_max_limit)
     }
 
     fun getMinOrderExceedStockErrorMessage(): String? {
@@ -170,14 +170,18 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_invalid_photo_reach_maximum)
     }
 
-    // admin multi location string properties
+    // Product specification properties
 
-    fun getAddProductMultiLocationMessage(): String? {
-        return getString(R.string.message_add_product_stock_only_main_location)
+    fun getProductSpecificationTips(): String {
+        return getString(R.string.label_product_specification_tips).orEmpty()
     }
 
-    fun getEditProductMultiLocationMessage(): String? {
-        return getString(R.string.message_edit_product_stock_only_main_location)
+    fun getProductSpecificationCounter(count: Int): String {
+        return try {
+            context?.getString(R.string.action_specification_counter, count).orEmpty()
+        } catch (e: Resources.NotFoundException) {
+            ""
+        }
     }
 
     // Network errors

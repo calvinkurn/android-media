@@ -50,6 +50,7 @@ class ProductContentViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
+            ProductDetailConstant.PAYLOAD_TRADEIN -> header?.renderTradein(element.showTradeIn())
         }
     }
 

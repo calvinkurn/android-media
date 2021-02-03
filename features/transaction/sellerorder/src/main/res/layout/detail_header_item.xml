@@ -12,9 +12,9 @@
         android:layout_width="4dp"
         android:layout_height="@dimen/layout_lvl0"
         android:background="@drawable/ic_order_status_indicator"
+        app:layout_constraintBottom_toBottomOf="@id/header_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/header_title"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_title"
@@ -33,10 +33,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintStart_toEndOf="@id/header_title"
-        app:layout_constraintTop_toTopOf="parent"
         app:labelTitle="@string/warehouse_label"
-        app:labelType="general_light_grey" />
+        app:labelType="general_light_grey"
+        app:layout_constraintStart_toEndOf="@id/header_title"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_see_history"
@@ -44,12 +44,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/see_detail"
-        app:typographyType="heading_6"
         android:textColor="@color/Unify_G500"
+        app:layout_constraintBottom_toBottomOf="@id/header_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/header_title"
+        app:typographyType="heading_6"
         tools:text="Lihat Detail" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
@@ -85,7 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="true"
         app:layout_constraintStart_toStartOf="parent"
@@ -110,10 +110,10 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/see_invoice"
         android:textColor="@color/Unify_G500"
+        app:layout_constraintBottom_toBottomOf="@id/header_invoice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/header_invoice"
-        app:layout_constraintBottom_toBottomOf="@id/header_invoice"
         app:typographyType="heading_6"
         tools:text="@string/see_invoice" />
 
@@ -133,16 +133,19 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_buyer_value"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
-        android:textIsSelectable="true"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textIsSelectable="true"
+        android:gravity="end"
         app:layout_constraintBottom_toBottomOf="@+id/header_buyer_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/header_buyer_label"
         app:layout_constraintTop_toTopOf="@id/header_buyer_label"
         app:typographyType="body_3"
-        tools:text="Mesut Ozil" />
+        tools:text="Andika Andaru Ahmaludin Pradipta Kecol Putra" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_date_label"
@@ -163,11 +166,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
-        android:textIsSelectable="true"
-        app:layout_constraintEnd_toEndOf="parent"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintTop_toTopOf="@id/header_date_label"
+        android:textIsSelectable="true"
         app:layout_constraintBottom_toBottomOf="@+id/header_date_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/header_date_label"
         app:typographyType="body_3"
         tools:text="25 Des 2018, 05:00 WIB" />
 
@@ -182,7 +185,7 @@
         app:layout_constraintTop_toBottomOf="@id/header_date_label"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Batas Respons"/>
+        tools:text="Batas Respons" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/due_label"
@@ -192,9 +195,9 @@
         android:background="@drawable/bg_due_response"
         app:cardCornerRadius="3dp"
         app:cardElevation="@dimen/dp_0"
+        app:layout_constraintBottom_toBottomOf="@id/header_deadline_label"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/header_deadline_label"
-        app:layout_constraintBottom_toBottomOf="@id/header_deadline_label">
+        app:layout_constraintTop_toTopOf="@id/header_deadline_label">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -226,13 +229,21 @@
 
     </androidx.cardview.widget.CardView>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSomDetailLabels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintTop_toBottomOf="@id/due_label" />
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerHeader"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_deadline_label" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvSomDetailLabels" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

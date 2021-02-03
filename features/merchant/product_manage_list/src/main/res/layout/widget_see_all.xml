@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/filter_see_all"
-        android:textColor="@color/g_500"
+        android:textColor="@color/Unify_G500"
         app:typographyWeight="reguler"
         app:typographyType="body_2"
         app:layout_constraintTop_toTopOf="parent"

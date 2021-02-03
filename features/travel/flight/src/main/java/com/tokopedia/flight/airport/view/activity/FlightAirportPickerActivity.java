@@ -27,7 +27,7 @@ public class FlightAirportPickerActivity extends BaseSimpleActivity implements H
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightAirportPickerFragment.getInstance(
+        return FlightAirportPickerFragment.Companion.getInstance(
                 getIntent().getExtras().getString(EXTRA_TOOLBAR_TITLE));
     }
 

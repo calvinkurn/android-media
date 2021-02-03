@@ -110,5 +110,10 @@
   
   <string name="error_new_phone_already_registered">Nomor HP sudah terdaftar di akun lain. Satu nomor HP hanya bisa digunakan pada satu akun.</string>
   <string name="error_input_another_phone">Nomor ini sudah terdaftar, masukkan nomor lainnya.</string>
+  
+  <string name="text_update_dialog_title">Update aplikasimu, yuk!</string>
+  <string name="text_update_dialog_description">Aplikasimu harus di-update dulu biar bisa pakai semua fitur Tokopedia.</string>
+  <string name="text_update_cta_primary">Update Sekarang</string>
+  <string name="text_update_cta_secondary">Batal</string>
 
 </resources>

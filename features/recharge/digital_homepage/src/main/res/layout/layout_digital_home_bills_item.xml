@@ -7,37 +7,37 @@
     android:orientation="horizontal">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="@dimen/dp_260"
+        android:layout_width="@dimen/bills_item_width"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_2"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:cardElevation="@dimen/dp_2">
+        android:layout_margin="@dimen/spacing_lvl1"
+        app:cardCornerRadius="@dimen/spacing_lvl3"
+        app:cardElevation="@dimen/spacing_lvl1">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.tokopedia.design.image.SquareImageView
+            <ImageView
                 android:id="@+id/bills_image"
-                android:layout_width="@dimen/dp_28"
-                android:layout_height="@dimen/dp_28"
-                android:layout_marginTop="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_12"
-                android:layout_marginLeft="@dimen/dp_12"/>
+                android:layout_width="@dimen/bills_item_image_width"
+                android:layout_height="@dimen/bills_item_image_width"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginBottom="@dimen/unify_space_12"
+                android:layout_marginLeft="@dimen/unify_space_12"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/bills_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_40"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl7"
                 android:maxLines="2"
-                android:paddingStart="@dimen/dp_2"
-                android:paddingLeft="@dimen/dp_2"
-                android:paddingEnd="@dimen/dp_2"
-                android:paddingRight="@dimen/dp_2"
+                android:paddingStart="@dimen/spacing_lvl1"
+                android:paddingLeft="@dimen/spacing_lvl1"
+                android:paddingEnd="@dimen/spacing_lvl1"
+                android:paddingRight="@dimen/spacing_lvl1"
                 app:typographyType="heading_5"
                 tools:text="Mulai Berlangganan dengan mudah" />
 

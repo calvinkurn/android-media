@@ -11,11 +11,11 @@
         android:id="@+id/title_component"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:lines="1"
-        android:paddingStart="@dimen/dp_4"
-        android:paddingLeft="@dimen/dp_4"
-        android:textColor="@color/Neutral_N700_96"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingLeft="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_5"
         tools:text="Transaksi Terakhir" />
 
@@ -23,5 +23,5 @@
         android:id="@+id/recycler_view_menu_component"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10" />
+        android:layout_marginTop="@dimen/spacing_lvl3" />
 </LinearLayout>

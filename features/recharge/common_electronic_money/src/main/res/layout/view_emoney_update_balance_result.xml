@@ -1,43 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/view_card_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/view_card_info"
-    android:padding="@dimen/dp_16"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_lvl4">
 
     <com.tokopedia.common_electronic_money.compoundview.ETollCardInfoView
         android:id="@+id/view_etoll_card_info"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/spacing_lvl4" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_topup"
-        android:layout_margin="@dimen/dp_4"
-        android:padding="@dimen/dp_16"
-        style="@style/Button.Submit.Green"
-        android:text="@string/emoney_button_topup"/>
-
-    <TextView
-        android:visibility="gone"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black"
-        android:gravity="center"
-        android:id="@+id/text_label_progress_title"/>
+        android:layout_margin="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:padding="@dimen/spacing_lvl4"
+        android:text="@string/emoney_button_topup"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
 
-    <TextView
-        android:visibility="gone"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_label_progress_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:id="@+id/text_label_progress_message"/>
+        android:textColor="@color/Unify_N700_96"
+        android:visibility="gone"
+        app:typographyType="body_1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_label_progress_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700_96"
+        android:visibility="gone"
+        app:typographyType="body_3" />
 
 </LinearLayout>

@@ -12,10 +12,4 @@
         android:title="@string/title_som_waiting_payment"
         android:visible="false"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/som_list_action_dotted_waiting_payment_order"
-        android:icon="@drawable/som_list_dotted_waiting_payment_button_icon"
-        android:title="@string/title_som_waiting_payment"
-        android:visible="false"
-        app:showAsAction="always" />
 </menu>

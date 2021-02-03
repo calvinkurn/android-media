@@ -2,7 +2,7 @@ package com.tokopedia.topads.edit.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
 
 /**
  * Created by Pika on 14/4/20.

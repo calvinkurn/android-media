@@ -11,7 +11,7 @@
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:paddingTop="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
@@ -42,7 +42,7 @@
                     android:layout_marginStart="@dimen/dp_7"
                     android:layout_toEndOf="@id/img_mvc"
                     android:lineSpacingExtra="@dimen/sp_4"
-                    android:textColor="@color/text_mvc"
+                    android:textColor="@color/Unify_G500"
                     app:typographyType="body_3"
                     app:typographyWeight="bold"
                     tools:text="@string/tv_mvc_text"
@@ -78,7 +78,7 @@
             android:paddingRight="@dimen/dp_8"
             android:paddingBottom="@dimen/dp_2"
             android:text="@string/label_text_promo_potency"
-            android:textColor="@color/text_promo_potency"
+            android:textColor="@color/Unify_R600"
             android:visibility="gone"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
@@ -176,7 +176,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_mvc_error"
             android:layout_marginTop="4dp"
-            android:textColor="@color/text_courier_error_red"
+            android:textColor="@color/Unify_R600"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/tv_error" />
@@ -198,6 +198,6 @@
         android:layout_height="@dimen/dp_half"
         android:layout_below="@+id/rl_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/separator_color" />
+        android:background="@color/Unify_N100" />
 
 </RelativeLayout>

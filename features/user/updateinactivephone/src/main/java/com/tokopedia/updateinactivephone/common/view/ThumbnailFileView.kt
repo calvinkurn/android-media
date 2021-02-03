@@ -55,7 +55,9 @@ class ThumbnailFileView @JvmOverloads constructor(
 
     fun setImage(url: String) {
         imageThumbnail.scaleType = ImageView.ScaleType.CENTER_CROP
-        imageThumbnail.setImageBitmap(convertToBitmap(url))
+        convertToBitmap(url)?.let {
+            imageThumbnail.setImageBitmap(it)
+        }
     }
 
     fun setImage(@DrawableRes drawable: Int) {

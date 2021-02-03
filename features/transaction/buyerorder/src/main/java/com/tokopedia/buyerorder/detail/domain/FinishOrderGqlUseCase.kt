@@ -29,7 +29,7 @@ class FinishOrderGqlUseCase @Inject constructor(private val graphqlUseCase: Grap
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<UohFinishOrder.Data> {
-        val graphqlRequest = GraphqlRequest(query, UohFinishOrder.Data::class.java, params)
+        val graphqlRequest = GraphqlRequest(query, UohFinishOrder.Data::class.java, params, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {

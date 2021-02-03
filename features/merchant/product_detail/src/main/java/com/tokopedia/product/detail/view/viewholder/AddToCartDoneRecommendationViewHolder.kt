@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
-import com.tokopedia.product.detail.view.adapter.AddToCartRecommendationProductAdapter
 import com.tokopedia.product.detail.view.adapter.RecommendationProductTypeFactory
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -20,10 +19,6 @@ class AddToCartDoneRecommendationViewHolder(
 
     companion object {
         val LAYOUT_RES = R.layout.add_to_cart_done_recommendation_layout
-    }
-
-    private val adapter: AddToCartRecommendationProductAdapter by lazy {
-        AddToCartRecommendationProductAdapter(fact)
     }
 
     private val fact: RecommendationProductTypeFactory by lazy {

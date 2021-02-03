@@ -143,7 +143,7 @@
                         "applink": "tokopedia://discovery/produk-baru?source=homepage.list_carousel.0.25744",
                         "serverTime": 0,
                         "expiredTime": "",
-                        "backColor": "red",
+                        "backColor": "",
                         "backImage": "",
                         "textColor": "#000000"
                     },
@@ -403,7 +403,7 @@
                         "applink": "tokopedia://discovery/produk-baru?source=homepage.list_carousel.0.25744",
                         "serverTime": 0,
                         "expiredTime": "",
-                        "backColor": "red",
+                        "backColor": "",
                         "backImage": "",
                         "textColor": "#000000"
                     },
@@ -612,7 +612,7 @@
                         "applink": "",
                         "serverTime": 0,
                         "expiredTime": "",
-                        "backColor": "red",
+                        "backColor": "",
                         "backImage": "",
                         "textColor": "#000000"
                     },
@@ -1189,7 +1189,7 @@
                         "applink": "tokopedia://discovery/pengguna-baru?source=home",
                         "serverTime": 1595493972,
                         "expiredTime": "2020-07-23T23:59:00+07:00",
-                        "backColor": "red",
+                        "backColor": "",
                         "backImage": "",
                         "textColor": "#000000"
                     },
@@ -1433,7 +1433,7 @@
                         "applink": "tokopedia://discovery/pengguna-baru-pg-dg-rabu?source=home",
                         "serverTime": 0,
                         "expiredTime": "",
-                        "backColor": "red",
+                        "backColor": "",
                         "backImage": "",
                         "textColor": "#000000"
                     },
@@ -1894,7 +1894,7 @@
                         "applink": "tokopedia://discovery/tokopedia-nyam?source=homepage.lego_3_image.0.34129",
                         "serverTime": 0,
                         "expiredTime": "",
-                        "backColor": "red",
+                        "backColor": "",
                         "backImage": "",
                         "textColor": "#000000"
                     },
@@ -2519,7 +2519,7 @@
                         "applink": "tokopedia://category-explore?type=1",
                         "serverTime": 0,
                         "expiredTime": "",
-                        "backColor": "red",
+                        "backColor": "",
                         "backImage": "",
                         "textColor": "#000000"
                     },

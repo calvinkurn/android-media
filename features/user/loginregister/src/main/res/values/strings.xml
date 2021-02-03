@@ -353,7 +353,7 @@
 
     <!--  TICKER  -->
     <string name="title_ticker_from_atc">Yuk, lanjutin belanjanya sekarang!</string>
-    <string name="desc_ticker_from_atc">Khusus pengguna baru, dapetin cashback 80% hingga Rp30.000.</string>
+    <string name="desc_ticker_from_atc">Khusus pengguna baru, dapetin cashback 80%% hingga Rp30.000.</string>
 
     <string name="seller_direct_login">Masuk ke toko ini?</string>
     <string name="button_direct_login">Masuk</string>
@@ -367,11 +367,15 @@
     <string name="content_desc_input_email_phone">input email phone</string>
     <string name="content_desc_password">input password</string>
     <string name="content_desc_register_btn">button submit</string>
-    <string name="content_desc_socmed_btn">button akun media sosial</string>
-    <string name="content_desc_register_button">text daftar</string>
+    <string name="content_desc_socmed_btn_phone">button akun media sosial phone</string>
+    <string name="content_desc_socmed_btn_register">button akun media sosial register initial</string>
+    <string name="content_desc_register_button_phone">text daftar phone</string>
+    <string name="content_desc_register_button_register">text daftar register initial</string>
     <string name="content_desc_login_button">text masuk</string>
     <string name="content_desc_forgot_pass">text lupa password</string>
+    <string name="content_desc_fingerprint_button">fingerprint button content</string>
     <string name="content_desc_provider_name">button sosial media</string>
+    <string name="content_desc_wrapper_pass_partial">wrapper password partial register</string>
 
     <!-- POPUP ERROR -->
     <string name="popup_error_title">Permintaanmu gagal diproses</string>
@@ -379,4 +383,37 @@
     <string name="check_full_information">Cek Informasi Lengkap</string>
     <string name="close_popup">Tutup</string>
 
+    <!-- External Register -->
+    <string name="title_external_register">Daftar</string>
+    <string name="title_external_register_verify">Verifikasi</string>
+    <string name="title_external_register_add_name">Siapa nama kamu?</string>
+    <string name="ovo_connect_account_description">Kamu bisa menghubungkan akun Tokopedia dan OVO agar transaksi jadi lebih praktis.</string>
+    <string name="ovo_connect_account_title">Hubungkan akun ini ke OVO?</string>
+    <string name="dialog_connect_account_positive_btn_text">Ya, Hubungkan</string>
+    <string name="dialog_connect_account_negative_btn_text">Daftar Tanpa Hubungkan</string>
+
+    <string name="dialog_register_account_positive_btn_text">Daftar Tokopedia &amp; OVO</string>
+    <string name="dialog_register_account_negative_btn_text">Daftar Tokopedia Saja</string>
+
+    <string name="base_add_phone_other_method">Metode Lain</string>
+    <string name="base_add_phone_or">atau daftar dengan</string>
+    <string name="base_add_phone_other_next">Selanjutnya</string>
+    <string name="base_add_name_next">Lanjut Daftar</string>
+    <string name="base_add_phone_placeholder">Nomor Ponsel atau Email</string>
+    <string name="ovo_external_register_description_success">Akunmu sudah aktif. Cashback dari transaksimu di Tokopedia akan masuk ke OVO Points.</string>
+    <string name="ovo_external_register_title_success">Hore! Pendaftaranmu berhasil</string>
+
+    <string name="ovo_external_register_description_error">Kamu bisa lanjut daftar dulu &amp; hubungkan akun ini ke OVO lewat home Tokopedia nanti.</string>
+    <string name="ovo_external_register_title_error">Ada kendala saat akses OVO</string>
+
+    <string name="base_add_name_ktp_message">Pastikan sesuai KTP untuk memudahkan verifikasi.</string>
+    <string name="base_add_name_full_name">Nama Lengkap</string>
+    <string name="base_add_name_title">Siapa nama kamu?</string>
+
+    <string name="base_add_name_error_empty">Wajib diisi.</string>
+
+    <string name="ovo_register_account_description">Kamu bisa daftarkan nomor %1$s di Tokopedia &amp; OVO sekaligus, lho!</string>
+    <string name="ovo_register_account_title">Mau sekalian daftar OVO?</string>
+    <string name="content_desc_ovo_success">OvoSuccess</string>
+    <string name="external_account_success_btn_text">Mulai Belanja</string>
 </resources>

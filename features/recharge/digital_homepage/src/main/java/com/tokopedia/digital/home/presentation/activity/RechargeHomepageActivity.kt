@@ -26,7 +26,6 @@ class RechargeHomepageActivity : BaseSimpleActivity(), HasComponent<RechargeHome
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-        handleTracking()
         GraphqlClient.init(this)
     }
 
@@ -34,7 +33,8 @@ class RechargeHomepageActivity : BaseSimpleActivity(), HasComponent<RechargeHome
         val bundle = intent.extras
         val platformId = bundle?.getString(PARAM_PLATFORM_ID)?.toIntOrNull() ?: 0
         val enablePersonalize = (bundle?.getString(PARAM_ENABLE_PERSONALIZE) ?: "true").toBoolean()
-        return RechargeHomepageFragment.newInstance(platformId, enablePersonalize)
+        val sliceOpenApp = bundle?.getBoolean(RECHARGE_HOME_PAGE_EXTRA) ?: false
+        return RechargeHomepageFragment.newInstance(platformId, enablePersonalize, sliceOpenApp)
     }
 
     override fun getScreenName(): String {
@@ -66,16 +66,6 @@ class RechargeHomepageActivity : BaseSimpleActivity(), HasComponent<RechargeHome
             intent.putExtra(PARAM_PLATFORM_ID, platformID)
             intent.putExtra(PARAM_ENABLE_PERSONALIZE, enablePersonalize)
             return intent
-        }
-    }
-
-
-    /* This Method is use to tracking action click when user click open app in action
-    */
-    private fun handleTracking(){
-        val trackingClick = intent.getBooleanExtra(RECHARGE_HOME_PAGE_EXTRA, false)
-        if (trackingClick) {
-            Timber.w("P2#ACTION_SLICE_CLICK_RECHARGE#DigitalHomepage")
         }
     }
 }

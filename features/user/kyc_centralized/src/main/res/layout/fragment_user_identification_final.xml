@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -17,7 +17,7 @@
             android:id="@+id/layout_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/Neutral_N0"
+            android:background="@color/Unify_N0"
             android:orientation="vertical"
             android:visibility="visible"
             android:padding="@dimen/spacing_lvl4">
@@ -27,7 +27,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:typographyType="heading_3"
-                    android:textColor="@color/kyc_centralized_f531353b"
+                    android:textColor="@color/Unify_N700_96"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -55,7 +55,8 @@
                     app:layout_constraintRight_toLeftOf="@+id/image_face"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintDimensionRatio="1:1"
-                    android:background="@drawable/imagebox_border" />
+                    android:background="@drawable/imagebox_border"
+                    android:contentDescription="@string/kyc_desc_foto_ktp"/>
 
                 <ImageView
                     android:id="@+id/result_image_ktp"
@@ -64,20 +65,21 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="@id/image_ktp"
                     app:layout_constraintStart_toStartOf="@id/image_ktp"
-                    app:layout_constraintBottom_toTopOf="@id/result_text_ktp"/>
+                    app:layout_constraintBottom_toTopOf="@id/result_text_ktp"
+                    android:contentDescription="@string/kyc_desc_foto_ktp_result"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/result_text_ktp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_lvl3"
-                    android:textColor="@color/Red_R500"
+                    android:textColor="@color/Unify_R500"
                     app:layout_constraintBottom_toBottomOf="@+id/image_ktp"
                     app:layout_constraintEnd_toEndOf="@+id/result_image_ktp"
                     app:layout_constraintStart_toStartOf="@+id/result_image_ktp"
                     app:layout_constraintTop_toBottomOf="@+id/result_image_ktp"
                     app:typographyType="body_2"
-                    android:text="Foto KTP"
+                    android:text="@string/kyc_desc_foto_ktp"
                     app:typographyWeight="bold" />
 
                 <ImageView
@@ -92,7 +94,8 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintDimensionRatio="1:1"
-                    android:background="@drawable/imagebox_border" />
+                    android:background="@drawable/imagebox_border"
+                    android:contentDescription="@string/kyc_desc_verifikasi_wajah" />
 
                 <ImageView
                     android:id="@+id/result_image_face"
@@ -101,7 +104,8 @@
                     app:layout_constraintTop_toTopOf="@id/image_face"
                     app:layout_constraintLeft_toLeftOf="@id/image_face"
                     app:layout_constraintRight_toRightOf="@id/image_face"
-                    app:layout_constraintBottom_toTopOf="@id/result_text_face" />
+                    app:layout_constraintBottom_toTopOf="@id/result_text_face"
+                    android:contentDescription="@string/kyc_desc_verifikasi_wajah_result" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/result_text_face"
@@ -110,12 +114,12 @@
                     app:typographyType="body_2"
                     app:typographyWeight="bold"
                     android:layout_marginBottom="@dimen/spacing_lvl3"
-                    android:textColor="@color/Red_R500"
+                    android:textColor="@color/Unify_R500"
                     app:layout_constraintTop_toBottomOf="@id/result_image_face"
                     app:layout_constraintLeft_toLeftOf="@id/result_image_face"
                     app:layout_constraintRight_toRightOf="@id/result_image_face"
                     app:layout_constraintBottom_toBottomOf="@id/image_face"
-                    android:text="Verifikasi wajah"/>
+                    android:text="@string/kyc_desc_verifikasi_wajah"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -128,7 +132,7 @@
                     android:gravity="center"
                     android:lineSpacingExtra="@dimen/fontSize_lvl10"
                     tools:text="@string/form_final_info"
-                    android:textColor="@color/kyc_centralized_8a000000"
+                    android:textColor="@color/Unify_N700_44"
                     android:textSize="@dimen/fontSize_lvl3"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/layout_result" />
@@ -190,7 +194,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="heading_2"
             android:textSize="@dimen/fontSize_lvl6"
-            android:textColor="@color/kyc_centralized_f531353b"
+            android:textColor="@color/Unify_N700_96"
             android:lineSpacingExtra="@dimen/kyc_centralized_6sp"
             android:gravity="center_horizontal"
             android:text="@string/upload_loading_title"/>
@@ -205,11 +209,16 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:typographyType="body_2"
             android:textSize="@dimen/fontSize_lvl3"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:lineSpacingExtra="@dimen/kyc_centralized_5sp"
             android:gravity="center_horizontal"
             android:text="@string/upload_loading_subtitle"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include layout="@layout/layout_kyc_upload_error"
+        android:id="@+id/layout_kyc_upload_error"
+        android:visibility="gone"/>
+
     </FrameLayout>
 </androidx.core.widget.NestedScrollView>
