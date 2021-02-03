@@ -29,7 +29,7 @@ class SomListGetOrderListUseCase @Inject constructor(
         return ""
     }
 
-    suspend fun execute(): Pair<Int, List<SomListOrderUiModel>> {
+    suspend fun execute(): Pair<Long, List<SomListOrderUiModel>> {
         useCase.setTypeClass(SomListOrderListResponse.Data::class.java)
         useCase.setRequestParams(params.parameters)
         val searchKeyword = getSearchKeyword()

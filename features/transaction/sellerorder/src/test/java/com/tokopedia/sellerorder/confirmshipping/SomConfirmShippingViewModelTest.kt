@@ -114,7 +114,7 @@ class SomConfirmShippingViewModelTest {
 
         //then
         assert(somConfirmShippingViewModel.courierListResult.value is Success)
-        assert((somConfirmShippingViewModel.courierListResult.value as Success<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>).data.first().shipmentId == 123)
+        assert((somConfirmShippingViewModel.courierListResult.value as Success<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>).data.first().shipmentId == 123L)
     }
 
     @Test

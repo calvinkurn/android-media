@@ -252,7 +252,7 @@ class SomListViewModel @Inject constructor(
         getOrderListParams.nextOrderId = 0
     }
 
-    fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != 0
+    fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != 0L
 
     fun getDataOrderListParams() = getOrderListParams
 

@@ -489,7 +489,7 @@ class SomListViewModelTest {
     fun getOrderList_shouldSuccess() {
         coEvery {
             somListGetOrderListUseCase.execute()
-        } returns (0 to listOf())
+        } returns (0L to listOf())
 
         somGetOrderListJobField.set(viewModel, null)
         viewModel.getOrderList()
@@ -506,7 +506,7 @@ class SomListViewModelTest {
         val getOrderListJob = mockk<Job>(relaxed = true)
         coEvery {
             somListGetOrderListUseCase.execute()
-        } returns (0 to listOf())
+        } returns (0L to listOf())
 
         somGetOrderListJobField.set(viewModel, getOrderListJob)
         viewModel.getOrderList()
@@ -540,7 +540,7 @@ class SomListViewModelTest {
 
         coEvery {
             somListGetOrderListUseCase.execute()
-        } returns (0 to listOf())
+        } returns (0L to listOf())
 
         viewModel.refreshSelectedOrder(invoice)
 
