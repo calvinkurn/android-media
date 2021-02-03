@@ -371,9 +371,11 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     }
 
     private fun hide() {
-        this.visibility = View.GONE
-        layoutContainer.hide()
-        if (::stickyLoginAction.isInitialized) stickyLoginAction.onViewChange(false)
+        if (isShowing()) {
+            this.visibility = View.GONE
+            layoutContainer.hide()
+            if (::stickyLoginAction.isInitialized) stickyLoginAction.onViewChange(false)
+        }
     }
 
     /**
