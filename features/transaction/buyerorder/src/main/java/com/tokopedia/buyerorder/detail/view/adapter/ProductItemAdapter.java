@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,9 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
@@ -48,8 +47,11 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public OrderListAnalytics orderListAnalytics;
     private static final String BUY_AGAIN_ACTION_BUTTON_KEY = "buy_again";
     private static final String CLICK_SIMILAR_PRODUCT_LEVEL_PRODUCT = "click lihat produk serupa - product";
+    private static final String PATH_ORDER_ID = "order_id";
+    private static final String PATH_ORDER_DETAIL_ID = "order_id";
 
-    // tambahin userId dsini
+
+
     public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter,
                               boolean isTradeIn, Status status, String userId) {
         this.context = context;
@@ -174,10 +176,15 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             itemView.setOnClickListener(view -> {
                 orderListAnalytics.hitClickProductName(status.status(), userId);
 
-                Intent intentSnapshot = RouteManager.getIntent(context, ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT);
-                intentSnapshot.putExtra(PARAM_ORDER_DETAIL_ID, items.getOrderDetailId());
-                intentSnapshot.putExtra(PARAM_ORDER_ID, items.getId());
-                view.getContext().startActivity(intentSnapshot);
+                String internalApplink = ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT;
+
+                String snapshotInternal = Uri.parse(internalApplink)
+                        .buildUpon()
+                        .appendQueryParameter(PATH_ORDER_ID, String.valueOf(items.getId()))
+                        .appendQueryParameter(PATH_ORDER_DETAIL_ID, String.valueOf(items.getOrderDetailId()))
+                        .build()
+                        .toString();
+                RouteManager.route(context, snapshotInternal);
             });
 
         }
