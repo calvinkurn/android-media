@@ -791,19 +791,19 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 when (result) {
                     is Success -> {
                         /* apply result only if:
-                           1. First filter data
+                           1. First filter data (cache or cloud)
                            2. Any filter data that is not from cache
                          */
                         if (realtimeDataChangeCount == 0 || !result.data.fromCache) {
                             if (tabActive.isNotBlank() && tabActive != SomConsts.STATUS_ALL_ORDER) {
                                 result.data.statusList.find { it.key == tabActive }?.let { activeFilter ->
                                     activeFilter.isChecked = true
-                                    val orderStatusIds = result.data.statusList.find { it.key == tabActive }?.id.orEmpty()
                                     /*  refresh only on:
-                                        1. 2nd..n-th realtime data
-                                        2. First realtime data with any differences from the previous cached data (if first realtime data is coming after cached data)
+                                        1. 2nd..n-th realtime (cloud) data
+                                        2. First realtime (cloud) data with any differences from the previous cached data (if first realtime data is coming after cached data)
+                                        3. First data
                                      */
-                                    if (result.data.refreshOrder && (realtimeDataChangeCount >= 1 || (realtimeDataChangeCount == 0 && viewModel.isOrderStatusIdsChanged(orderStatusIds)))) {
+                                    if (shouldRefreshOrders(activeFilter.id, result.data.refreshOrder)) {
                                         onTabClicked(activeFilter, shouldScrollToTop, false)
                                     }
                                 }
@@ -816,6 +816,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     else -> showGlobalError(Throwable())
                 }
                 shimmerViews.gone()
+            }
+
+            private fun shouldRefreshOrders(ids: List<Int>, refreshOrder: Boolean): Boolean {
+                return refreshOrder && (realtimeDataChangeCount >= 1 || (realtimeDataChangeCount == 0 && viewModel.isOrderStatusIdsChanged(ids)))
             }
         })
     }
