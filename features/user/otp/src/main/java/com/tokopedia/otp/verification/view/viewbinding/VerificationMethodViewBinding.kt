@@ -26,6 +26,7 @@ class VerificationMethodViewBinding @Inject constructor() : BaseOtpViewBinding()
     var subtitle: Typography? = null
     var methodList: RecyclerView? = null
     var phoneInactive: Typography? = null
+    var phoneInactiveTicker: Ticker? = null
     var loader: LoaderUnify? = null
     var toolbar: Toolbar? = null
     var ticker: Ticker? = null
@@ -37,6 +38,7 @@ class VerificationMethodViewBinding @Inject constructor() : BaseOtpViewBinding()
                 subtitle = findViewById(R.id.subtitle)
                 methodList = findViewById(R.id.method_list)
                 phoneInactive = findViewById(R.id.phone_inactive)
+                phoneInactiveTicker = findViewById(R.id.phone_inactive_ticker)
                 loader = findViewById(R.id.loader)
                 toolbar = findViewById(R.id.toolbar_otp)
                 ticker = findViewById(R.id.tickerVerificationMethod)

@@ -28,7 +28,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
-import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.di.OtpComponent
@@ -40,6 +39,8 @@ import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,6 +65,10 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     private val viewmodel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
+    }
+
+    private val abTestPlatform by lazy {
+        RemoteConfigInstance.getInstance().abTestPlatform
     }
 
     override var viewBound = VerificationMethodViewBinding()
@@ -103,12 +108,19 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     override fun onBackPressed(): Boolean = true
 
     private fun initView() {
-        (activity as VerificationActivity).title = "Verifikasi"
+        setTitle()
+        setMethodListAdapter()
+    }
 
+    private fun setTitle() {
+        (activity as VerificationActivity).title = TITLE
+    }
+
+    private fun setMethodListAdapter() {
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
                 analytics.trackClickMethodOtpButton(otpData.otpType, modeList.modeText)
-               viewmodel.done = true
+                viewmodel.done = true
                 if (modeList.modeText == OtpConstant.OtpMode.MISCALL) {
                     (activity as VerificationActivity).goToOnboardingMiscallPage(modeList)
                 } else {
@@ -175,13 +187,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private fun showListView(otpModeListData: OtpModeListData) {
         adapter.setList(otpModeListData.modeList)
         loadTickerTrouble(otpModeListData)
-
-        when (otpModeListData.linkType) {
-            TYPE_HIDE_LINK -> onTypeHideLink()
-            TYPE_CHANGE_PHONE_UPLOAD_KTP -> onChangePhoneUploadKtpType()
-            TYPE_PROFILE_SETTING -> onProfileSettingType()
-            else -> onTypeHideLink()
-        }
+        setFooter(otpModeListData.linkType)
     }
 
     private fun skipView(modeListData: ModeListData) {
@@ -204,26 +210,89 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
+    private fun setFooter(linkType: Int) {
+        when (linkType) {
+            TYPE_CHANGE_PHONE_UPLOAD_KTP -> onInactivePhoneNumber(getString(R.string.my_phone_number_is_inactive))
+            TYPE_PROFILE_SETTING -> onProfileSettingType()
+            else -> setAbTestFooter()
+        }
+
+    }
+
+    private fun setAbTestFooter() {
+        when (abTestPlatform.getString(AB_TEST_KEY_INACTIVE_PHONE, AB_TEST_VARIANT_1_INACTIVE_PHONE)) {
+            AB_TEST_VARIANT_1_INACTIVE_PHONE -> { onVariant1InactivePhone() }
+            AB_TEST_VARIANT_2_INACTIVE_PHONE -> { onVariant2InactivePhone() }
+            AB_TEST_VARIANT_3_INACTIVE_PHONE -> { onVariant3InactivePhone() }
+            else -> onTypeHideLink()
+        }
+    }
+
+    private fun onVariant1InactivePhone() {
+        onInactivePhoneNumber(getString(R.string.cellphone_number_has_changed))
+    }
+
+    private fun onVariant2InactivePhone() {
+        viewBound.phoneInactiveTicker?.visible()
+        viewBound.phoneInactiveTicker?.setHtmlDescription(String.format(getString(R.string.change_inactive_phone_number_html), ""))
+        viewBound.phoneInactiveTicker?.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                onGoToInactivePhoneNumber()
+            }
+
+            override fun onDismiss() {}
+        })
+    }
+
+    private fun onVariant3InactivePhone() {
+        val message = getString(R.string.change_inactive_phone_number)
+        val clickableMessage = getString(R.string.change_phone_number)
+        val spannable = SpannableString(message)
+        spannable.setSpan(
+                object : ClickableSpan() {
+                    override fun onClick(view: View) {
+                        onGoToInactivePhoneNumber()
+                    }
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                    }
+                },
+                message.indexOf(clickableMessage),
+                message.indexOf(clickableMessage) + clickableMessage.length,
+                0)
+        viewBound.phoneInactive?.visible()
+        context?.let { ContextCompat.getColor(it, R.color.Unify_N700_68) }?.let {
+            viewBound.phoneInactive?.setTextColor(it)
+        }
+        viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
+        viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
+    }
+
     private fun onTypeHideLink() {
         viewBound.phoneInactive?.hide()
     }
 
-    private fun onChangePhoneUploadKtpType() {
+    private fun onInactivePhoneNumber(text: String) {
         viewBound.phoneInactive?.visible()
-        viewBound.phoneInactive?.text = getString(R.string.my_phone_number_is_inactive)
+        viewBound.phoneInactive?.text = text
         viewBound.phoneInactive?.setOnClickListener {
-            context?.let {
-                analytics.trackClickInactivePhoneNumber(otpData.otpType.toString())
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE)
-                if (otpData.email.isEmpty() && otpData.msisdn.isEmpty()) {
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, userSession.tempPhoneNumber)
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.tempEmail)
-                } else {
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, otpData.msisdn)
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
-                }
-                startActivity(intent)
+            onGoToInactivePhoneNumber()
+        }
+    }
+
+    private fun onGoToInactivePhoneNumber() {
+        context?.let {
+            analytics.trackClickInactivePhoneNumber(otpData.otpType.toString())
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE)
+            if (otpData.email.isEmpty() && otpData.msisdn.isEmpty()) {
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, userSession.tempPhoneNumber)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.tempEmail)
+            } else {
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, otpData.msisdn)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
             }
+            startActivity(intent)
         }
     }
 
@@ -276,6 +345,12 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     companion object {
+
+        private const val TITLE = "Verifikasi"
+        private const val AB_TEST_KEY_INACTIVE_PHONE = "KEY"
+        private const val AB_TEST_VARIANT_1_INACTIVE_PHONE = "VARIANT 1"
+        private const val AB_TEST_VARIANT_2_INACTIVE_PHONE = "VARIANT 2"
+        private const val AB_TEST_VARIANT_3_INACTIVE_PHONE = "VARIANT 3"
 
         private const val TYPE_HIDE_LINK = 0
         private const val TYPE_CHANGE_PHONE_UPLOAD_KTP = 1
