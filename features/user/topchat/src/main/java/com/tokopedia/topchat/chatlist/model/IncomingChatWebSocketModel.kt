@@ -64,7 +64,7 @@ data class IncomingChatWebSocketModel constructor(val msgId: String = "") : Base
 
     fun isForOtherRole(@RoleType currentRole: Int, userId: String): Boolean {
         val fromRole = mapWsRoleToRoleType() ?: return true
-        return fromRole == currentRole && getToId() == userId
+        return fromRole == currentRole && getToId() == userId && getContactId() != userId
     }
 
     private fun mapWsRoleToRoleType(): Int? {
