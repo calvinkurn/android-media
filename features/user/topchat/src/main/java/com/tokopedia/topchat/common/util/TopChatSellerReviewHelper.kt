@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.di.ChatScope
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
@@ -18,7 +19,8 @@ import kotlin.coroutines.CoroutineContext
 
 @ChatScope
 class TopChatSellerReviewHelper @Inject constructor(
-        @ApplicationContext private val context: Context
+        @ApplicationContext private val context: Context,
+        private val userSession: UserSessionInterface
 ) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -34,7 +36,7 @@ class TopChatSellerReviewHelper @Inject constructor(
         launchCatchError(block = {
             if (!hasRepliedChat) return@launchCatchError
 
-            val messageIdsSet: MutableSet<String> = cacheHandler.getStringSet(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO, mutableSetOf())
+            val messageIdsSet: MutableSet<String> = cacheHandler.getStringSet(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO + userSession.userId, mutableSetOf())
             val isMessageIdAlreadySaved = messageIdsSet.contains(messageId)
             val isQuotaFull = messageIdsSet.size >= 5
 
@@ -44,7 +46,7 @@ class TopChatSellerReviewHelper @Inject constructor(
             }
 
             messageIdsSet.add(messageId)
-            cacheHandler.putStringSet(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO, messageIdsSet)
+            cacheHandler.putStringSet(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO + userSession.userId, messageIdsSet)
             cacheHandler.applyEditor()
         }, onError = {
             Timber.w(it)

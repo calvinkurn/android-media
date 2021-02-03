@@ -166,7 +166,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     private suspend fun addFlagOnUploadProductSuccess() {
         withContext(Dispatchers.IO) {
             val cacheHandler = LocalCacheHandler(applicationContext, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
-            cacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT, true)
+            cacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT + userSession.userId, true)
             cacheHandler.applyEditor()
         }
     }

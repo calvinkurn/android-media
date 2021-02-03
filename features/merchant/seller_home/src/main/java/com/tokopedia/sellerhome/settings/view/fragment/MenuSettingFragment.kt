@@ -253,7 +253,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun reviewApplication() {
-        SellerReviewUtils.saveFlagHasOpenedReviewApp(activity?.applicationContext)
+        SellerReviewUtils.saveFlagHasOpenedReviewApp(activity?.applicationContext, userSession.userId)
         val uri = Uri.parse(MARKET_DETAIL_HOST + activity?.application?.packageName)
         val goToMarket = Intent(Intent.ACTION_VIEW, uri)
         goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)

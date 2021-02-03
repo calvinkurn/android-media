@@ -11,6 +11,7 @@ import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerreview.view.bottomsheet.FeedbackBottomSheet
 import com.tokopedia.sellerreview.view.bottomsheet.RatingBottomSheet
 import com.tokopedia.sellerreview.view.bottomsheet.ThankYouBottomSheet
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -30,7 +31,8 @@ import kotlin.math.absoluteValue
 
 @SellerHomeScope
 class SellerReviewHelper @Inject constructor(
-        private val cacheHandler: LocalCacheHandler
+        private val cacheHandler: LocalCacheHandler,
+        private val userSession: UserSessionInterface
 ) : CoroutineScope {
 
     companion object {
@@ -53,10 +55,10 @@ class SellerReviewHelper @Inject constructor(
     fun checkForReview(context: Context, fm: FragmentManager) {
         launchCatchError(block = {
             delay(QUOTA_CHECK_DELAY)
-            val hasAddedProduct = cacheHandler.getBoolean(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT, false)
-            val hasPostedFeed = cacheHandler.getBoolean(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED, false)
-            val hasReplied5Chats = cacheHandler.getStringSet(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO, emptySet()).size >= 5
-            val hasOpenedReview = cacheHandler.getBoolean(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW, false)
+            val hasAddedProduct = cacheHandler.getBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT), false)
+            val hasPostedFeed = cacheHandler.getBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED), false)
+            val hasReplied5Chats = cacheHandler.getStringSet(getUniqueKey(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO), emptySet()).size >= 5
+            val hasOpenedReview = cacheHandler.getBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW), false)
 
             withContext(Dispatchers.Main) {
                 if ((getAskReviewStatus() || !hasOpenedReview) && (hasAddedProduct || hasPostedFeed || hasReplied5Chats)) {
@@ -121,7 +123,7 @@ class SellerReviewHelper @Inject constructor(
      * @return true if the in-app review pop-up never seen for the last 30 days
      * */
     private fun getAskReviewStatus(): Boolean {
-        val lastReviewAsked = cacheHandler.getLong(TkpdCache.SellerInAppReview.KEY_LAST_REVIEW_ASKED, Date().time)
+        val lastReviewAsked = cacheHandler.getLong(getUniqueKey(TkpdCache.SellerInAppReview.KEY_LAST_REVIEW_ASKED), Date().time)
         val daysDiff = getDateDiffInDays(Date(lastReviewAsked), Date())
         return daysDiff.absoluteValue > 30
     }
@@ -147,15 +149,19 @@ class SellerReviewHelper @Inject constructor(
 
     private fun resetQuotaCheck() {
         launchCatchError(block = {
-            cacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT, false)
-            cacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED, false)
-            cacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW, true)
-            cacheHandler.putStringSet(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO, mutableSetOf())
+            cacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT), false)
+            cacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED), false)
+            cacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW), true)
+            cacheHandler.putStringSet(getUniqueKey(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO), mutableSetOf())
             val todayMillis = Date().time
-            cacheHandler.putLong(TkpdCache.SellerInAppReview.KEY_LAST_REVIEW_ASKED, todayMillis)
+            cacheHandler.putLong(getUniqueKey(TkpdCache.SellerInAppReview.KEY_LAST_REVIEW_ASKED), todayMillis)
             cacheHandler.applyEditor()
         }, onError = {
             Timber.w(it)
         })
+    }
+
+    private fun getUniqueKey(key: String): String {
+        return SellerReviewUtils.getUniqueKey(key, userSession.userId)
     }
 }

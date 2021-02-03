@@ -206,7 +206,7 @@ class SubmitPostService : JobIntentService() {
 
     private fun addFlagOnCreatePostSuccess() {
         val cacheHandler = LocalCacheHandler(applicationContext, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
-        cacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED, true)
+        cacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED + userSession.userId, true)
         cacheHandler.applyEditor()
     }
 }

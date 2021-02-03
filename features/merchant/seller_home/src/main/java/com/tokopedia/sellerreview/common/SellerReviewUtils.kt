@@ -11,12 +11,14 @@ import java.util.*
 
 object SellerReviewUtils {
 
-    fun saveFlagHasOpenedReviewApp(context: Context?) {
+    fun saveFlagHasOpenedReviewApp(context: Context?, userId: String) {
         context?.let {
             val localCacheHandler = LocalCacheHandler(it, TkpdCache.SellerInAppReview.PREFERENCE_NAME)
-            localCacheHandler.putBoolean(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW, true)
-            localCacheHandler.putLong(TkpdCache.SellerInAppReview.KEY_LAST_REVIEW_ASKED, Date().time)
+            localCacheHandler.putBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW, userId), true)
+            localCacheHandler.putLong(getUniqueKey(TkpdCache.SellerInAppReview.KEY_LAST_REVIEW_ASKED, userId), Date().time)
             localCacheHandler.applyEditor()
         }
     }
+
+    fun getUniqueKey(key: String, userId: String): String = key + userId
 }
