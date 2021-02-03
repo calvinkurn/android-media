@@ -28,13 +28,12 @@ import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
-import com.tokopedia.flight.orderlist.data.cloud.entity.Route;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID;
-import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID;
+import static com.tokopedia.applink.order.DeeplinkMapperOrder.PATH_ORDER_DETAIL_ID;
+import static com.tokopedia.applink.order.DeeplinkMapperOrder.PATH_ORDER_ID;
 
 public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Items> itemsList;
@@ -47,9 +46,6 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public OrderListAnalytics orderListAnalytics;
     private static final String BUY_AGAIN_ACTION_BUTTON_KEY = "buy_again";
     private static final String CLICK_SIMILAR_PRODUCT_LEVEL_PRODUCT = "click lihat produk serupa - product";
-    private static final String PATH_ORDER_ID = "order_id";
-    private static final String PATH_ORDER_DETAIL_ID = "order_id";
-
 
 
     public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter,

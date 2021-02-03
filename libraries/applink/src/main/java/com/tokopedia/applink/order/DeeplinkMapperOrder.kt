@@ -32,8 +32,8 @@ object DeeplinkMapperOrder {
     private const val FILTER_COMPLAINT = "15"
     const val FILTER_CANCELLATION_REQUEST = 10
     private const val PATH_ORDER = "order"
-    private const val PATH_ORDER_ID = "order_id"
-    private const val PATH_ORDER_DETAIL_ID = "order_detail_id"
+    const val PATH_ORDER_ID = "order_id"
+    const val PATH_ORDER_DETAIL_ID = "order_detail_id"
 
     fun getRegisteredNavigationOrder(deeplink: String): String {
         return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(deeplink)
