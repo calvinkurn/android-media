@@ -10,9 +10,10 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
 import com.tokopedia.home_component.R
 
-class BannerChannelAdapter(itemList: List<CircularModel>, listener: CircularListener) : CircularViewPagerAdapter(itemList, listener) {
+class BannerChannelAdapter(val itemList: List<CircularModel>, listener: CircularListener) : CircularViewPagerAdapter(itemList, listener) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CircularViewHolder {
-        return BannerChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_banner_channel_item, parent, false))
+        val layout = if (itemCount > 1) R.layout.layout_banner_channel_item else R.layout.layout_banner_channel_item_full
+        return BannerChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false))
     }
 }
 
