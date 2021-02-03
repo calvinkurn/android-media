@@ -13,6 +13,8 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 02/02/21
  */
 
+//data layer : https://mynakama.tokopedia.com/datatracker/requestdetail/350
+
 @SellerHomeScope
 class SellerReviewTracking @Inject constructor(@ApplicationContext context: Context) {
 
