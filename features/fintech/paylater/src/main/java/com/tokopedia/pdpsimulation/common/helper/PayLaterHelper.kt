@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterPartnerStepDetails
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
 import com.tokopedia.pdpsimulation.paylater.mapper.ProcessingApplicationPartnerType
 import com.tokopedia.pdpsimulation.paylater.mapper.RegisterStepsPartnerType
@@ -30,14 +31,11 @@ object PayLaterHelper {
             bundle.putString(PayLaterActionStepsBottomSheet.ACTION_URL, data.actionWebUrl)
             when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data, partnerApplicationDetail)) {
                 is RegisterStepsPartnerType -> {
-                    bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, data.partnerApplyDetails)
-                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.pay_later_how_to_register)} ${data.partnerName}")
+                    populateBundle(bundle, data.partnerApplyDetails, "${context?.getString(R.string.pay_later_how_to_register)} ${data.partnerName}")
                     PayLaterActionStepsBottomSheet.show(bundle, childFragmentManager)
-
                 }
                 is UsageStepsPartnerType -> {
-                    bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, data.partnerUsageDetails)
-                    bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, "${context?.getString(R.string.pay_later_how_to_use)} ${data.partnerName}")
+                    populateBundle(bundle, data.partnerUsageDetails, "${context?.getString(R.string.pay_later_how_to_use)} ${data.partnerName}")
                     PayLaterActionStepsBottomSheet.show(bundle, childFragmentManager)
                 }
                 is ProcessingApplicationPartnerType -> {
@@ -48,7 +46,12 @@ object PayLaterHelper {
         }
     }
 
-    fun getJson(path : String) : String {
+    private fun populateBundle(bundle: Bundle, partnerData: PayLaterPartnerStepDetails?, title: String) {
+        bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, partnerData)
+        bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, title)
+    }
+
+    fun getJson(path: String): String {
         val uri = this.javaClass.classLoader?.getResource(path)
         val file = File(uri?.path)
         return String(file.readBytes())

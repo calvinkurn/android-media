@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.pdpsimulation.common.di.module.PdpSimulationModule
 import com.tokopedia.pdpsimulation.common.di.module.ViewModelModule
-import com.tokopedia.pdpsimulation.common.di.scope.PayLaterScope
+import com.tokopedia.pdpsimulation.common.di.scope.PdpSimulationScope
 import com.tokopedia.pdpsimulation.common.presentation.fragment.PdpSimulationFragment
 import com.tokopedia.pdpsimulation.creditcard.presentation.registration.bottomsheet.CreditCardRegistrationBottomSheet
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.CreditCardSimulationFragment
@@ -16,7 +16,7 @@ import com.tokopedia.pdpsimulation.paylater.presentation.simulation.PayLaterSimu
 
 import dagger.Component
 
-@PayLaterScope
+@PdpSimulationScope
 @Component(modules =
 [PdpSimulationModule::class,
     ViewModelModule::class],

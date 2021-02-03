@@ -1,9 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.mapper
 
-import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
-import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
-import com.tokopedia.unifycomponents.Label
 
 const val STATUS_APPROVED = "Approved"
 const val STATUS_WAITING = "Waiting"
@@ -39,61 +36,6 @@ object PayLaterApplicationStatusMapper {
             STATUS_FAILED -> PayLaterStatusFailed
             STATUS_CANCELLED -> PayLaterStatusCancelled
             else -> PayLaterStatusEmpty
-        }
-    }
-
-    fun handleApplicationStateResponse(userCreditApplicationStatus: UserCreditApplicationStatus): Pair<Boolean, Boolean> {
-        var isPayLaterActive = false
-        userCreditApplicationStatus.run {
-            if (!applicationDetailList.isNullOrEmpty()) {
-                for (applicationDetail in applicationDetailList) {
-                    setLabelData(applicationDetail)
-                    if (getApplicationStatusType(applicationDetail) is PayLaterStatusActive)
-                        isPayLaterActive = true
-                }
-            } else return Pair(false, isPayLaterActive)
-        }
-        return Pair(true, isPayLaterActive)
-    }
-
-    /**
-     * setLabelData -> set string resource id and label type once in application status data
-     * @param payLaterApplicationDetail : ApplicationStatus Data
-     */
-    private fun setLabelData(payLaterApplicationDetail: PayLaterApplicationDetail) {
-        when (getApplicationStatusType(payLaterApplicationDetail)) {
-            is PayLaterStatusWaiting -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_waiting
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_ORANGE
-            }
-            is PayLaterStatusActive -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_active
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_BLUE
-            }
-            is PayLaterStatusCancelled -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_cancelled
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
-            }
-            is PayLaterStatusRejected -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_rejected
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
-            }
-            is PayLaterStatusApproved -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_approved
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_BLUE
-            }
-            is PayLaterStatusSuspended -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_suspended
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
-            }
-            is PayLaterStatusFailed -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_failed
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
-            }
-            is PayLaterStatusExpired -> {
-                payLaterApplicationDetail.payLaterApplicationStatusLabelStringId = R.string.pay_later_status_expired
-                payLaterApplicationDetail.payLaterApplicationStatusLabelType = Label.GENERAL_LIGHT_RED
-            }
         }
     }
 }

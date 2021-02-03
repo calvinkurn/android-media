@@ -2,10 +2,12 @@ package com.tokopedia.pdpsimulation.creditcard.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
-import com.tokopedia.pdpsimulation.creditcard.domain.model.*
+import com.tokopedia.pdpsimulation.creditcard.domain.model.BankCardListItem
+import com.tokopedia.pdpsimulation.creditcard.domain.model.CreditCardPdpMetaData
+import com.tokopedia.pdpsimulation.creditcard.domain.model.CreditCardSimulationResult
+import com.tokopedia.pdpsimulation.creditcard.domain.model.PdpCreditCardSimulation
 import com.tokopedia.pdpsimulation.creditcard.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,7 +22,6 @@ class CreditCardViewModel @Inject constructor(
         private val creditCardTncMapperUseCase: CreditCardTncMapperUseCase,
         private val creditCardSimulationMapperUseCase: CreditCardSimulationMapperUseCase,
         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
-        @CoroutineBackgroundDispatcher val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
     val creditCardSimulationResultLiveData = MutableLiveData<Result<CreditCardSimulationResult>>()
     val creditCardPdpMetaInfoLiveData = MutableLiveData<Result<CreditCardPdpMetaData>>()
@@ -85,11 +86,8 @@ class CreditCardViewModel @Inject constructor(
         creditCardPdpMetaInfoLiveData.value = Fail(throwable)
     }
 
-    private fun onBankCardListDataSuccess(creditCardBankData: CreditCardBankData?) {
-        if (creditCardBankData == null || creditCardBankData.bankCardList.isNullOrEmpty())
-            onBankCardListDataError(PdpSimulationException.PayLaterNullDataException(BANK_CARD_DATA_FAILURE))
-        else
-            creditCardBankResultLiveData.value = Success(creditCardBankData.bankCardList)
+    private fun onBankCardListDataSuccess(creditCardBankList: ArrayList<BankCardListItem>) {
+        creditCardBankResultLiveData.value = Success(creditCardBankList)
     }
 
     private fun onBankCardListDataError(throwable: Throwable) {
@@ -113,7 +111,6 @@ class CreditCardViewModel @Inject constructor(
 
     companion object {
         const val SIMULATION_DATA_FAILURE = "NULL DATA"
-        const val BANK_CARD_DATA_FAILURE = "NULL DATA"
         const val CREDIT_CARD_NOT_AVAILABLE = "Credit Card Not Applicable"
     }
 }

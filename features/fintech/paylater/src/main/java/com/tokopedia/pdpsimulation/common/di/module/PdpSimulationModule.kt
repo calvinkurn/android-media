@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,10 +27,6 @@ class PdpSimulationModule {
     @Provides
     @CoroutineMainDispatcher
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @Provides
-    @CoroutineBackgroundDispatcher
-    fun provideBackgroundDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {

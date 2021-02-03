@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 
-class PayLaterPagerAdapter(val context: Context, fm: FragmentManager, behaviour: Int): FragmentStatePagerAdapter(fm, behaviour) {
+class PayLaterPagerAdapter(val context: Context, fm: FragmentManager, behaviour: Int) : FragmentStatePagerAdapter(fm, behaviour) {
     private val itemTabList: MutableList<Fragment> = mutableListOf()
 
     override fun getItem(position: Int): Fragment {
@@ -13,10 +13,8 @@ class PayLaterPagerAdapter(val context: Context, fm: FragmentManager, behaviour:
     }
 
     override fun getCount(): Int {
-        return 2
+        return itemTabList.size
     }
-
-    fun getList() = itemTabList
 
     fun setList(item: List<Fragment>) {
         item.let {
