@@ -73,7 +73,7 @@ data class NotificationUiModel(
         val updateTimeUnix: Long = 0,
         @SerializedName("user_id")
         val userId: Long = 0,
-        @SerializedName("type_widget_history")
+        @SerializedName("notif_order_type")
         val widgetType: Int = 0,
         @SerializedName("track_history")
         val trackHistory: List<TrackHistory> = listOf(),

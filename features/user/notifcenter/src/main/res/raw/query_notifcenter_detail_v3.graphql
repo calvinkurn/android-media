@@ -21,7 +21,6 @@ query notifcenter_detail_v3(
 			has_prev
 		}
 		new_list {
-		    type_widget_history
 			notif_id
 			user_id
 			shop_id
@@ -48,6 +47,7 @@ query notifcenter_detail_v3(
 			expire_time_unix
 			status
 			read_status
+		    notif_order_type
             widget {
                 title
                 description
@@ -147,7 +147,6 @@ query notifcenter_detail_v3(
 			}
 		}
 		list {
-		    type_widget_history
 			notif_id
 			user_id
 			shop_id
@@ -174,6 +173,7 @@ query notifcenter_detail_v3(
 			expire_time_unix
 			status
 			read_status
+		    notif_order_type
             widget {
                 title
                 description
