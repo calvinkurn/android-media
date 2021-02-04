@@ -1,15 +1,16 @@
 package com.tokopedia.sellerorder.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.model.*
 import com.tokopedia.sellerorder.common.domain.usecase.*
-import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
 import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
 import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -60,6 +61,12 @@ class SomDetailViewModelTest {
     lateinit var somRejectCancelOrderUseCase: SomRejectCancelOrderUseCase
 
     @RelaxedMockK
+    lateinit var authorizeSomDetailAccessUseCase: AuthorizeAccessUseCase
+
+    @RelaxedMockK
+    lateinit var authorizeChatReplyAccessUseCase: AuthorizeAccessUseCase
+
+    @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
 
     @Before
@@ -67,7 +74,8 @@ class SomDetailViewModelTest {
         MockKAnnotations.init(this)
         somDetailViewModel = SomDetailViewModel(dispatcher, userSessionInterface, somGetOrderDetailUseCase,
                 somAcceptOrderUseCase, somReasonRejectUseCase, somRejectOrderUseCase,
-                somEditRefNumUseCase, somSetDeliveredUseCase, somRejectCancelOrderUseCase)
+                somEditRefNumUseCase, somSetDeliveredUseCase, somRejectCancelOrderUseCase,
+                authorizeSomDetailAccessUseCase, authorizeChatReplyAccessUseCase)
 
         val product1 = SomDetailOrder.Data.GetSomDetail.Products(123)
         listProducts = arrayListOf(product1).toMutableList()
@@ -369,6 +377,92 @@ class SomDetailViewModelTest {
         somDetailViewModel.rejectCancelOrder("123456")
 
         assert(somDetailViewModel.rejectCancelOrderResult.value is Fail)
+    }
+
+    @Test
+    fun checkAdminAccess_ifShopOwner_shouldReturnTruePair() {
+        coEvery {
+            userSessionInterface.isShopOwner
+        } returns true
+
+        somDetailViewModel.getAdminPermission()
+
+        assertDetailChatEligibilityEquals(true to true)
+    }
+
+    @Test
+    fun checkAdminAccess_ifShopAdmin_shouldSuccess() {
+        val isSomDetailRole = true
+        val isReplyChatRole = true
+        onAuthorizeSomDetailAccessSuccess_thenReturn(isSomDetailRole)
+        onAuthorizeReplyChatAccessSuccess_thenReturn(isReplyChatRole)
+        coEvery {
+            userSessionInterface.isShopOwner
+        } returns false
+        coEvery {
+            userSessionInterface.isShopAdmin
+        } returns true
+
+        somDetailViewModel.getAdminPermission()
+
+        assertDetailChatEligibilityEquals(isSomDetailRole to isReplyChatRole)
+    }
+
+    @Test
+    fun checkAdminAccess_ifShopAdmin_shouldFail() {
+        onAuthorizeReplyChatAccessFail_thenThrow(ResponseErrorException())
+        coEvery {
+            userSessionInterface.isShopOwner
+        } returns false
+        coEvery {
+            userSessionInterface.isShopAdmin
+        } returns true
+
+        somDetailViewModel.getAdminPermission()
+
+        assert(somDetailViewModel.somDetailChatEligibility.value is Fail)
+    }
+
+    @Test
+    fun checkAdminAccess_ifIsNotOwnerOrAdmin_shouldReturnFalsePair() {
+        coEvery {
+            userSessionInterface.isShopOwner
+        } returns false
+        coEvery {
+            userSessionInterface.isShopAdmin
+        } returns false
+
+        somDetailViewModel.getAdminPermission()
+
+        assertDetailChatEligibilityEquals(false to false)
+    }
+
+    private fun onAuthorizeSomDetailAccessSuccess_thenReturn(isEligible: Boolean) {
+        coEvery {
+            authorizeSomDetailAccessUseCase.execute(any())
+        } returns isEligible
+    }
+
+    private fun onAuthorizeReplyChatAccessSuccess_thenReturn(isEligible: Boolean) {
+        coEvery {
+            authorizeChatReplyAccessUseCase.execute(any())
+        } returns isEligible
+    }
+
+    private fun onAuthorizeSomDetailAccessFail_thenThrow(throwable: Throwable) {
+        coEvery {
+            authorizeSomDetailAccessUseCase.execute(any())
+        } throws throwable
+    }
+
+    private fun onAuthorizeReplyChatAccessFail_thenThrow(throwable: Throwable) {
+        coEvery {
+            authorizeChatReplyAccessUseCase.execute(any())
+        } throws throwable
+    }
+
+    private fun assertDetailChatEligibilityEquals(pairs: Pair<Boolean, Boolean>) {
+        assert((somDetailViewModel.somDetailChatEligibility.value as? Success)?.equals(pairs) == true)
     }
 }
 
