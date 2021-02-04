@@ -128,6 +128,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun setHeadlineShopData(cpmData: CpmData?, appLink: String, adsClickUrl: String) {
         if (isEligible(cpmData)) {
+            val container = findViewById<View>(R.id.container)
             val list = findViewById<RecyclerView?>(R.id.list)
             val shopDetail = findViewById<View?>(R.id.shop_detail)
             val adsBannerShopCardView = findViewById<ShopCardView?>(R.id.adsBannerShopCardView)
@@ -136,6 +137,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 list?.gone()
                 shopDetail?.gone()
                 adsBannerShopCardView?.visible()
+                container?.setBackgroundResource(0)
 
                 setHeadlineShopDataCardWidget(cpmData, adsBannerShopCardView, appLink, adsClickUrl)
             }

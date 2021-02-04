@@ -90,8 +90,8 @@ class ShopCardView: BaseCustomView {
     }
 
     private fun initImageShopReputation(shopCardModel: ShopCardModel) {
-        shopWidgetImageViewShopReputation?.let { imageViewShopReputation ->
-            ImageHandler.loadImageThumbs(context, imageViewShopReputation, shopCardModel.reputationImageUri)
+        shopWidgetImageViewShopReputation?.shouldShowWithAction(shopCardModel.reputationImageUri.isNotEmpty()) {
+            ImageHandler.loadImageThumbs(context, shopWidgetImageViewShopReputation, shopCardModel.reputationImageUri)
         }
     }
 
