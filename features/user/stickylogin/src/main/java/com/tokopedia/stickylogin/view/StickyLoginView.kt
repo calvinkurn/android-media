@@ -146,13 +146,8 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     private fun initView() {
         initInjector()
+        updateDarkMode()
         setContent(content, highlight)
-
-        if (isDarkModeOn()) {
-            onDarkMode()
-        } else {
-            onLightMode()
-        }
 
         if (leftImage != null) {
             imageViewLeft.setImageDrawable(leftImage)
@@ -360,12 +355,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     }
 
     fun show() {
-        if (isDarkModeOn()) {
-            onDarkMode()
-        } else {
-            onLightMode()
-        }
-
+        updateDarkMode()
         this.visibility = View.VISIBLE
         layoutContainer.show()
         if (::stickyLoginAction.isInitialized) stickyLoginAction.onViewChange(true)
@@ -403,6 +393,14 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
         trackerLoginReminder.viewOnPage(page)
         show()
+    }
+
+    private fun updateDarkMode() {
+        if (isDarkModeOn()) {
+            onDarkMode()
+        } else {
+            onLightMode()
+        }
     }
 
     override fun isDarkModeOn(): Boolean = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
