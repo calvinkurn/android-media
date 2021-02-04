@@ -20,7 +20,9 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 }
 
 project.ext {

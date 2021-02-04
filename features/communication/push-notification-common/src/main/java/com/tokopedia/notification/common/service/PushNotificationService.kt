@@ -1,10 +1,10 @@
-package com.tokopedia.abstraction.aidl.service
+package com.tokopedia.notification.common.service
 
 import android.content.Intent
 import android.os.Bundle
-import com.tokopedia.appaidl.data.UserKey
-import com.tokopedia.appaidl.service.AidlRemoteService
+import com.tokopedia.notification.common.data.UserKey
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.aidl.service.AidlRemoteService
 
 class PushNotificationService: AidlRemoteService() {
 

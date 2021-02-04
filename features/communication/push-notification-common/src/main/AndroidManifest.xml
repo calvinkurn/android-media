@@ -3,4 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.notification.common">
 
+    <application>
+        <service
+            android:name="com.tokopedia.notification.common.service.PushNotificationService"
+            android:exported="true" />
+    </application>
+
 </manifest>
