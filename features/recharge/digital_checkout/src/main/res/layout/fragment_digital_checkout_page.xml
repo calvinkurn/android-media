@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/spacing_lvl4"
-                android:background="@color/Neutral_N0">
+                android:background="@color/Unify_N0">
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/iconCheckout"
@@ -35,7 +35,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/iconCheckout"
                     android:layout_marginLeft="@dimen/spacing_lvl3"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     app:typographyType="heading_4"
                     tools:text="Listrik PLN" />
 
@@ -44,7 +44,7 @@
                     android:layout_below="@+id/productTitle"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/Neutral_N75"
+                    android:background="@color/Unify_N75"
                     android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_marginBottom="@dimen/spacing_lvl4"/>
 
@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/spacing_lvl3"
                     android:text="@string/digital_cart_detail_see_detail_label"
-                    android:textColor="@color/Green_G500"
+                    android:textColor="@color/Unify_G500"
                     android:visibility="gone"
                     app:typographyType="body_2" />
 
@@ -116,7 +116,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         android:focusableInTouchMode="true"
-        android:background="@color/Neutral_N0">
+        android:background="@color/Unify_N0">
 
         <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
             android:id="@+id/digitalPromoBtnView"
@@ -131,7 +131,7 @@
             android:layout_marginHorizontal="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:text="@string/digital_checkout_total_payment_label"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
@@ -143,7 +143,7 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:textColor="@color/Yellow_Y500"
+            android:textColor="@color/Unify_Y500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tvTotalPaymentLabel"
             app:layout_constraintStart_toStartOf="@id/tvTotalPaymentLabel"
@@ -188,7 +188,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone"
-        android:background="@color/Neutral_N0">
+        android:background="@color/Unify_N0">
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/progress_bar"

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingVertical="@dimen/spacing_lvl4"
     android:paddingStart="@dimen/spacing_lvl4"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_dg_checkout_header"
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toStartOf="@id/icCheckoutMyBillsInfo"
             app:layout_constraintHorizontal_bias="0.0"
@@ -38,7 +38,7 @@
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:tint="@color/Neutral_N200"
+            android:tint="@color/Unify_N200"
             app:layout_constraintEnd_toStartOf="@id/checkBoxCheckoutMyBills"
             app:layout_constraintStart_toEndOf="@id/tvCheckoutMyBillsHeaderTitle"
             app:layout_constraintTop_toTopOf="@id/tvCheckoutMyBillsHeaderTitle"
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintTop_toBottomOf="@id/layout_dg_checkout_header"
         app:typographyType="small"
         tools:text="Pembayaran akan dilakukan secara otomatis pada 2 November 2018 dengan OvoCash." />
