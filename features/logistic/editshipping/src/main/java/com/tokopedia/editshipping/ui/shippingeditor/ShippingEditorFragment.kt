@@ -368,11 +368,20 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         val viewBottomSheetWarehouseInactive = View.inflate(context, R.layout.bottomsheet_courier_inactive, null)
         setupChildCourierInactive(viewBottomSheetWarehouseInactive, uiContentModel.headerLocation, uiContentModel.warehouses.size, data)
 
-        bottomSheetCourierInactive?.apply {
-            setTitle("Lokasi toko yang tidak memiliki kurir")
-            setCloseClickListener { dismiss() }
-            setChild(viewBottomSheetWarehouseInactive)
-            setOnDismissListener { dismiss() }
+        if (bottomSheetCourierInactiveState == BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE) {
+            bottomSheetCourierInactive?.apply {
+                setTitle(data.uiContent.header)
+                setCloseClickListener { dismiss() }
+                setChild(viewBottomSheetWarehouseInactive)
+                setOnDismissListener { dismiss() }
+            }
+        } else {
+            bottomSheetCourierInactive?.apply {
+                setTitle("Lokasi toko yang tidak memiliki kurir")
+                setCloseClickListener { dismiss() }
+                setChild(viewBottomSheetWarehouseInactive)
+                setOnDismissListener { dismiss() }
+            }
         }
 
         fragmentManager?.let {
@@ -476,7 +485,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                 tickerChargeBoCourierInactive?.gone()
             }
             BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE -> {
-                tvCourierInactive?.text = getString(R.string.text_header_validate_courier_not_covered, courierCount)
+                tvCourierInactive?.text = data?.uiContent?.headerLocation
                 btnPrimaryVertical?.text = "Batalkan & Atur Ulang"
                 btnPrimaryVertical?.setOnClickListener {
                     bottomSheetCourierInactive?.dismiss()

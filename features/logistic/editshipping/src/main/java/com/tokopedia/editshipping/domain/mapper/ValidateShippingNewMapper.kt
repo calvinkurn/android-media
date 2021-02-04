@@ -18,6 +18,7 @@ class ValidateShippingNewMapper @Inject constructor() {
         return UiContentModel().apply {
             header = response.header
             body = response.body
+            headerLocation = response.headerLocation
             ticker = mapTickerContent(response.ticker)
             warehouses = mapWarehouseModelBasedOnWarehouseId(response.warehouseId, response.warehouses)
             warehouseId = response.warehouseId
