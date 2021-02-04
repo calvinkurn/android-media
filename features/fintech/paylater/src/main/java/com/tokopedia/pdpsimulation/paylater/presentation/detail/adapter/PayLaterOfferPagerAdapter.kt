@@ -7,9 +7,9 @@ import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
+import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterPaymentOptionsFragment
 
 class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int): FragmentStatePagerAdapter(fm, behaviour) {

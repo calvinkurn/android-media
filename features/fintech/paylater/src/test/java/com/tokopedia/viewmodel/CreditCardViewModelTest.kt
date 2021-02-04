@@ -3,10 +3,7 @@ package com.tokopedia.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.pdpsimulation.creditcard.domain.model.*
-import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardBankDataUseCase
-import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardPdpMetaInfoUseCase
-import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardSimulationUseCase
-import com.tokopedia.pdpsimulation.creditcard.domain.usecase.CreditCardTncMapperUseCase
+import com.tokopedia.pdpsimulation.creditcard.domain.usecase.*
 import com.tokopedia.pdpsimulation.creditcard.viewmodel.CreditCardViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -32,6 +29,7 @@ class CreditCardViewModelTest {
     val creditCardPdpMetaInfoUseCase = mockk<CreditCardPdpMetaInfoUseCase>(relaxed = true)
     val creditCardBankDataUseCase = mockk<CreditCardBankDataUseCase>(relaxed = true)
     val credittncusecase = mockk<CreditCardTncMapperUseCase>(relaxed = true)
+    val creditCardSimulationMapperUseCase = mockk<CreditCardSimulationMapperUseCase>(relaxed = true)
 
     val dispatcher = TestCoroutineDispatcher()
     lateinit var viewModel: CreditCardViewModel
@@ -54,9 +52,6 @@ class CreditCardViewModelTest {
             isDisabled = false,
             isSelected = true
     )
-
-
-    //private val emptyCreditCardSimulationResponse = CreditCardGetSimulationResponse()
     private var creditCardSimulationObserver = mockk<Observer<Result<CreditCardSimulationResult>>>(relaxed = true)
 
     @Before
@@ -66,8 +61,8 @@ class CreditCardViewModelTest {
                 creditCardPdpMetaInfoUseCase,
                 creditCardBankDataUseCase,
                 credittncusecase,
+                creditCardSimulationMapperUseCase,
                 dispatcher,
-                dispatcher
         )
         viewModel.creditCardSimulationResultLiveData.observeForever(creditCardSimulationObserver)
     }
@@ -106,6 +101,12 @@ class CreditCardViewModelTest {
         coEvery {
             creditCardSimulationUseCase.cancelJobs()
         } just Runs
+
+        coEvery {
+            creditCardSimulationMapperUseCase.parseSimulationData(any(), any(), any())
+        } coAnswers {
+            secondArg<(CCSimulationDataStatus) -> Unit>().invoke(StatusApiFail)
+        }
         viewModel.getCreditCardSimulationData(1000000.0f)
         assert(viewModel.creditCardSimulationResultLiveData.value is Fail)
         Assertions.assertThat((viewModel.creditCardSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(nullDataErrorMessage)
@@ -130,6 +131,12 @@ class CreditCardViewModelTest {
         coEvery {
             creditCardSimulationUseCase.cancelJobs()
         } just Runs
+
+        coEvery {
+            creditCardSimulationMapperUseCase.parseSimulationData(any(), any(), any())
+        } coAnswers {
+            secondArg<(CCSimulationDataStatus) -> Unit>().invoke(StatusCCNotAvailable)
+        }
         viewModel.getCreditCardSimulationData(1000000.0f)
         assert(viewModel.creditCardSimulationResultLiveData.value is Fail)
         Assertions.assertThat((viewModel.creditCardSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(CreditCardViewModel.CREDIT_CARD_NOT_AVAILABLE)
@@ -155,6 +162,13 @@ class CreditCardViewModelTest {
         coEvery {
             creditCardSimulationUseCase.cancelJobs()
         } just Runs
+
+        coEvery {
+            creditCardSimulationMapperUseCase.parseSimulationData(any(), any(), any())
+        } coAnswers {
+            secondArg<(CCSimulationDataStatus) -> Unit>().invoke(StatusApiSuccess(mockSimulationData.creditCardGetSimulationResult!!))
+        }
+
         viewModel.getCreditCardSimulationData(1000000.0f)
         assert(viewModel.creditCardSimulationResultLiveData.value is Success)
         val actualInstallmentAmount = (viewModel.creditCardSimulationResultLiveData.value as Success).data.creditCardInstallmentList?.getOrNull(2)?.installmentAmount
@@ -181,6 +195,7 @@ class CreditCardViewModelTest {
     @Test
     fun `Execute getCreditCardTncData Fail(Data Failed)`() {
         val mockData = CreditCardPdpMetaData("", "", "", arrayListOf())
+        val mockThrowable = Throwable(message = nullDataErrorMessage)
         coEvery {
             creditCardPdpMetaInfoUseCase.getPdpMetaData(any(), any())
         } coAnswers {
@@ -189,6 +204,12 @@ class CreditCardViewModelTest {
         coEvery {
             creditCardPdpMetaInfoUseCase.cancelJobs()
         } just Runs
+
+        coEvery {
+            credittncusecase.parseTncData(any(), any(), any())
+        } coAnswers {
+            thirdArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
         viewModel.getCreditCardTncData()
         assert(viewModel.creditCardPdpMetaInfoLiveData.value is Fail)
         Assertions.assertThat((viewModel.creditCardPdpMetaInfoLiveData.value as Fail).throwable.message).isEqualTo(nullDataErrorMessage)
@@ -206,6 +227,12 @@ class CreditCardViewModelTest {
         coEvery {
             creditCardPdpMetaInfoUseCase.cancelJobs()
         } just Runs
+
+        coEvery {
+            credittncusecase.parseTncData(any(), any(), any())
+        } coAnswers {
+            secondArg<(CreditCardPdpMetaData) -> Unit>().invoke(mockData)
+        }
         viewModel.getCreditCardTncData()
         assert(viewModel.creditCardPdpMetaInfoLiveData.value is Success)
         val actualContentType = (viewModel.creditCardPdpMetaInfoLiveData.value as Success).data.pdpInfoContentList?.getOrNull(0)?.contentType
@@ -228,30 +255,13 @@ class CreditCardViewModelTest {
         Assertions.assertThat((viewModel.creditCardBankResultLiveData.value as Fail).throwable.message).isEqualTo(fetchFailedErrorMessage)
     }
 
-
-    @Test
-    fun `Execute getBankCardList Fail(Data Failed)`() {
-        val mockData = CreditCardBankData(arrayListOf())
-        coEvery {
-            creditCardBankDataUseCase.getBankCardList(any(), any())
-        } coAnswers {
-            firstArg<(CreditCardBankData) -> Unit>().invoke(mockData)
-        }
-        coEvery {
-            creditCardBankDataUseCase.cancelJobs()
-        } just Runs
-        viewModel.getBankCardList()
-        assert(viewModel.creditCardBankResultLiveData.value is Fail)
-        Assertions.assertThat((viewModel.creditCardBankResultLiveData.value as Fail).throwable.message).isEqualTo(nullDataErrorMessage)
-    }
-
     @Test
     fun `Execute getBankCardList Success`() {
         val mockData = CreditCardBankData(arrayListOf(BankCardListItem("bank1", "", "", "", true, arrayListOf())))
         coEvery {
             creditCardBankDataUseCase.getBankCardList(any(), any())
         } coAnswers {
-            firstArg<(CreditCardBankData) -> Unit>().invoke(mockData)
+            firstArg<(ArrayList<BankCardListItem>) -> Unit>().invoke(mockData.bankCardList!!)
         }
         coEvery {
             creditCardBankDataUseCase.cancelJobs()
@@ -262,143 +272,5 @@ class CreditCardViewModelTest {
         val expectedBankName = mockData.bankCardList?.getOrNull(0)?.bankName
         Assertions.assertThat(actualBankName).isEqualTo(expectedBankName)
     }
-
-
-/*
-
-    @Test
-    fun `Execute getPayLaterProductData product list empty`() {
-        // given
-        coEvery {
-            payLaterProductDetailUseCase.cancelJobs()
-        } just Runs
-
-        coEvery {
-            payLaterProductDetailUseCase.getPayLaterData(any(), any())
-        } coAnswers {
-            firstArg<(PayLaterProductData?) -> Unit>().invoke(emptyPayLaterActivityResponseResult.productData)
-        }
-        // when
-        viewModel.getPayLaterProductData()
-
-        //then
-        assert(viewModel.payLaterActivityResultLiveData.value is Fail)
-        Assertions.assertThat((viewModel.payLaterActivityResultLiveData.value as Fail).throwable.message).isEqualTo(nullDataErrorMessage)
-    }
-
-    @Test
-    fun `Execute getPayLaterProductData Fail(Invoke Failed)`() {
-        coEvery {
-            payLaterProductDetailUseCase.getPayLaterData(any(), any())
-        } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
-        coEvery {
-            payLaterProductDetailUseCase.cancelJobs()
-        } just Runs
-        viewModel.getPayLaterProductData()
-        assert(viewModel.payLaterActivityResultLiveData.value is Fail)
-        Assertions.assertThat((viewModel.payLaterActivityResultLiveData.value as Fail).throwable.message).isEqualTo(fetchFailedErrorMessage)
-    }
-
-    @Test
-    fun `Execute getPayLaterProductData Success`() {
-        val mockPayLaterData = Gson().fromJson(PayLaterHelper.getJson("paylaterproduct.json"), PayLaterActivityResponse::class.java)
-
-        coEvery {
-            payLaterProductDetailUseCase.getPayLaterData(any(), any())
-        } coAnswers {
-            firstArg<(PayLaterProductData) -> Unit>().invoke(mockPayLaterData.productData)
-        }
-        coEvery {
-            payLaterProductDetailUseCase.cancelJobs()
-        } just Runs
-
-        viewModel.getPayLaterProductData()
-        assert(viewModel.payLaterActivityResultLiveData.value is Success)
-        val partnerNameActual = (viewModel.payLaterActivityResultLiveData.value as Success).data.productList?.getOrNull(0)?.partnerName
-        val partnerNameExpected = mockPayLaterData.productData.productList?.getOrNull(0)?.partnerName
-        Assertions.assertThat(partnerNameActual).isEqualTo(partnerNameExpected)
-    }
-
-    @Test
-    fun `Execute getPayLaterSimulationData Fail(Invoke Failed)`() {
-        coEvery {
-            payLaterSimulationDataUseCase.getSimulationData(any(), any(), any())
-        } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
-        coEvery {
-            payLaterSimulationDataUseCase.cancelJobs()
-        } just Runs
-        viewModel.getPayLaterSimulationData(1000000)
-        assert(viewModel.payLaterSimulationResultLiveData.value is Fail)
-        Assertions.assertThat((viewModel.payLaterSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(fetchFailedErrorMessage)
-    }
-
-    @Test
-    fun `Execute getPayLaterSimulationData Fail(Amount less than 10000)`() {
-        coEvery {
-            payLaterSimulationDataUseCase.cancelJobs()
-        } just Runs
-        viewModel.getPayLaterSimulationData(100)
-        assert(viewModel.payLaterSimulationResultLiveData.value is Fail)
-        Assertions.assertThat((viewModel.payLaterSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(PayLaterViewModel.PAY_LATER_NOT_APPLICABLE)
-    }
-
-    @Test
-    fun `Execute getPayLaterSimulationData Success`() {
-        val mockSimulationData = Gson().fromJson(PayLaterHelper.getJson("simulationtabledata.json"), PayLaterGetSimulationResponse::class.java)
-
-        coEvery {
-            payLaterSimulationDataUseCase.getSimulationData(any(), any(), any())
-        } coAnswers {
-            firstArg<(PayLaterGetSimulationResponse) -> Unit>().invoke(mockSimulationData)
-        }
-        coEvery {
-            payLaterSimulationDataUseCase.cancelJobs()
-        } just Runs
-        viewModel.getPayLaterSimulationData(1000000)
-        assert(viewModel.payLaterSimulationResultLiveData.value is Success)
-        val expectedGatewayName = mockSimulationData.payLaterGetSimulationGateway?.payLaterGatewayList?.getOrNull(0)?.gatewayName
-        val actualGatewayName = (viewModel.payLaterSimulationResultLiveData.value as Success).data.getOrNull(0)?.gatewayName
-        Assertions.assertThat(actualGatewayName).isEqualTo(expectedGatewayName)
-    }
-
-    @Test
-    fun `Execute getPayLaterApplicationStatus Fail(Invoke Failed)`() {
-        coEvery {
-            payLaterApplicationStatusUseCase.getPayLaterApplicationStatus(any(), any())
-        } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
-        coEvery {
-            payLaterApplicationStatusUseCase.cancelJobs()
-        } just Runs
-
-        viewModel.getPayLaterApplicationStatus()
-        assert(viewModel.payLaterApplicationStatusResultLiveData.value is Fail)
-        Assertions.assertThat((viewModel.payLaterApplicationStatusResultLiveData.value as Fail).throwable.message).isEqualTo(fetchFailedErrorMessage)
-    }
-
-    @Test
-    fun `Execute getPayLaterApplicationStatus Success`() {
-        val mockApplicationStatusData = Gson().fromJson(PayLaterHelper.getJson("applicationstatusdata.json"), PayLaterApplicationStatusResponse::class.java)
-        coEvery {
-            payLaterApplicationStatusUseCase.getPayLaterApplicationStatus(any(), any())
-        } coAnswers {
-            firstArg<(UserCreditApplicationStatus) -> Unit>().invoke(mockApplicationStatusData.userCreditApplicationStatus)
-        }
-        coEvery {
-            payLaterApplicationStatusUseCase.cancelJobs()
-        } just Runs
-        viewModel.getPayLaterApplicationStatus()
-        assert(viewModel.payLaterApplicationStatusResultLiveData.value is Success)
-        val actual = (viewModel.payLaterApplicationStatusResultLiveData.value as Success).data.applicationDetailList?.getOrNull(0)?.payLaterGatewayName
-        val expected = mockApplicationStatusData.userCreditApplicationStatus.applicationDetailList?.getOrNull(0)?.payLaterGatewayName
-        Assertions.assertThat(actual).isEqualTo(expected)
-    }
-*/
-
 
 }

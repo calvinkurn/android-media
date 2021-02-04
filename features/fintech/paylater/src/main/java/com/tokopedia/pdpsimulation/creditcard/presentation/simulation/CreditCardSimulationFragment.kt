@@ -15,8 +15,6 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
-import com.tokopedia.pdpsimulation.common.CreditCard
-import com.tokopedia.pdpsimulation.common.PaymentMode
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
@@ -94,7 +92,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
         tvSeeAll.setOnClickListener { showAllBanksBottomSheet() }
         creditCardRegisterWidget.setOnClickListener {
             fetchBankCardList()
-            pdpSimulationCallback?.openBottomSheet(Bundle.EMPTY, CreditCardRegistrationBottomSheet::class.java)
+            pdpSimulationCallback?.openBottomSheet(Bundle(), CreditCardRegistrationBottomSheet::class.java)
         }
     }
 

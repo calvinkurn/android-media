@@ -3,9 +3,9 @@ package com.tokopedia.pdpsimulation.paylater.presentation.registration
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
+import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
 
 class PayLaterPaymentMethodAdapter(private val productDataList: ArrayList<PayLaterItemProductData>,
                                    private val applicationStatusList: ArrayList<PayLaterApplicationDetail>, private val clickListener: (PayLaterItemProductData, PayLaterApplicationDetail?) -> Unit) : RecyclerView.Adapter<PayLaterPaymentMethodViewHolder>() {

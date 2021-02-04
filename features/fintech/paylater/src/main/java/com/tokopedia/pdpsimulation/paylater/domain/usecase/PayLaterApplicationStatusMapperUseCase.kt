@@ -9,13 +9,13 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<PayLaterApplicationStatusResponse>() {
+class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<PayLaterAppStatus>() {
     private val PARAM_APP_STATUS_DATA = "param_app_status_data"
     private val APPLICATION_STATE_DATA_FAILURE = "NULL_DATA"
 
     fun mapLabelDataToApplicationStatus(
             userCreditApplicationStatus: UserCreditApplicationStatus,
-            onSuccess: (PayLaterApplicationStatusResponse) -> Unit,
+            onSuccess: (PayLaterAppStatus) -> Unit,
             onError: (Throwable) -> Unit,
     ) {
         useCaseRequestParams = RequestParams().apply {
@@ -28,13 +28,13 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
         }, useCaseRequestParams)
     }
 
-    override suspend fun executeOnBackground(): PayLaterApplicationStatusResponse {
+    override suspend fun executeOnBackground(): PayLaterAppStatus {
         val appStatusData = (useCaseRequestParams.getObject(PARAM_APP_STATUS_DATA)
                 ?: throw  NullPointerException(APPLICATION_STATE_DATA_FAILURE)) as UserCreditApplicationStatus
         return handleResponse(appStatusData)
     }
 
-    private fun handleResponse(appStatusData: UserCreditApplicationStatus): PayLaterApplicationStatusResponse {
+    private fun handleResponse(appStatusData: UserCreditApplicationStatus): PayLaterAppStatus {
         var isPayLaterActive = false
         appStatusData.run {
             if (applicationDetailList.isNullOrEmpty()) {
@@ -98,6 +98,6 @@ class PayLaterApplicationStatusMapperUseCase @Inject constructor() : UseCase<Pay
 }
 
 
-sealed class PayLaterApplicationStatusResponse
-data class StatusAppSuccess(val userCreditApplicationStatus: UserCreditApplicationStatus, val isPayLaterActive: Boolean) : PayLaterApplicationStatusResponse()
-object StatusFail : PayLaterApplicationStatusResponse()
+sealed class PayLaterAppStatus
+data class StatusAppSuccess(val userCreditApplicationStatus: UserCreditApplicationStatus, val isPayLaterActive: Boolean) : PayLaterAppStatus()
+object StatusFail : PayLaterAppStatus()

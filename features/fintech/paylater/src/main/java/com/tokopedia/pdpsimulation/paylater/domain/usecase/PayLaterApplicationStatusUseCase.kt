@@ -3,10 +3,9 @@ package com.tokopedia.pdpsimulation.paylater.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.pdpsimulation.common.constants.GQL_PAY_LATER_APPLICATION_STATUS
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationStatusResponse
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
-import com.tokopedia.pdpsimulation.common.constants.GQL_PAY_LATER_APPLICATION_STATUS
-
 import javax.inject.Inject
 
 @GqlQuery("PayLaterApplicationStatusQuery", GQL_PAY_LATER_APPLICATION_STATUS)

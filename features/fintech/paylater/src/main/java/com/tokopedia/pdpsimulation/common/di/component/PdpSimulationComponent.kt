@@ -1,8 +1,6 @@
 package com.tokopedia.pdpsimulation.common.di.component
 
-import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.pdpsimulation.common.di.module.PdpSimulationModule
 import com.tokopedia.pdpsimulation.common.di.module.ViewModelModule
 import com.tokopedia.pdpsimulation.common.di.scope.PdpSimulationScope
@@ -13,7 +11,6 @@ import com.tokopedia.pdpsimulation.creditcard.presentation.tnc.CreditCardTncFrag
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterOffersFragment
 import com.tokopedia.pdpsimulation.paylater.presentation.registration.PayLaterSignupBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.simulation.PayLaterSimulationFragment
-
 import dagger.Component
 
 @PdpSimulationScope

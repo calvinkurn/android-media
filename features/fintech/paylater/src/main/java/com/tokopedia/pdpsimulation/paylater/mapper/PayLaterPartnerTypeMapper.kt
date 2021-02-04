@@ -2,7 +2,6 @@ package com.tokopedia.pdpsimulation.paylater.mapper
 
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterProductData
 
 const val APPLY_STEPS_PARTNER = "how_to_apply"
 const val USAGE_STEPS_PARTNER = "how_to_use"

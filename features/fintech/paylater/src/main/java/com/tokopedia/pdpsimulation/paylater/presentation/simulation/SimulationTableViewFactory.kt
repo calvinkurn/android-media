@@ -3,7 +3,6 @@ package com.tokopedia.pdpsimulation.paylater.presentation.simulation
 import android.content.Context
 import android.view.ViewGroup
 import com.tokopedia.pdpsimulation.paylater.presentation.simulation.widgets.*
-import java.lang.IllegalArgumentException
 
 @Suppress("UNCHECKED_CAST")
 class SimulationTableViewFactory(val context: Context?) {

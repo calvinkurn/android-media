@@ -11,11 +11,11 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
 import com.tokopedia.pdpsimulation.paylater.mapper.RegisterStepsPartnerType
 import com.tokopedia.pdpsimulation.paylater.mapper.UsageStepsPartnerType
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet

@@ -3,10 +3,9 @@ package com.tokopedia.pdpsimulation.creditcard.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.pdpsimulation.common.constants.GQL_CREDIT_CARD_SIMULATION
 import com.tokopedia.pdpsimulation.creditcard.domain.model.CreditCardGetSimulationResponse
 import com.tokopedia.pdpsimulation.creditcard.domain.model.PdpCreditCardSimulation
-import com.tokopedia.pdpsimulation.common.constants.GQL_CREDIT_CARD_SIMULATION
-
 import javax.inject.Inject
 
 @GqlQuery("CreditCardSimulationQuery", GQL_CREDIT_CARD_SIMULATION)

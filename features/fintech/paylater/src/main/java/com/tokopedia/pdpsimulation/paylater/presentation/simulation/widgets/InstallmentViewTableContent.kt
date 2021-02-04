@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationItemDetail
 import com.tokopedia.pdpsimulation.paylater.mapper.EmptyInstallment
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterSimulationResponseMapper
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterSimulationTenureType
-import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationItemDetail
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 

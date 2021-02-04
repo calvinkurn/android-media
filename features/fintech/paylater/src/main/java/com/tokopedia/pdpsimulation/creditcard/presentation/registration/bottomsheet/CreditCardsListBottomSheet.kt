@@ -10,9 +10,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.pdpsimulation.common.constants.INTERNAL_URL
 import com.tokopedia.pdpsimulation.R
-import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
+import com.tokopedia.pdpsimulation.common.constants.INTERNAL_URL
 import com.tokopedia.pdpsimulation.creditcard.domain.model.CreditCardItem
 import com.tokopedia.pdpsimulation.creditcard.presentation.registration.adapter.CreditCardListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
