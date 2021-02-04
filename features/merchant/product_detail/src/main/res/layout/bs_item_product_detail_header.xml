@@ -48,7 +48,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/merchant_product_detail_label_selengkapnya"
-        android:textColor="@color/light_G500"
+        android:textColor="@color/Unify_G500"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
