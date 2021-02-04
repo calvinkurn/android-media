@@ -2785,7 +2785,6 @@ class DynamicProductDetailFragmentDiffutil : BaseProductDetailFragment<DynamicPd
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
-        openFtInstallmentBottomSheet(FtInstallmentCalculationDataResponse())
         if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
             doActionOrLogin({
                 nplFollowersButton?.startLoading()

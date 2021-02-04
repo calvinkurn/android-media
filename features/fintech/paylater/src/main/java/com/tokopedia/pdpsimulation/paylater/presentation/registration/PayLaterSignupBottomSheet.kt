@@ -3,6 +3,7 @@ package com.tokopedia.pdpsimulation.paylater.presentation.registration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,9 +12,16 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
+import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
+import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterPartnerStepDetails
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
+import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
+import com.tokopedia.pdpsimulation.paylater.mapper.ProcessingApplicationPartnerType
+import com.tokopedia.pdpsimulation.paylater.mapper.RegisterStepsPartnerType
+import com.tokopedia.pdpsimulation.paylater.mapper.UsageStepsPartnerType
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
@@ -51,7 +59,7 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
     private val childLayoutRes = R.layout.base_list_bottomsheet_widget
     private var payLaterDataList: ArrayList<PayLaterItemProductData> = arrayListOf()
     private var payLaterApplicationStatusList: ArrayList<PayLaterApplicationDetail> = arrayListOf()
-    private var listener: Listener? = null
+    private var pdpSimulationCallback: PdpSimulationCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,7 +105,7 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
 
     private fun initAdapter() {
         baseList.adapter = PayLaterPaymentMethodAdapter(payLaterDataList, payLaterApplicationStatusList) { payLaterData, payLaterApplicationStatus ->
-            listener?.onPayLaterSignupClicked(payLaterData, payLaterApplicationStatus)
+            openBottomSheet(payLaterData, payLaterApplicationStatus)
             dismiss()
         }
         baseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -110,10 +118,6 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
         showCloseIcon = true
         showHeader = true
         customPeekHeight = (getScreenHeight() / 2).toDp()
-    }
-
-    fun setActionListener(listener: Listener) {
-        this.listener = listener
     }
 
     private fun onPayLaterApplicationLoadingFail(throwable: Throwable) {
@@ -131,6 +135,42 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun openBottomSheet(
+            productItemData: PayLaterItemProductData,
+            partnerApplicationDetail: PayLaterApplicationDetail?,
+    ) {
+        val bundle = Bundle()
+        productItemData.let { data ->
+            bundle.putString(PayLaterActionStepsBottomSheet.ACTION_URL, data.actionWebUrl)
+            when (PayLaterPartnerTypeMapper.getPayLaterPartnerType(data, partnerApplicationDetail)) {
+                is RegisterStepsPartnerType ->
+                    openActionBottomSheet(
+                            bundle,
+                            data.partnerApplyDetails,
+                            "${context?.getString(R.string.pay_later_how_to_register)} ${data.partnerName}")
+
+                is UsageStepsPartnerType ->
+                    openActionBottomSheet(
+                            bundle,
+                            data.partnerUsageDetails,
+                            "${context?.getString(R.string.pay_later_how_to_use)} ${data.partnerName}")
+
+                is ProcessingApplicationPartnerType ->
+                    openVerificationBottomSheet(bundle, partnerApplicationDetail)
+            }
+        }
+    }
+
+    private fun openActionBottomSheet(bundle: Bundle, partnerData: PayLaterPartnerStepDetails?, title: String) {
+        bundle.putParcelable(PayLaterActionStepsBottomSheet.STEPS_DATA, partnerData)
+        bundle.putString(PayLaterActionStepsBottomSheet.ACTION_TITLE, title)
+        pdpSimulationCallback?.openBottomSheet(bundle, PayLaterActionStepsBottomSheet::class.java)
+    }
+
+    private fun openVerificationBottomSheet(bundle: Bundle, partnerApplicationDetail: PayLaterApplicationDetail?) {
+        bundle.putParcelable(PayLaterVerificationBottomSheet.APPLICATION_STATUS, partnerApplicationDetail)
+        pdpSimulationCallback?.openBottomSheet(bundle, PayLaterVerificationBottomSheet::class.java)
+    }
 
     companion object {
         private const val DIALOG_TITLE = "Mau daftar PayLater apa?"
@@ -138,14 +178,11 @@ class PayLaterSignupBottomSheet : BottomSheetUnify() {
         const val PAY_LATER_APPLICATION_DATA = "payLaterApplicationData"
 
         const val TAG = "PL_TAG"
-        fun getInstance(bundle: Bundle): PayLaterSignupBottomSheet {
-            return PayLaterSignupBottomSheet().apply {
-                arguments = bundle
-            }
+        fun show(bundle: Bundle, pdpSimulationCallback: PdpSimulationCallback, childFragmentManager: FragmentManager) {
+            val fragment = PayLaterSignupBottomSheet()
+            fragment.arguments = bundle
+            fragment.pdpSimulationCallback = pdpSimulationCallback
+            fragment.show(childFragmentManager, TAG)
         }
-    }
-
-    interface Listener {
-        fun onPayLaterSignupClicked(productItemData: PayLaterItemProductData, partnerApplicationDetail: PayLaterApplicationDetail?)
     }
 }

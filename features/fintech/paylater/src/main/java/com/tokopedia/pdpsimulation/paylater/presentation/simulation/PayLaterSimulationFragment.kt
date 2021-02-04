@@ -17,10 +17,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
-import com.tokopedia.pdpsimulation.common.PayLater
-import com.tokopedia.pdpsimulation.common.PaymentMode
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
+import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterSimulationGatewayItem
 import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationItemDetail
 import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterSimulationTenureType
@@ -49,7 +48,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         SimulationTableViewFactory(context)
     }
 
-    private var payLaterSimulationCallback: PayLaterSimulationCallback? = null
+    private var pdpSimulationCallback: PdpSimulationCallback? = null
 
     override fun initInjector() {
         getComponent(PdpSimulationComponent::class.java).inject(this)
@@ -78,10 +77,10 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
 
     private fun initListeners() {
         btnDaftarPayLater.setOnClickListener {
-            payLaterSimulationCallback?.onRegisterPayLaterClicked()
+            pdpSimulationCallback?.onRegisterWidgetClicked()
         }
         paylaterDaftarWidget.setOnClickListener {
-            payLaterSimulationCallback?.onRegisterPayLaterClicked()
+            pdpSimulationCallback?.onRegisterWidgetClicked()
         }
     }
 
@@ -104,8 +103,12 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun onSimulationDataLoaded(data: ArrayList<PayLaterSimulationGatewayItem>) {
-        payLaterSimulationCallback?.getPayLaterProductInfo()
+        payLaterViewModel.getPayLaterProductData()
         shimmerGroup.gone()
+        showSimulationData(data)
+    }
+
+    private fun showSimulationData(data: java.util.ArrayList<PayLaterSimulationGatewayItem>) {
         simulationDataGroup.visible()
         tickerSimulation.visible()
         clearAllViews()
@@ -115,11 +118,15 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
     }
 
     private fun onSimulationLoadingFail(throwable: Throwable) {
-        payLaterSimulationCallback?.getPayLaterProductInfo()
+        payLaterViewModel.getPayLaterProductData()
         shimmerGroup.gone()
+        showErrorLayout(throwable)
+    }
+
+    private fun showErrorLayout(throwable: Throwable) {
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
-                payLaterSimulationCallback?.noInternetCallback()
+                pdpSimulationCallback?.showNoNetworkView()
                 shimmerGroup.visible()
                 supervisorWidget.gone()
                 return
@@ -128,14 +135,16 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             is PdpSimulationException.PayLaterNotApplicableException -> {
                 payLaterTermsEmptyView.visible()
                 context?.let {
-                    ContextCompat.getDrawable(it, R.drawable.ic_paylater_terms_not_matched)?.let { it1 -> payLaterTermsEmptyView.setImageDrawable(it1) }
+                    ContextCompat.getDrawable(it, R.drawable.ic_paylater_terms_not_matched)?.let {
+                        drawable -> payLaterTermsEmptyView.setImageDrawable(drawable)
+                    }
                 }
                 tickerSimulation.visible()
                 tickerSimulation.setHtmlDescription(context?.getString(R.string.pay_later_not_applicable_ticker_text)
                         ?: "")
                 tickerSimulation.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        payLaterSimulationCallback?.switchPaymentMode()
+                        pdpSimulationCallback?.switchPaymentMode()
                     }
 
                     override fun onDismiss() {}
@@ -153,7 +162,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
             simulationGlobalError.gone()
             shimmerGroup.visible()
             supervisorWidget.gone()
-            payLaterSimulationCallback?.getSimulationProductInfo(PayLater)
+            pdpSimulationCallback?.getSimulationProductInfo()
         }
     }
 
@@ -167,7 +176,7 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         } else {
             btnDaftarPayLater.visible()
             paylaterDaftarWidget.gone()
-            payLaterSimulationCallback?.showRegisterWidget()
+            pdpSimulationCallback?.showRegisterWidget()
         }
     }
 
@@ -244,25 +253,16 @@ class PayLaterSimulationFragment : BaseDaggerFragment() {
         llPayLaterPartner.removeAllViews()
     }
 
-    fun setSimulationListener(payLaterSimulationCallback: PayLaterSimulationCallback) {
-        this.payLaterSimulationCallback = payLaterSimulationCallback
-    }
-
     companion object {
         const val ROW_HEADER_WIDTH = 84
         const val TABLE_ITEM_HEIGHT = 52
         const val CONTENT_WIDTH = 110
 
         @JvmStatic
-        fun newInstance() = PayLaterSimulationFragment()
-    }
-
-    interface PayLaterSimulationCallback {
-        fun onRegisterPayLaterClicked()
-        fun noInternetCallback()
-        fun getPayLaterProductInfo()
-        fun switchPaymentMode()
-        fun getSimulationProductInfo(paymentMode: PaymentMode)
-        fun showRegisterWidget()
+        fun newInstance(pdpSimulationCallback: PdpSimulationCallback): PayLaterSimulationFragment {
+            val simulationFragment = PayLaterSimulationFragment()
+            simulationFragment.pdpSimulationCallback = pdpSimulationCallback
+            return simulationFragment
+        }
     }
 }

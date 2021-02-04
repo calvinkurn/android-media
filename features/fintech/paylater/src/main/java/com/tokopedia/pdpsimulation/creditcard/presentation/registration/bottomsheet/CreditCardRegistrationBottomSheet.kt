@@ -3,6 +3,7 @@ package com.tokopedia.pdpsimulation.creditcard.presentation.registration.bottoms
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.common.constants.INTERNAL_URL
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
+import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.creditcard.domain.model.BankCardListItem
 import com.tokopedia.pdpsimulation.creditcard.domain.model.CreditCardItem
 import com.tokopedia.pdpsimulation.creditcard.presentation.registration.adapter.CreditCardRegistrationAdapter
@@ -53,7 +55,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private var listener: Listener? = null
+    private var pdpSimulationCallback: PdpSimulationCallback? = null
     private val childLayoutRes = R.layout.base_list_bottomsheet_widget
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,10 +111,19 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
 
     private fun initAdapter() {
         baseList.adapter = CreditCardRegistrationAdapter(arrayListOf()) { creditCardList, bankName, bankSlug ->
-            listener?.showCreditCardList(creditCardList, bankName, bankSlug)
+            openBottomSheet(creditCardList, bankName, bankSlug)
             dismiss()
         }
         baseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    private fun openBottomSheet(creditCardList: ArrayList<CreditCardItem>, bankName: String?, bankSlug: String?) {
+        val bundle = Bundle().apply {
+            putParcelableArrayList(CreditCardsListBottomSheet.CREDIT_CARD_DATA, creditCardList)
+            putString(CreditCardsListBottomSheet.BANK_NAME, bankName)
+            putString(CreditCardsListBottomSheet.BANK_SLUG, bankSlug)
+        }
+        pdpSimulationCallback?.openBottomSheet(bundle, CreditCardsListBottomSheet::class.java)
     }
 
     private fun setDefaultParams() {
@@ -124,10 +135,6 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
         customPeekHeight = getScreenHeight() / 2
     }
 
-    fun setActionListener(listener: Listener) {
-        this.listener = listener
-    }
-
     private fun openUrlWebView(urlString: String) {
         val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
         RouteManager.route(context, webViewAppLink)
@@ -135,10 +142,10 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val TAG = "CC_TAG"
-        fun getInstance() = CreditCardRegistrationBottomSheet()
-    }
-
-    interface Listener {
-        fun showCreditCardList(arrayList: ArrayList<CreditCardItem>, bankName: String?, bankSlug: String?)
+        fun show(pdpSimulationCallback: PdpSimulationCallback, childFragmentManager: FragmentManager) {
+            val fragment = CreditCardRegistrationBottomSheet()
+            fragment.pdpSimulationCallback = pdpSimulationCallback
+            fragment.show(childFragmentManager, TAG)
+        }
     }
 }

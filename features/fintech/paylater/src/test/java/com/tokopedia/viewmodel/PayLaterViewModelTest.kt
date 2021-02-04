@@ -6,7 +6,6 @@ import com.google.gson.Gson
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterApplicationStatusUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterProductDetailUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationUseCase
-import com.tokopedia.pdpsimulation.common.helper.PayLaterHelper
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.usecase.coroutines.Fail

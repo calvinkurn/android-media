@@ -21,11 +21,9 @@ import com.tokopedia.pdpsimulation.common.PayLater
 import com.tokopedia.pdpsimulation.common.PaymentMode
 import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
-import com.tokopedia.pdpsimulation.common.helper.PayLaterHelper
+import com.tokopedia.pdpsimulation.common.helper.BottomSheetManager
+import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterPagerAdapter
-import com.tokopedia.pdpsimulation.creditcard.domain.model.CreditCardItem
-import com.tokopedia.pdpsimulation.creditcard.presentation.registration.bottomsheet.CreditCardRegistrationBottomSheet
-import com.tokopedia.pdpsimulation.creditcard.presentation.registration.bottomsheet.CreditCardsListBottomSheet
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.CreditCardSimulationFragment
 import com.tokopedia.pdpsimulation.creditcard.presentation.tnc.CreditCardTncFragment
 import com.tokopedia.pdpsimulation.creditcard.viewmodel.CreditCardViewModel
@@ -42,12 +40,7 @@ import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
 import javax.inject.Inject
 
 class PdpSimulationFragment : BaseDaggerFragment(),
-        PayLaterSimulationFragment.PayLaterSimulationCallback,
-        PayLaterOffersFragment.PayLaterOfferCallback,
-        CreditCardSimulationFragment.CreditCardSimulationCallback,
-        CreditCardTncFragment.CreditCardTnCCallback,
-        PayLaterSignupBottomSheet.Listener,
-        CreditCardRegistrationBottomSheet.Listener,
+        PdpSimulationCallback,
         TabLayout.OnTabSelectedListener,
         ViewPager.OnPageChangeListener,
         CompoundButton.OnCheckedChangeListener {
@@ -63,6 +56,10 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     private val creditCardViewModel: CreditCardViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(CreditCardViewModel::class.java)
+    }
+
+    private val bottomSheetManager: BottomSheetManager by lazy(LazyThreadSafetyMode.NONE) {
+        BottomSheetManager(childFragmentManager)
     }
 
     private val productPrice: Int by lazy {
@@ -96,25 +93,17 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getSimulationProductInfo(PayLater)
+        getSimulationProductInfo()
         renderTabAndViewPager()
         initListeners()
     }
 
-    override fun getSimulationProductInfo(paymentMode: PaymentMode) {
+    override fun getSimulationProductInfo() {
         parentDataGroup.visible()
-        when (this.paymentMode) {
+        when (paymentMode) {
             is PayLater -> payLaterViewModel.getPayLaterSimulationData(productPrice)
             is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
         }
-    }
-
-    override fun getPayLaterProductInfo() {
-        payLaterViewModel.getPayLaterProductData()
-    }
-
-    override fun getApplicationStatusInfo(shouldFetch: Boolean) {
-        payLaterViewModel.getPayLaterApplicationStatus(shouldFetch)
     }
 
     private fun observeViewModel() {
@@ -142,7 +131,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     private fun initListeners() {
         paylaterDaftarWidget.setOnClickListener {
-            onRegisterPayLaterClicked()
+            onRegisterWidgetClicked()
         }
         modeSwitcher.setOnCheckedChangeListener(this)
         paylaterTabLayout.tabLayout.addOnTabSelectedListener(this)
@@ -173,24 +162,17 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         val fragmentList = mutableListOf<Fragment>()
         when (paymentMode) {
             is CreditCard -> {
-                val simulationFragment = CreditCardSimulationFragment.newInstance()
-                val tncFragment = CreditCardTncFragment.newInstance()
-                simulationFragment.setCreditCardSimulationCallback(this)
-                tncFragment.setCreditCardTncCallback(this)
-                fragmentList.add(simulationFragment)
-                fragmentList.add(tncFragment)
+                fragmentList.add(CreditCardSimulationFragment.newInstance(this))
+                fragmentList.add(CreditCardTncFragment.newInstance(this))
             }
             else -> {
-                val simulationFragment = PayLaterSimulationFragment.newInstance()
-                val payLaterOffersFragment = PayLaterOffersFragment.newInstance()
-                simulationFragment.setSimulationListener(this)
-                payLaterOffersFragment.setPayLaterProductCallback(this)
-                fragmentList.add(simulationFragment)
-                fragmentList.add(payLaterOffersFragment)
+                fragmentList.add(PayLaterSimulationFragment.newInstance(this))
+                fragmentList.add(PayLaterOffersFragment.newInstance(this))
             }
         }
         return fragmentList
     }
+
 
     override fun showRegisterWidget() {
         if (isPayLaterSimulationPage())
@@ -198,45 +180,9 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         else daftarGroup.gone()
     }
 
-    override fun onRegisterPayLaterClicked() {
+    override fun onRegisterWidgetClicked() {
         if (payLaterDataList.isNotEmpty()) {
-            val bottomSheet = PayLaterSignupBottomSheet.getInstance(
-                    populatePayLaterBundle())
-            bottomSheet.also {
-                it.setActionListener(this)
-                it.show(childFragmentManager, PayLaterSignupBottomSheet.TAG)
-            }
-        }
-    }
-
-    override fun onRegisterCreditCardClicked() {
-        CreditCardRegistrationBottomSheet.getInstance().also {
-            it.setActionListener(this)
-            it.show(childFragmentManager, CreditCardRegistrationBottomSheet.TAG)
-        }
-    }
-
-    override fun onPayLaterSignupClicked(productItemData: PayLaterItemProductData, partnerApplicationDetail: PayLaterApplicationDetail?) {
-        PayLaterHelper.openBottomSheet(context, childFragmentManager, productItemData, partnerApplicationDetail)
-    }
-
-    override fun showCreditCardList(arrayList: ArrayList<CreditCardItem>, bankName: String?, bankSlug: String?) {
-        val bundle = Bundle().apply {
-            putParcelableArrayList(CreditCardsListBottomSheet.CREDIT_CARD_DATA, arrayList)
-            putString(CreditCardsListBottomSheet.BANK_NAME, bankName)
-            putString(CreditCardsListBottomSheet.BANK_SLUG, bankSlug)
-        }
-        CreditCardsListBottomSheet.show(bundle, childFragmentManager)
-    }
-
-    override fun noInternetCallback() {
-        parentDataGroup.gone()
-        daftarGroup.gone()
-        payLaterParentGlobalError.setType(GlobalError.NO_CONNECTION)
-        payLaterParentGlobalError.show()
-        payLaterParentGlobalError.setActionClickListener {
-            payLaterParentGlobalError.gone()
-            getSimulationProductInfo(PayLater)
+            openBottomSheet(populatePayLaterBundle(), PayLaterSignupBottomSheet::class.java)
         }
     }
 
@@ -244,7 +190,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_APPLICATION_DATA, applicationStatusList)
         putParcelableArrayList(PayLaterSignupBottomSheet.PAY_LATER_PARTNER_DATA, payLaterDataList)
     }
-
 
     override fun onTabSelected(tab: TabLayout.Tab) {
         onPageSelected(tab.position)
@@ -275,6 +220,21 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             paymentMode = PayLater
         }
         renderTabAndViewPager()
+    }
+
+    override fun showNoNetworkView() {
+        parentDataGroup.gone()
+        daftarGroup.gone()
+        payLaterParentGlobalError.setType(GlobalError.NO_CONNECTION)
+        payLaterParentGlobalError.show()
+        payLaterParentGlobalError.setActionClickListener {
+            payLaterParentGlobalError.gone()
+            getSimulationProductInfo()
+        }
+    }
+
+    override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
+        bottomSheetManager.showBottomSheet(modelClass, bundle, this)
     }
 
     override fun switchPaymentMode() {

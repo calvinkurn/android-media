@@ -38,7 +38,6 @@ class CreditCardViewModel @Inject constructor(
         }
     }
 
-
     fun getCreditCardTncData() {
         creditCardPdpMetaInfoUseCase.cancelJobs()
         if (creditCardPdpMetaInfoLiveData.value !is Success)

@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
+import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.creditcard.domain.model.CreditCardPdpMetaData
 import com.tokopedia.pdpsimulation.creditcard.presentation.tnc.adapter.CreditCardTncAdapter
 import com.tokopedia.pdpsimulation.creditcard.viewmodel.CreditCardViewModel
@@ -36,7 +37,7 @@ class CreditCardTncFragment : BaseDaggerFragment() {
         viewModelProvider.get(CreditCardViewModel::class.java)
     }
 
-    private var creditCardTnCCallback: CreditCardTnCCallback? = null
+    private var pdpSimulationCallback: PdpSimulationCallback? = null
 
     override fun initInjector() {
         getComponent(PdpSimulationComponent::class.java).inject(this)
@@ -86,7 +87,7 @@ class CreditCardTncFragment : BaseDaggerFragment() {
         rvPdpInfo.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
-                creditCardTnCCallback?.noInternetCallback()
+                pdpSimulationCallback?.showNoNetworkView()
                 return
             }
             is IllegalStateException -> {
@@ -107,10 +108,6 @@ class CreditCardTncFragment : BaseDaggerFragment() {
         }
     }
 
-    fun setCreditCardTncCallback(creditCardTnCCallback: CreditCardTnCCallback) {
-        this.creditCardTnCCallback = creditCardTnCCallback
-    }
-
     private fun openUrlWebView(urlString: String) {
         if (urlString.isNotEmpty()) {
             val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
@@ -118,15 +115,13 @@ class CreditCardTncFragment : BaseDaggerFragment() {
         }
     }
 
-
     companion object {
 
         @JvmStatic
-        fun newInstance() =
-                CreditCardTncFragment()
-    }
-
-    interface CreditCardTnCCallback {
-        fun noInternetCallback()
+        fun newInstance(pdpSimulationCallback: PdpSimulationCallback): CreditCardTncFragment {
+            val tncFragment = CreditCardTncFragment()
+            tncFragment.pdpSimulationCallback = pdpSimulationCallback
+            return tncFragment
+        }
     }
 }

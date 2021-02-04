@@ -18,9 +18,11 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.CreditCard
 import com.tokopedia.pdpsimulation.common.PaymentMode
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
+import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
+import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.creditcard.domain.model.CreditCardSimulationResult
 import com.tokopedia.pdpsimulation.creditcard.domain.model.SimulationBank
-import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
+import com.tokopedia.pdpsimulation.creditcard.presentation.registration.bottomsheet.CreditCardRegistrationBottomSheet
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.adapter.CreditCardAvailableBanksAdapter
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.adapter.CreditCardSimulationAdapter
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.bottomsheet.CreditCardAvailableBanksBottomSheet
@@ -46,7 +48,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
 
     private var bankList = ArrayList<SimulationBank>()
     private var smallBankList = ArrayList<SimulationBank>()
-    private var creditCardSimulationCallback: CreditCardSimulationCallback? = null
+    private var pdpSimulationCallback: PdpSimulationCallback? = null
 
     override fun initInjector() {
         getComponent(PdpSimulationComponent::class.java).inject(this)
@@ -92,7 +94,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
         tvSeeAll.setOnClickListener { showAllBanksBottomSheet() }
         creditCardRegisterWidget.setOnClickListener {
             fetchBankCardList()
-            creditCardSimulationCallback?.onRegisterCreditCardClicked()
+            pdpSimulationCallback?.openBottomSheet(Bundle.EMPTY, CreditCardRegistrationBottomSheet::class.java)
         }
     }
 
@@ -164,7 +166,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
         rvAvailableBanks.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
-                creditCardSimulationCallback?.noInternetCallback()
+                pdpSimulationCallback?.showNoNetworkView()
                 creditSimulationShimmerGroup.visible()
                 return
             }
@@ -174,15 +176,17 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
             is PdpSimulationException.CreditCardSimulationNotAvailableException -> {
                 creditCardTermsEmptyView.visible()
                 context?.let {
-                    ContextCompat.getDrawable(it, R.drawable.ic_paylater_terms_not_matched)?.let { drawable -> creditCardTermsEmptyView.setImageDrawable(drawable) }
+                    ContextCompat.getDrawable(it, R.drawable.ic_paylater_terms_not_matched)?.let {
+                        drawable -> creditCardTermsEmptyView.setImageDrawable(drawable) }
                 }
                 dividerVertical.visible()
                 tickerSimulation.visible()
                 creditCardRegisterWidget.visible()
-                tickerSimulation.setHtmlDescription(context?.getString(R.string.credit_card_not_applicable_ticker_text) ?: "")
+                tickerSimulation.setHtmlDescription(context?.getString(R.string.credit_card_not_applicable_ticker_text)
+                        ?: "")
                 tickerSimulation.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        creditCardSimulationCallback?.switchPaymentMode()
+                        pdpSimulationCallback?.switchPaymentMode()
                     }
 
                     override fun onDismiss() {
@@ -203,7 +207,7 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
             simulationGlobalError.gone()
             creditSimulationShimmerGroup.visible()
             rvAvailableBanks.visible()
-            creditCardSimulationCallback?.getSimulationProductInfo(CreditCard)
+            pdpSimulationCallback?.getSimulationProductInfo()
         }
     }
 
@@ -212,26 +216,18 @@ class CreditCardSimulationFragment : BaseDaggerFragment() {
             val bundle = Bundle().apply {
                 putParcelableArrayList(CreditCardAvailableBanksBottomSheet.CREDIT_CARD_BANK_DATA, bankList)
             }
-            CreditCardAvailableBanksBottomSheet.show(bundle, childFragmentManager)
+            pdpSimulationCallback?.openBottomSheet(bundle, CreditCardAvailableBanksBottomSheet::class.java)
         }
-    }
-
-    fun setCreditCardSimulationCallback(creditCardSimulationCallback: CreditCardSimulationCallback) {
-        this.creditCardSimulationCallback = creditCardSimulationCallback
     }
 
     companion object {
         const val MAX_BANK_LIST_VIEW_SIZE = 4
 
         @JvmStatic
-        fun newInstance() = CreditCardSimulationFragment()
-
-    }
-
-    interface CreditCardSimulationCallback {
-        fun onRegisterCreditCardClicked()
-        fun noInternetCallback()
-        fun getSimulationProductInfo(paymentMode: PaymentMode)
-        fun switchPaymentMode()
+        fun newInstance(pdpSimulationCallback: PdpSimulationCallback): CreditCardSimulationFragment {
+            val simulationFragment = CreditCardSimulationFragment()
+            simulationFragment.pdpSimulationCallback = pdpSimulationCallback
+            return simulationFragment
+        }
     }
 }

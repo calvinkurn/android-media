@@ -23,9 +23,6 @@ import dagger.Component
         dependencies = [BaseAppComponent::class])
 interface PdpSimulationComponent {
 
-    @ApplicationContext
-    fun context(): Context
-
     fun inject(pdpSimulationFragment: PdpSimulationFragment)
     fun inject(payLaterOffersFragment: PayLaterOffersFragment)
     fun inject(simulationFragment: PayLaterSimulationFragment)

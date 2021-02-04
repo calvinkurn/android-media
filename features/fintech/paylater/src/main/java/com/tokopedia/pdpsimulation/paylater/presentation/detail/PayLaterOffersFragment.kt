@@ -11,6 +11,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
+import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterProductData
 import com.tokopedia.pdpsimulation.paylater.domain.model.UserCreditApplicationStatus
@@ -36,7 +37,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     private val pagerAdapter: PayLaterOfferPagerAdapter by lazy {
         PayLaterOfferPagerAdapter(childFragmentManager, 0)
     }
-    private var payLaterOfferCallback: PayLaterOfferCallback? = null
+    private var pdpSimulationCallback: PdpSimulationCallback? = null
 
     override fun initInjector() {
         getComponent(PdpSimulationComponent::class.java).inject(this)
@@ -87,15 +88,15 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     }
 
     private fun onPayLaterDataLoaded(data: PayLaterProductData) {
-        payLaterOfferCallback?.getApplicationStatusInfo(true)
+        payLaterViewModel.getPayLaterApplicationStatus(true)
     }
 
     private fun onPayLaterDataLoadingFail(throwable: Throwable) {
-        payLaterOfferCallback?.getApplicationStatusInfo(false)
+        payLaterViewModel.getPayLaterApplicationStatus(false)
         payLaterOffersShimmerGroup.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
-                payLaterOfferCallback?.noInternetCallback()
+                pdpSimulationCallback?.showNoNetworkView()
                 return
             }
             is IllegalStateException -> {
@@ -110,7 +111,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             payLaterOffersGlobalError.hide()
             // notify pdp simulation fragment to invoke again
             payLaterOffersShimmerGroup.visible()
-            payLaterOfferCallback?.getPayLaterProductInfo()
+            payLaterViewModel.getPayLaterProductData()
         }
     }
 
@@ -137,21 +138,15 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         }
     }
 
-    fun setPayLaterProductCallback(payLaterOfferCallback: PayLaterOfferCallback) {
-        this.payLaterOfferCallback = payLaterOfferCallback
-    }
-
     companion object {
         const val PAGE_MARGIN = 16
 
         @JvmStatic
-        fun newInstance() =
-                PayLaterOffersFragment()
+        fun newInstance(pdpSimulationCallback: PdpSimulationCallback): PayLaterOffersFragment {
+            val detailFragment = PayLaterOffersFragment()
+            detailFragment.pdpSimulationCallback = pdpSimulationCallback
+            return detailFragment
+        }
     }
 
-    interface PayLaterOfferCallback {
-        fun getPayLaterProductInfo()
-        fun getApplicationStatusInfo(shouldFetch: Boolean)
-        fun noInternetCallback()
-    }
 }
