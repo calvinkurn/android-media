@@ -20,6 +20,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
+        android:contentDescription="@null"
         tools:src="@tools:sample/avatars"
         android:paddingStart="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
