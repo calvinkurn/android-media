@@ -1410,7 +1410,118 @@
                         "attribution": "X_PG_NUZ_Deal Pengguna Baru_July 20",
                         "gradient_color": ["#005C98"]
                     }
-                }, {
+                },
+                {
+                    "id": 72908,
+                    "group_id": 240,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Testing Gavril",
+                    "layout": "1x2_banner",
+                    "type": "inspiration",
+                    "campaignID": 0,
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "header": {
+                        "id": 73149,
+                        "name": "",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#000000"
+                    },
+                    "hero": null,
+                    "grids": [
+                        {
+                            "id": 245676,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/discovery/apalah",
+                            "applink": "tokopedia://discovery/apalah?source=homepage.1x2_banner.0.72908",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/RInQea/2021/2/2/9b4f8045-a1ae-49ee-833c-aa158010949c.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "atribution",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": []
+                        },
+                        {
+                            "id": 245677,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/discovery/apalah",
+                            "applink": "tokopedia://discovery/apalah?source=homepage.1x2_banner.0.72908",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/RInQea/2021/2/2/8d3e4f4b-ba1e-4f42-acb4-fea8275894f4.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "atribution",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": []
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ]
+                    }
+                },
+                {
                     "id": 29925,
                     "group_id": 164,
                     "galaxy_attribution": "PG",

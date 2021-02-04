@@ -99,6 +99,9 @@ class DynamicLegoBannerViewHolder(itemView: View,
                 DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
                     legoListener?.onChannelImpressionFourImage(element.channelModel, adapterPosition)
                 }
+                DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE -> {
+                    legoListener?.onChannelImpressionTwoImage(element.channelModel, adapterPosition)
+                }
             }
         }
     }
@@ -165,6 +168,9 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
                         listener?.onImpressionGridFourImage(channel, parentPosition)
                     }
+                    DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE -> {
+                        listener?.onImpressionGridTwoImage(channel, parentPosition)
+                    }
                 }
             }
         }
@@ -180,6 +186,9 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     }
                     DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
                         listener?.onClickGridFourImage(channel, grid, position, parentPosition)
+                    }
+                    DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE -> {
+                        listener?.onClickGridTwoImage(channel, grid, position, parentPosition)
                     }
                 }
             }
@@ -203,6 +212,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     DynamicChannelLayout.LAYOUT_6_IMAGE -> legoListener?.onSeeAllSixImage(element.channelModel, adapterPosition)
                     DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> legoListener?.onSeeAllThreemage(element.channelModel, adapterPosition)
                     DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> legoListener?.onSeeAllFourImage(element.channelModel, adapterPosition)
+                    DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE -> legoListener?.onSeeAllTwoImage(element.channelModel, adapterPosition)
                 }
             }
 
