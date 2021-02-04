@@ -1,6 +1,7 @@
-package com.tokopedia.vouchergame.list.view.activity
+package com.tokopedia.vouchergame
 
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.vouchergame.list.view.activity.VoucherGameListActivity
 import org.junit.Rule
 import org.junit.Test
 
