@@ -202,9 +202,9 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         digitalSubscriptionParams.isSubscribed = cartInfo.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
         sendGetCartAndCheckoutAnalytics()
 
+        renderInputPriceView(cartInfo.attributes?.pricePlain?.toLong().toString(), cartInfo.attributes?.userInputPrice)
         renderCrossSellingMyBillsWidget(cartInfo.crossSellingConfig)
         renderFintechProductWidget(cartInfo.attributes?.fintechProduct?.getOrNull(0))
-        renderInputPriceView(cartInfo.attributes?.pricePlain.toString(), cartInfo.attributes?.userInputPrice)
         showMyBillsSubscriptionView(cartInfo.showSubscriptionsView)
 
         productTitle.text = cartInfo.attributes?.categoryName
@@ -362,9 +362,12 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
 
             if (crossSellingConfig.isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter ?: "")
             else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore ?: "")
-
-            subscriptionWidget.setChecked(crossSellingConfig.isChecked)
             subscriptionWidget.hasMoreInfo(false)
+
+            if (!subscriptionWidget.isChecked()) {
+                subscriptionWidget.setChecked(crossSellingConfig.isChecked)
+            }
+            viewModel.onSubscriptionChecked(subscriptionWidget.isChecked())
 
             subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
                 override fun onMoreInfoClicked() {}
@@ -396,7 +399,10 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             fintechProductWidget.visibility = View.VISIBLE
 
             if (fintechProduct.checkBoxDisabled) fintechProductWidget.disableCheckBox() else {
-                fintechProductWidget.setChecked(fintechProduct.optIn)
+                if (!fintechProductWidget.isChecked()) {
+                    fintechProductWidget.setChecked(fintechProduct.optIn)
+                }
+                viewModel.updateTotalPriceWithFintechProduct(fintechProductWidget.isChecked(), getPriceInput())
             }
 
             fintechProductWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
@@ -410,9 +416,10 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
                     } else {
                         digitalAnalytics.eventClickCrossSell(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
                     }
-                    viewModel.updateTotalPriceWithFintechProduct(isChecked)
+                    viewModel.updateTotalPriceWithFintechProduct(isChecked, getPriceInput())
                 }
             }
+
         }
     }
 
@@ -441,9 +448,10 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
             inputPriceContainer.visibility = View.VISIBLE
 
             inputPriceHolderView.setLabelText(userInputPriceDigital.minPayment ?: "", userInputPriceDigital.maxPayment ?: "")
-            inputPriceHolderView.setMinMaxPayment(total ?: "", userInputPriceDigital.minPaymentPlain, userInputPriceDigital.maxPaymentPlain)
+            inputPriceHolderView.setMinMaxPayment(total ?: "", userInputPriceDigital.minPaymentPlain.toLong(),
+                    userInputPriceDigital.maxPaymentPlain.toLong())
             inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
-                override fun onInputPriceByUserFilled(paymentAmount: Double) { viewModel.setTotalPrice(paymentAmount) }
+                override fun onInputPriceByUserFilled(paymentAmount: Long) { viewModel.setTotalPrice(paymentAmount.toDouble()) }
                 override fun enableCheckoutButton() { btnCheckout.isEnabled = true }
                 override fun disableCheckoutButton() { btnCheckout.isEnabled = false }
             }
@@ -535,11 +543,12 @@ class DigitalCartFragment : BaseDaggerFragment(), TickerPromoStackingCheckoutVie
         startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
     }
 
-    private fun getPromoDigitalModel(): PromoDigitalModel = viewModel.getPromoDigitalModel(cartPassData, inputPriceHolderView.getPriceInput())
+    private fun getPromoDigitalModel(): PromoDigitalModel = viewModel.getPromoDigitalModel(cartPassData, getPriceInput())
     private fun getCartDigitalInfoData(): CartDigitalInfoData = viewModel.cartDigitalInfoData.value ?: CartDigitalInfoData()
     private fun getCategoryName(): String = getCartDigitalInfoData().attributes?.categoryName ?: ""
     private fun getOperatorName(): String = getCartDigitalInfoData().attributes?.operatorName ?: ""
     private fun getPromoData(): PromoData = viewModel.promoData.value ?: PromoData()
+    private fun getPriceInput(): Double = inputPriceHolderView.getPriceInput().toDouble()
 
     companion object {
         private const val ARG_PASS_DATA = "ARG_PASS_DATA"
