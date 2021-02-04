@@ -1,8 +1,8 @@
 package com.tokopedia.sellerorder.list.presentation.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.sellerorder.SomTestDispatcherProvider
-import com.tokopedia.sellerorder.common.SomDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
@@ -70,7 +70,7 @@ class SomListViewModelTest {
     @RelaxedMockK
     lateinit var bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase
 
-    private val dispatcher: SomDispatcherProvider = SomTestDispatcherProvider()
+    private val dispatcher: CoroutineDispatchers = CoroutineDispatchersProvider
 
     private lateinit var viewModel: SomListViewModel
 

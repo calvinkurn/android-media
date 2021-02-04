@@ -1,7 +1,7 @@
 package com.tokopedia.sellerorder.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.sellerorder.SomTestDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.sellerorder.common.domain.model.*
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
@@ -32,7 +32,7 @@ class SomDetailViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = SomTestDispatcherProvider()
+    private val dispatcher = CoroutineDispatchersProvider
     private lateinit var somDetailViewModel: SomDetailViewModel
     private var listProducts = listOf<SomDetailOrder.Data.GetSomDetail.Products>()
     private var listMsg = listOf<String>()

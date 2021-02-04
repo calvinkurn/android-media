@@ -2,8 +2,8 @@ package com.tokopedia.sellerorder.detail.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.detail.data.model.*
@@ -19,7 +19,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-09-30.
  */
 class SomDetailViewModel @Inject constructor(
-        dispatcher: SomDispatcherProvider,
+        dispatcher: CoroutineDispatchers,
         userSession: UserSessionInterface,
         private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
         somAcceptOrderUseCase: SomAcceptOrderUseCase,
@@ -29,7 +29,7 @@ class SomDetailViewModel @Inject constructor(
         private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
         private val getUserRoleUseCase: SomGetUserRoleUseCase,
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase
-) : SomOrderBaseViewModel(dispatcher.ui(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
+) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
     private val _orderDetailResult = MutableLiveData<Result<GetSomDetailResponse>>()

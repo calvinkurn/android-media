@@ -3,10 +3,10 @@ package com.tokopedia.sellerorder.list.presentation.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -30,7 +30,7 @@ class SomListViewModel @Inject constructor(
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
         somEditRefNumUseCase: SomEditRefNumUseCase,
         userSession: UserSessionInterface,
-        dispatcher: SomDispatcherProvider,
+        dispatcher: CoroutineDispatchers,
         private val somListGetTickerUseCase: SomListGetTickerUseCase,
         private val somListGetFilterListUseCase: SomListGetFilterListUseCase,
         private val somListGetWaitingPaymentUseCase: SomListGetWaitingPaymentUseCase,
@@ -38,7 +38,7 @@ class SomListViewModel @Inject constructor(
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
         private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase
-) : SomOrderBaseViewModel(dispatcher.io(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
+) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
     companion object {
@@ -94,12 +94,12 @@ class SomListViewModel @Inject constructor(
                             data.data.shouldRecheck = false
                         }
                         if (it.data.data.success + it.data.data.fail == it.data.data.totalOrder) {
-                            bulkAcceptOrderStatusResult.value = lastBulkAcceptOrderStatusSuccessResult
+                            bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
                         } else if (retryCount < MAX_RETRY_GET_ACCEPT_ORDER_STATUS) {
                             retryCount++
                             getBulkAcceptOrderStatus((_bulkAcceptOrderResult.value as Success).data.data.batchId, DELAY_GET_ACCEPT_ORDER_STATUS)
                         } else {
-                            bulkAcceptOrderStatusResult.value = lastBulkAcceptOrderStatusSuccessResult
+                            bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
                         }
                     }
                     is Fail -> {
@@ -110,7 +110,7 @@ class SomListViewModel @Inject constructor(
                             retryCount++
                             getBulkAcceptOrderStatus((_bulkAcceptOrderResult.value as Success).data.data.batchId, DELAY_GET_ACCEPT_ORDER_STATUS)
                         } else {
-                            bulkAcceptOrderStatusResult.value = lastBulkAcceptOrderStatusSuccessResult
+                            bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
                         }
                     }
                 }
@@ -129,9 +129,9 @@ class SomListViewModel @Inject constructor(
                     batchId = batchId,
                     shopId = userSession.shopId
             ))
-            _bulkAcceptOrderStatusResult.value = Success(bulkAcceptOrderStatusUseCase.executeOnBackground())
+            _bulkAcceptOrderStatusResult.postValue(Success(bulkAcceptOrderStatusUseCase.executeOnBackground()))
         }, onError = {
-            _bulkAcceptOrderStatusResult.value = Fail(it)
+            _bulkAcceptOrderStatusResult.postValue(Fail(it))
         })
     }
 
@@ -140,9 +140,9 @@ class SomListViewModel @Inject constructor(
             retryCount = 0
             lastBulkAcceptOrderStatusSuccessResult = null
             bulkAcceptOrderUseCase.setParams(orderIds, userSession.userId)
-            _bulkAcceptOrderResult.value = Success(bulkAcceptOrderUseCase.executeOnBackground())
+            _bulkAcceptOrderResult.postValue(Success(bulkAcceptOrderUseCase.executeOnBackground()))
         }, onError = {
-            _bulkAcceptOrderResult.value = Fail(it)
+            _bulkAcceptOrderResult.postValue(Fail(it))
         })
     }
 
@@ -155,16 +155,16 @@ class SomListViewModel @Inject constructor(
                 getBulkAcceptOrderStatus(bulkAcceptResult.data.data.batchId, 0L)
             }
         }, onError = {
-            _bulkAcceptOrderStatusResult.value = Fail(it)
+            _bulkAcceptOrderStatusResult.postValue(Fail(it))
         })
     }
 
     fun getTickers() {
         launchCatchError(block = {
             somListGetTickerUseCase.setParam(SomListGetTickerParam(userId = userSession.userId))
-            _tickerResult.value = Success(somListGetTickerUseCase.executeOnBackground())
+            _tickerResult.postValue(Success(somListGetTickerUseCase.executeOnBackground()))
         }, onError = {
-            _tickerResult.value = Fail(it)
+            _tickerResult.postValue(Fail(it))
         })
     }
 
@@ -172,21 +172,21 @@ class SomListViewModel @Inject constructor(
         if (somListGetFilterListUseCase.isFirstLoad) {
             somListGetFilterListUseCase.isFirstLoad = false
             launchCatchError(block = {
-                _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(true).apply { refreshOrder = refreshOrders })
+                _filterResult.postValue(Success(somListGetFilterListUseCase.executeOnBackground(true).apply { refreshOrder = refreshOrders }))
             }, onError = {})
         }
         launchCatchError(block = {
-            _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(false).apply { refreshOrder = refreshOrders })
+            _filterResult.postValue(Success(somListGetFilterListUseCase.executeOnBackground(false).apply { refreshOrder = refreshOrders }))
         }, onError = {
-            _filterResult.value = Fail(it)
+            _filterResult.postValue(Fail(it))
         })
     }
 
     fun getWaitingPaymentCounter() {
         launchCatchError(block = {
-            _waitingPaymentCounterResult.value = Success(somListGetWaitingPaymentUseCase.executeOnBackground())
+            _waitingPaymentCounterResult.postValue(Success(somListGetWaitingPaymentUseCase.executeOnBackground()))
         }, onError = {
-            _waitingPaymentCounterResult.value = Fail(it)
+            _waitingPaymentCounterResult.postValue(Fail(it))
         })
     }
 
@@ -197,9 +197,9 @@ class SomListViewModel @Inject constructor(
             val result = somListGetOrderListUseCase.executeOnBackground()
             getUserRolesJob()?.join()
             getOrderListParams.nextOrderId = result.first
-            _orderListResult.value = Success(result.second)
+            _orderListResult.postValue(Success(result.second))
         }, onError = {
-            _orderListResult.value = Fail(it)
+            _orderListResult.postValue(Fail(it))
         })
     }
 
@@ -214,23 +214,23 @@ class SomListViewModel @Inject constructor(
             setSearchParam(currentSearchParam)
             getUserRolesJob()?.join()
             getOrderListParams.nextOrderId = currentNextOrderId
-            _orderListResult.value = Success(result.second)
+            _orderListResult.postValue(Success(result.second))
         }, onError = {
-            _orderListResult.value = Fail(it)
+            _orderListResult.postValue(Fail(it))
         })
     }
 
     fun getTopAdsCategory() {
         launchCatchError(block = {
             somListGetTopAdsCategoryUseCase.setParams(userSession.shopId.toIntOrZero())
-            _topAdsCategoryResult.value = Success(somListGetTopAdsCategoryUseCase.executeOnBackground())
+            _topAdsCategoryResult.postValue(Success(somListGetTopAdsCategoryUseCase.executeOnBackground()))
         }, onError = {
-            _topAdsCategoryResult.value = Fail(it)
+            _topAdsCategoryResult.postValue(Fail(it))
         })
     }
 
     fun clearUserRoles() {
-        _userRoleResult.value = null
+        _userRoleResult.postValue(null)
     }
 
     fun isTopAdsActive(): Boolean {
