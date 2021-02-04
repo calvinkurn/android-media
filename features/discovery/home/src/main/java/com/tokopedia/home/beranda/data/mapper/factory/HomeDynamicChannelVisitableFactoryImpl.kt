@@ -87,7 +87,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
                             channel = channel,
                             trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
                             isCombined = true)
-                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
+                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE,
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE-> {
                     createDynamicLegoBannerComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
