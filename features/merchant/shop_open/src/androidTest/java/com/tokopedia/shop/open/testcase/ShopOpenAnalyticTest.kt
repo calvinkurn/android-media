@@ -132,7 +132,7 @@ class ShopOpenAnalyticTest {
             ))
         }
 
-        onView(firstView(withId(R.id.btn_back_quisioner_page)))
+        onView(allOf(instanceOf(AppCompatImageButton::class.java), isDescendantOfA(withId(R.id.toolbar_questioner))))
                 .perform(click())
 
         onView(withText("Batal"))
@@ -144,7 +144,7 @@ class ShopOpenAnalyticTest {
                 withId(R.id.checkbox_choice))))
                 .perform(click())
 
-        onView(firstView(withId(R.id.btn_skip_quisioner_page)))
+        onView(allOf(withText("Lewati"), isDescendantOfA(withId(R.id.toolbar_questioner))))
                 .perform(click())
 
         onView(withText("Batal"))

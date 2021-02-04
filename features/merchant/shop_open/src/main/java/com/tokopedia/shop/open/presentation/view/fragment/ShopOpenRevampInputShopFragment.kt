@@ -208,6 +208,8 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
 
     private fun setupToolbarActions(view: View?) {
         view?.findViewById<HeaderUnify>(R.id.toolbar_input_shop)?.apply {
+            transparentMode = fragmentNavigationInterface?.isDarkModeOn() == true
+            isShowShadow = false
             setNavigationOnClickListener {
                 shopOpenRevampTracking?.clickBackButtonFromInputShopPage()
                 fragmentNavigationInterface?.showExitDialog()
