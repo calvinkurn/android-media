@@ -179,7 +179,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
         viewModel.promoData.observe(viewLifecycleOwner, Observer {
             digitalPromoBtnView.desc = getPromoData().description
             if (getPromoData().description.isEmpty()) {
-                digitalPromoBtnView.title = "Makin hemat pakai promo"
+                digitalPromoBtnView.title = getString(R.string.digital_checkout_promo_title)
                 digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_gray_24
             } else {
                 digitalPromoBtnView.title = getPromoData().title
