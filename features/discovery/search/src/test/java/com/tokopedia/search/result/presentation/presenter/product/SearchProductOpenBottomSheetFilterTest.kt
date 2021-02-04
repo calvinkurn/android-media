@@ -150,9 +150,14 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
         `Given get dynamic filter model API will success`(slot(), dynamicFilterModel)
 
         `When open filter page`(mapParameter)
+        `When bottomsheet filter is dismissed`()
         `When open filter page`(mapParameter)
 
         `Then verify interactions open filter page second time after first time success`(dynamicFilterModel)
+    }
+
+    private fun `When bottomsheet filter is dismissed`() {
+        productListPresenter.enableBottomSheetFilter()
     }
 
     private fun `Then verify interactions open filter page second time after first time success`(dynamicFilterModel: DynamicFilterModel) {
@@ -176,6 +181,7 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
         `Given get dynamic filter model API will fail and then success`(dynamicFilterModel)
 
         `When open filter page`(mapParameter)
+        `When bottomsheet filter is dismissed`()
         `When open filter page`(mapParameter)
 
         `Then verify interactions for open filter page second time after first time failed`(dynamicFilterModelSlot, dynamicFilterModel)
