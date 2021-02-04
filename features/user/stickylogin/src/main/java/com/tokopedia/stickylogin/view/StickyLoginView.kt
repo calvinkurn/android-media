@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
@@ -19,14 +18,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.R
 import com.tokopedia.stickylogin.analytics.StickyLoginReminderTracker
 import com.tokopedia.stickylogin.analytics.StickyLoginTracking
-import com.tokopedia.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_PDP
@@ -43,7 +40,9 @@ import com.tokopedia.stickylogin.common.helper.getPrefLoginReminder
 import com.tokopedia.stickylogin.common.helper.getPrefStickyLogin
 import com.tokopedia.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.stickylogin.di.module.StickyLoginModule
+import com.tokopedia.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.stickylogin.view.viewModel.StickyLoginViewModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -64,8 +63,8 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     private lateinit var remoteConfig: RemoteConfig
 
     private lateinit var layoutContainer: ConstraintLayout
-    private lateinit var imageViewLeft: ImageView
-    private lateinit var imageViewRight: ImageView
+    private lateinit var imageViewLeft: ImageUnify
+    private lateinit var imageViewRight: ImageUnify
     private lateinit var textContent: EllipsizedTextView
 
     private var leftImage: Drawable? = null
@@ -111,7 +110,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         }
     }
 
-    private fun initAttrsInBg(attributeSet: AttributeSet) : Deferred<Unit> = async(Dispatchers.IO) {
+    private fun initAttrsInBg(attributeSet: AttributeSet): Deferred<Unit> = async(Dispatchers.IO) {
         initAttributeSet(attributeSet)
     }
 
@@ -149,6 +148,12 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         initInjector()
         setContent(content, highlight)
 
+        if (isDarkModeOn()) {
+            onDarkMode()
+        } else {
+            onLightMode()
+        }
+
         if (leftImage != null) {
             imageViewLeft.setImageDrawable(leftImage)
         }
@@ -184,7 +189,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     private fun initObserver(lifecycleOwner: LifecycleOwner) {
         viewModel.stickyContent.observe(lifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     setContent(it.data.tickerDataModels[0])
                     if (isOnDelay(page)) {
@@ -392,7 +397,8 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         textContent.setContent("$TEXT_RE_LOGIN $name")
 
         profilePicture?.let {
-            imageViewLeft.loadImageCircle(it)
+            imageViewLeft.type = ImageUnify.TYPE_CIRCLE
+            imageViewLeft.setImageUrl(it)
         }
 
         trackerLoginReminder.viewOnPage(page)
