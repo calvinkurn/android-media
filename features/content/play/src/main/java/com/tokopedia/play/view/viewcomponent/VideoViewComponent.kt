@@ -127,8 +127,8 @@ class VideoViewComponent(
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        mExoPlayer = pvVideo.player as? ExoPlayer
-        setPlayer(null)
+//        mExoPlayer = pvVideo.player as? ExoPlayer
+//        setPlayer(null)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

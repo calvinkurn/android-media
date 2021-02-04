@@ -24,6 +24,7 @@ import com.tokopedia.play.view.contract.*
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.viewcomponent.FragmentErrorViewComponent
 import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
 import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
@@ -80,8 +81,16 @@ class PlayActivity : BaseActivity(),
                 listener = this
         )
     }
-
     private val ivLoading by viewComponent { LoadingViewComponent(it, R.id.iv_loading) }
+    private val fragmentErrorView by viewComponent {
+        FragmentErrorViewComponent(startChannelId, it, R.id.fl_global_error, supportFragmentManager)
+    }
+
+    private val startChannelId: String
+        get() = intent?.getStringExtra(PLAY_KEY_CHANNEL_ID).orEmpty()
+
+    private val activeFragment: PlayFragment?
+        get() = try { supportFragmentManager.fragments.filterIsInstance<PlayFragment>()[swipeContainerView.getCurrentPos()] } catch (e: Throwable) { null }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -147,11 +156,11 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun onOrientationChanged(screenOrientation: ScreenOrientation, isTilting: Boolean) {
-        if (requestedOrientation != screenOrientation.requestedOrientation && !onInterceptOrientationChangedEvent(screenOrientation))
+        if (requestedOrientation != screenOrientation.requestedOrientation && !onInterceptOrientationChangedEvent(screenOrientation)) {
             requestedOrientation = screenOrientation.requestedOrientation
 
-        //TODO("Tracker")
-//        sendTrackerWhenRotateScreen(screenOrientation, isTilting)
+            if (screenOrientation.isLandscape && isTilting) activeFragment?.sendTrackerWhenRotateFullScreen()
+        }
     }
 
     override fun onEnterFullscreen() {
@@ -181,10 +190,7 @@ class PlayActivity : BaseActivity(),
     private fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
         if (swipeContainerView.scrollState != ViewPager2.SCROLL_STATE_IDLE) return true
 
-        val currFragment = supportFragmentManager.fragments[swipeContainerView.getCurrentPos()]
-
-        return if (currFragment is PlayFragmentContract) currFragment.onInterceptOrientationChangedEvent(newOrientation)
-        else false
+        return activeFragment?.onInterceptOrientationChangedEvent(newOrientation) ?: true
     }
 
     private fun inject() {
@@ -228,18 +234,28 @@ class PlayActivity : BaseActivity(),
     private fun observeChannelList() {
         viewModel.observableChannelIdsResult.observe(this, Observer {
             when (it.state) {
-                PageResultState.Loading -> ivLoading.show()
-                else -> ivLoading.hide()
+                PageResultState.Loading -> {
+                    fragmentErrorViewOnStateChanged(shouldShow = false)
+                    if (it.currentValue.isEmpty()) ivLoading.show() else ivLoading.hide()
+                }
+                is PageResultState.Fail -> {
+                    ivLoading.hide()
+                    if (it.currentValue.isEmpty()) fragmentErrorViewOnStateChanged(shouldShow = true)
+                }
+                is PageResultState.Success -> {
+                    ivLoading.hide()
+                    fragmentErrorViewOnStateChanged(shouldShow = false)
+                }
             }
             swipeContainerView.setChannelIds(it.currentValue)
         })
     }
 
     override fun onBackPressed(isSystemBack: Boolean) {
-        val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
-        if (fragment != null && fragment is PlayFragment) {
+        val fragment = activeFragment
+        if (fragment is PlayFragment) {
             if (!fragment.onBackPressed()) {
-                if (isSystemBack && orientation.isLandscape) fragment.onOrientationChanged(ScreenOrientation.Portrait, false)
+                if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
                     if (isTaskRoot) {
                         val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
@@ -266,6 +282,10 @@ class PlayActivity : BaseActivity(),
         onBackPressed(true)
     }
 
+    override fun navigateToNextPage() {
+        swipeContainerView.scrollTo(SwipeContainerViewComponent.ScrollDirection.Next, isSmoothScroll = true)
+    }
+
     fun getPltPerformanceResultData(): PltPerformanceData? {
         return pageMonitoring.getPltPerformanceData()
     }
@@ -273,6 +293,15 @@ class PlayActivity : BaseActivity(),
     private fun startPageMonitoring() {
         pageMonitoring.startPlayMonitoring()
         pageMonitoring.startPreparePagePerformanceMonitoring()
+    }
+
+    private fun fragmentErrorViewOnStateChanged(shouldShow: Boolean) {
+        if (shouldShow) {
+            fragmentErrorView.safeInit()
+            fragmentErrorView.show()
+        } else {
+            fragmentErrorView.hide()
+        }
     }
 
     companion object {

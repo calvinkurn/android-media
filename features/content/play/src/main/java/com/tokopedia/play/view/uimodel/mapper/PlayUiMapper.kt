@@ -7,14 +7,13 @@ import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 /**
  * Created by mzennis on 2020-03-06.
  */
-object PlayUiMapper {
+object PlayUiAMapper {
 
     private const val MS_PER_SECOND = 1000
 
@@ -221,8 +220,4 @@ object PlayUiMapper {
             )
         }
     }
-
-    fun mapChannelStatus(channelStatus: ChannelStatusResponse) = PlayStatusType.getByValue(
-            channelStatus.playGetChannelsStatus.data.firstOrNull()?.status.orEmpty()
-    )
 }

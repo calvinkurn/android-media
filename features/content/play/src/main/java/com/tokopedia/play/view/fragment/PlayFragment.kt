@@ -19,7 +19,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.ERR_STATE_SOCKET
@@ -49,19 +48,19 @@ import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.type.PiPMode
-import com.tokopedia.play.view.uimodel.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -69,14 +68,17 @@ import javax.inject.Inject
  */
 class PlayFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        private val pageMonitoring: PlayPltPerformanceCallback
+        private val pageMonitoring: PlayPltPerformanceCallback,
+        private val dispatchers: CoroutineDispatcherProvider,
 ) :
         TkpdBaseV4Fragment(),
-        PlayOrientationListener,
         PlayFragmentContract,
         FragmentVideoViewComponent.Listener,
         FragmentYouTubeViewComponent.Listener,
         PlayVideoScalingManager.Listener {
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(dispatchers.main + job)
 
     private lateinit var ivClose: ImageView
     private lateinit var loaderPage: PlayUnifyLoader
@@ -92,9 +94,6 @@ class PlayFragment @Inject constructor(
     private val fragmentYouTubeView by viewComponent {
         FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
     }
-    private val fragmentErrorView by viewComponent {
-        FragmentErrorViewComponent(channelId, it, R.id.fl_global_error, childFragmentManager)
-    }
 
     private lateinit var playParentViewModel: PlayParentViewModel
     private lateinit var playViewModel: PlayViewModel
@@ -103,12 +102,6 @@ class PlayFragment @Inject constructor(
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     private val keyboardWatcher = KeyboardWatcher()
-
-    private var requestedOrientation: Int
-        get() = requireActivity().requestedOrientation
-        set(value) {
-            requireActivity().requestedOrientation = value
-        }
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
@@ -167,6 +160,7 @@ class PlayFragment @Inject constructor(
         )
         onPageDefocused()
         super.onPause()
+        job.cancelChildren()
     }
 
     override fun onDestroyView() {
@@ -175,6 +169,7 @@ class PlayFragment @Inject constructor(
 
         destroyInsets(requireView())
         super.onDestroyView()
+        job.cancelChildren()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -185,13 +180,6 @@ class PlayFragment @Inject constructor(
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onOrientationChanged(screenOrientation: ScreenOrientation, isTilting: Boolean) {
-        if (requestedOrientation != screenOrientation.requestedOrientation && !onInterceptOrientationChangedEvent(screenOrientation))
-            requestedOrientation = screenOrientation.requestedOrientation
-
-        sendTrackerWhenRotateScreen(screenOrientation, isTilting)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -422,11 +410,16 @@ class PlayFragment @Inject constructor(
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.statusType.isFreeze) {
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+
+                scope.launch {
+                    delay(DELAY_FREEZE_AUTO_SWIPE)
+                    playNavigation.navigateToNextPage()
+                }
             } else if (it.statusType.isBanned) {
-                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
+                showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)
             }
             if (it.statusType.isFreeze || it.statusType.isBanned) {
                 unregisterKeyboardListener(requireView())
@@ -543,7 +536,7 @@ class PlayFragment @Inject constructor(
 
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
-                if (!playViewModel.getStateHelper(orientation).bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
+                if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
             }
         })
     }
@@ -557,13 +550,12 @@ class PlayFragment @Inject constructor(
         playViewModel.hideInsets(isKeyboardHandled = true)
     }
 
-    private fun sendTrackerWhenRotateScreen(screenOrientation: ScreenOrientation, isTilting: Boolean) {
-        if (screenOrientation.isLandscape && isTilting) {
-            PlayAnalytics.userTiltFromPortraitToLandscape(
-                    userId = playViewModel.userId,
-                    channelId = channelId,
-                    channelType = playViewModel.channelType)
-        }
+    fun sendTrackerWhenRotateFullScreen() {
+        PlayAnalytics.userTiltFromPortraitToLandscape(
+                userId = playViewModel.userId,
+                channelId = channelId,
+                channelType = playViewModel.channelType
+        )
     }
 
     private fun setBackground(backgroundUrl: String) {
@@ -619,21 +611,12 @@ class PlayFragment @Inject constructor(
             fragmentYouTubeView.show()
         }
     }
-
-    private fun fragmentErrorViewOnStateChanged(
-            shouldShow: Boolean
-    ) {
-        if (shouldShow) {
-            fragmentErrorView.safeInit()
-            fragmentErrorView.show()
-        } else {
-            fragmentErrorView.hide()
-        }
-    }
     //endregion
 
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+
+        private const val DELAY_FREEZE_AUTO_SWIPE = 2500L
     }
 }

@@ -20,16 +20,14 @@ import com.tokopedia.play_common.player.PlayVideoManager
 /**
  * Created by jegul on 21/01/21
  */
-typealias PlayChannelResponseMapper = PlayViewerMapper<ChannelDetailsWithRecomResponse, List<PlayChannelData>>
-
 class PlayChannelDetailsWithRecomMapper(
         private val context: Context
-) : PlayChannelResponseMapper {
+) {
 
     private val exoPlayer: ExoPlayer
         get() = PlayVideoManager.getInstance(context).videoPlayer
 
-    override fun map(input: ChannelDetailsWithRecomResponse): List<PlayChannelData> {
+    fun map(input: ChannelDetailsWithRecomResponse): List<PlayChannelData> {
         return input.channelDetails.dataList.map {
             PlayChannelData(
                     id = it.id,
@@ -41,7 +39,7 @@ class PlayChannelDetailsWithRecomMapper(
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = mapVideoMeta(it.video, it.config, it.isLive),
-                    event = mapEvent(it),
+                    statusInfo = mapChannelStatusInfo(it.config, it.title)
 //                    miscConfigInfo = mapMiscConfigInfo(it.config),
             )
         }
@@ -105,12 +103,10 @@ class PlayChannelDetailsWithRecomMapper(
     )
 
     private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPinnedUiModel.PinnedMessage(
+            id = pinnedMessageResponse.id,
             applink = pinnedMessageResponse.redirectUrl,
             partnerName = partnerResponse.name,
             title = pinnedMessageResponse.title,
-            shouldShow = pinnedMessageResponse.id.isNotEmpty() &&
-                    !pinnedMessageResponse.id.contentEquals("0") &&
-                    pinnedMessageResponse.title.isNotEmpty()
     )
 
     private fun mapPinnedProduct(configResponse: ChannelDetailsWithRecomResponse.Config, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPinnedUiModel.PinnedProduct(
@@ -154,6 +150,33 @@ class PlayChannelDetailsWithRecomMapper(
             lastMillis = null
     )
 
+    private fun mapChannelStatusInfo(
+            configResponse: ChannelDetailsWithRecomResponse.Config,
+            title: String
+    ) = PlayStatusInfoUiModel(
+            statusType = mapStatusType(!configResponse.active || configResponse.freezed),
+            bannedModel = mapBannedModel(configResponse.bannedData),
+            freezeModel = mapFreezeModel(configResponse.freezeData, title),
+    )
+
+    private fun mapBannedModel(
+            bannedDataResponse: ChannelDetailsWithRecomResponse.BannedData
+    ) = PlayBannedUiModel(
+            title = bannedDataResponse.title,
+            message = bannedDataResponse.message,
+            btnTitle = bannedDataResponse.buttonText
+    )
+
+    private fun mapFreezeModel(
+            freezeDataResponse: ChannelDetailsWithRecomResponse.FreezeData,
+            title: String
+    ) = PlayFreezeUiModel(
+            title = String.format(freezeDataResponse.title, title),
+            message = freezeDataResponse.desc,
+            btnTitle = freezeDataResponse.buttonText,
+            btnUrl = freezeDataResponse.buttonAppLink
+    )
+
     private fun mapMiscConfigInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayMiscConfigUiModel(
             shouldShowCart = configResponse.showCart
     )
@@ -169,15 +192,7 @@ class PlayChannelDetailsWithRecomMapper(
         } else PlayBufferControl()
     }
 
-    private fun mapEvent(channel: ChannelDetailsWithRecomResponse.Data) = PlayEventUiModel(
-            statusType = mapChannelStatus(!channel.config.active || channel.config.freezed),
-            bannedMessage = channel.config.bannedData.message,
-            bannedTitle = channel.config.bannedData.title,
-            bannedButtonTitle = channel.config.bannedData.buttonText,
-            freezeTitle = String.format(channel.config.freezeData.title, channel.title),
-    )
-
-    private fun mapChannelStatus(isFreezed: Boolean): PlayStatusType {
+    private fun mapStatusType(isFreezed: Boolean): PlayStatusType {
         return if (isFreezed) PlayStatusType.Freeze
         else PlayStatusType.Active
     }

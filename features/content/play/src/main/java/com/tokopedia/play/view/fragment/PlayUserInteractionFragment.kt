@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -31,7 +32,6 @@ import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -52,15 +52,15 @@ import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.recom.PlayEventUiModel
+import com.tokopedia.play.view.uimodel.recom.LikeSource
 import com.tokopedia.play.view.uimodel.recom.PlayLikeStatusInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayStatusInfoUiModel
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.EventObserver
@@ -595,9 +595,9 @@ class PlayUserInteractionFragment @Inject constructor(
             private var isFirstTime = true
 
             override fun onChanged(it: PlayLikeStatusInfoUiModel) {
-                likeView.setEnabled(true)
+                if (isFirstTime) likeView.setEnabled(true)
 
-                likeView.playLikeAnimation(it.isLiked, !isFirstTime)
+                likeView.playLikeAnimation(it.isLiked, it.source == LikeSource.UserAction && !isFirstTime)
                 isFirstTime = false
 
                 likeView.setTotalLikes(it)
@@ -699,7 +699,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             getBottomSheetInstance().setState(it.statusType.isFreeze)
 
             if (it.statusType.isFreeze || it.statusType.isBanned) {
@@ -916,7 +916,7 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.changeLikeCount(shouldLike)
 
         viewModel.doLikeUnlike(
-                feedInfoUiModel = playViewModel.feedInfoUiModel,
+                likeParamInfo = playViewModel.likeParamInfo,
                 shouldLike = shouldLike
         )
 
@@ -977,7 +977,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
-        return getVideoBoundsProvider().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
+        return try {
+            getVideoBoundsProvider().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
+        } catch (e: Throwable) { getScreenHeight() }
     }
 
     private suspend fun invalidateChatListBounds(
@@ -1178,10 +1180,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun endLiveInfoViewOnStateChanged(
-            event: PlayEventUiModel
+            event: PlayStatusInfoUiModel
     ) {
         if(event.statusType.isFreeze) {
-            endLiveInfoView.setInfo(title = event.freezeTitle)
+            endLiveInfoView.setInfo(title = event.freezeModel.title)
             endLiveInfoView.show()
         } else endLiveInfoView.hide()
     }

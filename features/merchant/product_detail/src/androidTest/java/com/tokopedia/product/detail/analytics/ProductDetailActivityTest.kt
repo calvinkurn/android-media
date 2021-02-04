@@ -26,11 +26,9 @@ import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionMostHelpfulViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
-import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
 import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
@@ -206,7 +204,7 @@ class ProductDetailActivityTest {
     private fun clickSeeAllDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))), scrollTo()))
         val viewInteraction = onView(withId(R.id.rv_pdp)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionMostHelpfulViewHolder>(12, clickChildViewWithId(R.id.productDiscussionMostHelpfulSeeAll)))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionMostHelpfulViewHolder>(13, clickChildViewWithId(R.id.productDiscussionMostHelpfulSeeAll)))
     }
 
     private fun clickThreadDetailDiscussion() {
