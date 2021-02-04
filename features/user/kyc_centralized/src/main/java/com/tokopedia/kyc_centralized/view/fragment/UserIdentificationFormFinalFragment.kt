@@ -30,7 +30,6 @@ import com.tokopedia.abstraction.base.view.listener.StepperListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.data.model.response.KycData
@@ -51,6 +50,7 @@ import com.tokopedia.user_identification_common.KycCommonUrl
 import com.tokopedia.user_identification_common.KycUrl
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import kotlinx.android.synthetic.main.layout_kyc_upload_error.*
+import com.tokopedia.utils.file.FileUtil
 import timber.log.Timber
 import java.net.SocketTimeoutException
 import javax.inject.Inject
@@ -478,8 +478,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     fun deleteTmpFile() {
-        FileUtils.deleteFileInTokopediaFolder(stepperModel?.ktpFile)
-        FileUtils.deleteFileInTokopediaFolder(stepperModel?.faceFile)
+        FileUtil.deleteFile(stepperModel?.ktpFile)
+        FileUtil.deleteFile(stepperModel?.faceFile)
     }
 
     companion object {

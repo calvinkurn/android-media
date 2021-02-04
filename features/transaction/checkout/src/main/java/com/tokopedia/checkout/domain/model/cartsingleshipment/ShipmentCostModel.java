@@ -29,8 +29,6 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private int totalPromoStackAmount;
     private String totalPromoStackAmountStr;
     private int TotalDiscWithoutCashback;
-    private long macroInsurancePrice;
-    private String macroInsurancePriceLabel;
     private int bookingFee;
     private String discountLabel;
     private int discountAmount;
@@ -64,8 +62,6 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         totalPromoStackAmount = in.readInt();
         totalPromoStackAmountStr = in.readString();
         TotalDiscWithoutCashback = in.readInt();
-        macroInsurancePrice = in.readLong();
-        macroInsurancePriceLabel = in.readString();
         bookingFee = in.readInt();
         discountLabel = in.readString();
         discountAmount = in.readInt();
@@ -98,8 +94,6 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         dest.writeInt(totalPromoStackAmount);
         dest.writeString(totalPromoStackAmountStr);
         dest.writeInt(TotalDiscWithoutCashback);
-        dest.writeLong(macroInsurancePrice);
-        dest.writeString(macroInsurancePriceLabel);
         dest.writeInt(bookingFee);
         dest.writeString(discountLabel);
         dest.writeInt(discountAmount);
@@ -276,22 +270,6 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     public int getBookingFee() { return bookingFee; }
 
     public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
-
-    public long getMacroInsurancePrice() {
-        return macroInsurancePrice;
-    }
-
-    public void setMacroInsurancePrice(long macroInsurancePrice) {
-        this.macroInsurancePrice = macroInsurancePrice;
-    }
-
-    public String getMacroInsurancePriceLabel() {
-        return macroInsurancePriceLabel;
-    }
-
-    public void setMacroInsurancePriceLabel(String macroInsurancePriceLabel) {
-        this.macroInsurancePriceLabel = macroInsurancePriceLabel;
-    }
 
     public String getDiscountLabel() {
         return discountLabel;

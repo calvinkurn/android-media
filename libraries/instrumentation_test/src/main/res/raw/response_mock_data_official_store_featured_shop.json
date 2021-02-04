@@ -1,0 +1,56 @@
+[
+  {
+    "data": {
+      "OfficialStoreFeaturedShop": {
+        "totalShops": 4,
+        "header": {
+          "ctaText": "Semua Brand",
+          "title": "Brand pilihan",
+          "link": "tokopedia://official-store/brand/0"
+        },
+        "shops": [
+          {
+            "id": 2946191,
+            "name": "D'Lanier",
+            "url": "tokopedia://shop/2946191",
+            "logoUrl": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2019/12/17/2946191/2946191_fdaa9894-9085-45a8-bcc7-b2be362d426b.jpg",
+            "imageUrl": "https://ecs7.tokopedia.net/img/cache/600x323/afXJgn/2021/1/19/a105c119-6198-460d-ac29-05e2c6c1d489.jpg.webp",
+            "additionalInformation": "{\"first_line\":\"\",\"second_line\":\"\",\"benefit\":\"\"}",
+            "featuredBrandId": "0-2339",
+            "campaignCode": ""
+          },
+          {
+            "id": 9147732,
+            "name": "Acquatrend Bathroom",
+            "url": "tokopedia://shop/9147732",
+            "logoUrl": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/7/22/9147732/9147732_5585a6a2-f39e-4a50-bad9-8863423a131b.jpg",
+            "imageUrl": "https://ecs7.tokopedia.net/img/cache/600x323/afXJgn/2021/1/13/ca5d78ad-b346-41b3-b48f-c083f6bfe189.jpg.webp",
+            "additionalInformation": "{\"first_line\":\"Diskon\",\"second_line\":\"hingga\",\"benefit\":\"90\"}",
+            "featuredBrandId": "0-2323",
+            "campaignCode": ""
+          },
+          {
+            "id": 6836943,
+            "name": "AR Signature Official",
+            "url": "tokopedia://shop/6836943",
+            "logoUrl": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2019/9/26/6836943/6836943_bb886184-107a-4772-82e6-1164555cbe01.jpg",
+            "imageUrl": "https://ecs7.tokopedia.net/img/cache/600x323/afXJgn/2021/1/19/982ac822-a7e7-4117-b8e1-e8b52a04e765.jpg.webp",
+            "additionalInformation": "{\"first_line\":\"\",\"second_line\":\"\",\"benefit\":\"\"}",
+            "featuredBrandId": "0-2344",
+            "campaignCode": ""
+          },
+          {
+            "id": 6965941,
+            "name": "Sage Denim",
+            "url": "tokopedia://shop/6965941",
+            "logoUrl": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/4/18/6965941/6965941_25cf3067-4c2e-4247-a1a3-42a6ef3879a3.jpg",
+            "imageUrl": "https://ecs7.tokopedia.net/img/cache/600x323/afXJgn/2021/1/13/2dfcad1b-354f-4a2a-9990-26ab4fafee74.jpg.webp",
+            "additionalInformation": "{\"first_line\":\"Special\",\"second_line\":\"Bundling\",\"benefit\":\"\"}",
+            "featuredBrandId": "0-2320",
+            "campaignCode": ""
+          }
+        ]
+      }
+    }
+  }
+]

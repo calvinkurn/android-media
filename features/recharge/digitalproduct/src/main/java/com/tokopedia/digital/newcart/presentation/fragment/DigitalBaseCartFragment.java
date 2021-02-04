@@ -27,6 +27,7 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
@@ -42,7 +43,6 @@ import com.tokopedia.digital.newcart.presentation.model.cart.UserInputPriceDigit
 import com.tokopedia.digital.newcart.presentation.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.empty_state.EmptyStateUnify;
-import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
@@ -50,8 +50,6 @@ import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.HashMap;
@@ -61,6 +59,7 @@ import java.util.Objects;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
+
 
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
         implements DigitalBaseContract.View,
@@ -100,17 +99,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        TrackApp.getInstance().getAppsFlyer().getAdsID(new AFAdsIDCallback() {
-            @Override
-            public void onGetAFAdsID(String string) {
-                // do nothing
-            }
-
-            @Override
-            public void onErrorAFAdsID() {
-                //do nothing
-            }
-        });
+        DeviceInfo.getAdsIdSuspend(requireContext(), null);
         super.onCreate(savedInstanceState);
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
         DigitalSubscriptionParams subParams = getArguments().getParcelable(ARG_SUBSCRIPTION_PARAMS);
@@ -485,19 +474,28 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void showError(String message) {
-        if (emptyState != null) {
+        if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL) || message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION) || message.equals(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)) {
             emptyState.setDescription(message);
-            emptyState.setPrimaryCTAClickListener(() -> {
-                emptyState.setVisibility(View.GONE);
-                presenter.onViewCreated();
-                return Unit.INSTANCE;
-            });
-
-            emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500));
-            emptyState.setPrimaryCTAText(getString(R.string.digital_empty_state_checkout_btn));
-            emptyState.setTitle(getString(R.string.digital_empty_state_checkout_title));
-            emptyState.setVisibility(View.VISIBLE);
+            emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection));
+            emptyState.setTitle(getString(com.tokopedia.globalerror.R.string.noConnectionAction));
         }
+        else if(message.equals(ErrorNetMessage.MESSAGE_ERROR_SERVER) || message.equals(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)){
+            emptyState.setDescription(getString(com.tokopedia.globalerror.R.string.error500Desc));
+            emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500));
+            emptyState.setTitle(getString(com.tokopedia.globalerror.R.string.error500Title));
+        }
+        else {
+            emptyState.setDescription(message);
+            emptyState.setImageDrawable(getResources().getDrawable(R.drawable.digital_ic_digital_cart_transaction_failed));
+            emptyState.setTitle(getString(R.string.digital_transaction_failed_title));
+        }
+        emptyState.setPrimaryCTAText(getString(R.string.digital_empty_state_checkout_btn));
+        emptyState.setPrimaryCTAClickListener(() -> {
+            emptyState.setVisibility(View.GONE);
+            presenter.onViewCreated();
+            return Unit.INSTANCE;
+        });
+        emptyState.setVisibility(View.VISIBLE);
     }
 
     @Override

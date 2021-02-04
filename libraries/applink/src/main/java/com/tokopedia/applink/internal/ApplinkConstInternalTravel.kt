@@ -53,5 +53,5 @@ object ApplinkConstInternalTravel {
     val EXTRA_DESTINATION_WEB_URL = "EXTRA_DESTINATION_WEB_URL"
 
     @JvmField
-    val TRAVEL_ACTION = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_TRAVEL_SLICE/main"
+    val TRAVEL_ACTION = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_TRAVEL_SLICE/main"
 }

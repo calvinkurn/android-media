@@ -17,7 +17,6 @@ import android.view.Window;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -36,8 +35,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.header.HeaderUnify;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
-import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.review.R;
+import com.tokopedia.review.common.util.ReviewErrorHandler;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
 import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationComponent;
@@ -233,7 +232,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onErrorGetInboxDetail(Throwable throwable) {
         if (getActivity() != null && mainView != null)
-            NetworkErrorHelper.showEmptyState(getActivity(), mainView, ErrorHandler.getErrorMessage(getContext(), throwable),
+            NetworkErrorHelper.showEmptyState(getActivity(), mainView, ReviewErrorHandler.getErrorMessage(getContext(), throwable),
                     () -> presenter.getInboxDetail(
                             reputationId,
                             getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
@@ -292,7 +291,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onErrorRefreshInboxDetail(Throwable throwable) {
         if (getActivity() != null)
-            NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), throwable));
+            NetworkErrorHelper.showSnackbar(getActivity(), ReviewErrorHandler.getErrorMessage(getContext(), throwable));
     }
 
     @Override

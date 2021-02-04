@@ -11,7 +11,6 @@ import dagger.multibindings.IntoMap
 
 
 @Module
-@CommonTradeInScope
 abstract class CommonTradeInViewModelModule {
 
     @CommonTradeInScope

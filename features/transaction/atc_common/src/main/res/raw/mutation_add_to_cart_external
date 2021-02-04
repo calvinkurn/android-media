@@ -1,5 +1,5 @@
-mutation add_to_cart_external($productID: Int) {
-      add_to_cart_external(productID: $productID) {
+mutation add_to_cart_external_v2($productID: SuperInteger) {
+      add_to_cart_external_v2(productID: $productID) {
         error_message
         status
         data {

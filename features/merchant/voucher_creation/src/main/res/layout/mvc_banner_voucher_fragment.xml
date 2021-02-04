@@ -7,18 +7,19 @@
     <FrameLayout
         android:id="@+id/bannerFrame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/bannerImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true" />
 
         <com.tokopedia.vouchercreation.create.view.customview.BannerVoucherPreviewInfo
             android:id="@+id/bannerInfo"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
     </FrameLayout>
 
@@ -27,17 +28,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/bannerFrame"
-        android:clipToPadding="false"/>
-
-    <!-- will set height to 0dp as the recycler view is temporarily disabled -->
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/recycler_view"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:paddingBottom="?android:attr/actionBarSize"-->
-<!--        android:layout_below="@id/bannerFrame"-->
-<!--        android:clipToPadding="false"-->
-<!--        tools:itemCount="1"-->
-<!--        tools:listitem="@layout/mvc_type_budget_promotion_widget"/>-->
+        android:clipToPadding="false" />
 
 </RelativeLayout>

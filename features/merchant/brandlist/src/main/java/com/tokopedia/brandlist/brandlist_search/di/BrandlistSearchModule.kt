@@ -13,7 +13,6 @@ import dagger.Provides
 import javax.inject.Named
 
 @Module(includes = [BrandlistSearchViewModelModule::class])
-@BrandlistSearchScope
 class BrandlistSearchModule {
 
     @BrandlistSearchScope

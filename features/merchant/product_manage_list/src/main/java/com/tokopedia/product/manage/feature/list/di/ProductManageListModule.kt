@@ -30,7 +30,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@ProductManageListScope
 @Module(includes = [ProductManageNetworkModule::class, ViewModelModule::class])
 class ProductManageListModule(private val context: Context) {
 

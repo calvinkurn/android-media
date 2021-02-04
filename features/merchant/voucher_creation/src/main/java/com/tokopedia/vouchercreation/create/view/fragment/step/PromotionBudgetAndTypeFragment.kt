@@ -50,12 +50,14 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
 
         @JvmStatic
         fun createInstance(onNext: (VoucherImageType, Int, Int) -> Unit,
+                           setRecommendationStatus: (Int) -> Unit,
                            getVoucherUiModel: () -> BannerVoucherUiModel,
                            getBannerBaseUiModel: () -> BannerBaseUiModel,
                            onSetShopInfo: (String, String) -> Unit,
                            getVoucherReviewData: () -> VoucherReviewUiModel,
                            isCreateNew: Boolean) = PromotionBudgetAndTypeFragment().apply {
             this.onNextStep = onNext
+            this.setRecommendationStatus = setRecommendationStatus
             this.getVoucherUiModel = getVoucherUiModel
             this.getBannerBaseUiModel = getBannerBaseUiModel
             this.onSetShopInfo = onSetShopInfo
@@ -65,6 +67,7 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     }
 
     private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ ->  }
+    private var setRecommendationStatus: (Int) -> Unit = { _ -> }
     private var getVoucherUiModel: () -> BannerVoucherUiModel = {
         BannerVoucherUiModel(
                 VoucherImageType.FreeDelivery(0),
@@ -112,7 +115,7 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     }
 
     private val cashbackVoucherCreateFragment by lazy {
-        context?.let { CashbackVoucherCreateFragment.createInstance(onNextStep, ::onShouldChangeBannerValue, it, getVoucherReviewData) }
+        context?.let { CashbackVoucherCreateFragment.createInstance(onNextStep, setRecommendationStatus, ::onShouldChangeBannerValue, it, getVoucherReviewData, isCreateNew) }
     }
 
     private val impressHolder = ImpressHolder()
