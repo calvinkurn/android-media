@@ -899,14 +899,15 @@ open class HomeViewModel @Inject constructor(
             }
         }) {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
-
+            val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
             Timber.w("${ConstantKey.HomeTimber.TAG}error_init_flow;reason='${it.message?:""
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
                     .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
         }.invokeOnCompletion {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
             Timber.w("${ConstantKey.HomeTimber.TAG}cancelled_init_flow;reason='${it?.message?:"No error propagated"
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
                     .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
             homeFlowDataCancelled = true
         }
