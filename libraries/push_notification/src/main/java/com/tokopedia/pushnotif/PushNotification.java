@@ -41,7 +41,7 @@ public class PushNotification {
     private static boolean isChatBotWindowOpen;
     private static Bundle aidlApiBundle;
 
-    public void init(Context context) {
+    public static void init(Context context) {
         PushNotificationApi.bindService(
                 context,
                 (s, bundle) -> {
