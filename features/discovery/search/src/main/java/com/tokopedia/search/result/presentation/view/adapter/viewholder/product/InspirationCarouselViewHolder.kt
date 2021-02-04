@@ -49,17 +49,8 @@ class InspirationCarouselViewHolder(
     }
 
     override fun bind(element: InspirationCarouselViewModel) {
-        setDefaultHeightInspirationCarouselOptionList()
         bindTitle(element)
         bindContent(element)
-    }
-
-    private fun setDefaultHeightInspirationCarouselOptionList() {
-        itemView.inspirationCarousel?.inspirationCarouselOptionList?.let {
-            val carouselLayoutParams = it.layoutParams
-            carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
-            it.layoutParams = carouselLayoutParams
-        }
     }
 
     private fun bindTitle(element: InspirationCarouselViewModel) {
@@ -76,6 +67,7 @@ class InspirationCarouselViewHolder(
                 it.initRecyclerViewForGrid(option, productList)
                 configureSeeAllButton(option)
             } else {
+                it.setDefaultHeightInspirationCarouselOptionList()
                 it.layoutManager = createLayoutManager()
                 it.adapter = createAdapter(element.options)
             }
@@ -155,6 +147,12 @@ class InspirationCarouselViewHolder(
         itemView.inspirationCarouselSeeAllButton?.setOnClickListener {
             inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
         }
+    }
+
+    private fun RecyclerView.setDefaultHeightInspirationCarouselOptionList() {
+        val carouselLayoutParams = layoutParams
+        carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
+        layoutParams = carouselLayoutParams
     }
 
     private fun createLayoutManager(): RecyclerView.LayoutManager {
