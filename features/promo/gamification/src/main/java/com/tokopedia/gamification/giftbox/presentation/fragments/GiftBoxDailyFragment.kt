@@ -40,6 +40,7 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
 import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParams
+import com.tokopedia.gamification.giftbox.presentation.viewmodels.AutoApplyCallback
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyViewModel
 import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
@@ -428,12 +429,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         })
 
-        viewModel.autoApplyLiveData.observe(viewLifecycleOwner, Observer
-        {
-            when (it.status) {
-                LiveDataResult.STATUS.SUCCESS -> {
-                    val code = it.data?.tokopointsSetAutoApply?.resultStatus?.code
-                    val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
+        viewModel.autoApplycallback = object : AutoApplyCallback {
+            override fun success(response: AutoApplyResponse?) {
+                try {
+                    val code = response?.tokopointsSetAutoApply?.resultStatus?.code
+                    val messageList = response?.tokopointsSetAutoApply?.resultStatus?.message
                     if (code == HTTP_STATUS_OK) {
                         if (autoApplyMessage.isNotEmpty() && context != null) {
                             CustomToast.show(context!!, autoApplyMessage)
@@ -443,10 +443,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             CustomToast.show(context!!, messageList[0], isError = true)
                         }
                     }
+                } catch (th: Throwable) {
+                    Timber.e(th)
                 }
             }
-
-        })
+        }
 
         pdpGamificationView.errorListener = object : PdpErrorListener {
             override fun onError() {
@@ -792,7 +793,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun checkInternetOnButtonActionAndRedirect() {
         if (context != null) {
-            var internetAvailable = isConnectedToInternet()
+            var internetAvailable = true
             if (!internetAvailable) {
                 showNoInterNetDialog(this::checkInternetOnButtonActionAndRedirect, context!!)
             } else {

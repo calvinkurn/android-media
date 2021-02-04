@@ -20,7 +20,7 @@
             android:layout_height="@dimen/dp_24"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/iconunify_close"
-            app:tint="#6C727C" />
+            app:tint="@color/gf_close_color" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
@@ -38,7 +38,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_10"
-        android:background="@color/colorGray"
         app:gami_corner_radius="8dp"
         app:layout_constraintDimensionRatio="h,3:1"
         app:layout_constraintEnd_toEndOf="parent"

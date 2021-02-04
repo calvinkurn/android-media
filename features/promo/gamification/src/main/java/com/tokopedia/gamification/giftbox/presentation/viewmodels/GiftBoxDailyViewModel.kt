@@ -10,10 +10,12 @@ import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
-class GiftBoxDailyViewModel @Inject constructor(@Named(IO) workerDispatcher: CoroutineDispatcher,
+class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) val ui: CoroutineDispatcher,
+                                                @Named(IO) workerDispatcher: CoroutineDispatcher,
                                                 val giftBoxDailyUseCase: GiftBoxDailyUseCase,
                                                 val giftBoxDailyRewardUseCase: GiftBoxDailyRewardUseCase,
                                                 val couponDetailUseCase: CouponDetailUseCase,
@@ -30,8 +32,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(IO) workerDispatcher: Cor
     val giftBoxLiveData: MutableLiveData<LiveDataResult<Pair<GiftBoxEntity, RemindMeCheckEntity>>> = MutableLiveData()
     val rewardLiveData: MutableLiveData<LiveDataResult<GiftBoxRewardEntity>> = MutableLiveData()
     val reminderSetLiveData: MutableLiveData<LiveDataResult<RemindMeEntity>> = MutableLiveData()
-    val autoApplyLiveData: MutableLiveData<LiveDataResult<AutoApplyResponse>> = MutableLiveData()
-
+    var autoApplycallback: AutoApplyCallback?=null
     var rewardJob: Job? = null
     var remindMeJob: Job? = null
 
@@ -121,9 +122,15 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(IO) workerDispatcher: Cor
             val map = autoApplyUseCase.getQueryParams(code)
             var response: AutoApplyResponse
             response = autoApplyUseCase.getResponse(map)
-            autoApplyLiveData.postValue(LiveDataResult.success(response))
+            withContext(ui) {
+                autoApplycallback?.success(response)
+            }
         }, onError = {
-            autoApplyLiveData.postValue(LiveDataResult.error(it))
+            //Do nothing
         })
     }
+}
+
+interface AutoApplyCallback {
+    fun success(response: AutoApplyResponse?)
 }
