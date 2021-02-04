@@ -311,7 +311,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var lastSendScreenTimeMillis: Long = 0
-    private var positionSticky: IntArray? = IntArray(2)
     private var isLightThemeStatusBar = true
     private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> = HashMap()
     private var mLastClickTime = System.currentTimeMillis()
@@ -786,9 +785,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
 
             override fun onViewChange(isShowing: Boolean) {
-                if (stickyLoginView?.isShowing() == true) {
-                    positionSticky = stickyLoginView?.getLocation()
-                }
                 floatingEggButtonFragment?.let {
                     updateEggBottomMargin(it)
                 }
@@ -2293,9 +2289,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             stickyLoginView?.height?.let { params.setMargins(0, 0, 0, it) }
             val positionEgg = IntArray(2)
             val eggHeight = floatingEggButtonFragment.egg.height
+            val stickyTopLocation = stickyLoginView?.getLocation()?.get(1) ?: 0
             floatingEggButtonFragment.egg.getLocationOnScreen(positionEgg)
-            if (positionEgg[1] + eggHeight > positionSticky?.get(1) ?: 0) {
-                floatingEggButtonFragment.moveEgg(positionSticky!![1] - eggHeight)
+            if (positionEgg[1] + eggHeight > stickyTopLocation) {
+                floatingEggButtonFragment.moveEgg(stickyTopLocation - eggHeight)
             }
         } else {
             params.setMargins(0, 0, 0, 0)
