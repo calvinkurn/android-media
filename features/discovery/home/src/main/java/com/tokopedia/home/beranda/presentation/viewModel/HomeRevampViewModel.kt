@@ -248,6 +248,8 @@ open class HomeRevampViewModel @Inject constructor(
     private var isNeedShowGeoLocation = false
     private var headerDataModel: HeaderDataModel? = null
 
+    private var homeFlowDataCancelled = false
+
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     private var onRefreshState = true
@@ -938,15 +940,27 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }
         }) {
-            _updateNetworkLiveData.postValue(Result.errorGeneral(Throwable(), null))
-
+            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
             Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_init_flow;reason='${it.message?:""
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
                     .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+        }.invokeOnCompletion {
+            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
+            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_cancelled_init_flow;reason='${it?.message?:"No error propagated"
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            homeFlowDataCancelled = true
         }
     }
 
     fun refreshHomeData() {
+        if (homeFlowDataCancelled) {
+            initFlow()
+            homeFlowDataCancelled = false
+        }
+
         onRefreshState = true
         if (getHomeDataJob?.isActive == true) return
         getHomeDataJob = launchCatchError(coroutineContext, block = {
@@ -962,7 +976,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
-            _updateNetworkLiveData.postValue(Result.errorGeneral(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
 
             Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_refresh;reason='${it.message?:""
                     .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
