@@ -79,11 +79,16 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     fun submitInitialList(visitables: List<DynamicPdpDataModel>) {
         hideSwipeLoading()
-        productAdapter?.submitList(visitables)
+
+        rvPdp?.post {
+            productAdapter?.submitList(visitables)
+        }
     }
 
     fun submitList(visitables: List<DynamicPdpDataModel>) {
-        productAdapter?.submitList(visitables)
+        rvPdp?.post {
+            productAdapter?.submitList(visitables)
+        }
     }
 
     fun showLoading() {
