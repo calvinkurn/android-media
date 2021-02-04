@@ -1977,7 +1977,7 @@ final class ProductListPresenter
     }
 
     @Override
-    public void enableBottomSheetFilter() {
+    public void onBottomSheetFilterDismissed() {
         bottomSheetFilterEnabled = true;
     }
 

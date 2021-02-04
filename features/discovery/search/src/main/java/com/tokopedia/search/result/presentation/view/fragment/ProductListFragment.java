@@ -1703,7 +1703,7 @@ public class ProductListFragment
 
         sortFilterBottomSheet.setOnDismissListener(() -> {
             sortFilterBottomSheet = null;
-            presenter.enableBottomSheetFilter();
+            presenter.onBottomSheetFilterDismissed();
             return Unit.INSTANCE;
         });
     }

@@ -157,7 +157,7 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
     }
 
     private fun `When bottomsheet filter is dismissed`() {
-        productListPresenter.enableBottomSheetFilter()
+        productListPresenter.onBottomSheetFilterDismissed()
     }
 
     private fun `Then verify interactions open filter page second time after first time success`(dynamicFilterModel: DynamicFilterModel) {

@@ -239,7 +239,7 @@ public interface ProductListSectionContract {
 
         boolean isBottomSheetFilterEnabled();
 
-        void enableBottomSheetFilter();
+        void onBottomSheetFilterDismissed();
 
         void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
 
