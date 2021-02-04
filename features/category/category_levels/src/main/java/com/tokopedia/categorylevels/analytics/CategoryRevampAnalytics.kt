@@ -156,6 +156,11 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             productMap[KEY_ID] = it.productId.toString()
             productMap[LIST] = if (it.isTopads == false) dimension40 else "$dimension40 - topads"
             productMap[KEY_NAME] = it.name.toString()
+            var label = ""
+            getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
+                label = "$label&${map.key}-${map.value}"
+            }
+            productMap[FIELD_DIMENSION_61] = label.removePrefix("&")
             productMap[KEY_POSITION] = componentsItems.position + 1
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
             productMap[KEY_VARIANT] = NONE_OTHER
@@ -186,6 +191,11 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 productMap[KEY_CATEGORY] = it.departmentID
                 productMap[KEY_ID] = it.productId.toString()
                 productMap[LIST] = productCardItemList
+                var label = ""
+                getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
+                    label = "$label&${map.key}-${map.value}"
+                }
+                productMap[FIELD_DIMENSION_61] = label.removePrefix("&")
                 productMap[KEY_NAME] = it.name.toString()
                 productMap[KEY_POSITION] = componentsItems.position + 1
                 productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
@@ -252,5 +262,17 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             }
         }
         return map
+    }
+
+    override fun trackClickDetailedFilter(componentName: String?) {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_FILTER_MENU))
+    }
+
+    override fun trackClickApplyFilter(mapParameters: Map<String, String>) {
+        var label = ""
+        for (map in mapParameters) {
+            label = "$label&${map.key}-${map.value}"
+        }
+        getTracker().sendGeneralEvent(createGeneralEvent(eventName = EVENT_CLICK_FILTER, eventAction = APPLY_FILTER, eventLabel = label.removePrefix("&")))
     }
 }

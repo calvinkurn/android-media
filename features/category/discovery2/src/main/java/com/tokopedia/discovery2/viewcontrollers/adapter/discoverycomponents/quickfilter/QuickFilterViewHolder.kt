@@ -109,15 +109,13 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     private fun setSortFilterItemState(options: List<Option>) {
         if (options.size != quickSortFilter.chipItems.size) return
-        var selectedCount = 0
         for (i in options.indices) {
             if (quickFilterViewModel.isQuickFilterSelected(options[i])) {
                 setQuickFilterChipsSelected(i)
-                selectedCount ++
             } else
                 setQuickFilterChipsNormal(i)
         }
-        quickSortFilter.indicatorCounter = selectedCount
+        quickSortFilter.indicatorCounter = quickFilterViewModel.getSelectedFilterCount()
     }
 
     private fun setQuickFilterChipsSelected(position: Int) {
@@ -149,6 +147,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
         quickFilterViewModel.onApplySortFilter(applySortFilterModel)
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickApplyFilter(applySortFilterModel.selectedFilterMapParameter)
+        quickSortFilter.indicatorCounter = quickFilterViewModel.getSelectedFilterCount()
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {

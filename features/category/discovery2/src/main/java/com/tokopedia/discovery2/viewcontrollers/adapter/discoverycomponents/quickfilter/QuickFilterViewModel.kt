@@ -81,6 +81,8 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         getTargetComponent()?.let { component ->
             components.selectedFilters = selectedFilter
             components.selectedSort = selectedSort
+            component.selectedFilters = selectedFilter
+            component.selectedSort = selectedSort
             launchCatchError(block = {
                 if (quickFilterUseCase.onFilterApplied(component, selectedFilter, selectedSort)) {
                     syncData.value = true
@@ -185,6 +187,10 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     private fun getUserId(): String? {
         return UserSession(application).userId
+    }
+
+    fun getSelectedFilterCount() : Int {
+        return components.filterController.filterViewStateSet.size
     }
 
     fun filterProductsCount(selectedFilterMapParameter: Map<String, String>) {
