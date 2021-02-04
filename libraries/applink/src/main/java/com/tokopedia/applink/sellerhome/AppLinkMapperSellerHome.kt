@@ -10,6 +10,7 @@ import com.tokopedia.applink.order.DeeplinkMapperOrder.FILTER_CANCELLATION_REQUE
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerCancellationRequest
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerCancelled
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerFinished
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerHistory
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerInShipping
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerNewOrder
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerReadyToShip
@@ -112,6 +113,21 @@ object AppLinkMapperSellerHome {
             }
         } else {
             getRegisteredNavigationMainAppSellerCancellationRequest()
+        }
+    }
+
+    fun getSomAllOrderAppLink(deepLink: String): String {
+        val uri = Uri.parse(deepLink)
+        val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
+            if(searchKeyword.isNotBlank()) {
+                val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
+                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL, param)
+            } else {
+                ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL
+            }
+        } else {
+            getRegisteredNavigationMainAppSellerHistory()
         }
     }
 
