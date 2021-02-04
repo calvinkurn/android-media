@@ -21,7 +21,7 @@ data class SnapshotResponse(
 				val shopImagePrimaryUrl: String = "",
 
 				@field:SerializedName("product_url")
-				val productUrl: String = "",
+				var productUrl: String = "",
 
 				@field:SerializedName("product_total_weight_formatted")
 				val productTotalWeightFormatted: String = "",
