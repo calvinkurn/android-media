@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerreview.view.bottomsheet.FeedbackBottomSheet
@@ -53,7 +54,8 @@ class SellerReviewHelper @Inject constructor(
      * and never seen the bottom sheet before within last 30 days
      * */
     fun checkForReview(context: Context, fm: FragmentManager) {
-        if (popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context)) return
+        val isAllowDebuggingTools = GlobalConfig.isAllowDebuggingTools()
+        if (popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context) || isAllowDebuggingTools) return
 
         launchCatchError(block = {
             delay(QUOTA_CHECK_DELAY)
