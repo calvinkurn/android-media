@@ -2,17 +2,20 @@ package com.tokopedia.sellerorder.filter.presentation.bottomsheet
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
@@ -280,13 +283,23 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     }
 
     private fun setStatusBarColor() {
-        statusBarColorUtil = StatusBarColorUtil(requireActivity())
-        statusBarColorUtil?.setStatusBarColor()
+        if (GlobalConfig.isSellerApp()) {
+            statusBarColorUtil = StatusBarColorUtil(requireActivity())
+            statusBarColorUtil?.setStatusBarColor()
+        } else {
+            activity?.run {
+                window?.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifycomponents.R.color.Unify_N700_68)
+            }
+        }
     }
 
     private fun undoStatusBarColor() {
-        statusBarColorUtil?.undoSetStatusBarColor()
-        statusBarColorUtil = null
+        if (GlobalConfig.isSellerApp()) {
+            statusBarColorUtil?.undoSetStatusBarColor()
+            statusBarColorUtil = null
+        } else {
+            activity?.window?.statusBarColor = Color.TRANSPARENT
+        }
     }
 
     private fun clickShowOrder() {
