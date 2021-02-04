@@ -78,6 +78,7 @@
     <string name="error_text_image_file_too_big">Foto melebihi ukuran maksimum 10 MB</string>
     <string name="error_text_image_cant_be_accessed">Foto ktp tidak dapat diakses</string>
     <string name="error_text_liveness_image_cant_be_accessed">Foto tidak dapat diakses</string>
+    <string name="error_text_image_fail_to_encrypt">Foto tidak dapat disimpan</string>
 
     <string name="title_kyc_form_ktp">1. Foto KTP</string>
     <string name="title_kyc_form_selfie">2. Foto Diri &amp; KTP</string>
