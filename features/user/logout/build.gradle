@@ -29,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.utils)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
     } else {
