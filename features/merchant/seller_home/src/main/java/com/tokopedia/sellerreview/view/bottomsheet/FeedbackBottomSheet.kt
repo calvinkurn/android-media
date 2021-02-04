@@ -129,7 +129,7 @@ class FeedbackBottomSheet : BaseBottomSheet() {
         SellerReviewUtils.dismissSoftKeyboard(this@FeedbackBottomSheet)
 
         val isConnected = SellerReviewUtils.getConnectionStatus(requireContext())
-        if (isConnected) {
+        if (!isConnected) {
             setOnError(UnknownHostException())
             return@run
         }
