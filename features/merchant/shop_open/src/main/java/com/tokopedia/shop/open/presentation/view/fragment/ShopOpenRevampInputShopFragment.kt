@@ -30,10 +30,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainSuggestionResult
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
-import com.tokopedia.shop.open.common.EspressoIdlingResource
-import com.tokopedia.shop.open.common.PageNameConstant
-import com.tokopedia.shop.open.common.ScreenNameTracker
-import com.tokopedia.shop.open.common.ShopOpenRevampErrorHandler
+import com.tokopedia.shop.open.common.*
 import com.tokopedia.shop.open.common.TermsAndConditionsLink.URL_PRIVACY_POLICY
 import com.tokopedia.shop.open.common.TermsAndConditionsLink.URL_TNC
 import com.tokopedia.shop.open.di.DaggerShopOpenRevampComponent
@@ -239,7 +236,11 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                         } else {
                             validateShopName(true, errorMessage)
                         }
-                        ShopOpenRevampErrorHandler.logMessage(errorMessage)
+                        ShopOpenRevampErrorHandler.logMessage(
+                                title = ErrorConstant.ERROR_CHECK_SHOP_NAME,
+                                userId = userSession.userId,
+                                message = errorMessage
+                        )
                     } else {
                         validateShopName(false, getString(R.string.open_shop_revamp_default_hint_input_shop))
                         EspressoIdlingResource.increment()
@@ -249,9 +250,14 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 is Fail -> {
                     it.throwable.message?.let { message ->
                         validateShopName(true, message)
-                        ShopOpenRevampErrorHandler.logMessage(message)
-                        ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
                     }
+
+                    ShopOpenRevampErrorHandler.logMessage(
+                            title = ErrorConstant.ERROR_CHECK_SHOP_NAME,
+                            userId = userSession.userId,
+                            message = it.throwable.message ?: ""
+                    )
+                    ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         })
@@ -265,7 +271,11 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     if (!it.data.validateDomainShopName.isValid) {
                         val errorMessage = it.data.validateDomainShopName.error.message
                         validateDomainName(true, errorMessage)
-                        ShopOpenRevampErrorHandler.logMessage(errorMessage)
+                        ShopOpenRevampErrorHandler.logMessage(
+                                title = ErrorConstant.ERROR_CHECK_DOMAIN_NAME,
+                                userId = userSession.userId,
+                                message = errorMessage
+                        )
                     } else {
                         isValidDomainName = true
                         validateDomainName(false, "")
@@ -274,9 +284,13 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 is Fail -> {
                     it.throwable.message?.let { message ->
                         validateDomainName(true, message)
-                        ShopOpenRevampErrorHandler.logMessage(message)
-                        ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
                     }
+                    ShopOpenRevampErrorHandler.logMessage(
+                            title = ErrorConstant.ERROR_CHECK_DOMAIN_NAME,
+                            userId = userSession.userId,
+                            message = it.throwable.message ?: ""
+                    )
+                    ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         })
@@ -307,17 +321,26 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                             _message = getString(R.string.open_shop_revamp_error_retry)
                             showErrorResponse(_message)
                         }
-                        ShopOpenRevampErrorHandler.logMessage(_message)
+
+                        ShopOpenRevampErrorHandler.logMessage(
+                                title = ErrorConstant.ERROR_CREATE_SHOP,
+                                userId = userSession.userId,
+                                message = _message
+                        )
+
                     }
                 }
                 is Fail -> {
                     val isSuccess = false
                     showErrorNetwork(it.throwable)
                     shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
-                    it.throwable.message?.let {message ->
-                        ShopOpenRevampErrorHandler.logMessage(message)
-                        ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    }
+
+                    ShopOpenRevampErrorHandler.logMessage(
+                            title = ErrorConstant.ERROR_CREATE_SHOP,
+                            userId = userSession.userId,
+                            message = it.throwable.message ?: ""
+                    )
+                    ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         })
@@ -335,10 +358,13 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable)
-                    it.throwable.message?.let {message ->
-                        ShopOpenRevampErrorHandler.logMessage(message)
-                        ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    }
+
+                    ShopOpenRevampErrorHandler.logMessage(
+                            title = ErrorConstant.ERROR_DOMAIN_NAME_SUGGESTIONS,
+                            userId = userSession.userId,
+                            message = it.throwable.message ?: ""
+                    )
+                    ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         })
