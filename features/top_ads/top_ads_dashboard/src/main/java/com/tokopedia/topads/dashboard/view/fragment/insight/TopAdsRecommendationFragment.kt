@@ -161,9 +161,15 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     fun setClick() {
-        val fragments = (view_pager?.adapter as? TopAdsDashInsightPagerAdapter)?.listFrag
-        if (fragments?.firstOrNull() is TopAdsInsightBaseProductFragment?) {
-            (fragments?.get(0) as TopAdsInsightBaseProductFragment).openBottomSheet()
+        val fragments = (view_pager?.adapter as? TopAdsDashboardBasePagerAdapter)?.getList()
+        if (fragments != null) {
+            for (frag in fragments) {
+                when (frag.fragment) {
+                    is TopAdsInsightBaseProductFragment -> {
+                        (frag.fragment as TopAdsInsightBaseProductFragment).openBottomSheet()
+                    }
+                }
+            }
         }
     }
 
