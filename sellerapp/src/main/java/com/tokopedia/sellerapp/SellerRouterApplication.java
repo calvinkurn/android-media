@@ -99,7 +99,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
         SellerHomeRouter,
         LoginRouter {
 
-    private CMPushNotificationManager cmPushNotificationManager;
     private TopAdsComponent topAdsComponent;
     private TetraDebugger tetraDebugger;
 
@@ -116,16 +115,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
         initResourceDownloadManager();
         initIris();
         performLibraryInitialisation();
-    }
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        if (cmPushNotificationManager != null) {
-            cmPushNotificationManager.getAidlApiApp().unbindService();
-            cmPushNotificationManager = null;
-            PushNotification.unbind();
-        }
     }
 
     private void performLibraryInitialisation(){
@@ -160,8 +149,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
 
     private void initCMPushNotification() {
-        cmPushNotificationManager = CMPushNotificationManager.getInstance();
-        cmPushNotificationManager.init(this);
+        CMPushNotificationManager.getInstance().init(this);
         PushNotification.init(getApplicationContext());
 
         List<String> excludeScreenList = new ArrayList<>();

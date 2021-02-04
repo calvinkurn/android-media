@@ -141,7 +141,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Inject
     Lazy<ReactUtils> reactUtils;
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
-    private CMPushNotificationManager cmPushNotificationManager;
     private OmsComponent omsComponent;
     private ReactNativeComponent reactNativeComponent;
     private TokopointComponent tokopointComponent;
@@ -160,16 +159,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         performLibraryInitialisation();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground(ConsumerRouterApplication.this);
         initResourceDownloadManager();
-    }
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        if (cmPushNotificationManager != null) {
-            cmPushNotificationManager.getAidlApiApp().unbindService();
-            cmPushNotificationManager = null;
-            PushNotification.unbind();
-        }
     }
 
     private void warmUpGQLClient() {
@@ -556,8 +545,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initCMPushNotification() {
-        cmPushNotificationManager = CMPushNotificationManager.getInstance();
-        cmPushNotificationManager.init(ConsumerRouterApplication.this);
+        CMPushNotificationManager.getInstance().init(ConsumerRouterApplication.this);
         PushNotification.init(getApplicationContext());
 
         List<String> excludeScreenList = new ArrayList<>();
