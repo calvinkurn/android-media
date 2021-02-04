@@ -170,22 +170,10 @@ class AccountHeaderViewHolder(itemView: View,
         if (!element.isGetShopError && element.shopName.isNotEmpty()) {
             tvShopInfo.visible()
             tvShopTitle.visible()
-            var subtext = ""
-            var fulltext = ""
-            if (element.isGetShopError) {
-                subtext = MethodChecker.fromHtml(AccountHeaderDataModel.ERROR_TEXT_SHOP_TRY).toString()
-                fulltext = String.format(AccountHeaderDataModel.ERROR_TEXT_SHOP, subtext)
-            } else {
-                subtext = MethodChecker.fromHtml(element.shopName).toString()
-                fulltext = String.format(TEXT_TOKO_SAYA, subtext)
-                tvShopInfo.setOnClickListener { onShopClicked() }
-            }
-
-            tvShopInfo.setText(fulltext, TextView.BufferType.SPANNABLE)
+            tvShopInfo.setText(element.shopName, TextView.BufferType.SPANNABLE)
             val str = tvShopInfo.text as Spannable
-            val i = fulltext.indexOf(subtext)
-            str.setSpan(ForegroundColorSpan(itemView.context.getResColor(R.color.green_shop)), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            str.setSpan(StyleSpan(BOLD), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            str.setSpan(ForegroundColorSpan(itemView.context.getResColor(R.color.green_shop)), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            str.setSpan(StyleSpan(BOLD), 0, element.shopName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         } else if (element.isGetShopLoading) {
             tvShopInfo.gone()
             tvShopTitle.gone()
