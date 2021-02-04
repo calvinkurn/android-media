@@ -86,3 +86,14 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
 }
+
+project.ext {
+    artifactId = 'digital_checkout'
+    groupId = 'com.tokopedia.digital_checkout'
+    versionName = "1.0.0"
+    artifactName ="digital_checkout-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
