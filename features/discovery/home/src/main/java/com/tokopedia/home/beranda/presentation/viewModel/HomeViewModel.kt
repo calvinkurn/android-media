@@ -64,7 +64,6 @@ import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -246,6 +245,8 @@ open class HomeViewModel @Inject constructor(
     private var hasGeoLocationPermission = false
     private var isNeedShowGeoLocation = false
     private var headerDataModel: HeaderDataModel? = null
+
+    private var homeFlowDataCancelled = false
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
@@ -897,18 +898,26 @@ open class HomeViewModel @Inject constructor(
                 }
             }
         }) {
+            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
 
+            Timber.w("${ConstantKey.HomeTimber.TAG}error_init_flow;reason='${it.message?:""
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
         }.invokeOnCompletion {
-            if (it != null) {
-                _updateNetworkLiveData.postValue(Result.errorGeneral(Throwable(), null))
-                Timber.w("${ConstantKey.HomeTimber.TAG}error_init_flow;reason='${it.message?:""
-                        .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
-                        .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
-            }
+            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            Timber.w("${ConstantKey.HomeTimber.TAG}cancelled_init_flow;reason='${it?.message?:"No error propagated"
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
+                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            homeFlowDataCancelled = true
         }
     }
 
     fun refreshHomeData() {
+        if (homeFlowDataCancelled) {
+            initFlow()
+            homeFlowDataCancelled = false
+        }
+
         onRefreshState = true
         if (getHomeDataJob?.isActive == true) return
         getHomeDataJob = launchCatchError(coroutineContext, block = {

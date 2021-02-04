@@ -981,6 +981,10 @@ open class HomeFragment : BaseDaggerFragment(),
             } else if (status === Result.Status.ERROR_PAGINATION) {
                 hideLoading()
                 showNetworkError(getString(R.string.home_error_connection))
+            } else if(status == Result.Status.ERROR_GENERAL) {
+                showNetworkError(getString(R.string.home_error_connection))
+                NetworkErrorHelper.showEmptyState(activity, root, getString(R.string.home_error_connection)) { onRefresh() }
+                pageLoadTimeCallback?.invalidate()
             } else {
                 showLoading()
             }
