@@ -13,7 +13,7 @@ data class ChannelStatusResponse(
 
     data class Data(
             @SerializedName("data")
-            val data: List<ChannelStatusResponse> = listOf()
+            val data: List<ChannelStatus> = listOf()
     )
 
     data class ChannelStatus(

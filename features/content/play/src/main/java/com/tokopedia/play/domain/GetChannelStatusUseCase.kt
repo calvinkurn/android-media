@@ -46,7 +46,7 @@ class GetChannelStatusUseCase @Inject constructor(private val gqlUseCase: Graphq
     companion object {
         private const val PARAM_CHANNEL_IDS = "channelIds"
 
-        fun createParams(channelIds: Array<StrictMath>): Map<String, Any> = mapOf(
+        fun createParams(channelIds: Array<String>): Map<String, Any> = mapOf(
                 PARAM_CHANNEL_IDS to channelIds
         )
     }

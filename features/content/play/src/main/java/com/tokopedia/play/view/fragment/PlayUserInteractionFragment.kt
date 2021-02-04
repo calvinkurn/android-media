@@ -52,6 +52,7 @@ import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.uimodel.recom.PlayEventUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeStatusInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.viewcomponent.*
@@ -699,9 +700,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
-            getBottomSheetInstance().setState(it.isFreeze)
+            getBottomSheetInstance().setState(it.statusType.isFreeze)
 
-            if (it.isFreeze || it.isBanned) {
+            if (it.statusType.isFreeze || it.statusType.isBanned) {
                 gradientBackgroundView.hide()
                 likeView.hide()
                 quickReplyView?.hide()
@@ -1177,9 +1178,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun endLiveInfoViewOnStateChanged(
-            event: EventUiModel
+            event: PlayEventUiModel
     ) {
-        if(event.isFreeze) {
+        if(event.statusType.isFreeze) {
             endLiveInfoView.setInfo(title = event.freezeTitle)
             endLiveInfoView.show()
         } else endLiveInfoView.hide()

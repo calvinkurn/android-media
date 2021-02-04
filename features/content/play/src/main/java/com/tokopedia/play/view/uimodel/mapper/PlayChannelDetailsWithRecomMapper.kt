@@ -8,8 +8,12 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.uimodel.General
+import com.tokopedia.play.view.uimodel.Unknown
+import com.tokopedia.play.view.uimodel.VideoStreamUiModel
+import com.tokopedia.play.view.uimodel.YouTube
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.player.PlayVideoManager
 
@@ -37,6 +41,7 @@ class PlayChannelDetailsWithRecomMapper(
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = mapVideoMeta(it.video, it.config, it.isLive),
+                    event = mapEvent(it),
 //                    miscConfigInfo = mapMiscConfigInfo(it.config),
             )
         }
@@ -162,6 +167,19 @@ class PlayChannelDetailsWithRecomMapper(
                     bufferForPlaybackAfterRebufferMs = bufferControl.bufferForPlaybackAfterRebuffer * MS_PER_SECOND
             )
         } else PlayBufferControl()
+    }
+
+    private fun mapEvent(channel: ChannelDetailsWithRecomResponse.Data) = PlayEventUiModel(
+            statusType = mapChannelStatus(!channel.config.active || channel.config.freezed),
+            bannedMessage = channel.config.bannedData.message,
+            bannedTitle = channel.config.bannedData.title,
+            bannedButtonTitle = channel.config.bannedData.buttonText,
+            freezeTitle = String.format(channel.config.freezeData.title, channel.title),
+    )
+
+    private fun mapChannelStatus(isFreezed: Boolean): PlayStatusType {
+        return if (isFreezed) PlayStatusType.Freeze
+        else PlayStatusType.Active
     }
 
     companion object {
