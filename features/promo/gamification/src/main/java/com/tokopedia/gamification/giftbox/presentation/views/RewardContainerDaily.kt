@@ -44,7 +44,7 @@ open class RewardContainerDaily @JvmOverloads constructor(
 
     var userSession: UserSession? = null
     val FADE_IN_REWARDS_DURATION_TAP_TAP = 400L
-    private var milliSecondsPerInch = 5f
+    private var milliSecondsPerInch = 2f
     private var cancelAutoScroll = false
 
     open val LAYOUT_ID = R.layout.view_reward_container_daily
