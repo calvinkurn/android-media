@@ -1517,7 +1517,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun enableSubmitButton() {
         submitButton?.isClickable = true
         submitButton?.setBackgroundResource(com.tokopedia.product.addedit.R.drawable.product_add_edit_rect_green_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)) }
     }
 
     private fun disableSubmitButton() {
