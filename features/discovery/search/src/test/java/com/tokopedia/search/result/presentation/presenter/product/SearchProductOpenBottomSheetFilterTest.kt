@@ -211,4 +211,26 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
             productListView.setDynamicFilter(dynamicFilterModel)
         }
     }
+
+    @Test
+    fun `User cannot spam bottom sheet filter`() {
+        val dynamicFilterModel = "searchproduct/dynamicfilter/dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true)
+
+        `Given get dynamic filter model API will success`(slot(), dynamicFilterModel)
+
+        `When open filter page`(mapParameter)
+        `When open filter page`(mapParameter)
+
+        `Then verify interactions bottom sheet filter opened only once`(dynamicFilterModel)
+    }
+
+    private fun `Then verify interactions bottom sheet filter opened only once`(dynamicFilterModel: DynamicFilterModel) {
+        verify(exactly = 1) {
+            productListView.sendTrackingOpenFilterPage()
+            productListView.openBottomSheetFilter(null)
+            getDynamicFilterUseCase.execute(any(), any())
+            productListView.setDynamicFilter(dynamicFilterModel)
+        }
+    }
 }
