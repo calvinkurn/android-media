@@ -17,6 +17,7 @@ import com.tokopedia.authentication.AuthConstant;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.utils.URLGenerator;
@@ -24,6 +25,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.utils.view.DarkModeUtil;
+import com.tokopedia.utils.view.ViewUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -44,6 +47,7 @@ public class TkpdWebView extends WebView {
     private static final String HEADER_TKPD_SESSION_ID = "tkpd-sessionid";
     private static final String HEADER_TKPD_SESSION_ID2 = "Tkpd-SessionId";
     private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
+    private static final String HEADER_DARK_MODE = "x-dark-mode";
     private static final String HEADER_TKPD_USER_AGENT = "tkpd-useragent";
     private RemoteConfig remoteConfig;
     private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
@@ -124,19 +128,17 @@ public class TkpdWebView extends WebView {
             header.put(HEADER_TKPD_SESSION_ID2, deviceId);
             header.put(HEADER_TKPD_USER_AGENT, DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE);
             header.put(HEADER_TKPD_USER_ID, userSession.getUserId());
-            Context application = getContext().getApplicationContext();
-            if (application instanceof NetworkRouter) {
-                FingerprintModel fingerprintModel = ((NetworkRouter) (application)).getFingerprintModel();
-                String hash = fingerprintModel.getFingerprintHash();
-                header.put(
-                        KEY_FINGERPRINT_DATA,
-                        hash
-                );
-                header.put(
-                        KEY_FINGERPRINT_HASH,
-                        AuthHelper.Companion.getMD5Hash(hash + "+" + userSession.getUserId())
-                );
-            }
+            header.put(HEADER_DARK_MODE, String.valueOf(DarkModeUtil.isDarkMode(getContext())));
+            FingerprintModel fingerprintModel = FingerprintModelGenerator.generateFingerprintModel(getContext().getApplicationContext());
+            String hash = fingerprintModel.getFingerprintHash();
+            header.put(
+                    KEY_FINGERPRINT_DATA,
+                    hash
+            );
+            header.put(
+                    KEY_FINGERPRINT_HASH,
+                    AuthHelper.Companion.getMD5Hash(hash + "+" + userSession.getUserId())
+            );
             loadUrl(urlToLoad, header);
         }
     }
