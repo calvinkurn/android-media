@@ -989,16 +989,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 //Login Event
                 LinkerManager.getInstance().sendEvent(
                         LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
-                loginEventAppsFlyer(userSession.userId, userSession.email)
+                loginEventAppsFlyer(userSession.userId, "")
             }
 
             if(isFromRegister) {
                 TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(
-                        userSession.name,
+                        "",
                         userSession.userId,
-                        userSession.email,
+                        "",
                         analytics.getLoginMethodMoengage(userSession.loginMethod),
-                        userSession.phoneNumber,
+                        "",
                         userSession.isGoldMerchant,
                         userSession.shopId,
                         userSession.shopName
@@ -1006,9 +1006,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             } else {
                 TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
                         userSession.userId,
-                        userSession.name,
-                        userSession.email,
-                        userSession.phoneNumber,
+                        "",
+                        "",
+                        "",
                         userSession.isGoldMerchant,
                         userSession.shopName,
                         userSession.shopId,
@@ -1108,7 +1108,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_PENDING, isPending)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
                         it.startActivity(intent)
                         it.finish()
                     }
@@ -1746,7 +1746,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (isFromAtcPage() && isShowTicker) {
                 tickerAnnouncement.visibility = View.VISIBLE
                 tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
-                tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
+                tickerAnnouncement.setTextDescription(String.format(getString(R.string.desc_ticker_from_atc)))
                 tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
                 tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {}

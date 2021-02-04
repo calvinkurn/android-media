@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
-import com.tokopedia.topads.common.data.response.groupitem.DataItem
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
@@ -68,7 +68,7 @@ class GroupDetailViewModel @Inject constructor(
                 val restResponse: RestResponse? = typeResponse[token]
                 val response = restResponse?.getData() as DataResponse<NonGroupResponse>
                 val nonGroupResponse = response.data.topadsDashboardGroupProducts
-                if(nonGroupResponse.data.isEmpty()) {
+                if (nonGroupResponse.data.isEmpty()) {
                     onEmpty()
                 } else {
                     onSuccess(nonGroupResponse)
@@ -90,10 +90,11 @@ class GroupDetailViewModel @Inject constructor(
                 })
     }
 
-    fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, onSuccess: ((GetDashboardProductStatistics) -> Unit)) {
+    fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, onSuccess: (GetDashboardProductStatistics) -> Unit, selectedSortId: String, selectedStatusId: Int?) {
         topAdsGetProductStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 com.tokopedia.topads.common.R.raw.gql_query_product_statistics))
-        topAdsGetProductStatisticsUseCase.setParams(startDate, endDate, adIds)
+        topAdsGetProductStatisticsUseCase.setParams(startDate, endDate, adIds, selectedSortId, selectedStatusId
+                ?: 0)
         topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.getDashboardProductStatistics)
@@ -158,7 +159,7 @@ class GroupDetailViewModel @Inject constructor(
     }
 
 
-    fun getGroupList(search: String, onSuccess: (List<DataItem>) -> Unit) {
+    fun getGroupList(search: String, onSuccess: (List<GroupListDataItem>) -> Unit) {
         topAdsGetGroupListUseCase.setParamsForKeyWord(search)
         topAdsGetGroupListUseCase.executeQuerySafeMode(
                 {
@@ -167,7 +168,6 @@ class GroupDetailViewModel @Inject constructor(
                 {
                     it.printStackTrace()
                 })
-
     }
 
     fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {

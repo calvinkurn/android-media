@@ -21,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
  * ade.hadian@tokopedia.com
  */
 
-@ShopCreationScope
 @Module
 class ShopCreationModule {
 

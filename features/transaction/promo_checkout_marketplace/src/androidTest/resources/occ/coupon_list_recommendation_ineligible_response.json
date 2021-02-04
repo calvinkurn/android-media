@@ -1,0 +1,83 @@
+[
+  {
+    "data": {
+      "coupon_list_recommendation": {
+        "message": [],
+        "error_code": "200",
+        "status": "OK",
+        "data": {
+          "result_status": {
+            "code": "200",
+            "message": [
+              "Success"
+            ],
+            "reason": "OK"
+          },
+          "promo_recommendation": {
+            "codes": [],
+            "message": "Kamu bisa hemat Rp168.100"
+          },
+          "coupon_sections": [
+            {
+              "title": "Promo yang belum bisa dipakai",
+              "sub_title": "",
+              "icon_url": "",
+              "is_enabled": false,
+              "is_collapsed": true,
+              "tags": [],
+              "coupons": [],
+              "sub_sections": [
+                {
+                  "title": "Red Pomade",
+                  "sub_title": "Promo dipilih",
+                  "icon_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
+                  "is_enabled": false,
+                  "is_collapsed": false,
+                  "tags": [],
+                  "coupons": [
+                    {
+                      "code": "REDPW73ON9",
+                      "title": "Promo Cashback REDPW73ON9",
+                      "message": "Tambah Rp434.000 untuk pakai promo",
+                      "expiry_info": "Berakhir 29 menit lagi!",
+                      "expiry_count_down": 1593275350,
+                      "coupon_url": "HCKCSCP915523-",
+                      "coupon_app_link": "HCKCSCP915523-",
+                      "unique_id": "",
+                      "shop_id": 915523,
+                      "tag_image_urls": [],
+                      "benefit_amount": 0,
+                      "is_recommended": false,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "radio_check_state": "disabled",
+                      "clashing_infos": []
+                    },
+                    {
+                      "code": "REDP1A5ZJR",
+                      "title": "Promo Cashback REDP1A5ZJR",
+                      "message": "Tambah Rp184.000 untuk pakai promo",
+                      "expiry_info": "Berakhir 29 menit lagi!",
+                      "expiry_count_down": 1593275350,
+                      "coupon_url": "HCKCSCP915523-",
+                      "coupon_app_link": "HCKCSCP915523-",
+                      "unique_id": "",
+                      "shop_id": 915523,
+                      "tag_image_urls": [],
+                      "benefit_amount": 0,
+                      "is_recommended": false,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "radio_check_state": "disabled",
+                      "clashing_infos": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+]

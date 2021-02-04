@@ -15,7 +15,7 @@ import dagger.Component
     LoginModule::class,
     LoginQueryModule::class,
     LoginUseCaseModule::class,
-    SeamlessSellerViewModelModule::class
+    LoginViewModelModule::class
 ], dependencies = [LoginRegisterComponent::class])
 interface LoginComponent {
     fun inject(activity: LoginActivity)

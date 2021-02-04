@@ -29,6 +29,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
+import com.tokopedia.vouchercreation.common.consts.VoucherRecommendationStatus
 import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
@@ -91,7 +92,6 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
         ViewModelProvider(this, viewModelFactory)
     }
 
-
     private val viewModel by lazy {
         viewModelProvider.get(CreateMerchantVoucherStepsViewModel::class.java)
     }
@@ -113,9 +113,10 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
                             ::getVoucherReviewUiModel,
                             isCreateNew,
                             isEditVoucher))
-            put(VoucherCreationStepInfo.STEP_TWO,
+                put(VoucherCreationStepInfo.STEP_TWO,
                     PromotionBudgetAndTypeFragment.createInstance(
                             ::setVoucherBenefit,
+                            ::setVoucherRecommendationStatus,
                             ::getBannerVoucherUiModel,
                             ::getBannerBaseUiModel,
                             ::onSetShopInfo,
@@ -134,6 +135,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
                     ReviewVoucherFragment.createInstance(
                             ::getVoucherReviewUiModel,
                             ::getToken,
+                            ::getRecommendationStatus,
                             ::getPostBaseUiModel,
                             ::onReturnToStep,
                             ::getBannerBitmap,
@@ -244,6 +246,8 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
             )
 
     private var token = ""
+
+    private var recommendationStatus = 0
 
     private var bannerVoucherUiModel =
             BannerVoucherUiModel(
@@ -548,6 +552,10 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
         onNextStep()
     }
 
+    private fun setVoucherRecommendationStatus(@VoucherRecommendationStatus status: Int) {
+        this.recommendationStatus = status
+    }
+
     private fun setVoucherPeriod(dateStart: String,
                                  dateEnd: String,
                                  hourStart: String,
@@ -581,6 +589,8 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
     private fun getBannerBaseUiModel() = bannerBaseUiModel
 
     private fun getToken() = token
+
+    private fun getRecommendationStatus() = recommendationStatus
 
     private fun getPostBaseUiModel() = postBaseUiModel
 

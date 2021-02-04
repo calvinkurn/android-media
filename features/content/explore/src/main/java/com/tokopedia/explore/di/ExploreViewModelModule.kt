@@ -10,7 +10,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@ExploreScope
 abstract class ExploreViewModelModule {
 
     @ExploreScope

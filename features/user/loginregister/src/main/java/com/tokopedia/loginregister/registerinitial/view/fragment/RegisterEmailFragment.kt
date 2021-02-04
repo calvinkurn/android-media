@@ -186,7 +186,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         registerNextTAndC?.setText(spannable, TextView.BufferType.SPANNABLE)
         registerNextTAndC?.movementMethod = LinkMovementMethod.getInstance()
         showPasswordHint()
-        showEmailHint()
         showNameHint()
     }
 
@@ -324,7 +323,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                showEmailHint()
                 if (s.length == 0) {
                     setWrapperErrorNew(wrapper, getString(R.string.error_field_required))
                 } else if (!Patterns.EMAIL_ADDRESS.matcher(wrapperEmail?.textFieldInput?.text.toString()).matches()) {
@@ -411,7 +409,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         setWrapperErrorNew(wrapperName, null)
         setWrapperErrorNew(wrapperEmail, null)
         showPasswordHint()
-        showEmailHint()
         showNameHint()
     }
 
@@ -422,10 +419,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     fun showNameHint() {
         setWrapperHint(wrapperName, "  ")
-    }
-
-    fun showEmailHint() {
-        setWrapperHint(wrapperEmail, resources.getString(R.string.send_verif_to_email))
     }
 
     fun setActionsEnabled(isEnabled: Boolean) {

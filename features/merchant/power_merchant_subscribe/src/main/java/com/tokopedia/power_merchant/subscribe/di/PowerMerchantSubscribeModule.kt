@@ -19,7 +19,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@PowerMerchantSubscribeScope
 @Module(includes = [GmCommonModule::class])
 class PowerMerchantSubscribeModule {
 

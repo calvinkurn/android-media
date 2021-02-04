@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.preview.presentation.service
 
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -15,14 +14,11 @@ import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandle
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
-import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.tracking.ProductAddUploadTracking
-import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
 import com.tokopedia.product.addedit.tracking.ProductEditUploadTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
@@ -101,8 +97,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        return object : AddEditProductNotificationManager(urlImageCount, manager, applicationContext) {
+        return object : AddEditProductNotificationManager(urlImageCount, applicationContext) {
             override fun getSuccessIntent(): PendingIntent {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
                 return PendingIntent.getActivity(context, 0, intent, 0)
