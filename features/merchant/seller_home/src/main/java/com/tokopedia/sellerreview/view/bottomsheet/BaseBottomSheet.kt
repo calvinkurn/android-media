@@ -70,7 +70,7 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
                 rating = rating,
                 feedback = feedback,
                 appVersion = GlobalConfig.VERSION_NAME,
-                deviceModel = Build.BRAND,
+                deviceModel = "${Build.BRAND} - ${Build.MODEL}",
                 osType = Const.OS_TYPE,
                 osVersion = Build.VERSION.SDK_INT.toString()
         )
