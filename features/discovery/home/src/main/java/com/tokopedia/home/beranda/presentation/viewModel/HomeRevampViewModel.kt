@@ -940,11 +940,14 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }
         }) {
-            _updateNetworkLiveData.postValue(Result.errorGeneral(Throwable(), null))
 
-            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_init_flow;reason='${it.message?:""
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+        }.invokeOnCompletion {
+            if (it != null) {
+                _updateNetworkLiveData.postValue(Result.errorGeneral(Throwable(), null))
+                Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_init_flow;reason='${it.message?:""
+                        .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
+                        .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            }
         }
     }
 
