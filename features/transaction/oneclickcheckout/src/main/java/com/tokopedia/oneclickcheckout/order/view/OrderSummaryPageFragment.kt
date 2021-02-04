@@ -110,6 +110,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val swipeRefreshLayout by lazy { view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout) }
     private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
     private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
+    private val loaderContent by lazy { view?.findViewById<ConstraintLayout>(R.id.loader_content) }
 
     private val tickerOsp by lazy { view?.findViewById<Ticker>(R.id.ticker_osp) }
 
@@ -286,6 +287,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 is OccState.FirstLoad -> {
                     orderPreference = it.data
                     swipeRefreshLayout?.isRefreshing = false
+                    loaderContent?.gone()
                     globalError?.gone()
                     mainContent?.visible()
                     view?.let { _ ->
@@ -308,6 +310,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 is OccState.Success -> {
                     orderPreference = it.data
                     swipeRefreshLayout?.isRefreshing = false
+                    loaderContent?.gone()
                     globalError?.gone()
                     mainContent?.visible()
                     view?.let { _ ->
@@ -331,9 +334,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 is OccState.Loading -> {
                     swipeRefreshLayout?.isRefreshing = true
+                    loaderContent?.visible()
+                    mainContent?.gone()
+                    globalError?.gone()
                 }
                 is OccState.Failed -> {
                     swipeRefreshLayout?.isRefreshing = false
+                    loaderContent?.gone()
                     it.getFailure()?.let { failure ->
                         handleError(failure.throwable)
                     }
@@ -487,11 +494,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 is OccGlobalEvent.AtcError -> {
                     progressDialog?.dismiss()
                     swipeRefreshLayout?.isRefreshing = false
+                    loaderContent?.gone()
                     handleAtcError(it)
                 }
                 is OccGlobalEvent.AtcSuccess -> {
                     progressDialog?.dismiss()
                     swipeRefreshLayout?.isRefreshing = false
+                    loaderContent?.gone()
                     view?.let { v ->
                         if (it.message.isNotBlank()) {
                             Toaster.build(v, it.message).show()
@@ -1334,6 +1343,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true) {
         swipeRefreshLayout?.isRefreshing = true
         if (shouldHideAll) {
+            loaderContent?.visible()
             mainContent?.gone()
             globalError?.gone()
         }
