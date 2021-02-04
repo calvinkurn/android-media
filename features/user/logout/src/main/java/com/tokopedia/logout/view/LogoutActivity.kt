@@ -75,7 +75,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private var tetraDebugger: TetraDebugger? = null
-    private var notificationApi: PushNotificationApi? = null
 
     override fun getNewFragment(): Fragment? = null
 
