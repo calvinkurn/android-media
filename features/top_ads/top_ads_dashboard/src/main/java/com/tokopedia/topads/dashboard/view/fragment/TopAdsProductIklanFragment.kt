@@ -337,7 +337,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
             autoAdsAdapter.items.add(AutoAdsItemsItemViewModel(it))
         }
         if (adIds.isNotEmpty()) {
-            topAdsDashboardPresenter.getProductStats(resources, format.format(startDate), format.format(endDate), adIds, ::OnSuccessStats)
+            topAdsDashboardPresenter.getProductStats(resources, format.format(startDate), format.format(endDate), adIds, groupFilterSheet.getSelectedSortId(), 0, ::OnSuccessStats)
         }
         if (!groupFilterSheet.getFilterCount().isZero()) {
             filterCount.visibility = View.VISIBLE

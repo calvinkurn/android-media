@@ -9,16 +9,14 @@ import timber.log.Timber
  */
 object ShopOpenRevampErrorHandler {
 
-    fun logMessage(message: String) {
-        try {
-            if (!BuildConfig.DEBUG) {
-                FirebaseCrashlytics.getInstance().log(message)
-            } else {
-                Timber.e(message)
-            }
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
+    fun logMessage(title: String, userId: String, message: String) {
+        val errorMessage = String.format(
+                "\"%s.\",\"userId: %s\",\"errorMessage: %s\"",
+                title,
+                userId,
+                message
+        )
+        Timber.w("P2#SHOP_OPEN#%s", errorMessage)
     }
 
     fun logExceptionToCrashlytics(t: Throwable) {
