@@ -19,7 +19,7 @@ class ValidateShippingNewMapper @Inject constructor() {
             header = response.header
             body = response.body
             ticker = mapTickerContent(response.ticker)
-            warehouses = mapWarehouses(response.warehouses)
+            warehouses = mapWarehouseModelBasedOnWarehouseId(response.warehouseId, response.warehouses)
             warehouseId = response.warehouseId
         }
     }
@@ -33,9 +33,18 @@ class ValidateShippingNewMapper @Inject constructor() {
         }
     }
 
-    private fun mapWarehouses(response: List<Warehouses>): List<WarehousesModel> {
-        return response.map {
-            WarehousesModel(
+    private fun mapWarehouseModelBasedOnWarehouseId(response: List<Int>, warehouses: List<Warehouses>): List<WarehousesModel> {
+        return warehouses.filter {
+            response.any { id ->
+                it.warehouseId == id
+            }
+        }.map {
+            mapWarehouses(it)
+        }
+    }
+
+    private fun mapWarehouses(it: Warehouses): WarehousesModel {
+        return WarehousesModel(
                     it.warehouseId,
                     it.warehouseName,
                     it.districtId,
@@ -58,7 +67,6 @@ class ValidateShippingNewMapper @Inject constructor() {
                     mapShopId(it.shopId),
                     mapPartnerId(it.partnerId)
             )
-        }
     }
 
     private fun mapShopId(response: ShopId) : ShopIdModel {

@@ -36,11 +36,6 @@ class ShipperProductItemAdapter : RecyclerView.Adapter<ShipperProductItemAdapter
         notifyDataSetChanged()
     }
 
-    fun clearData() {
-        shipperProduct.clear()
-        notifyDataSetChanged()
-    }
-
     fun updateChecked(checked: Boolean) {
         shipperProduct.forEach {
             it.isActive = checked

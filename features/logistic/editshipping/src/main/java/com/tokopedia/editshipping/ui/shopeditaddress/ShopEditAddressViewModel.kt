@@ -72,7 +72,7 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
     }
 
     fun getDistrictGeocode(latlon: String?) {
-        viewModelScope.launch {
+        viewModelScope.launch(onErrorGetDistrictGeocode) {
             val reverseGeocode = repo.getDistrictGeocode(latlon)
             _districtGeocode.value = Success(reverseGeocode.keroMapsAutofill)
         }
@@ -91,7 +91,7 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
 
     fun checkCouriersAvailability(shopId: Int, districtId: Int) {
         _checkCouriers.value = ShopEditAddressState.Loading
-        viewModelScope.launch {
+        viewModelScope.launch(onErrorCheckCouriersAvailability){
             val getCheckCouriersData = shopRepo.shopCheckCouriersNewLoc(shopId, districtId)
             _checkCouriers.value = ShopEditAddressState.Success(getCheckCouriersData.shopLocCheckCouriers)
         }
@@ -115,5 +115,9 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
 
     private val onErrorSaveEditShopLocation = CoroutineExceptionHandler { _, e ->
         _saveEditShop.value = ShopEditAddressState.Fail(e, "")
+    }
+
+    private val onErrorCheckCouriersAvailability = CoroutineExceptionHandler { _, e ->
+        _checkCouriers.value = ShopEditAddressState.Fail(e, "")
     }
 }

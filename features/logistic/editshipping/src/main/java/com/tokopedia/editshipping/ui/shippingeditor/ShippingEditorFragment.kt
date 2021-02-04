@@ -12,12 +12,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
@@ -32,10 +32,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -65,7 +62,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private var tickerHeader: Ticker? = null
 
     private var bottomSheetShipperInfo: BottomSheetUnify? = null
-    private var bottomSheetImageInfo: DeferredImageView? = null
+    private var bottomSheetImageInfo: ImageUnify? = null
     private var bottomSheetInfoCourier: Typography? = null
     private var bottomSheetInfoCourierDetail: Typography? = null
     private var btnShipperBottomSheet: UnifyButton? = null
@@ -144,6 +141,21 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
     private fun renderTickerOnDemand() {
         SpannableString(getString(R.string.awb_otomatis_list))
         tickerOnDemand?.setHtmlDescription(getString(R.string.ticker_dijemput_kurir_complete))
+        tickerOnDemand?.setDescriptionClickEvent(object: TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                if (linkUrl == "awb_otomatis") {
+                    bottomSheetShipperInfoType = 1
+                    openBottomSheetShipperInfo()
+                } else {
+                    bottomSheetShipperInfoType = 2
+                    openBottomSheetShipperInfo()
+                }
+            }
+            override fun onDismiss() {
+                //no-op
+            }
+
+        })
     }
 
     private fun renderTextDetailCourier() {
@@ -592,12 +604,12 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         btnShipperBottomSheet = child.findViewById(R.id.btn_close)
 
         if(bottomSheetShipperInfoType == 1) {
-            bottomSheetImageInfo?.loadRemoteImageDrawable("AWB")
+            bottomSheetImageInfo?.setImageDrawable(ContextCompat.getDrawable(child.context, R.drawable.ic_awb_otomatis))
             bottomSheetInfoCourier?.text = getString(R.string.awb_otomatis_title)
             bottomSheetInfoCourierDetail?.text = getString(R.string.awb_otomatis_detail)
 
         } else {
-            bottomSheetImageInfo?.loadRemoteImageDrawable("Non Tunai")
+            bottomSheetImageInfo?.setImageDrawable(ContextCompat.getDrawable(child.context, R.drawable.ic_non_tunai))
             bottomSheetInfoCourier?.text = getString(R.string.non_tunai_title)
             bottomSheetInfoCourierDetail?.text = getString(R.string.non_tunai_detail)
         }

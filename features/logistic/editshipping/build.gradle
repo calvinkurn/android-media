@@ -54,8 +54,15 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.viewModelKtx
-    implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.flexBoxLayout
+
+    //-------------------------------------------------------------------//
+    //--------------------- Testing Library Section ---------------------//
+    //-------------------------------------------------------------------//
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    //-------------------------------------------------------------------//
 }
 
 project.ext {

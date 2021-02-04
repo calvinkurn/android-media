@@ -183,6 +183,16 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
         }
 
         private fun setItemChecked(data: ConventionalModel) {
+            if (data.tickerState == 1) {
+                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
+                data.isActive = false
+                productItemAdapter?.updateChecked(data.isActive)
+                shipmentItemCb.isEnabled = false
+            } else {
+                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
+                shipmentItemCb.isEnabled = true
+            }
+
             shipmentItemCb.isChecked = data.isActive
             if (shipmentItemCb.isChecked) {
                 childLayout.visible()
@@ -190,19 +200,13 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
                 childLayout.gone()
             }
 
-            if (data.tickerState == 1) {
-                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
-                shipmentItemCb.isEnabled = false
-            } else {
-                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
-                shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
-                    data.isActive = isChecked
-                    productItemAdapter?.updateChecked(isChecked)
-                    if (isChecked) {
-                        childLayout.visible()
-                    } else {
-                        childLayout.gone()
-                    }
+            shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
+                data.isActive = isChecked
+                productItemAdapter?.updateChecked(isChecked)
+                if (isChecked) {
+                    childLayout.visible()
+                } else {
+                    childLayout.gone()
                 }
             }
         }
