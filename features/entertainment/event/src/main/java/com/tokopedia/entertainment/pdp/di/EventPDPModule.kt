@@ -113,7 +113,7 @@ class EventPDPModule {
                             fingerprintInterceptor: FingerprintInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
-        return mutableListOf(fingerprintInterceptor, httpLoggingInterceptor, chuckerInterceptor)
+        return mutableListOf(tkpdAuthInterceptor, fingerprintInterceptor, httpLoggingInterceptor, chuckerInterceptor)
     }
 
     @Provides
