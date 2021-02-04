@@ -54,8 +54,7 @@ class SellerReviewHelper @Inject constructor(
      * and never seen the bottom sheet before within last 30 days
      * */
     fun checkForReview(context: Context, fm: FragmentManager) {
-        val isAllowDebuggingTools = GlobalConfig.isAllowDebuggingTools()
-        if (popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context) || isAllowDebuggingTools) return
+        if (popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context)) return
 
         launchCatchError(block = {
             delay(QUOTA_CHECK_DELAY)
@@ -63,15 +62,25 @@ class SellerReviewHelper @Inject constructor(
             val hasPostedFeed = cacheHandler.getBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_POSTED_FEED), false)
             val hasReplied5Chats = cacheHandler.getStringSet(getUniqueKey(TkpdCache.SellerInAppReview.KEY_CHATS_REPLIED_TO), emptySet()).size >= 5
             val hasOpenedReview = cacheHandler.getBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_OPENED_REVIEW), false)
+            val allowPopupShown = canShowPopup()
 
             withContext(Dispatchers.Main) {
-                if ((getAskReviewStatus() || !hasOpenedReview) && (hasAddedProduct || hasPostedFeed || hasReplied5Chats)) {
+                if (allowPopupShown && (getAskReviewStatus() || !hasOpenedReview) && (hasAddedProduct || hasPostedFeed || hasReplied5Chats)) {
                     showInAppReviewBottomSheet(context, fm)
                 }
             }
         }, onError = {
             Timber.w(it)
         })
+    }
+
+    /**
+     * we can only show the popup on prod signed apk or app review debugging is enabled
+     * */
+    private fun canShowPopup(): Boolean {
+        val isAllowDebuggingTools = GlobalConfig.isAllowDebuggingTools()
+        val appReviewDebugEnabled = cacheHandler.getBoolean(TkpdCache.SellerInAppReview.KEY_IS_ALLOW_APP_REVIEW_DEBUGGING, false)
+        return !isAllowDebuggingTools || appReviewDebugEnabled
     }
 
     private fun showInAppReviewBottomSheet(context: Context, fm: FragmentManager) {
@@ -85,6 +94,9 @@ class SellerReviewHelper @Inject constructor(
         val ratingBottomSheet = (fm.findFragmentByTag(RatingBottomSheet.TAG) as? RatingBottomSheet)
                 ?: RatingBottomSheet.createInstance()
 
+        ratingBottomSheet.setOnDestroyListener {
+            popupAlreadyShown = false
+        }
         ratingBottomSheet.setOnSubmittedListener {
             setOnRatingSubmitted(context, fm, it)
         }.show(fm)

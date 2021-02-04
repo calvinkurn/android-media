@@ -34,6 +34,7 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    private var onDestroyCallback: (() -> Unit)? = null
     protected var childView: View? = null
     protected var isSubmitted = false
 
@@ -54,6 +55,15 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
                 super.dismiss()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        onDestroyCallback?.invoke()
+    }
+
+    fun setOnDestroyListener(callback: () -> Unit) {
+        this.onDestroyCallback = callback
     }
 
     abstract fun show(fm: FragmentManager)
