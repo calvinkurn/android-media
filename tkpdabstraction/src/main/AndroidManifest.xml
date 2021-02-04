@@ -5,10 +5,6 @@
         <meta-data
             android:name="com.tokopedia.abstraction.common.utils.image.TkpdGlideModule"
             android:value="GlideModule" />
-
-        <service
-            android:name="com.tokopedia.abstraction.aidl.service.PushNotificationService"
-            android:exported="true" />
     </application>
 
 </manifest>

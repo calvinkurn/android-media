@@ -6,15 +6,14 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
-import com.tokopedia.abstraction.aidl.PushNotificationApi
-import com.tokopedia.appaidl.AidlApi
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.notification.common.PushNotificationApi
+import com.tokopedia.notification.common.utils.NotificationValidationManager
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.common.CMRemoteConfigUtils
 import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
 import com.tokopedia.notifications.inApp.CMInAppManager
-import com.tokopedia.notifications.utils.NotificationValidationManager
 import com.tokopedia.notifications.worker.PushWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -26,7 +25,7 @@ import com.tokopedia.notifications.common.PayloadConverter.convertMapToBundle as
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
-class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
+class CMPushNotificationManager : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Job()
@@ -66,9 +65,6 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED,
                 false)
 
-    var aidlApiApp: PushNotificationApi? = null
-        private set
-
     /**
      * initialization of push notification library
      * Push Worker is initialisation & scheduled periodic
@@ -76,19 +72,22 @@ class CMPushNotificationManager : CoroutineScope, AidlApi.ReceiverListener {
      */
     fun init(application: Application) {
         this.applicationContext = application.applicationContext
-        aidlApiApp = PushNotificationApi(this.applicationContext, this)
         CMInAppManager.getInstance().init(application)
         GraphqlClient.init(applicationContext)
         PushWorker.schedulePeriodicWorker()
 
-        aidlApiApp?.bindService()
+        PushNotificationApi.bindService(
+                applicationContext,
+                ::onAidlReceive,
+                ::onAidlError
+        )
     }
 
-    override fun onAidlReceive(tag: String, bundle: Bundle?) {
+    private fun onAidlReceive(tag: String, bundle: Bundle?) {
         this.aidlApiBundle = bundle
     }
 
-    override fun onAidlError() {}
+    private fun onAidlError() {}
 
     /**
      * Send FCM token to server

@@ -1,8 +1,8 @@
 package com.tokopedia.pushnotif.util
 
+import com.tokopedia.notification.common.utils.NotificationTargetPriorities
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel
-import com.tokopedia.pushnotif.data.model.NotificationTargetPriorities
-import com.tokopedia.pushnotif.util.NotificationValidationManager.NotificationPriorityType as NotificationPriorityType
+import com.tokopedia.notification.common.utils.NotificationValidationManager.NotificationPriorityType as NotificationPriorityType
 
 object AdvanceTargetUtil {
 

@@ -29,15 +29,12 @@ import android.widget.ToggleButton;
 
 import com.chuckerteam.chucker.api.Chucker;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.tokopedia.abstraction.aidl.PushNotificationApi;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
-import com.tokopedia.appaidl.AidlApi;
-import com.tokopedia.appaidl.data.UserKey;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -49,6 +46,8 @@ import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenS
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.TimberWrapper;
+import com.tokopedia.notification.common.PushNotificationApi;
+import com.tokopedia.notification.common.data.UserKey;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.url.Env;
@@ -58,7 +57,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -70,7 +68,7 @@ import timber.log.Timber;
 import static com.tokopedia.developer_options.config.DevOptConfig.CHUCK_ENABLED;
 import static com.tokopedia.developer_options.config.DevOptConfig.IS_CHUCK_ENABLED;
 
-public class DeveloperOptionActivity extends BaseActivity implements AidlApi.ReceiverListener {
+public class DeveloperOptionActivity extends BaseActivity {
 
     public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
@@ -139,7 +137,6 @@ public class DeveloperOptionActivity extends BaseActivity implements AidlApi.Rec
     private Button requestFcmToken;
 
     private PermissionCheckerHelper permissionCheckerHelper;
-    private PushNotificationApi aidlApi;
 
     @Override
     public String getScreenName() {
@@ -151,7 +148,7 @@ public class DeveloperOptionActivity extends BaseActivity implements AidlApi.Rec
         super.onCreate(savedInstanceState);
         if (GlobalConfig.isAllowDebuggingTools()) {
             userSession = new UserSession(this);
-            aidlApi = new PushNotificationApi(this, this);
+            bindAidlService();
 
             Intent intent = getIntent();
             Uri uri = null;
@@ -176,10 +173,16 @@ public class DeveloperOptionActivity extends BaseActivity implements AidlApi.Rec
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        aidlApi.unbindService();
+    private void bindAidlService() {
+        PushNotificationApi.bindService(this,
+                (s, bundle) -> {
+                    onAidlReceive(s, bundle);
+                    return null;
+                },
+                () -> {
+                    onAidlError();
+                    return null;
+                });
     }
 
     private String userSessionData(Bundle data) {
@@ -193,8 +196,7 @@ public class DeveloperOptionActivity extends BaseActivity implements AidlApi.Rec
         return message;
     }
 
-    @Override
-    public void onAidlReceive(String tag, Bundle data) {
+    private void onAidlReceive(String tag, Bundle data) {
         String message = "";
         if (!tag.isEmpty() && !data.isEmpty() && data.containsKey(UserKey.IS_LOGIN)) {
             if (GlobalConfig.isSellerApp()) {
@@ -209,8 +211,7 @@ public class DeveloperOptionActivity extends BaseActivity implements AidlApi.Rec
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onAidlError() {
+    private void onAidlError() {
         Toast.makeText(this, "dev-opt: onAidlError", Toast.LENGTH_LONG).show();
     }
 
@@ -488,7 +489,7 @@ public class DeveloperOptionActivity extends BaseActivity implements AidlApi.Rec
             notificationManagerCompat.notify(777, notifReview);
         });
 
-        btnAidlStatus.setOnClickListener(v -> aidlApi.bindService());
+        btnAidlStatus.setOnClickListener(v -> bindAidlService());
 
         toggleDarkMode.setChecked((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
         toggleDarkMode.setOnCheckedChangeListener((view, state) -> AppCompatDelegate.setDefaultNightMode(state ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO));

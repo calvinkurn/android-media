@@ -6,13 +6,13 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.notification.common.utils.NotificationTargetPriorities
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
-import com.tokopedia.notifications.data.model.NotificationTargetPriorities
 import com.tokopedia.notifications.model.*
 import org.json.JSONObject
 import java.util.*
-import com.tokopedia.notifications.utils.NotificationValidationManager.NotificationPriorityType as NotificationPriorityType
+import com.tokopedia.notification.common.utils.NotificationValidationManager.NotificationPriorityType as NotificationPriorityType
 
 const val HOURS_24_IN_MILLIS: Long = 24 * 60 * 60 * 1000L
 
