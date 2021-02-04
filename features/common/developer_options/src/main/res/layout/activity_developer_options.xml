@@ -242,7 +242,7 @@
             android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="Client Analytics Validator"
+            android:text="Cassava"
             android:textColor="@color/white" />
 
         <TextView

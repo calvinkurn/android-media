@@ -4,14 +4,10 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
-import com.tokopedia.analyticsdebugger.validator.Utils
 
 internal typealias JsonMap = Map<String, Any>
 
-fun JsonMap.toDefaultValidator() = Validator(
-        Utils.getAnalyticsName(this),
-        this
-)
+fun JsonMap.toDefaultValidator() = Validator(this)
 
 internal fun JsonMap.toJson(): String =
         GsonBuilder()
