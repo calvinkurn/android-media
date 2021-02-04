@@ -452,8 +452,8 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         if (usePdp()) {
             goToPdp(product)
         } else {
-            val atcPageIntent = getBuyPageIntent(notification, product)
-            startActivity(atcPageIntent)
+            val buyPageIntent = getBuyPageIntent(notification, product)
+            startActivity(buyPageIntent)
         }
     }
 
