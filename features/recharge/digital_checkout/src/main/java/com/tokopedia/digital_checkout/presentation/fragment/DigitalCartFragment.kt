@@ -285,14 +285,12 @@ class DigitalCartFragment : BaseDaggerFragment() {
             onClickUsePromo()
         }
 
-        digitalPromoBtnView.actionListener = object : ButtonPromoCheckoutView.ActionListener {
-            override fun onClickChevronIcon() {
-                if (digitalPromoBtnView.desc.isNotEmpty()) {
-                    digitalPromoBtnView.state = ButtonPromoCheckoutView.State.LOADING
-                    onResetPromoDiscount()
-                } else {
-                    onClickUsePromo()
-                }
+        digitalPromoBtnView.setListenerChevronIcon {
+            if (digitalPromoBtnView.desc.isNotEmpty()) {
+                digitalPromoBtnView.state = ButtonPromoCheckoutView.State.LOADING
+                onResetPromoDiscount()
+            } else {
+                onClickUsePromo()
             }
         }
         digitalPromoBtnView.visibility = View.VISIBLE

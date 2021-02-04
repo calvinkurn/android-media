@@ -48,8 +48,6 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
             initView()
         }
 
-    var actionListener: ActionListener? = null
-
     init {
         inflate(context, getLayout(), this)
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.PromoCheckoutButtonView)
@@ -88,10 +86,11 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
             chevronIcon = R.drawable.ic_promo_checkout_chevron_right
         }
         iv_promo_checkout_right.setImageDrawable(MethodChecker.getDrawable(context, chevronIcon))
+    }
+
+    fun setListenerChevronIcon(actionListener: () -> Unit) {
         iv_promo_checkout_right.setOnClickListener {
-            actionListener?.let {
-                it.onClickChevronIcon()
-            }
+            actionListener.invoke()
         }
     }
 
@@ -207,9 +206,5 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
                 return arrayOfNulls(size)
             }
         }
-    }
-
-    interface ActionListener {
-        fun onClickChevronIcon()
     }
 }
