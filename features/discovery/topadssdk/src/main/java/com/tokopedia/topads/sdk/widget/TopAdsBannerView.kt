@@ -133,7 +133,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                 setHeadlineShopDataCardWidget(cpmData, adsBannerShopCardView, appLink, adsClickUrl)
             }
-            else {
+            else if (cpmData != null) {
                 list?.visible()
                 shopDetail?.visible()
                 adsBannerShopCardView?.gone()
