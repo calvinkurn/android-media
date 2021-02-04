@@ -27,6 +27,8 @@ import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactoryImpl
 import com.tokopedia.orderhistory.view.adapter.viewholder.OrderHistoryViewHolder
 import com.tokopedia.orderhistory.view.viewmodel.OrderHistoryViewModel
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -43,6 +45,8 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     lateinit var analytic: OrderHistoryAnalytic
     @Inject
     lateinit var session: UserSessionInterface
+
+    var remoteConfig: RemoteConfig? = null
 
     private var recycler: VerticalRecyclerView? = null
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
@@ -74,7 +78,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     private fun setupProductListObserver() {
-        viewModel.product.observe(this, Observer { result ->
+        viewModel.product.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> onSuccessGetProductDate(result.data)
                 is Fail -> showGetListError(result.throwable)
@@ -107,6 +111,14 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     override fun onClickBuyAgain(product: Product) {
+        if (usePdp()) {
+            goToPdp(product.productId)
+        } else {
+            goToOldNormalCheckout(product)
+        }
+    }
+
+    private fun goToOldNormalCheckout(product: Product) {
         val quantity = product.minOrder
         val atcAndBuyAction = ATC_ONLY
         val needRefresh = true
@@ -197,6 +209,19 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     private fun goToCheckoutPage() {
         RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+    }
+
+    private fun usePdp(): Boolean {
+        return remoteConfig?.getBoolean(RemoteConfigKey.USE_PDP_FOR_OLD_NORMAL_CHECKOUT) ?: false
+    }
+
+    private fun goToPdp(productId: String?) {
+        if (productId == null) return
+        RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productId
+        )
     }
 
     companion object {
