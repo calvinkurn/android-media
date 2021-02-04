@@ -25,5 +25,5 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_22"
-        android:text="5 OVO Points" />
+        tools:text="5 OVO Points" />
 </androidx.constraintlayout.widget.ConstraintLayout>
