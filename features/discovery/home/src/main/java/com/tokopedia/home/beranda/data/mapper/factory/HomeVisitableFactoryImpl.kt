@@ -155,7 +155,7 @@ class HomeVisitableFactoryImpl(
         visitableList.add(viewModelDynamicIcon)
     }
 
-    private fun addDynamicIconData(id: String = "", defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf()) {
+    private fun addDynamicIconData(id: String = "", type: Int = 1, defaultIconList: List<DynamicHomeIcon.DynamicIcon> = listOf()) {
         val viewModelDynamicIcon = DynamicIconComponentDataModel(
                 id = id,
                 dynamicIconComponent = DynamicIconComponent(
@@ -176,23 +176,24 @@ class HomeVisitableFactoryImpl(
                             )
                         }
                 ),
-                isCache = isCache
+                isCache = isCache,
+                type = type
         )
 
         visitableList.add(viewModelDynamicIcon)
     }
 
-    private fun addDynamicChannelData(addLoadingMore: Boolean, defaultDynamicHomeChannel: DynamicHomeChannel? = null, useDefaultWhenEmpty: Boolean = true) {
+    private fun addDynamicChannelData(addLoadingMore: Boolean, defaultDynamicHomeChannel: DynamicHomeChannel? = null, useDefaultWhenEmpty: Boolean = true, startPosition: Int = 0) {
         if (defaultDynamicHomeChannel != null) {
             defaultDynamicHomeChannel?.let {
                 val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
-                        HomeChannelData(it), isCache, addLoadingMore, useDefaultWhenEmpty)
+                        HomeChannelData(it), isCache, addLoadingMore, useDefaultWhenEmpty, startPosition = startPosition)
                 data?.let { it1 -> visitableList.addAll(it1) }
             }
         } else {
             homeData?.let {
                 val data = dynamicChannelDataMapper?.mapToDynamicChannelDataModel(
-                        HomeChannelData(it.dynamicHomeChannel), isCache, addLoadingMore, useDefaultWhenEmpty)
+                        HomeChannelData(it.dynamicHomeChannel), isCache, addLoadingMore, useDefaultWhenEmpty, startPosition = startPosition)
                 data?.let { it1 -> visitableList.addAll(it1) }
             }
         }
@@ -256,7 +257,7 @@ class HomeVisitableFactoryImpl(
                 var tickerPosition = 0
                 var iconPosition = 0
 
-                it.dataList.forEach { data ->
+                it.dataList.forEachIndexed { index, data ->
                     when(data.component) {
                         TYPE_ICON -> {
                             data.atfStatusCondition (
@@ -267,7 +268,8 @@ class HomeVisitableFactoryImpl(
                                         visitableList.add(ErrorStateIconModel())
                                     },
                                     onSuccess = {
-                                        addDynamicIconData(data.id.toString(),data.getAtfContent<DynamicHomeIcon>()?.dynamicIcon?: listOf())
+                                        val icon = data.getAtfContent<DynamicHomeIcon>()
+                                        addDynamicIconData(data.id.toString(),icon?.type ?: 1, icon?.dynamicIcon?: listOf())
                                     }
                             )
                             iconPosition++
@@ -302,7 +304,8 @@ class HomeVisitableFactoryImpl(
                                         addDynamicChannelData(
                                                 false,
                                                 data.getAtfContent<DynamicHomeChannel>(),
-                                                false
+                                                false,
+                                                index
                                         )
                                     }
                             )
@@ -322,7 +325,7 @@ class HomeVisitableFactoryImpl(
     }
 
     override fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean): HomeVisitableFactory {
-        addDynamicChannelData(addLoadingMore = addLoadingMore, useDefaultWhenEmpty = useDefaultWhenEmpty)
+        addDynamicChannelData(addLoadingMore = addLoadingMore, useDefaultWhenEmpty = useDefaultWhenEmpty, startPosition = homeData?.atfData?.dataList?.size ?: 0)
         return this
     }
 
