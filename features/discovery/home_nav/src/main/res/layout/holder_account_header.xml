@@ -219,17 +219,30 @@
 
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/usr_shop_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/usr_shop_info"
+            app:layout_constraintLeft_toLeftOf="@id/usr_badge"
+            app:layout_constraintTop_toBottomOf="@id/usr_ovo_badge"
+            app:layout_goneMarginStart="@dimen/dp_10"
+            app:typographyType="body_3"
+            tools:text="Toko saya:"
+            tools:visibility="visible" />
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/usr_shop_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:visibility="gone"
-            app:typographyType="body_3"
-            app:layout_goneMarginStart="@dimen/dp_10"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            app:typographyType="body_2"
             app:layout_constraintTop_toBottomOf="@id/usr_ovo_badge"
-            app:layout_constraintLeft_toLeftOf="@id/usr_badge"
+            app:layout_constraintStart_toEndOf="@id/usr_shop_title"
             tools:visibility="visible"
-            tools:text="toko saya : toko kamu "/>
+            tools:text="toko kamu "/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/usr_shop_notif"
