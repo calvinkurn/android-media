@@ -1,9 +1,13 @@
 package com.tokopedia.product.manage.feature.filter.presentation.widget
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.diffutil.FilterDataDiffUtil
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.diffutil.FilterDiffUtil
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -13,10 +17,11 @@ class ChipsAdapter(private val listener: ChipClickListener, private val canSelec
 
     companion object {
         const val MAXIMUM_CHIPS = 5
+        const val KEY_SELECT_BUNDLE = "is_select_bundle"
+        const val KEY_TITLE_BUNDLE = "key_select_bundle"
     }
 
     fun setData(element: FilterUiModel) {
-        this.data.clear()
         var numSelected = 0
         element.data.forEach {
             if(it.select) numSelected++
@@ -29,8 +34,11 @@ class ChipsAdapter(private val listener: ChipClickListener, private val canSelec
         } else {
             dataToDisplay = element.data.subList(0, numSelected)
         }
-        data = dataToDisplay
-        notifyDataSetChanged()
+        val diffUtilCallback = FilterDataDiffUtil(data, dataToDisplay)
+        val result = DiffUtil.calculateDiff(diffUtilCallback)
+        data.clear()
+        data.addAll(dataToDisplay)
+        result.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -41,6 +49,22 @@ class ChipsAdapter(private val listener: ChipClickListener, private val canSelec
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bind(data[position])
+    }
+
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int, payloads: MutableList<Any>) {
+        if(payloads.isNullOrEmpty())
+            super.onBindViewHolder(holder, position, payloads)
+        else {
+            val bundle = payloads[0] as? Bundle
+            bundle?.keySet()?.forEach { key ->
+                if(key == KEY_TITLE_BUNDLE) {
+                    holder.updateTitleChips(bundle.getString(KEY_TITLE_BUNDLE).orEmpty())
+                }
+                else if(key == KEY_SELECT_BUNDLE) {
+                    holder.updateSelectedChips(bundle.getBoolean(KEY_SELECT_BUNDLE))
+                }
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -62,6 +86,18 @@ class ChipsAdapter(private val listener: ChipClickListener, private val canSelec
             }
             chips.setOnClickListener {
                 chipClickListener.onChipClicked(element, canSelectMany, title)
+            }
+        }
+
+        fun updateTitleChips(title: String) {
+            chips.chipText = title
+        }
+
+        fun updateSelectedChips(selected: Boolean) {
+            chips.chipType = if(selected) {
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                ChipsUnify.TYPE_NORMAL
             }
         }
     }

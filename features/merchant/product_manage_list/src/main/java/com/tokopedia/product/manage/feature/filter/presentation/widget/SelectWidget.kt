@@ -29,7 +29,7 @@ class SelectWidget : BaseCustomView {
 
     fun bind(element: SelectUiModel, selectClickListener: SelectClickListener) {
         this.title.text = element.name
-        if(element.isSelected) {
+        if (element.isSelected) {
             this.check.visibility = View.VISIBLE
             isVisible = true
         } else {
@@ -38,6 +38,11 @@ class SelectWidget : BaseCustomView {
         this.setOnClickListener {
             selectClickListener.onSelectClick(element)
         }
+    }
+
+    fun bind(isSelected: Boolean) {
+        this.check.visibility = if (isSelected)
+            View.VISIBLE else View.GONE
     }
 }
 

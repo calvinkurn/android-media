@@ -1,15 +1,15 @@
-package com.tokopedia.product.manage.feature.filter.presentation.adapter.diffutil
+package com.tokopedia.product.manage.feature.cashback.presentation.adapter.diffutil
 
 import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewholder.SelectViewHolder.Companion.KEY_IS_SELECTED
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
+import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewholder.SetCashbackViewHolder.Companion.KEY_IS_SELECTED_CASHBACK
+import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmodel.SetCashbackUiModel
 
-class SelectDiffUtil(private val oldList: List<SelectUiModel>, private val newList: List<SelectUiModel>)
+class SetCashbackDiffUtil(private val oldList: List<SetCashbackUiModel>, private val newList: List<SetCashbackUiModel>)
     : DiffUtil.Callback() {
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return (oldList[oldItemPosition].id == newList[newItemPosition].id)
+        return (oldList[oldItemPosition].cashback == newList[newItemPosition].cashback)
     }
 
     override fun getOldListSize(): Int {
@@ -30,12 +30,14 @@ class SelectDiffUtil(private val oldList: List<SelectUiModel>, private val newLi
 
         val diff = Bundle()
 
-        if (newItem.isSelected != oldItem.isSelected) {
-            diff.putBoolean(KEY_IS_SELECTED, newItem.isSelected)
+        if(oldItem.isSelected != newItem.isSelected) {
+            diff.putBoolean(KEY_IS_SELECTED_CASHBACK, newItem.isSelected)
         }
 
         return if (diff.size() == 0) {
             null
-        } else diff
+        } else {
+            diff
+        }
     }
 }
