@@ -1137,8 +1137,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(element)
-        val buyPageIntent = getBuyPageIntent(element)
-        startActivity(buyPageIntent)
+        if (usePdp()) {
+            goToPdp(element.productId.toString())
+        } else {
+            val buyPageIntent = getBuyPageIntent(element)
+            startActivity(buyPageIntent)
+        }
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
