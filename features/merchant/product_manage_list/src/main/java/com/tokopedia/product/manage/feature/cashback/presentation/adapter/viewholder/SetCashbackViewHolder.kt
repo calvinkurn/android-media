@@ -33,8 +33,10 @@ class SetCashbackViewHolder(view: View, private val selectClickListener: SelectC
         val bundle = payloads[0] as? Bundle
         bundle?.keySet()?.forEach { key ->
             if (key == KEY_IS_SELECTED_CASHBACK) {
-                val isSelected = bundle.getBoolean(SelectViewHolder.KEY_IS_SELECTED)
-                selectWidget.bind(isSelected)
+                val isSelected = bundle.getBoolean(KEY_IS_SELECTED_CASHBACK)
+                val selectViewModel = SelectUiModel(name = element.description, value =  element.cashback.toString(),
+                        isSelected = isSelected)
+                selectWidget.bindPayload(selectViewModel, selectClickListener)
             }
         }
     }

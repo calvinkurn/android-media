@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdapter.Companion.KEY_SELECT_BUNDLE
-import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdapter.Companion.KEY_TITLE_BUNDLE
 
 class FilterDataDiffUtil(private val oldList: List<FilterDataUiModel>, private val newList: List<FilterDataUiModel>)
     : DiffUtil.Callback() {
@@ -33,10 +32,6 @@ class FilterDataDiffUtil(private val oldList: List<FilterDataUiModel>, private v
 
         if (oldItem.select != newItem.select) {
             bundle.putBoolean(KEY_SELECT_BUNDLE, newItem.select)
-        }
-
-        if (oldItem.name != newItem.name) {
-            bundle.putString(KEY_TITLE_BUNDLE, newItem.name)
         }
 
         return if(bundle.size() == 0) {
