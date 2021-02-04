@@ -33,9 +33,6 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.applink.order.DeeplinkMapperOrder.PATH_ORDER_DETAIL_ID;
-import static com.tokopedia.applink.order.DeeplinkMapperOrder.PATH_ORDER_ID;
-
 public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Items> itemsList;
     private Context context;
