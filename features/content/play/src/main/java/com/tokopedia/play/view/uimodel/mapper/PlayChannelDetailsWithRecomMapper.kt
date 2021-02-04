@@ -8,8 +8,12 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.uimodel.General
+import com.tokopedia.play.view.uimodel.Unknown
+import com.tokopedia.play.view.uimodel.VideoStreamUiModel
+import com.tokopedia.play.view.uimodel.YouTube
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.player.PlayVideoManager
 
@@ -150,8 +154,7 @@ class PlayChannelDetailsWithRecomMapper(
             configResponse: ChannelDetailsWithRecomResponse.Config,
             title: String
     ) = PlayStatusInfoUiModel(
-            isBanned = false,
-            isFreeze = !configResponse.active || configResponse.freezed,
+            statusType = mapStatusType(!configResponse.active || configResponse.freezed),
             bannedModel = mapBannedModel(configResponse.bannedData),
             freezeModel = mapFreezeModel(configResponse.freezeData, title),
     )
@@ -187,6 +190,11 @@ class PlayChannelDetailsWithRecomMapper(
                     bufferForPlaybackAfterRebufferMs = bufferControl.bufferForPlaybackAfterRebuffer * MS_PER_SECOND
             )
         } else PlayBufferControl()
+    }
+
+    private fun mapStatusType(isFreezed: Boolean): PlayStatusType {
+        return if (isFreezed) PlayStatusType.Freeze
+        else PlayStatusType.Active
     }
 
     companion object {

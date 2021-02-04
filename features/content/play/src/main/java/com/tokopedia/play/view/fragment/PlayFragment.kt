@@ -411,24 +411,24 @@ class PlayFragment @Inject constructor(
 
     private fun observeEventUserInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.isFreeze) {
+            if (it.statusType.isFreeze) {
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
 
                 scope.launch {
                     delay(DELAY_FREEZE_AUTO_SWIPE)
                     playNavigation.navigateToNextPage()
                 }
-            } else if (it.isBanned) {
+            } else if (it.statusType.isBanned) {
                 showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)
             }
-            if (it.isFreeze || it.isBanned) {
+            if (it.statusType.isFreeze || it.statusType.isBanned) {
                 unregisterKeyboardListener(requireView())
                 onBottomInsetsViewHidden()
             }
 
-            fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
-            fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
-            fragmentYouTubeViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
+            fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
+            fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
+            fragmentYouTubeViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
         })
     }
 

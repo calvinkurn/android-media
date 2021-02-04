@@ -8,6 +8,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ class PlaySocketToModelMapper @Inject constructor(
         private val productTagMapper: PlayProductTagUiMapper,
         private val merchantVoucherMapper: PlayMerchantVoucherUiMapper,
         private val chatMapper: PlayChatUiMapper,
+        private val channelStatusMapper: PlayChannelStatusMapper,
 ) {
 
     fun mapTotalLike(input: TotalLike): PlayLikeStatusInfoUiModel {
@@ -56,5 +58,9 @@ class PlaySocketToModelMapper @Inject constructor(
 
     fun mapChat(input: PlayChat): PlayChatUiModel {
         return chatMapper.mapChat(input)
+    }
+
+    fun mapStatus(isBanned: Boolean): PlayStatusType {
+        return channelStatusMapper.mapStatusBanned(isBanned)
     }
 }

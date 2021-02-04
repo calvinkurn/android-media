@@ -374,7 +374,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun observeEventUserInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.isFreeze || it.isBanned) {
+            if (it.statusType.isFreeze || it.statusType.isBanned) {
                 viewModel.onFreezeBan()
                 hideLoadingView()
             }

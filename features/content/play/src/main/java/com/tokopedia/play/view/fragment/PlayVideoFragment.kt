@@ -313,11 +313,11 @@ class PlayVideoFragment @Inject constructor(
 
     private fun observeEventUserInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.isFreeze || it.isBanned) {
+            if (it.statusType.isFreeze || it.statusType.isBanned) {
                 onboardingView.hide()
             }
 
-            videoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
+            videoViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
         })
     }
 

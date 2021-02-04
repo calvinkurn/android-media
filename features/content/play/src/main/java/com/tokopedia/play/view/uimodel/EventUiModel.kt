@@ -10,8 +10,5 @@ data class EventUiModel(
         val bannedMessage: String = "",
         val bannedTitle: String = "",
         val bannedButtonTitle: String = "",
-        val freezeMessage: String = "",
         val freezeTitle: String = "",
-        val freezeButtonTitle: String = "",
-        val freezeButtonUrl: String = ""
 )

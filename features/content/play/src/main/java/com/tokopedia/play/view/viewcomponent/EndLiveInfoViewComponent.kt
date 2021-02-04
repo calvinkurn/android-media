@@ -15,10 +15,8 @@ class EndLiveInfoViewComponent(
 ) : ViewComponent(container, idRes) {
 
     private val txtLiveEndedTitle = findViewById<TextView>(R.id.txt_live_ended_title)
-    private val txtLiveEndedBody = findViewById<TextView>(R.id.txt_live_ended_body)
 
-    fun setInfo(title: String, message: String) {
+    fun setInfo(title: String) {
         txtLiveEndedTitle.text = title
-        txtLiveEndedBody.text = message
     }
 }
