@@ -126,6 +126,8 @@ class FeedbackBottomSheet : BaseBottomSheet() {
     }
 
     private fun setOnSubmitClicked() = childView?.run {
+        SellerReviewUtils.dismissSoftKeyboard(this@FeedbackBottomSheet)
+
         val isConnected = SellerReviewUtils.getConnectionStatus(requireContext())
         if (isConnected) {
             setOnError(UnknownHostException())

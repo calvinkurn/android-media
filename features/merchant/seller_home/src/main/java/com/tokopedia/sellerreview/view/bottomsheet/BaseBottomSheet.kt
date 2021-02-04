@@ -39,7 +39,7 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.UnifyBottomSheetNotOverlapStyle)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.UnifyBottomSheetNotOverlapStyle)
         initInjector()
     }
 

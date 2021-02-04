@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.constant.TkpdCache
 import java.util.*
@@ -34,6 +36,13 @@ object SellerReviewUtils {
         } else {
             val activeNetwork = connectivityManager.activeNetworkInfo // Deprecated in 29
             activeNetwork != null && activeNetwork.isConnectedOrConnecting // // Deprecated in 28
+        }
+    }
+
+    fun dismissSoftKeyboard(fragment: Fragment) {
+        fragment.activity?.run {
+            val imm: InputMethodManager? = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+            imm?.hideSoftInputFromWindow(fragment.view?.rootView?.windowToken, 0)
         }
     }
 }
