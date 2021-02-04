@@ -21,7 +21,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -30,7 +33,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class PopularKeywordViewHolder (val view: View,
                                 val homeCategoryListener: HomeCategoryListener,
-                                val popularKeywordListener: PopularKeywordListener)
+                                private val popularKeywordListener: PopularKeywordListener)
     : AbstractViewHolder<PopularKeywordListDataModel>(view) {
     companion object {
         @LayoutRes
@@ -45,6 +48,7 @@ class PopularKeywordViewHolder (val view: View,
     var tvReload: Typography? = null
     var ivReload: AppCompatImageView? = null
     var loadingView: View? = null
+    private val errorPopularKeyword = view.findViewById<LocalLoad>(R.id.error_popular_keyword)
     private val rotateAnimation = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
     private val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
 
@@ -73,6 +77,8 @@ class PopularKeywordViewHolder (val view: View,
             recyclerView.adapter = adapter
         }
         adapter?.submitList(element.popularKeywordList)
+        if(element.isErrorLoad) recyclerView.hide()
+        else recyclerView.visible()
         performanceMonitoring?.stopTrace()
         performanceMonitoring = null
     }
@@ -135,6 +141,9 @@ class PopularKeywordViewHolder (val view: View,
                 }
                 ivReload?.setOnClickListener(reloadClickListener(element))
             }
+            if(!element.isErrorLoad) errorPopularKeyword?.hide()
+            else errorPopularKeyword.show()
+            errorPopularKeyword?.refreshBtn?.setOnClickListener(reloadClickListener(element))
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -148,6 +157,7 @@ class PopularKeywordViewHolder (val view: View,
         return View.OnClickListener {
             ivReload?.startAnimation(rotateAnimation)
             loadingView?.show()
+            errorPopularKeyword.hide()
             adapter?.clearList()
             popularKeywordListener.onPopularKeywordSectionReloadClicked(element.position, element.channel)
         }
