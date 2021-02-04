@@ -126,6 +126,12 @@ class FeedbackBottomSheet : BaseBottomSheet() {
     }
 
     private fun setOnSubmitClicked() = childView?.run {
+        val isConnected = SellerReviewUtils.getConnectionStatus(requireContext())
+        if (isConnected) {
+            setOnError(UnknownHostException())
+            return@run
+        }
+
         isSubmitted = true
         btnSirSubmitFeedback.isLoading = true
         val rating = arguments?.getInt(KEY_RATING).orZero()

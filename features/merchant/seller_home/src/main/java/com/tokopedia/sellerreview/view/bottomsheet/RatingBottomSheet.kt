@@ -124,6 +124,12 @@ class RatingBottomSheet : BaseBottomSheet() {
      * or open feedback bottom sheet if else
      * */
     private fun submitRating() = childView?.run {
+        val isConnected = SellerReviewUtils.getConnectionStatus(requireContext())
+        if (!isConnected) {
+            setOnError(UnknownHostException())
+            return@run
+        }
+
         isSubmitted = true
         if (givenRating >= 4) {
             btnSirSubmit.isLoading = true

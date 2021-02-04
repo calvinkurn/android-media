@@ -53,6 +53,8 @@ class SellerReviewHelper @Inject constructor(
      * and never seen the bottom sheet before within last 30 days
      * */
     fun checkForReview(context: Context, fm: FragmentManager) {
+        if (popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context)) return
+
         launchCatchError(block = {
             delay(QUOTA_CHECK_DELAY)
             val hasAddedProduct = cacheHandler.getBoolean(getUniqueKey(TkpdCache.SellerInAppReview.KEY_HAS_ADDED_PRODUCT), false)
@@ -72,9 +74,10 @@ class SellerReviewHelper @Inject constructor(
 
     private fun showInAppReviewBottomSheet(context: Context, fm: FragmentManager) {
         //we can't show bottom sheet if FragmentManager's state has already been saved
-        if (fm.isStateSaved || popupAlreadyShown) return
+        if (fm.isStateSaved || popupAlreadyShown || !SellerReviewUtils.getConnectionStatus(context)) return
 
         popupAlreadyShown = true
+
         resetQuotaCheck()
 
         val ratingBottomSheet = (fm.findFragmentByTag(RatingBottomSheet.TAG) as? RatingBottomSheet)
@@ -90,14 +93,14 @@ class SellerReviewHelper @Inject constructor(
             rateOnPlayStore(context, fm)
         } else {
             handler.postDelayed({
-                showFeedBackBottomSheet(fm, rating)
+                showFeedBackBottomSheet(context, fm, rating)
             }, POPUP_DELAY)
         }
     }
 
-    private fun showFeedBackBottomSheet(fm: FragmentManager, rating: Int) {
+    private fun showFeedBackBottomSheet(context: Context, fm: FragmentManager, rating: Int) {
         //we can't show bottom sheet if FragmentManager's state has already been saved
-        if (fm.isStateSaved) return
+        if (fm.isStateSaved || !SellerReviewUtils.getConnectionStatus(context)) return
 
         val feedbackBottomSheet = (fm.findFragmentByTag(FeedbackBottomSheet.TAG) as? FeedbackBottomSheet)
                 ?: FeedbackBottomSheet.createInstance(rating)
