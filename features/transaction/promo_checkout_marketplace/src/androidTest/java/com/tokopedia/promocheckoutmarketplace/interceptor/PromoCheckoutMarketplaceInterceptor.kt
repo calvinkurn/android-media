@@ -1,10 +1,10 @@
-package com.tokopedia.promocheckoutmarketplace.occ
+package com.tokopedia.promocheckoutmarketplace.interceptor
 
 import com.tokopedia.test.application.util.ResourcePathUtil.getJsonFromResource
 import okhttp3.*
 import okio.Buffer
 
-class PromoOccInterceptor : Interceptor {
+class PromoCheckoutMarketplaceInterceptor : Interceptor {
 
     var customCouponListRecommendationResponsePath: String? = null
     var customValidateUsePromoRevampResponsePath: String? = null
