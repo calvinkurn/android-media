@@ -107,20 +107,12 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData.cpm.name)
             bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener))
             val list = findViewById<RecyclerView>(R.id.list)
-            val container = findViewById<View>(R.id.container)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
             list.addOnScrollListener(CustomScrollListner(back_view))
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
 
-            if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
-                container?.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
-            } else if (cpmData.cpm.cpmShop.isOfficial) {
-                container?.background = ContextCompat.getDrawable(context, R.drawable.bg_os_gradient)
-            } else {
-                container?.background = ContextCompat.getDrawable(context, R.drawable.bg_rm_gradient)
-            }
             template = SHOP_TEMPLATE
         }
         setHeadlineShopData(cpmData, appLink, adsClickUrl)
@@ -145,6 +137,14 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 list?.visible()
                 shopDetail?.visible()
                 adsBannerShopCardView?.gone()
+
+                if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
+                    container?.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
+                } else if (cpmData.cpm.cpmShop.isOfficial) {
+                    container?.background = ContextCompat.getDrawable(context, R.drawable.bg_os_gradient)
+                } else {
+                    container?.background = ContextCompat.getDrawable(context, R.drawable.bg_rm_gradient)
+                }
 
                 var shop_badge = findViewById<ImageView>(R.id.shop_badge)
                 shop_badge?.let {
