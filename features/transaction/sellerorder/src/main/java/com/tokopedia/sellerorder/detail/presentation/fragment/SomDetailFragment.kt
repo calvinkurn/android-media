@@ -1506,7 +1506,10 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setChatButtonEnabled(isEnabled: Boolean) {
-        menu?.findItem(R.id.som_action_chat)?.isVisible = isEnabled
+        menu?.findItem(R.id.som_action_chat)?.run {
+            isVisible = isEnabled
+            setEnabled(isEnabled)
+        }
     }
 
     private fun getActivityPltPerformanceMonitoring() {

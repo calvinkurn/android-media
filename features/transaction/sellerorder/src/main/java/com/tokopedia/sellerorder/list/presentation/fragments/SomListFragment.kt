@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -36,7 +35,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
@@ -60,7 +58,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
-import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
@@ -92,8 +89,6 @@ import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
-import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
-import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
@@ -260,7 +255,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var somListLoadTimeMonitoring: SomListLoadTimeMonitoring? = null
     private var bulkAcceptOrderDialog: SomListBulkAcceptOrderDialog? = null
     private var tickerPagerAdapter: TickerPagerAdapter? = null
-    private var userNotAllowedDialog: DialogUnify? = null
     private var errorToaster: Snackbar? = null
     private var commonToaster: Snackbar? = null
     private var textChangeJob: Job? = null
@@ -1345,16 +1339,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         context?.let {
             menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
             menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible = false
-        }
-    }
-
-    private fun onUserNotAllowedToViewSOM() {
-        context?.run {
-            rvSomList?.gone()
-            if (userNotAllowedDialog == null) {
-                userNotAllowedDialog = Utils.createUserNotAllowedDialog(this)
-            }
-            userNotAllowedDialog?.show()
         }
     }
 
