@@ -168,9 +168,9 @@ class DigitalCartViewModel @Inject constructor(
             } else {
                 _showContentCheckout.postValue(true)
                 _showLoading.postValue(false)
+                _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
                 _cartDigitalInfoData.postValue(mappedCartData)
                 _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
-                _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
             }
         }
     }
@@ -209,10 +209,10 @@ class DigitalCartViewModel @Inject constructor(
                 } else {
                     _showContentCheckout.postValue(true)
                     _showLoading.postValue(false)
+                    _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
                     _cartDigitalInfoData.postValue(mappedCartData)
                     _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
                     _promoData.postValue(DigitalCheckoutMapper.mapToPromoData(mappedCartData))
-                    _totalPrice.postValue(mappedCartData.attributes?.pricePlain ?: 0.0)
                 }
             }
         }
@@ -293,7 +293,7 @@ class DigitalCartViewModel @Inject constructor(
             items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_TOTAL_PAYMENT, getStringIdrFormat(totalPayment)))
             val cartAdditionalInfo = CartItemDigitalWithTitle(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT, items)
             additionals.add(cartAdditionalInfo)
-            _cartAdditionalInfoList.value = additionals
+            _cartAdditionalInfoList.postValue(additionals)
             _totalPrice.forceRefresh()
         }
     }
@@ -306,7 +306,7 @@ class DigitalCartViewModel @Inject constructor(
                 break
             }
         }
-        _cartAdditionalInfoList.value = additionalInfos
+        _cartAdditionalInfoList.postValue(additionalInfos)
         _totalPrice.forceRefresh()
     }
 
@@ -314,17 +314,17 @@ class DigitalCartViewModel @Inject constructor(
         requestCheckoutParam.isSubscriptionChecked = isChecked
     }
 
-    fun updateTotalPriceWithFintechProduct(isChecked: Boolean) {
+    fun updateTotalPriceWithFintechProduct(isChecked: Boolean, inputPrice: Double) {
         requestCheckoutParam.isFintechProductChecked = isChecked
 
         cartDigitalInfoData.value?.attributes?.let { attributes ->
-            var totalPrice = attributes.pricePlain
+            var totalPrice = if (inputPrice > 0) inputPrice else attributes.pricePlain
             if (isChecked) {
                 val fintechProductPrice = attributes.fintechProduct?.getOrNull(0)?.fintechAmount
                         ?: 0.0
                 totalPrice += fintechProductPrice
             }
-            _totalPrice.value = totalPrice
+            _totalPrice.postValue(totalPrice)
         }
     }
 

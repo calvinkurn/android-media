@@ -115,14 +115,17 @@ object DigitalCheckoutMapper {
             }
 
             responseCartData.relationships?.let { relationship ->
-                cartDigitalInfoData.relationProduct?.type = relationship.product?.data?.type
-                cartDigitalInfoData.relationProduct?.id = relationship.product?.data?.id
+                cartDigitalInfoData.relationProduct = CartDigitalInfoData.RelationshipData(
+                        relationship.product?.data?.type ?: "", relationship.product?.data?.id ?: ""
+                )
 
-                cartDigitalInfoData.relationCategory?.type = relationship.category?.data?.type
-                cartDigitalInfoData.relationCategory?.id = relationship.category?.data?.id
+                cartDigitalInfoData.relationCategory = CartDigitalInfoData.RelationshipData(
+                        relationship.category?.data?.type ?: "", relationship.category?.data?.id ?: ""
+                )
 
-                cartDigitalInfoData.relationOperator?.type = relationship.operator?.data?.type
-                cartDigitalInfoData.relationOperator?.id = relationship.operator?.data?.id
+                cartDigitalInfoData.relationOperator = CartDigitalInfoData.RelationshipData(
+                        relationship.operator?.data?.type ?: "", relationship.operator?.data?.id ?: ""
+                )
             }
 
             responseCartData.attributes?.run {
