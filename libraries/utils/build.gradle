@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.design
@@ -46,9 +47,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
-    androidTestImplementation rootProject.ext.supportLibDependencies.constraintLayout
-
     implementation rootProject.ext.miscDependencies.sliceCore
+    androidTestImplementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 
 project.ext {
