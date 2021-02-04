@@ -95,7 +95,7 @@ abstract class SomOrderBaseViewModel constructor(
                     }
                     val secondEligibilityDeferred = async {
                         AuthorizeAccessUseCase.createRequestParams(shopId, secondAccessId).let { requestParam ->
-                            firstAuthorizeAccessUseCase.execute(requestParam)
+                            secondAuthorizeAccessUseCase.execute(requestParam)
                         }
                     }
                     Success(firstEligibilityDeferred.await() to secondEligibilityDeferred.await())

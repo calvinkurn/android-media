@@ -506,6 +506,8 @@ class SomDetailFragment : BaseDaggerFragment(),
             setPullEnabled(false)
             finishRefresh()
         }
+        containerBtnDetail?.hide()
+        rv_detail?.hide()
         somDetailAdminPermissionView?.setUserNotAllowedToViewSom {
             activity?.finish()
         }
