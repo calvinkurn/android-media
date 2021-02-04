@@ -59,6 +59,7 @@ import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -81,7 +82,6 @@ class PlayFragment @Inject constructor(
     private val scope = CoroutineScope(dispatchers.main + job)
 
     private lateinit var ivClose: ImageView
-    private lateinit var loaderPage: PlayUnifyLoader
     private val fragmentVideoView by viewComponent {
         FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
     }
@@ -329,7 +329,6 @@ class PlayFragment @Inject constructor(
     private fun initView(view: View) {
         with (view) {
             ivClose = findViewById(R.id.iv_close)
-            loaderPage = findViewById(R.id.loader_page)
         }
     }
 
