@@ -58,12 +58,12 @@ class PlayVideoFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         dispatchers: CoroutineDispatcherProvider,
         private val pipAnalytic: PlayPiPAnalytic
-) : TkpdBaseV4Fragment(), PlayFragmentContract {
+) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.immediate + job)
 
-    private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video) }
+    private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video, this) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
     private val onboardingView by viewComponent { OnboardingViewComponent(it, R.id.iv_onboarding) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
@@ -209,16 +209,25 @@ class PlayVideoFragment @Inject constructor(
 
         PlayViewerPiPCoordinator(
                 context = requireContext(),
+                videoPlayer = playViewModel.getVideoPlayer(),
                 videoOrientation = playViewModel.videoOrientation,
                 pipInfoUiModel = PiPInfoUiModel(
                         channelId = channelId,
                         partnerId = playViewModel.partnerId,
                         channelType = playViewModel.channelType,
                         videoOrientation = playViewModel.videoOrientation,
+                        stopOnClose = pipMode == PiPMode.WatchInPip
                 ),
                 pipAdapter = pipAdapter,
                 listener = playViewerPiPCoordinatorListener
         ).startPip()
+    }
+
+    /**
+     * Video View Component DataSource
+     */
+    override fun isInPiPMode(): Boolean {
+        return playViewModel.isInPiPMode
     }
 
     private fun initAnalytic() {
@@ -257,6 +266,7 @@ class PlayVideoFragment @Inject constructor(
 
     private fun removePiP() {
         pipAdapter.removeByKey(FLOATING_WINDOW_KEY)
+        videoViewOnStateChanged()
     }
 
     //region observe

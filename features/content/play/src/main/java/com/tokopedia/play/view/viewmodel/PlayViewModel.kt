@@ -529,7 +529,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun defocusVideoPlayer() {
-        playVideoPlayer.pause(preventLoadingBuffer = true)
+        if (!isInPiPMode) playVideoPlayer.pause(preventLoadingBuffer = true)
         playVideoPlayer.removeListener(videoManagerListener)
     }
 
@@ -670,6 +670,8 @@ class PlayViewModel @Inject constructor(
             })
         }
     }
+
+    fun getVideoPlayer() = playVideoPlayer
 
     private fun startWebSocket(channelId: String) {
         scope.launchCatchError(block = {

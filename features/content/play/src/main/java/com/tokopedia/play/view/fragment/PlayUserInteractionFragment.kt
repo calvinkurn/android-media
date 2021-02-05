@@ -36,6 +36,7 @@ import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
+import com.tokopedia.play.view.activity.TestActivity
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayFullscreenManager
@@ -903,12 +904,13 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
-        if (requestCode == null) {
-            RouteManager.route(context, applink, *params)
-        } else {
-            val intent = RouteManager.getIntent(context, applink, *params)
-            startActivityForResult(intent, requestCode)
-        }
+//        if (requestCode == null) {
+//            RouteManager.route(context, applink, *params)
+//        } else {
+//            val intent = RouteManager.getIntent(context, applink, *params)
+//            startActivityForResult(intent, requestCode)
+//        }
+        startActivity(Intent(requireContext(), TestActivity::class.java))
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
 
         if (shouldFinish) activity?.finish()

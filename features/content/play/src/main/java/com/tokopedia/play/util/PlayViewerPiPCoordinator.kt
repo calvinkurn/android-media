@@ -12,12 +12,14 @@ import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
+import com.tokopedia.play_common.player.PlayVideoWrapper
 
 /**
  * Created by jegul on 01/12/20
  */
 class PlayViewerPiPCoordinator(
         context: Context,
+        videoPlayer: PlayVideoWrapper,
         videoOrientation: VideoOrientation,
         pipInfoUiModel: PiPInfoUiModel,
         private val pipAdapter: FloatingWindowAdapter,
@@ -40,6 +42,7 @@ class PlayViewerPiPCoordinator(
         }
 
         val view = PlayViewerPiPView(context.applicationContext).also {
+            it.setPlayer(videoPlayer)
             it.setPiPInfo(pipInfoUiModel)
         }
 

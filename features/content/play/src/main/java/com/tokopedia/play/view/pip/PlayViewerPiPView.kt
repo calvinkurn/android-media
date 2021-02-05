@@ -17,7 +17,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
-import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSession
@@ -31,11 +31,13 @@ class PlayViewerPiPView : ConstraintLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+//    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+//    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private val playVideoManager: PlayVideoManager
-        get() = PlayVideoManager.getInstance(context)
+    private var mVideoPlayer: PlayVideoWrapper = PlayVideoWrapper.Builder(context).build()
+
+//    private val playVideoPlayer: playVideoPlayer
+//        get() = playVideoPlayer.getInstance(context)
 
     private val userSession: UserSessionInterface = UserSession(context.applicationContext)
     private val pipAnalytic: PlayPiPAnalytic = PlayPiPAnalytic(userSession)
@@ -44,7 +46,7 @@ class PlayViewerPiPView : ConstraintLayout {
 
     private val pipAdapter = FloatingWindowAdapter(context)
 
-    private val videoListener = object : PlayVideoManager.Listener {
+    private val videoListener = object : PlayVideoWrapper.Listener {
         override fun onVideoPlayerChanged(player: ExoPlayer) {
             pvVideo.player = player
         }
@@ -81,21 +83,21 @@ class PlayViewerPiPView : ConstraintLayout {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        playVideoManager.resumeOrPlayPreviousVideo(true)
-        playVideoManager.mute(false)
+        mVideoPlayer.resume()
+        mVideoPlayer.mute(false)
 
         timePipAttached = System.currentTimeMillis()
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        playVideoManager.removeListener(videoListener)
-        if (!isRoutingToRoom) {
-            if (playVideoManager.isVideoLive()) playVideoManager.release()
-            else playVideoManager.stop()
-        }
+        mVideoPlayer.removeListener(videoListener)
 
         pipRemovedAnalytic()
+    }
+
+    fun setPlayer(playVideoPlayer: PlayVideoWrapper) {
+        mVideoPlayer = playVideoPlayer
     }
 
     fun setPiPInfo(pipInfo: PiPInfoUiModel) {
@@ -116,8 +118,15 @@ class PlayViewerPiPView : ConstraintLayout {
     fun getPlayerView(): PlayerView = pvVideo
 
     private fun setupView() {
-        playVideoManager.addListener(videoListener)
+        mVideoPlayer.addListener(videoListener)
         flCloseArea.setOnClickListener {
+            if (mPiPInfo?.stopOnClose == true) {
+                if (mVideoPlayer.isVideoLive()) mVideoPlayer.release()
+                else mVideoPlayer.stop()
+            } else {
+                mVideoPlayer.pause(false)
+            }
+
             pipAdapter.removeByKey(PlayVideoFragment.FLOATING_WINDOW_KEY)
         }
 
