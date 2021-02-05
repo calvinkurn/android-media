@@ -176,7 +176,7 @@ public interface ProductListSectionContract {
 
         void showProductCardOptions(ProductCardOptionsModel productCardOptionsModel);
 
-        void trackSuccessAddToCartEvent(String suggestedRelatedKeyword, boolean isAds, Object addToCartDataLayer);
+        void trackSuccessAddToCartEvent(boolean isAds, Object addToCartDataLayer);
 
         void showAddToCartSuccessMessage();
 

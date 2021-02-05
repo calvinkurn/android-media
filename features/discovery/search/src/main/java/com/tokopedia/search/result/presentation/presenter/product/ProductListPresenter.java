@@ -2143,7 +2143,7 @@ final class ProductListPresenter
                     SearchConstant.TopAdsComponent.TOP_ADS
             );
 
-        getView().trackSuccessAddToCartEvent(getSuggestedRelatedKeyword(), threeDotsProductItem.isAds(), addToCartDataLayer);
+        getView().trackSuccessAddToCartEvent(threeDotsProductItem.isAds(), addToCartDataLayer);
         getView().showAddToCartSuccessMessage();
     }
 

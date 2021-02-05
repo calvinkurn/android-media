@@ -649,9 +649,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackSuccessAddToCartEvent(String suggestedRelatedKeyword, boolean isAds, Object addToCartDataLayer) {
-        String keyword = suggestedRelatedKeyword.isEmpty() ? getQueryKey() : suggestedRelatedKeyword;
-        SearchTracking.trackEventAddToCart(keyword, isAds, addToCartDataLayer);
+    public void trackSuccessAddToCartEvent(boolean isAds, Object addToCartDataLayer) {
+        SearchTracking.trackEventAddToCart(getQueryKey(), isAds, addToCartDataLayer);
     }
 
     @Override
