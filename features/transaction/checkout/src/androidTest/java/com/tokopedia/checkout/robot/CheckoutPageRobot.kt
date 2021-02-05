@@ -1,0 +1,78 @@
+package com.tokopedia.checkout.robot
+
+import android.content.Context
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
+import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.checkout.R
+import com.tokopedia.checkout.view.ShipmentActivity
+import org.junit.Assert
+
+fun checkoutPage(func: CheckoutPageRobot.() -> Unit) = CheckoutPageRobot().apply(func)
+
+class CheckoutPageRobot {
+
+    fun waitForData() {
+        Thread.sleep(2000)
+    }
+
+    fun openDurationBottomsheet() {
+        onView(ViewMatchers.withId(R.id.rv_shipment))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
+                        clickOnViewChild(R.id.layout_state_no_selected_shipping)))
+    }
+
+    fun selectFirstShippingDurationOption() {
+        onView(ViewMatchers.withText("Bebas Ongkir")).perform(ViewActions.click())
+    }
+
+    fun scrollToLastPosition(activityRule: IntentsTestRule<ShipmentActivity>) {
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
+        val itemCount = recyclerView.adapter?.itemCount ?: 0
+
+        scrollRecyclerViewToPosition(activityRule, recyclerView, itemCount - 1)
+    }
+
+    private fun scrollRecyclerViewToPosition(activityRule: IntentsTestRule<ShipmentActivity>,
+                                             recyclerView: RecyclerView,
+                                             position: Int) {
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
+    }
+
+    private fun clickOnViewChild(viewId: Int) = object : ViewAction {
+        override fun getConstraints() = null
+
+        override fun getDescription() = "Click on a child view with specified id."
+
+        override fun perform(uiController: UiController, view: View) = ViewActions.click().perform(uiController, view.findViewById(viewId))
+    }
+
+    infix fun choosePayment(func: ResultRobot.() -> Unit): ResultRobot {
+        onView(ViewMatchers.withText("Pilih Pembayaran")).perform(ViewActions.click())
+        return ResultRobot().apply(func)
+    }
+
+}
+
+class ResultRobot {
+
+    fun waitForData() {
+        Thread.sleep(2000)
+    }
+
+    fun hasPassedAnalytics(gtmLogDBSource: GtmLogDBSource, context: Context, queryFileName: String) {
+        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, queryFileName), hasAllSuccess())
+    }
+
+}

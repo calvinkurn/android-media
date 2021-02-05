@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
+import com.tokopedia.recharge_component.visitable.RechargeComponentVisitable
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
 
 class HomeVisitableDiffUtil : DiffUtil.ItemCallback<Visitable<*>>() {
@@ -13,6 +14,8 @@ class HomeVisitableDiffUtil : DiffUtil.ItemCallback<Visitable<*>>() {
         } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
             oldItem.visitableId() == newItem.visitableId()
         } else if (oldItem is RecommendationVisitable && newItem is RecommendationVisitable) {
+            oldItem.visitableId() == newItem.visitableId()
+        } else if (oldItem is RechargeComponentVisitable && newItem is RechargeComponentVisitable) {
             oldItem.visitableId() == newItem.visitableId()
         } else false
     }
@@ -26,6 +29,8 @@ class HomeVisitableDiffUtil : DiffUtil.ItemCallback<Visitable<*>>() {
             oldItem.equalsWith(newItem)
         }  else if (oldItem is RecommendationVisitable && newItem is RecommendationVisitable) {
             oldItem.equalsWith(newItem)
+        } else if (oldItem is RechargeComponentVisitable && newItem is RechargeComponentVisitable) {
+            oldItem.equalsWith(newItem)
         } else false
     }
 
@@ -37,6 +42,8 @@ class HomeVisitableDiffUtil : DiffUtil.ItemCallback<Visitable<*>>() {
         } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
             oldItem.getChangePayloadFrom(newItem)
         } else if (oldItem is RecommendationVisitable && newItem is RecommendationVisitable) {
+            oldItem.getChangePayloadFrom(newItem)
+        } else if (oldItem is RechargeComponentVisitable && newItem is RechargeComponentVisitable) {
             oldItem.getChangePayloadFrom(newItem)
         } else false
     }

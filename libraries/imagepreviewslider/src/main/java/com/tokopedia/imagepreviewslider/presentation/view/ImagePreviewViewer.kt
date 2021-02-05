@@ -79,7 +79,7 @@ class ImagePreviewViewer {
     private fun startViewer(imageList: List<String>?, imageViewTransitionFrom: ImageView?, context: Context?, index: Int) {
         context?.let {
             viewer = StfalconImageViewer.Builder<String>(context, imageList, ::loadImages)
-                    .withBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+                    .withBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_96))
                     .withStartPosition(index)
                     .withTransitionFrom(imageViewTransitionFrom)
                     .withImageChangeListener {

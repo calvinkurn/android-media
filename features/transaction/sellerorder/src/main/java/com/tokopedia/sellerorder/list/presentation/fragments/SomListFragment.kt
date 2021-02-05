@@ -16,6 +16,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
+import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -249,6 +251,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var selectedOrderId: String = ""
     private var tabActive: String = ""
     private var somListBulkProcessOrderBottomSheet: SomListBulkProcessOrderBottomSheet? = null
+    private var somListLoadTimeMonitoring: SomListLoadTimeMonitoring? = null
     private var bulkAcceptOrderDialog: SomListBulkAcceptOrderDialog? = null
     private var tickerPagerAdapter: TickerPagerAdapter? = null
     private var userNotAllowedDialog: DialogUnify? = null
@@ -273,6 +276,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getActivityPltPerformanceMonitoring()
         if (savedInstanceState == null && arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
             filterOrderType = arguments?.getInt(FILTER_ORDER_TYPE, 0).orZero()
@@ -289,6 +293,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        getActivityPltPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setInitialOrderListParams()
@@ -402,11 +407,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.isMultiSelectEnabled = false
         resetOrderSelectedStatus()
         isLoadingInitialData = true
+        somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
         loadUserRoles()
         loadTopAdsCategory()
         loadTickers()
         loadWaitingPaymentOrderCounter()
-        loadFilters()
+        loadFilters(loadOrders = true)
         if (shouldReloadOrderListImmediately()) {
             loadOrderList()
         }
@@ -514,7 +520,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             textChangeJob?.cancel()
             viewModel.setSearchParam(text.orEmpty())
             shouldScrollToTop = true
-            loadFilters(false)
+            loadFilters(showShimmer = false, loadOrders = true)
             if (shouldReloadOrderListImmediately()) {
                 refreshOrderList()
             } else {
@@ -531,7 +537,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             viewModel.setSearchParam(text.orEmpty())
             if (!skipSearch) {
                 shouldScrollToTop = true
-                loadFilters(false)
+                loadFilters(showShimmer = false, loadOrders = true)
                 if (shouldReloadOrderListImmediately()) {
                     refreshOrderList()
                 } else {
@@ -707,7 +713,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         toggleBulkActionButtonVisibility()
                         toggleBulkActionCheckboxVisibility()
                         toggleTvSomListBulkText()
-                        loadFilters()
+                        loadFilters(loadOrders = true)
                         if (shouldReloadOrderListImmediately()) {
                             loadOrderList()
                         } else {
@@ -784,7 +790,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     if (tabActive.isNotBlank() && tabActive != SomConsts.STATUS_ALL_ORDER) {
                         result.data.statusList.find { it.key == tabActive }?.let { activeFilter ->
                             activeFilter.isChecked = true
-                            onTabClicked(activeFilter, shouldScrollToTop, false)
+                            if (result.data.refreshOrder) {
+                                onTabClicked(activeFilter, shouldScrollToTop, false)
+                            }
                         }
                     }
                     somListSortFilterTab?.show(result.data)
@@ -808,6 +816,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun observeOrderList() {
         viewModel.orderListResult.observe(viewLifecycleOwner, Observer { result ->
+            somListLoadTimeMonitoring?.startRenderPerformanceMonitoring()
+            rvSomList.addOneTimeGlobalLayoutListener {
+                stopLoadTimeMonitoring()
+            }
             when (result) {
                 is Success -> renderOrderList(result.data)
                 is Fail -> showGlobalError(result.throwable)
@@ -1044,6 +1056,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 isRefreshing = true
             }
             viewModel.refreshSelectedOrder(selectedOrder.orderResi)
+            loadFilters(showShimmer = false, loadOrders = false)
         }
     }
 
@@ -1069,12 +1082,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.getWaitingPaymentCounter()
     }
 
-    private fun loadFilters(showShimmer: Boolean = true) {
+    private fun loadFilters(showShimmer: Boolean = true, loadOrders: Boolean) {
         if (showShimmer) {
             sortFilterSomList.invisible()
             shimmerViews.show()
         }
-        viewModel.getFilters()
+        viewModel.getFilters(loadOrders)
     }
 
     private fun loadOrderList() {
@@ -1318,6 +1331,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         sortFilterSomList.invisible()
         scrollViewErrorState.show()
         errorToaster?.dismiss()
+        stopLoadTimeMonitoring()
     }
 
     private fun renderTickers(data: List<TickerData>) {
@@ -1346,8 +1360,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
                 tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab?.getSelectedFilterOrderCount().orZero())
-                multiEditViews.showWithCondition(somListSortFilterTab?.shouldShowBulkAction()
-                        ?: false)
+                multiEditViews.showWithCondition((somListSortFilterTab?.shouldShowBulkAction()
+                        ?: false) && GlobalConfig.isSellerApp())
                 toggleTvSomListBulkText()
                 toggleBulkActionCheckboxVisibility()
                 toggleBulkActionButtonVisibility()
@@ -1384,7 +1398,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             data.firstOrNull().let { newOrder ->
                 if (newOrder == null) {
                     (adapter as SomListOrderAdapter).removeOrder(selectedOrderId)
-                    somListSortFilterTab?.decrementOrderCount()
                     updateOrderCounter()
                     checkLoadMore()
                 } else {
@@ -1632,7 +1645,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }?.key
         tabActive = selectedStatusFilterKey.orEmpty()
         viewModel.updateGetOrderListParams(filterData)
-        loadFilters(false)
+        loadFilters(showShimmer = false, loadOrders = true)
         if (shouldReloadOrderListImmediately()) {
             loadOrderList()
         } else {
@@ -1882,7 +1895,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun refreshOrdersOnTabClicked(shouldScrollToTop: Boolean, refreshFilter: Boolean) {
         this.shouldScrollToTop = shouldScrollToTop
         if (refreshFilter) {
-            loadFilters(false)
+            loadFilters(showShimmer = false, loadOrders = true)
         }
         if (shouldReloadOrderListImmediately() || !refreshFilter) {
             refreshOrderList()
@@ -1898,5 +1911,14 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             reshowWaitingPaymentOrderListCoachMark()
             reshowBulkAcceptOrderCoachMark()
         }, DELAY_COACHMARK)
+    }
+
+    private fun getActivityPltPerformanceMonitoring() {
+        somListLoadTimeMonitoring = (activity as? SomListLoadTimeMonitoringActivity)?.getSomListLoadTimeMonitoring()
+    }
+
+    private fun stopLoadTimeMonitoring() {
+        somListLoadTimeMonitoring?.stopRenderPerformanceMonitoring()
+        (activity as? SomListLoadTimeMonitoringActivity)?.loadTimeMonitoringListener?.onStopPltMonitoring()
     }
 }
