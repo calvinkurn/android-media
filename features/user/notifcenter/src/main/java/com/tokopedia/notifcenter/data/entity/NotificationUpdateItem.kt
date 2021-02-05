@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.data.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.notifcenter.data.annotation.UsedInNewRevamp
 
 /**
  * @author : Steven 11/04/19
@@ -64,6 +65,7 @@ data class Label (
         @Expose @SerializedName("color") val color: String = ""
 )
 
+@UsedInNewRevamp
 data class Campaign(
         @SerializedName("active") val active: Boolean = false,
         @SerializedName("original_price") val originalPrice: Int = 0,
@@ -73,6 +75,7 @@ data class Campaign(
         @SerializedName("discount_price_fmt") val discountPriceFormat: String = ""
 )
 
+@UsedInNewRevamp
 data class Variant (
         @Expose @SerializedName("value") val value: String = "",
         @Expose @SerializedName("identifier") val identifier: String = "",

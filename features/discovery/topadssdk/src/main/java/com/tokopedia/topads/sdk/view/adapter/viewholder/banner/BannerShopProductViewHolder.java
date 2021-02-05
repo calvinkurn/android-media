@@ -1,16 +1,18 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.banner;
 
 import android.content.Context;
-
-import androidx.annotation.LayoutRes;
-
 import android.graphics.Paint;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
+
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.domain.model.LabelGroup;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
@@ -18,6 +20,10 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+
+import java.util.List;
+
+import kotlin.collections.CollectionsKt;
 
 /**
  * Created by errysuprayogi on 4/16/18.
@@ -28,18 +34,26 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     @LayoutRes
     public static int LAYOUT = R.layout.layout_ads_banner_shop_a_product;
     private static final String TAG = BannerShopProductViewHolder.class.getSimpleName();
-    private ImpressedImageView imageView;
-    private TextView descTxt;
-    private TextView priceTxt;
-    private TextView reviewCountTxt;
-    private TextView discountTxt;
-    private TextView newLabelTxt;
-    private TextView slashedPrice;
+    private final ImpressedImageView imageView;
+    private final TextView descTxt;
+    private final TextView priceTxt;
+    private final TextView reviewCountTxt;
+    private final TextView discountTxt;
+    private final TextView newLabelTxt;
+    private final TextView slashedPrice;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
     private final TopAdsItemImpressionListener impressionListener;
-    private Context context;
-    private View container;
-    private ImageView rating1, rating2, rating3, rating4, rating5;
+    private final Context context;
+    private final View container;
+    private final ImageView rating1;
+    private final ImageView rating2;
+    private final ImageView rating3;
+    private final ImageView rating4;
+    private final ImageView rating5;
+    private final ImageView imageRatingAverage;
+    private final TextView textRatingAverage;
+    private final TextView labelIntegrity;
+    private final View ratingAverageIntegrityLine;
     private static final String className = "com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder";
 
 
@@ -62,6 +76,10 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         discountTxt = itemView.findViewById(R.id.discount_txt);
         newLabelTxt = itemView.findViewById(R.id.label_new);
         slashedPrice = itemView.findViewById(R.id.slashed_price);
+        imageRatingAverage = itemView.findViewById(R.id.imageViewRatingAverage);
+        textRatingAverage = itemView.findViewById(R.id.textRatingAverage);
+        labelIntegrity = itemView.findViewById(R.id.textViewIntegrity);
+        ratingAverageIntegrityLine = itemView.findViewById(R.id.ratingAverageIntegrityLine);
     }
 
     @Override
@@ -96,6 +114,10 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
             slashedPrice.setVisibility(View.INVISIBLE);
         }
         setRating(element.getProduct().getProductRating(), !hasDiscount(element));
+
+        boolean isRatingAverageVisible = element.getProduct().getProductRating() == 0 && !hasDiscount(element);
+        setRatingAverageAndLabelIntegrity(product, isRatingAverageVisible);
+
         container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,6 +164,60 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
             slashedPrice.setVisibility(View.VISIBLE);
             slashedPrice.setText(price);
             slashedPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+    }
+
+    private void setRatingAverageAndLabelIntegrity(Product product, boolean isVisible) {
+        String ratingAverage = product.getHeadlineProductRatingAverage();
+        LabelGroup labelGroupIntegrity = getLabelGroupIntegrity(product);
+
+        boolean hasRatingAverage = !ratingAverage.isEmpty() && isVisible;
+        boolean hasLabelIntegrity = labelGroupIntegrity != null && !labelGroupIntegrity.getTitle().isEmpty() && isVisible;
+
+        setRatingAverage(ratingAverage, hasRatingAverage);
+        setLabelIntegrity(labelGroupIntegrity, hasLabelIntegrity);
+        showRatingAverageAndIntegrityLine(hasRatingAverage, hasLabelIntegrity);
+    }
+
+    @Nullable
+    private LabelGroup getLabelGroupIntegrity(Product product) {
+        List<LabelGroup> labelGroupList =
+                CollectionsKt.filter(product.getLabelGroupList(), labelGroup -> labelGroup.getPosition().equals("integrity"));
+
+        return labelGroupList.size() > 0 ? labelGroupList.get(0) : null;
+    }
+
+    private void setRatingAverage(String ratingAverage, boolean hasRatingAverage) {
+        if (imageRatingAverage == null || textRatingAverage == null) return;
+
+        if (hasRatingAverage) {
+            imageRatingAverage.setVisibility(View.VISIBLE);
+            textRatingAverage.setVisibility(View.VISIBLE);
+            textRatingAverage.setText(ratingAverage);
+        } else {
+            imageRatingAverage.setVisibility(View.GONE);
+            textRatingAverage.setVisibility(View.GONE);
+        }
+    }
+
+    private void setLabelIntegrity(LabelGroup labelGroupIntegrity, boolean hasLabelIntegrity) {
+        if (labelIntegrity == null) return;
+
+        if (hasLabelIntegrity) {
+            labelIntegrity.setText(MethodChecker.fromHtml(labelGroupIntegrity.getTitle()));
+            labelIntegrity.setVisibility(View.VISIBLE);
+        } else {
+            labelIntegrity.setVisibility(View.GONE);
+        }
+    }
+
+    private void showRatingAverageAndIntegrityLine(boolean hasRatingAverage, boolean hasLabelIntegrity) {
+        if (ratingAverageIntegrityLine == null) return;
+
+        if (hasRatingAverage && hasLabelIntegrity) {
+            ratingAverageIntegrityLine.setVisibility(View.VISIBLE);
+        } else {
+            ratingAverageIntegrityLine.setVisibility(View.GONE);
         }
     }
 }

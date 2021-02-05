@@ -33,6 +33,7 @@ data class AddToCartRequestParams(
         const val ATC_FROM_RECENT_VIEW = "last_seen_list"
         const val ATC_FROM_RECOMMENDATION = "recommendation_list"
         const val ATC_FROM_TOPCHAT = "topchat"
+        const val ATC_FROM_NOTIFCENTER = "notifcenter"
         const val ATC_FROM_DISCOVERY = "discovery_page"
         const val ATC_FROM_PLAY = "play"
         const val ATC_FROM_PDP = ""

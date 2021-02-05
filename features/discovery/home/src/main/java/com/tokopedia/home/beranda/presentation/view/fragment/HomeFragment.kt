@@ -305,6 +305,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
     private var coachMarkIsShowing = false
+    private var useNewInbox = false
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
 
@@ -495,6 +496,7 @@ open class HomeFragment : BaseDaggerFragment(),
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
+        initInboxAbTest()
         navAbTestCondition(
                 ifNavOld = {
                     oldToolbar?.setAfterInflationCallable(afterInflationCallable)
@@ -533,13 +535,17 @@ open class HomeFragment : BaseDaggerFragment(),
                                     }
                                 }
                         ))
-                        it.setIcon(
-                                IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                                        .addIcon(IconList.ID_MESSAGE) {}
-                                        .addIcon(IconList.ID_NOTIFICATION) {}
-                                        .addIcon(IconList.ID_CART) {}
-                                        .addIcon(IconList.ID_NAV_GLOBAL) {}
-                        )
+                        val icons = IconBuilder(
+                                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
+                        ).addIcon(IconList.ID_MESSAGE) {}
+                        if (!useNewInbox) {
+                            icons.addIcon(IconList.ID_NOTIFICATION) {}
+                        }
+                        icons.apply {
+                            addIcon(IconList.ID_CART) {}
+                            addIcon(IconList.ID_NAV_GLOBAL) {}
+                        }
+                        it.setIcon(icons)
                     }
                 }
         )
@@ -557,6 +563,12 @@ open class HomeFragment : BaseDaggerFragment(),
         setupHomeRecyclerView()
         initEggDragListener()
         return view
+    }
+
+    private fun initInboxAbTest() {
+        useNewInbox = getAbTestPlatform().getString(
+                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+        ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
     }
 
     private fun showNavigationOnBoarding() {
@@ -879,7 +891,9 @@ open class HomeFragment : BaseDaggerFragment(),
                         }
                     },
                     ifNavRevamp = {
-                        navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, 0)
+                        if (!useNewInbox) {
+                            navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, 0)
+                        }
                     }
             )
         }
@@ -904,7 +918,7 @@ open class HomeFragment : BaseDaggerFragment(),
         observePlayWidgetToggleReminder()
         observeRechargeBUWidget()
     }
-          
+
     private fun observeIsNeedRefresh() {
         getHomeViewModel().isNeedRefresh.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isNeedRefresh = data.peekContent()
@@ -2100,13 +2114,15 @@ open class HomeFragment : BaseDaggerFragment(),
                     }
                 },
                 ifNavRevamp = {
-                    navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+                    if (!useNewInbox) {
+                        navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+                    }
                     navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
                     navToolbar?.setBadgeCounter(IconList.ID_CART, cartCount)
                 }
         )
     }
-    
+
 
     override val homeMainToolbarHeight: Int
         get() {
