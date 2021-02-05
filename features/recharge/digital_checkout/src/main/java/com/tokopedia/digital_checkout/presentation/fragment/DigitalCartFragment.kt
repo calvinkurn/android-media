@@ -180,7 +180,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
             digitalPromoBtnView.desc = getPromoData().description
             if (getPromoData().description.isEmpty()) {
                 digitalPromoBtnView.title = getString(R.string.digital_checkout_promo_title)
-                digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_gray_24
+                digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
             } else {
                 digitalPromoBtnView.title = getPromoData().title
             }
