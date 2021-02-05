@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.FilterAdapterTypeFactory
 
 class FilterUiModel (
-        var title: String,
-        var data: MutableList<FilterDataUiModel>,
+        val title: String,
+        val data: MutableList<FilterDataUiModel>,
         var isChipsShown: Boolean
 ) : Visitable <FilterAdapterTypeFactory> {
 

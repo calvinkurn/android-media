@@ -3,12 +3,8 @@ package com.tokopedia.product.manage.feature.filter.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_checklist.view.*
 import kotlinx.android.synthetic.main.widget_select.view.*
 
 class SelectWidget : BaseCustomView {
