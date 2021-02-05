@@ -21,6 +21,6 @@ fun componentTargetName(): String {
 * AIDL Tag:
 * to validate the source service.
 * */
-fun aidlTag(): String {
+fun tagDefault(): String {
     return if (GlobalConfig.isSellerApp()) SELLER_APP else CUSTOMER_APP
 }

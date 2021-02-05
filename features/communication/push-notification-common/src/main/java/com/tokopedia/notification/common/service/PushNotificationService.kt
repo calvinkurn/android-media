@@ -2,7 +2,10 @@ package com.tokopedia.notification.common.service
 
 import android.content.Intent
 import android.os.Bundle
-import com.tokopedia.notification.common.data.UserKey
+import com.tokopedia.notification.common.data.UserKey.IS_LOGIN
+import com.tokopedia.notification.common.data.UserKey.NAME
+import com.tokopedia.notification.common.data.UserKey.EMAIL
+import com.tokopedia.notification.common.data.UserKey.USER_ID
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.aidl.service.AidlRemoteService
 
@@ -16,13 +19,13 @@ class PushNotificationService: AidlRemoteService() {
         val data = Bundle()
         if (userSession.isLoggedIn) {
             data.apply {
-                putBoolean(UserKey.IS_LOGIN, true)
-                putString(UserKey.NAME, userSession.name)
-                putString(UserKey.EMAIL, userSession.email)
-                putString(UserKey.USER_ID, userSession.userId)
+                putBoolean(IS_LOGIN, true)
+                putString(NAME, userSession.name)
+                putString(EMAIL, userSession.email)
+                putString(USER_ID, userSession.userId)
             }
         } else {
-            data.putBoolean(UserKey.IS_LOGIN, false)
+            data.putBoolean(IS_LOGIN, false)
         }
 
         broadcastResult(tag, data)

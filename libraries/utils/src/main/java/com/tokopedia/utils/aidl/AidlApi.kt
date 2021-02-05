@@ -4,7 +4,7 @@ import android.content.*
 import android.os.Bundle
 import com.tokopedia.utils.aidl.data.CUSTOMER_APP
 import com.tokopedia.utils.aidl.data.SELLER_APP
-import com.tokopedia.utils.aidl.data.aidlTag
+import com.tokopedia.utils.aidl.data.tagDefault
 import com.tokopedia.utils.aidl.data.componentTargetName
 import com.tokopedia.utils.aidl.service.AidlServiceConnection
 
@@ -28,7 +28,7 @@ open class AidlApi(
         }
     }
 
-    fun bindService(context: Context, aidlTag: String = aidlTag(), serviceName: String) {
+    fun bindService(context: Context, aidlTag: String = tagDefault(), serviceName: String) {
         // the serviceView is serviceConnection to register the receiver in activity and send the data
         stubService = AidlServiceConnection(aidlTag) { tag, service ->
             if (service != null) {
