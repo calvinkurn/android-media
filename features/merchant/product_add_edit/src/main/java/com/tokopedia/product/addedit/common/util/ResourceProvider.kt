@@ -86,8 +86,12 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_empty_product_stock)
     }
 
-    fun getMinLimitProductStockErrorMessage(): String? {
-        return getString(R.string.error_minimum_stock_quantity_is_one)
+    fun getMinLimitProductStockErrorMessage(minStock: Int = 1): String? {
+        return try {
+            context?.getString(R.string.error_minimum_stock_quantity, minStock)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }
     }
 
     fun getMaxLimitProductStockErrorMessage(): String? {

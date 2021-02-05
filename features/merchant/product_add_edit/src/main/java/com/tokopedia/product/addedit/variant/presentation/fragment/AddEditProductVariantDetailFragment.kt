@@ -83,10 +83,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
-    private val couldShowMultiLocationTicker by lazy {
-        (userSession.isShopOwner || userSession.isShopAdmin) && userSession.isMultiLocationShop
-    }
-
     private var multiLocationTicker: Ticker? = null
 
     override fun getScreenName(): String {
@@ -128,10 +124,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         // set bg color programatically, to reduce overdraw
         context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
-        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_variant_multi_location)
-        multiLocationTicker?.showWithCondition(couldShowMultiLocationTicker)
+        viewModel.setupMultiLocationValue()
 
-        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this, couldShowMultiLocationTicker)
+        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_variant_multi_location)
+        multiLocationTicker?.showWithCondition(viewModel.isMultiLocationShop)
+
+        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this, viewModel.isMultiLocationShop)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
@@ -366,7 +364,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun showMultipleEditBottomSheet() {
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
-        val bottomSheet = MultipleVariantEditSelectBottomSheet(this, couldShowMultiLocationTicker)
+        val bottomSheet = MultipleVariantEditSelectBottomSheet(this, viewModel.isMultiLocationShop)
         val hasWholesale = viewModel.hasWholesale.value ?: false
         bottomSheet.setData(variantInputModel)
         bottomSheet.setEnableEditSku(switchUnifySku.isChecked)
