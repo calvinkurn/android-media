@@ -23,20 +23,15 @@ class InboxNotificationUseCase @Inject constructor(
             onError: (Throwable) -> Unit
     ) {
         launchCatchError(
-                dispatchers.IO,
-                {
+                block = {
                     val response = gqlUseCase.apply {
                         setTypeClass(InboxNotificationResponse::class.java)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
-                    withContext(dispatchers.Main) {
-                        onSuccess(response.notifications)
-                    }
+                    onSuccess(response.notifications)
                 },
-                {
-                    withContext(dispatchers.Main) {
-                        onError(it)
-                    }
+                onError = {
+                    onError(it)
                 }
         )
     }
@@ -68,9 +63,6 @@ class InboxNotificationUseCase @Inject constructor(
                 notifcenter_int
                 chat_int
                 talk_int
-              }
-              seller_discussion_unresponded {
-                total_int
               }
             }
           }

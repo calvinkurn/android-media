@@ -2,8 +2,7 @@ package com.tokopedia.inbox.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.inbox.common.InboxCoroutineDispatcher
+import androidx.lifecycle.ViewModel
 import com.tokopedia.inbox.domain.cache.InboxCacheManager
 import com.tokopedia.inbox.domain.data.notification.Notifications
 import com.tokopedia.inbox.domain.usecase.InboxNotificationUseCase
@@ -17,8 +16,7 @@ class InboxViewModel @Inject constructor(
         private val notificationUseCase: InboxNotificationUseCase,
         private val userSession: UserSessionInterface,
         private val cacheManager: InboxCacheManager,
-        dispatchers: InboxCoroutineDispatcher
-) : BaseViewModel(dispatchers.IO) {
+) : ViewModel() {
 
     private val keyPageVisited = "${userSession.userId}_inbox_activity"
     private val _notifications = MutableLiveData<Result<Notifications>>()
@@ -28,7 +26,6 @@ class InboxViewModel @Inject constructor(
     fun getNotifications() {
         notificationUseCase.getNotification(
                 {
-                    it.inboxCounter.updateTotalDiscussion()
                     _notifications.value = Success(it)
                 },
                 {
@@ -41,8 +38,8 @@ class InboxViewModel @Inject constructor(
         val isBuyerOnly = !userSession.hasShop()
         val hasShownSeller = cacheManager.loadCacheBoolean(KEY_ONBOARDING_SELLER) ?: false
         val hasShownBuyer = cacheManager.loadCacheBoolean(KEY_ONBOARDING_BUYER) ?: false
-        return if (isBuyerOnly && !hasShownSeller) {
-            hasShownBuyer
+        return if (isBuyerOnly) {
+            hasShownBuyer || hasShownSeller
         } else {
             hasShownSeller
         }
@@ -65,7 +62,7 @@ class InboxViewModel @Inject constructor(
     }
 
     companion object {
-        private const val KEY_ONBOARDING_SELLER = "key_onboarding_seller"
-        private const val KEY_ONBOARDING_BUYER = "key_onboarding_buyer"
+        const val KEY_ONBOARDING_SELLER = "key_onboarding_seller"
+        const val KEY_ONBOARDING_BUYER = "key_onboarding_buyer"
     }
 }

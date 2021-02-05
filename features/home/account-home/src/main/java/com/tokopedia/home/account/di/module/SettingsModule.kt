@@ -9,7 +9,6 @@ import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import dagger.Module
 import dagger.Provides
 
-@AccountLogoutScope
 @Module
 class SettingsModule(private var activityContext: Context?) {
 

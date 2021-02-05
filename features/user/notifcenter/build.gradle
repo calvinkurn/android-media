@@ -45,6 +45,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants

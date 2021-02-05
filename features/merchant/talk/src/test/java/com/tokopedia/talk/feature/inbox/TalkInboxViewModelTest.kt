@@ -37,7 +37,7 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
-        viewModel.setFilter(expectedFilter, true)
+        viewModel.setFilter(expectedFilter)
 
         val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
 

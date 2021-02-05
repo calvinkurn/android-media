@@ -27,8 +27,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.sellerapp.R;
@@ -139,10 +137,8 @@ public class WelcomeFragment extends BaseDaggerFragment implements
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
-                    startActivityForResult(intent, REQUEST_LOGIN);
-                }
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+                startActivityForResult(intent, REQUEST_LOGIN);
             }
         });
         isNotFirstRun = new LocalCacheHandler(getActivity(), "FirstRun");
@@ -246,11 +242,9 @@ public class WelcomeFragment extends BaseDaggerFragment implements
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-                    Intent intent = LoginActivity.DeepLinkIntents.getAutoLoginWebview(getActivity(), listProvider.get(position)
-                                    .getName(), listProvider.get(position).getUrl());
-                    startActivityForResult(intent, REQUEST_LOGIN);
-                }
+                Intent intent = LoginActivity.DeepLinkIntents.getAutoLoginWebview(getActivity(), listProvider.get(position)
+                        .getName(), listProvider.get(position).getUrl());
+                startActivityForResult(intent, REQUEST_LOGIN);
                 getActivity().getWindow().setSoftInputMode(
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                 UserAuthenticationAnalytics.setActiveAuthenticationMedium(getActivity(), listProvider.get(position).getName());
@@ -259,17 +253,13 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     }
 
     public void onGoogleClick() {
-        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            Intent intent = LoginActivity.DeepLinkIntents.getAutoLoginGoogle(getActivity());
-            startActivityForResult(intent, REQUEST_LOGIN);
-        }
+        Intent intent = LoginActivity.DeepLinkIntents.getAutoLoginGoogle(getActivity());
+        startActivityForResult(intent, REQUEST_LOGIN);
     }
 
     private void onFacebookClick() {
-        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            Intent intent = LoginActivity.DeepLinkIntents.getAutoLoginFacebook(getActivity());
-            startActivityForResult(intent, REQUEST_LOGIN);
-        }
+        Intent intent = LoginActivity.DeepLinkIntents.getAutoLoginFacebook(getActivity());
+        startActivityForResult(intent, REQUEST_LOGIN);
     }
 
     @Override
@@ -356,19 +346,17 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     }
 
     private void onSuccessLogin() {
-        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            Intent intent;
-            if (getUserSession().hasShop() && getActivity() != null) {
-                intent = ((TkpdCoreRouter) getActivity().getApplication()).getHomeIntent(getActivity());
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
-                        .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            } else {
-                intent = RouteManager.getIntent(getContext(), OPEN_SHOP);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            }
-            startActivity(intent);
+        Intent intent;
+        if (getUserSession().hasShop() && getActivity() != null) {
+            intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
+                    .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        } else {
+            intent = RouteManager.getIntent(getContext(), OPEN_SHOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
+        startActivity(intent);
     }
 
     private UserSessionInterface getUserSession() {

@@ -49,12 +49,14 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkDFMapper;
+import com.tokopedia.applink.FragmentConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceUtil;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.home.HomeInternalRouter;
@@ -98,7 +100,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-
+import com.tokopedia.applink.RouteManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -240,6 +242,7 @@ public class MainParentActivity extends BaseActivity implements
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
         installDFonBackground();
+        SubmitDeviceUtil.scheduleWorker(this, false);
     }
 
     private void initInboxAbTest() {
@@ -645,7 +648,7 @@ public class MainParentActivity extends BaseActivity implements
         List<Fragment> fragmentList = new ArrayList<>();
 
         fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
-        fragmentList.add(FeedPlusContainerFragment.newInstance(getIntent().getExtras()));
+        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
         fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
         fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));

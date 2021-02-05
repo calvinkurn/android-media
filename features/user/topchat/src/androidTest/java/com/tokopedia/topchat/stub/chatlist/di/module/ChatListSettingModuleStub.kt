@@ -8,7 +8,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-@ChatListScope
 @Module
 class ChatListSettingModuleStub {
     @Provides

@@ -33,6 +33,7 @@ class VariantContainerViewHolder(val view: View, val listener: ProductVariantLis
     init {
         rvVariant.adapter = variantOptionAdapter
         rvVariant.layoutManager = layoutManager
+        rvVariant.setHasFixedSize(true)
         rvVariant.itemAnimator = null
     }
 

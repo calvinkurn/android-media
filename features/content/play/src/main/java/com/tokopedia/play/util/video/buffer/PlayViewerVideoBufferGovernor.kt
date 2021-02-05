@@ -49,13 +49,14 @@ class PlayViewerVideoBufferGovernor (
     }
 
     private fun resetPlayer() {
-        stopPlayer()
-        playVideoManager.resumeOrPlayPreviousVideo(true)
-    }
-
-    private fun stopPlayer() {
-        if (playVideoManager.isVideoLive()) playVideoManager.release()
-        else playVideoManager.stop(resetState = false)
+        if (playVideoManager.isVideoLive()) {
+            val videoUri = playVideoManager.currentUri
+            playVideoManager.release()
+            if (videoUri != null) playVideoManager.playUri(videoUri, autoPlay = true)
+        } else {
+            playVideoManager.stop(resetState = false)
+            playVideoManager.resumeOrPlayPreviousVideo(true)
+        }
     }
 
     companion object {

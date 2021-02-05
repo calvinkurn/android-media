@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.create.R
-import com.tokopedia.topads.data.response.ResponseCreateGroup
+import com.tokopedia.topads.common.data.model.ResponseCreateGroup
 import com.tokopedia.topads.view.RequestHelper
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -33,19 +33,17 @@ class SummaryViewModel @Inject constructor(
     }
 
 
-    fun topAdsCreated(param: HashMap<String, Any>, onSuccessGetDeposit: ((ResponseCreateGroup) -> Unit),
+    fun topAdsCreated(param: HashMap<String, Any>, onSuccessGetDeposit: (() -> Unit),
                       onErrorGetAds: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
-                    val data = withContext(dispatcher.io) {
+                    withContext(dispatcher.io) {
                         val request = RequestHelper.getGraphQlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_activate_ads),
                                 ResponseCreateGroup::class.java, param)
                         val cacheStrategy = RequestHelper.getCacheStrategy()
                         repository.getReseponse(listOf(request), cacheStrategy)
                     }
-                    data.getSuccessData<ResponseCreateGroup>().let {
-                        onSuccessGetDeposit(it)
-                    }
+                    onSuccessGetDeposit()
                 },
                 onError = {
                     onErrorGetAds(it)

@@ -41,6 +41,7 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
         super.onCreate(savedInstanceState)
+        startPerformanceMonitoring()
     }
 
     override fun getNewFragment(): Fragment? {

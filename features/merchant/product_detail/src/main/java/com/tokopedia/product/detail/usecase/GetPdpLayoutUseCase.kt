@@ -27,7 +27,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 name
                 pdpSession
                 basicInfo {
-                  alias
                   shopName
                   productID
                   shopID
@@ -35,12 +34,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                   maxOrder
                   weight
                   weightUnit
-                  condition
                   status
                   url
                   sku
-                  gtin
-                  isMustInsurance
                   needPrescription
                   catalogID
                   isLeasing
@@ -95,21 +91,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         URL300
                         description
                         videoURLAndroid
-                        videoURLIOS
                         isAutoplay
-                      }
-                      pictures {
-                        picID
-                        description
-                        filePath
-                        fileName
-                        width
-                        height
-                        isFromIG
-                        urlOriginal
-                        urlThumbnail
-                        url300
-                        Status
                       }
                       videos {
                         source
@@ -120,8 +102,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       name
                       price {
                         value
-                        currency
-                        lastUpdateUnix
                       }
                       campaign {
                         campaignID
@@ -156,8 +136,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         minQty
                         price {
                           value
-                          lastUpdateUnix
-                          currency
                         }
                       }
                       isCashback {
@@ -169,7 +147,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       }
                       preorder {
                         duration
-                        timeUnit
                         isActive
                       }
                       isTradeIn
@@ -201,8 +178,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         title
                         subtitle
                         applink
-                        type
-                        rating
                       }
                     }
                     ... on pdpDataInfo {

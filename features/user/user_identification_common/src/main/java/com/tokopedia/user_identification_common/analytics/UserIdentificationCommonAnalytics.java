@@ -68,6 +68,8 @@ public class UserIdentificationCommonAnalytics {
 
         private static final String CLICK_ON_BUTTON_EXIT = "click on button keluar";
         private static final String CLICK_ON_BUTTON_STAY = "click on button lanjut kirim";
+
+        private static final String CLICK_ON_BUTTON_COBA_LAGI = "click on button coba lagi";
     }
 
     private static class Category {
@@ -76,12 +78,16 @@ public class UserIdentificationCommonAnalytics {
         private static final String KYC_LIVENESS_PAGE = "kyc liveness page";
         private static final String KYC_SUBMISSION_PAGE = "kyc submission page";
         private static final String KYC_PAGE_TRADEIN = "kyc trade in page";
+
+        private static final String KYC_LIVENESS_FAILED_PAGE = "kyc liveness failed page";
     }
 
     private static class Label {
         private static final String labelOne = "1";
         private static final String labelTwo = "2";
         private static final String labelThree = "3";
+
+        private static final String labelConnectionTimeout = "connection timeout";
     }
 
     private UserIdentificationCommonAnalytics(int projectID) {
@@ -501,6 +507,24 @@ public class UserIdentificationCommonAnalytics {
                 Category.KYC_PAGE_TRADEIN,
                 Action,
                 ""));
+    }
+
+    public void eventClickConnectionTimeout() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_LIVENESS_FAILED_PAGE,
+                Action.CLICK_ON_BUTTON_COBA_LAGI,
+                Label.labelConnectionTimeout
+        ));
+    }
+
+    public void eventClickBackConnectionTimeout() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_LIVENESS_FAILED_PAGE,
+                Action.CLICK_ON_BUTTON_BACK,
+                Label.labelConnectionTimeout
+        ));
     }
 
 }
