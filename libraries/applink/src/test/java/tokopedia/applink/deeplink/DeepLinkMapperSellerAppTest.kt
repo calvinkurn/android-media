@@ -3,6 +3,7 @@ package tokopedia.applink.deeplink
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.config.GlobalConfig
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -189,5 +190,23 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     fun `check shipping editor appLink then should return tokopedia internal seller shipping editor in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-settings-shipping"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SHIPPING_EDITOR, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller history appLink then should return seller home seller history in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_HISTORY, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller history internal appLink then should return seller home seller history in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder"
+        assertEqualsDeepLinkMapper(ApplinkConstInternalOrder.HISTORY, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller history internal appLink then should return seller home seller history in sellerapp with search param`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder?search=product"
+        assertEqualsDeepLinkMapper("${ApplinkConstInternalOrder.HISTORY}?search=product", expectedDeepLink)
     }
 }
