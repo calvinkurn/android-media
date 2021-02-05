@@ -19,20 +19,11 @@ class ItemHighLightSuggestionChipsAdapter(private val highLightListener: Highlig
     private var highLightChipsUiModel = mutableListOf<ItemHighlightSuggestionSearchUiModel>()
 
     fun setChipsHighlight(newHighLightChipsUiModelInitial: List<ItemHighlightSuggestionSearchUiModel>) {
-        if (newHighLightChipsUiModelInitial.size >= MAX_CHIPS_FILTER) {
-            val maxChipsHighlight = newHighLightChipsUiModelInitial.take(MAX_CHIPS_FILTER)
-            val callBack = HighlightSuggestionSearchDiffUtil(highLightChipsUiModel, maxChipsHighlight)
-            val diffResult = DiffUtil.calculateDiff(callBack)
-            highLightChipsUiModel.clear()
-            highLightChipsUiModel.addAll(maxChipsHighlight)
-            diffResult.dispatchUpdatesTo(this)
-        } else {
-            val callBack = HighlightSuggestionSearchDiffUtil(highLightChipsUiModel, newHighLightChipsUiModelInitial)
-            val diffResult = DiffUtil.calculateDiff(callBack)
-            highLightChipsUiModel.clear()
-            highLightChipsUiModel.addAll(newHighLightChipsUiModelInitial)
-            diffResult.dispatchUpdatesTo(this)
-        }
+        val callBack = HighlightSuggestionSearchDiffUtil(highLightChipsUiModel, newHighLightChipsUiModelInitial)
+        val diffResult = DiffUtil.calculateDiff(callBack)
+        highLightChipsUiModel.clear()
+        highLightChipsUiModel.addAll(newHighLightChipsUiModelInitial)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChipsListViewHolder {
@@ -66,9 +57,5 @@ class ItemHighLightSuggestionChipsAdapter(private val highLightListener: Highlig
                 }
             }
         }
-    }
-
-    companion object {
-        const val MAX_CHIPS_FILTER = 5
     }
 }
