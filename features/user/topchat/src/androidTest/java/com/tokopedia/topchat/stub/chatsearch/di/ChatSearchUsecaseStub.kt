@@ -7,7 +7,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-@ChatSearchScope
 class ChatSearchUsecaseStub(private val getSearchQueryUseCaseStub: GetSearchQueryUseCaseStub) {
 
     @ChatSearchScope

@@ -11,7 +11,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-@ChatSearchScope
 class ChatSearchModuleTest {
 
     @ChatSearchScope
