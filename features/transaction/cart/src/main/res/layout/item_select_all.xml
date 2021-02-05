@@ -16,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_select_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_select_all_product"

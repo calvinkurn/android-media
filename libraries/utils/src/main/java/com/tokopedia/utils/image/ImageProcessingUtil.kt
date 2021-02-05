@@ -43,57 +43,6 @@ object ImageProcessingUtil {
 
     const val DEFAULT_DIRECTORY = "Tokopedia/"
 
-    /**
-     * This method calculates maximum size of both width and height of bitmap.
-     * It is twice the device screen diagonal for default implementation (extra quality to zoom image).
-     * Size cannot exceed max texture size.
-     *
-     * @return - max bitmap size in pixels.
-     */
-    private fun calculateMaxBitmapSize(context: Context): Int {
-        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display: Display
-        val width: Int
-        val height: Int
-        val size = Point()
-        display = wm.defaultDisplay
-        display.getSize(size)
-        width = size.x
-        height = size.y
-        // Twice the device screen diagonal as default
-        var maxBitmapSize = sqrt(width.toDouble().pow(2.0) + height.toDouble().pow(2.0)).toInt()
-        // Check for max texture size via Canvas
-        val canvas = Canvas()
-        val maxCanvasSize: Int = min(canvas.maximumBitmapWidth, canvas.maximumBitmapHeight)
-        if (maxCanvasSize > 0) {
-            maxBitmapSize = min(maxBitmapSize, maxCanvasSize)
-        }
-        return maxBitmapSize
-    }
-
-    // This will handle OOM for too large Bitmap
-    @JvmStatic
-    fun getBitmapFromFile(context: Context, imagePath: String): Bitmap? {
-        val options = BitmapFactory.Options()
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888
-        options.inJustDecodeBounds = true
-        BitmapFactory.decodeFile(imagePath, options)
-        val maxBitmapSize = calculateMaxBitmapSize(context)
-        options.inSampleSize = calculateInSampleSize(options, maxBitmapSize, maxBitmapSize)
-        options.inJustDecodeBounds = false
-        var tempPic: Bitmap? = null
-        var decodeAttemptSuccess = false
-        while (!decodeAttemptSuccess) {
-            try {
-                tempPic = BitmapFactory.decodeFile(imagePath, options)
-                decodeAttemptSuccess = true
-            } catch (error: OutOfMemoryError) {
-                options.inSampleSize *= 2
-            }
-        }
-        return tempPic
-    }
-
     private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int { // Raw height and width of image
         val height = options.outHeight
         val width = options.outWidth
@@ -210,6 +159,7 @@ object ImageProcessingUtil {
         }
     }
 
+    @JvmOverloads
     @JvmStatic
     fun getBitmapFromPath(imagePath: String?, maxWidth: Int = DEF_WIDTH, maxHeight: Int = DEF_HEIGHT, needCheckRotate: Boolean = true): Bitmap? {
         val options = BitmapFactory.Options()
@@ -355,36 +305,6 @@ object ImageProcessingUtil {
         } else null
     }
 
-    @JvmStatic
-    fun convertToWebp(context: Context, imagePath: String, quality: Int): String {
-        return convertImageFormat(context, imagePath, quality, CompressFormat.WEBP)
-    }
-
-    @JvmStatic
-    fun convertImageFormat(context: Context, imagePath: String, quality: Int, targetCompressFormat: CompressFormat): String {
-        if (imagePath.getCompressFormat() == targetCompressFormat) {
-            return imagePath
-        }
-        // not webp:
-        // get bitmap, then compress to webp format.
-        try {
-            val bitmap = getBitmapFromFile(context, imagePath)
-            val fileOutput = getTokopediaPhotoPath(targetCompressFormat)
-            return if (bitmap != null) {
-                val out = FileOutputStream(fileOutput)
-                bitmap.compress(targetCompressFormat, quality, out)
-                out.flush()
-                out.close()
-                fileOutput.absolutePath
-            } else {
-                imagePath
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return imagePath
-        }
-    }
-
     /**
      * compress the bitmap, then write to internal Tokopedia File
      */
@@ -501,7 +421,7 @@ object ImageProcessingUtil {
 
     @JvmOverloads
     @JvmStatic
-    fun resizeBitmap(imagePath: String, maxWidth: Int, maxHeight: Int, needCheckRotate: Boolean,
+    fun resizeBitmap(imagePath: String, maxWidth: Int, maxHeight: Int, needCheckRotate: Boolean, compressFormat: CompressFormat,
                      resultRelativeDirectory: String? = DEFAULT_DIRECTORY): String {
         val bitmapToEdit = getBitmapFromPath(imagePath, maxWidth, maxHeight, needCheckRotate)
         val outputBitmap: Bitmap
@@ -509,7 +429,7 @@ object ImageProcessingUtil {
             outputBitmap = Bitmap.createBitmap(bitmapToEdit!!.width, bitmapToEdit.height, bitmapToEdit.config)
             val canvas = Canvas(outputBitmap)
             canvas.drawBitmap(bitmapToEdit, 0f, 0f, null)
-            val file = writeImageToTkpdPath(outputBitmap, imagePath.getCompressFormat(), resultRelativeDirectory)
+            val file = writeImageToTkpdPath(outputBitmap, compressFormat, resultRelativeDirectory)
             bitmapToEdit.recycle()
             outputBitmap.recycle()
             System.gc()
