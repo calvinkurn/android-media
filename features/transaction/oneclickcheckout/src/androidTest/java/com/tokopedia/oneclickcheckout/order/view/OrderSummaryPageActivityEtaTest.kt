@@ -52,7 +52,7 @@ class OrderSummaryPageActivityEtaTest {
     }
 
     @Test
-    fun happyFlow_DirectCheckout() {
+    fun happyFlow_WithEta() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
         logisticInterceptor.customRatesResponsePath = RATES_ETA_RESPONSE_PATH
 
@@ -70,6 +70,26 @@ class OrderSummaryPageActivityEtaTest {
                     hasPromo = true,
                     promoTitle = "Tersedia Bebas Ongkir",
                     promoSubtitle = "Estimasi tiba besok - 3 Feb")
+
+            clickChangeCourierRevamp {
+                chooseCourierWithText("JNE Reg (Rp9.000)")
+            }
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Reguler",
+                    shippingCourier = "JNE Reg (Rp9.000)",
+                    shippingPrice = null,
+                    shippingEta = "Estimasi tiba besok - 4 Feb")
+
+            clickChangeDurationRevamp {
+                chooseDurationWithText("Same Day (Rp14.000)")
+            }
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Same Day",
+                    shippingCourier = "Gojek (Rp14.000)",
+                    shippingPrice = null,
+                    shippingEta = "Estimasi tiba hari ini - besok")
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
             clickApplyShipmentPromoRevamp()

@@ -87,8 +87,18 @@ class OrderSummaryPageRobot {
         CourierBottomSheetRobot().apply(func)
     }
 
+    fun clickChangeCourierRevamp(func: CourierBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.btn_new_change_courier)).perform(scrollTo()).perform(click())
+        CourierBottomSheetRobot().apply(func)
+    }
+
     fun clickUbahDuration(func: DurationBottomSheetRobot.() -> Unit) {
         onView(withId(R.id.tv_shipping_change_duration)).perform(scrollTo()).perform(click())
+        DurationBottomSheetRobot().apply(func)
+    }
+
+    fun clickUbahDurationRevamp(func: DurationBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.btn_new_change_duration)).perform(scrollTo()).perform(click())
         DurationBottomSheetRobot().apply(func)
     }
 

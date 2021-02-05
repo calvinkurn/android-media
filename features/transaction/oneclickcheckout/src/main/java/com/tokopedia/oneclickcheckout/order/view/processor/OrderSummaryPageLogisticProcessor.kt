@@ -525,6 +525,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                 insuranceData = selectedShippingCourierUiModel.productData.insurance,
                                 shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                                 shippingRecommendationData = shippingRecommendationData,
                                 logisticPromoShipping = null,
                                 isApplyLogisticPromo = false)
@@ -564,6 +565,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     shipperName = selectedShippingCourierUiModel.productData.shipperName,
                     insuranceData = selectedShippingCourierUiModel.productData.insurance,
                     shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                    serviceEta = getShippingServiceETA(selectedShippingDurationViewModel.serviceData.texts),
+                    shippingEta = getShippingCourierETA(selectedShippingCourierUiModel.productData.estimatedTimeArrival),
                     shippingRecommendationData = shippingRecommendationData,
                     logisticPromoTickerMessage = null,
                     logisticPromoViewModel = null,
