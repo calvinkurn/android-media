@@ -11,24 +11,22 @@ import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.fragment.PlayYouTubePlayerFragment
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Created by jegul on 31/07/20
  */
 class YouTubeViewComponent(
-        container: ViewGroup,
+        private val container: ViewGroup,
         @IdRes idRes: Int,
-        fragmentManager: FragmentManager,
+        private val fragmentManager: FragmentManager,
         private val dataSource: DataSource,
         private val listener: Listener
 ) : ViewComponent(container, idRes) {
 
-    private val youtubeFragment =
-            fragmentManager.findFragmentByTag(YOUTUBE_FRAGMENT_TAG) as? PlayYouTubePlayerFragment ?: PlayYouTubePlayerFragment().also {
-                fragmentManager.beginTransaction()
-                        .replace(rootView.id, it, YOUTUBE_FRAGMENT_TAG)
-                        .commit()
-            }
+    private var isAlreadyInit: AtomicBoolean = AtomicBoolean(false)
+
+    private var youtubeFragment: PlayYouTubePlayerFragment? = null
 
     private var youTubePlayer: YouTubePlayer? = null
     private var mVideoId: String? = null
@@ -92,6 +90,32 @@ class YouTubeViewComponent(
         }
     }
 
+    fun safeInit() = synchronized(this) {
+        if (isAlreadyInit.get()) return@synchronized
+        isAlreadyInit.compareAndSet(false, true)
+
+        youtubeFragment = fragmentManager.findFragmentByTag(YOUTUBE_FRAGMENT_TAG) as? PlayYouTubePlayerFragment ?: getPlayYouTubePlayerFragment().also {
+            fragmentManager.beginTransaction()
+                    .replace(rootView.id, it, YOUTUBE_FRAGMENT_TAG)
+                    .commit()
+        }
+    }
+
+    fun safeRelease() = synchronized(this) {
+        if (!isAlreadyInit.get()) return@synchronized
+        isAlreadyInit.compareAndSet(true, false)
+
+        release()
+
+        fragmentManager.findFragmentByTag(YOUTUBE_FRAGMENT_TAG)?.let { fragment ->
+            fragmentManager.beginTransaction()
+                    .remove(fragment)
+                    .commit()
+        }
+
+        youtubeFragment = null
+    }
+
     fun setYouTubeId(youtubeId: String) {
         setYouTubeId(youtubeId, mStartMillis, mShouldPlayOnReady)
     }
@@ -133,18 +157,20 @@ class YouTubeViewComponent(
     fun getPlayer(): YouTubePlayer? = youTubePlayer
 
     private fun initYouTubePlayer() {
-        youtubeFragment.initialize(object : YouTubePlayer.OnInitializedListener {
-            override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, wasRestored: Boolean) {
-                player?.let {
-                    youTubePlayer = configYouTubePlayer(it)
-                    mVideoId?.let { videoId -> playYouTubeFromId(videoId, mStartMillis) }
+        youtubeFragment?.let {
+            it.initialize(object : YouTubePlayer.OnInitializedListener {
+                override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, wasRestored: Boolean) {
+                    player?.let {
+                        youTubePlayer = configYouTubePlayer(it)
+                        mVideoId?.let { videoId -> playYouTubeFromId(videoId, mStartMillis) }
+                    }
                 }
-            }
 
-            override fun onInitializationFailure(provider: YouTubePlayer.Provider?, error: YouTubeInitializationResult?) {
-                listener.onInitFailure(this@YouTubeViewComponent, error ?: YouTubeInitializationResult.UNKNOWN_ERROR)
-            }
-        })
+                override fun onInitializationFailure(provider: YouTubePlayer.Provider?, error: YouTubeInitializationResult?) {
+                    listener.onInitFailure(this@YouTubeViewComponent, error ?: YouTubeInitializationResult.UNKNOWN_ERROR)
+                }
+            })
+        }
     }
 
     private fun playYouTubeFromId(youtubeId: String, startMillis: Int) {
@@ -167,6 +193,11 @@ class YouTubeViewComponent(
         return youTubePlayer?.doSafe { isPlaying } ?: true
     }
 
+    private fun getPlayYouTubePlayerFragment(): PlayYouTubePlayerFragment {
+        val fragmentFactory = fragmentManager.fragmentFactory
+        return fragmentFactory.instantiate(container.context.classLoader, PlayYouTubePlayerFragment::class.java.name) as PlayYouTubePlayerFragment
+    }
+
     /**
      * Lifecycle Event
      */
@@ -184,6 +215,7 @@ class YouTubeViewComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
+        safeInit()
         val videoId = mVideoId
         if (videoId != null) {
             mVideoId = null

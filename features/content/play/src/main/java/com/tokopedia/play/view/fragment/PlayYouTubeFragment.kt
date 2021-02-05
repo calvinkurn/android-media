@@ -208,7 +208,7 @@ class PlayYouTubeFragment @Inject constructor(
     ) {
         when {
             isFreezeOrBanned -> {
-                youtubeView.release()
+                youtubeView.safeRelease()
                 youtubeView.hide()
             }
             videoPlayer is YouTube -> {
