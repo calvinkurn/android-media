@@ -56,6 +56,7 @@ class PlayViewModel @Inject constructor(
         private val getCartCountUseCase: GetCartCountUseCase,
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
+        private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
         private val playSocket: PlaySocket,
         private val playSocketToModelMapper: PlaySocketToModelMapper,
         private val playUiModelMapper: PlayUiModelMapper,
@@ -511,6 +512,7 @@ class PlayViewModel @Inject constructor(
         focusVideoPlayer(channelData)
         updateChannelInfo(channelData)
         startWebSocket(channelData.id)
+        trackVisitChannel(channelData.id)
     }
 
     fun defocusPage() {
@@ -1066,6 +1068,16 @@ class PlayViewModel @Inject constructor(
                 val productIds = productList.mapNotNull { product -> if (product is ProductLineUiModel) product.id else null }
                 trackProductTagBroadcasterUseCase.params = TrackProductTagBroadcasterUseCase.createParams(channelId, productIds)
                 trackProductTagBroadcasterUseCase.executeOnBackground()
+            }
+        }) {
+        }
+    }
+
+    private fun trackVisitChannel(channelId: String) {
+        scope.launchCatchError(block = {
+            withContext(dispatchers.io) {
+                trackVisitChannelBroadcasterUseCase.params = TrackVisitChannelBroadcasterUseCase.createParams(channelId)
+                trackVisitChannelBroadcasterUseCase.executeOnBackground()
             }
         }) {
         }
