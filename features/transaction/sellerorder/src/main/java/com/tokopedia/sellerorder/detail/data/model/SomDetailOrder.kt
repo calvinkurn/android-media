@@ -23,7 +23,7 @@ data class SomDetailOrder(
         data class GetSomDetail(
                 @SerializedName("order_id")
                 @Expose
-                val orderId: Long = 0L,
+                val orderId: String = "0",
 
                 @SerializedName("status")
                 @Expose
@@ -132,11 +132,11 @@ data class SomDetailOrder(
             data class Products(
                     @SerializedName("id")
                     @Expose
-                    val id: Long = 0,
+                    val id: String = "0",
 
                     @SerializedName("order_detail_id")
                     @Expose
-                    val orderDetailId: Long = 0,
+                    val orderDetailId: String = "0",
 
                     @SerializedName("name")
                     @Expose
@@ -181,7 +181,7 @@ data class SomDetailOrder(
             data class Customer(
                     @SerializedName("id")
                     @Expose
-                    val id: Long = 0,
+                    val id: String = "0",
 
                     @SerializedName("name")
                     @Expose
@@ -207,7 +207,7 @@ data class SomDetailOrder(
             data class Shipment(
                     @SerializedName("id")
                     @Expose
-                    val id: Long = 0,
+                    val id: String = "0",
 
                     @SerializedName("name")
                     @Expose
@@ -215,7 +215,7 @@ data class SomDetailOrder(
 
                     @SerializedName("product_id")
                     @Expose
-                    val productId: Long = 0,
+                    val productId: String = "0",
 
                     @SerializedName("product_name")
                     @Expose

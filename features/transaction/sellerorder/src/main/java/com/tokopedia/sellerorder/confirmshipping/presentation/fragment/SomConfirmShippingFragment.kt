@@ -14,6 +14,7 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
@@ -229,7 +230,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     courierListResponse = it.data
 
                     if (courierListResponse.isNotEmpty()) {
-                        currShipmentId = courierListResponse.first().shipmentId
+                        currShipmentId = courierListResponse.first().shipmentId.toLongOrZero()
                         label_choosen_courier?.text = courierListResponse.first().shipmentName
 
                         val listServiceCourier = courierListResponse.first().listShipmentPackage
@@ -297,7 +298,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     private fun setCourierServiceListData(shipmentId: Long) {
         bottomSheetUnify.setTitle(SomConsts.TITLE_JENIS_LAYANAN)
         courierListResponse.forEach {
-            if (it.shipmentId == shipmentId) {
+            if (it.shipmentId.toLongOrZero() == shipmentId) {
                 somBottomSheetCourierListAdapter.listCourierService = it.listShipmentPackage.toMutableList()
                 somBottomSheetCourierListAdapter.isServiceCourier = true
                 somBottomSheetCourierListAdapter.notifyDataSetChanged()
@@ -317,7 +318,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         currShipmentId = shipmentId
         label_choosen_courier?.text = courierName
         courierListResponse.forEach {
-            if (it.shipmentId == shipmentId) {
+            if (it.shipmentId.toLongOrZero() == shipmentId) {
                 label_choosen_courier_service?.text = it.listShipmentPackage.first().name
                 currShipmentProductId = it.listShipmentPackage.first().spId
             }

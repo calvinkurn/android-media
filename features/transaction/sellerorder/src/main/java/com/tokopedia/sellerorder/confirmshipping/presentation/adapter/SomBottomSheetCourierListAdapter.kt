@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
 import kotlinx.android.synthetic.main.bottomsheet_text_item.view.*
@@ -37,7 +38,7 @@ class SomBottomSheetCourierListAdapter(private var listener: ActionListener): Re
 
         } else {
             holder.itemView.label.text = listCourier[position].shipmentName
-            holder.itemView.setOnClickListener { listener.onChooseCourierAgent(listCourier[position].shipmentId, listCourier[position].shipmentName) }
+            holder.itemView.setOnClickListener { listener.onChooseCourierAgent(listCourier[position].shipmentId.toLongOrZero() , listCourier[position].shipmentName) }
         }
     }
 
