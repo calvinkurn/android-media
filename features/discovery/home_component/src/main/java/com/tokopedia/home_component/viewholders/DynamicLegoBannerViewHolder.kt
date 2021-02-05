@@ -14,6 +14,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.customview.ShimmeringImageView
 import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
+import com.tokopedia.home_component.decoration.clearDecorations
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -72,8 +73,11 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     adapterPosition + 1,
                     isCacheData)
             var marginValue = 0
+            recyclerView.clearDecorations()
             if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
                     || element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE) {
+                if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
+                        GridSpacingItemDecoration(2, 15, false))
                 marginValue = convertDpToPixel(16f, itemView.context)
             }
             val marginLayoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
