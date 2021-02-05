@@ -99,8 +99,7 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
         tv_promo_checkout_desc?.visibility = View.GONE
         promo_checkout_loading_state?.visibility = View.VISIBLE
         iv_promo_checkout_left?.setImageResource(R.drawable.ic_promo_checkout_percentage)
-        iv_promo_checkout_right?.setImageResource(R.drawable.unify_chips_ic_chevron_normal)
-        iv_promo_checkout_right?.rotation = 270f
+        iv_promo_checkout_right?.setImageResource(R.drawable.ic_promo_checkout_chevron_right)
     }
 
     private fun setViewActive() {
@@ -116,8 +115,7 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
         }
 
         iv_promo_checkout_left?.setImageResource(R.drawable.ic_promo_checkout_percentage)
-        iv_promo_checkout_right?.setImageResource(R.drawable.unify_chips_ic_chevron_normal)
-        iv_promo_checkout_right?.rotation = 270f
+        iv_promo_checkout_right?.setImageResource(R.drawable.ic_promo_checkout_chevron_right)
     }
 
     private fun setViewInactive() {
