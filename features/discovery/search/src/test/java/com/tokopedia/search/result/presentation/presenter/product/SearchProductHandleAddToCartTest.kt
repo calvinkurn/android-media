@@ -27,10 +27,10 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
 
     @Before
     fun setUpAddToCartTest() {
-        `Given view already load data`(searchProductModel)
+        `Given view already load data`()
     }
 
-    private fun `Given view already load data`(searchProductModel: SearchProductModel) {
+    private fun `Given view already load data`() {
         every { searchProductFirstPageUseCase.execute(any(), any()) } answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
