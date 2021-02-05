@@ -45,4 +45,5 @@
     <string name="button_label_continue">Lanjut</string>
     <string name="button_label_skip">Lewati</string>
     <string name="tnc_input_shop">Syarat dan Ketentuan dan Kebijakan Privasi.</string>
+    <string name="content_desc_announce_shop_open">announce the shop opening</string>
 </resources>

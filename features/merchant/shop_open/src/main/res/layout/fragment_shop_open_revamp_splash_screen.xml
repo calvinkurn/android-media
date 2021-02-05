@@ -47,6 +47,7 @@
         android:id="@+id/img_icon_open_shop_finish"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:contentDescription="@string/content_desc_announce_shop_open"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_64"
         android:scaleType="fitCenter"
