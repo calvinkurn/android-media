@@ -1,13 +1,14 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.banner;
 
 import android.content.Context;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
+
 import android.graphics.Paint;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topads.sdk.R;
@@ -21,9 +22,12 @@ import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import kotlin.collections.CollectionsKt;
+import kotlin.jvm.functions.Function1;
 
 /**
  * Created by errysuprayogi on 4/16/18.
@@ -34,26 +38,20 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     @LayoutRes
     public static int LAYOUT = R.layout.layout_ads_banner_shop_a_product;
     private static final String TAG = BannerShopProductViewHolder.class.getSimpleName();
-    private final ImpressedImageView imageView;
-    private final TextView descTxt;
-    private final TextView priceTxt;
-    private final TextView reviewCountTxt;
-    private final TextView discountTxt;
-    private final TextView newLabelTxt;
-    private final TextView slashedPrice;
+    private ImpressedImageView imageView;
+    private TextView descTxt;
+    private TextView priceTxt;
+    private TextView reviewCountTxt;
+    private TextView discountTxt;
+    private TextView newLabelTxt;
+    private TextView slashedPrice;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
     private final TopAdsItemImpressionListener impressionListener;
-    private final Context context;
-    private final View container;
-    private final ImageView rating1;
-    private final ImageView rating2;
-    private final ImageView rating3;
-    private final ImageView rating4;
-    private final ImageView rating5;
-    private final ImageView imageRatingAverage;
-    private final TextView textRatingAverage;
-    private final TextView labelIntegrity;
-    private final View ratingAverageIntegrityLine;
+    private Context context;
+    private View container;
+    private ImageView rating1, rating2, rating3, rating4, rating5, imageRatingAverage;
+    private TextView textRatingAverage, labelIntegrity;
+    private View ratingAverageIntegrityLine;
     private static final String className = "com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder";
 
 
