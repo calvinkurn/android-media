@@ -199,6 +199,12 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check seller history appLink then should return seller home seller history in sellerapp with search param`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder?search=product&search=product"
+        assertEqualsDeepLinkMapper("${ApplinkConst.SELLER_HISTORY}?search=product", expectedDeepLink)
+    }
+
+    @Test
     fun `check seller history internal appLink then should return seller home seller history in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder"
         assertEqualsDeepLinkMapper(ApplinkConstInternalOrder.HISTORY, expectedDeepLink)
