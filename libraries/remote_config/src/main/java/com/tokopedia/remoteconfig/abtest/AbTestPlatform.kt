@@ -152,7 +152,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
     private fun gqlResponseHandler(graphqlResponse: GraphqlResponse): RolloutFeatureVariants {
         val responseData: AbTestVariantPojo = graphqlResponse.getData(AbTestVariantPojo::class.java)
-        val featureVariants = responseData.dataRollout.featureVariants
+        val featureVariants = responseData?.dataRollout?.featureVariants
         val globalRevision = responseData.dataRollout.globalRev
 
         val currentTimestamp = Date().time
@@ -194,7 +194,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         val KEY_SP_TIMESTAMP_AB_TEST = "key_sp_timestamp_ab_test"
         val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
 
-        private const val CONSUMER_PRO_APPLICATION = 3
+        private const val CONSUMER_PRO_APPLICATION = 3;
         private const val CONSUMER_PRO_APPLICATION_PACKAGE = "com.tokopedia.intl"
 
         const val NAVIGATION_EXP_TOP_NAV = "Navigation P0.1"

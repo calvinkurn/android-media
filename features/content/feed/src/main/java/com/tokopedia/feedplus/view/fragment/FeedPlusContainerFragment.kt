@@ -387,12 +387,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun onErrorGetWhitelist(throwable: Throwable) {
         view?.let {
-            Toaster.build(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
+            Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
                 if (userSession.isLoggedIn) {
                     viewModel.getWhitelist()
                 }
-            }).show()
+            })
         }
     }
 
