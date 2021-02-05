@@ -144,6 +144,9 @@ class TalkInboxTracking @Inject constructor() {
             TalkInboxTab.SHOP_OLD -> {
                 String.format(TalkInboxTrackingConstants.EVENT_CATEGORY_INBOX, TalkInboxTrackingConstants.TAB_SELLER)
             }
+            TalkInboxTab.SHOP_TAB -> {
+                String.format(TalkInboxTrackingConstants.EVENT_CATEGORY_INBOX, TalkInboxTrackingConstants.TAB_SELLER)
+            }
             TalkInboxTab.BUYER_TAB -> {
                 String.format(TalkInboxTrackingConstants.EVENT_CATEGORY_INBOX, TalkInboxTrackingConstants.TAB_BUYER)
             }
@@ -158,6 +161,9 @@ class TalkInboxTracking @Inject constructor() {
             TalkInboxTab.SHOP_OLD -> {
                 String.format(TalkInboxTrackingConstants.EVENT_ACTION_CLICK_TAB, TalkInboxTrackingConstants.TAB_SELLER)
             }
+            TalkInboxTab.SHOP_TAB -> {
+                String.format(TalkInboxTrackingConstants.EVENT_ACTION_CLICK_TAB, TalkInboxTrackingConstants.TAB_SELLER)
+            }
             TalkInboxTab.BUYER_TAB -> {
                 String.format(TalkInboxTrackingConstants.EVENT_ACTION_CLICK_TAB, TalkInboxTrackingConstants.TAB_BUYER)
             }
@@ -170,6 +176,9 @@ class TalkInboxTracking @Inject constructor() {
     private fun getInboxType(inboxType: String): String {
         return when (inboxType) {
             TalkInboxTab.SHOP_OLD -> {
+                TalkInboxTrackingConstants.TAB_SELLER
+            }
+            TalkInboxTab.SHOP_TAB -> {
                 TalkInboxTrackingConstants.TAB_SELLER
             }
             TalkInboxTab.BUYER_TAB -> {
@@ -193,7 +202,7 @@ class TalkInboxTracking @Inject constructor() {
                 TalkInboxTrackingConstants.FILTER_PROBLEM
             }
             TalkInboxFilter.UNRESPONDED_FILTER -> {
-                TalkInboxTrackingConstants.FILTER_UNREAD
+                TalkInboxTrackingConstants.FILTER_UNRESPONDED
             }
             else -> {
                 ""

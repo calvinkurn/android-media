@@ -206,7 +206,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         if (!::viewModel.isInitialized) return
         when (role) {
             RoleType.BUYER -> inboxType = TalkInboxTab.BUYER_TAB
-            RoleType.SELLER -> inboxType = TalkInboxTab.SHOP_OLD
+            RoleType.SELLER -> inboxType = TalkInboxTab.SHOP_TAB
         }
         clearAllData()
         setInboxType()
@@ -299,6 +299,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                         if (it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                             hitOnRoleChangeTracker()
                             talkInboxListener?.updateUnreadCounter(it.data.sellerUnread, it.data.buyerUnread)
+                            setFilterCounter()
                             hideLoading()
                             if (it.data.inbox.isEmpty()) {
                                 when (it.filter) {
@@ -441,7 +442,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         talkInboxSortFilter?.apply {
             sortFilterItems.removeAllViews()
             sortFilterPrefix.removeAllViews()
-            if (isSellerView() && isNewView()) {
+            if (isSellerView() && isNewView() || GlobalConfig.isSellerApp()) {
                 addItem(getSellerFilterList())
                 setSettingsChipMargins()
                 initCoachmark()
@@ -472,12 +473,12 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun getSellerFilterList(): ArrayList<SortFilterItem> {
-        val unrespondedFilter = if (getUnrespondedCount() != 0) {
+        val unrespondedFilter = if (getUnrespondedCount() != 0L) {
             SortFilterItem(getString(R.string.inbox_unresponded) + " (${getUnrespondedCount()})")
         } else {
             SortFilterItem(getString(R.string.inbox_unresponded))
         }
-        val problemFilter = if (getUnrespondedCount() != 0) {
+        val problemFilter = if (getUnrespondedCount() != 0L) {
             SortFilterItem(getString(R.string.inbox_problem) + " (${getProblemCount()})")
         } else {
             SortFilterItem(getString(R.string.inbox_problem))
@@ -537,7 +538,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun selectFilter(filter: TalkInboxFilter) {
-        viewModel.setFilter(filter)
+        viewModel.setFilter(filter, isSellerView() || GlobalConfig.isSellerApp())
         showFullPageLoading()
         clearAllData()
     }
@@ -577,19 +578,22 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         return viewModel.getType() == TalkInboxTab.SHOP_OLD
     }
 
-    private fun getUnrespondedCount(): Int {
-        return (viewModel.inboxList.value as? TalkInboxViewState.Success)?.data?.unrespondedTotal
-                ?: 0
+    private fun getProblemCount(): Long {
+        return (viewModel.inboxList.value as? TalkInboxViewState.Success)?.data?.problemTotal ?: 0L
+    }
+
+    private fun getUnrespondedCount(): Long {
+        return (viewModel.inboxList.value as? TalkInboxViewState.Success)?.data?.unrespondedTotal ?: 0L
     }
 
     private fun setFilterCounter() {
         if(isSellerView() && isNewView()) {
-            if (getUnrespondedCount() != 0) {
+            if (getUnrespondedCount() != 0L) {
                 talkInboxSortFilter?.chipItems?.getOrNull(0)?.title = getString(R.string.inbox_unresponded) + " (${getUnrespondedCount()})"
             } else {
                 talkInboxSortFilter?.chipItems?.getOrNull(0)?.title = getString(R.string.inbox_unresponded)
             }
-            if (getProblemCount() != 0) {
+            if (getProblemCount() != 0L) {
                 talkInboxSortFilter?.chipItems?.getOrNull(1)?.title = getString(R.string.inbox_problem) + " (${getProblemCount()})"
             } else {
                 talkInboxSortFilter?.chipItems?.getOrNull(1)?.title = getString(R.string.inbox_problem)
@@ -686,14 +690,18 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         }
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        return try {
+            if (!::remoteConfigInstance.isInitialized) {
+                remoteConfigInstance = RemoteConfigInstance(activity?.application)
+            }
+            remoteConfigInstance.abTestPlatform
+        } catch (e: IllegalStateException) {
+            null
         }
-        return remoteConfigInstance.abTestPlatform
     }
 
-    private fun getCounterForTracking(): Int {
+    private fun getCounterForTracking(): Long {
         if(isSellerView() && isNewView()) {
             return viewModel.getUnrespondedCount()
         }

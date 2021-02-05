@@ -44,6 +44,10 @@ class TalkInboxViewModel @Inject constructor(
         return shopId
     }
 
+    fun getUnrespondedCount(): Long {
+        return unrespondedCount
+    }
+
     fun getUnreadCount(): Long {
         return unreadCount
     }
@@ -66,13 +70,13 @@ class TalkInboxViewModel @Inject constructor(
         resetFilter()
     }
 
-    fun setFilter(selectedFilter: TalkInboxFilter) {
+    fun setFilter(selectedFilter: TalkInboxFilter, isSellerView: Boolean) {
         if(this.filter == selectedFilter) {
-            talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), unreadCount, false, getShopId(), getUserId())
+            talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), if(isSellerView) unrespondedCount else unreadCount, false, getShopId(), getUserId())
             resetFilter()
             return
         }
-        talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), unreadCount, true, getShopId(), getUserId())
+        talkInboxTracking.eventClickFilter(selectedFilter.filterParam, getType(), if(isSellerView) unrespondedCount else unreadCount, true, getShopId(), getUserId())
         this.filter = selectedFilter
         resetPage()
     }
