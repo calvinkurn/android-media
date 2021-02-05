@@ -52,8 +52,7 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterCompo
 
     override fun onBackPressed() {
         if (supportFragmentManager.findFragmentById(R.id.parent_view) is LoginEmailPhoneContract.View) {
-            (supportFragmentManager.findFragmentById(R.id
-                    .parent_view) as LoginEmailPhoneContract.View).onBackPressed()
+            (supportFragmentManager.findFragmentById(R.id.parent_view) as LoginEmailPhoneContract.View).onBackPressed()
         } else {
             super.onBackPressed()
         }
@@ -72,7 +71,6 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterCompo
             var method = it.getQueryParameter(PARAM_LOGIN_METHOD).orEmpty()
             val phone = it.getQueryParameter(PARAM_PHONE).orEmpty()
             val email = it.getQueryParameter(PARAM_EMAIL).orEmpty()
-            val password = it.getQueryParameter(PARAM_PASSWORD).orEmpty()
             val source = it.getQueryParameter(PARAM_SOURCE).orEmpty()
 
             if (method.isEmpty()) {
@@ -86,7 +84,6 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterCompo
             bundle.putString(PARAM_LOGIN_METHOD, method)
             bundle.putString(PARAM_PHONE, phone)
             bundle.putString(PARAM_EMAIL, email)
-            bundle.putString(PARAM_PASSWORD, password)
             bundle.putString(PARAM_SOURCE, source)
         }
 
@@ -103,9 +100,8 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterCompo
 
     companion object {
         const val PARAM_LOGIN_METHOD = "method"
-        const val PARAM_PHONE = "phone"
-        const val PARAM_EMAIL = "email"
-        const val PARAM_PASSWORD = "password"
+        const val PARAM_PHONE = "p"
+        const val PARAM_EMAIL = "e"
         const val PARAM_SOURCE = "source"
     }
 }
