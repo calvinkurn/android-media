@@ -5,11 +5,18 @@ import com.tokopedia.moengage_wrapper.constants.Constants
 
 class MoengageValidator {
 
-    fun checkIfMoengageEnabled(context: Context): Boolean {
+    fun checkIfMoengageEnabled(context: Context, yes: () -> Unit = {}, no: () -> Unit = {}) : Boolean {
         val remoteConfigUtil = RemoteConfigUtil(context)
         val moengageEventsEnabled = remoteConfigUtil.getBooleanRemoteConfig(Constants.RemoteConfigConstants.APP_MOENGAGE_EVENTS, false)
         val moengageUserAttributeEnabled = remoteConfigUtil.getBooleanRemoteConfig(Constants.RemoteConfigConstants.APP_MOENGAGE_USER_ATTRIBUTE, false)
-        return moengageEventsEnabled || moengageUserAttributeEnabled
+        return if ( moengageEventsEnabled || moengageUserAttributeEnabled) {
+            yes()
+            true
+        }
+        else {
+            no()
+            false
+        }
     }
 
     fun checkIfMoengageEventsEnabled(context: Context): Boolean {

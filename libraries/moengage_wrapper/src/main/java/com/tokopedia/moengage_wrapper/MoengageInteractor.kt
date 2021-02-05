@@ -41,9 +41,8 @@ object MoengageInteractor {
         /*
           Mandatory to set small/Large notification icon while initialising sdk
           */
-        if (::context.isInitialized && keyMoengage.isNotEmpty() && smallIcon != 0 && largeIcon != 0) {
-            val checkIfMoengageEnabled = MoengageValidator().checkIfMoengageEnabled(context)
-            if (checkIfMoengageEnabled && !isMoengageInitialised) {
+        if (!isMoengageInitialised && ::context.isInitialized && keyMoengage.isNotEmpty() && smallIcon != 0 && largeIcon != 0) {
+            MoengageValidator().checkIfMoengageEnabled(context, {
                 val moEngage = MoEngage.Builder(context,
                         keyMoengage)
                         .setNotificationSmallIcon(smallIcon)
@@ -56,10 +55,10 @@ object MoengageInteractor {
                 println("MoengageInteractor: Moengage Initialized")
                 println("MoengageInteractor: $smallIcon $largeIcon")
                 println("MoengageInteractor: MoengageKey $keyMoengage ")
-                return true
-            }
+            })
+
         }
-        return false
+        return isMoengageInitialised
     }
 
     private fun sendTokenToServerIfNotSent() {
@@ -184,7 +183,7 @@ object MoengageInteractor {
             value[Constants.MOENGAGE.TOTAL_SOLD_ITEM] = totalSoldItem
             value[Constants.MOENGAGE.TOPADS_AMT] = topAdsAmt
             value[Constants.MOENGAGE.HAS_PURCHASED_MARKETPLACE] = hasPurchasedMarketplace
-            value[Constants.MOENGAGE.LAST_TRANSACT_DATE] = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MM_YYYY, extractFirstSegment(lastTransactionDate , "T"))
+            value[Constants.MOENGAGE.LAST_TRANSACT_DATE] = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MM_YYYY, extractFirstSegment(lastTransactionDate, "T"))
             value[MoEHelperConstants.USER_ATTRIBUTE_USER_GENDER] = gender
 
             setUserData(value)
@@ -278,8 +277,14 @@ object MoengageInteractor {
     }
 
     private fun initialiseMoengageIfEnabled(moengageValidator: MoengageValidator) {
-        if (!isMoengageInitialised && moengageValidator.checkIfMoengageEnabled(context))
-            initialiseMoengage()
+        moengageValidator.checkIfMoengageEnabled(context, {
+            if (!isMoengageInitialised)
+                initialiseMoengage()
+        }, {
+            setPushListener(null)
+            setInAppListener(null)
+            setInAppListener(null)
+        })
     }
 
     private fun checkNull(o: Any?): Boolean {
@@ -302,47 +307,49 @@ object MoengageInteractor {
     fun refreshToken(token: String?) {
         val moengageValidator = MoengageValidator()
         initialiseMoengageIfEnabled(moengageValidator)
-        if (moengageValidator.checkIfMoengageEnabled(context) && !token.isNullOrEmpty()) {
-            PushManager.getInstance().refreshToken(context, token)
-            println("MoengageInteractor: refreshToken $token")
-            moengageWrapperCacheHandler.putBoolean(Constants.SharedPreference.TOKEN_SENT, true)
-        } else moengageWrapperCacheHandler.putBoolean(Constants.SharedPreference.TOKEN_SENT, false)
+        moengageValidator.checkIfMoengageEnabled(context, {
+            if (!token.isNullOrEmpty()) {
+                PushManager.getInstance().refreshToken(context, token)
+                println("MoengageInteractor: refreshToken $token")
+                moengageWrapperCacheHandler.putBoolean(Constants.SharedPreference.TOKEN_SENT, true)
+            } else moengageWrapperCacheHandler.putBoolean(Constants.SharedPreference.TOKEN_SENT, false)
+        })
     }
 
     fun handlePushPayload(token: Map<String, String>) {
         val moengageValidator = MoengageValidator()
         initialiseMoengageIfEnabled(moengageValidator)
-        if (moengageValidator.checkIfMoengageEnabled(context)) {
+        moengageValidator.checkIfMoengageEnabled(context, {
             PushManager.getInstance().pushHandler?.handlePushPayload(context, token)
             println("MoengageInteractor: handlePushPayload $token")
-        }
+        })
     }
 
-    fun setMessageListener(listener: CustomPushDataListener) {
+    fun setMessageListener(listener: CustomPushDataListener?) {
         val moengageValidator = MoengageValidator()
         initialiseMoengageIfEnabled(moengageValidator)
-        if (moengageValidator.checkIfMoengageEnabled(context)) {
-            PushManager.getInstance().setMessageListener(CustomPushListener(listener))
-            println("MoengageInteractor: setMessageListener")
-        }
+        moengageValidator.checkIfMoengageEnabled(context, {
+            PushManager.getInstance().setMessageListener(if (listener == null) null else CustomPushListener(listener))
+            println("MoengageInteractor: setMessageListener $listener")
+        })
     }
 
-    fun setInAppListener(listener: MoengageInAppListener) {
+    fun setInAppListener(listener: MoengageInAppListener?) {
         val moengageValidator = MoengageValidator()
         initialiseMoengageIfEnabled(moengageValidator)
-        if (moengageValidator.checkIfMoengageEnabled(context)) {
-            InAppManager.getInstance().setInAppListener(MoengageInAppListenerImpl(listener, context))
-            println("MoengageInteractor: setInAppListener")
-        }
+        moengageValidator.checkIfMoengageEnabled(context, {
+            InAppManager.getInstance().setInAppListener(if (listener == null) null else MoengageInAppListenerImpl(listener, context))
+            println("MoengageInteractor: setInAppListener $listener")
+        })
     }
 
-    fun setPushListener(listener: MoengagePushListener) {
+    fun setPushListener(listener: MoengagePushListener?) {
         val moengageValidator = MoengageValidator()
         initialiseMoengageIfEnabled(moengageValidator)
-        if (moengageValidator.checkIfMoengageEnabled(context)) {
-            MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(MoengagePushListenerImpl(listener))
-            println("MoengageInteractor: setPushListener")
-        }
+        moengageValidator.checkIfMoengageEnabled(context, {
+            MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(if (listener == null) null else MoengagePushListenerImpl(listener))
+            println("MoengageInteractor: setPushListener $listener")
+        })
     }
 
     fun isFromMoEngagePlatform(remoteMessageData: MutableMap<String, String>): Boolean {
