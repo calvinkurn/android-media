@@ -148,7 +148,9 @@ class SellerReviewHelper @Inject constructor(
             return
         }
 
-        fragment.show(fm)
+        handler.post {
+            fragment.show(fm)
+        }
     }
 
     /**
