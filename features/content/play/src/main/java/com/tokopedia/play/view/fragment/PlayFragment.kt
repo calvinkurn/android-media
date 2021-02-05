@@ -34,8 +34,6 @@ import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
-import com.tokopedia.play.view.contract.PlayOrientationListener
-import com.tokopedia.play.view.custom.PlayUnifyLoader
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.BoundsKey
 import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoBoundsManager
@@ -43,14 +41,13 @@ import com.tokopedia.play.view.measurement.bounds.manager.videobounds.VideoBound
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
-import com.tokopedia.play.view.type.BottomInsetsState
-import com.tokopedia.play.view.type.BottomInsetsType
-import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.type.PiPMode
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
-import com.tokopedia.play.view.viewcomponent.*
+import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.FragmentUserInteractionViewComponent
+import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
+import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
@@ -81,7 +78,6 @@ class PlayFragment @Inject constructor(
     private val scope = CoroutineScope(dispatchers.main + job)
 
     private lateinit var ivClose: ImageView
-    private lateinit var loaderPage: PlayUnifyLoader
     private val fragmentVideoView by viewComponent {
         FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
     }
@@ -329,7 +325,6 @@ class PlayFragment @Inject constructor(
     private fun initView(view: View) {
         with (view) {
             ivClose = findViewById(R.id.iv_close)
-            loaderPage = findViewById(R.id.loader_page)
         }
     }
 
