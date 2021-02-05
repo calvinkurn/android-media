@@ -230,7 +230,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     private fun getWhiteListedDomains() {
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this.applicationContext)
         val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
-        whiteListedDomains = Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
+        if(whiteListedDomainsCsv.isNotBlank()) {
+            whiteListedDomains = Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
+        }
     }
 
     private fun getBaseDomain(host: String): String {
@@ -268,7 +270,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
         const val SELLERAPP_PACKAGE = "com.tokopedia.sellerapp"
         const val CUSTOMERAPP_PACKAGE = "com.tokopedia.tkpd"
-        const val APP_WHITELISTED_DOMAINS_URL = ""
+        const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
 
         @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
         @JvmStatic
