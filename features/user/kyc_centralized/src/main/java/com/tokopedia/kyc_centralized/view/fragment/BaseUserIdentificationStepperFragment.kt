@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.StepperListener
@@ -193,7 +194,14 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
             return true
         }
 
-    abstract override fun initInjector()
+    override fun initInjector() {
+        if (activity != null) {
+            val daggerUserIdentificationComponent = DaggerUserIdentificationCommonComponent.builder()
+                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                    .build()
+            daggerUserIdentificationComponent.inject(this)
+        }
+    }
     protected abstract fun setContentView()
 
     companion object {

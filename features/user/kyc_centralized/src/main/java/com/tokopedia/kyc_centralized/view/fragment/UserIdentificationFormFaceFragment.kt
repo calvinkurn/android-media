@@ -6,7 +6,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -100,15 +99,6 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
 
     override fun trackOnBackPressed() {
         analytics?.eventClickBackSelfiePage()
-    }
-
-    override fun initInjector() {
-        if (activity != null) {
-            val daggerUserIdentificationComponent = DaggerUserIdentificationCommonComponent.builder()
-                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                    .build()
-            daggerUserIdentificationComponent.inject(this)
-        }
     }
 
     companion object {
